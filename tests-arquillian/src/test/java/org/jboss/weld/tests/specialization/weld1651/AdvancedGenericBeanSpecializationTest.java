@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +40,7 @@ public class AdvancedGenericBeanSpecializationTest {
 
     @Deployment
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(AdvancedGenericBeanSpecializationTest.class, SpecializedGenericBean.class,
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdvancedGenericBeanSpecializationTest.class)).addClasses(AdvancedGenericBeanSpecializationTest.class, SpecializedGenericBean.class,
                 SpecializingGenericBean.class, Bar.class, Foo.class);
     }
 

@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,7 +41,7 @@ public class InterceptorConflictingEnablementTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(TransactionalInterceptor.class, LoggingInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorConflictingEnablementTest.class)).intercept(TransactionalInterceptor.class, LoggingInterceptor.class)
                 .decorate(TestDecorator.class, AnotherTestDecorator.class)
                 .addPackage(InterceptorConflictingEnablementTest.class.getPackage()).addClass(ActionSequence.class);
     }

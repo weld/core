@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.test.util.el.EL;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,7 +44,7 @@ import org.junit.runner.RunWith;
 public class ELResolverTest {
     @Deployment
     public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ELResolverTest.class))
                 .addPackage(ELResolverTest.class.getPackage())
                 .addClass(EL.class)
                 .addPackages(true, ExpressionFactory.class.getPackage());

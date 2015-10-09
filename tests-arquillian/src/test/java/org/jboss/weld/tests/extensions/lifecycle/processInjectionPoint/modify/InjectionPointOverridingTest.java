@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +39,7 @@ public class InjectionPointOverridingTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(AnimalDecorator.class).addPackage(Dog.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointOverridingTest.class)).decorate(AnimalDecorator.class).addPackage(Dog.class.getPackage())
                 .addAsServiceProvider(Extension.class, ModifyingExtension.class);
     }
 

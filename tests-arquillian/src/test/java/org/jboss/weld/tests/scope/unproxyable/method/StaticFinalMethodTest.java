@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,7 +42,7 @@ public class StaticFinalMethodTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClass(Goose.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StaticFinalMethodTest.class)).addClass(Goose.class);
     }
 
     @Test

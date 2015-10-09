@@ -29,6 +29,7 @@ import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,7 @@ public class StereotypesTest
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StereotypesTest.class))
          .addPackage(StereotypesTest.class.getPackage());
    }
 

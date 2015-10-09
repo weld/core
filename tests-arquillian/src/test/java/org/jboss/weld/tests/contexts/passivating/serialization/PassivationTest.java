@@ -46,7 +46,7 @@ public class PassivationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Logger.class, NonSerializableLogger.class, ShoppingCart.class, OutputWriter.class, Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PassivationTest.class)).addClasses(Logger.class, NonSerializableLogger.class, ShoppingCart.class, OutputWriter.class, Utils.class);
     }
 
     @Test

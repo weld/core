@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
 public class ManagerTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ManagerTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(ManagerTest.class.getPackage())
                 .addClass(Utils.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

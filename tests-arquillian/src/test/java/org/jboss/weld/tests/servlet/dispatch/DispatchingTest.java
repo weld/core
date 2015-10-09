@@ -22,6 +22,6 @@ public class DispatchingTest extends AbstractDispatchingTestCase {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return Deployments.deployment(MainServlet.class, false);
+        return Deployments.deployment(MainServlet.class, false, DispatchingTest.class);
     }
 }

@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +44,7 @@ public class AnotherProgrammaticLookupOfNewBeanTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(PaymentProcessor.class, ChequePaymentProcessor.class, InjectedBean2.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AnotherProgrammaticLookupOfNewBeanTest.class)).addClasses(PaymentProcessor.class, ChequePaymentProcessor.class, InjectedBean2.class);
     }
 
     @Test

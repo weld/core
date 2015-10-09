@@ -30,7 +30,6 @@ import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
 public class InjectionPointTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointTest.class))
                 .addPackage(InjectionPointTest.class.getPackage())
                 .addClass(Utils.class);
     }

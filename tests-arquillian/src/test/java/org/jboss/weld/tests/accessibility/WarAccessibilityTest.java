@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -50,7 +51,8 @@ public class WarAccessibilityTest {
         JavaArchive sharedInterfaceBundle = ShrinkWrap.create(JavaArchive.class).addClass(Animal.class);
         JavaArchive extensionLibrary1 = createSimpleExtensionArchive(SharedLibrary1Extension.class, SharedLibrary1Impl.class);
         JavaArchive library1 = ShrinkWrap.create(BeanArchive.class).addClass(Library1Impl.class);
-        WebArchive war = ShrinkWrap.create(WebArchive.class).addAsLibraries(sharedInterfaceBundle, extensionLibrary1, library1)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(WarAccessibilityTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addAsLibraries(sharedInterfaceBundle, extensionLibrary1, library1)
                 .addClass(War1Impl.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return war;
     }

@@ -44,6 +44,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.NamedLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +57,7 @@ public class CreateBeanAttributesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(Lake.class.getPackage()).addClass(BeanUtilities.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CreateBeanAttributesTest.class)).addPackage(Lake.class.getPackage()).addClass(BeanUtilities.class);
     }
 
     @Test

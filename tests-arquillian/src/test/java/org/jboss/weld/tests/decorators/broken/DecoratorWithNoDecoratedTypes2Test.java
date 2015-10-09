@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,7 +34,7 @@ public class DecoratorWithNoDecoratedTypes2Test {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(FooDecorator.class).addClasses(Foo.class, FooDecorator.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratorWithNoDecoratedTypes2Test.class)).decorate(FooDecorator.class).addClasses(Foo.class, FooDecorator.class);
     }
 
     @Test

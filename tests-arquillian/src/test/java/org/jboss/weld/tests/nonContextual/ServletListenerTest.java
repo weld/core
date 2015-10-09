@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +35,7 @@ import org.junit.runner.RunWith;
 public class ServletListenerTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletListenerTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(ServletContextListenerImpl.class, LogManager.class)
                 .addAsWebInfResource(
                         ServletListenerTest.class.getPackage(), "web.xml", ArchivePaths.create("web.xml"))

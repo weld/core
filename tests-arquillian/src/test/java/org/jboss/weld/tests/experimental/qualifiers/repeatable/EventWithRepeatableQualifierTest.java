@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.experimental.qualifiers.repeatable.RepeatableQualifier.Literal;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class EventWithRepeatableQualifierTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(EventWithRepeatableQualifierTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventWithRepeatableQualifierTest.class)).addPackage(EventWithRepeatableQualifierTest.class.getPackage());
     }
 
     @Test

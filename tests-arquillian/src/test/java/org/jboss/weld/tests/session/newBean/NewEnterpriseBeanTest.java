@@ -38,6 +38,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Assert;
@@ -50,7 +51,7 @@ import org.junit.runner.RunWith;
 public class NewEnterpriseBeanTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NewEnterpriseBeanTest.class))
                 .addPackage(NewEnterpriseBeanTest.class.getPackage())
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }

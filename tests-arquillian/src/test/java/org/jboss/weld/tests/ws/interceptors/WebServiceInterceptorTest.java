@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class WebServiceInterceptorTest {
 
     @Deployment
     public static Archive<?> archive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME + ".war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(WebServiceInterceptorTest.class, Utils.ARCHIVE_TYPE.WAR));
         war.addPackage(WebServiceInterceptorTest.class.getPackage());
         war.addAsWebInfResource(new StringAsset(BEANS_CONFIG), "beans.xml");
         return war;

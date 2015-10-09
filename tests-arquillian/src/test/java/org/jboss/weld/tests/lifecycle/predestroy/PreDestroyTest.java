@@ -22,6 +22,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ import javax.enterprise.inject.spi.BeanManager;
 public class PreDestroyTest {
     @Deployment
     public static Archive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(PreDestroyTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PreDestroyTest.class)).addPackage(PreDestroyTest.class.getPackage());
     }
 
     @Test

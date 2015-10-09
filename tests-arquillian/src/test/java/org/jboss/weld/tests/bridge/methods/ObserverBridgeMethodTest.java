@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +39,7 @@ public class ObserverBridgeMethodTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Foo.class, Bar.class, CharlieObserver.class, BasicObserver.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ObserverBridgeMethodTest.class)).addClasses(Foo.class, Bar.class, CharlieObserver.class, BasicObserver.class);
     }
 
     @Test

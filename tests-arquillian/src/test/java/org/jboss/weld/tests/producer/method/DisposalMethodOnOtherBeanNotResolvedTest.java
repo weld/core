@@ -35,7 +35,7 @@ import javax.inject.Inject;
 public class DisposalMethodOnOtherBeanNotResolvedTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposalMethodOnOtherBeanNotResolvedTest.class))
                 .addPackage(DisposalMethodOnOtherBeanNotResolvedTest.class.getPackage())
                 .addClass(Utils.class);
     }

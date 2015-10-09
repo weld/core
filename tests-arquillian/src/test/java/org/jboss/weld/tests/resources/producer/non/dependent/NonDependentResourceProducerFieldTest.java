@@ -10,6 +10,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -24,7 +25,7 @@ public class NonDependentResourceProducerFieldTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static JavaArchive deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonDependentResourceProducerFieldTest.class))
                 .addPackage(NonDependentResourceProducerFieldTest.class.getPackage())
                 .addAsResource(PERSISTENCE_XML, "META-INF/persistence.xml");
     }

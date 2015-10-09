@@ -24,6 +24,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class ProcessAnnotatedTypeResolutionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(ProcessAnnotatedTypeResolutionTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessAnnotatedTypeResolutionTest.class)).addPackage(ProcessAnnotatedTypeResolutionTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class, ProcessAnnotatedTypeObservers.class);
     }
 

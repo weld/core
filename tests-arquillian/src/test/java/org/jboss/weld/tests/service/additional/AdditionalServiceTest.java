@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.ServiceLoader;
 import org.junit.Assert;
@@ -57,7 +58,7 @@ public class AdditionalServiceTest {
              TransactionServices1.class,
              TransactionServices2.class,
         };
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AdditionalServiceTest.class, Utils.ARCHIVE_TYPE.WAR)).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(classes)
                 .addAsServiceProvider(Service.class, AlphaImpl.class, BravoImpl.class, TransactionServices1.class, TransactionServices2.class);
     }

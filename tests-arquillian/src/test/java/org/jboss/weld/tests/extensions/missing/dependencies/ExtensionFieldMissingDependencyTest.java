@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,7 +38,7 @@ public class ExtensionFieldMissingDependencyTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addClasses(InvalidExtension.class, ActionSequence.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ExtensionFieldMissingDependencyTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(InvalidExtension.class, ActionSequence.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsServiceProvider(Extension.class, InvalidExtension.class);
     }

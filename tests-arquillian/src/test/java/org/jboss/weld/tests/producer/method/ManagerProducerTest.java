@@ -33,7 +33,7 @@ import javax.inject.Inject;
 public class ManagerProducerTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ManagerProducerTest.class))
                 .addPackage(ManagerProducerTest.class.getPackage())
                 .addClass(Utils.class);
     }

@@ -28,6 +28,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class RmiRequestScopeTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RmiRequestScopeTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Bridge.class, BridgeBean.class, Config.class, Manager.class, My.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

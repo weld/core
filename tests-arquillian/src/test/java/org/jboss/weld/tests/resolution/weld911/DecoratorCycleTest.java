@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +39,7 @@ public class DecoratorCycleTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratorCycleTest.class))
                 .decorate(BarDecorator.class)
                 .addClasses(Bar.class, BarDecorator.class, BarImplDependent.class, Foo.class, Holder.class);
     }

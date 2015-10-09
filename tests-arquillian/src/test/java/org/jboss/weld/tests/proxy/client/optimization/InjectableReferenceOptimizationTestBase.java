@@ -40,7 +40,7 @@ public abstract class InjectableReferenceOptimizationTestBase {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectableReferenceOptimizationTestBase.class))
                 .addClasses(InjectableReferenceOptimizationTestBase.class, Utils.class, Alpha.class, Bravo.class,
                         Charlie.class, Delta.class, Echo.class, Foxtrot.class, Golf.class, Hotel.class, India.class,
                         Custom.class, CustomScoped.class, CustomContext.class, CustomScopeExtension.class)

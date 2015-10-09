@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.proxy.client.serialization;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -32,14 +30,12 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ClientProxySerializationUnit {
 
-    private static final AtomicInteger deploymentId = new AtomicInteger();
-
     @Inject
     private Foo fooClientProxy;
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, "deployment" + deploymentId.incrementAndGet() + ".jar").addPackage(ClientProxySerializationUnit.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ClientProxySerializationUnit.class)).addPackage(ClientProxySerializationUnit.class.getPackage()).addClass(Utils.class);
     }
 
     @Test

@@ -38,7 +38,7 @@ import java.util.Date;
 public class NamedProducerWithBindingTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NamedProducerWithBindingTest.class))
                 .addPackage(NamedProducerWithBindingTest.class.getPackage())
                 .addClass(Utils.class);
     }
