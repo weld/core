@@ -34,6 +34,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.TypeEqualitySpecializationUtils;
@@ -155,10 +156,13 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     protected void postSpecialize() {
-        // override qualifiers
+        // Override qualifiers and the bean name
         Set<Annotation> qualifiers = new HashSet<Annotation>();
         qualifiers.addAll(attributes().getQualifiers());
-        // override name
+        if (qualifiers.contains(DefaultLiteral.INSTANCE) && !getAnnotated().isAnnotationPresent(DefaultLiteral.INSTANCE.annotationType())) {
+            // @Default is not declared explicitly
+            qualifiers.remove(DefaultLiteral.INSTANCE);
+        }
         String name = attributes().getName();
         for (AbstractBean<?, ?> specializedBean : getSpecializedBeans()) {
             qualifiers.addAll(specializedBean.getQualifiers());

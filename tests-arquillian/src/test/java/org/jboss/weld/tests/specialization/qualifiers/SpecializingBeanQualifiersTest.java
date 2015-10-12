@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.specialization.qualifiers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
@@ -23,14 +26,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.AnyLiteral;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +40,6 @@ import org.junit.runner.RunWith;
  * @see WELD-2046
  */
 @RunWith(Arquillian.class)
-@Ignore("WELD-2046")
 public class SpecializingBeanQualifiersTest {
 
     @Inject
@@ -62,14 +62,14 @@ public class SpecializingBeanQualifiersTest {
 
     private void testQualifiersOfSpecializedBean(Class<?> specializedClass, Class<?> specializingClass) {
         Set<Bean<?>> specializationBeans = beanManager.getBeans(specializedClass, new Admin.AdminLiteral());
-        Assert.assertEquals(1, specializationBeans.size());
+        assertEquals(1, specializationBeans.size());
 
         Bean<?> bean = specializationBeans.iterator().next();
-        Assert.assertTrue(bean.getTypes().contains(specializingClass));
+        assertTrue(bean.getTypes().contains(specializingClass));
         Set<Annotation> qualifiers = bean.getQualifiers();
-        Assert.assertEquals(2, qualifiers.size());
-        Assert.assertTrue(qualifiers.contains(AnyLiteral.INSTANCE));
-        Assert.assertTrue(qualifiers.contains(new Admin.AdminLiteral()));
+        assertEquals(2, qualifiers.size());
+        assertTrue(qualifiers.contains(AnyLiteral.INSTANCE));
+        assertTrue(qualifiers.contains(new Admin.AdminLiteral()));
     }
 
 }
