@@ -92,13 +92,47 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-               <systemPropertyVariables>
+               <systemProperties>
                   <arquillian.launch>weld-se</arquillian.launch>
                   <libPath>${project.build.outputDirectory}</libPath>
-               </systemPropertyVariables>
+                  <jacoco.agent>${jacoco.agent}</jacoco.agent>
+               </systemProperties>
             </configuration>
          </plugin>
       </plugins>
    </build>
+   
+   <profiles>
+      <profile>
+         <id>jacoco</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+            <property>
+               <name>jacoco</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.jacoco</groupId>
+                  <artifactId>jacoco-maven-plugin</artifactId>
+                  <configuration>
+                     <excludes>
+                        <exclude>org.jboss.weld.environment.se.test.*</exclude>
+                     </excludes>
+                     <propertyName>jacoco.agent</propertyName>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>prepare-agent</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 
 </project>
