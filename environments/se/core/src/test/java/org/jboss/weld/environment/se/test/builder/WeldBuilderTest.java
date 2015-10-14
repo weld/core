@@ -62,7 +62,7 @@ public class WeldBuilderTest {
         assertNull(WeldContainer.instance("FOO"));
         // Test alternatives selected for the synthetic BDA
         try (WeldContainer container = weld.beanClasses(Foo.class, Bar.class, Cat.class).alternatives(Bar.class)
-                .alternativeStereotypes(AlternativeStereotype.class).initialize()) {
+            .alternativeStereotypes(AlternativeStereotype.class).initialize()) {
             assertEquals(10, container.select(Foo.class).get().getVal());
             assertEquals(1, container.select(Bar.class).get().getVal());
             assertEquals(5, container.select(Cat.class).get().getVal());
@@ -84,13 +84,15 @@ public class WeldBuilderTest {
     }
 
     @Test
-    public void testInitializedContainers() {
+    public void testMultipleWeldInstancesCreated() {
         Baz.DESTROYED.clear();
         Weld weld = new Weld().disableDiscovery();
         int loop = 5;
         List<WeldContainer> containers = new ArrayList<WeldContainer>();
         for (int i = 0; i < loop; i++) {
             containers.add(weld.containerId("" + i).beanClasses(Baz.class).initialize());
+            WeldContainer.getRunningContainerIds().contains(String.valueOf(i));
+            assertTrue(WeldContainer.getRunningContainerIds().size() == i + 1);
         }
         for (WeldContainer container : containers) {
             assertTrue(container.isRunning());
@@ -109,23 +111,23 @@ public class WeldBuilderTest {
     @Test
     public void testConfigurationProperties() {
         try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class).property(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false)
-                .initialize()) {
+            .initialize()) {
             assertFalse(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
-                    .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
+                .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
         }
     }
 
     @Test
     public void testReset() {
         Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), true)
-                .beanClasses(Foo.class);
+            .beanClasses(Foo.class);
         weld.reset();
         assertFalse(weld.isDiscoveryEnabled());
         assertEquals("FOO", weld.getContainerId());
         try (WeldContainer container = weld.beanClasses(Bar.class).initialize()) {
             assertTrue(container.select(Foo.class).isUnsatisfied());
             assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
-                    .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
+                .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
         }
     }
 
@@ -139,7 +141,7 @@ public class WeldBuilderTest {
         try (WeldContainer container = weld.beanClasses(Bar.class).initialize()) {
             assertTrue(container.select(Foo.class).isUnsatisfied());
             assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
-                    .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
+                .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
         }
     }
 

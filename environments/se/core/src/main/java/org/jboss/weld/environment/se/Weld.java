@@ -137,6 +137,21 @@ import com.google.common.collect.Multimap;
  * WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class, Bar.class).initialize()) {
  * </pre>
  *
+ *
+ * <p>
+ * In the same manner, it is possible to explicitly declare interceptors, decorators, extensions and Weld-specific options (such
+ * as relaxed construction) using the builder.
+ * </p>
+ *
+ * <pre>
+ * Weld builder = new Weld()
+ *    .disableDiscovery()
+ *    .packages(Main.class, Utils.class)
+ *    .interceptors(TransactionalInterceptor.class)
+ *    .property("org.jboss.weld.construction.relaxed", true);
+ * WeldContainer container = builder.initialize();
+ * </pre>
+ *
  * <p>
  * The builder is reusable which means that it's possible to initialize multiple Weld containers with one builder. However, note that containers must have a
  * unique identifier assigned when running multiple Weld instances at the same time.
