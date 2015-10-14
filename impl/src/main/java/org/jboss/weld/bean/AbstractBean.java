@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -158,10 +159,11 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     protected void postSpecialize() {
         // Override qualifiers and the bean name
         Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.addAll(attributes().getQualifiers());
-        if (qualifiers.contains(DefaultLiteral.INSTANCE) && !getAnnotated().isAnnotationPresent(DefaultLiteral.INSTANCE.annotationType())) {
-            // @Default is not declared explicitly
-            qualifiers.remove(DefaultLiteral.INSTANCE);
+        for (Annotation qualifier : attributes().getQualifiers()) {
+            // Don't include implicit javax.enterprise.inject.Default qualifier
+            if (!qualifier.equals(DefaultLiteral.INSTANCE) || getAnnotated().isAnnotationPresent(Default.class)) {
+                qualifiers.add(qualifier);
+            }
         }
         String name = attributes().getName();
         for (AbstractBean<?, ?> specializedBean : getSpecializedBeans()) {
