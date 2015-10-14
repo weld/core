@@ -497,6 +497,63 @@ public static void main(String[] args) {
 }
 -----------------------------------------------------------------
 
+Because `WeldContainer` implements `AutoCloseable`, it can be used within a 
+try-with-resources block. Should the execution get out of the code block,
+the Weld instance is shut down and all managed instances
+are safely deleted. Here is an example using the above code but 
+leaving out the `shutdown()` method:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+org.jboss.weld.environment.se.Weld;
+
+public static void main(String[] args) {
+   Weld weld = new Weld();
+   try (WeldContainer container = weld.initialize()) {
+   container.instance().select(MyApplicationBean.class).get();
+   }
+}
+-----------------------------------------------------------------
+
+In case of more complex scenarios, it might be handy to gain higher level of
+control over the bootstraping process. Using the builder, it is possible to
+disable automatic scanning and to explicitly select classes/packages which
+will be managed by Weld. Interceptors, decorators and extensions can be 
+defined in the very same manner. Last but not least, builder can 
+be used to set Weld-specific configuration. Following example 
+demonstrates these features:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+Weld builder = new Weld()
+    .disableDiscovery()
+    .packages(Main.class, Utils.class)
+    .interceptors(TransactionalInterceptor.class)
+    .property("org.jboss.weld.construction.relaxed", true);
+
+try (WeldContainer weld = builder.initialize()) {
+    MyBean bean = weld.select(MyBean.class).get();
+    System.out.println(bean.computeResult());
+}
+-----------------------------------------------------------------
+
+Furthermore, it is also possible to create several independent Weld instances.
+Code snippet below shows how achieve that:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+new Weld().disableDiscovery().containerId("one").beanClasses(MyBean.class)
+   .initialize();
+new Weld().disableDiscovery().containerId("two").beanClasses(OtherBean.class)
+   .initialize();
+
+MyBean bean = WeldContainer.instance("one").select(MyBean.class).get();
+System.out.println(bean.computeResult());
+
+WeldContainer.instance("one").shutdown();
+WeldContainer.instance("two").shutdown();
+-----------------------------------------------------------------
+
 ==== Thread Context
 
 In contrast to Java EE applications, Java SE applications place no
