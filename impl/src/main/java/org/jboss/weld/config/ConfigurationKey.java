@@ -190,7 +190,7 @@ public enum ConfigurationKey {
     /**
      * If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the bootstrap performance.
      */
-    @Description("If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature may has negative impact on the <strong>bootstrap performance</strong>.")
+    @Description("If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the <strong>bootstrap performance</strong>.")
     PROBE_EVENT_MONITOR_CONTAINER_LIFECYCLE_EVENTS("org.jboss.weld.probe.eventMonitor.containerLifecycleEvents", false),
 
     ;
