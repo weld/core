@@ -296,6 +296,13 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
             return $.getJSON(
                 appController.get('restUrlBase') + 'observers' + query).done(
                 function(data) {
+                    data.data.forEach(function(observer) {
+                        // We want to render the bda index
+                        if (observer.declaringBean) {
+                            observer.bda = findBeanDeploymentArchive(appController
+                                .get('bdas'), observer.declaringBean.bdaId);
+                        }
+                    });
                     return data;
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert('Unable to get JSON data: ' + textStatus);

@@ -725,7 +725,7 @@ ${head}
         <table class="table table-bordered table-striped">
             <tr>
                 <th rowspan="2"></th>
-                <th colspan="2">Declaring Bean</th>
+                <th colspan="3">Declaring Bean</th>
                 <th rowspan="2" class="with-rowspan">
                     Observed Type {{tip "Click to show the observer method detail"}}
                     <form {{action "filter" on="submit"}}>
@@ -742,6 +742,7 @@ ${head}
                 <th rowspan="2" class="with-rowspan">Transaction Phase {{view 'select' content=txPhases value=txPhase prompt="-- ANY --" class="form-control"}}</th>
             </tr>
             <tr>
+                <th>Bean Archive</th>
                 <th>Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
                     Bean Class {{tip "Or ObserverMethod.getBeanClass() if declaring bean not available"}}
@@ -753,10 +754,11 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
-                <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{else}}N/A{{/if}}</td>
+                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{else}}-{{/if}}</td>
+                <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{else}}-{{/if}}</td>
                 <td>
                     {{#if declaringBean}}
-                        {{#link-to 'beanDetail' declaringBean.id}}{{abbr declaringBean.beanClass 50}}{{/link-to}}
+                        {{#link-to 'beanDetail' declaringBean.id}}{{abbr declaringBean.beanClass 45}}{{/link-to}}
                     {{else}}
                         {{unbound beanClass}}
                     {{/if}}
@@ -766,7 +768,7 @@ ${head}
                     {{#if description}}<i class="fa fa-lg fa-exclamation-triangle" title="{{unbound description}}"></i>{{/if}}
                 </td>
                 <td>
-                    {{eachLiAbbr qualifiers 50}}
+                    {{eachLiAbbr qualifiers 45}}
                 </td>
                 <td>
                     <span class="{{unbound reception}} boxed">{{unbound reception}}</span>

@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -352,26 +353,30 @@ class Probe {
     }
 
     void addEvent(EventInfo event) {
-     // Remove some old data if the limit is exceeded
+        // Remove some old data if the limit is exceeded
         if (events.size() > DEFAULT_EVENTS_LIMIT) {
             synchronized (this) {
                 if (events.size() > DEFAULT_EVENTS_LIMIT) {
-                    events.subList(DEFAULT_EVENTS_LIMIT / 2, events.size()).clear();
+                    events.subList(0, DEFAULT_EVENTS_LIMIT / 2).clear();
                     ProbeLogger.LOG.monitoringLimitExceeded(EventInfo.class.getSimpleName(), DEFAULT_EVENTS_LIMIT);
                 }
             }
         }
-        events.add(0, event);
+        events.add(event);
     }
 
     /**
-     * Returns a mutable copy of the captured event information.
+     * Returns a mutable copy of the captured event information (in reverse order - last added events go first).
      *
      * @return mutable copy of the captured event information
      */
     List<EventInfo> getEvents() {
         synchronized (events) {
-            return new ArrayList<EventInfo>(events);
+            List<EventInfo> result = new ArrayList<>(events.size());
+            for (ListIterator<EventInfo> iterator = events.listIterator(events.size()); iterator.hasPrevious();) {
+                result.add(iterator.previous());
+            }
+            return result;
         }
     }
 
