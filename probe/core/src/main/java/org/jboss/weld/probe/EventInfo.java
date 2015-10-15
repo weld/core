@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.EMPTY;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -58,11 +60,27 @@ class EventInfo {
      */
     EventInfo(Type type, Set<Annotation> qualifiers, Object event, InjectionPoint injectionPoint, List<ObserverMethod<?>> observers, boolean containerEvent,
             long timestamp) {
+        this(type, qualifiers, event, injectionPoint, observers, containerEvent, timestamp, true);
+    }
+
+    /**
+     *
+     * @param type
+     * @param qualifiers
+     * @param event
+     * @param injectionPoint
+     * @param observers
+     * @param containerEvent
+     * @param timestamp
+     * @param abbreviateEventString
+     */
+    EventInfo(Type type, Set<Annotation> qualifiers, Object event, InjectionPoint injectionPoint, List<ObserverMethod<?>> observers, boolean containerEvent,
+            long timestamp, boolean abbreviateEventString) {
         this.type = type;
         this.qualifiers = qualifiers;
         this.injectionPoint = injectionPoint;
         this.containerEvent = containerEvent;
-        this.eventString = Strings.abbreviate(event.toString(), EVENT_INFO_STRING_LIMIT);
+        this.eventString = event != null ? (abbreviateEventString ? Strings.abbreviate(event.toString(), EVENT_INFO_STRING_LIMIT) : event.toString()) : EMPTY;
         this.observers = observers;
         this.timestamp = timestamp;
     }

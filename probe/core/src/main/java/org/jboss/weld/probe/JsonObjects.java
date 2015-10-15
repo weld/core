@@ -1087,7 +1087,7 @@ final class JsonObjects {
 
     static JsonObjectBuilder createEventJson(EventInfo event, Probe probe) {
         JsonObjectBuilder builder = Json.objectBuilder();
-        builder.add(TYPE, Formats.formatType(event.getType(), false));
+        builder.add(TYPE, Formats.formatType(event.getType(), event.isContainerEvent()));
         builder.add(QUALIFIERS, createQualifiers(event.getQualifiers(), true));
         builder.add(EVENT_INFO, event.getEventString());
         builder.add(KIND, (event.isContainerEvent() ? CONTAINER : APPLICATION).toUpperCase());
