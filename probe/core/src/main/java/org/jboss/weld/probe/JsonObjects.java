@@ -1098,7 +1098,8 @@ final class JsonObjects {
             if (observer instanceof ObserverMethodImpl<?, ?>) {
                 ObserverMethodImpl<?, ?> weldObserver = (ObserverMethodImpl<?, ?>) observer;
                 AnnotatedMethod<?> method = weldObserver.getMethod().getAnnotated();
-                b.add(METHOD, method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters()));
+                b.add(METHOD, method.getJavaMember().getName());
+                // b.add(METHOD, method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters()));
             }
             observersBuilder.add(b);
         }
