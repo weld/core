@@ -18,7 +18,10 @@ package org.jboss.weld.probe;
 
 import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -27,6 +30,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -35,7 +39,15 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.enterprise.inject.spi.ProcessObserverMethod;
+import javax.enterprise.inject.spi.ProcessProducer;
+import javax.enterprise.inject.spi.ProcessProducerField;
+import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.interceptor.Interceptor;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -46,13 +58,20 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
+import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
+import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
+import org.jboss.weld.bootstrap.events.RequiredAnnotationDiscovery;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * This extension adds {@link AnnotatedType}s needed for monitoring. Furthermore, {@link BeanAttributes} of all suitable beans are modified so that a stereotype
@@ -72,6 +91,8 @@ public class ProbeExtension implements Extension {
 
     private volatile Pattern invocationMonitorExcludePattern;
 
+    private volatile boolean eventMonitorContainerLifecycleEvents;
+
     public ProbeExtension() {
         this.probe = new Probe();
     }
@@ -82,9 +103,12 @@ public class ProbeExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(Monitored.class), Monitored.class.getName());
         event.addAnnotatedType(manager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
         event.addAnnotatedType(manager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());
-        String exclude = manager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
+        WeldConfiguration configuration = manager.getServices().get(WeldConfiguration.class);
+        String exclude = configuration.getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
         this.invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);
         this.jsonDataProvider = new DefaultJsonDataProvider(probe, manager);
+        this.eventMonitorContainerLifecycleEvents = configuration.getBooleanProperty(ConfigurationKey.PROBE_EVENT_MONITOR_CONTAINER_LIFECYCLE_EVENTS);
+        addContainerLifecycleEvent(event, null, beanManager);
     }
 
     public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event, BeanManager beanManager) {
@@ -101,8 +125,17 @@ public class ProbeExtension implements Extension {
                 protected BeanAttributes<T> attributes() {
                     return beanAttributes;
                 }
+
+                @Override
+                public String toString() {
+                    return beanAttributes.toString();
+                }
             });
             ProbeLogger.LOG.monitoringStereotypeAdded(event.getAnnotated());
+        }
+        if (eventMonitorContainerLifecycleEvents) {
+            addContainerLifecycleEvent(event, "Types: [" + Formats.formatTypes(event.getBeanAttributes().getTypes()) + "], qualifiers: ["
+                    + Formats.formatAnnotations(event.getBeanAttributes().getQualifiers()) + "]", beanManager);
         }
     }
 
@@ -110,6 +143,7 @@ public class ProbeExtension implements Extension {
         BeanManagerImpl weldManager = BeanManagerProxy.unwrap(beanManager);
         String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_EVENT_MONITOR_EXCLUDE_TYPE);
         event.addObserverMethod(new ProbeObserver(weldManager, exclude.isEmpty() ? null : Pattern.compile(exclude), probe));
+        addContainerLifecycleEvent(event, null, beanManager);
     }
 
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
@@ -118,12 +152,12 @@ public class ProbeExtension implements Extension {
         if (isJMXSupportEnabled(manager)) {
             try {
                 MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                mbs.registerMBean(new ProbeDynamicMBean(jsonDataProvider, JsonDataProvider.class),
-                        constructProbeJsonDataMBeanName(manager, probe));
+                mbs.registerMBean(new ProbeDynamicMBean(jsonDataProvider, JsonDataProvider.class), constructProbeJsonDataMBeanName(manager, probe));
             } catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
                 event.addDeploymentProblem(ProbeLogger.LOG.unableToRegisterMBean(JsonDataProvider.class, manager.getContextId(), e));
             }
         }
+        addContainerLifecycleEvent(event, null, beanManager);
     }
 
     public void beforeShutdown(@Observes BeforeShutdown event, BeanManager beanManager) {
@@ -138,6 +172,54 @@ public class ProbeExtension implements Extension {
             } catch (MalformedObjectNameException | MBeanRegistrationException | InstanceNotFoundException e) {
                 throw ProbeLogger.LOG.unableToUnregisterMBean(JsonDataProvider.class, manager.getContextId(), e);
             }
+        }
+    }
+
+    public void processAnnotatedTypes(@Observes ProcessAnnotatedType<?> event, BeanManager beanManager) {
+        addContainerLifecycleEvent(event, null, beanManager);
+    }
+
+    public void processInjectionPoints(@Observes ProcessInjectionPoint<?, ?> event, BeanManager beanManager) {
+        if (eventMonitorContainerLifecycleEvents) {
+            addContainerLifecycleEvent(event, formatMember(event.getInjectionPoint().getMember()), beanManager);
+        }
+    }
+
+    public void processInjectionTargets(@Observes ProcessInjectionTarget<?> event, BeanManager beanManager) {
+        if (eventMonitorContainerLifecycleEvents) {
+            addContainerLifecycleEvent(event, Formats.formatType(event.getAnnotatedType().getBaseType(), false), beanManager);
+        }
+    }
+
+    public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanManager) {
+        addContainerLifecycleEvent(event, null, beanManager);
+    }
+
+    public void processObserverMethods(@Observes ProcessObserverMethod<?, ?> event, BeanManager beanManager) {
+        if (eventMonitorContainerLifecycleEvents) {
+            addContainerLifecycleEvent(event,
+                    event.getAnnotatedMethod() != null ? formatMember(event.getAnnotatedMethod().getJavaMember()) : event.getObserverMethod().toString(),
+                    beanManager);
+        }
+    }
+
+    public void processProducers(@Observes ProcessProducer<?, ?> event, BeanManager beanManager) {
+        if (eventMonitorContainerLifecycleEvents) {
+            addContainerLifecycleEvent(event, formatMember(event.getAnnotatedMember().getJavaMember()), beanManager);
+        }
+    }
+
+    public void processBeans(@Observes ProcessBean<?> event, BeanManager beanManager) {
+        if (eventMonitorContainerLifecycleEvents) {
+            Object info;
+            if (event instanceof ProcessProducerMethod) {
+                info = formatMember(((ProcessProducerMethod<?, ?>) event).getAnnotatedProducerMethod().getJavaMember());
+            } else if (event instanceof ProcessProducerField) {
+                info = formatMember(((ProcessProducerField<?, ?>) event).getAnnotatedProducerField().getJavaMember());
+            } else {
+                info = Formats.formatType(event.getBean().getBeanClass(), false);
+            }
+            addContainerLifecycleEvent(event, info, beanManager);
         }
     }
 
@@ -186,4 +268,42 @@ public class ProbeExtension implements Extension {
         }
         return true;
     }
+
+    private <T> void addContainerLifecycleEvent(T event, Object info, BeanManagerImpl beanManagerImpl) {
+        ResolvedObservers<?> resolvedObservers = null;
+        Type eventType = null;
+        if (event instanceof AbstractContainerEvent) {
+            AbstractContainerEvent containerEvent = (AbstractContainerEvent) event;
+            eventType = containerEvent.getEventType();
+            resolvedObservers = beanManagerImpl.getGlobalLenientObserverNotifier().resolveObserverMethods(eventType);
+        } else if (event instanceof ProcessAnnotatedTypeImpl) {
+            ProcessAnnotatedTypeImpl<?> processAnnotatedTypeEvent = (ProcessAnnotatedTypeImpl<?>) event;
+            eventType = ProcessAnnotatedType.class;
+            info = Formats.formatType(processAnnotatedTypeEvent.getOriginalAnnotatedType().getBaseType(), false);
+            resolvedObservers = beanManagerImpl.getGlobalLenientObserverNotifier().resolveObserverMethods(
+                    ProcessAnnotatedTypeEventResolvable.of(processAnnotatedTypeEvent, beanManagerImpl.getServices().get(RequiredAnnotationDiscovery.class)));
+        }
+        if (resolvedObservers != null && eventType != null) {
+            probe.addEvent(new EventInfo(eventType, Collections.emptySet(), info, null, Reflections.cast(resolvedObservers.getAllObservers()), true,
+                    System.currentTimeMillis(), false));
+        }
+    }
+
+    private <T> void addContainerLifecycleEvent(T event, Object payloadInfo, BeanManager beanManager) {
+        if (eventMonitorContainerLifecycleEvents) {
+            addContainerLifecycleEvent(event, payloadInfo, BeanManagerProxy.unwrap(beanManager));
+        }
+    }
+
+    private String formatMember(Member member) {
+        StringBuilder format = new StringBuilder();
+        format.append(member.getDeclaringClass().getName());
+        format.append(".");
+        format.append(member.getName());
+        if (member instanceof Method) {
+            format.append("()");
+        }
+        return format.toString();
+    }
+
 }
