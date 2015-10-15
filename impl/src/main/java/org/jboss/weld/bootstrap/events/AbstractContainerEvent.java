@@ -49,9 +49,8 @@ public abstract class AbstractContainerEvent extends ContainerEvent {
     }
 
     public void fire() {
-        Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
         try {
-            beanManager.getGlobalLenientObserverNotifier().fireEvent(eventType, this);
+            beanManager.getGlobalLenientObserverNotifier().fireEvent(getEventType(), this);
         } catch (Exception e) {
             getErrors().add(e);
         }
@@ -63,5 +62,9 @@ public abstract class AbstractContainerEvent extends ContainerEvent {
 
     protected Type[] getActualTypeArguments() {
         return actualTypeArguments;
+    }
+
+    public Type getEventType() {
+        return new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
     }
 }

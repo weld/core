@@ -164,6 +164,8 @@ public final class Strings {
 
     static final String WARNING_UNRESTRICTED_PAT_OBSERVER = "BOOTSTRAP PERFORMANCE TIP: This observer method receives events for all annotated types! Consider restricting events using @WithAnnotations or a generic type with bounds.";
 
+    static final String EMPTY = "";
+
     private static final int ABR_MIN_LIMIT = 4;
     private static final String ABR_MARKER = "...";
 

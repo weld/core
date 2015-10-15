@@ -189,6 +189,12 @@ public enum ConfigurationKey {
     @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> one or more MBean components may be registered so that it is possible to use JMX to access the Probe development tool data.")
     PROBE_JMX_SUPPORT("org.jboss.weld.probe.jmxSupport", false),
 
+    /**
+     * If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the bootstrap performance.
+     */
+    @Description("If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature may has negative impact on the <strong>bootstrap performance</strong>.")
+    PROBE_EVENT_MONITOR_CONTAINER_LIFECYCLE_EVENTS("org.jboss.weld.probe.eventMonitor.containerLifecycleEvents", false),
+
     ;
 
     /**

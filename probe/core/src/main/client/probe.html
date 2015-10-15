@@ -55,7 +55,7 @@ ${head}
                             </ul>
                         </li>
                     </ul>
-                    <p class="navbar-text navbar-right version"> <span title="Running on Weld {{unbound version}}"><i class="fa fa-lg fa-cogs"></i> Weld {{unbound versionShort}}</span>, <span title="Application init time: {{unbound initTime}}"><i class="fa fa-lg fa-clock-o"></i> {{initTimeFromNow}}</span></p>
+                    <p class="navbar-text navbar-right version"> <span title="Running on Weld {{unbound version}}"><i class="fa fa-lg fa-cogs"></i> Weld {{unbound versionShort}}</span>  <span title="Application init time: {{unbound initTime}}"><i class="fa fa-lg fa-clock-o"></i> {{initTimeFromNow}}</span></p>
                 </div>
             </div>
         </div>
@@ -1197,7 +1197,7 @@ ${head}
                 <td>
                         {{#with _view.contentIndex as index}}
                         {{#if observers}}
-                        <a class="boxed SYNTHETIC centered let-width-3" role="button" data-toggle="collapse" href="#o_{{unbound index}}" aria-expanded="false" aria-controls="o_{{unbound index}}">{{observers.length}} <i class="fa fa-lg fa-caret-square-o-down"></i></a>
+                        <a class="boxed SYNTHETIC centered" role="button" data-toggle="collapse" href="#o_{{unbound index}}" aria-expanded="false" aria-controls="o_{{unbound index}}">{{observers.length}} <i class="fa fa-lg fa-caret-square-o-down"></i></a>
                         <div class="collapse" id="o_{{unbound index}}">
                             <ul class="plain-list no-margin">
                             {{#each observers}}
