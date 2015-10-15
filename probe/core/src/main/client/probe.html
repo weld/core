@@ -1195,11 +1195,19 @@ ${head}
                 <td>{{eachLiAbbr qualifiers 20}}</td>
                 <td><span title="{{unbound tsLong}}">{{tsShort}}</span></td>
                 <td>
-                    <ul class="plain-list no-margin">
-                        {{#each observers}}
-                            <li>{{#link-to 'observerDetail' id}}{{abbr beanClass 20 suppressHtml=true}}{{#if method}}.{{method}}{{/if}}{{/link-to}}</li>
-                        {{/each}}
-                    </ul>
+                        {{#with _view.contentIndex as index}}
+                        {{#if observers}}
+                        <a class="boxed SYNTHETIC centered let-width-3" role="button" data-toggle="collapse" href="#o_{{unbound index}}" aria-expanded="false" aria-controls="o_{{unbound index}}">{{observers.length}} <i class="fa fa-lg fa-caret-square-o-down"></i></a>
+                        <div class="collapse" id="o_{{unbound index}}">
+                            <ul class="plain-list no-margin">
+                            {{#each observers}}
+                                <li>{{#link-to 'observerDetail' id}}{{abbr beanClass 20 suppressHtml=true}}{{#if method}}.{{method}}{{/if}}{{/link-to}}</li>
+                            {{/each}}
+                            </ul>
+                        </div>
+                        {{/if}}
+                        {{/with}}
+
                 </td>
             </tr>
             {{/each}}
