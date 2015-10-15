@@ -290,7 +290,7 @@ div.bda-beans {
   display: inline-block;
 }
 
-a.let-width-3, div.let-width-3 {
+div.let-width-3 {
   width: 3em;
 }
 
