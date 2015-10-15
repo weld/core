@@ -71,7 +71,7 @@ final class Queries {
      * @return the page of data
      */
     static <T, F extends Filters<T>> Page<T> find(List<T> data, int page, int pageSize, F filters) {
-        if (filters != null) {
+        if (filters != null && !filters.isEmpty()) {
             ProbeLogger.LOG.filtersApplied(filters);
             for (Iterator<T> iterator = data.iterator(); iterator.hasNext();) {
                 T element = iterator.next();
@@ -321,6 +321,8 @@ final class Queries {
             return filter.startsWith("@") ? filter.substring(1, filter.length()) : filter;
         }
 
+        abstract boolean isEmpty();
+
     }
 
     static class BeanFilters extends Filters<Bean<?>> {
@@ -378,6 +380,12 @@ final class Queries {
         public String toString() {
             return String.format("BeanFilters [kind=%s, beanClass=%s, beanType=%s, qualifier=%s, scope=%s, bda=%s, isAlternative=%s, stereotypes=%s]", kind,
                     beanClass, beanType, qualifier, scope, bda, isAlternative, stereotypes);
+        }
+
+        @Override
+        boolean isEmpty() {
+            return kind == null && beanClass == null && beanType == null && qualifier == null && scope == null && bda == null && isAlternative == null
+                    && stereotypes == null;
         }
 
     }
@@ -448,6 +456,13 @@ final class Queries {
                     beanClass, observedType, qualifier, reception, txPhase, declaringBeanKind, bda);
         }
 
+        @Override
+        boolean isEmpty() {
+            return beanClass == null && observedType == null && qualifier == null && reception == null && bda == null && txPhase == null
+                    && declaringBeanKind == null;
+        }
+
+
     }
 
     static class InvocationsFilters extends Filters<Invocation> {
@@ -505,13 +520,21 @@ final class Queries {
             return String.format("InvocationsFilters [beanClass=%s, methodName=%s, search=%s, description=%s]", beanClass, methodName, search, description);
         }
 
+        @Override
+        boolean isEmpty() {
+            return beanClass == null && methodName == null && search == null && description == null;
+        }
+
     }
 
     static class EventsFilters extends Filters<EventInfo> {
 
         private Boolean container;
+
         private String eventInfo;
+
         private String type;
+
         private String qualifiers;
 
         EventsFilters(Probe probe) {
@@ -545,6 +568,12 @@ final class Queries {
         public String toString() {
             return String.format("EventsFilters [container=%s, eventInfo=%s, type=%s, qualifiers=%s]", container, eventInfo, type, qualifiers);
         }
+
+        @Override
+        boolean isEmpty() {
+            return container == null && eventInfo == null && type == null && qualifiers == null;
+        }
+
     }
 
 }
