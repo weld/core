@@ -76,7 +76,7 @@ ${head}
 
         <div class="btn-line">
             <label>
-                {{input type="checkbox" name="hideAddBda" checked=hideAddBda}} Hide Additional Bean Archives {{tip "These synthetic bean archives are created for beans and extensions which do not belong to any regular bean archive"}}
+                {{input type="checkbox" name="hideAddBda" checked=hideAddBda}} Hide Additional Bean Archives {{tip "Additional/synthetic bean archives are automatically created for beans and extensions which do not belong to any regular bean archive"}}
             </label>
         </div>
 
@@ -302,6 +302,7 @@ ${head}
                     prompt="-- ANY --"
                     class="form-control form-control-auto-width"
                 }}
+               {{tip "Additional/synthetic bean archives are automatically created for beans and extensions which do not belong to any regular bean archive"}}
             </form>
         </div>
 
@@ -321,21 +322,21 @@ ${head}
                 <th>Bean Archive</th>
                 <th>Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
-                    Scope
+                    Scope {{tip "Packages of built-in scopes are not displayed"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=scope class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
                 <th>
-                    Bean class {{tip "Click to show the bean detail"}}
+                    Bean class
                     <form {{action "filter" on="submit"}}>
-                        {{input value=beanClass class="form-control" placeholder="FQN Contains"}}
+                        {{input value=beanClass class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
                 <th>
                     Bean types {{tip "The set does not contain java.lang.Object"}}
                     <form {{action "filter" on="submit"}}>
-                        {{input value=beanType class="form-control" placeholder="Any FQN contains"}}
+                        {{input value=beanType class="form-control" placeholder="Any contains"}}
                     </form>
                 </th>
                 <th>
@@ -709,6 +710,7 @@ ${head}
                     prompt="-- ANY --"
                     class="form-control form-control-auto-width"
                 }}
+                {{tip "Additional/synthetic bean archives are automatically created for beans and extensions which do not belong to any regular bean archive"}}
             </form>
         </div>
 

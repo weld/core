@@ -96,7 +96,7 @@ Probe.ApplicationRoute = Ember.Route
                         filterBdas
                             .unshift({
                                 "id" : controller.get('markerFilterAddBdas'),
-                                "bdaId" : "Only application bean archives - filter out beans from additional bean archives"
+                                "bdaId" : "Only application bean archives - leave out additional bean archives"
                             });
                         controller.set('filterBdas', filterBdas);
                         // Weld configuration - changed flag indicates a
