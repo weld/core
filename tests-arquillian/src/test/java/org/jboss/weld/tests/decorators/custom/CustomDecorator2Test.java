@@ -36,7 +36,7 @@ public class CustomDecorator2Test {
 
     @Deployment
     public static Archive<?> deployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomDecorator2Test.class))
                 .decorate(OuterWindowFrame.class)
                 .decorate(CustomWindowFrame.class)
                 .decorate(InnerWindowFrame.class)

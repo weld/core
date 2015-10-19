@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +45,7 @@ public class EMFFactoryTest {
 
     @Deployment(testable = false)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(EMFFactoryTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(JPAResourceProducerSingletonEJB_StaticField.class, ProducedViaStaticFieldOnEJB.class, EMFConsumer1.class)
                 .addClasses(JPAResourceProducerManagedBean_InstanceField.class, ProducedViaInstanceFieldOnManagedBean.class, EMFConsumer2.class)
                 .addClasses(JPAResourceProducerManagedBean_StaticField.class, ProducedViaStaticFieldOnManagedBean.class, EMFConsumer3.class)

@@ -14,6 +14,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -26,7 +27,7 @@ public class MessageSenderTest {
 
     @Deployment(testable = false)
     public static WebArchive create() {
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(MessageSenderTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(MessageSenderTest.class.getPackage())
                 .setWebXML(new StringAsset(
                         "<web-app>" +

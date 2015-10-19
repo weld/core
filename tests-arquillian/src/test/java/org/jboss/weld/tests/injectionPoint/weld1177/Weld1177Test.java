@@ -26,7 +26,7 @@ public class Weld1177Test {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(Weld1177Test.class))
                 .addPackage(Weld1177Test.class.getPackage())
                 .addClass(Utils.class);
     }

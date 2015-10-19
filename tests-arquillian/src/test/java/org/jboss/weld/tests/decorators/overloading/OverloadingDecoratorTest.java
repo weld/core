@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,7 +43,7 @@ public class OverloadingDecoratorTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(AlphaServiceDecorator.class).decorate(BravoServiceDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(OverloadingDecoratorTest.class)).decorate(AlphaServiceDecorator.class).decorate(BravoServiceDecorator.class)
                 .decorate(CharlieServiceDecorator.class).addPackage(OverloadingDecoratorTest.class.getPackage())
                 .addClass(ActionSequence.class);
     }

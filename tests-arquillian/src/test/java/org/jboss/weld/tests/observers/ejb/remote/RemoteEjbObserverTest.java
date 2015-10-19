@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -36,7 +37,7 @@ public class RemoteEjbObserverTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(FooRemote.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbObserverTest.class)).addPackage(FooRemote.class.getPackage());
     }
 
     @Test

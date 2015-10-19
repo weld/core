@@ -42,6 +42,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class SyntheticProducerTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(SyntheticProducerTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticProducerTest.class)).addPackage(SyntheticProducerTest.class.getPackage());
     }
 
     private <X, A extends AnnotatedMember<? super X>> A getAnnotatedMember(Class<X> javaClass, String memberName) {

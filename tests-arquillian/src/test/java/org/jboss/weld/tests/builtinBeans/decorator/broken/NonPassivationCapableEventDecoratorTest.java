@@ -24,6 +24,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,7 +34,7 @@ public class NonPassivationCapableEventDecoratorTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(EventDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivationCapableEventDecoratorTest.class)).decorate(EventDecorator.class)
                 .addClasses(NonPassivationCapableEventDecoratorTest.class, EventDecorator.class);
     }
 

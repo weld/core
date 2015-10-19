@@ -35,6 +35,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class ProcessInjectionPointFiredTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(Alpha.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessInjectionPointFiredTest.class)).addPackage(Alpha.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class)
                 .addClass(BeanUtilities.class);
     }
 

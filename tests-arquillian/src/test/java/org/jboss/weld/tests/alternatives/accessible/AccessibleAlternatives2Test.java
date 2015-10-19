@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,9 +40,10 @@ import javax.inject.Inject;
 public class AccessibleAlternatives2Test {
     @Deployment
     public static Archive<?> deploy() {
-        JavaArchive lib = ShrinkWrap.create(BeanArchive.class, "test.jar").addClasses(IUser.class, AUser.class);
-        StringAsset beansXml = new StringAsset("<beans><alternatives><class>" + BUser.class.getName()  + "</class></alternatives></beans>");
-        return ShrinkWrap.create(WebArchive.class)
+        JavaArchive lib = ShrinkWrap.create(BeanArchive.class)
+                .addClasses(IUser.class, AUser.class);
+        StringAsset beansXml = new StringAsset("<beans><alternatives><class>" + BUser.class.getName() + "</class></alternatives></beans>");
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AccessibleAlternatives2Test.class, Utils.ARCHIVE_TYPE.WAR))
                 .addAsLibrary(lib)
                 .addAsWebInfResource(beansXml, "beans.xml")
                 .addClasses(BUser.class);

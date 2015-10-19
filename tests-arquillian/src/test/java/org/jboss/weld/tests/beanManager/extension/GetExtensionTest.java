@@ -29,6 +29,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,7 +48,7 @@ public class GetExtensionTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetExtensionTest.class))
                 .addPackage(GetExtensionTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, AlphaExtension.class, BravoExtension.class, CharlieExtension.class, VerifyingExtension.class);
     }

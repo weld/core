@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,7 +38,7 @@ public class EjbDecoratorTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(Decorator1.class, Decorator2.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EjbDecoratorTest.class)).decorate(Decorator1.class, Decorator2.class)
                 .addPackage(EjbDecoratorTest.class.getPackage()).addClass(ActionSequence.class);
     }
 

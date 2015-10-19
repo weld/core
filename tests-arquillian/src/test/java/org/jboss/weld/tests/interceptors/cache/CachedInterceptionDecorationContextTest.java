@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.context.cache.RequestScopedCache;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,7 +45,7 @@ public class CachedInterceptionDecorationContextTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(CachedInterceptionDecorationContextTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CachedInterceptionDecorationContextTest.class)).addPackage(CachedInterceptionDecorationContextTest.class.getPackage());
     }
 
     @Test

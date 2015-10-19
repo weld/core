@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,7 +49,7 @@ public class MultiwarProjectNameValidation2Test {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class).addClasses(Alpha.class, Bravo.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         WebArchive war2 = ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(war1, war2);
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(MultiwarProjectNameValidation2Test.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(war1, war2);
     }
 
     @Test

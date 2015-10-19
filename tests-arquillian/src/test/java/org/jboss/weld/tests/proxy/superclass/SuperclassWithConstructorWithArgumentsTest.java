@@ -7,6 +7,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,7 +15,7 @@ import org.junit.runner.RunWith;
 public class SuperclassWithConstructorWithArgumentsTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassWithConstructorWithArgumentsTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SuperclassWithConstructorWithArgumentsTest.class)).addPackage(SuperclassWithConstructorWithArgumentsTest.class.getPackage());
     }
 
     @Inject

@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
 public class DisposalMethodInjectionPointTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposalMethodInjectionPointTest.class))
                 .addPackage(DisposalMethodInjectionPointTest.class.getPackage())
                 .addClass(Utils.class);
     }

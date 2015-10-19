@@ -29,6 +29,6 @@ public class MetaInfLocationTest extends AbstractBeansXmlLocationTest {
 
     @Deployment
     public static WebArchive getDeployment() {
-        return getBaseDeployment().addAsResource(getBeansXml(), "META-INF/beans.xml");
+        return getBaseDeployment(MetaInfLocationTest.class).addAsResource(getBeansXml(), "META-INF/beans.xml");
     }
 }

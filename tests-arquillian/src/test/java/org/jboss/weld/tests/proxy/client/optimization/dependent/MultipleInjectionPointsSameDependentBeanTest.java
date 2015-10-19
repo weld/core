@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,7 @@ public class MultipleInjectionPointsSameDependentBeanTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(MultipleInjectionPointsSameDependentBeanTest.class))
                 .addClasses(FooRequest.class, FooApplication.class, Bar.class)
                 .addAsResource(
                         PropertiesBuilder.newBuilder().set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true")

@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import org.junit.runner.RunWith;
 public class ProxyConstructorTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ProxyConstructorTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(ProxyConstructorTest.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies");

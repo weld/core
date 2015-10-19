@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class LookupInstanceTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LookupInstanceTest.class))
                 .addPackage(LookupInstanceTest.class.getPackage())
                 .addClass(Utils.class);
     }

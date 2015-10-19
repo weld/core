@@ -13,6 +13,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class HttpRequestFilteringTest {
         WebArchive foo = ShrinkWrap.create(WebArchive.class, "foo.war").addClass(FooServlet.class)
                 .addAsWebInfResource(HttpRequestFilteringTest.class.getPackage(), "web.xml", "web.xml").addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         WebArchive bar = ShrinkWrap.create(WebArchive.class, "bar.war").addClass(BarServlet.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(foo, bar).addAsLibrary(library);
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(HttpRequestFilteringTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(foo, bar).addAsLibrary(library);
     }
 
     @Test

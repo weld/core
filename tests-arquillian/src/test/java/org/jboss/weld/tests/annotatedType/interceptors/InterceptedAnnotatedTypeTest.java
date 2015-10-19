@@ -28,7 +28,7 @@ public class InterceptedAnnotatedTypeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(BoxInterceptor.class).addPackage(InterceptedAnnotatedTypeTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedAnnotatedTypeTest.class)).intercept(BoxInterceptor.class).addPackage(InterceptedAnnotatedTypeTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, SetupExtension.class)
                 .addAsManifestResource(new StringAsset("Dependencies: com.google.guava\n"), "MANIFEST.MF").addClass(Utils.class);
     }

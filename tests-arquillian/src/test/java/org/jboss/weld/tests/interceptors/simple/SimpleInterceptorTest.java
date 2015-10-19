@@ -36,6 +36,7 @@ import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +50,7 @@ public class SimpleInterceptorTest
    @Deployment
    public static JavaArchive createDeployment()
    {
-      return ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleInterceptorTest.class))
          .intercept(SimpleInterceptor.class, TwoBindingsInterceptor.class)
          .decorate(SimpleDecorator.class)
          .addPackage(SimpleInterceptorTest.class.getPackage());

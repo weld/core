@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
@@ -37,7 +38,7 @@ public class DecoratorWithNoDecoratedTypes3Test {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratorWithNoDecoratedTypes3Test.class))
                 .addClasses(Glue.class, GlueDecorator.class, GlueDecoratorExtension.class, ForwardingBeanAttributes.class,
                         ForwardingInjectionPoint.class).addAsServiceProvider(Extension.class, GlueDecoratorExtension.class);
     }

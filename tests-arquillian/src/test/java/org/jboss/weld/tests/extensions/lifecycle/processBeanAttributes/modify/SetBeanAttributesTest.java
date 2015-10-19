@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class SetBeanAttributesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).alternate(Cat.class).addPackage(Cat.class.getPackage()).addClass(BeanUtilities.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SetBeanAttributesTest.class)).alternate(Cat.class).addPackage(Cat.class.getPackage()).addClass(BeanUtilities.class)
                 .addAsServiceProvider(Extension.class, ModifyingExtension.class);
     }
 

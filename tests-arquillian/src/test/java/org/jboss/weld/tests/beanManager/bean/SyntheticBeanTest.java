@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,7 +57,7 @@ public class SyntheticBeanTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(SimpleInterceptor.class, LifecycleInterceptor.class).decorate(VehicleDecorator.class).addPackage(Simple.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticBeanTest.class)).intercept(SimpleInterceptor.class, LifecycleInterceptor.class).decorate(VehicleDecorator.class).addPackage(Simple.class.getPackage())
                 .addAsServiceProvider(Extension.class, BeanExtension.class);
     }
 

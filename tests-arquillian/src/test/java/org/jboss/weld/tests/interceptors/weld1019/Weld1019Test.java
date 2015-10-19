@@ -5,6 +5,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,7 +23,7 @@ public class Weld1019Test {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(Weld1019Test.class))
                 .intercept(UppercasingInterceptor.class)
                 .addPackage(Weld1019Test.class.getPackage())
                 .addAsServiceProvider(Extension.class, MyScopeExtension.class);

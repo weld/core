@@ -9,6 +9,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,7 @@ public class IndirectSpecializationNameInheritedTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap
-                .create(WebArchive.class)
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(IndirectSpecializationNameInheritedTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(BeanA.class, BeanB.class, BeanC.class, IndirectSpecializationNameInheritedTest.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

@@ -28,6 +28,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -50,7 +51,7 @@ public class ConversationTimeoutTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ConversationTimeoutTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(ConversationTimeoutTest.class.getPackage())
                 .addAsWebInfResource(ConversationTimeoutTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

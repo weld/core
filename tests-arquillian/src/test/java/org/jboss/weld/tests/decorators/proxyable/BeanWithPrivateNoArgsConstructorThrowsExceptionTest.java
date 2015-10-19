@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.proxy.DefaultProxyInstantiator;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ public class BeanWithPrivateNoArgsConstructorThrowsExceptionTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanWithPrivateNoArgsConstructorThrowsExceptionTest.class))
                 .decorate(DecoratorBean.class)
                 .addClass(DecoratedBean.class)
                 .addClass(BeanWithPrivateNoArgsConstructor.class)

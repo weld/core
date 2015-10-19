@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,7 @@ import org.junit.runner.RunWith;
 public class SelfInvokingClassTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SelfInvokingClassTest.class))
                 .intercept(AllPurposeInterceptor.class)
                 .decorate(SomeBeanDecorator.class)
                 .addPackage(SelfInvokingClassTest.class.getPackage());

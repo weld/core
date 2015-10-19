@@ -31,6 +31,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,7 +50,7 @@ public class GetDisposedParameterTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(Producer.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetDisposedParameterTest.class)).addPackage(Producer.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 
     @Test

@@ -40,7 +40,7 @@ public class AroundConstructTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundConstructTest.class))
                 .intercept(AlphaInterceptor.class, BravoInterceptor.class, CharlieInterceptor1.class, CharlieInterceptor2.class)
                 .addPackage(AroundConstructTest.class.getPackage()).addClasses(ActionSequence.class, Utils.class);
     }

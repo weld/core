@@ -21,6 +21,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
@@ -40,7 +41,7 @@ import javax.enterprise.inject.spi.Extension;
 public class AnnotatedTypeSessionBeanTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeSessionBeanTest.class))
                 .addPackage(AnnotatedTypeSessionBeanTest.class.getPackage())
                 .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
                 .addAsServiceProvider(Extension.class, AnnotatedTypeEjbExtension.class);

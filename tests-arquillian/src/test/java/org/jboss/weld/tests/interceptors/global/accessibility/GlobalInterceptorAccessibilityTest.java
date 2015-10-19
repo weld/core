@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,7 +39,7 @@ public class GlobalInterceptorAccessibilityTest {
     public static Archive<?> getDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(FooInterceptor.class, VerifyingListener.class);
         JavaArchive jar = ShrinkWrap.create(BeanArchive.class).addClasses(Foo.class, FooBinding.class);
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModule(war).addAsLibrary(jar);
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(GlobalInterceptorAccessibilityTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModule(war).addAsLibrary(jar);
     }
 
     @Test

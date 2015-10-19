@@ -30,6 +30,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,7 +49,7 @@ public class ExternalConfigurationConfigTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClass(MyExternalConfiguration.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExternalConfigurationConfigTest.class)).addClass(MyExternalConfiguration.class)
                 .addAsServiceProvider(Service.class, MyExternalConfiguration.class);
     }
 

@@ -28,6 +28,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,8 @@ public class LazyConversationContextTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, "lazyConvContext.war").addClasses(Foo.class, SimpleFilter.class).addAsWebInfResource(LazyConversationContextTest.class.getPackage(), "web.xml", "web.xml");
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(LazyConversationContextTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Foo.class, SimpleFilter.class)
+                .addAsWebInfResource(LazyConversationContextTest.class.getPackage(), "web.xml", "web.xml");
     }
 
     @Test

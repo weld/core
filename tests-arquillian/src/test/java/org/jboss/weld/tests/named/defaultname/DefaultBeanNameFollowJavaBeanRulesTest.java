@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,7 @@ public class DefaultBeanNameFollowJavaBeanRulesTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(DefaultBeanNameFollowJavaBeanRulesTest.class))
                 .addPackage(DefaultBeanNameFollowJavaBeanRulesTest.class.getPackage())
                 .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.DEFAULT_BEAN_NAMES_FOLLOW_JAVABEAN_RULES.get(), "true").build(),
                         "weld.properties");

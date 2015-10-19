@@ -28,6 +28,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Timer;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +44,8 @@ public class RequestScopeEventMessageDeliveryTest {
     @Deployment
     public static WebArchive createTestArchive() {
 
-        return ShrinkWrap.create(WebArchive.class).addPackage(RequestScopeEventMessageDeliveryTest.class.getPackage()).addClass(Timer.class);
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RequestScopeEventMessageDeliveryTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(RequestScopeEventMessageDeliveryTest.class.getPackage()).addClass(
+                Timer.class);
     }
 
     @Inject

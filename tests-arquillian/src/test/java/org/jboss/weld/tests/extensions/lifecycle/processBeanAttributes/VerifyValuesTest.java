@@ -41,6 +41,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +54,7 @@ public class VerifyValuesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).alternate(Alpha.class, BravoProducer.class, CharlieProducer.class).addPackage(Alpha.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VerifyValuesTest.class)).alternate(Alpha.class, BravoProducer.class, CharlieProducer.class).addPackage(Alpha.class.getPackage())
                 .addClass(BeanUtilities.class).addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

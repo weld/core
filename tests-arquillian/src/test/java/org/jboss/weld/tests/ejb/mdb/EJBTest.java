@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Ignore;
@@ -46,9 +47,9 @@ public class EJBTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EJBTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModule(
-                        ShrinkWrap.create(BeanArchive.class)
+                        ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EJBTest.class))
                                 .addPackage(EJBTest.class.getPackage())
                         //.addAsManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
                 );

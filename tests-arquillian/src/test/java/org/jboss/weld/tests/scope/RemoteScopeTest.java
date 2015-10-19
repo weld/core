@@ -46,7 +46,7 @@ public class RemoteScopeTest {
 
     @Deployment(testable = false)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RemoteScopeTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Bar.class, Foo.class, RemoteClient.class, Special.class, Temp.class, TempConsumer.class, TempProducer.class, Useless.class)
                 .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
