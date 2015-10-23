@@ -181,6 +181,7 @@ Some features of the <<devmode,development mode>> may have negative impact on th
 |`org.jboss.weld.probe.invocationMonitor.excludeType`|<<probe,Probe>>|'' |A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the type is excluded from monitoring.
 |`org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties`|<<probe,Probe>>|'true' |If set to `true`, the JavaBean accessor methods are not monitored.
 |`org.jboss.weld.probe.eventMonitor.excludeType`|<<probe,Probe>>|'' |A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+|`org.jboss.weld.probe.eventMonitor.containerLifecycleEvents`|<<probe,Probe>>|'false'|If set to `true` all the container lifecycle events are monitored during bootstrap.
 |`org.jboss.weld.probe.embedInfoSnippet`|<<probe,Probe>>|'true' | If set to `true` an informative HTML snippet will be added to every HTTP response with Content-Type of value `text/html`.
 |`org.jboss.weld.probe.jmxSupport`|<<probe,Probe>>|'false' | If set to `true` one or more MBean components may be registered so that it's possible to use JMX to access the Probe development tool data.
 |=======================================================================
