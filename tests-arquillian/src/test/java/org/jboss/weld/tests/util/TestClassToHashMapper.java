@@ -34,7 +34,7 @@ import org.jboss.weld.test.util.Utils;
 public class TestClassToHashMapper {
 
     public static final String TEST_SUFFIX = "Test.java";
-    public static final String OUTPUT_FILE_NAME = "test-classes-with-hash";
+    public static final String OUTPUT_FILE_NAME = "test-classes-with-hash.txt";
     public static final String TARGET_DIR = "target";
     public static final String PREFIX = "org";
     public static final String SUFFIX = ".java";
