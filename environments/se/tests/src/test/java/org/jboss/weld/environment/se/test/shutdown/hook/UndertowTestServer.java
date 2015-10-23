@@ -16,29 +16,40 @@
  */
 package org.jboss.weld.environment.se.test.shutdown.hook;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
-public class UndertowTestServer {
+class UndertowTestServer {
+
+    final static AtomicBoolean STARTED = new AtomicBoolean(false);
+
+    final static UndertowTestServer INSTANCE = new UndertowTestServer();
 
     private final Undertow server;
 
     public UndertowTestServer() {
-        server = Undertow.builder().addHttpListener(ShutdownHookTest.UNDERTOW_PORT, "localhost").setHandler(new HttpHandler() {
+        server = Undertow.builder().addHttpListener(Foo.UNDERTOW_PORT, "localhost").setHandler(new HttpHandler() {
             @Override
             public void handleRequest(final HttpServerExchange exchange) throws Exception {
                 // Any request indicates success
-                ShutdownHookTest.IS_FOO_DESTROYED.set(true);
+                Foo.IS_FOO_DESTROYED.set(true);
             }
         }).build();
     }
 
-    void start() {
-        server.start();
+    static void start() {
+        if (STARTED.get()) {
+            stop();
+        }
+        STARTED.set(true);
+        INSTANCE.server.start();
     }
 
-    void stop() {
-        server.stop();
+    static void stop() {
+        STARTED.set(false);
+        INSTANCE.server.stop();
     }
 }
