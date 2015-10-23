@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.shutdown.hook;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployer;
@@ -35,16 +35,17 @@ import org.junit.runner.RunWith;
 /**
  *
  * @author Martin Kouba
- * @see https://issues.jboss.org/browse/WELD-2018
+ * @see https://issues.jboss.org/browse/WELD-2051
  */
 @RunWith(Arquillian.class)
-public class ShutdownHookTest {
+public class ShutdownHookNotRegisteredTest {
 
     private static final String DEPLOYMENT_NAME = "foo";
 
     @Deployment(managed = false, name = DEPLOYMENT_NAME)
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(ShutdownHookTest.class, Foo.class)).build();
+        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(ShutdownHookNotRegisteredTest.class, Foo.class))
+                .addSystemProperty(Weld.SHUTDOWN_HOOK_SYSTEM_PROPERTY, "false").build();
     }
 
     @ArquillianResource
@@ -57,8 +58,9 @@ public class ShutdownHookTest {
         // Reset state
         Foo.IS_FOO_DESTROYED.set(false);
         // Start embedded undertow to collect test results
-        // We need to use reflection because ShutdownHookTest is a part of the test archive and testFooPing() is called in-container
-        ShutdownHookTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("start").invoke(null);
+        // We need to use reflection because ShutdownHookTest is a part of the
+        // test archive and testFooPing() is called in-container
+        ShutdownHookNotRegisteredTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("start").invoke(null);
         // Deploy the test archive - start SE app
         deployer.deploy(DEPLOYMENT_NAME);
     }
@@ -78,10 +80,10 @@ public class ShutdownHookTest {
             // Undeploy the test archive - kill SE app subprocess
             deployer.undeploy(DEPLOYMENT_NAME);
             // Check whether shutdown hook was performed correctly
-            assertTrue(Foo.IS_FOO_DESTROYED.get());
+            assertFalse(Foo.IS_FOO_DESTROYED.get());
         } finally {
             // Stop embedded undertow
-            ShutdownHookTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("stop").invoke(null);
+            ShutdownHookNotRegisteredTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("stop").invoke(null);
         }
     }
 

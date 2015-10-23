@@ -176,6 +176,9 @@ public class Weld implements ContainerInstanceFactory {
     // This system property is used to activate the development mode
     public static final String DEV_MODE_SYSTEM_PROPERTY = "org.jboss.weld.development";
 
+    // System property used to skip the registration of a shutdown hook
+    public static final String SHUTDOWN_HOOK_SYSTEM_PROPERTY = "org.jboss.weld.se.shutdownHook";
+
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
     static {

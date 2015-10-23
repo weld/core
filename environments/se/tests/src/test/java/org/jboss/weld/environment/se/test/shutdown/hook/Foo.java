@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.test.shutdown.hook;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -26,6 +27,12 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Foo {
+
+    static final String UNDERTOW_TEST_SERVER_CLASS = "org.jboss.weld.environment.se.test.shutdown.hook.UndertowTestServer";
+
+    static final int UNDERTOW_PORT = 8989;
+
+    static final AtomicBoolean IS_FOO_DESTROYED = new AtomicBoolean(false);
 
     public void ping() {
     }
@@ -36,7 +43,7 @@ public class Foo {
 
     @PreDestroy
     public void destroy() {
-        try (InputStream in = new URL("http", "localhost", ShutdownHookTest.UNDERTOW_PORT, "test").openStream()) {
+        try (InputStream in = new URL("http", "localhost", UNDERTOW_PORT, "test").openStream()) {
             // Sending HTTP GET request
         } catch (IOException e) {
             e.printStackTrace();
