@@ -60,6 +60,6 @@ JSON data are available through the REST API, eventually (if <<config-dev-mode,J
 
 However, a default UI - HTML client (single-page application) is only available in a web application at `{webappContextPath}/weld-probe`, e.g. `http://localhost:8080/weld-numberguess/weld-probe`.
 
-Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet) and Weld SE.
+Right now, the integration is provided for WildFly 10, Tomcat and Jetty (Weld Servlet) and Weld SE.
 
-TIP: There are some configuration properties which allow to tune or disable Probe features, e.g. to limit the set of components which will be monitored. See also <<config-dev-mode>>.
+TIP: There are some configuration properties which allow to tune or disable Probe features, e.g. to restrict the set of components which will be monitored. See also <<config-dev-mode>>.
