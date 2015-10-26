@@ -22,19 +22,27 @@ public class TestClassToHashMapper {
     public static final String PREFIX = "org";
     public static final String SUFFIX = ".java";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         File userDir = new File(System.getProperty("user.dir"));
-        FileWriter writer = new FileWriter(new File(userDir + File.separator + TARGET_DIR + File.separator + OUTPUT_FILE_NAME));
+        File outputFile = new File(userDir + File.separator + TARGET_DIR + File.separator + OUTPUT_FILE_NAME);
+        try {
+            if (!outputFile.exists()) {
+                outputFile.createNewFile();
+            }
+            FileWriter writer = new FileWriter(outputFile);
+            List<File> files = (List<File>) FileUtils.listFiles(userDir, new TestFileFilter(), new DirFileFilter());
+            for (File file : files) {
+                String fqcn = file.getPath().substring(file.getPath().indexOf(PREFIX), file.getPath().indexOf(SUFFIX));
+                fqcn = fqcn.replaceAll(File.separator, ".");
+                writer.append(fqcn + " " + Utils.getHashOfTestClass(fqcn));
+                writer.append(System.lineSeparator());
+            }
+            writer.flush();
+            writer.close();
 
-        List<File> files = (List<File>) FileUtils.listFiles(userDir, new TestFileFilter(), new DirFileFilter());
-        for (File file : files) {
-            String fqcn = file.getPath().substring(file.getPath().indexOf(PREFIX), file.getPath().indexOf(SUFFIX));
-            fqcn = fqcn.replaceAll(File.separator, ".");
-            writer.append(fqcn + " " + Utils.getHashOfTestClass(fqcn));
-            writer.append(System.lineSeparator());
+        } catch (IOException e) {
         }
-        writer.flush();
-        writer.close();
+
     }
 
     static class TestFileFilter implements IOFileFilter {
