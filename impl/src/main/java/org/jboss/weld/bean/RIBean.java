@@ -59,7 +59,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
         this.hashCode = this.id.hashCode();
     }
 
-    protected BeanManagerImpl getBeanManager() {
+    public BeanManagerImpl getBeanManager() {
         return beanManager;
     }
 
