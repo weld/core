@@ -16,6 +16,22 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -31,22 +47,6 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.CreationException;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Set;
-
-import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 /**
  * Represents a producer method bean
  *
@@ -58,7 +58,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     private MethodInjectionPoint<T, ? super X> method;
     private DisposalMethod<X, ?> disposalMethodBean;
     private ProducerMethod<?, ?> specializedBean;
-    private final String id;
     private final boolean proxiable;
 
     /**
@@ -74,36 +73,34 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     }
 
     protected ProducerMethod(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
+        super(createId(method, declaringBean), declaringBean, beanManager, services);
         this.method = MethodInjectionPoint.of(this, method, beanManager);
         initType();
         initTypes();
         initQualifiers();
-        this.id = createId(method, declaringBean);
         initStereotypes();
         initProducerMethodInjectableParameters();
         this.proxiable = Proxies.isTypesProxyable(this);
     }
 
-    protected String createId(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
+    protected static String createId(WeldMethod<?, ?> method, AbstractClassBean<?> declaringBean) {
         if (declaringBean.getWeldAnnotated().isDiscovered()) {
             StringBuilder sb = new StringBuilder();
-            sb.append(BEAN_ID_PREFIX);
             sb.append(ProducerMethod.class.getSimpleName());
             sb.append(BEAN_ID_SEPARATOR);
             sb.append(declaringBean.getWeldAnnotated().getName());
-            sb.append(getWeldAnnotated().getSignature().toString());
+            sb.append(".");
+            sb.append(method.getSignature().toString());
             return sb.toString();
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append(BEAN_ID_PREFIX);
             sb.append(ProducerMethod.class.getSimpleName());
             sb.append(BEAN_ID_SEPARATOR);
             sb.append(AnnotatedTypes.createTypeId(declaringBean.getWeldAnnotated()));
+            sb.append(".");
             sb.append(AnnotatedTypes.createCallableId(method));
             return sb.toString();
         }
-
     }
 
     /**
@@ -252,11 +249,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             throw new IllegalStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
         }
         this.specializedBean = check;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     @Override
