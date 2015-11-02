@@ -45,9 +45,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -206,6 +206,12 @@ public class ServletConversationTest {
         }
 
         // verify destroyed conversations
+        {
+            TextPage page = client.getPage(getPath("/listDestroyedMessages", null));
+            assertTrue(page.getContent().contains("DestroyedMessages:"));
+            assertTrue(page.getContent().contains("<M:" + cid1 + ">"));
+            assertTrue(page.getContent().contains("<M:" + cid2 + ">"));
+        }
         {
             TextPage page = client.getPage(getPath("/listConversationsDestroyedWhileBeingAssociated", null));
             assertTrue(page.getContent().contains("ConversationsDestroyedWhileBeingAssociated:"));

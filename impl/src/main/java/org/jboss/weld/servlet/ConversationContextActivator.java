@@ -16,16 +16,26 @@
  */
 package org.jboss.weld.servlet;
 
+import static org.jboss.weld.context.AbstractConversationContext.REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.LazyHttpConversationContextImpl;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -151,6 +161,7 @@ public class ConversationContextActivator {
                     if (!lazyConversationContext.isInitialized()) {
                         // if this lazy conversation has not been touched yet, just deactivate it
                         lazyConversationContext.deactivate();
+                        destroyRemainingConversationContexts(request);
                         return;
                     }
                 }
@@ -167,11 +178,41 @@ public class ConversationContextActivator {
                 if (isTransient) {
                     conversationDestroyedEvent.fire(request);
                 }
+                destroyRemainingConversationContexts(request);
             }
         } catch (Exception e) {
             ServletLogger.LOG.unableToDeactivateContext(httpConversationContext(), request);
             ServletLogger.LOG.catchingDebug(e);
         }
+    }
+
+    /**
+     * If needed, destroy the remaining conversation contexts after an HTTP session was invalidated within the current request.
+     *
+     * @param request
+     */
+    private void destroyRemainingConversationContexts(HttpServletRequest request) {
+        Object remainingContextsAttribute = request.getAttribute(REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME);
+        if (remainingContextsAttribute instanceof Map) {
+            Map<String, List<ContextualInstance<?>>> remainingContexts = cast(remainingContextsAttribute);
+            synchronized (remainingContexts) {
+                FastEvent<String> destroyedEvent = FastEvent.of(String.class, beanManager, DestroyedLiteral.CONVERSATION);
+                for (Iterator<Entry<String, List<ContextualInstance<?>>>> iterator = remainingContexts.entrySet().iterator(); iterator.hasNext();) {
+                    Entry<String, List<ContextualInstance<?>>> entry = iterator.next();
+                    for (ContextualInstance<?> contextualInstance : entry.getValue()) {
+                        destroyContextualInstance(contextualInstance);
+                    }
+                    // Note that for the attached/current conversation we fire the destroyed event twice because we can't reliably identify such a conversation
+                    destroyedEvent.fire(entry.getKey());
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    private <T> void destroyContextualInstance(ContextualInstance<T> instance) {
+        instance.getContextual().destroy(instance.getInstance(), instance.getCreationalContext());
+        ContextLogger.LOG.contextualInstanceRemoved(instance, this);
     }
 
     protected void disassociateConversationContext(HttpServletRequest request) {

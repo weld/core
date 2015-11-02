@@ -1,5 +1,7 @@
 package org.jboss.weld.context.http;
 
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -10,6 +12,7 @@ import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.servlet.SessionHolder;
+import org.jboss.weld.util.collections.EnumerationIterator;
 
 public class HttpConversationContextImpl extends AbstractConversationContext<HttpServletRequest, HttpSession> implements HttpConversationContext {
 
@@ -75,4 +78,10 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
     protected String getNamingSchemePrefix() {
         return NAMING_SCHEME_PREFIX;
     }
+
+    @Override
+    protected Iterator<String> getSessionAttributeNames(HttpSession session) {
+        return new EnumerationIterator<String>(session.getAttributeNames());
+    }
+
 }
