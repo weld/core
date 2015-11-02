@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.contexts.conversation.servlet;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,6 +33,7 @@ public class DestroyedConversationObserver {
 
     private final Set<String> disassociatedConversationIds = Collections.synchronizedSet(new HashSet<String>());
     private final Set<String> associatedConversationIds = Collections.synchronizedSet(new HashSet<String>());
+    private final List<Message> destroyedMessages = Collections.synchronizedList(new ArrayList<Message>());
 
     void observeDestroyedConversation(@Observes @Destroyed(ConversationScoped.class) String id) {
         disassociatedConversationIds.add(id);
@@ -51,9 +54,18 @@ public class DestroyedConversationObserver {
         return Collections.unmodifiableSet(associatedConversationIds);
     }
 
+    public void addMessage(Message message) {
+        destroyedMessages.add(message);
+    }
+
+    public List<Message> getDestroyedMessages() {
+        return destroyedMessages;
+    }
+
     void reset() {
         disassociatedConversationIds.clear();
         associatedConversationIds.clear();
+        destroyedMessages.clear();
     }
 
 }

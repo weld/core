@@ -1,5 +1,6 @@
 package org.jboss.weld.context.bound;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.jboss.weld.context.AbstractConversationContext;
@@ -65,6 +66,11 @@ public class BoundConversationContextImpl extends AbstractConversationContext<Bo
     @Override
     protected String getNamingSchemePrefix() {
         return NAMING_SCHEME_PREFIX;
+    }
+
+    @Override
+    protected Iterator<String> getSessionAttributeNames(Map<String, Object> session) {
+        return session.keySet().iterator();
     }
 
 }
