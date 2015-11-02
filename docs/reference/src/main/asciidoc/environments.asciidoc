@@ -406,6 +406,11 @@ public class HelloWorld
 }
 ------------------------------------------------------------------------------------------------------
 
+NOTE: Weld automatically registers shutdown hook during initialization in order to properly terminate
+all running containers should the VM be terminated or program exited. Even though it is possible to register 
+an alternative hook and implement the logic, it is not recommended. The behavior across OS platforms may 
+differ and specifically on Windows it proves to be problematic.
+
 ==== Bootstrapping CDI SE
 
 CDI SE applications can be bootstrapped in the following ways.
