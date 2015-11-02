@@ -18,6 +18,7 @@ package org.jboss.weld.tests.contexts.conversation.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Conversation;
@@ -50,6 +51,7 @@ public class Servlet extends HttpServlet {
             resp.sendRedirect("servlet/display"); // do a redirect, the cid is not propagated;
         } else if (uri.endsWith("/begin")) {
             conversation.begin();
+            message.setCid(conversation.getId());
             printInfo(resp.getWriter());
         } else if (uri.endsWith("/end")) {
             conversation.end();
@@ -61,6 +63,10 @@ public class Servlet extends HttpServlet {
             observer.reset();
             req.getSession().invalidate();
             printInfo(resp.getWriter());
+        } else if (uri.endsWith("/listDestroyedMessages")) {
+            PrintWriter writer = resp.getWriter();
+            writer.append("DestroyedMessages: ");
+            printMessages(writer, observer.getDestroyedMessages());
         } else if (uri.endsWith("/listConversationsDestroyedWhileBeingAssociated")) {
             PrintWriter writer = resp.getWriter();
             writer.append("ConversationsDestroyedWhileBeingAssociated: ");
@@ -74,7 +80,7 @@ public class Servlet extends HttpServlet {
         }
         resp.setContentType("text/plain");
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
@@ -102,7 +108,13 @@ public class Servlet extends HttpServlet {
             writer.append('<').append(id).append('>');
         }
     }
-    
+
+    private void printMessages(PrintWriter writer, List<Message> messages) {
+        for (Message message : messages) {
+            writer.append("<M:").append(message.getCid()).append('>');
+        }
+    }
+
     private void setMessage(HttpServletRequest request) {
         String value = request.getParameter("message");
         if (value == null) {

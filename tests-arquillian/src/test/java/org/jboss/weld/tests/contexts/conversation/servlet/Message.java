@@ -18,11 +18,18 @@ package org.jboss.weld.tests.contexts.conversation.servlet;
 
 import java.io.Serializable;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ConversationScoped;
+import javax.inject.Inject;
 
 @ConversationScoped
 @SuppressWarnings("serial")
 public class Message implements Serializable {
+
+    @Inject
+    private DestroyedConversationObserver conversationObserver;
+
+    private String cid;
 
     private String value = "Hello";
 
@@ -32,5 +39,18 @@ public class Message implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getCid() {
+        return cid;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        conversationObserver.addMessage(this);
     }
 }

@@ -26,11 +26,13 @@ import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVER
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
@@ -39,6 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.enterprise.context.ConversationScoped;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.ConversationNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
@@ -63,8 +66,9 @@ import org.jboss.weld.util.LazyValueHolder;
  */
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext {
 
-    private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
     public static final String CONVERSATIONS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".conversations";
+    public static final String REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".remainingContexts";
+    private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
 
     private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000L;
     private static final long CONCURRENT_ACCESS_TIMEOUT = 1000L;
@@ -291,10 +295,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         Map<String, ManagedConversation> conversations = getConversationMap();
         synchronized (conversations) {
             Iterator<Entry<String, ManagedConversation>> entryIterator = conversations.entrySet().iterator();
+            S session = getSessionFromRequest(getRequest(), false);
             while (entryIterator.hasNext()) {
                 Entry<String, ManagedConversation> entry = entryIterator.next();
                 if (entry.getValue().isTransient()) {
-                    destroyConversation(getSessionFromRequest(getRequest(), false), entry.getKey());
+                    destroyConversation(session, entry.getKey());
                     entryIterator.remove();
                 }
             }
@@ -340,22 +345,14 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                         // There are some conversations to destroy
                         setActive(true);
                         if (beanStore == null) {
-                            // There is no request associated
-                            for (ManagedConversation conversation : conversations.values()) {
-                                destroyConversation(session, conversation.getId());
+                            // There is no request associated - destroy conversation contexts immediately
+                            for (Entry<String, ManagedConversation> entry : conversations.entrySet()) {
+                                destroyConversation(session, entry.getKey());
                             }
                         } else {
-                            for (ManagedConversation conversation : conversations.values()) {
-                                String id = conversation.getId();
-                                if (!conversation.isTransient()) {
-                                    // the currently associated conversation will be destroyed at the end of the current request
-                                    conversation.end();
-                                }
-                                if (!isCurrentConversation(id)) {
-                                    // a conversation that is not currently associated is destroyed immediately
-                                    destroyConversation(session, id);
-                                }
-                            }
+                            // All conversation contexts created during the current session should be destroyed after the servlet service() completes
+                            // However, at that time the session will not be available - store all remaining contextual instances in the request
+                            saveRemainingContextualInstances(conversations, session);
                         }
                     }
                 }
@@ -373,16 +370,28 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    private boolean isCurrentConversation(String id) {
-        if (!isAssociated()) {
-            return false;
+    private void saveRemainingContextualInstances(Map<String, ManagedConversation> conversations, S session) {
+        Map<String, List<ContextualInstance<?>>> remainingContexts = new HashMap<>();
+        for (Entry<String, ManagedConversation> entry : conversations.entrySet()) {
+            ManagedConversation conversation = entry.getValue();
+            // First make all conversations transient
+            if (!conversation.isTransient()) {
+                conversation.end();
+            }
+            // Extract contextual instances
+            List<ContextualInstance<?>> contextualInstances = new ArrayList<>();
+            for (String id : new ConversationNamingScheme(getNamingSchemePrefix(), entry.getKey(), beanIdentifierIndex)
+                    .filterIds(getSessionAttributeNames(session))) {
+                contextualInstances.add((ContextualInstance<?>) getSessionAttributeFromSession(session, id));
+            }
+            remainingContexts.put(entry.getKey(), contextualInstances);
         }
-        return id !=null && id.equals(getCurrentConversation().getId());
+        // Store remaining conversation contexts for later destruction
+        setRequestAttribute(getRequest(), REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME, Collections.synchronizedMap(remainingContexts));
     }
 
     protected void destroyConversation(S session, String id) {
         if (session != null) {
-            // session can be null as we may have nothing in the session
             setBeanStore(createSessionBeanStore(new ConversationNamingScheme(getNamingSchemePrefix(), id, beanIdentifierIndex), session));
             getBeanStore().attach();
             destroy();
@@ -571,5 +580,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     protected R getRequest() {
         return associated.get();
     }
+
+    protected abstract Iterator<String> getSessionAttributeNames(S session);
 
 }
