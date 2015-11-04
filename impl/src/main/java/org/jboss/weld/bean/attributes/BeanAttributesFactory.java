@@ -152,8 +152,18 @@ public class BeanAttributesFactory {
             } else {
                 Set<Annotation> normalizedQualifiers = new HashSet<Annotation>(qualifiers.size() + 2);
                 if (qualifiers.size() == 1) {
-                    if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
+                    Annotation qualifier = qualifiers.iterator().next();
+                    if (qualifier.annotationType().equals(Named.class) || qualifier.equals(AnyLiteral.INSTANCE)) {
+                        // Single qualifier - @Named or @Any
                         normalizedQualifiers.add(DefaultLiteral.INSTANCE);
+                    }
+                } else if (qualifiers.size() == 2 && qualifiers.contains(AnyLiteral.INSTANCE)) {
+                    for (Annotation qualifier : qualifiers) {
+                        if (qualifier.annotationType().equals(Named.class)) {
+                            // Two qualifiers - @Named and @Any
+                            normalizedQualifiers.add(DefaultLiteral.INSTANCE);
+                            break;
+                        }
                     }
                 }
                 normalizedQualifiers.addAll(qualifiers);
