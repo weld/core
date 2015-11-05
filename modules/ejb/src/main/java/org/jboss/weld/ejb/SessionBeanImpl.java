@@ -198,9 +198,12 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
     protected void checkObserverMethods() {
         Collection<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = BeanMethods.getObserverMethods(this.getEnhancedAnnotated());
         if (!observerMethods.isEmpty()) {
-            Set<MethodSignature> businessMethodSignatures = getBusinessMethodSignatures();
+            Set<MethodSignature> businessMethodSignatures = getLocalBusinessMethodSignatures();
+            Set<MethodSignature> remoteBusinessMethodSignatures = getRemoteBusinessMethodSignatures();
             for (EnhancedAnnotatedMethod<?, ? super T> observerMethod : observerMethods) {
-                if (!observerMethod.isStatic() && !businessMethodSignatures.contains(observerMethod.getSignature())) {
+                boolean isLocalBusinessMethod = !remoteBusinessMethodSignatures.contains(observerMethod.getSignature()) && businessMethodSignatures
+                        .contains(observerMethod.getSignature());
+                if (!isLocalBusinessMethod && !observerMethod.isStatic()) {
                     throw BeanLogger.LOG
                             .observerMethodMustBeStaticOrBusiness(observerMethod, Formats.formatAsStackTraceElement(observerMethod.getJavaMember()));
                 }
@@ -208,13 +211,18 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
         }
     }
 
-    public Set<MethodSignature> getBusinessMethodSignatures() {
+    public Set<MethodSignature> getLocalBusinessMethodSignatures() {
         Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
             for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
                 businessMethodSignatures.add(new MethodSignatureImpl(m));
             }
         }
+        return Collections.unmodifiableSet(businessMethodSignatures);
+    }
+
+    public Set<MethodSignature> getRemoteBusinessMethodSignatures() {
+        Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getRemoteBusinessInterfaces()) {
             for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
                 businessMethodSignatures.add(new MethodSignatureImpl(m));

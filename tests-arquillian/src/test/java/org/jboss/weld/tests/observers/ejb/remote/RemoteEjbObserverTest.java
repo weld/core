@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.tests.observers.ejb.remote;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.DefinitionException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -36,15 +36,14 @@ import org.junit.runner.RunWith;
 public class RemoteEjbObserverTest {
 
     @Deployment
+    @ShouldThrowException(DefinitionException.class)
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbObserverTest.class)).addPackage(FooRemote.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbObserverTest.class)).addClasses(FooBean.class, FooRemote.class,
+                Giraffe.class);
     }
 
     @Test
-    public void testRemoteEjbObserverNotified(BeanManager beanManager) {
-        FooBean.observations.set(0);
-        beanManager.fireEvent(new Giraffe());
-        assertEquals(2, FooBean.observations.get());
+    public void testObserverMustNotBeRemoteEjbMethod(BeanManager beanManager) {
     }
 
 }

@@ -39,9 +39,14 @@ public interface SessionBean<T> extends ClassBean<T> {
     EjbDescriptor<T> getEjbDescriptor();
 
     /**
-     * Returns an unmodifiable set of business method signatures.
+     * Returns an unmodifiable set of local business method signatures.
      * @return business method signatures
      */
-    Set<MethodSignature> getBusinessMethodSignatures();
+    Set<MethodSignature> getLocalBusinessMethodSignatures();
 
+    /**
+     * Returns an unmodifiable set of remote business method signatures.
+     * @return business method signatures
+     */
+    Set<MethodSignature> getRemoteBusinessMethodSignatures();
 }

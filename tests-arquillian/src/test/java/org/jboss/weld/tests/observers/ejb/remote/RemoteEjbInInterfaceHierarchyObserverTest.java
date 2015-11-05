@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.observers.ejb.localremote;
-
-import static org.junit.Assert.assertEquals;
+package org.jboss.weld.tests.observers.ejb.remote;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -27,24 +25,25 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class LocalRemoteEjbObserverTest {
+public class RemoteEjbInInterfaceHierarchyObserverTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LocalRemoteEjbObserverTest.class)).addPackage(FooRemote.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbInInterfaceHierarchyObserverTest.class))
+                .addClasses(BarBean.class, BarRemote.class, BarSuperRemote.class, Giraffe.class);
     }
 
     @Test
-    public void testLocalAndRemoteObserversNotified(BeanManager beanManager) {
-        FooBean.observations.set(0);
+    public void testRemoteEjbObserverNotified(BeanManager beanManager) {
         beanManager.fireEvent(new Giraffe());
-        assertEquals(2, FooBean.observations.get());
+        Assert.assertEquals(BarBean.observations.get(), 1);
     }
 
 }
