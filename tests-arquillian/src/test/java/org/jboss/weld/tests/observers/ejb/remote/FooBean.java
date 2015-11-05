@@ -16,28 +16,14 @@
  */
 package org.jboss.weld.tests.observers.ejb.remote;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 
 @Stateless
 public class FooBean implements FooRemote {
 
-    public static AtomicInteger observations = new AtomicInteger(0);
-
     @Override
     public void observeGiraffe(@Observes Giraffe giraffe) {
-        assertNotNull(giraffe);
-        observations.incrementAndGet();
-    }
-
-    @Override
-    public void observeSuperGiraffe(@Observes Giraffe giraffe) {
-        assertNotNull(giraffe);
-        observations.incrementAndGet();
     }
 
 }

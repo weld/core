@@ -19,7 +19,7 @@ package org.jboss.weld.tests.observers.ejb.remote;
 import javax.ejb.Remote;
 
 @Remote
-public interface FooRemote extends FooSuperRemote {
+public interface FooRemote{
 
     public void observeGiraffe(Giraffe giraffe);
 

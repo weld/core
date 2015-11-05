@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.observers.ejb.localremote;
+package org.jboss.weld.tests.observers.ejb.remote;
 
-import javax.ejb.Local;
+import javax.ejb.Remote;
 
-@Local
-public interface FooLocal {
+@Remote
+public interface BarSuperRemote {
 
-    public void observeGiraffeLocal(Giraffe giraffe);
+    public void observeSuperGiraffe(Giraffe giraffe);
 
 }
