@@ -32,6 +32,7 @@
         <jdocbook.source.directory>target/docbook</jdocbook.source.directory>
         <jdocbook.plugin.version>2.3.8</jdocbook.plugin.version>
         <pressgang.version>2.0.2</pressgang.version>
+        <documentation.url>http://docs.jboss.org/weld/reference/latest/en-US/html</documentation.url>
     </properties>
 
     <dependencyManagement>
@@ -155,6 +156,31 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/docbook/publish/en-US/html/</outputDirectory>
+
+                            <resources>
+                                <resource>
+                                    <directory>src/main/sitemap</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>sitemap.xml</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
