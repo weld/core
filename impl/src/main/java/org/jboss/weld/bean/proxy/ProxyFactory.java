@@ -454,8 +454,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         }
         List<DeferredBytecode> initialValueBytecode = new ArrayList<DeferredBytecode>();
 
-
-        ClassMethod staticConstructor = proxyClassType.addMethod(AccessFlag.PUBLIC, "<clinit>", "V");
+        // Workaround for IBM JVM - the ACC_STATIC flag should only be required for class file with version number 51.0 or above
+        ClassMethod staticConstructor = proxyClassType.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.STATIC), "<clinit>", "V");
 
         addFields(proxyClassType, initialValueBytecode);
         addConstructors(proxyClassType, initialValueBytecode);
