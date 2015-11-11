@@ -1,5 +1,10 @@
 language: java
 jdk:
+  - oraclejdk8
   - oraclejdk7
+  - openjdk7
 script: "mvn verify"
 sudo: false
+cache:
+  directories:
+   - $HOME/.m2/repository
