@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.context.AbstractConversationContext.REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME;
+import static org.jboss.weld.context.AbstractConversationContext.DESTRUCTION_QUEUE_ATTRIBUTE_NAME;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Iterator;
@@ -154,7 +154,7 @@ public class ConversationContextActivator {
                     if (!lazyConversationContext.isInitialized()) {
                         // if this lazy conversation has not been touched yet, just deactivate it
                         lazyConversationContext.deactivate();
-                        destroyRemainingConversationContexts(request);
+                        processDestructionQueue(request);
                         return;
                     }
                 }
@@ -171,7 +171,7 @@ public class ConversationContextActivator {
                 if (isTransient) {
                     conversationDestroyedEvent.fire(request);
                 }
-                destroyRemainingConversationContexts(request);
+                processDestructionQueue(request);
             }
         } catch (Exception e) {
             ServletLogger.LOG.unableToDeactivateContext(httpConversationContext(), request);
@@ -184,13 +184,13 @@ public class ConversationContextActivator {
      *
      * @param request
      */
-    private void destroyRemainingConversationContexts(HttpServletRequest request) {
-        Object remainingContextsAttribute = request.getAttribute(REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME);
-        if (remainingContextsAttribute instanceof Map) {
-            Map<String, List<ContextualInstance<?>>> remainingContexts = cast(remainingContextsAttribute);
-            synchronized (remainingContexts) {
+    private void processDestructionQueue(HttpServletRequest request) {
+        Object contextsAttribute = request.getAttribute(DESTRUCTION_QUEUE_ATTRIBUTE_NAME);
+        if (contextsAttribute instanceof Map) {
+            Map<String, List<ContextualInstance<?>>> contexts = cast(contextsAttribute);
+            synchronized (contexts) {
                 FastEvent<String> destroyedEvent = FastEvent.of(String.class, beanManager, DestroyedLiteral.CONVERSATION);
-                for (Iterator<Entry<String, List<ContextualInstance<?>>>> iterator = remainingContexts.entrySet().iterator(); iterator.hasNext();) {
+                for (Iterator<Entry<String, List<ContextualInstance<?>>>> iterator = contexts.entrySet().iterator(); iterator.hasNext();) {
                     Entry<String, List<ContextualInstance<?>>> entry = iterator.next();
                     for (ContextualInstance<?> contextualInstance : entry.getValue()) {
                         destroyContextualInstance(contextualInstance);

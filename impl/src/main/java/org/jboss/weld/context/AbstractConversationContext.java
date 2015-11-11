@@ -67,7 +67,7 @@ import org.jboss.weld.util.LazyValueHolder;
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext {
 
     public static final String CONVERSATIONS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".conversations";
-    public static final String REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".remainingContexts";
+    public static final String DESTRUCTION_QUEUE_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".destructionQueue";
     private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
 
     private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000L;
@@ -352,7 +352,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                         } else {
                             // All conversation contexts created during the current session should be destroyed after the servlet service() completes
                             // However, at that time the session will not be available - store all remaining contextual instances in the request
-                            saveRemainingContextualInstances(conversations, session);
+                            setDestructionQueue(conversations, session);
                         }
                     }
                 }
@@ -370,8 +370,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    private void saveRemainingContextualInstances(Map<String, ManagedConversation> conversations, S session) {
-        Map<String, List<ContextualInstance<?>>> remainingContexts = new HashMap<>();
+    private void setDestructionQueue(Map<String, ManagedConversation> conversations, S session) {
+        Map<String, List<ContextualInstance<?>>> contexts = new HashMap<>();
         for (Entry<String, ManagedConversation> entry : conversations.entrySet()) {
             ManagedConversation conversation = entry.getValue();
             // First make all conversations transient
@@ -384,10 +384,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                     .filterIds(getSessionAttributeNames(session))) {
                 contextualInstances.add((ContextualInstance<?>) getSessionAttributeFromSession(session, id));
             }
-            remainingContexts.put(entry.getKey(), contextualInstances);
+            contexts.put(entry.getKey(), contextualInstances);
         }
         // Store remaining conversation contexts for later destruction
-        setRequestAttribute(getRequest(), REMAINING_CONVERSATION_CONTEXTS_ATTRIBUTE_NAME, Collections.synchronizedMap(remainingContexts));
+        setRequestAttribute(getRequest(), DESTRUCTION_QUEUE_ATTRIBUTE_NAME, Collections.synchronizedMap(contexts));
     }
 
     protected void destroyConversation(S session, String id) {
