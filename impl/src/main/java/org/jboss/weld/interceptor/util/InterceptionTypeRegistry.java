@@ -44,7 +44,9 @@ public final class InterceptionTypeRegistry {
             try {
                 interceptionAnnotationClasses.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.getClassLoader().loadClass(interceptionType.annotationClassName()));
             } catch (Exception e) {
-                InterceptorLogger.LOG.interceptorAnnotationClassNotFound(interceptionType.annotationClassName());
+                if (InterceptionUtils.isAnnotationClassExpected(interceptionType)) {
+                    InterceptorLogger.LOG.interceptorAnnotationClassNotFound(interceptionType.annotationClassName());
+                }
             }
         }
         INTERCEPTOR_ANNOTATION_CLASSES = Collections.unmodifiableMap(interceptionAnnotationClasses);
