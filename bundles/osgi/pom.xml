@@ -151,7 +151,7 @@
                             <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                             <outputDirectory>${project.build.directory}/sources</outputDirectory>
                             <excludeGroupIds>*</excludeGroupIds>
-                            <includeGroupIds>org.jboss.weld</includeGroupIds>
+                            <includeGroupIds>org.jboss.weld,org.jboss.weld.probe</includeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
