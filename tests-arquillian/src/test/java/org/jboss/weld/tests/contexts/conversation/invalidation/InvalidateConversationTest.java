@@ -17,15 +17,12 @@
 package org.jboss.weld.tests.contexts.conversation.invalidation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.net.URL;
 
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -63,27 +60,69 @@ public class InvalidateConversationTest {
             .addClass(ActionSequence.class)
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-    
+
     @Test
     public void testConversationDestroyedAfterRequestEnds() throws IOException {
-        // trigger conversation
+
         WebClient client = new WebClient();
+
+        //reset ActionSequence on server
+        client.getPage(url + "resetSequence");
+
+        // trigger conversation
         TextPage page = client.getPage(url + "begin");
         String cid = page.getContent().trim();
         // trigger session invalidation
         page = client.getPage(url + "invalidate?cid=" + cid);
-        
+
         // invoke third request to get complete result of ActionSequence from server
         page = client.getPage(url + "result");
         String result = page.getContent();
-        
+
         // prepare expected result
         ActionSequence.reset();
         ActionSequence.addAction("conversationCreated");
         ActionSequence.addAction("beforeInvalidate");
         ActionSequence.addAction("afterInvalidate");
         ActionSequence.addAction("conversationDestroyed");
-        
+
         assertEquals(ActionSequence.getSequence().dataToCsv(), result);
     }
+
+    @Test
+    public void testAllLongRunningConversationsGetDestroyedAfterRequest() throws IOException {
+        String firstCid;
+        String secondCid;
+
+        WebClient client = new WebClient();
+        //reset ActionSequence on server
+        client.getPage(url + "resetSequence");
+
+        // initiate conversations
+        TextPage page = client.getPage(url + "begin");
+        firstCid = page.getContent().trim();
+
+        page = client.getPage(url + "begin");
+        secondCid = page.getContent().trim();
+        assertFalse(firstCid.equals(secondCid));
+
+        // trigger session invalidation with one cid
+        page = client.getPage(url + "invalidate?cid=" + secondCid);
+
+        // invoke third request to get complete result of ActionSequence from server
+        page = client.getPage(url + "result");
+        String result = page.getContent();
+
+        // prepare expected result
+        ActionSequence.reset();
+        ActionSequence.addAction("conversationCreated");
+        ActionSequence.addAction("conversationCreated");
+        ActionSequence.addAction("beforeInvalidate");
+        ActionSequence.addAction("afterInvalidate");
+        ActionSequence.addAction("conversationDestroyed");
+        ActionSequence.addAction("conversationDestroyed");
+
+        assertEquals(ActionSequence.getSequence().dataToCsv(), result);
+    }
+
 }
