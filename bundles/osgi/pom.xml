@@ -103,7 +103,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>*; scope=compile; inline=true; groupId=org.jboss.weld</Embed-Dependency>
+                        <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
 
                         <_exportcontents>${export.contents}${osgi.version}</_exportcontents>
 
@@ -173,7 +173,7 @@
                             <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                             <outputDirectory>${project.build.directory}/sources</outputDirectory>
                             <excludeGroupIds>*</excludeGroupIds>
-                            <includeGroupIds>org.jboss.weld</includeGroupIds>
+                            <includeGroupIds>org.jboss.weld,org.jboss.weld.probe</includeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -218,11 +218,6 @@
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-spi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.classfilewriter</groupId>
-            <artifactId>jboss-classfilewriter</artifactId>
         </dependency>
 
         <dependency>
