@@ -47,7 +47,6 @@ public class ConversationServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if ("/begin".equals(req.getPathInfo())) {
-            ActionSequence.reset();
             req.getSession(true);
             conversation.begin();
             bean.pong();
@@ -55,6 +54,8 @@ public class ConversationServlet extends HttpServlet {
         } else if ("/result".equals(req.getPathInfo())) {
             // invoke as last (and separate) request to get complete list of actions
             resp.getWriter().print(ActionSequence.getSequence().dataToCsv());
+        } else if ("/resetSequence".equals(req.getPathInfo())) {
+            ActionSequence.reset();
         } else {
             ActionSequence.addAction("beforeInvalidate");
             req.getSession().invalidate();
