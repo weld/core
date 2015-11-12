@@ -19,15 +19,26 @@ package org.jboss.weld.interceptor.util;
 
 import java.util.concurrent.Callable;
 
+import org.jboss.weld.bootstrap.api.Environment;
+import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.interceptor.proxy.InterceptorException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
+import org.jboss.weld.interceptor.spi.model.InterceptionType;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public class InterceptionUtils {
+
     public static final String POST_CONSTRUCT = "lifecycle_mixin_$$_postConstruct";
+
     public static final String PRE_DESTROY = "lifecycle_mixin_$$_preDestroy";
+
+    private static final String WELD_SE_CLASS = "org.jboss.weld.environment.se.Weld";
+
+    private static final String WELD_SERVLET_CLASS = "org.jboss.weld.environment.servlet.WeldServletLifecycle";
 
     private InterceptionUtils() {
     }
@@ -66,5 +77,26 @@ public class InterceptionUtils {
 
     public static void executePredestroy(Object proxy) {
         executePredestroy(proxy, null);
+    }
+
+    static boolean isAnnotationClassExpected(InterceptionType interceptionType) {
+        if (InterceptionType.POST_ACTIVATE.equals(interceptionType) || InterceptionType.PRE_PASSIVATE.equals(interceptionType)) {
+            Environment environment = detectEnvironment();
+            if (environment != null && (Environments.SE.equals(environment) || Environments.SERVLET.equals(environment))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static Environment detectEnvironment() {
+        // We should rather use the environment from WeldStartup but it's not available in the static initializer
+        Environment environment = null;
+        if (Reflections.isClassLoadable(WELD_SE_CLASS, WeldClassLoaderResourceLoader.INSTANCE)) {
+            environment = Environments.SE;
+        } else if (Reflections.isClassLoadable(WELD_SERVLET_CLASS, WeldClassLoaderResourceLoader.INSTANCE)) {
+            environment = Environments.SERVLET;
+        }
+        return environment;
     }
 }
