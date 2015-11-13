@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedMember;
@@ -67,6 +68,9 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
     protected void checkProducerMethod(EnhancedAnnotatedMethod<T, ? super X> method) {
         if (method.getEnhancedParameters(Observes.class).size() > 0) {
             throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Observes", this.method,
+                    Formats.formatAsStackTraceElement(method.getJavaMember()));
+        } else if (method.getEnhancedParameters(ObservesAsync.class).size() > 0) {
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@ObservesAsync", this.method,
                     Formats.formatAsStackTraceElement(method.getJavaMember()));
         } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
             throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Disposes", this.method,

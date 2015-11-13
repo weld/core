@@ -43,6 +43,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
@@ -298,6 +299,10 @@ public class Beans {
             }
             if (!constructor.getEnhancedParameters(Observes.class).isEmpty()) {
                 throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@Observes", constructor,
+                        Formats.formatAsStackTraceElement(constructor.getJavaMember()));
+            }
+            if (!constructor.getEnhancedParameters(ObservesAsync.class).isEmpty()) {
+                throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@ObservesAsync", constructor,
                         Formats.formatAsStackTraceElement(constructor.getJavaMember()));
             }
         }

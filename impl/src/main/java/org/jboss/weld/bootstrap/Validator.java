@@ -542,7 +542,7 @@ public class Validator implements Service {
     protected void validateInterceptor(Interceptor<?> interceptor, BeanManagerImpl manager) {
         if (interceptor instanceof InterceptorImpl<?>) {
             EnhancedAnnotatedType<?> annotated = ((InterceptorImpl<?>) interceptor).getEnhancedAnnotated();
-            if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
+            if (!BeanMethods.getObserverMethods(annotated).isEmpty() || !BeanMethods.getAsyncObserverMethods(annotated).isEmpty()) {
                 throw ValidatorLogger.LOG.interceptorsCannotHaveObserverMethods(interceptor);
             }
             if (!interceptor.getScope().equals(Dependent.class)) {
@@ -606,7 +606,7 @@ public class Validator implements Service {
                 validateRIBean((CommonBean<?>) decorator, manager, specializedBeans);
 
                 // Following checks are not legal for custom decorator beans as we cannot rely on decorator bean class methods
-                if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
+                if (!BeanMethods.getObserverMethods(annotated).isEmpty() || !BeanMethods.getAsyncObserverMethods(annotated).isEmpty()) {
                     throw ValidatorLogger.LOG.decoratorsCannotHaveObserverMethods(decorator);
                 }
                 while (annotated != null && annotated.getJavaClass() != Object.class) {
