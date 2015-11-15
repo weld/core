@@ -104,7 +104,8 @@ public class BeanDeployment {
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
-        this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
+        this.beanManager = BeanManagerImpl.newManager(deploymentManager,
+                WeldBootstrap.stripArchiveIdSuffix(beanDeploymentArchive.getId()), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
 
         services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager, beanDeploymentArchive);
