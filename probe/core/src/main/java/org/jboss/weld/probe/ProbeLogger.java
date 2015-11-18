@@ -66,8 +66,8 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 6, value = "{0} not monitored - excluded", format = Format.MESSAGE_FORMAT)
     void invocationMonitorNotAssociatedExcluded(Object beanClass);
 
-    @LogMessage(level = Level.INFO)
-    @Message(id = 8, value = "\n=====================================\n\n Weld Development Mode: ENABLED \n\n=====================================")
+    @LogMessage(level = Level.WARN)
+    @Message(id = 8, value = "\n=====================================\n Weld Development Mode: ENABLED\n ------------------------------------\n Disable this mode in production - it may have negative impact on performance and/or represent a potential security risk\n=====================================")
     void developmentModeEnabled();
 
     @LogMessage(level = Level.DEBUG)
