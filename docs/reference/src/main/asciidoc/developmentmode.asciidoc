@@ -45,6 +45,8 @@ You should see the following log message during initialization of your applicati
 -----------------------------------------------------------------------------------------------------------
 =====================================
  Weld Development Mode: ENABLED
+ ------------------------------------
+ Disable this mode in production - it may have negative impact on performance and/or represent a potential security risk
 =====================================
 -----------------------------------------------------------------------------------------------------------
 
