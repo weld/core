@@ -19,7 +19,9 @@ package org.jboss.weld.logging;
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
 import org.jboss.logging.Logger;
+import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
@@ -104,5 +106,9 @@ public interface UtilLogger extends WeldLogger {
 
     @Message(id = 833, value = "Resource injection point represents a method which doesn't follow JavaBean conventions {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException resourceSetterInjectionNotAJavabean(Object param1);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 834, value = "Unable to inject resource - most probably incorrect InjectionServices SPI implementation: {0}\n\tat {1}", format = Format.MESSAGE_FORMAT)
+    void unableToInjectResource(Object member, Object stackElement);
 
 }
