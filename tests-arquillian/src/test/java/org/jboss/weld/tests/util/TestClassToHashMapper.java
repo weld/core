@@ -50,7 +50,7 @@ public class TestClassToHashMapper {
             List<File> files = (List<File>) FileUtils.listFiles(userDir, new TestFileFilter(), new DirFileFilter());
             for (File file : files) {
                 String fqcn = file.getPath().substring(file.getPath().indexOf(PREFIX), file.getPath().indexOf(SUFFIX));
-                fqcn = fqcn.replaceAll(File.separator, ".");
+                fqcn = fqcn.replace(File.separator, ".");
                 writer.append(fqcn + " " + Utils.getHashOfTestClass(fqcn));
                 writer.append(System.lineSeparator());
             }
