@@ -73,4 +73,9 @@ class SetterResourceInjection<T, X> extends AbstractResourceInjection<T> {
         }
     }
 
+    @Override
+    Method getMember() {
+        return accessibleMethod;
+    }
+
 }

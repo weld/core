@@ -16,12 +16,15 @@
  */
 package org.jboss.weld.injection;
 
+import java.lang.reflect.Member;
+
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
-import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.logging.UtilLogger;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -36,17 +39,23 @@ abstract class AbstractResourceInjection<T> implements ResourceInjection<T> {
     private final ResourceReferenceFactory<T> factory;
 
     AbstractResourceInjection(ResourceReferenceFactory<T> factory) {
-        Preconditions.checkNotNull(factory);
         this.factory = factory;
     }
 
     @Override
     public T getResourceReference(CreationalContext<?> ctx) {
-        ResourceReference<T> reference = factory.createResource();
-        if (ctx instanceof WeldCreationalContext<?>) {
-            Reflections.<WeldCreationalContext<?>> cast(ctx).addDependentResourceReference(reference);
+        ResourceReference<T> reference = null;
+        if (factory != null) {
+            reference = factory.createResource();
         }
-        return reference.getInstance();
+        if (reference != null) {
+            if (ctx instanceof WeldCreationalContext<?>) {
+                Reflections.<WeldCreationalContext<?>> cast(ctx).addDependentResourceReference(reference);
+            }
+            return reference.getInstance();
+        }
+        UtilLogger.LOG.unableToInjectResource(getMember(), Formats.formatAsStackTraceElement(getMember()));
+        return null;
     }
 
     @Override
@@ -55,5 +64,7 @@ abstract class AbstractResourceInjection<T> implements ResourceInjection<T> {
     }
 
     protected abstract void injectMember(Object declaringInstance, Object reference);
+
+    abstract Member getMember();
 
 }
