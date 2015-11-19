@@ -67,4 +67,9 @@ class FieldResourceInjection<T, X> extends AbstractResourceInjection<T> {
         }
     }
 
+    @Override
+    Field getMember() {
+        return accessibleField;
+    }
+
 }
