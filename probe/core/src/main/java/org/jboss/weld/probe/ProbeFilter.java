@@ -84,6 +84,8 @@ public class ProbeFilter implements Filter {
 
     private boolean skipMonitoring;
 
+    private Pattern allowRemoteAddressPattern;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -112,6 +114,9 @@ public class ProbeFilter implements Filter {
 
         String exclude = configuration.getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
         skipMonitoring = !exclude.isEmpty() && Pattern.compile(exclude).matcher(ProbeFilter.class.getName()).matches();
+
+        String allowRemoteAddress = configuration.getStringProperty(ConfigurationKey.PROBE_ALLOW_REMOTE_ADDRESS);
+        allowRemoteAddressPattern = allowRemoteAddress.isEmpty() ? null : Pattern.compile(allowRemoteAddress);
     }
 
     @Override
@@ -124,6 +129,13 @@ public class ProbeFilter implements Filter {
 
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        if (allowRemoteAddressPattern != null && !allowRemoteAddressPattern.matcher(request.getRemoteAddr()).matches()) {
+            ProbeLogger.LOG.requestDenied(request.getRemoteAddr(), httpRequest.getRequestURI());
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         final String[] resourcePathParts = getResourcePathParts(httpRequest.getRequestURI(), httpRequest.getServletContext().getContextPath());
 
         if (resourcePathParts != null) {

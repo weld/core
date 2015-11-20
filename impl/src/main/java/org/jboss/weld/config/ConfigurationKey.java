@@ -192,8 +192,24 @@ public enum ConfigurationKey {
     /**
      * If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the bootstrap performance.
      */
-    @Description("If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the <strong>bootstrap performance</strong>.")
+    @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the <strong>bootstrap performance</strong>.")
     PROBE_EVENT_MONITOR_CONTAINER_LIFECYCLE_EVENTS("org.jboss.weld.probe.eventMonitor.containerLifecycleEvents", false),
+
+    /**
+     * A regular expression used to limit access to the Probe REST API. The default value attempts to match connections from localhost only, i.e. it's matching the
+     * following addresses:
+     * <ul>
+     * <li><code>127.0.0.1</code></li>
+     * <li><code>::1</code>, incl. zone indices (e.g. <code>::1%0</code>)</li>
+     * <li><code>0:0:0:0:0:0:0:1</code>, incl. zone indices (e.g. <code>0:0:0:0:0:0:0:1%eth0</code>)</li>
+     * </ul>
+     *
+     * Note that this might not work properly for an application behind a reverse-proxy or a load balancer. In such case we assume the web container involves
+     * some technique of overridding the client IP address with a value from the request headers (e.g.
+     * <code>io.undertow.server.handlers.ProxyPeerAddressHandler</code>, <code>org.apache.catalina.valves.RemoteIpValve</code>, etc.).
+     */
+    @Description("<strong>DEVELOPMENT MODE</strong> - a regular expression used to limit access to Probe REST API. Matches connections from localhost by default. Might not work properly for an application behind a reverse proxy or a load balancer.")
+    PROBE_ALLOW_REMOTE_ADDRESS("org.jboss.weld.probe.allowRemoteAddress", "127.0.0.1|::1|::1%.+|0:0:0:0:0:0:0:1|0:0:0:0:0:0:0:1%.+"),
 
     ;
 
