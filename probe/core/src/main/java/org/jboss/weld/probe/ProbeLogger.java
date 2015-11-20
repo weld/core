@@ -98,4 +98,8 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 16, value = "Unable to parse query filters: {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException unableToParseQueryFilter(Object filters);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 17, value = "Access to {0} denied for {1}", format = Format.MESSAGE_FORMAT)
+    void requestDenied(Object requestInfo, Object remoteAddr);
+
 }
