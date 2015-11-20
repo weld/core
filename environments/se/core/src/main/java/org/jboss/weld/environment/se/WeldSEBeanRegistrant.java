@@ -65,9 +65,9 @@ public class WeldSEBeanRegistrant implements Extension {
         VetoedSuppressedAnnotatedType<RunnableDecorator> runnableDecorator = new VetoedSuppressedAnnotatedType<RunnableDecorator>(
                 manager.createAnnotatedType(RunnableDecorator.class));
 
-        event.addAnnotatedType(parametersFactory);
-        event.addAnnotatedType(instanceManager);
-        event.addAnnotatedType(runnableDecorator);
+        event.addAnnotatedType(parametersFactory, ParametersFactory.class.getName());
+        event.addAnnotatedType(instanceManager, InstanceManager.class.getName());
+        event.addAnnotatedType(runnableDecorator, RunnableDecorator.class.getName());
     }
 
     public void registerWeldSEContexts(@Observes ExperimentalAfterBeanDiscovery event, BeanManager manager) {
