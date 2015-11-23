@@ -38,22 +38,20 @@ public final class EventMetadataImpl implements EventMetadata {
     private final InjectionPoint injectionPoint;
     private final Set<Annotation> qualifiers;
     private final Annotation[] qualifierArray;
-    private final boolean isAsync;
 
-    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, boolean isAsync) {
-        this(type, injectionPoint, qualifiers, null, isAsync);
+    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers) {
+        this(type, injectionPoint, qualifiers, null);
     }
 
     public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Annotation[] qualifiers) {
-        this(type, injectionPoint, null, qualifiers, false);
+        this(type, injectionPoint, null, qualifiers);
     }
 
-    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, Annotation[] qualifierArray, boolean isAsync) {
+    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, Annotation[] qualifierArray) {
         this.type = type;
         this.injectionPoint = injectionPoint;
         this.qualifiers = qualifiers;
         this.qualifierArray = qualifierArray;
-        this.isAsync = isAsync;
     }
 
     @Override
@@ -81,11 +79,12 @@ public final class EventMetadataImpl implements EventMetadata {
 
     @Override
     public boolean isAsync() {
-        return isAsync;
+        // TODO remove this method once the up-to-date CDI 2.0 API is available
+        return false;
     }
 
     @Override
     public String toString() {
-        return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + ", isAsync=" + isAsync + "]";
+        return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + "]";
     }
 }

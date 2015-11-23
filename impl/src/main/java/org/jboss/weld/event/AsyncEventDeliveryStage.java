@@ -17,20 +17,13 @@
 package org.jboss.weld.event;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
-
-import javax.enterprise.event.FireAsyncException;
 
 import org.jboss.weld.util.ForwardingCompletionStage;
 
 /**
- * TODO Find a better way to propagate FireAsyncException or unwrap CompletionException.
  *
  * @param <T>
  */
@@ -57,54 +50,4 @@ public class AsyncEventDeliveryStage<T> extends ForwardingCompletionStage<T> {
         return delegate;
     }
 
-    /*
-     * All the following methods unwrap CompletionException in order for FireAsyncException to be propagate on the top level.
-     * This may not be needed in the future - depending on the resolution of https://issues.jboss.org/browse/CDI-548
-     */
-    @Override
-    public CompletionStage<T> whenComplete(BiConsumer<? super T, ? super Throwable> action) {
-        return super.whenComplete((r,t) -> action.accept(r, unwrap(t)));
-    }
-
-    @Override
-    public CompletionStage<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action) {
-        return super.whenCompleteAsync((r,t) -> action.accept(r, unwrap(t)));
-    }
-
-    @Override
-    public CompletionStage<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action, Executor executor) {
-        return super.whenCompleteAsync((r,t) -> action.accept(r, unwrap(t)), executor);
-    }
-
-    @Override
-    public <U> CompletionStage<U> handle(BiFunction<? super T, Throwable, ? extends U> fn) {
-        return super.handle((r,t) -> fn.apply(r, unwrap(t)));
-    }
-
-    @Override
-    public <U> CompletionStage<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn) {
-        return super.handleAsync((r,t) -> fn.apply(r, unwrap(t)));
-    }
-
-    @Override
-    public <U> CompletionStage<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn, Executor executor) {
-        return super.handleAsync((r,t) -> fn.apply(r, unwrap(t)), executor);
-    }
-
-    @Override
-    public CompletionStage<T> exceptionally(Function<Throwable, ? extends T> fn) {
-        return super.exceptionally((t) -> fn.apply(unwrap(t)));
-    }
-
-    private static Throwable unwrap(Throwable exception) {
-        if (exception != null) {
-            if (exception instanceof CompletionException) {
-                exception = ((CompletionException) exception).getCause();
-            }
-            if (!(exception instanceof FireAsyncException)) {
-                exception = new FireAsyncException(exception);
-            }
-        }
-        return exception;
-    }
 }

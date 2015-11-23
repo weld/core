@@ -18,7 +18,7 @@ package org.jboss.weld.tests.experimental.event.async.complex;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 
 @ApplicationScoped
@@ -27,9 +27,9 @@ public class Worker {
     @Inject
     private Event<Result> event;
 
-    public void doWork(@Observes Work work) {
+    public void doWork(@ObservesAsync Work work) {
         double result = calculatePiFor(work.getStart(), work.getNrOfElements());
-        event.fireAsync(new Result(result));
+        event.fire(new Result(result));
     }
 
     private double calculatePiFor(int start, int nrOfElements) {

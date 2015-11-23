@@ -24,14 +24,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
-import javax.enterprise.event.FireAsyncException;
 import javax.enterprise.event.ObserverException;
-import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -292,13 +291,12 @@ public class ObserverNotifier {
     }
 
     /**
-     * Delivers the given asynchronous event object to given observer synchronous, transactional and asynchronous observer methods.
+     * Delivers the given asynchronous event object to given observer asynchronous observer methods.
      *
-     * Transactional observer methods are scheduled to be executed in the corresponding transaction phase. Then, synchronous observer methods with {@link TransactionPhase#IN_PROGRESS}
-     * are called synchronously in the current thread. Next, asynchronous observer methods are scheduled to be notified in a separate thread. Note that this method exits just after
+     * Asynchronous observer methods are scheduled to be notified in a separate thread. Note that this method exits just after
      * event delivery to asynchronous observer methods is scheduled. {@link EventMetadata} is made available for injection into observer methods, if needed.
      *
-     * Note that if any of the observer methods throws an exception, it is never thrown out of this method. Instead, all the exceptions are grouped together using {@link FireAsyncException}
+     * Note that if any of the observer methods throws an exception, it is never thrown out of this method. Instead, all the exceptions are grouped together using {@link CompletionException}
      * and the returned {@link CompletionStage} fails with this compound exception.
      *
      * If an executor is provided then observer methods are notified using this executor. Otherwise, Weld's task executor is used.
@@ -313,8 +311,6 @@ public class ObserverNotifier {
             metadata = null;
         }
         final ObserverExceptionHandler handler = new CollectingExceptionHandler();
-        notifyTransactionObservers(observers.getTransactionObservers(), event, metadata, handler);
-        notifySyncObservers(observers.getImmediateSyncObservers(), event, metadata, handler);
         return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, executor, handler);
     }
 
@@ -350,11 +346,11 @@ public class ObserverNotifier {
             }
             List<Throwable> handledExceptions = handler.getHandledExceptions();
             if (!handledExceptions.isEmpty()) {
-                FireAsyncException exception = null;
+                CompletionException exception = null;
                 if (handledExceptions.size() == 1) {
-                    exception = new FireAsyncException(handledExceptions.get(0));
+                    exception = new CompletionException(handledExceptions.get(0));
                 } else {
-                    exception = new FireAsyncException();
+                    exception = new CompletionException(null);
                 }
                 for (Throwable handledException : handledExceptions) {
                     exception.addSuppressed(handledException);
