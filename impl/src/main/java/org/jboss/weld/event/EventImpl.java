@@ -89,7 +89,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
-        getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.syncMetadata);
+        getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.metadata);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     private <U extends T> CompletionStage<U> fireAsyncInternal(U event, Executor executor) {
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
-        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.asyncMetadata, executor);
+        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.metadata, executor);
     }
 
     private CachedObservers getObservers(T event) {
@@ -131,9 +131,8 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         final Type eventType = getEventType(runtimeType);
         // this performs type check
         final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
-        final EventMetadata syncMetadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers(), false);
-        final EventMetadata asyncMetadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers(), true);
-        return new CachedObservers(runtimeType, observers, syncMetadata, asyncMetadata);
+        final EventMetadata metadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers());
+        return new CachedObservers(runtimeType, observers, metadata);
     }
 
     @Override
@@ -208,14 +207,12 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     private class CachedObservers {
         private final Class<?> rawType;
         private final ResolvedObservers<T> observers;
-        private final EventMetadata syncMetadata;
-        private final EventMetadata asyncMetadata;
+        private final EventMetadata metadata;
 
-        private CachedObservers(Class<?> rawType, ResolvedObservers<T> observers, EventMetadata syncMetadata, EventMetadata asyncMetadata) {
+        private CachedObservers(Class<?> rawType, ResolvedObservers<T> observers, EventMetadata metadata) {
             this.rawType = rawType;
             this.observers = observers;
-            this.syncMetadata = syncMetadata;
-            this.asyncMetadata = asyncMetadata;
+            this.metadata = metadata;
         }
     }
 }

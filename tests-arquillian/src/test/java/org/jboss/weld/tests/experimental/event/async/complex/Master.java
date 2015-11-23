@@ -53,7 +53,7 @@ public class Master {
         pendingMessages--;
 
         if (pendingMessages == 0) {
-            resultEvent.fireAsync(new PiApproximation(pi, System.currentTimeMillis() - start));
+            resultEvent.fire(new PiApproximation(pi, System.currentTimeMillis() - start));
         }
     }
 

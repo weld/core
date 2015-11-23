@@ -21,11 +21,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.event.FireAsyncException;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -76,8 +76,8 @@ public class FireAsyncTest {
         }).whenComplete((event, throwable) -> synchronizer.add(throwable));
 
         Throwable materializedThrowable = synchronizer.poll(2, TimeUnit.SECONDS);
-        assertTrue(materializedThrowable instanceof FireAsyncException);
-        Throwable[] suppressed = ((FireAsyncException) materializedThrowable).getSuppressed();
+        assertTrue(materializedThrowable instanceof CompletionException);
+        Throwable[] suppressed = ((CompletionException) materializedThrowable).getSuppressed();
         assertEquals(1, suppressed.length);
         assertTrue(suppressed[0] instanceof IllegalStateException);
         assertEquals(FireAsyncTest.class.getName(), suppressed[0].getMessage());
