@@ -191,7 +191,8 @@ final class JsonObjects {
 
         // INIT TS
         deploymentBuilder.add(INIT_TS, probe.getInitTs());
-
+        // CONTEXT ID
+        deploymentBuilder.add(CONTEXT_ID, beanManager.getContextId());
         // WELD VERSION
         deploymentBuilder.add(VERSION, Formats.getSimpleVersion());
 
