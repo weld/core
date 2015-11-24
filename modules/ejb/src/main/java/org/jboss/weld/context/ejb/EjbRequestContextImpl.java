@@ -4,6 +4,7 @@ import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.ejb.InvocationContextBeanStore;
+import org.jboss.weld.context.cache.RequestScopedCache;
 
 import javax.enterprise.context.RequestScoped;
 import javax.interceptor.InvocationContext;
@@ -29,6 +30,21 @@ public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContex
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public void activate() {
+        super.activate();
+        RequestScopedCache.beginRequest();
+    }
+
+    @Override
+    public void deactivate() {
+        try {
+            RequestScopedCache.endRequest();
+        } finally {
+            super.deactivate();
         }
     }
 }
