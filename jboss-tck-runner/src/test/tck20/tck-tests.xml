@@ -45,13 +45,6 @@
 
             <!-- Issues in the TCK -->
             
-            <!-- CDITCK-497 -->
-            <class name="org.jboss.cdi.tck.tests.event.observer.resolve.enterprise.ResolveEnterpriseEventObserverTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- changes in Weld 3 which were not reflected in TCK yet -->
             <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
                 <methods>
