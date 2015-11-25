@@ -206,9 +206,9 @@
         <profile>
             <id>default</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>default</name>
+                    <name>!incontainer</name>
                 </property>
             </activation>
             <properties>
@@ -238,101 +238,6 @@
             </build>
         </profile>
 
-        <!-- InContainer profile using JBoss AS Managed. Runs the full integration test suite, used by e.g. Hudson. -->
-        <profile>
-            <id>jbossas6</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas6</name>
-                </property>
-            </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationSuite</test>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jbossas-managed-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-server-manager</artifactId>
-                    <version>1.0.4.Final</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-as-client</artifactId>
-                    <version>6.1.0.Final</version>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <arquillian.launch>jboss-as-6</arquillian.launch>
-                            </systemProperties>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- InContainer profile using JBoss AS Remote container. Used for debugging single tests, -Dtest=.. -->
-        <profile>
-            <id>jbossas6-remote</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas6-remote</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jbossas-remote-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-as-client</artifactId>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <arquillian.launch>jboss-as-6</arquillian.launch>
-                            </systemProperties>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/jboss-resources</directory>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                    </testResource>
-                </testResources>
-            </build>
-        </profile>
-
         <!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
         <profile>
             <id>incontainer</id>
@@ -340,6 +245,7 @@
                 <activeByDefault>false</activeByDefault>
                 <property>
                     <name>incontainer</name>
+                    <value>true</value>
                 </property>
             </activation>
             <properties>
@@ -385,7 +291,8 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>incontainer-remote</name>
+                    <name>incontainer</name>
+                    <value>remote</value>
                 </property>
             </activation>
             <properties>
@@ -422,159 +329,40 @@
             </build>
         </profile>
 
-        <!-- Performance test related profiles -->
-
-        <!-- Standalone performance test profile using weld-ee-embedded container -->
         <profile>
-            <id>standalone-perf</id>
-            <activation>
-                <property>
-                    <name>standalone-perf</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.weld.arquillian.container</groupId>
-                    <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-                    <scope>provided</scope>
-                    <!--
-                       should be test, but we need shrinkwrap-impl for compiling
-                       BeanArchive, having this in test scopes override the
-                       shrinkwrap-api scope. ??
-                    -->
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <test>org.jboss.weld.tests.NormalPerformanceSuite</test>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- InContianer Performance test profile using JBoss AS Managed container -->
-        <profile>
-            <id>jbossas6-perf</id>
+            <id>jdk18</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer-perf</name>
-                </property>
+                <jdk>[1.8,)</jdk>
             </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationPerformanceSuite</test>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jbossas-managed-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-server-manager</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-as-client</artifactId>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
+                        <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
+                            <source>1.8</source>
+                            <target>1.8</target>
                         </configuration>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- GlassFish Profiles -->
-
-        <profile>
-            <id>glassfish-embedded</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>glassfish-embedded</name>
-                </property>
-            </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationSuite</test>
-                <glassfish.version>3.1-b19</glassfish.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-embedded-3</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.extras</groupId>
-                    <artifactId>glassfish-embedded-all</artifactId>
-                    <version>${glassfish.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>glassfish-remote</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>glassfish-remote</name>
-                </property>
-            </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationSuite</test>
-                <glassfish.version>3.1-b19</glassfish.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-glassfish-remote-3</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.deployment</groupId>
-                    <artifactId>deployment-client</artifactId>
-                    <version>${glassfish.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-                        </configuration>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>add-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/test/java8</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
