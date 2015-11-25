@@ -127,15 +127,16 @@ public class Beans {
      * Oracle JDK 8 compiler (unlike prev versions) generates bridge methods which have method and parameter annotations copied from the original method.
      * However such methods should not become observers, producers, disposers, initializers and lifecycle callbacks.
      *
-     * This predicate determines true if the given method is not a bridge method.
+     * Moreover, JDK8u60 propagates parameter annotations to the synthetic method generated for a lambda. Therefore, we should also ignore synthetic methods.
      *
      * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
+     * @see https://issues.jboss.org/browse/WELD-2019
      */
     @SuppressWarnings("rawtypes")
-    private static final Predicate<WeldMethod> BRIDGE_METHOD_FILTER_PREDICATE = new Predicate<WeldMethod>() {
+    private static final Predicate<WeldMethod> METHOD_FILTER_PREDICATE = new Predicate<WeldMethod>() {
         @Override
         public boolean apply(WeldMethod method) {
-            return !method.getJavaMember().isBridge();
+            return !method.getJavaMember().isBridge() && !method.getJavaMember().isSynthetic();
         }
     };
 
@@ -300,7 +301,7 @@ public class Beans {
     private static <T> Collection<WeldMethod<?, ? super T>> filterOutOverriddenAndBridgeMethods(WeldClass<T> type, Collection<WeldMethod<?, ? super T>> methods) {
         Collection<WeldMethod<?, ? super T>> filteredMethods = new ArrayList<WeldMethod<?, ? super T>>();
         for (WeldMethod<?, ? super T> method : methods) {
-            if (!type.isMethodOverridden(method) && BRIDGE_METHOD_FILTER_PREDICATE.apply(method)) {
+            if (!type.isMethodOverridden(method) && METHOD_FILTER_PREDICATE.apply(method)) {
                 filteredMethods.add(method);
             }
         }
@@ -320,7 +321,7 @@ public class Beans {
                 });
         WeldClass<? super T> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
-            for (WeldMethod<?, ? super T> method : Collections2.filter(t.getDeclaredWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE)) {
+            for (WeldMethod<?, ? super T> method : Collections2.filter(t.getDeclaredWeldMethods(), METHOD_FILTER_PREDICATE)) {
                 if (!isOverridden(method, seenMethods) && !method.getWeldParameters(Observes.class).isEmpty()) {
                     observerMethods.add(method);
                 }
@@ -432,7 +433,7 @@ public class Beans {
         Class<?> clazz = weldClass.getJavaClass();
         while (clazz != null) {
             ArraySet<MethodInjectionPoint<?, ?>> set = new ArraySet<MethodInjectionPoint<?, ?>>();
-            for (WeldMethod<?, ?> weldMethod : Collections2.filter(weldClass.getWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE)) {
+            for (WeldMethod<?, ?> weldMethod : Collections2.filter(weldClass.getWeldMethods(), METHOD_FILTER_PREDICATE)) {
                 if (weldMethod.getJavaMember().getDeclaringClass().equals(clazz)) {
                     processPossibleInitializerMethod(declaringBean, weldClass, weldMethod, seenMethods, set, beanManager);
                 }
@@ -453,7 +454,7 @@ public class Beans {
         WeldClass<?> clazz = weldClass;
         while (clazz != null && !clazz.getJavaClass().equals(Object.class)) {
             ArraySet<MethodInjectionPoint<?, ?>> set = new ArraySet<MethodInjectionPoint<?, ?>>();
-            Collection declaredWeldMethods = Collections2.filter(clazz.getDeclaredWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE);
+            Collection declaredWeldMethods = Collections2.filter(clazz.getDeclaredWeldMethods(), METHOD_FILTER_PREDICATE);
             for (WeldMethod<?, ?> method : (Collection<WeldMethod<?, ?>>) declaredWeldMethods) {
                 processPossibleInitializerMethod(declaringBean, weldClass, method, seenMethods, set, beanManager);
             }
@@ -878,7 +879,7 @@ public class Beans {
      * @return a set of producer methods, bridge methods are filtered out
      */
     public static <T> Collection<WeldMethod<?, ? super T>> getProducerMethods(WeldClass<T> weldClass) {
-        return Collections2.filter(weldClass.getDeclaredWeldMethods(Produces.class), BRIDGE_METHOD_FILTER_PREDICATE);
+        return Collections2.filter(weldClass.getDeclaredWeldMethods(Produces.class), METHOD_FILTER_PREDICATE);
     }
 
     /**
@@ -887,7 +888,7 @@ public class Beans {
     * @return a set of disposer methods, bridge methods are filtered out
     */
     public static <T> Collection<WeldMethod<?, ? super T>> getDisposerMethods(WeldClass<T> weldClass) {
-        return Collections2.filter(weldClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class), BRIDGE_METHOD_FILTER_PREDICATE);
+        return Collections2.filter(weldClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class), METHOD_FILTER_PREDICATE);
     }
 
 }
