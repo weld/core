@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.experimental.event.async.context.security;
 
-import java.util.concurrent.CompletionException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.ExecutionException;
 
 import javax.ejb.EJBAccessException;
@@ -31,8 +34,6 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import junit.framework.Assert;
 
 /**
  * Testcase for WELD-1977
@@ -52,19 +53,17 @@ public class SecurityContextPropagationTest {
     @Test
     public void testPositive(Student student) throws InterruptedException, ExecutionException {
         Spreadsheet spreadsheet = new Spreadsheet();
-        Assert.assertEquals(spreadsheet, student.print(spreadsheet));
+        assertEquals(spreadsheet, student.print(spreadsheet));
     }
 
     @Test
     public void testNegative(Stranger stranger) throws InterruptedException, ExecutionException {
         try {
             stranger.print(new Spreadsheet());
-            Assert.fail();
+            fail();
         } catch (ExecutionException expected) {
-            Assert.assertTrue(expected.getCause() instanceof CompletionException);
-            CompletionException cause = (CompletionException) expected.getCause();
-            Assert.assertEquals(1, cause.getSuppressed().length);
-            Assert.assertTrue(cause.getSuppressed()[0] instanceof EJBAccessException);
+            // CompletableFuture unwraps CompletionException automatically
+            assertTrue(expected.getCause() instanceof EJBAccessException);
         }
     }
 }
