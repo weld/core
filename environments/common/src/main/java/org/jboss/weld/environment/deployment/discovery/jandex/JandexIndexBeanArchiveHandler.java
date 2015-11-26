@@ -58,7 +58,7 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
         if (index == null) {
             return null;
         }
-        BeanArchiveBuilder builder = new BeanArchiveBuilder().setAttribute(JandexDiscoveryStrategy.INDEX_ATTRIBUTE_NAME, index);
+        BeanArchiveBuilder builder = new BeanArchiveBuilder().setAttribute(Jandex.INDEX_ATTRIBUTE_NAME, index);
         handleArchiveByIndex(index, builder);
         return builder;
     }

@@ -32,14 +32,13 @@ import org.jboss.weld.environment.util.Files;
  */
 public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
 
-    private static final String SLASH = "/";
+    protected static final String SLASH = "/";
 
-    private static final String DOT = ".";
+    protected static final String DOT = ".";
 
     private final ServletContext servletContext;
 
     /**
-     *
      * @param servletContext
      */
     public ServletContextBeanArchiveHandler(ServletContext servletContext) {
@@ -57,6 +56,13 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
         return builder;
     }
 
+    protected void add(String rootPath, String subpath, BeanArchiveBuilder builder) {
+        // Class file
+        String className = toClassName(rootPath, subpath);
+        builder.addClass(className);
+        WeldServletLogger.LOG.tracev("Class discovered: {0}", className);
+    }
+
     private void handleResourcePath(String rootPath, String resourcePath, BeanArchiveBuilder builder) {
 
         WeldServletLogger.LOG.debugv("Handle resource path: {0}", resourcePath);
@@ -68,10 +74,7 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
                     // Paths indicating subdirectory end with a '/'
                     handleResourcePath(rootPath, subpath, builder);
                 } else if (subpath.endsWith(Files.CLASS_FILE_EXTENSION)) {
-                    // Class file
-                    String className = toClassName(rootPath, subpath);
-                    builder.addClass(className);
-                    WeldServletLogger.LOG.tracev("Class discovered: {0}", className);
+                    add(rootPath, subpath, builder);
                 }
             }
         }

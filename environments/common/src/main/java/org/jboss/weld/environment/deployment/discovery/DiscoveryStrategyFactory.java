@@ -16,46 +16,37 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
-import static org.jboss.weld.environment.util.Reflections.cast;
-import static org.jboss.weld.environment.util.Reflections.classForName;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.logging.CommonLogger;
-import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- *
  * @author Martin Kouba
  */
 public final class DiscoveryStrategyFactory {
-
-    private static final String JANDEX_DISCOVERY_STRATEGY_CLASS_NAME = "org.jboss.weld.environment.deployment.discovery.jandex.JandexDiscoveryStrategy";
-
-    private static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
 
     private DiscoveryStrategyFactory() {
     }
 
     /**
-     *
      * @param resourceLoader
      * @param bootstrap
      * @param initialBeanDefiningAnnotations
      * @return the discovery strategy
      */
-    public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
-        if (Reflections.isClassLoadable(resourceLoader, JANDEX_INDEX_CLASS_NAME)) {
+    public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap,
+            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        if (Jandex.isJandexAvailable(resourceLoader)) {
             CommonLogger.LOG.usingJandex();
             try {
-                return cast(classForName(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME).getConstructor(ResourceLoader.class, Bootstrap.class, Set.class)
-                        .newInstance(resourceLoader, bootstrap, initialBeanDefiningAnnotations));
+                return Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
             } catch (Exception e) {
-                throw CommonLogger.LOG.unableToInstantiate(JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
+                throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
                         Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
             }
         }
