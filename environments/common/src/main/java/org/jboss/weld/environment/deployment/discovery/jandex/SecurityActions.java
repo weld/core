@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.servlet;
+package org.jboss.weld.environment.deployment.discovery.jandex;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
@@ -50,6 +50,17 @@ final class SecurityActions {
         }
     }
 
+    /**
+     * @param javaClass
+     * @param types
+     * @param params
+     * @param <T>
+     * @return
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
     static <T> T newConstructorInstance(Class<T> javaClass, Class<?>[] constructorParamTypes, Object... constructorParamInstances)
             throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if (System.getSecurityManager() != null) {

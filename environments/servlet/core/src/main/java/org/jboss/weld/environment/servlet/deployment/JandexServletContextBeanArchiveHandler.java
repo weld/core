@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -14,29 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.deployment.discovery.jandex;
+package org.jboss.weld.environment.servlet.deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+
+import javax.servlet.ServletContext;
 
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
-import org.jboss.weld.environment.deployment.discovery.FileSystemBeanArchiveHandler;
+import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.logging.CommonLogger;
-import org.jboss.weld.environment.util.Files;
 
 /**
- * Builds and attaches a jandex index to each bean archive.
- *
- * @author Matej Briškár
- * @author Martin Kouba
+ * @author Tomas Remes
  */
-public class JandexFileSystemBeanArchiveHandler extends FileSystemBeanArchiveHandler {
+public class JandexServletContextBeanArchiveHandler extends ServletContextBeanArchiveHandler {
 
     private final Indexer indexer = new Indexer();
+
+    private final ServletContext servletContext;
+
+    /**
+     * @param servletContext
+     */
+    public JandexServletContextBeanArchiveHandler(ServletContext servletContext) {
+        super(servletContext);
+        this.servletContext = servletContext;
+    }
 
     @Override
     public BeanArchiveBuilder handle(String path) {
@@ -44,34 +50,23 @@ public class JandexFileSystemBeanArchiveHandler extends FileSystemBeanArchiveHan
         if (builder == null) {
             return null;
         }
+
         builder.setAttribute(Jandex.INDEX_ATTRIBUTE_NAME, buildIndex());
         return builder;
     }
 
-    @Override
-    protected void add(Entry entry, BeanArchiveBuilder builder) throws MalformedURLException {
-        super.add(entry, builder);
-        if (Files.isClass(entry.getName())) {
-            addToIndex(entry.getUrl());
+    private void addToIndex(InputStream inputStream) {
+        try {
+            indexer.index(inputStream);
+        } catch (IOException ex) {
+            CommonLogger.LOG.couldNotOpenStreamForURL(inputStream, ex);
         }
     }
 
-    private void addToIndex(URL url) {
-        InputStream fs = null;
-        try {
-            fs = url.openStream();
-            indexer.index(fs);
-        } catch (IOException ex) {
-            CommonLogger.LOG.couldNotOpenStreamForURL(url, ex);
-        } finally {
-            try {
-                if (fs != null) {
-                    fs.close();
-                }
-            } catch (IOException ex) {
-                CommonLogger.LOG.couldNotCloseStreamForURL(url, ex);
-            }
-        }
+    @Override
+    protected void add(String rootPath, String subpath, BeanArchiveBuilder builder) {
+        super.add(rootPath, subpath, builder);
+        addToIndex(servletContext.getResourceAsStream(subpath));
     }
 
     private Index buildIndex() {
