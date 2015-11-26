@@ -52,8 +52,10 @@ import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
+import org.jboss.weld.environment.deployment.discovery.BeanArchiveHandler;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
+import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
 import org.jboss.weld.environment.jetty.JettyContainer;
 import org.jboss.weld.environment.logging.CommonLogger;
@@ -91,6 +93,8 @@ public class WeldServletLifecycle {
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
     private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
+
+    private static final String JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER = "org.jboss.weld.environment.servlet.deployment.JandexServletContextBeanArchiveHandler";
 
     // This context param is used to activate the development mode
     private static final String CONTEXT_PARAM_DEV_MODE = "org.jboss.weld.development";
@@ -278,10 +282,18 @@ public class WeldServletLifecycle {
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final EEModuleDescriptor eeModule = new EEModuleDescriptorImpl(context.getContextPath(), ModuleType.WEB);
 
-        final DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
-                typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations());
-        strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
-
+        final DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations());
+        if (Jandex.isJandexAvailable(resourceLoader)) {
+            try {
+                Class<? extends BeanArchiveHandler> handlerClass = Reflections.loadClass(resourceLoader, JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER);
+                strategy.registerHandler((SecurityActions.newConstructorInstance(handlerClass, new Class<?>[] { ServletContext.class }, context)));
+            } catch (Exception e) {
+                throw CommonLogger.LOG.unableToInstantiate(JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER,
+                        Arrays.toString(new Object[] { context }), e);
+            }
+        } else {
+            strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
+        }
         strategy.setScanner(new WebAppBeanArchiveScanner(resourceLoader, bootstrap, context));
         Set<WeldBeanDeploymentArchive> beanDeploymentArchives = strategy.performDiscovery();
 
