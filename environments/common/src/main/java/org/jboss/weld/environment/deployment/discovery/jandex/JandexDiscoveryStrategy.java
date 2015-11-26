@@ -47,8 +47,6 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
-    static final String INDEX_ATTRIBUTE_NAME = JandexDiscoveryStrategy.class.getPackage().getName() + ".index";
-
     private static final int ANNOTATION = 0x00002000;
 
     private Set<DotName> beanDefiningAnnotations;
@@ -72,7 +70,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
     protected void beforeDiscovery(Collection<BeanArchiveBuilder> builders) {
         List<IndexView> indexes = new ArrayList<IndexView>();
         for (BeanArchiveBuilder builder : builders) {
-            IndexView index = (IndexView) builder.getAttribute(INDEX_ATTRIBUTE_NAME);
+            IndexView index = (IndexView) builder.getAttribute(Jandex.INDEX_ATTRIBUTE_NAME);
             if (index != null) {
                 indexes.add(index);
             }
