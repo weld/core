@@ -32,8 +32,20 @@ public class SessionScopedBean implements Serializable {
     public static final String MESSAGE_B = "B happened.";
     public static final String MESSAGE_AB = "AB happened.";
 
+    public static final String SOME_METHOD_NAME = "doSomething";
+    public static final String GETTER_METHOD_NAME = "getTestJavaAccesorMethods";
+
+    public String getTestJavaAccesorMethods() {
+        return testJavaAccesorMethods;
+    }
+
+    private String testJavaAccesorMethods = "message";
+
     @Inject
     Event<String> event;
+
+    @Inject
+    Event<DummyBean> dummyBeanEvent;
 
     @TestInterceptorBinding
     public void doSomething() {
@@ -43,5 +55,8 @@ public class SessionScopedBean implements Serializable {
 
         Collector.CollectorLiteral collectorLiteralB = new Collector.CollectorLiteral("B");
         event.select(collectorLiteralB).fire(MESSAGE_B);
+
+        dummyBeanEvent.fire(new DummyBean());
+
     }
 }

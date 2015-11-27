@@ -21,7 +21,11 @@ public class InvokingServlet extends HttpServlet {
 
         modelBean.simpleCall();
 
+        resp.getWriter().print("<html>");
+        resp.getWriter().print("<body>");
         resp.getWriter().print(req.getSession().getId());
+        resp.getWriter().print("</body>");
+        resp.getWriter().print("</html>");
         resp.setContentType("text/html");
 
     }

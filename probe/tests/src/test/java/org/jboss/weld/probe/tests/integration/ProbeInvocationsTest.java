@@ -104,7 +104,7 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
         //test sessionScopedBean child invocation
         JsonObject sessionScopedInvocation = childsOfInvocation.getJsonObject(0);
         assertEquals(SessionScopedBean.class.getName(), sessionScopedInvocation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
-        assertEquals("doSomething", sessionScopedInvocation.getString(METHOD_NAME));
+        assertEquals(SessionScopedBean.SOME_METHOD_NAME, sessionScopedInvocation.getString(METHOD_NAME));
 
         JsonArray observerInvocation = sessionScopedInvocation.getJsonArray(CHILDREN);
         assertTrue(checkStringInArrayRecursively(ApplicationScopedObserver.class.getName(), BEAN_CLASS, observerInvocation, false));

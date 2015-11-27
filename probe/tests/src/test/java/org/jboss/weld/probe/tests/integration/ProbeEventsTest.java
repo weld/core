@@ -68,7 +68,7 @@ public class ProbeEventsTest extends ProbeIntegrationTest {
     @Test
     public void testEventsEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
-        JsonObject events = getPageAsJSONObject(JSONTestUtil.EVENTS_PATH + "?filters=kind:APPLICATION", url, client);
+        JsonObject events = getPageAsJSONObject(JSONTestUtil.EVENTS_PATH + "?filters=kind:\"APPLICATION\"", url, client);
         JsonArray eventsData = events.getJsonArray(DATA);
         assertTrue("No events found !", eventsData.size() > 0);
 

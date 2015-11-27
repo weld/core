@@ -45,7 +45,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.tests.integration.deployment.InvokingServlet;
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
 import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
-import org.jboss.weld.probe.tests.integration.deployment.extensions.DummyBean;
+import org.jboss.weld.probe.tests.integration.deployment.beans.DummyBean;
 import org.jboss.weld.probe.tests.integration.deployment.extensions.TestExtension;
 import org.junit.Test;
 import org.junit.runner.RunWith;
