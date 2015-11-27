@@ -37,4 +37,8 @@ public class ApplicationScopedObserver {
     public void listen3(@Observes(notifyObserver = Reception.IF_EXISTS, during = TransactionPhase.BEFORE_COMPLETION) Properties properties) {
     }
 
+    public void dummyObserver(@Observes DummyBean dummyBean){
+
+    }
+
 }

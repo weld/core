@@ -30,6 +30,7 @@ public class ModelBean {
 
     public void simpleCall() {
         session.doSomething();
+        session.getTestJavaAccesorMethods();
         conversationBean.start();
     }
 

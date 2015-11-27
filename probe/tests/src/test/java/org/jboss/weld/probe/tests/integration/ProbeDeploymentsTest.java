@@ -18,7 +18,7 @@ package org.jboss.weld.probe.tests.integration;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.fail;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.DEPLOYMENT_PATH;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getDeploymentByName;
@@ -28,6 +28,7 @@ import java.net.URL;
 
 import javax.json.JsonObject;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -36,7 +37,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -95,11 +95,14 @@ public class ProbeDeploymentsTest extends ProbeIntegrationTest {
     }
 
     @Test
-    @Ignore("WFLY-4388")
     @OperateOnDeployment(NON_BEAN_ARCHIVE)
     public void testDeploymentEndpointWithNonBeanArchive() throws IOException {
-        JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, NOT_BEAN_ARCHIVE_NAME, url);
-        assertNull("Archive should not be found!", testArchive);
+        //expects exception
+        try {
+            JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, NOT_BEAN_ARCHIVE_NAME, url);
+            fail("Deployment archive must not be obtained since Probe shoudln't start!");
+        } catch (FailingHttpStatusCodeException e) {
+        }
     }
 
 }
