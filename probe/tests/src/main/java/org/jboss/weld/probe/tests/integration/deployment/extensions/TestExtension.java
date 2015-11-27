@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
+import org.jboss.weld.probe.tests.integration.deployment.beans.DummyBean;
 import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
 public class TestExtension implements Extension {
