@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.probe.tests.integration.deployment.extensions;
+package org.jboss.weld.probe.tests.integration.deployment.beans;
 
 public class DummyBean {
 }
