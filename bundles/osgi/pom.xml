@@ -74,16 +74,18 @@
                             javax.decorator;
                             javax.enterprise.*;
                             version=${osgi.version},
-                            org.jboss.weld.context;
+                            org.jboss.weld;
                             org.jboss.weld.ejb;
                             org.jboss.weld.bean;
                             org.jboss.weld.bean.builtin;
                             org.jboss.weld.bean.proxy;
                             org.jboss.weld.*.api.*;
                             org.jboss.weld.*.spi.*;
-                            org.jboss.weld.conversation;
-                            org.jboss.weld;
                             org.jboss.weld.bootstrap;
+                            org.jboss.weld.config;
+                            org.jboss.weld.context;
+                            org.jboss.weld.conversation;
+                            org.jboss.weld.exceptions;
                             org.jboss.weld.event;
                             org.jboss.weld.injection;
                             org.jboss.weld.introspector;
