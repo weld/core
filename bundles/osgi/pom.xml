@@ -64,10 +64,12 @@
                             org.jboss.weld.bean.builtin;
                             org.jboss.weld.bean.proxy;
                             org.jboss.weld.bootstrap;
+                            org.jboss.weld.config;
                             org.jboss.weld.context;
                             org.jboss.weld.ejb;
                             org.jboss.weld.el;
                             org.jboss.weld.event;
+                            org.jboss.weld.exceptions;
                             org.jboss.weld.injection;
                             org.jboss.weld.interceptor.proxy;
                             org.jboss.weld.interceptor.util.proxy;
