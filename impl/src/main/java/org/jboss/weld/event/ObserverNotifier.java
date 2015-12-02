@@ -316,11 +316,11 @@ public class ObserverNotifier {
 
     protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata,
             Executor executor, final ObserverExceptionHandler handler) {
-        if (observers.isEmpty()) {
-            return AsyncEventDeliveryStage.completed(event);
-        }
         if (executor == null) {
             executor = asyncEventExecutor;
+        }
+        if (observers.isEmpty()) {
+            return AsyncEventDeliveryStage.completed(event, executor);
         }
         final SecurityContext securityContext = securityServices.getSecurityContext();
         return new AsyncEventDeliveryStage<>(() -> {
