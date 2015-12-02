@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.OBSERVED_TYPE;
@@ -38,6 +38,9 @@ import javax.enterprise.event.TransactionPhase;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -51,7 +54,6 @@ import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * @author Tomas Remes
@@ -79,15 +81,19 @@ public class ProbeObserversTest extends ProbeIntegrationTest {
     public void testObserversEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject observers = getPageAsJSONObject(JSONTestUtil.OBSERVERS_PATH, url, client);
-        JsonArray observersData = observers.getJsonArray(DATA);
-        assertTrue("No observers found !", observersData.size() > 0);
+        ReadContext ctx = JsonPath.parse(observers.toString());
+        List<String> beanClasses = ctx.read("$." + DATA + "[*]." + BEAN_CLASS, List.class);
+        List<String> txPhases = ctx.read("$." + DATA + "[*]." + TX_PHASE, List.class);
+        List<String> qualifiers = ctx.read("$." + DATA + "[*]." + QUALIFIERS + "[*]", List.class);
 
         //check observers
-        assertTrue(checkStringInArrayRecursively(ApplicationScopedObserver.class.getName(), BEAN_CLASS, observersData, false));
-        assertTrue(checkStringInArrayRecursively(Collector.class.getName().concat("(value=A)"), QUALIFIERS, observersData, false));
-        assertTrue(checkStringInArrayRecursively(Collector.class.getName().concat("(value=B)"), QUALIFIERS, observersData, false));
-        assertTrue(checkStringInArrayRecursively(TransactionPhase.BEFORE_COMPLETION.name(), TX_PHASE, observersData, false));
+        assertTrue(beanClasses.contains(ApplicationScopedObserver.class.getName()));
+        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=A)")));
+        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=B)")));
+        assertTrue(txPhases.contains(TransactionPhase.BEFORE_COMPLETION.name()));
 
+        JsonArray observersData = observers.getJsonArray(DATA);
+        assertTrue("No observers found !", observersData.size() > 0);
         List<JsonObject> jsonObservers = getAllJsonObjectsByClass(ApplicationScopedObserver.class, observersData);
 
         // find observer only with Collector qualifier with value "B"

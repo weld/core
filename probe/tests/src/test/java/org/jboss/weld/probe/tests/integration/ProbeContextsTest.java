@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.SCOPE;
@@ -27,12 +27,15 @@ import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONO
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.json.JsonObject;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -71,21 +74,23 @@ public class ProbeContextsTest extends ProbeIntegrationTest {
     public void testSessionContextsEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject sessionContext = getPageAsJSONObject(SESSION_CONTEXTS_PATH, url, client);
+        ReadContext ctx = JsonPath.parse(sessionContext.toString());
+        List<String> beanClasses = ctx.read("$." + INSTANCES + "[*]." + BEAN_CLASS, List.class);
 
         assertEquals(SessionScoped.class.getName(), sessionContext.getString(SCOPE));
-        assertTrue("Cannot find initialized context for " + sessionContext.getString(SCOPE),
-                checkStringInArrayRecursively(SessionScopedBean.class.getName(), BEAN_CLASS, sessionContext.getJsonArray(INSTANCES), false));
+        assertTrue("Cannot find initialized context for " + sessionContext.getString(SCOPE), beanClasses.contains(SessionScopedBean.class.getName()));
     }
 
     @Test
     public void testApplicationContextsEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject applicationContext = getPageAsJSONObject(APPLICATION_CONTEXTS_PATH, url, client);
+        ReadContext ctx = JsonPath.parse(applicationContext.toString());
+        List<String> beanClasses = ctx.read("$." + INSTANCES + "[*]." + BEAN_CLASS, List.class);
 
         assertEquals(ApplicationScoped.class.getName(), applicationContext.getString(SCOPE));
         assertTrue("Cannot find initialized context for " + applicationContext.getString(SCOPE),
-                checkStringInArrayRecursively(ApplicationScopedObserver.class.getName(), BEAN_CLASS, applicationContext.getJsonArray(INSTANCES), false));
+                beanClasses.contains(ApplicationScopedObserver.class.getName()));
     }
-
 
 }

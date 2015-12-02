@@ -22,6 +22,8 @@ import javax.inject.Inject;
 @Model
 public class ModelBean {
 
+    public static final String SIMPLE_CALL_METHOD_NAME = "simpleCall";
+
     @Inject
     SessionScopedBean session;
 
