@@ -45,6 +45,8 @@ import javax.decorator.Decorator;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -96,8 +98,11 @@ public class ProbeSessionBeansTest extends ProbeIntegrationTest {
         String statefulEjbSessionId = statefulEjbJson.getString(ID);
         JsonObject sessionBeansDetail = getPageAsJSONObject(BEANS_PATH + "/" + statefulEjbSessionId, url);
 
+        ReadContext ctx = JsonPath.parse(sessionBeansDetail.toString());
+        List<String> types = ctx.read("$." + TYPES, List.class);
+
         assertEquals(BeanType.SESSION.name(), sessionBeansDetail.getString(KIND));
-        assertTrue(checkStringInArrayRecursively(DecoratedInterface.class.getName(), TYPES, sessionBeansDetail.getJsonArray(TYPES), false));
+        assertTrue(types.contains(DecoratedInterface.class.getName()));
         assertEquals(Boolean.TRUE.booleanValue(), sessionBeansDetail.getBoolean(IS_ALTERNATIVE));
         assertEquals(Boolean.TRUE.booleanValue(), sessionBeansDetail.getBoolean(EJB_NAME));
         assertEquals(SessionBeanType.STATEFUL.name(), sessionBeansDetail.getString(SESSION_BEAN_TYPE));
@@ -121,9 +126,13 @@ public class ProbeSessionBeansTest extends ProbeIntegrationTest {
         JsonObject decoratorDetail = getPageAsJSONObject(BEANS_PATH + "/" + decoratorId, url);
 
         assertEquals(BeanType.DECORATOR.name(), decoratorDetail.getString(KIND));
-        assertTrue(checkStringInArrayRecursively(DecoratedInterface.class.getName(), TYPES, decoratorDetail.getJsonArray(TYPES), false));
-        assertTrue(checkStringInArrayRecursively(Serializable.class.getName(), TYPES, decoratorDetail.getJsonArray(TYPES), false));
-        assertTrue(checkStringInArrayRecursively(Decorator.class.getName(), CLASS, decoratorDetail.getJsonArray(STEREOTYPES), false));
+        ReadContext ctx = JsonPath.parse(decoratorDetail.toString());
+        List<String> types = ctx.read("$." + TYPES, List.class);
+        List<String> stereotypes = ctx.read("$." + STEREOTYPES + "[*]." + CLASS, List.class);
+
+        assertTrue(types.contains(DecoratedInterface.class.getName()));
+        assertTrue(types.contains(Serializable.class.getName()));
+        assertTrue(stereotypes.contains(Decorator.class.getName()));
 
     }
 
