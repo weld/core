@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
@@ -47,6 +47,9 @@ import javax.enterprise.inject.Default;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -63,8 +66,6 @@ import org.jboss.weld.probe.tests.integration.deployment.beans.TestProducer;
 import org.jboss.weld.probe.tests.integration.deployment.interceptors.TestInterceptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * @author Tomas Remes
@@ -92,11 +93,12 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
     public void testBeansEndpoint() throws IOException {
         JsonObject beansInTestArchive = getPageAsJSONObject(BEANS_PATH_ALL, url);
         assertNotNull(beansInTestArchive);
-        JsonArray beansArray = beansInTestArchive.getJsonArray(DATA);
 
-        assertBeanClassVisibleInProbe(ModelBean.class, beansArray);
-        assertBeanClassVisibleInProbe(SessionScopedBean.class, beansArray);
-        assertBeanClassVisibleInProbe(TestInterceptor.class, beansArray);
+        ReadContext ctx = JsonPath.parse(beansInTestArchive.toString());
+        List<String> beanClasses = ctx.read("$." + DATA + "[*]." + BEAN_CLASS, List.class);
+        assertBeanClassVisibleInProbe(ModelBean.class, beanClasses);
+        assertBeanClassVisibleInProbe(SessionScopedBean.class, beanClasses);
+        assertBeanClassVisibleInProbe(TestInterceptor.class, beanClasses);
     }
 
     @Test
@@ -107,12 +109,14 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         assertEquals("@" + RequestScoped.class.getSimpleName(), modelBeanDetail.getString(SCOPE));
 
         // check @Model bean
-        JsonArray qualifiers = modelBeanDetail.getJsonArray(QUALIFIERS);
-        JsonArray types = modelBeanDetail.getJsonArray(TYPES);
-        JsonArray dependencies = modelBeanDetail.getJsonArray(DEPENDENCIES);
-        assertTrue(checkStringInArrayRecursively(Default.class.getSimpleName(), null, qualifiers, false));
-        assertTrue(checkStringInArrayRecursively(ModelBean.class.getName(), null, types, false));
-        assertTrue(checkStringInArrayRecursively(SessionScopedBean.class.getName(), BEAN_CLASS, dependencies, false));
+        ReadContext ctx = JsonPath.parse(modelBeanDetail.toString());
+        List<String> qualifiers = ctx.read("$." + QUALIFIERS + "[*]", List.class);
+        List<String> types = ctx.read("$." + TYPES + "[*]", List.class);
+        List<String> dependencies = ctx.read("$." + DEPENDENCIES + "[*]." + BEAN_CLASS, List.class);
+
+        assertTrue(qualifiers.contains("@" + Default.class.getSimpleName()));
+        assertBeanClassVisibleInProbe(ModelBean.class, types);
+        assertBeanClassVisibleInProbe(SessionScopedBean.class, dependencies);
 
         // check sessionscoped bean
         JsonObject sessionScopedBeanDetail = getBeanDetail(BEANS_PATH_ALL, SessionScopedBean.class, url);
@@ -120,11 +124,13 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         assertEquals(BeanType.MANAGED.name(), sessionScopedBeanDetail.getString(KIND));
         assertEquals("@" + SessionScoped.class.getSimpleName(), sessionScopedBeanDetail.getString(SCOPE));
 
-        types = sessionScopedBeanDetail.getJsonArray(TYPES);
-        JsonArray dependents = sessionScopedBeanDetail.getJsonArray(DEPENDENTS);
-        assertTrue(checkStringInArrayRecursively(SessionScopedBean.class.getName(), null, types, false));
-        assertTrue(checkStringInArrayRecursively(Serializable.class.getName(), null, types, false));
-        assertTrue(checkStringInArrayRecursively(ModelBean.class.getName(), BEAN_CLASS, dependents, false));
+        //types = sessionScopedBeanDetail.getJsonArray(TYPES);
+        ctx = JsonPath.parse(sessionScopedBeanDetail.toString());
+        types = ctx.read("$." + TYPES + "[*]", List.class);
+        List<String> dependents = ctx.read("$." + DEPENDENTS + "[*].beanClass", List.class);
+        assertBeanClassVisibleInProbe(SessionScopedBean.class, types);
+        assertBeanClassVisibleInProbe(Serializable.class, types);
+        assertBeanClassVisibleInProbe(ModelBean.class, dependents);
 
         // check interceptor detail
         JsonObject testInterceptorDetail = getBeanDetail(BEANS_PATH_ALL, TestInterceptor.class, url);
@@ -150,7 +156,10 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         }
         assertNotNull("Cannot find producer field from " + TestProducer.class.getName(), fieldProducer);
         assertEquals("@" + Dependent.class.getSimpleName(), fieldProducer.getString(SCOPE));
-        assertTrue(checkStringInArrayRecursively(String.class.getName(), null, fieldProducer.getJsonArray(TYPES), false));
+
+        ReadContext ctx = JsonPath.parse(fieldProducer.toString());
+        List<String> types = ctx.read("$." + TYPES + "[*]", List.class);
+        assertTrue(types.contains(String.class.getName()));
 
         JsonObject methodProducer = null;
         for (JsonObject jsonObject : producers) {
@@ -161,7 +170,9 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         }
         assertNotNull("Cannot find producer method from " + TestProducer.class.getName(), methodProducer);
         assertEquals("@" + Dependent.class.getSimpleName(), methodProducer.getString(SCOPE));
-        assertTrue(checkStringInArrayRecursively(ModelBean.class.getName(), null, methodProducer.getJsonArray(TYPES), false));
+        ctx = JsonPath.parse(methodProducer.toString());
+        types = ctx.read("$." + TYPES + "[*]", List.class);
+        assertTrue(types.contains(ModelBean.class.getName()));
     }
 
     @Test
@@ -172,19 +183,19 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         JsonObject sessionBeanInstance = getBeanInstanceDetail(BEANS_PATH_ALL, SessionScopedBean.class, url, webClient);
         assertEquals(BeanType.MANAGED.name(), sessionBeanInstance.getString(KIND));
         assertEquals(SessionScopedBean.class.getName(), sessionBeanInstance.getString(BEAN_CLASS));
-        assertEquals("@"+SessionScoped.class.getSimpleName(), sessionBeanInstance.getString(SCOPE));
+        assertEquals("@" + SessionScoped.class.getSimpleName(), sessionBeanInstance.getString(SCOPE));
 
         // applicationscoped bean instance
         JsonObject applicationScopedBeanInstance = getBeanInstanceDetail(BEANS_PATH_ALL, ApplicationScopedObserver.class, url, webClient);
         assertEquals(BeanType.MANAGED.name(), applicationScopedBeanInstance.getString(KIND));
         assertEquals(ApplicationScopedObserver.class.getName(), applicationScopedBeanInstance.getString(BEAN_CLASS));
-        assertEquals("@"+ApplicationScoped.class.getSimpleName(), applicationScopedBeanInstance.getString(SCOPE));
+        assertEquals("@" + ApplicationScoped.class.getSimpleName(), applicationScopedBeanInstance.getString(SCOPE));
 
         // conversationscoped bean instance
         JsonObject conversationScopedBeanInstance = getBeanInstanceDetail(BEANS_PATH_ALL, ConversationBean.class, url, webClient, "?cid=1");
         assertEquals(BeanType.MANAGED.name(), conversationScopedBeanInstance.getString(KIND));
         assertEquals(ConversationBean.class.getName(), conversationScopedBeanInstance.getString(BEAN_CLASS));
-        assertEquals("@"+ConversationScoped.class.getSimpleName(), conversationScopedBeanInstance.getString(SCOPE));
+        assertEquals("@" + ConversationScoped.class.getSimpleName(), conversationScopedBeanInstance.getString(SCOPE));
     }
 
 }

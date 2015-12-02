@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.KIND;
@@ -31,12 +32,15 @@ import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONO
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -44,8 +48,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.tests.integration.deployment.InvokingServlet;
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
-import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
 import org.jboss.weld.probe.tests.integration.deployment.beans.DummyBean;
+import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
 import org.jboss.weld.probe.tests.integration.deployment.extensions.TestExtension;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,20 +82,24 @@ public class ProbeExtensionsTest extends ProbeIntegrationTest {
         JsonObject beansInTestArchive = getPageAsJSONObject(BEANS_PATH_ALL, url);
         assertNotNull(beansInTestArchive);
         JsonArray beansArray = beansInTestArchive.getJsonArray(DATA);
-        assertBeanClassVisibleInProbe(TestExtension.class, beansArray);
+        ReadContext ctx = JsonPath.parse(beansInTestArchive.toString());
+        List<String> beanClasses = ctx.read("$." + DATA + "[*]." + BEAN_CLASS, List.class);
+        assertBeanClassVisibleInProbe(TestExtension.class, beanClasses);
 
         //test extension attributes
         JsonObject extensionBeanDetail = getBeanDetail(BEANS_PATH_ALL, TestExtension.class, url);
-        JsonArray declaredObserversInExtension = extensionBeanDetail.getJsonArray(DECLARED_OBSERVERS);
         assertEquals(BeanType.EXTENSION.name(), extensionBeanDetail.getString(KIND));
-        assertTrue("Cannot find ProcessAnnotatedType observer method!",
-                checkStringInArrayRecursively(ProcessAnnotatedType.class.getName() + "<DummyBean>", OBSERVED_TYPE, declaredObserversInExtension, false));
+
+        ctx = JsonPath.parse(extensionBeanDetail.toString());
+        List<String> observedTypes = ctx.read("$." + DECLARED_OBSERVERS + "[*]." + OBSERVED_TYPE, List.class);
+        assertTrue("Cannot find ProcessAnnotatedType observer method!", observedTypes.contains(ProcessAnnotatedType.class.getName() + "<DummyBean>"));
 
         //test bean altered by extension
         JsonObject dummyBeanDetail = getBeanDetail(BEANS_PATH_ALL, DummyBean.class, url);
-        JsonArray qualifiersOfDummyBean = dummyBeanDetail.getJsonArray(QUALIFIERS);
+        ctx = JsonPath.parse(dummyBeanDetail.toString());
+        List<String> qualifiers = ctx.read("$." + QUALIFIERS + "[*]", List.class);
         assertTrue("Cannot find " + Collector.class + " qualifier on " + DummyBean.class,
-                checkStringInArrayRecursively("@" + Collector.class.getName(), null, qualifiersOfDummyBean, false));
+                qualifiers.contains("@" + Collector.class.getName().concat("(value=\"\")")));
     }
 
 }

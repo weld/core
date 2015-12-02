@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.DATA;
@@ -30,10 +30,13 @@ import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONO
 
 import java.io.IOException;
 import java.net.URL;
-
+import java.util.List;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -51,8 +54,6 @@ import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.jboss.weld.tests.util.SystemPropertiesLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * @author Tomas Remes
@@ -83,9 +84,11 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
     public void testInvocationsEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject invocations = getPageAsJSONObject(INVOCATIONS_PATH, url, client);
-        JsonArray invocationData = invocations.getJsonArray(DATA);
-        assertTrue("No invocations in invocation tree!", invocationData.size() > 0);
-        assertTrue(checkStringInArrayRecursively("simpleCall", METHOD_NAME, invocationData, false));
+        ReadContext ctx = JsonPath.parse(invocations.toString());
+        List<String> methodNames = ctx.read("$." + DATA + "[*]." + METHOD_NAME, List.class);
+
+        assertTrue("No invocations in invocation tree!", methodNames.size() > 0);
+        assertTrue(methodNames.contains(ModelBean.SIMPLE_CALL_METHOD_NAME));
     }
 
     @Test
@@ -106,10 +109,13 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
         assertEquals(SessionScopedBean.class.getName(), sessionScopedInvocation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
         assertEquals(SessionScopedBean.SOME_METHOD_NAME, sessionScopedInvocation.getString(METHOD_NAME));
 
-        JsonArray observerInvocation = sessionScopedInvocation.getJsonArray(CHILDREN);
-        assertTrue(checkStringInArrayRecursively(ApplicationScopedObserver.class.getName(), BEAN_CLASS, observerInvocation, false));
-        assertTrue(checkStringInArrayRecursively("listen", METHOD_NAME, observerInvocation, false));
-        assertTrue(checkStringInArrayRecursively("listen1", METHOD_NAME, observerInvocation, false));
+        ReadContext ctx = JsonPath.parse(sessionScopedInvocation.toString());
+        List<String> beanClasses = ctx.read("$." + CHILDREN + "[*]." + INTERCEPTED_BEAN + "." + BEAN_CLASS, List.class);
+        List<String> methodNames = ctx.read("$." + CHILDREN + "[*]." + METHOD_NAME, List.class);
+
+        assertTrue(beanClasses.contains(ApplicationScopedObserver.class.getName()));
+        assertTrue(methodNames.contains("listen"));
+        assertTrue(methodNames.contains("listen1"));
 
         //test conversationScopedBean child invocation
         JsonObject conversationScopedInvocation = childsOfInvocation.getJsonObject(1);
