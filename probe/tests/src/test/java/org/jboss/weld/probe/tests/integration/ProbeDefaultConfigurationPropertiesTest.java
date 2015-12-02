@@ -23,7 +23,6 @@ import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.Strings.TYPE;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.INVOCATIONS_PATH;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONObject;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -45,17 +44,13 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.context.DependentContext;
-import org.jboss.weld.probe.ProbeFilter;
 import org.jboss.weld.probe.tests.integration.deployment.InvokingServlet;
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
-import org.jboss.weld.probe.tests.integration.deployment.beans.DummyBean;
 import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
 import org.jboss.weld.probe.tests.integration.deployment.beans.SessionScopedBean;
 import org.jboss.weld.probe.tests.integration.deployment.extensions.TestExtension;
 import org.jboss.weld.probe.tests.integration.deployment.interceptors.TestInterceptor;
-import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,15 +59,15 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class ProbeConfigurationPropertiesTest extends ProbeIntegrationTest {
+public class ProbeDefaultConfigurationPropertiesTest extends ProbeIntegrationTest {
 
     @ArquillianResource
     private URL url;
 
-    private static final String TEST_ARCHIVE_NAME = "probe-config-properties-test";
+    private static final String TEST_ARCHIVE_NAME = "probe-default-config-properties-test";
 
     @Deployment(testable = false)
-    public static WebArchive deployFirst() {
+    public static WebArchive deploySecond() {
         return ShrinkWrap.create(WebArchive.class, TEST_ARCHIVE_NAME + ".war")
                 .addAsWebInfResource(ProbeBeansTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ProbeBeansTest.class.getPackage(), "beans.xml", "beans.xml")
@@ -81,72 +76,37 @@ public class ProbeConfigurationPropertiesTest extends ProbeIntegrationTest {
                 .addPackage(TestExtension.class.getPackage())
                 .addPackage(ModelBean.class.getPackage())
                 .addPackage(Collector.class.getPackage())
-                .addAsServiceProvider(Extension.class, TestExtension.class)
-                .addAsResource(PropertiesBuilder.newBuilder()
-                        .set(ConfigurationKey.PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES.get(), "false")
-                        .set(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE.get(),
-                                "org.jboss.weld.servlet.WeldInitialListener|org.jboss.weld.servlet.WeldTerminalListener|" + InvokingServlet.class.getName()
-                                        + "|"
-                                        + ProbeFilter.class.getName())
-                        .set(ConfigurationKey.PROBE_EVENT_MONITOR_CONTAINER_LIFECYCLE_EVENTS.get(), "true")
-                        .set(ConfigurationKey.PROBE_EMBED_INFO_SNIPPET.get(), "false")
-                        .set(ConfigurationKey.PROBE_EVENT_MONITOR_EXCLUDE_TYPE.get(), DummyBean.class.getName())
-                        .build(), "weld.properties");
+                .addAsServiceProvider(Extension.class, TestExtension.class);
     }
 
     @Test
-    public void testProbeFilterIsExcluded() throws IOException {
-        WebClient webClient = invokeSimpleAction(url);
-        JsonObject invocations = getPageAsJSONObject(INVOCATIONS_PATH, url, webClient);
-        JsonArray invocationData = invocations.getJsonArray(DATA);
-        int id = invocationData.getJsonObject(0).getInt(ID);
-        JsonObject invocationTree = getPageAsJSONObject(INVOCATIONS_PATH + "/" + id, url, webClient);
-        ReadContext ctx = JsonPath.parse(invocationTree.toString());
-        String methodName = ctx.read("$." + METHOD_NAME, String.class);
-
-        // servlet methods are omitted due InvokingServlet exlusion
-        assertEquals(methodName, ModelBean.SIMPLE_CALL_METHOD_NAME);
-    }
-
-    @Test
-    public void testAccesorMethodIsAvailableInInvocationTree() throws IOException {
+    public void testAccesorMethodIsNOTAvailableInInvocationTree() throws IOException {
         JsonArray childsOfInvocation = getChildInvocations();
         assertTrue("Cannot find any child invocations!", childsOfInvocation.size() > 0);
 
         ReadContext ctx = JsonPath.parse(childsOfInvocation.toString());
         List<String> methodNames = ctx.read("$.[*]." + METHOD_NAME, List.class);
-        assertTrue("Cannot find accesor method " + SessionScopedBean.GETTER_METHOD_NAME, methodNames.contains(SessionScopedBean.GETTER_METHOD_NAME));
+        assertTrue("Found accesor method " + SessionScopedBean.GETTER_METHOD_NAME, !methodNames.contains(SessionScopedBean.GETTER_METHOD_NAME));
     }
 
     @Test
-    public void testLifecycleEventsAreMonitored() throws IOException {
+    public void testEmbededInfoSnippetAvailable() throws IOException {
+        WebClient client = new WebClient();
+        HtmlPage page = client.getPage(url.toString() + "test");
+        assertTrue(page.getBody().asXml().toString().contains("Probe Development Tool"));
+        assertTrue(page.getBody().asXml().toString().contains(TEST_ARCHIVE_NAME));
+        assertTrue(page.getBody().asXml().toString().contains("The following snippet was automatically added by Weld"));
+    }
+
+    @Test
+    public void testLifecycleEventsAreNOTMonitored() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject events = getPageAsJSONObject(JSONTestUtil.EVENTS_PATH + "?pageSize=0", url, client);
 
         ReadContext ctx = JsonPath.parse(events.toString());
         List<String> eventTypes = ctx.read("$." + DATA + "[*]." + TYPE, List.class);
-        assertTrue("No event types found !", eventTypes.size() > 0);
-        assertTrue("Cannot find PB event for " + DependentContext.class.getName(), eventTypes.contains("ProcessBean<DependentContext>"));
-        assertTrue("Cannot find PIT event for " + InvokingServlet.class.getName(), eventTypes.contains("ProcessInjectionTarget<InvokingServlet>"));
-    }
-
-    @Test
-    public void testEmbededInfoSnippetNOTAvailable() throws IOException {
-        WebClient client = new WebClient();
-        HtmlPage page = client.getPage(url.toString() + "test");
-        System.out.println(page.getBody().asXml());
-        assertFalse(page.getBody().asXml().toString().contains("Probe Development Tool"));
-        assertFalse(page.getBody().asXml().toString().contains(TEST_ARCHIVE_NAME));
-        assertFalse(page.getBody().asXml().toString().contains("The following snippet was automatically added by Weld"));
-    }
-
-    @Test
-    public void testDummyBeanEventIsExcluded() throws IOException {
-        WebClient client = invokeSimpleAction(url);
-        JsonObject events = getPageAsJSONObject(JSONTestUtil.EVENTS_PATH + "?filters=kind:\"APPLICATION\"&pageSize=0", url, client);
-        ReadContext ctx = JsonPath.parse(events.toString());
-        List<String> eventsData = ctx.read("$." + DATA + "[*]." + TYPE, List.class);
-        assertFalse("Found excluded event type " + DummyBean.class.getSimpleName() + "!", eventsData.contains(DummyBean.class.getSimpleName()));
+        assertFalse("Found PB event for " + DependentContext.class.getName(), eventTypes.contains("ProcessBean<DependentContext>"));
+        assertFalse("Found PIT event for " + InvokingServlet.class.getName(), eventTypes.contains("ProcessInjectionTarget<InvokingServlet>"));
     }
 
     private JsonArray getChildInvocations() throws IOException {

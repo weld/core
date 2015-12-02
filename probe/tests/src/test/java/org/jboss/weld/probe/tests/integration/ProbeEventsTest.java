@@ -24,11 +24,13 @@ import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONO
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -68,17 +70,20 @@ public class ProbeEventsTest extends ProbeIntegrationTest {
     public void testEventsEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject events = getPageAsJSONObject(JSONTestUtil.EVENTS_PATH + "?filters=kind:\"APPLICATION\"", url, client);
-        JsonArray eventsData = events.getJsonArray(DATA);
-        assertTrue("No events found !", eventsData.size() > 0);
+
+        ReadContext ctx = JsonPath.parse(events.toString());
+        List<String> eventInfos = ctx.read("$." + DATA + "[*]." + EVENT_INFO, List.class);
+        List<String> qualifiers = ctx.read("$." + DATA + "[*]." + QUALIFIERS + "[*]", List.class);
+        assertTrue("No events found !", eventInfos.size() > 0);
 
         //check events
-        assertTrue(checkStringInArrayRecursively(SessionScopedBean.MESSAGE_A, EVENT_INFO, eventsData, false));
-        assertTrue(checkStringInArrayRecursively(SessionScopedBean.MESSAGE_B, EVENT_INFO, eventsData, false));
-        assertTrue(checkStringInArrayRecursively(SessionScopedBean.MESSAGE_AB, EVENT_INFO, eventsData, false));
+        assertTrue(eventInfos.contains(SessionScopedBean.MESSAGE_A));
+        assertTrue(eventInfos.contains(SessionScopedBean.MESSAGE_B));
+        assertTrue(eventInfos.contains(SessionScopedBean.MESSAGE_AB));
 
         //check event qualifiers
-        assertTrue(checkStringInArrayRecursively(Collector.class.getName().concat("(value=\\\"B\\\")"), QUALIFIERS, eventsData, false));
-        assertTrue(checkStringInArrayRecursively(Collector.class.getName().concat("(value=\\\"A\\\")"), QUALIFIERS, eventsData, false));
+        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=\"B\")")));
+        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=\"A\")")));
     }
 
 }
