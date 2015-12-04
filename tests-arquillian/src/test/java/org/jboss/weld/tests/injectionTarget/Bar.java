@@ -16,6 +16,32 @@
  */
 package org.jboss.weld.tests.injectionTarget;
 
-public interface Foo {
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
+public class Bar {
+
+    @Inject
+    private BeanManager beanManager;
+
+    private String id;
+
+    Bar(String id) {
+        this.id = id;
+    }
+
+    @PostConstruct
+    void init() {
+        id += "init";
+    }
+
+    public BeanManager getBeanManager() {
+        return beanManager;
+    }
+
+    public String getId() {
+        return id;
+    }
 
 }

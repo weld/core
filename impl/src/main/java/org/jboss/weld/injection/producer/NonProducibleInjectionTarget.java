@@ -41,8 +41,32 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class NonProducibleInjectionTarget<T> extends BasicInjectionTarget<T> {
 
-    public NonProducibleInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        super(type, bean, beanManager, null);
+    public static <T> NonProducibleInjectionTarget<T> create(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        return create(type, bean, null, null, beanManager);
+    }
+
+    public static <T> NonProducibleInjectionTarget<T> create(EnhancedAnnotatedType<T> type, Bean<T> bean, Injector<T> injector,
+            LifecycleCallbackInvoker<T> invoker, BeanManagerImpl beanManager) {
+        if (injector == null) {
+            injector = DefaultInjector.of(type, bean, beanManager);
+        }
+        if (invoker == null) {
+            invoker = DefaultLifecycleCallbackInvoker.of(type);
+        }
+        return new NonProducibleInjectionTarget<T>(type, bean, beanManager, injector, invoker);
+    }
+
+    /**
+     *
+     * @param type
+     * @param bean
+     * @param beanManager
+     * @param injector
+     * @param invoker
+     */
+    private NonProducibleInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector,
+            LifecycleCallbackInvoker<T> invoker) {
+        super(type, bean, beanManager, injector, invoker);
     }
 
     @Override
