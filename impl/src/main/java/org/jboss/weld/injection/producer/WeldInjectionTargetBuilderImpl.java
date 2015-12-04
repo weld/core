@@ -27,6 +27,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldInjectionTarget;
 import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.InjectionTargets;
 
 /**
  * Default {@link WeldInjectionTargetBuilder} implementation. The builder runs in a privileged context.
@@ -103,13 +104,17 @@ public class WeldInjectionTargetBuilderImpl<T> implements WeldInjectionTargetBui
     private BasicInjectionTarget<T> buildInternal() {
         final Injector<T> injector = buildInjector();
         final LifecycleCallbackInvoker<T> invoker = buildInvoker();
-
+        NonProducibleInjectionTarget<T> nonProducible = InjectionTargets.createNonProducibleInjectionTarget(type, bean, injector, invoker, manager);
+        if (nonProducible != null) {
+            return nonProducible;
+        }
         if (!interceptorsEnabled && !decorationEnabled) {
             return BasicInjectionTarget.create(type, bean, manager, injector, invoker);
         } else if (interceptorsEnabled && decorationEnabled) {
             return new BeanInjectionTarget<T>(type, bean, manager, injector, invoker);
         }
-        throw new IllegalStateException("Unsupported combination: [interceptorsEnabled=" + interceptorsEnabled + ", decorationEnabled=" + decorationEnabled + "]");
+        throw new IllegalStateException(
+                "Unsupported combination: [interceptorsEnabled=" + interceptorsEnabled + ", decorationEnabled=" + decorationEnabled + "]");
     }
 
     private Injector<T> buildInjector() {
