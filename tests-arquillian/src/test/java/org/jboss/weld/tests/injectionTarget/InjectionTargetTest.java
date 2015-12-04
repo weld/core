@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.tests.injectionTarget;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -31,6 +33,8 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.exceptions.CreationException;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +44,8 @@ import org.junit.runner.RunWith;
 public class InjectionTargetTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionTargetTest.class)).addPackage(InjectionTargetTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionTargetTest.class)).addPackage(InjectionTargetTest.class.getPackage())
+                .addClass(Utils.class);
     }
 
     /*
@@ -58,8 +63,8 @@ public class InjectionTargetTest {
 
     @Test
     public void testObtainingInjectionTargetForAbstractClass(BeanManager beanManager) {
-        InjectionTarget<AbstractClass> it = beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(AbstractClass.class)).createInjectionTarget(
-                null);
+        InjectionTarget<AbstractClass> it = beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(AbstractClass.class))
+                .createInjectionTarget(null);
         CreationalContext<AbstractClass> ctx = beanManager.createCreationalContext(null);
         AbstractClass instance = new AbstractClass() {
         };
@@ -75,9 +80,9 @@ public class InjectionTargetTest {
     }
 
     @Test
-    public void testObtainingInjectionTargetForNonStaticInnerClass(BeanManager beanManager) {
-        InjectionTarget<NonStaticInnerClass> it = beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(NonStaticInnerClass.class)).createInjectionTarget(
-                null);
+    public void testObtainingInjectionTarget(BeanManager beanManager) {
+        InjectionTarget<NonStaticInnerClass> it = beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(NonStaticInnerClass.class))
+                .createInjectionTarget(null);
         CreationalContext<NonStaticInnerClass> ctx = beanManager.createCreationalContext(null);
         NonStaticInnerClass instance = new NonStaticInnerClass();
         it.postConstruct(instance);
@@ -89,6 +94,44 @@ public class InjectionTargetTest {
         } catch (CreationException expected) {
         }
         it.preDestroy(instance);
+    }
+
+    @Test
+    public void testNonProducibleInjectionTargetBuilderForClassWithoutBeanConstructor(BeanManagerImpl beanManager) {
+        WeldInjectionTargetBuilder<Bar> builder = beanManager.createInjectionTargetBuilder(beanManager.createAnnotatedType(Bar.class));
+        InjectionTarget<Bar> injectionTarget = builder.build();
+        CreationalContext<Bar> ctx = beanManager.createCreationalContext(null);
+
+        Bar instance = new Bar("foo");
+        injectionTarget.postConstruct(instance);
+        assertEquals("fooinit", instance.getId());
+        assertNull(instance.getBeanManager());
+        injectionTarget.inject(instance, ctx);
+        assertNotNull(instance.getBeanManager());
+        try {
+            injectionTarget.produce(ctx);
+            Assert.fail();
+        } catch (CreationException expected) {
+        }
+    }
+
+    @Test
+    public void testNonProducibleInjectionTargetBuilderForAbstractClass(BeanManagerImpl beanManager) {
+        WeldInjectionTargetBuilder<Baz> builder = beanManager.createInjectionTargetBuilder(beanManager.createAnnotatedType(Baz.class));
+        InjectionTarget<Baz> injectionTarget = builder.build();
+        CreationalContext<Baz> ctx = beanManager.createCreationalContext(null);
+
+        Baz instance = new Baz() {};
+        injectionTarget.postConstruct(instance);
+        assertEquals("init", instance.getId());
+        assertNull(instance.getBeanManager());
+        injectionTarget.inject(instance, ctx);
+        assertNotNull(instance.getBeanManager());
+        try {
+            injectionTarget.produce(ctx);
+            Assert.fail();
+        } catch (CreationException expected) {
+        }
     }
 
     private class NonStaticInnerClass {
