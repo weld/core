@@ -36,12 +36,11 @@ import org.jboss.weld.injection.producer.NonProducibleInjectionTarget;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.injection.spi.InjectionServices;
-import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.api.WeldInjectionTarget;
 import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.InjectionTargets;
 
 /**
  * Factory capable of producing {@link InjectionTarget} implementations for a given combination of {@link AnnotatedType} and
@@ -98,23 +97,9 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
         if (bean instanceof Decorator<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
             return new DecoratorInjectionTarget<T>(type, bean, manager);
         }
-        if (type.isAbstract()) {
-            if (type.getJavaClass().isInterface()) {
-                throw BeanLogger.LOG.injectionTargetCannotBeCreatedForInterface(type);
-            }
-            BeanLogger.LOG.injectionTargetCreatedForAbstractClass(type.getJavaClass());
-            return new NonProducibleInjectionTarget<T>(type, bean, manager);
-        }
-        if (!Reflections.isTopLevelOrStaticNestedClass(type.getJavaClass())) {
-            BeanLogger.LOG.injectionTargetCreatedForNonStaticInnerClass(type.getJavaClass());
-            return new NonProducibleInjectionTarget<T>(type, bean, manager);
-        }
-        if (Beans.getBeanConstructor(type) == null) {
-            if (bean != null) {
-                throw BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructorException(type.getJavaClass());
-            }
-            BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructor(type.getJavaClass());
-            return new NonProducibleInjectionTarget<T>(type, null, manager);
+        NonProducibleInjectionTarget<T> nonProducible = InjectionTargets.createNonProducibleInjectionTarget(type, bean, manager);
+        if(nonProducible != null) {
+            return nonProducible;
         }
         if (bean instanceof SessionBean<?>) {
             return SessionBeanInjectionTarget.of(type, (SessionBean<T>) bean, manager);
@@ -171,6 +156,6 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
 
     @Override
     public WeldInjectionTarget<T> createNonProducibleInjectionTarget() {
-        return prepareInjectionTarget(new NonProducibleInjectionTarget<T>(type, null, manager));
+        return prepareInjectionTarget(NonProducibleInjectionTarget.create(type, null, manager));
     }
 }
