@@ -228,6 +228,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 createManagedBean(weldClass);
             }
         } else {
+            if(Beans.isDecoratorDeclaringInAppropriateConstructor(annotatedType)){
+                BootstrapLogger.LOG.decoratorWithNonCdiConstructor(annotatedType.getJavaClass().getName());
+            }
             getCacheValue(otherWeldClasses, annotatedType.getJavaClass()).add(annotatedType);
         }
     }

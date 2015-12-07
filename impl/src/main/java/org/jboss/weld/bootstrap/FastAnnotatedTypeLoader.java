@@ -82,6 +82,10 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
                 }
             }
 
+            if(Beans.isDecoratorDeclaringInAppropriateConstructor(classFileInfo)){
+                BootstrapLogger.LOG.decoratorWithNonCdiConstructor(classFileInfo.getClassName());
+            }
+
             // lastly, check if this class fulfills CDI managed bean requirements - if it does, add the class
             if (Beans.isTypeManagedBeanOrDecoratorOrInterceptor(classFileInfo)) {
                 return createContext(className, classFileInfo, observerMethods, bdaId);
