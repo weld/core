@@ -74,6 +74,22 @@ the session context before other listeners are invoked (note that the
 listeners are notified in reverse order when a session is being
 destroyed).
 
+When working with multiple deployments in servlet environment, Weld Servlet 
+allows to define context identifier per application deployed. Each different 
+context identifier will create a new Weld container instance. If not specified, 
+Weld falls back to the default value - `STATIC_INSTANCE`. While using custom 
+identifiers is neither required nor commonly used, it certainly has some use-cases.
+For instance managing several deployments with Arquillian Tomcat container. 
+Setting the identifier is as simple as adding one context parameter into `web.xml`:
+
+[source.XML, xml]
+-------------------------------------------------------------------------------
+<context-param>
+   <param-name>WELD_CONTEXT_ID_KEY</param-name>
+   <param-value>customValue</param-value>
+</context-param>
+-------------------------------------------------------------------------------
+
 ==== Tomcat
 
 Tomcat 7 and 8 are supported. Context activation/deactivation and dependency
