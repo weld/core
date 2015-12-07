@@ -471,6 +471,14 @@ public class Beans {
                 && (!Modifier.isAbstract(classFileInfo.getModifiers()) || classFileInfo.isAnnotationDeclared(Decorator.class));
     }
 
+    public static boolean isDecoratorDeclaringInAppropriateConstructor(ClassFileInfo classFileInfo) {
+        return !classFileInfo.hasCdiConstructor() && classFileInfo.isAnnotationDeclared(Decorator.class);
+    }
+
+    public static boolean isDecoratorDeclaringInAppropriateConstructor(AnnotatedType<?> annotatedType) {
+        return !hasSimpleCdiConstructor(annotatedType) && annotatedType.isAnnotationPresent(Decorator.class);
+    }
+
     public static boolean hasSimpleCdiConstructor(AnnotatedType<?> type) {
         for (AnnotatedConstructor<?> constructor : type.getConstructors()) {
             if (constructor.getParameters().isEmpty()) {
