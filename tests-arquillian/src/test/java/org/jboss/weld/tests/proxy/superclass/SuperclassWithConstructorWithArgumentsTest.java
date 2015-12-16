@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.proxy.superclass;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -23,5 +25,8 @@ public class SuperclassWithConstructorWithArgumentsTest {
 
     @Test
     public void testSuperClassWithoutSimpleConstructor() {
+        // tests deployability of this scenario
+        // SimpleBean superclass has a constructor with args
+        assertEquals("nothing", bean.giveMeNothing());
     }
 }

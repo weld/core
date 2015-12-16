@@ -133,7 +133,6 @@ public class ELCurrentActivityTest {
         }
 
         public void destroy(Cow instance, CreationalContext<Cow> creationalContext) {
-            // TODO Auto-generated method stub
 
         }
 

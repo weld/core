@@ -39,6 +39,7 @@ public class EJBTest {
 
     @Test
     public void testMdbDeploys() {
+        // should NOT cause any deployment problems
     }
 
 }

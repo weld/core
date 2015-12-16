@@ -47,8 +47,9 @@ public class ComplexBeanTypeTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentFailsWithInvalidBeanTypes() {
+        // should throw definition exception
+     }
 
     public static class BrokenExtension<T> implements Extension {
         public void observe(@Observes AfterBeanDiscovery event) {

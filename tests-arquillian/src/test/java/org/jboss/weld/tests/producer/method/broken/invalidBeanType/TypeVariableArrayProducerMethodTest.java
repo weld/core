@@ -42,6 +42,7 @@ public class TypeVariableArrayProducerMethodTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithTypeVariableArrayProducerMethod() {
+        // should throw definition exception
+     }
 }

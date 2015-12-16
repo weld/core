@@ -38,6 +38,7 @@ public class DisposerMethodValidationTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithDisposerValidationFailure() {
+        // should throw deployment exception
+     }
 }

@@ -46,5 +46,6 @@ public class EnabledAlternativeValidatedTest {
 
     @Test
     public void testEnabledAlternativeWithInvalidInjectionPoint() {
+        // should throw deployment exception
     }
 }

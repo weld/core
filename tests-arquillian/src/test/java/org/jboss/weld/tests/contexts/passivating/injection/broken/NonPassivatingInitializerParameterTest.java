@@ -44,6 +44,7 @@ public class NonPassivatingInitializerParameterTest extends TestClasses {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithNonPassivatingInitParameter() {
+        // should throw deployment exception
+     }
 }

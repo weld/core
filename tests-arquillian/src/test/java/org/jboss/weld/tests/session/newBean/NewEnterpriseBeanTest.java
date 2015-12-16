@@ -65,7 +65,6 @@ public class NewEnterpriseBeanTest {
     private NewSessionBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
 
     public void initNewBean() {
-        Set<Bean<?>> beans = beanManager.getBeans(WrappedEnterpriseBeanLocal.class);
         Assert.assertEquals(1, beanManager.getBeans(WrappedEnterpriseBeanLocal.class).size());
         Assert.assertTrue(beanManager.getBeans(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof SessionBean<?>);
         wrappedEnterpriseBean = (SessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();

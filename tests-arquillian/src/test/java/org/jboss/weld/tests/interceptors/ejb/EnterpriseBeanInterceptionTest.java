@@ -53,10 +53,6 @@ public class EnterpriseBeanInterceptionTest {
     private BeanManagerImpl beanManager;
 
     @Test
-    public void testX() {
-    }
-
-    // @Test -- impl details class
     public void testInterceptors() throws Exception {
         SessionBean<Ball> ballSessionBean = (SessionBean<Ball>) beanManager.getBeans(Ball.class).iterator().next();
         InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(beanManager.getInterceptorModelRegistry().get(ballSessionBean.getAnnotated()));

@@ -44,6 +44,7 @@ public class BuiltInBeanPassivationCapabilityValidationTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentFailsWithNonPassivationCapableBean() {
+        // should throw deployment exception
+     }
 }

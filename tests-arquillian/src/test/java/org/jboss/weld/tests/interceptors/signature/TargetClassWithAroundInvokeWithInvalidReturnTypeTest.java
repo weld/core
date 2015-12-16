@@ -42,7 +42,8 @@ public class TargetClassWithAroundInvokeWithInvalidReturnTypeTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithInvalidReturnType() {
+        // should throw exception, either IllegalArg or Definition
+     }
 
 }

@@ -43,8 +43,9 @@ public class MultiDimensionalWildcardArrayProducerFieldTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithMultiDimensionalWildcardArrayProducerField() {
+        // should throw definition exception
+     }
 
     private static class Foo<T> {
     }

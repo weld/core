@@ -46,6 +46,7 @@ public class GenericBeanRawSpecialization03Test {
     }
 
     @Test
-    public void testSpecializationOfRawType() {
-    }
+    public void testDeploymentWithSpecializationOfRawType() {
+        // should throw definition exception
+     }
 }

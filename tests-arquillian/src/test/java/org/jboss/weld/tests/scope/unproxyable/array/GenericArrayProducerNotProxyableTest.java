@@ -46,6 +46,7 @@ public class GenericArrayProducerNotProxyableTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentOfUnproxyableArrayProducer() {
+        // should throw deployment exception
+     }
 }

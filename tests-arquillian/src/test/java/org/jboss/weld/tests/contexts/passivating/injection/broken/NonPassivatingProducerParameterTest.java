@@ -43,6 +43,7 @@ public class NonPassivatingProducerParameterTest extends TestClasses {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithNonPassivatingProducerParameter() {
+        // should throw deployment exception
+     }
 }

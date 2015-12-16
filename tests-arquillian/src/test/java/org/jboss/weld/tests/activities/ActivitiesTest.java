@@ -307,7 +307,6 @@ public class ActivitiesTest {
             }
 
         };
-        // TODO Fix this test to use an observer method in a child activity
         childActivity.addObserver(observer);
         beanManager.fireEvent(new NightTime());
     }

@@ -22,7 +22,8 @@ public class DependentCircularInjectionTest {
     }
 
     @Test
-    public void test() {
+    public void testCyclicInjection() {
+        // should throw deployment exception
 
     }
 

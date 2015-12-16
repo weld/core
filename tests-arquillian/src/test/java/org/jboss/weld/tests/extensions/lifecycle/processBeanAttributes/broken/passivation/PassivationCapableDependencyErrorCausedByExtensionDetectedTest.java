@@ -47,6 +47,7 @@ public class PassivationCapableDependencyErrorCausedByExtensionDetectedTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentProblemWithPassivationDueToExtension() {
+        // should throw deployment exception
+     }
 }

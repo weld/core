@@ -42,6 +42,7 @@ public class MultiDimensionalWildcardTypeArrayProducerMethodTest<T> {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithMultiDimensionalWildcardArrayProducerMethod() {
+        // should throw definition exception
+     }
 }

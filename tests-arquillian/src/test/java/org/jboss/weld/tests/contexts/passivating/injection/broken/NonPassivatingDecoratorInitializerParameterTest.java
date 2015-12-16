@@ -43,6 +43,7 @@ public class NonPassivatingDecoratorInitializerParameterTest extends TestClasses
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithNonPassivatingDecoratorInitParameter() {
+        // should throw deployment exception
+     }
 }

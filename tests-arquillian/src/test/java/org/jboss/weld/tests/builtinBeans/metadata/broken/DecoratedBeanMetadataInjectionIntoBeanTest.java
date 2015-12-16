@@ -41,8 +41,9 @@ public class DecoratedBeanMetadataInjectionIntoBeanTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testBrokenDecoratedInjection() {
+        // should throw definition exception
+     }
 
     public static class BrokenBean {
         @Inject

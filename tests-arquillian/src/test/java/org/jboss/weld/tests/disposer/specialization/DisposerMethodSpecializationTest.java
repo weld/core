@@ -44,6 +44,7 @@ public class DisposerMethodSpecializationTest {
     }
 
     @Test
-    public void testExceptionThrown() {
-    }
+    public void testDeploymentWithSpecializedDisposerMethod() {
+        // should throw definition exception
+     }
 }

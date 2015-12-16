@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.scope.unproxyable.method;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -43,11 +43,11 @@ public class PrivateFinalMethodTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PrivateFinalMethodTest.class)).addClass(Duck.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PrivateFinalMethodTest.class)).addClasses(Duck.class, DuckLake.class);
     }
 
     @Test
-    public void testPrivateFinalMethodValid() {
-        assertEquals(1, manager.getBeans(Duck.class).size());
-    }
+    public void testPrivateFinalMethodValid(DuckLake lake) {
+        assertFalse(lake.isEmpty());
+     }
 }

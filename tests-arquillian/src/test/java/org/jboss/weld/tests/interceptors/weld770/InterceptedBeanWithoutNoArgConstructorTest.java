@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.weld771;
+package org.jboss.weld.tests.interceptors.weld770;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -31,19 +31,18 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class TestInterceptedBeanWithFinalMethod {
+public class InterceptedBeanWithoutNoArgConstructorTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TestInterceptedBeanWithFinalMethod.class))
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedBeanWithoutNoArgConstructorTest.class))
                 .intercept(TransactionalInterceptor.class)
-                .addPackage(TestInterceptedBeanWithFinalMethod.class.getPackage());
+                .addPackage(InterceptedBeanWithoutNoArgConstructorTest.class.getPackage());
     }
 
     @Test
-    public void testFinalMethodProperlyInvoked(SimpleBean simpleBean) throws Exception {
+    public void testInterceptedBean(SimpleBean simpleBean) throws Exception {
         simpleBean.intercepted();
-        Assert.assertEquals(1, simpleBean.getNotInterceptedInvocationCount());
-        Assert.assertEquals(1, simpleBean.getInterceptedInvocationCount());
+        Assert.assertEquals(1, simpleBean.getInvocationsCount());
         Assert.assertEquals(1, TransactionalInterceptor.interceptorInvocationCount);
     }
 }

@@ -137,7 +137,6 @@ public class InstanceCurrentActivityTest {
         }
 
         public void destroy(Cow instance, CreationalContext<Cow> creationalContext) {
-            // TODO Auto-generated method stub
 
         }
 

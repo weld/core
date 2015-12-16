@@ -51,7 +51,7 @@ public class MultiwarProjectNameValidationTest {
     }
 
     @Test
-    public void test() {
+    public void testMultiWarDeploymentWithNoNameConflicts() {
         // no deployment exception should occur, since the ambiguous name is distributed over isolated sub-deployments
     }
 }
