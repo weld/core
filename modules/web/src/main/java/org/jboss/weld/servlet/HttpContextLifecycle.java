@@ -112,7 +112,8 @@ public class HttpContextLifecycle implements Service {
         this.servletContextService = beanManager.getServices().get(ServletContextService.class);
         this.nestedInvocationGuardEnabled = nestedInvocationGuardEnabled;
         this.container = Container.instance(beanManager);
-        this.module = beanManager.getServices().get(BeanDeploymentModules.class).getModule(beanManager);
+        BeanDeploymentModules beanDeploymentModules = beanManager.getServices().get(BeanDeploymentModules.class);
+        this.module = beanDeploymentModules != null ? beanDeploymentModules.getModule(beanManager) : null;
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -150,12 +151,14 @@ public class HttpContextLifecycle implements Service {
     }
 
     private void fireEventForApplicationScope(ServletContext ctx, Annotation qualifier) {
-        if (module.isWebModule()) {
-            module.fireEvent(ServletContext.class, ctx, qualifier);
-        } else {
-            // fallback for backward compatibility
-            final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
+        if (module != null) {
+            if (module.isWebModule()) {
+                module.fireEvent(ServletContext.class, ctx, qualifier);
+            } else {
+                // fallback for backward compatibility
+                final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
+                beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
+            }
         }
     }
 

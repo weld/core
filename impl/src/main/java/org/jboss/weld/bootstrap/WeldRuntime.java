@@ -57,11 +57,14 @@ public class WeldRuntime {
 
         } finally {
             try {
-                // fire @Destroyed(ApplicationScoped.class) for non-web modules
-                // web modules are handled by HttpContextLifecycle
-                for (BeanDeploymentModule module : deploymentManager.getServices().get(BeanDeploymentModules.class)) {
-                    if (!module.isWebModule()) {
-                        module.fireEvent(Object.class, ContextEvent.APPLICATION_DESTROYED, DestroyedLiteral.APPLICATION);
+                BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
+                if (modules != null) {
+                    // fire @Destroyed(ApplicationScoped.class) for non-web modules
+                    // web modules are handled by HttpContextLifecycle
+                    for (BeanDeploymentModule module : modules) {
+                        if (!module.isWebModule()) {
+                            module.fireEvent(Object.class, ContextEvent.APPLICATION_DESTROYED, DestroyedLiteral.APPLICATION);
+                        }
                     }
                 }
             } catch (Exception ignored) {

@@ -51,6 +51,7 @@ import org.jboss.weld.bean.proxy.ProtectionDomainCache;
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Environment;
+import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
@@ -166,6 +167,8 @@ public class WeldStartup {
 
         Container.currentId.set(contextId);
         this.contextId = contextId;
+        this.deployment = deployment;
+        this.environment = environment;
 
         if (this.extensions == null) {
             setExtensions(deployment.getExtensions());
@@ -203,8 +206,6 @@ public class WeldStartup {
             BootstrapLogger.LOG.jtaUnavailable();
         }
 
-        this.deployment = deployment;
-        this.environment = environment;
         this.deploymentManager = BeanManagerImpl.newRootManager(contextId, "deployment", registry);
 
         Container.initialize(contextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
@@ -326,7 +327,9 @@ public class WeldStartup {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));
-        services.add(BeanDeploymentModules.class, new BeanDeploymentModules(contextId, services));
+        if (isEEModulesAwareEnvironment()) {
+            services.add(BeanDeploymentModules.class, new BeanDeploymentModules(contextId, services));
+        }
     }
 
     // needs to be resolved once extension beans are deployed
@@ -500,16 +503,20 @@ public class WeldStartup {
         }
         // feed BeanDeploymentModule registry
         final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
-        modules.processBeanDeployments(getBeanDeployments());
-        BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
+        if (modules != null) {
+            modules.processBeanDeployments(getBeanDeployments());
+            BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
+        }
 
         getContainer().setState(ContainerState.INITIALIZED);
 
-        // fire @Initialized(ApplicationScoped.class) for non-web modules
-        // web modules are handled by HttpContextLifecycle
-        for (BeanDeploymentModule module : modules) {
-            if (!module.isWebModule()) {
-                module.fireEvent(Object.class, ContextEvent.APPLICATION_INITIALIZED, InitializedLiteral.APPLICATION);
+        if (modules != null) {
+            // fire @Initialized(ApplicationScoped.class) for non-web modules
+            // web modules are handled by HttpContextLifecycle
+            for (BeanDeploymentModule module : modules) {
+                if (!module.isWebModule()) {
+                    module.fireEvent(Object.class, ContextEvent.APPLICATION_INITIALIZED, InitializedLiteral.APPLICATION);
+                }
             }
         }
     }
@@ -636,6 +643,10 @@ public class WeldStartup {
 
     Deployment getDeployment() {
         return deployment;
+    }
+
+    private boolean isEEModulesAwareEnvironment() {
+        return !Environments.SE.equals(environment);
     }
 
 }
