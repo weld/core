@@ -44,8 +44,9 @@ public class NestedTypeVariableProducerFieldTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithNestedTypeVariableProducerField() {
+        // should throw definition exception
+     }
 
     private static class Foo<T> {
     }

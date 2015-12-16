@@ -43,6 +43,7 @@ public class GenericBeanSpecialization01Test {
     }
 
     @Test
-    public void testSpecializingBeanWithStricterType() {
-    }
+    public void testDeploymentWithSpecializingBeanWithStricterType() {
+        // should throw definition exception
+     }
 }

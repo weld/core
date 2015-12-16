@@ -38,7 +38,7 @@ public class ArrayBindingTest {
     }
 
     @Test
-    public void testProperExceptionThrown() {
-
-    }
+    public void testDeploymentFails() {
+        // should throw definition exception
+     }
 }

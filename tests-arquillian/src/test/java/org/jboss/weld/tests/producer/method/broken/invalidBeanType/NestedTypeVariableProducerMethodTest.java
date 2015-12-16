@@ -42,6 +42,7 @@ public class NestedTypeVariableProducerMethodTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithNestedTypeProducerMethod() {
+        // should throw definition exception
+     }
 }

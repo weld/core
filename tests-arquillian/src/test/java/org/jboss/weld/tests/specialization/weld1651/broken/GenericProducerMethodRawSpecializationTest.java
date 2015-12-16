@@ -42,6 +42,7 @@ public class GenericProducerMethodRawSpecializationTest {
     }
 
     @Test
-    public void testSpecializationOfRawType() {
-    }
+    public void testDeploymentWithSpecializationOfRawType() {
+        // should throw definition exception
+     }
 }

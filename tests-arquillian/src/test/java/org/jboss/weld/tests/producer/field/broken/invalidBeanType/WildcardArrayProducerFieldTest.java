@@ -43,8 +43,9 @@ public class WildcardArrayProducerFieldTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithWildcardArrayProducerField() {
+        // should throw definition exception
+     }
 
     private static class Foo<T> {
     }

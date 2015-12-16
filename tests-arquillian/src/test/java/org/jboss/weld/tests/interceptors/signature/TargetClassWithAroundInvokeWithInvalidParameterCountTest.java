@@ -42,7 +42,8 @@ public class TargetClassWithAroundInvokeWithInvalidParameterCountTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithInvalidParamCount() {
+        // should throw exception, either IllegalArg or Definition
+     }
 
 }

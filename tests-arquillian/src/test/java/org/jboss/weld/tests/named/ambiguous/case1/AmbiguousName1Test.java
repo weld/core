@@ -47,6 +47,7 @@ public class AmbiguousName1Test {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithAmbiguousBeanNames() {
+        // should throw deployment exception
+     }
 }

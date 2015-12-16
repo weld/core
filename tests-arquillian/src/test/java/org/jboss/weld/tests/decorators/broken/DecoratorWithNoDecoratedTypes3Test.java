@@ -44,6 +44,7 @@ public class DecoratorWithNoDecoratedTypes3Test {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithBadDecorator() {
+        // should throw definition exception
+     }
 }

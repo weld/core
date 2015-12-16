@@ -40,6 +40,7 @@ public class InvalidQualifierTest {
     }
     
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithInvalidQualifierExtension() {
+        // should throw definition exception
+     }
 }

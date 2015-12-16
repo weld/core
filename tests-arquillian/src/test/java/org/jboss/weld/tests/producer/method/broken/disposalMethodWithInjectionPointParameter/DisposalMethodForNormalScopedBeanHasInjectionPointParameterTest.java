@@ -38,6 +38,7 @@ public class DisposalMethodForNormalScopedBeanHasInjectionPointParameterTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithDisposerWithInjectionPoint() {
+        // should throw definition exception
+     }
 }

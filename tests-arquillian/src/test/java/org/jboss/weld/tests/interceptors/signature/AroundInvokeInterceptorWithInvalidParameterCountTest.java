@@ -47,8 +47,9 @@ public class AroundInvokeInterceptorWithInvalidParameterCountTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentInterceptorWithInvalidParamCount() {
+        // should throw exception, either IllegalArg or Definition
+     }
 
     @Intercept
     @Interceptor

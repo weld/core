@@ -48,8 +48,9 @@ public class PostConstructInterceptorWithInvalidParameterCountTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentInterceptorWithInvalidParamCount() {
+        // should throw exception, wither IllegalArg or Definition
+     }
 
     @Lifecycle
     @Interceptor

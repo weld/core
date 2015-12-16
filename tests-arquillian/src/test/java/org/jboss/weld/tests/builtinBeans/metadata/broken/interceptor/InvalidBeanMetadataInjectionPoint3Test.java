@@ -39,6 +39,7 @@ public class InvalidBeanMetadataInjectionPoint3Test {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentFailsWithBadInterceptor() {
+        // should throw definition exception
+     }
 }

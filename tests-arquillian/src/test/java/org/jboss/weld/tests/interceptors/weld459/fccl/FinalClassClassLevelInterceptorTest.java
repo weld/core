@@ -42,6 +42,7 @@ public class FinalClassClassLevelInterceptorTest {
 
 
     @Test
-    public void testFinalClassWithClassLevelInterceptor() throws Exception {
-    }
+         public void testFinalClassWithClassLevelInterceptor() throws Exception {
+        // should throw deployment exception
+     }
 }

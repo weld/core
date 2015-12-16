@@ -20,7 +20,10 @@ import java.math.BigDecimal;
 
 public class Account2 implements Account {
 
+    public static boolean triggered = false;
+    
     public String withdraw(BigDecimal amount) {
+        triggered = true;
         return "Account2 withdraw";
     }
 

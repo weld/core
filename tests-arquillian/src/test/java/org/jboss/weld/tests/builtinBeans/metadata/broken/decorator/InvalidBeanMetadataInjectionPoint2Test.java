@@ -38,6 +38,7 @@ public class InvalidBeanMetadataInjectionPoint2Test {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentFailsWithBadMetadata() {
+        // should throw definition exception
+     }
 }

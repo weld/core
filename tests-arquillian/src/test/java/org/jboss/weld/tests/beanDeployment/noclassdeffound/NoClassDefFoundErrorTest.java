@@ -26,5 +26,6 @@ public class NoClassDefFoundErrorTest {
 
     @Test
     public void testDeployment() {
-    }
+        // tests plain deployment, no error should be thrown as long as the class in not accessed
+     }
 }

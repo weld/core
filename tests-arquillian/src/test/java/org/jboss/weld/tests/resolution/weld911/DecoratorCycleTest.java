@@ -45,6 +45,7 @@ public class DecoratorCycleTest {
     }
 
     @Test
-    public void testFoo() {
-    }
+    public void testDeploymentWithCyclicDecoratorDependency() {
+        // should throw deployment exception
+     }
 }

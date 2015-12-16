@@ -44,6 +44,7 @@ public class NonPassivatingInterceptorOnPassivatingBeanTest {
     }
 
     @Test
-    public void test() throws Exception {
-    }
+    public void testDeploymentWithNonPassivatingInterceptor() throws Exception {
+        // should throw deployment exception
+     }
 }

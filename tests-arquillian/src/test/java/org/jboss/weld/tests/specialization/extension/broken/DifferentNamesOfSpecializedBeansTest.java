@@ -39,6 +39,7 @@ public class DifferentNamesOfSpecializedBeansTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithDifferentNamesOfSpecializedBeans() {
+        // should throw definition exception
+     }
 }

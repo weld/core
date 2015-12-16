@@ -43,8 +43,9 @@ public class TypeVariableArrayProducerFieldTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithVariableArrayProducerField() {
+        // should throw definition exception
+     }
 
     public static class Producer<T> {
         @Produces

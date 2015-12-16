@@ -40,8 +40,9 @@ public class InterceptorMetadataInjectionIntoBeanTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testBrokenInterceptorInjection() {
+        // should throw definition exception
+     }
 
     public static class BrokenBean {
         @Inject

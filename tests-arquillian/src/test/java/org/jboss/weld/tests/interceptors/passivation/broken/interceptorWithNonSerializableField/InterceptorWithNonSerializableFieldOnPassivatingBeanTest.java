@@ -44,6 +44,7 @@ public class InterceptorWithNonSerializableFieldOnPassivatingBeanTest {
     }
 
     @Test
-    public void test() throws Exception {
-    }
+    public void testDeploymentWithNonSerializableFieldForPassivation() throws Exception {
+        // should throw deployment exception
+     }
 }

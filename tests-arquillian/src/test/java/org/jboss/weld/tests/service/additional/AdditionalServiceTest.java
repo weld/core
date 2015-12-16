@@ -55,8 +55,8 @@ public class AdditionalServiceTest {
             Bravo1Service.class,
             Bravo2Service.class,
             BravoImpl.class,
-             TransactionServices1.class,
-             TransactionServices2.class,
+            TransactionServices1.class,
+            TransactionServices2.class
         };
         return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AdditionalServiceTest.class, Utils.ARCHIVE_TYPE.WAR)).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(classes)
@@ -82,6 +82,9 @@ public class AdditionalServiceTest {
         Assert.assertTrue(bravo2 == bravo3);
     }
 
+    /**
+     * description = WFLY-3951
+     */
     @Test
     public void testOverridingService() {
         TransactionServices transactionServices = manager.getServices().get(TransactionServices.class);

@@ -32,7 +32,8 @@ public class NonDependentResourceProducerFieldTest {
 
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithNonDependentResourceProducerField() {
+        // should throw definition exception
+     }
 
 }

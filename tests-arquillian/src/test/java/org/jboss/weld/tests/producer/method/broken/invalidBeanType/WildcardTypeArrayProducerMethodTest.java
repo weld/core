@@ -42,6 +42,7 @@ public class WildcardTypeArrayProducerMethodTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithWildcardArrayProducerMethod() {
+        // should throw definition exception
+     }
 }

@@ -40,7 +40,8 @@ public class UnproxyableTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentOfUnproxyableSimpleProducer() {
+        // should throw deployment exception
+     }
 
 }
