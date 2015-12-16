@@ -40,6 +40,7 @@ public class TypeConflictDetectionTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithTypeConflict() {
+        // should throw deployment exception
+     }
 }

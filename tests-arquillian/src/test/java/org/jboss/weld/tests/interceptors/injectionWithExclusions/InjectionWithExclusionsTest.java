@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.injectionWithMethodExclusions;
+package org.jboss.weld.tests.interceptors.injectionWithExclusions;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,17 +35,16 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class TestInjectionWithExclusionsOnMethods {
+public class InjectionWithExclusionsTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TestInjectionWithExclusionsOnMethods.class))
-                .addPackage(TestInjectionWithExclusionsOnMethods.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionWithExclusionsTest.class))
+                .addPackage(InjectionWithExclusionsTest.class.getPackage());
     }
 
     @Test
-    public void testBeanWithExcludeDefaultInterceptorsInjected(Simple simple) throws Exception {
-        Assert.assertNotNull(simple.getHelper());
-
+    @Category(Integration.class)
+    public void testBeanInjected(Simple simple) throws Exception {
         Counter.count = 0;
         EjbInterceptor.count = 0;
         EjbInterceptor2.count = 0;
@@ -67,34 +66,5 @@ public class TestInjectionWithExclusionsOnMethods {
         Assert.assertEquals(2, EjbInterceptor2.count);
         Assert.assertEquals(3, EjbInterceptor3.count);
         Assert.assertEquals(4, EjbInterceptor4.count);
-
-        simple.getHelper().help();
-    }
-
-    @Test
-    public void testBeanWithExcludeClassInterceptors(Simple2 simple) throws Exception {
-        Counter.count = 0;
-        EjbInterceptor.count = 0;
-        EjbInterceptor2.count = 0;
-        EjbInterceptor3.count = 0;
-        EjbInterceptor4.count = 0;
-        Assert.assertNotNull(simple.getHelper());
-        Assert.assertEquals(1, EjbInterceptor.count);
-        Assert.assertEquals(2, EjbInterceptor2.count);
-        Assert.assertEquals(0, EjbInterceptor3.count);
-        Assert.assertEquals(0, EjbInterceptor4.count);
-
-        Counter.count = 0;
-        EjbInterceptor.count = 0;
-        EjbInterceptor2.count = 0;
-        EjbInterceptor3.count = 0;
-        EjbInterceptor4.count = 0;
-        simple.doSomething();
-        Assert.assertEquals(0, EjbInterceptor.count);
-        Assert.assertEquals(0, EjbInterceptor2.count);
-        Assert.assertEquals(1, EjbInterceptor3.count);
-        Assert.assertEquals(2, EjbInterceptor4.count);
-
-        simple.getHelper().help();
     }
 }

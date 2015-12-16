@@ -60,7 +60,8 @@ public class ConfigurationKeyHasDifferentValuesTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithSeveralFilesWithContradictorySettings() {
+        // should throw illegal state exception
+     }
 
 }

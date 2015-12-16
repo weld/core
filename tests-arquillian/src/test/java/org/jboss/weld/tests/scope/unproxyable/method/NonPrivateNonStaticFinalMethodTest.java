@@ -43,6 +43,7 @@ public class NonPrivateNonStaticFinalMethodTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentOfNonProvateFinalMethod() {
+        // should throw deployment exception
+     }
 }

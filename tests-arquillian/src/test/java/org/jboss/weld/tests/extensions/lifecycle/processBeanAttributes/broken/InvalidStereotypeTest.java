@@ -40,6 +40,7 @@ public class InvalidStereotypeTest {
     }
     
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithInvalidStereotypeException() {
+        // should throw definition exception
+     }
 }

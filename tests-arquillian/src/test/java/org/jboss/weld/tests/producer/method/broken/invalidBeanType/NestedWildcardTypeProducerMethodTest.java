@@ -42,6 +42,7 @@ public class NestedWildcardTypeProducerMethodTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithNestedWildcardTypeProducerMethod() {
+        // should throw definition exception
+     }
 }

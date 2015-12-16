@@ -22,8 +22,8 @@ public class DependentSelfInjectionProducerTest {
     }
 
     @Test
-    public void test() {
-
-    }
+    public void testDependentLoopingProducer() {
+        // should throw deployment exception
+     }
 
 }

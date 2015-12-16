@@ -40,6 +40,7 @@ public class InvalidScopeTest {
     }
     
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithInvalidScopeExtension() {
+        // should throw definition exception
+     }
 }

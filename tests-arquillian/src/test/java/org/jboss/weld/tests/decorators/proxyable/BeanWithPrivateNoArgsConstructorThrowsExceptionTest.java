@@ -52,6 +52,7 @@ public class BeanWithPrivateNoArgsConstructorThrowsExceptionTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithPrivateConstructor() {
+        // should throw deployment exception
+     }
 }

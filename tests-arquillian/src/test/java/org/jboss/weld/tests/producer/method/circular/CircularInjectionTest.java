@@ -48,6 +48,7 @@ public class CircularInjectionTest {
     */
     @Test
     public void testProducerCalledOnBeanUnderConstruction() {
+        // should throw deployment exception
     }
 
 }

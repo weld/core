@@ -39,6 +39,7 @@ public class NonPassivationCapableInstanceDecoratorTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testNonPasivationCapableInstanceDecorator() {
+        // should throw deployment exception
+     }
 }

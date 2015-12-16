@@ -43,8 +43,9 @@ public class NestedWildcardProducerFieldTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithNestedWildcardProducerField() {
+        // should throw definition exception
+     }
 
     private static class Foo<T> {
     }

@@ -48,6 +48,7 @@ public class WildcardArrayBeanTypeTest {
 
     @Test
     public void testDeploymentFails() {
+        // should throw definition exception
     }
 
     public static class BrokenExtension implements Extension {

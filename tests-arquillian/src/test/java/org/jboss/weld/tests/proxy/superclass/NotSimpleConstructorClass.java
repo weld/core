@@ -5,4 +5,9 @@ public class NotSimpleConstructorClass {
 
     public NotSimpleConstructorClass(String value) {
     }
+    
+    protected String giveMeNothing() {
+        // dummy method
+        return "nothing";
+    }
 }

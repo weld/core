@@ -30,8 +30,8 @@ public class RemoteClient extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO -- who's actually issuing empty path request?
         String pathInfo = req.getPathInfo();
+        // return on empty path request
         if (pathInfo == null)
             return;
 

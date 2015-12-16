@@ -49,6 +49,7 @@ public class NonDependentBeanWithParameterizedBeanTypeWithTypeVariableTest {
 
     @Test
     public void testDeploymentFails() {
+        // should throw definition exception
     }
 
     public static class BrokenExtension<T> implements Extension {

@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.tests.decorators.multidelegate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.math.BigDecimal;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,18 +32,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class TestMultiDelegate {
+public class MultiDelegateTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TestMultiDelegate.class))
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MultiDelegateTest.class))
                 .decorate(AccountDecorator.class)
-                .addPackage(TestMultiDelegate.class.getPackage());
+                .addPackage(MultiDelegateTest.class.getPackage());
     }
 
     /**
      * description="http://seamframework.org/Community/SerializableDecorators"
      */
     @Test
-    public void go() {
-    }
+    public void testDelegation(Account1 acc1, Account2 acc2) {
+        assertEquals("Account1 withdraw", acc1.withdraw(BigDecimal.ZERO));
+        assertTrue(Account1.triggered);
+        assertFalse(Account2.triggered);
+
+        assertEquals("Account2 withdraw", acc2.withdraw(BigDecimal.ZERO));
+        assertTrue(Account2.triggered);
+     }
 }

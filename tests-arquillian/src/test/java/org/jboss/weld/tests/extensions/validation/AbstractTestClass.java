@@ -39,6 +39,8 @@ public abstract class AbstractTestClass {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentFails() {
+        // should throw deployment exception
+        // the reason for it differs based on implementing class
+     }
 }
