@@ -27,7 +27,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.WeldCollections;
 
 /**
- * Repository for {@link BeanDeploymentModule}s.
+ * Repository for {@link BeanDeploymentModule}s. It is an optional per-deployment service, i.e. it does not make sense for all environments (e.g. Weld SE).
  *
  * @author Jozef Hartinger
  *
