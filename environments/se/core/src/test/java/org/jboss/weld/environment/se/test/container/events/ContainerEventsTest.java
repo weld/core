@@ -50,6 +50,11 @@ public class ContainerEventsTest {
         assertTrue(sequenceData.contains(ContainerInitialized.class.getName() + ApplicationScoped.class.getName() + id));
         assertTrue(sequenceData.contains(ContainerShutdown.class.getName() + id));
         assertTrue(sequenceData.contains(ContainerShutdown.class.getName() + ApplicationScoped.class.getName() + id));
+
+        sequenceData = ActionSequence.getSequenceData(ApplicationScoped.class.getName());
+        assertEquals(2, sequenceData.size());
+        assertTrue(sequenceData.get(0).equals(ContainerInitialized.class.getName() + ApplicationScoped.class.getName()));
+        assertTrue(sequenceData.get(1).equals(ContainerShutdown.class.getName() + ApplicationScoped.class.getName()));
     }
 
 }
