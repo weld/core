@@ -44,6 +44,7 @@ public class PropagationOfBeanMetadataTest {
     }
 
     @Test
-    public void test() throws Exception {
-    }
+    public void testDeploymentFailsWithBadDisposer() throws Exception {
+        // should throw definition exception
+     }
 }

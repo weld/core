@@ -43,8 +43,9 @@ public class MultiDimensionalTypeVariableArrayProducerFieldTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithMultiDimensionalArrayProducerField() {
+        // should throw definition exception
+     }
 
     public static class Producer<T> {
         @Produces

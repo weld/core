@@ -53,6 +53,7 @@ public class MultiwarProjectNameValidation2Test {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithAmbiguousBeanName() {
+        // should throw deployment exception
+     }
 }

@@ -25,7 +25,6 @@ import javax.ejb.Timer;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @Stateless
-@TimeBound
 public class BallImpl implements Ball {
     @Shot
     public void shoot() {
@@ -36,6 +35,7 @@ public class BallImpl implements Ball {
     }
 
     @Timeout
+    @TimeBound
     public void finishGame(Timer timer) {
 
     }

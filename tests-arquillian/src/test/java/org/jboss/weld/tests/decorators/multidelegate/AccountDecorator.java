@@ -31,7 +31,6 @@ public class AccountDecorator implements Account {
     Account account;
 
     public String withdraw(BigDecimal amount) {
-        System.out.println("AccountDecorator withdraw " + account.toString());
         return account.withdraw(amount);
     }
 

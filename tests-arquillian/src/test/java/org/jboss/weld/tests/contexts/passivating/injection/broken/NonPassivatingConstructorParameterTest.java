@@ -43,6 +43,7 @@ public class NonPassivatingConstructorParameterTest extends TestClasses {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithNonPassivatingConstructor() {
+        // should throw deployment exception
+     }
 }

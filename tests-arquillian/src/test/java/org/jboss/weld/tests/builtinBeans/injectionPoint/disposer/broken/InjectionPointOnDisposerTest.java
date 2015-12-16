@@ -43,6 +43,7 @@ public class InjectionPointOnDisposerTest {
     }
 
     @Test
-    public void test() throws Exception {
-    }
+    public void testInjectInDisposer() {
+        // should throw definition exception
+     }
 }

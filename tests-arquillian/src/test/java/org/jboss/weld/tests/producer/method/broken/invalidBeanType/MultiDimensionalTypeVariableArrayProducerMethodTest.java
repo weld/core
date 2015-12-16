@@ -42,6 +42,7 @@ public class MultiDimensionalTypeVariableArrayProducerMethodTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithMultiDimensionalVariableArrayProducerMethod() {
+        // should throw definition exception
+     }
 }

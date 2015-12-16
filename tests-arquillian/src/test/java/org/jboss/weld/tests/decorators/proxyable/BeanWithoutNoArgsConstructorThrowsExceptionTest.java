@@ -55,6 +55,7 @@ public class BeanWithoutNoArgsConstructorThrowsExceptionTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentWithoutNoArgsConstructor() {
+        // should throw deployment exception
+     }
 }

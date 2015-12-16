@@ -40,6 +40,7 @@ public class InvalidTypesTest {
     }
     
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithInvalidTypes() {
+        // should throw definition exception
+     }
 }

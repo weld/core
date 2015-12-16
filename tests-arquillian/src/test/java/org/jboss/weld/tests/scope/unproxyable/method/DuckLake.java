@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,28 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.annotatedType.decoration;
+package org.jboss.weld.tests.scope.unproxyable.method;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import java.lang.reflect.Method;
+import javax.inject.Inject;
 
 /**
- * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
- * @version $Revision: 1.1 $
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-public class MockAnnotatedMethod<X> extends MockAnnotatedCallable<X> implements AnnotatedMethod<X> {
-    public MockAnnotatedMethod(Annotated delegate) {
-        super(delegate);
-    }
-
-    @Override
-    public AnnotatedMethod<X> getDelegate() {
-        return (AnnotatedMethod<X>) super.getDelegate();
-
-    }
-
-    public Method getJavaMember() {
-        return getDelegate().getJavaMember();
+public class DuckLake {
+    
+    @Inject
+    private Duck duck;
+    
+    public boolean isEmpty() {
+        return duck == null;
     }
 }

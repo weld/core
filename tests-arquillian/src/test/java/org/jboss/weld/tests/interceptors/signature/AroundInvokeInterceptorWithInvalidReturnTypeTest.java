@@ -47,8 +47,9 @@ public class AroundInvokeInterceptorWithInvalidReturnTypeTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentInterceptorWithBadReturnType() {
+        // should throw exception, wither IllegalArg or Definition
+     }
 
     @Intercept
     @Interceptor

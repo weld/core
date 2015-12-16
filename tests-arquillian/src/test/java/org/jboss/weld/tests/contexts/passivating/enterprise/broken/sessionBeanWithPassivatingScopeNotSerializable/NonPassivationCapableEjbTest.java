@@ -42,7 +42,8 @@ public class NonPassivationCapableEjbTest {
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentOfSFSBWithNonPassivatingInjection() {
+        // should throw deployment exception
+     }
 
 }

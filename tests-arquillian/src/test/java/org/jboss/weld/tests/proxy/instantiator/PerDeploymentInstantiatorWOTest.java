@@ -47,6 +47,7 @@ public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstan
 
     @Test
     public void testWO() throws Exception {
+        // should throw deployment exception
     }
 
 }

@@ -41,6 +41,7 @@ public class GenericProducerMethodSpecialization01Test {
     }
 
     @Test
-    public void testSpecializingProducerMethodWithStricterReturnType() {
-    }
+    public void testDeploymentWithSpecializingProducerMethodWithStricterReturnType() {
+        // should throw definition exception
+     }
 }

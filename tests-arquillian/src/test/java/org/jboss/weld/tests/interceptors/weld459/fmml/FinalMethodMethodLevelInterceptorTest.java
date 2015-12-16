@@ -42,5 +42,6 @@ public class FinalMethodMethodLevelInterceptorTest {
 
     @Test
     public void testFinalMethodWithMethodLevelInterceptor() throws Exception {
+        // should throw deployment exception
     }
 }

@@ -48,8 +48,9 @@ public class PostConstructInterceptorWithInvalidReturnTypeTest {
     }
 
     @Test
-    public void testDeploymentFails() {
-    }
+    public void testDeploymentInterceptorWithInvalidReturnType() {
+        // should throw exception, either IllegalArg or Definition
+     }
 
     @Lifecycle
     @Interceptor

@@ -43,6 +43,7 @@ public class NonPassivatingInterceptorInitializerParameterTest extends TestClass
     }
 
     @Test
-    public void test() {
-    }
+    public void testDeploymentWithNonPassivatingInterceptorInitParameter() {
+        // should throw deployment exception
+     }
 }
