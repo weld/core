@@ -116,7 +116,7 @@ public class Types {
             builder.append("[]");
             return builder.toString();
         }
-        throw new IllegalArgumentException("Cannot create type id for" + type.toString());
+        throw new IllegalArgumentException("Cannot create type id for " + type.toString());
     }
 
     /**

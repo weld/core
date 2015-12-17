@@ -277,21 +277,6 @@ public class Beans {
     }
 
     /**
-     * Check if any of the beans is an alternative
-     *
-     * @param beans the beans to check
-     * @return true if any bean is an alternative
-     */
-    public static boolean isAlternativePresent(Set<Bean<?>> beans) {
-        for (Bean<?> bean : beans) {
-            if (bean.isAlternative()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Is alternative.
      *
      * @param annotated the annotated
