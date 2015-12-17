@@ -51,4 +51,9 @@ public class BeansTest {
         assertEquals(SIGNATURE, Beans.createTypeCollectionId(types));
     }
 
+    @Test
+    public void testDeclaredBeanType() {
+        assertEquals(Beans.getDeclaredBeanType(Foo.class).toString(), String.class.getSimpleName());
+    }
+
 }

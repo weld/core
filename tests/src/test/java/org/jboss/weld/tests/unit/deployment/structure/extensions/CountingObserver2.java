@@ -30,7 +30,7 @@ public class CountingObserver2 implements Extension {
 
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         beforeBeanDiscovery++;
-        event.addAnnotatedType(beanManager.createAnnotatedType(Bar.class));
+        event.addAnnotatedType(beanManager.createAnnotatedType(Bar.class), Bar.class.getSimpleName());
     }
 
     public void observerProcessFooManagedBean(@Observes ProcessManagedBean<Foo> event) {
