@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.unit.util;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -32,6 +33,8 @@ import org.jboss.weld.util.Types;
 import org.testng.annotations.Test;
 
 public class TypesTest {
+
+    private static final String GENERIC_ARRAY_TYPE_ID = "java.util.List<java.util.List<java.lang.Integer>[]>";
 
     @SuppressWarnings("serial")
     @Test
@@ -65,6 +68,11 @@ public class TypesTest {
         assertTrue(Types.isMoreSpecific(new TypeLiteral<List<Integer>>() {
         }.getType(), new TypeLiteral<Collection<Integer>>() {
         }.getType()));
+    }
+
+    @Test
+    public void testTypeId() throws NoSuchFieldException {
+        assertEquals(Types.getTypeId(Foo.class.getField("lists").getGenericType()), GENERIC_ARRAY_TYPE_ID);
     }
 
 }
