@@ -537,7 +537,7 @@ public class Validator implements Service {
                 throw ValidatorLogger.LOG.interceptorsCannotHaveObserverMethods(interceptor);
             }
             if (!interceptor.getScope().equals(Dependent.class)) {
-                throw ValidatorLogger.LOG.interceptorMustBeDependent(interceptor);
+                throw ValidatorLogger.LOG.interceptorOrDecoratorMustBeDependent(interceptor);
             }
             while (annotated != null && annotated.getJavaClass() != Object.class) {
                 if (!annotated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
@@ -568,6 +568,10 @@ public class Validator implements Service {
 
         if (decorator.getDecoratedTypes().isEmpty()) {
             throw ValidatorLogger.LOG.noDecoratedTypes(decorator);
+        }
+
+        if (!decorator.getScope().equals(Dependent.class)) {
+            throw ValidatorLogger.LOG.interceptorOrDecoratorMustBeDependent(decorator);
         }
 
         Decorators.checkDelegateType(decorator);

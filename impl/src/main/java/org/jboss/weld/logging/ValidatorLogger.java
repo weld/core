@@ -291,7 +291,7 @@ public interface ValidatorLogger extends WeldLogger {
     String unsatisfiedDependencyBecauseQualifiersDontMatch(Object param1);
 
     @Message(id = 1476, value = "{0} must be @Dependent", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMustBeDependent(Object param1);
+    DefinitionException interceptorOrDecoratorMustBeDependent(Object param1);
 
     @Message(id = 1477, value = "The bean {0} declares a passivating scope but has a(n) {1} with a non-passivation-capable dependency {2}", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException interceptorDecoratorInjectionPointHasNonSerializableDependency(Object param1, Object param2, Object param3);
