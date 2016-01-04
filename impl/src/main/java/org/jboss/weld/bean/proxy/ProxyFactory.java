@@ -215,7 +215,11 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             if (superInterface == null) {
                 throw new IllegalArgumentException("Proxied bean type cannot be java.lang.Object without an interface");
             } else {
-                proxyPackage = DEFAULT_PROXY_PACKAGE;
+                if (superInterface.getPackage() == null) {
+                    proxyPackage = DEFAULT_PROXY_PACKAGE;
+                } else {
+                    proxyPackage = superInterface.getPackage().getName();
+                }
             }
         } else {
             if (proxiedBeanType.getPackage() == null) {
