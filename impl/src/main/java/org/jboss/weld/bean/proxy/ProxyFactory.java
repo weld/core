@@ -594,14 +594,18 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         try {
             // Add all methods from the class hierarchy
             Class<?> cls = getBeanType();
-            // first add equals/hashCode methods if required
-            generateEqualsMethod(proxyClassType);
 
+            // First add equals/hashCode methods if required
+            generateEqualsMethod(proxyClassType);
             generateHashCodeMethod(proxyClassType);
+
+            // In rare cases, the bean class may be abstract - in this case we have to add methods from all interfaces implemented by any abstract class
+            // from the hierarchy
+            boolean isBeanClassAbstract = Modifier.isAbstract(cls.getModifiers());
 
             while (cls != null) {
                 addMethods(cls, proxyClassType, staticConstructor);
-                if (cls == getBeanType() && Modifier.isAbstract(cls.getModifiers())) {
+                if (isBeanClassAbstract && Modifier.isAbstract(cls.getModifiers())) {
                     for (Class<?> implementedInterface : Reflections.getInterfaceClosure(cls)) {
                         if (!additionalInterfaces.contains(implementedInterface)) {
                             addMethods(implementedInterface, proxyClassType, staticConstructor);
