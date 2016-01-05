@@ -16,7 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.custombeans.types;
 
-import java.util.Map;
+import java.util.Comparator;
 
-public abstract class MyMap extends MyComparator implements Map<String, Object> {
+public abstract class MyComparator implements Comparator<Object> {
+
 }

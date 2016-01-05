@@ -82,4 +82,10 @@ public class MyMapImpl extends MyMap {
     @Override
     public void clear() {
     }
+
+    @Override
+    public int compare(Object o1, Object o2) {
+        return 0;
+    }
+
 }

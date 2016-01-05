@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.custombeans.types;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
@@ -43,12 +45,13 @@ public class CustomBeanWithAbstractBeanTypeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomBeanWithAbstractBeanTypeTest.class)).addPackage(CustomBeanWithAbstractBeanTypeTest.class.getPackage())
-                .addAsServiceProvider(Extension.class, MyMapExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomBeanWithAbstractBeanTypeTest.class))
+                .addPackage(CustomBeanWithAbstractBeanTypeTest.class.getPackage()).addAsServiceProvider(Extension.class, MyMapExtension.class);
     }
 
     @Test
     public void test() {
         map.clear();
+        assertEquals(0, map.compare(map, "foo"));
     }
 }
