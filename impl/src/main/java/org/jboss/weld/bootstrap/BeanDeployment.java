@@ -16,6 +16,15 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,8 +32,6 @@ import java.util.List;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.ContextBean;
@@ -63,14 +70,8 @@ import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
-import static java.util.Collections.emptyList;
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 /**
  * @author pmuir
@@ -221,6 +222,7 @@ public class BeanDeployment {
         doAfterBeanDiscovery(beanManager.getBeans());
         doAfterBeanDiscovery(beanManager.getDecorators());
         doAfterBeanDiscovery(beanManager.getInterceptors());
+        beanDeployer.registerCdiInterceptorsForMessageDrivenBeans();
     }
 
     private void doAfterBeanDiscovery(List<? extends Bean<?>> beanList) {
