@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
 import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
@@ -46,6 +49,9 @@ import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.SecureReflections;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
 /**
  * Represents a producer method bean
@@ -54,6 +60,11 @@ import org.jboss.weld.util.reflection.SecureReflections;
  * @author Pete Muir
  */
 public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
+
+    // Logger
+    private static final LocLogger log = loggerFactory().getLogger(BEAN);
+    private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
+
     // The underlying method
     private MethodInjectionPoint<T, ? super X> method;
     private DisposalMethod<X, ?> disposalMethodBean;
@@ -192,6 +203,9 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         try {
             getProducer().dispose(instance);
+        } catch (Exception e) {
+            log.error(ERROR_DESTROYING, instance, this);
+            xLog.throwing(Level.DEBUG, e);
         } finally {
             if (getDeclaringBean().isDependent()) {
                 creationalContext.release();
