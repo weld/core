@@ -195,7 +195,9 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 145, value = "Bean identifier index built:\n  {0}", format = Format.MESSAGE_FORMAT)
     void beanIdentifierIndexBuilt(Object info);
 
+    // id 146 omitted on purpose to not collide with master see WELD-2035
+
     @LogMessage(level = Level.WARN)
-    @Message(id = 146, value = "Decorator {0} declares inappropriate constructor therefore will not available as a managed bean!", format = Format.MESSAGE_FORMAT)
+    @Message(id = 147, value = "Decorator {0} declares inappropriate constructor therefore will not available as a managed bean!", format = Format.MESSAGE_FORMAT)
     void decoratorWithNonCdiConstructor(String clazzName);
 }

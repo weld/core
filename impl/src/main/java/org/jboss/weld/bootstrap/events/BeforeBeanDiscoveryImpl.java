@@ -99,7 +99,6 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
     @Override
     public void addAnnotatedType(AnnotatedType<?> source) {
         checkWithinObserverNotification();
-        // TODO: once this method is deprecated as part of CDI-83, log a warning then it is called
         addAnnotatedType(source, null);
     }
 
