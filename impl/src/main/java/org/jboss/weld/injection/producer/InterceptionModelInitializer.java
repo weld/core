@@ -87,6 +87,16 @@ public class InterceptionModelInitializer<T> {
      *
      * @param beanManager
      * @param annotatedType
+     * @param type
+     */
+    public InterceptionModelInitializer(BeanManagerImpl beanManager, WeldClass<T> annotatedType, Class<T> type) {
+        this(beanManager, annotatedType, null, type);
+    }
+
+    /**
+     *
+     * @param beanManager
+     * @param annotatedType
      * @param stereotypes
      * @param type
      * @param contextualStore
