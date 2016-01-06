@@ -34,9 +34,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Set;
 
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyObject;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -76,6 +73,9 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
+
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.ProxyObject;
 
 /**
  * Represents a simple bean
@@ -314,7 +314,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 creationalContext.release();
             }
         } catch (Exception e) {
-            log.error(ERROR_DESTROYING, this, instance);
+            log.error(ERROR_DESTROYING, instance, this);
             xLog.throwing(Level.DEBUG, e);
         }
     }
