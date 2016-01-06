@@ -118,6 +118,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- We need this to compile the resource manager -->
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-common</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
