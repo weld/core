@@ -42,7 +42,7 @@ abstract class JBossASMessaging {
         return null;
     }
 
-    private static final List<JBossASMessaging> INSTANCES = ImmutableList.of(new HornetQ());
+    private static final List<JBossASMessaging> INSTANCES = ImmutableList.<JBossASMessaging>of(new HornetQ());
 
     boolean isActive(ModelControllerClient client) throws IOException {
         ModelNode request = new ModelNode();

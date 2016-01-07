@@ -161,6 +161,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -196,6 +201,35 @@
                     <parallel>none</parallel>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss.spec.javax.annotation</groupId>
+                                    <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <configuration>
+                  <compilerArguments>
+                     <endorseddirs>${project.build.directory}/endorsed</endorseddirs>
+                  </compilerArguments>
+               </configuration>
             </plugin>
         </plugins>
     </build>
