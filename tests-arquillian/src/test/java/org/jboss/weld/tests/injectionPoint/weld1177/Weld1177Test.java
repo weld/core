@@ -1,5 +1,8 @@
 package org.jboss.weld.tests.injectionPoint.weld1177;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -8,14 +11,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
@@ -81,6 +82,14 @@ public class Weld1177Test {
         assertEquals(Weld1177Test.class.getDeclaredField("fooInstance2"), foo2.getInjectionPointMember());
         assertEquals(Foo.class, foo.getInjectionPointType());
         assertEquals(Foo.class, foo2.getInjectionPointType());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testInjectionPointOutsideSLSB() throws Exception {
+        assertNotNull(foo.getInjectionPoint());
+        // This should yield an exception - injection point metadata injected into a stateless session bean may only be accessed within its business method
+        // invocation
+        foo.getInjectionPoint().getType();
     }
 
 }
