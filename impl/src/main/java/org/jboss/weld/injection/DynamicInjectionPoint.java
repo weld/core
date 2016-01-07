@@ -22,6 +22,7 @@ import java.io.Serializable;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -48,7 +49,11 @@ public class DynamicInjectionPoint extends ForwardingInjectionPoint implements S
     }
 
     protected InjectionPoint delegate() {
-        return invocationInjectionPoint.peek();
+        InjectionPoint injectionPoint = invocationInjectionPoint.peek();
+        if (injectionPoint == null) {
+            throw BeanLogger.LOG.statelessSessionBeanInjectionPointMetadataNotAvailable();
+        }
+        return injectionPoint;
     }
 
     private Object readResolve() throws ObjectStreamException {

@@ -487,4 +487,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1563, value = "A producer field type may not be a type variable or an array type whose component type is a type variable: \n  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException producerFieldTypeInvalidTypeVariable(Object param1, String stackElement);
 
+    @Message(id = 1564, value = "Injection point metadata injected into a stateless session bean may only be accessed within its business method invocation", format = Format.MESSAGE_FORMAT)
+    IllegalStateException statelessSessionBeanInjectionPointMetadataNotAvailable();
+
 }
