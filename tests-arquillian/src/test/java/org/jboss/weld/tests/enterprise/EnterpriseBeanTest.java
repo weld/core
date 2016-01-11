@@ -108,9 +108,8 @@ public class EnterpriseBeanTest {
     }
 
     /*
-    * description = "WELD-80"
+    * description = "Test for passivation of SFSB"
     */
-    @Ignore("It seems there is no portable way to force passivation of SFSB at the moment")
     @Test
     public void testPassivationOfEjbs(HelloAction action) {
         action.executeRequest();

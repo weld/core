@@ -27,8 +27,6 @@ import javax.enterprise.inject.spi.BeanManager;
 @SuppressWarnings("serial")
 @Stateful
 @SessionScoped
-// This annotation does not work on AS7/WildFly8 anyway
-// @CacheConfig(idleTimeoutSeconds = 1)
 public class HelloBean implements IHelloBean, Serializable {
     @Resource(mappedName = "java:comp/BeanManager")
     private BeanManager beanManager;

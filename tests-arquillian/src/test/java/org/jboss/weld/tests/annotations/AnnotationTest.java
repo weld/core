@@ -28,6 +28,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -42,5 +43,6 @@ public class AnnotationTest {
     public void testNoInterface(@Foo Cow cow) {
         assertNotNull(cow);
         cow.ping();
+        assertTrue(cow.isPinged());
     }
 }

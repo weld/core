@@ -46,6 +46,7 @@ public class ExtensionWithBrokenAsyncObserverTest {
     }
 
     @Test
-    public void test() {
+    public void testAsyncObserverForContainerLifecycleEvent() {
+        //should throw definition exception
     }
 }

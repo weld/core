@@ -43,6 +43,10 @@ public class AroundConstructContainerIntegrationTest {
                 .addAsManifestResource(AroundConstructContainerIntegrationTest.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
     }
 
+    /**
+     * Actual assertions are done in the interceptors.
+     * Interceptors are called in the following order: Alpha, Bravo, Charlie
+     */
     @Test
     public void testConstruction() {
         instance.get();
