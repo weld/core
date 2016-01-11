@@ -29,6 +29,8 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import junit.framework.Assert;
+
 /**
  * Tests that {@link InterceptionDecorationContext} survives {@link RequestScopedCache} being flushed.
  *
@@ -51,5 +53,6 @@ public class CachedInterceptionDecorationContextTest {
     @Test
     public void testInvalidatedCacheDoesNotInfluenceInterception() {
         foo.foo();
+        Assert.assertTrue(FooInterceptor.invoked);
     }
 }

@@ -26,8 +26,11 @@ import javax.interceptor.InvocationContext;
 @Priority(Interceptor.Priority.APPLICATION)
 public class FooInterceptor {
 
+    public static boolean invoked;
+    
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
+        invoked = true;
         return ctx.proceed();
     }
 }

@@ -44,6 +44,7 @@ public class RemoteEjbObserverTest {
 
     @Test
     public void testObserverMustNotBeRemoteEjbMethod(BeanManager beanManager) {
+        // should throw definition exception
     }
 
 }
