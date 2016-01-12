@@ -23,6 +23,7 @@ import java.util.function.Function;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -44,9 +45,6 @@ public class ClientProxyProvider {
 
     private static final Object BEAN_NOT_PROXYABLE_MARKER = new Object();
 
-    private final Function<Bean<Object>, Object> CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY;
-    private final Function<RequestedTypeHolder, Object> CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY;
-
     private class CreateClientProxy implements Function<Bean<Object>, Object> {
         @Override
         public Object apply(Bean<Object> from) {
@@ -61,20 +59,33 @@ public class ClientProxyProvider {
     private class CreateClientProxyForType implements Function<RequestedTypeHolder, Object> {
         @Override
         public Object apply(RequestedTypeHolder input) {
-            // first, collect all interfaces
+            // First, collect all interfaces
             ImmutableSet.Builder<Type> types = ImmutableSet.builder();
             for (Type type : input.bean.getTypes()) {
                 if (Reflections.getRawType(type).isInterface()) {
                     types.add(type);
                 }
             }
-            // if the requested type if proxyable use requested type + bean interfaces
+            // Object.class as a required type is often used for lookup if no required type is available (e.g. integration with frameworks where
+            // only names are used to reference beans). In this case, try to use the bean class (or type of a producer) instead of Object.
+            if (input.requestedType.equals(Object.class)) {
+                Type beanType;
+                if (input.bean instanceof RIBean) {
+                    RIBean<?> riBean = (RIBean<?>) input.bean;
+                    beanType = riBean.getType();
+                } else {
+                    beanType = input.bean.getBeanClass();
+                }
+                if (Proxies.isTypeProxyable(beanType, services())) {
+                    return createClientProxy(input.bean, types.add(beanType).build());
+                }
+            }
+            // If the requested type if proxyable use requested type + bean interfaces
             if (Proxies.isTypeProxyable(input.requestedType, services())) {
                 return createClientProxy(input.bean, types.add(input.requestedType).build());
             }
             /*
-             * Requested type is not proxyable. Check whether a proxyable subtype exists within the set of
-             * bean types that we could use instead.
+             * Requested type is not proxyable. Check whether a proxyable subtype exists within the set of bean types that we could use instead.
              */
             Class<?> requestedRawType = Reflections.getRawType(input.requestedType);
             for (Type type : input.bean.getTypes()) {
@@ -146,14 +157,13 @@ public class ClientProxyProvider {
     private volatile ServiceRegistry services;
 
     /**
-     * Constructor
+     *
+     * @param contextId
      */
     public ClientProxyProvider(String contextId) {
         ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
-        this.CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY = new CreateClientProxy();
-        this.CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY = new CreateClientProxyForType();
-        this.beanTypeClosureProxyPool = cacheBuilder.build(CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY);
-        this.requestedTypeClosureProxyPool = cacheBuilder.build(CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY);
+        this.beanTypeClosureProxyPool = cacheBuilder.build(new CreateClientProxy());
+        this.requestedTypeClosureProxyPool = cacheBuilder.build(new CreateClientProxyForType());
         this.contextId = contextId;
     }
 
