@@ -233,10 +233,6 @@
                 </property>
             </activation>
 
-            <properties>
-                <jetty.version>${jetty9.version}</jetty.version>
-            </properties>
-
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
