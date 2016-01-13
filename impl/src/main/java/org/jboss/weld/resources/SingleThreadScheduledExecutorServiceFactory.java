@@ -16,11 +16,16 @@
  */
 package org.jboss.weld.resources;
 
-import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
+
+/**
+*
+* @see WELD-2079
+*/
+@Deprecated
 public class SingleThreadScheduledExecutorServiceFactory implements ScheduledExecutorServiceFactory {
 
     private final ScheduledExecutorService executorService;
