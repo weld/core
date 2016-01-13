@@ -67,7 +67,7 @@
         <shrinkwrap.version>1.1.3</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>5.10</testng.version>
-        <weld.api.version>2.3.Final</weld.api.version>
+        <weld.api.version>2.3.SP1</weld.api.version>
         <weld.logging.tools.version>1.0.1.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -664,7 +664,7 @@
             </build>
         </profile>
         <profile>
-            <!-- Following profile is automatically triggered in Windows environment and allows to handle behaviour/problems 
+            <!-- Following profile is automatically triggered in Windows environment and allows to handle behaviour/problems
             specific for this OS. For instance excluding a test here will skip its execution on Windows. -->
             <activation>
                 <os>
