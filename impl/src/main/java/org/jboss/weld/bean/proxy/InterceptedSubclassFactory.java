@@ -26,15 +26,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
-import javassist.NotFoundException;
-import javassist.bytecode.AccessFlag;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.DuplicateMemberException;
-import javassist.bytecode.Opcode;
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyObject;
-
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
@@ -49,6 +40,15 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
+
+import javassist.NotFoundException;
+import javassist.bytecode.AccessFlag;
+import javassist.bytecode.Bytecode;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.DuplicateMemberException;
+import javassist.bytecode.Opcode;
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.ProxyObject;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -77,7 +77,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      */
 
     public InterceptedSubclassFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
-        super(proxiedBeanType, typeClosure, proxyName, bean);
+        super(proxiedBeanType, typeClosure, proxyName, bean, true);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
     }
 
