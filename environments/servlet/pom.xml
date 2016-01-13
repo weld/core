@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.servlet</groupId>
     <artifactId>weld-servlet-parent</artifactId>
@@ -28,8 +29,7 @@
         <jsf.version>2.1</jsf.version>
         <tomcat.version>7.0.62</tomcat.version>
         <tomcat8.version>8.0.22</tomcat8.version>
-        <jetty.version>8.1.17.v20150415</jetty.version>
-        <jetty9.version>9.1.5.v20140505</jetty9.version>
+        <jetty.version>9.3.6.v20151106</jetty.version>
         <jetty9.asm.version>5.0.3</jetty9.asm.version>
         <!-- Jetty 6 API is used for GWT support only -->
         <jetty6.version>6.1.26</jetty6.version>
@@ -139,6 +139,12 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-annotations</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
 
