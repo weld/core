@@ -37,18 +37,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javassist.NotFoundException;
-import javassist.bytecode.AccessFlag;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.DuplicateMemberException;
-import javassist.bytecode.ExceptionTable;
-import javassist.bytecode.FieldInfo;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Opcode;
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyObject;
-
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
@@ -74,6 +62,18 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
+
+import javassist.NotFoundException;
+import javassist.bytecode.AccessFlag;
+import javassist.bytecode.Bytecode;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.DuplicateMemberException;
+import javassist.bytecode.ExceptionTable;
+import javassist.bytecode.FieldInfo;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Opcode;
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.ProxyObject;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
@@ -108,7 +108,18 @@ public class ProxyFactory<T> {
      * generated from the bean id
      */
     public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
-        this(proxiedBeanType, typeClosure, getProxyName(proxiedBeanType, typeClosure, bean), bean);
+        this(proxiedBeanType, typeClosure, bean, false);
+    }
+
+    /**
+     *
+     * @param proxiedBeanType
+     * @param typeClosure
+     * @param bean
+     * @param forceSuperClass
+     */
+    public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, boolean forceSuperClass) {
+        this(proxiedBeanType, typeClosure, getProxyName(proxiedBeanType, typeClosure, bean), bean, forceSuperClass);
     }
 
     /**
@@ -119,14 +130,14 @@ public class ProxyFactory<T> {
      * @param typeClosure     the bean types of the bean
      * @param proxyName       the name of the proxy class
      */
-    public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
+    public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, boolean forceSuperClass) {
         this.bean = bean;
         this.proxiedBeanType = proxiedBeanType;
         addInterfacesFromTypeClosure(typeClosure, proxiedBeanType, proxyName);
         TypeInfo typeInfo = TypeInfo.of(typeClosure);
         Class<?> superClass = typeInfo.getSuperClass();
         superClass = superClass == null ? Object.class : superClass;
-        if (superClass.equals(Object.class) && additionalInterfaces.isEmpty()) {
+        if (forceSuperClass || superClass.equals(Object.class) && additionalInterfaces.isEmpty()) {
             // No interface beans must use the bean impl as superclass
             superClass = proxiedBeanType;
         }
