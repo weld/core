@@ -960,3 +960,5 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 * Java 6 support was dropped. Java 7 or newer is now required for both compile time and runtime.
 
 * An observer for `@Initialized(ConversationScoped.class)` or `@Destroyed(ConversationScoped.class)` event no longer forces eager conversation context initialization. See also <<_lazy_and_eager_conversation_context_initialization>>.
+
+* `ScheduledExecutorServiceFactory` is deprecated and no default implementation is provided by default. This service has not been used by Weld internals at least since version 1.1.0.Final.
