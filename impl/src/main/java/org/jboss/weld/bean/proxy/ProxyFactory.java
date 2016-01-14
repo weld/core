@@ -637,7 +637,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         }
     }
 
-    private boolean isMethodAccepted(Method method) {
+    protected boolean isMethodAccepted(Method method) {
         for (ProxiedMethodFilter filter : METHOD_FILTERS) {
             if (!filter.accept(method)) {
                 return false;

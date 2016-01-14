@@ -22,9 +22,9 @@ import javax.enterprise.context.ApplicationScoped;
 public class Foo {
 
     public void ping() {
+        pong("foo", null);
     }
 
-    @SuppressWarnings("unused")
     private <T extends Number> void pong(String name, Bar<T> bar) {
     }
 
