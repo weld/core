@@ -36,7 +36,7 @@ interface ProxiedMethodFilter {
 
     /**
      * Determines whether this filter is enabled. E.g. GroovyMethodFilter is only enabled in Groovy environment
-     * @return true iff this method filter should be used
+     * @return true if this method filter should be used
      */
     boolean isEnabled();
 

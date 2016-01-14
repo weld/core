@@ -51,4 +51,11 @@ final class CommonProxiedMethodFilters {
             return method.getDeclaringClass() != Object.class || method.getName().equals("toString");
         }
     };
+
+    static final ProxiedMethodFilter NON_PRIVATE = new AbstractProxiedMethodFilter() {
+        @Override
+        public boolean accept(Method method) {
+            return !Modifier.isPrivate(method.getModifiers());
+        }
+    };
 }
