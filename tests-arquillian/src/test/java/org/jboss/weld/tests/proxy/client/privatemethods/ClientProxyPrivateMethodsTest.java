@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2016, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.proxy.modifiers;
+package org.jboss.weld.tests.proxy.client.privatemethods;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,41 +35,32 @@ import org.junit.runner.RunWith;
 /**
  *
  * @author Martin Kouba
- * @see WELD-1626
+ *
  */
 @RunWith(Arquillian.class)
-public class ClientProxyMethodModifiersTest {
+public class ClientProxyPrivateMethodsTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ClientProxyMethodModifiersTest.class))
-                .addPackage(ClientProxyMethodModifiersTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ClientProxyPrivateMethodsTest.class))
+                .addPackage(ClientProxyPrivateMethodsTest.class.getPackage()).addClass(Utils.class);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testMethodModifiers(NormalScopedBean proxy) {
-
-        Method[] methods = proxy.getClass().getDeclaredMethods();
-
-        Method foo = find("foo", methods);
-        assertNotNull(foo);
-        assertTrue(Modifier.isPublic(foo.getModifiers()));
-
-        Method bar = find("bar", methods);
-        assertNotNull(bar);
-        assertTrue(Modifier.isProtected(bar.getModifiers()));
-
-        Method baz = find("baz", methods);
-        assertNull(baz);
+    public void testPrivateMethodsIgnored(BeanManager beanManager) {
+        Bean<Foo> fooBean = (Bean<Foo>) beanManager.resolve(beanManager.getBeans(Foo.class));
+        Foo foo = (Foo) beanManager.getReference(fooBean, Foo.class, beanManager.createCreationalContext(fooBean));
+        foo.ping();
+        assertNull(find("pong", foo.getClass().getDeclaredMethods()));
     }
 
     private Method find(String name, Method[] methods) {
         for (Method method : methods) {
-            if(name.equals(method.getName())) {
+            if (name.equals(method.getName())) {
                 return method;
             }
         }
         return null;
     }
-
 }
