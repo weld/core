@@ -35,7 +35,6 @@ import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.ImmutableMap;
 import org.jboss.weld.exceptions.InvalidObjectException;
 
 /**
