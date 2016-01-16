@@ -29,6 +29,7 @@ import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.ImmutableMap;
@@ -158,7 +159,11 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
 
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
-        return new EnterpriseBeanProxyMethodHandler<T>((SessionBeanImpl<T>) manager.getPassivationCapableBean(beanId), reference);
+        try {
+            return new EnterpriseBeanProxyMethodHandler<T>((SessionBeanImpl<T>) manager.getPassivationCapableBean(beanId), reference);
+        } catch (Exception e) {
+            throw SerializationLogger.LOG.unableToDeserialize(beanId, e);
+        }
     }
 
     private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap, Set<Class<?>> businessInterfaces) {
