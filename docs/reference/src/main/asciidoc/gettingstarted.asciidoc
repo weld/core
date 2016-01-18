@@ -24,7 +24,7 @@ following:
 ** WildFly 8.0.0.Final,
 ** GlassFish 4.0,
 ** Apache Tomcat 7 or better (war example only), or
-** Jetty 7 or better (war example only)
+** Jetty 9 or better (war example only)
 
 In the next few sections, you'll be using the Maven command (`mvn`) to
 invoke the Maven project file in each example to compile, assemble and
