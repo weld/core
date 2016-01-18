@@ -17,18 +17,10 @@
 
 package org.jboss.weld.environment.jetty;
 
-import java.util.EventListener;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
 import org.eclipse.jetty.util.DecoratedObjectFactory;
 import org.eclipse.jetty.util.Decorator;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
@@ -68,38 +60,6 @@ public class WeldDecorator implements Decorator {
             injector = jwi;
         }
         return injector;
-    }
-
-    // ServletContextHandler.Decorator in Jetty 7.x, 8.x and 9.0.x defines following methods
-
-    public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
-        return decorate(filter);
-    }
-
-    public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException {
-        return decorate(servlet);
-    }
-
-    public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException {
-        return decorate(listener);
-    }
-
-    public void decorateFilterHolder(FilterHolder filter) throws ServletException {
-    }
-
-    public void decorateServletHolder(ServletHolder servlet) throws ServletException {
-    }
-
-    public void destroyServletInstance(Servlet s) {
-        destroy(s);
-    }
-
-    public void destroyFilterInstance(Filter f) {
-        destroy(f);
-    }
-
-    public void destroyListenerInstance(EventListener f) {
-        destroy(f);
     }
 
     // ServletContextHandler.Decorator in Jetty 9.1 defines following methods

@@ -168,7 +168,7 @@ public class Main {
 
 ==== Jetty
 
-Jetty 7, 8 and 9 are supported. Context activation/deactivation and dependency
+Jetty 9.3.6 and newer are supported. Context activation/deactivation and dependency
 injection into Servlets and Filters works out of the box. Injection into Servlet listeners works on
 Jetty 9.1.1 and newer.
 

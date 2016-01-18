@@ -79,6 +79,7 @@
                     <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
                     <outputName>test-report</outputName>
                 </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -94,7 +95,12 @@
                     <dependenciesToScan>
                         <dependency>org.jboss.weld.servlet:weld-servlet-test-base</dependency>
                     </dependenciesToScan>
+                    <!-- WELD-2101 enable when new version of Arquillian container jetty is released -->
+                    <excludes>
+                        <exclude>**/CrossContextForwardTest.java</exclude>
+                    </excludes>
                 </configuration>
+
             </plugin>
         </plugins>
     </build>
@@ -151,6 +157,13 @@
 
                 <dependency>
                     <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-deploy</artifactId>
+                    <version>${jetty.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-annotations</artifactId>
                     <scope>test</scope>
                 </dependency>
@@ -191,45 +204,11 @@
         </profile>
         <profile>
 
-            <id>jetty-embedded-7</id>
-
-            <activation>
-                <property>
-                    <name>jetty-embedded-7</name>
-                </property>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <!-- Listener injection should work on Jetty 9.1.1+ -->
-                                <exclude>**/ListenerInjectionTest.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jetty-embedded-7</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
-        </profile>
-        <profile>
-
             <id>jetty-embedded-9</id>
 
             <activation>
                 <property>
-                    <name>!jetty-embedded-7</name>
+                    <name>incontainer</name>
                 </property>
             </activation>
 
