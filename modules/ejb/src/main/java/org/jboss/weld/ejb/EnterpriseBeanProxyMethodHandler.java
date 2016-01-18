@@ -35,6 +35,8 @@ import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
+import org.jboss.weld.exceptions.InvalidObjectException;
+
 /**
  * Method handler for enterprise bean client proxies
  *
@@ -158,7 +160,12 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
 
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
-        return new EnterpriseBeanProxyMethodHandler<T>((SessionBeanImpl<T>) manager.getPassivationCapableBean(beanId), reference);
+        try {
+            return new EnterpriseBeanProxyMethodHandler<T>((SessionBeanImpl<T>) manager.getPassivationCapableBean(beanId), reference);
+        }
+        catch(Exception e) {
+            throw new InvalidObjectException("Weld Serialization Incompatibility");
+        }
     }
 
     private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap, Set<Class<?>> businessInterfaces) {
