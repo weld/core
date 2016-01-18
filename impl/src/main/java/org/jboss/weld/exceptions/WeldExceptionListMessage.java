@@ -57,7 +57,7 @@ public class WeldExceptionListMessage implements WeldExceptionMessage, Serializa
         int i = 0;
         for (Throwable throwable : causes) {
             messageBuffer.print("Exception ");
-            messageBuffer.print(i);
+            messageBuffer.print(i++);
             messageBuffer.print(" :\n");
             throwable.printStackTrace(messageBuffer);
         }
