@@ -153,11 +153,13 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
 
     public BeanBuilder<T> addInjectionPoints(InjectionPoint... injectionPoints) {
         checkArgumentNotNull(injectionPoints, ARG_INJECTION_POINTS);
+        Collections.addAll(this.injectionPoints, injectionPoints);
         return this;
     }
 
     public BeanBuilder<T> addInjectionPoints(Set<InjectionPoint> injectionPoints) {
         checkArgumentNotNull(injectionPoints, ARG_INJECTION_POINTS);
+        this.injectionPoints.addAll(injectionPoints);
         return this;
     }
 
