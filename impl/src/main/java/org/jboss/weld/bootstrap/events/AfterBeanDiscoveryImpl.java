@@ -48,6 +48,7 @@ import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
+import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.logging.InterceptorLogger;
@@ -138,6 +139,18 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     @Override
     public <T> BeanBuilder<T> beanBuilder() {
         return new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeploymentFinder());
+    }
+
+    @Override
+    public InterceptorBuilder interceptorBuilder() {
+        return new InterceptorBuilderImpl(getBeanManager());
+    }
+
+    public InterceptorBuilder addInterceptor() {
+        InterceptorBuilderImpl builder = new InterceptorBuilderImpl(getBeanManager());
+        additionalBeans.add(new BeanRegistration(builder));
+        return builder;
+
     }
 
     protected <T> void processBeanRegistration(BeanRegistration registration, GlobalEnablementBuilder globalEnablementBuilder) {
@@ -248,20 +261,20 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
         private final Bean<?> bean;
 
-        private final BeanBuilderImpl<?> builder;
+        private final AbstractBeanBuilder builder;
 
         BeanRegistration(Bean<?> bean) {
             this.bean = bean;
             this.builder = null;
         }
 
-        BeanRegistration(BeanBuilderImpl<?> builder) {
+        BeanRegistration(AbstractBeanBuilder builder) {
             this.builder = builder;
             this.bean = null;
         }
 
         public Bean<?> getBean() {
-            return bean != null ? bean : builder.build();
+            return bean != null ? bean : (Bean<?>) builder.build();
         }
 
         protected BeanManagerImpl getBeanManager() {
