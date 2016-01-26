@@ -60,17 +60,9 @@ public class WeldSEBeanRegistrant implements Extension {
         if (ignoreEvent(event)) {
             return;
         }
-
-        VetoedSuppressedAnnotatedType<ParametersFactory> parametersFactory = new VetoedSuppressedAnnotatedType<ParametersFactory>(
-                manager.createAnnotatedType(ParametersFactory.class));
-        VetoedSuppressedAnnotatedType<InstanceManager> instanceManager = new VetoedSuppressedAnnotatedType<InstanceManager>(
-                manager.createAnnotatedType(InstanceManager.class));
-        VetoedSuppressedAnnotatedType<RunnableDecorator> runnableDecorator = new VetoedSuppressedAnnotatedType<RunnableDecorator>(
-                manager.createAnnotatedType(RunnableDecorator.class));
-
-        event.addAnnotatedType(parametersFactory);
-        event.addAnnotatedType(instanceManager);
-        event.addAnnotatedType(runnableDecorator);
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager));
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InstanceManager.class, manager));
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager));
     }
 
     public void registerWeldSEContexts(@Observes AfterBeanDiscovery event, BeanManager manager) {
@@ -80,10 +72,7 @@ public class WeldSEBeanRegistrant implements Extension {
 
         final String contextId = BeanManagerProxy.unwrap(manager).getContextId();
 
-        // set up this thread's bean store
         this.threadContext = new ThreadContext(contextId);
-
-        // activate and add context
         event.addContext(threadContext);
 
         // Register WeldContainer as a singleton
@@ -102,6 +91,10 @@ public class WeldSEBeanRegistrant implements Extension {
     }
 
     private static class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {
+
+        static <T> VetoedSuppressedAnnotatedType<T> from(Class<T> clazz, BeanManager beanManager) {
+            return new VetoedSuppressedAnnotatedType<T>(beanManager.createAnnotatedType(clazz));
+        }
 
         private final AnnotatedType<T> annotatedType;
 
