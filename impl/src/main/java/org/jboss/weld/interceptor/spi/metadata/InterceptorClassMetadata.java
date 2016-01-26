@@ -17,6 +17,7 @@
 
 package org.jboss.weld.interceptor.spi.metadata;
 
+import java.io.Serializable;
 
 /**
  * Metadata about an interceptor component.
@@ -40,4 +41,12 @@ public interface InterceptorClassMetadata<T> extends InterceptorMetadata {
      * @return
      */
     Class<T> getJavaClass();
+
+    /**
+     *
+     * @return a unique key which might be used to identify a metadata instance
+     */
+    default Serializable getKey() {
+        return getJavaClass();
+    }
 }

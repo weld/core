@@ -72,23 +72,23 @@ public class InterceptionContext implements Serializable {
 
     private final transient InterceptionModel interceptionModel;
 
-    private final Map<Class<?>, Object> interceptorInstances;
+    private final Map<Serializable, Object> interceptorInstances;
     private final BeanManagerImpl manager;
     private final SlimAnnotatedType<?> annotatedType;
 
-    private InterceptionContext(Map<Class<?>, Object> interceptorInstances, BeanManagerImpl manager, InterceptionModel interceptionModel, SlimAnnotatedType<?> type) {
+    private InterceptionContext(Map<Serializable, Object> interceptorInstances, BeanManagerImpl manager, InterceptionModel interceptionModel, SlimAnnotatedType<?> type) {
         this.interceptorInstances = interceptorInstances;
         this.manager = manager;
         this.interceptionModel = interceptionModel;
         this.annotatedType = type;
     }
 
-    private static Map<Class<?>, Object> initInterceptorInstanceMap(InterceptionModel model, CreationalContext ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes) {
-        Map<Class<?>, Object> interceptorInstances = new HashMap<Class<?>, Object>();
+    private static Map<Serializable, Object> initInterceptorInstanceMap(InterceptionModel model, CreationalContext ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes) {
+        Map<Serializable, Object> interceptorInstances = new HashMap<>();
         for (InterceptorClassMetadata<?> interceptor : model.getAllInterceptors()) {
             for (InterceptionType interceptionType : interceptionTypes) {
                 if (interceptor.isEligible(interceptionType)) {
-                    interceptorInstances.put(interceptor.getJavaClass(), interceptor.getInterceptorFactory().create(ctx, manager));
+                    interceptorInstances.put(interceptor.getKey(), interceptor.getInterceptorFactory().create(ctx, manager));
                 }
             }
         }
@@ -100,7 +100,7 @@ public class InterceptionContext implements Serializable {
     }
 
     public <T> T getInterceptorInstance(InterceptorClassMetadata<T> interceptorMetadata) {
-        return cast(interceptorInstances.get(interceptorMetadata.getJavaClass()));
+        return cast(interceptorInstances.get(interceptorMetadata.getKey()));
     }
 
     private Object readResolve() throws ObjectStreamException {
