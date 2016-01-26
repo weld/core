@@ -87,7 +87,7 @@ public class InterceptionContext implements Serializable {
         Map<Serializable, Object> interceptorInstances = new HashMap<>();
         for (InterceptorClassMetadata<?> interceptor : model.getAllInterceptors()) {
             for (InterceptionType interceptionType : interceptionTypes) {
-                if (interceptor.isEligible(interceptionType)) {
+                if (interceptor.isEligible(interceptionType) && !interceptorInstances.containsKey(interceptor.getKey())) {
                     interceptorInstances.put(interceptor.getKey(), interceptor.getInterceptorFactory().create(ctx, manager));
                 }
             }
