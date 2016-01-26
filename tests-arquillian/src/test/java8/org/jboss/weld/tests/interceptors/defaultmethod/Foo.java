@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.defaultmethod;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 @Fast
 public class Foo implements Omega {
 

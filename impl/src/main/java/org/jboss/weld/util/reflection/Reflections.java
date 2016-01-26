@@ -508,4 +508,11 @@ public class Reflections {
             addInterfaces(interfac, result);
         }
     }
+
+    public static boolean isDefault(Method method) {
+        // Default methods are public non-abstract instance methods declared in an interface
+        // Backported from JDK8
+        return ((method.getModifiers() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC)
+                && method.getDeclaringClass().isInterface();
+    }
 }
