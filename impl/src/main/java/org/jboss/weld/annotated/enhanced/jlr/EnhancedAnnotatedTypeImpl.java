@@ -139,6 +139,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         }
     }
 
+    @java.lang.SuppressWarnings("unchecked")
     protected EnhancedAnnotatedTypeImpl(SlimAnnotatedType<T> annotatedType, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
         super(annotatedType, annotationMap, declaredAnnotationMap, classTransformer);
         this.slim = annotatedType;
@@ -244,6 +245,16 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                         current = current.getEnhancedSuperclass();
                     }
                 }
+                // Also add default methods
+                for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(javaClass)) {
+                    EnhancedAnnotatedType<?> interfaceType = classTransformer.getEnhancedAnnotatedType(interfaceClazz, slim.getIdentifier().getBdaId());
+                    for (EnhancedAnnotatedMethod<?, ?> interfaceMethod : interfaceType.getEnhancedMethods()) {
+                        if(Reflections.isDefault(interfaceMethod.getJavaMember())) {
+                            methodsTemp.add((EnhancedAnnotatedMethod<?, ? super T>) interfaceMethod);
+                        }
+                    }
+                }
+
             }
             this.declaredMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>(declaredMethodsTemp);
         } else {

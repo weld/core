@@ -614,7 +614,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
-                            createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
+                            if (Reflections.isDefault(method)) {
+                                addConstructedGuardToMethodBody(classMethod);
+                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
+                            } else {
+                                createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
+                            }
                             BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                         }
@@ -679,6 +684,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         createInterceptorBody(proxyClassType, method, staticConstructor);
     }
 
+    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod) {
+        addConstructedGuardToMethodBody(classMethod, classMethod.getClassFile().getSuperclass());
+    }
+
     /**
      * Adds the following code to a delegating method:
      * <p/>
@@ -689,7 +698,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * This means that the proxy will not start to delegate to the underlying
      * bean instance until after the constructor has finished.
      */
-    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod) {
+    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod, String className) {
         if (!proxyInstantiator.isUsingConstructor()) {
             return;
         }
@@ -704,7 +713,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         // this is run when the proxy is being constructed
         cond.aload(0);
         cond.loadMethodParameters();
-        cond.invokespecial(classMethod.getClassFile().getSuperclass(), classMethod.getName(), classMethod.getDescriptor());
+        cond.invokespecial(className, classMethod.getName(), classMethod.getDescriptor());
         cond.returnInstruction();
         cond.branchEnd(jumpMarker);
     }
