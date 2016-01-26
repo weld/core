@@ -49,6 +49,7 @@ import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -197,10 +198,29 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     MethodSignature signature = new MethodSignatureImpl(method);
                     if (enhancedMethodSignatures.contains(signature) && !processedBridgeMethods.contains(signature)) {
                         try {
-                            MethodInformation methodInformation = new RuntimeMethodInformation(method);
-                            final ClassMethod classMethod = proxyClassType.addMethod(method);
-                            createSpecialMethodBody(classMethod, methodInformation, staticConstructor);
-                            BeanLogger.LOG.addingMethodToProxy(method);
+                            if (interceptedMethodSignatures.contains(signature) && Reflections.isDefault(method)) {
+                                MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                                // create delegate-to-super method
+                                int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC
+                                        & ~AccessFlag.PROTECTED;
+                                ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX,
+                                        DescriptorUtils.makeDescriptor(method.getReturnType()),
+                                        DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
+                                delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
+                                createDelegateToSuper(delegatingMethod, methodInfo);
+
+                                // this method is intercepted
+                                // override a subclass method to delegate to method handler
+                                ClassMethod classMethod = proxyClassType.addMethod(method);
+                                addConstructedGuardToMethodBody(classMethod);
+                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
+                                BeanLogger.LOG.addingMethodToProxy(method);
+                            } else {
+                                MethodInformation methodInformation = new RuntimeMethodInformation(method);
+                                final ClassMethod classMethod = proxyClassType.addMethod(method);
+                                createSpecialMethodBody(classMethod, methodInformation, staticConstructor);
+                                BeanLogger.LOG.addingMethodToProxy(method);
+                            }
                         } catch (DuplicateMemberException e) {
                         }
                     }
@@ -237,11 +257,15 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     }
 
     private void createDelegateToSuper(ClassMethod classMethod, MethodInformation method) {
+        createDelegateToSuper(classMethod, method, classMethod.getClassFile().getSuperclass());
+    }
+
+    private void createDelegateToSuper(ClassMethod classMethod, MethodInformation method, String className) {
         CodeAttribute b = classMethod.getCodeAttribute();
         // first generate the invokespecial call to the super class method
         b.aload(0);
         b.loadMethodParameters();
-        b.invokespecial(classMethod.getClassFile().getSuperclass(), method.getName(), method.getDescriptor());
+        b.invokespecial(className, method.getName(), method.getDescriptor());
         b.returnInstruction();
     }
 
