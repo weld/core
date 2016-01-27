@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.jms;
 
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -26,11 +26,11 @@ import javax.interceptor.InvocationContext;
 @Missile
 public class MissileInterceptor {
 
-    static final LinkedBlockingDeque<String> MESSAGES = new LinkedBlockingDeque<String>();
+    static final AtomicBoolean INTERCEPTED = new AtomicBoolean(false);
 
     @AroundInvoke
     public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
-        MESSAGES.add("intercepted");
+        INTERCEPTED.set(true);
         return ctx.proceed();
     }
 
