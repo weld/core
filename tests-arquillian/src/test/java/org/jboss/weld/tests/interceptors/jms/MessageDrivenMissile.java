@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.jms;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -30,11 +30,11 @@ import javax.jms.MessageListener;
         @ActivationConfigProperty(propertyName = "destination", propertyValue = "java:/queue/test") })
 public class MessageDrivenMissile implements MessageListener {
 
-    static final AtomicBoolean MESSAGE_ACCEPTED = new AtomicBoolean(false);
+    static final LinkedBlockingDeque<String> MESSAGES = new LinkedBlockingDeque<String>();
 
     @Override
     public void onMessage(Message message) {
-        MESSAGE_ACCEPTED.set(true);
+        MESSAGES.add(MessageDrivenMissile.class.getName());
     }
 
 }

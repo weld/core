@@ -57,8 +57,8 @@ public class MessageDrivenBeanInterceptorInvocationTest {
     @Test
     public void testMessageDrivenBeanMethodIntercepted() throws Exception {
         producer.sendQueueMessage();
-        assertEquals("intercepted", MissileInterceptor.MESSAGES.poll(5, TimeUnit.SECONDS));
-        assertTrue(MessageDrivenMissile.MESSAGE_ACCEPTED.get());
+        assertEquals(MessageDrivenMissile.class.getName(), MessageDrivenMissile.MESSAGES.poll(5, TimeUnit.SECONDS));
+        assertTrue(MissileInterceptor.INTERCEPTED.get());
     }
 
 }
