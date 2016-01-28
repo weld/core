@@ -53,7 +53,7 @@ public class SimpleCDI extends AbstractCDI<Object> {
             }
             Set<BeanManagerImpl> managers = new HashSet<BeanManagerImpl>();
             for (Map.Entry<BeanDeploymentArchive, BeanManagerImpl> entry : container.beanDeploymentArchives().entrySet()) {
-                for (String className : entry.getKey().getBeanClasses()) {
+                for (String className : entry.getKey().getKnownClasses()) {
                     if (className.equals(callerClassName)) {
                         managers.add(entry.getValue());
                     }

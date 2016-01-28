@@ -99,7 +99,7 @@ public class WeldSEProvider implements CDIProvider {
             for (String containerId : ids) {
                 Container container = Container.instance(containerId);
                 for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : container.beanDeploymentArchives().entrySet()) {
-                    for (String className : entry.getKey().getBeanClasses()) {
+                    for (String className : entry.getKey().getKnownClasses()) {
                         if (className.equals(callerClassName)) {
                             return WeldContainer.instance(containerId);
                         }

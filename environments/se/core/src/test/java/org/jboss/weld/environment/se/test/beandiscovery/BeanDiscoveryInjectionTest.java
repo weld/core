@@ -17,6 +17,8 @@
 package org.jboss.weld.environment.se.test.beandiscovery;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -28,7 +30,10 @@ import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,10 +59,16 @@ public class BeanDiscoveryInjectionTest {
     }
 
     @Test
-    public void testAnnotatedBeanDiscovery(BeanManager manager) {
+    public void testAnnotatedBeanDiscovery(BeanManagerImpl manager) {
         assertEquals(1, manager.getBeans(Tree.class).size());
         assertEquals(1, manager.getBeans(Plant.class).size());
         assertEquals(0, manager.getBeans(Stone.class).size());
+        for (BeanDeploymentArchive beanDeploymentArchive : Container.instance(manager).beanDeploymentArchives().keySet()) {
+            if(beanDeploymentArchive.getBeanClasses().contains(Plant.class.getName())) {
+                assertFalse(beanDeploymentArchive.getBeanClasses().contains(Stone.class.getName()));
+                assertTrue(beanDeploymentArchive.getKnownClasses().contains(Stone.class.getName()));
+            }
+        }
     }
 
     @Test

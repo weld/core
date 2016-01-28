@@ -694,7 +694,7 @@ public class Weld implements ContainerInstanceFactory {
         if (isSyntheticBeanArchiveRequired()) {
             ImmutableSet.Builder<String> beanClassesBuilder = ImmutableSet.builder();
             beanClassesBuilder.addAll(scanPackages());
-            WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, beanClassesBuilder.build(),
+            WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, beanClassesBuilder.build(), null,
                     buildSyntheticBeansXml(), Collections.emptySet(), ImmutableSet.copyOf(beanClasses));
             beanArchives.add(syntheticBeanArchive);
         }

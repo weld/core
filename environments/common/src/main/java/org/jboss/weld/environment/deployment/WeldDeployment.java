@@ -78,7 +78,7 @@ public class WeldDeployment extends AbstractWeldDeployment {
     @Override
     public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
         for (BeanDeploymentArchive bda : beanDeploymentArchives) {
-            if (bda.getBeanClasses().contains(beanClass.getName())) {
+            if (bda.getKnownClasses().contains(beanClass.getName())) {
                 return bda;
             }
         }
