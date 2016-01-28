@@ -38,6 +38,7 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
 
     private final Collection<String> beanClasses;
     private final Collection<Class<?>> loadedBeanClasses;
+    private final Collection<String> knownClasses;
 
     private final BeansXml beansXml;
 
@@ -51,19 +52,46 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param beanDeploymentArchives
      */
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
-        this(id, beanClasses, beansXml, beanDeploymentArchives, Collections.emptySet());
+        this(id, beanClasses, null, beansXml, beanDeploymentArchives, Collections.emptySet());
     }
 
-    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives, Collection<Class<?>> loadedBeanClasses) {
+    /**
+     *
+     * @param id
+     * @param beanClasses
+     * @param knownClasses
+     * @param beansXml
+     * @param beanDeploymentArchives
+     * @param loadedBeanClasses
+     */
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives, Collection<Class<?>> loadedBeanClasses) {
         super(id);
         this.beanClasses = beanClasses;
+        this.knownClasses = knownClasses;
         this.beansXml = beansXml;
         this.accessibleBeanDeploymentArchives = beanDeploymentArchives;
         this.loadedBeanClasses = loadedBeanClasses;
     }
 
+    /**
+     *
+     * @param id
+     * @param beanClasses
+     * @param beansXml
+     */
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
         this(id, beanClasses, beansXml, Collections.<WeldBeanDeploymentArchive> emptySet());
+    }
+
+    /**
+     *
+     * @param id
+     * @param beanClasses
+     * @param knownClasses
+     * @param beansXml
+     */
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses, BeansXml beansXml) {
+        this(id, beanClasses, knownClasses, beansXml, Collections.emptySet(), Collections.emptySet());
     }
 
     @Override
@@ -74,6 +102,11 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
     @Override
     public Collection<Class<?>> getLoadedBeanClasses() {
         return Collections.unmodifiableCollection(loadedBeanClasses);
+    }
+
+    @Override
+    public Collection<String> getKnownClasses() {
+        return knownClasses != null ? knownClasses : super.getKnownClasses();
     }
 
     @Override

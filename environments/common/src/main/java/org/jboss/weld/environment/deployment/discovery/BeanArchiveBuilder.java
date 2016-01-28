@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.util.Preconditions;
@@ -37,15 +38,17 @@ public class BeanArchiveBuilder {
 
     private final Map<String, Object> attributes;
 
-    private final Set<String> classes;
+    private final Set<String> beanClasses;
 
     private BeansXml beansXml;
 
     private String id;
 
+    private Set<String> knownClasses;
+
     public BeanArchiveBuilder() {
-        this.attributes = new HashMap<String, Object>();
-        this.classes = new HashSet<String>();
+        this.attributes = new HashMap<>();
+        this.beanClasses = new HashSet<>();
     }
 
     /**
@@ -54,7 +57,7 @@ public class BeanArchiveBuilder {
      */
     public WeldBeanDeploymentArchive build() {
         Preconditions.checkArgumentNotNull(id, "id");
-        return new WeldBeanDeploymentArchive(id, classes, getBeansXml());
+        return new WeldBeanDeploymentArchive(id, beanClasses, knownClasses, getBeansXml());
     }
 
     public BeansXml getBeansXml() {
@@ -63,6 +66,9 @@ public class BeanArchiveBuilder {
 
     public BeanArchiveBuilder setBeansXml(BeansXml beansXml) {
         this.beansXml = beansXml;
+        if (beansXml != null && BeanDiscoveryMode.ANNOTATED.equals(beansXml.getBeanDiscoveryMode())) {
+            this.knownClasses = new HashSet<>(beanClasses);
+        }
         return this;
     }
 
@@ -76,17 +82,17 @@ public class BeanArchiveBuilder {
     }
 
     public BeanArchiveBuilder addClass(String className) {
-        classes.add(className);
+        beanClasses.add(className);
         return this;
     }
 
     public BeanArchiveBuilder clearClasses() {
-        classes.clear();
+        beanClasses.clear();
         return this;
     }
 
     public Set<String> getClasses() {
-        return classes;
+        return beanClasses;
     }
 
     public BeanArchiveBuilder setAttribute(String key, Object value) {
@@ -98,7 +104,7 @@ public class BeanArchiveBuilder {
     }
 
     public Iterator<String> getClassIterator() {
-        return classes.iterator();
+        return beanClasses.iterator();
     }
 
 }

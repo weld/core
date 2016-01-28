@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.inject.Any;
@@ -190,11 +189,10 @@ public class WeldBuilderTest {
         try (WeldContainer container = weld.reset().addPackage(true, Any.class).initialize()) {
             // There is no managed bean discovered, therefore we only check the the bean class was found
             boolean found = false;
-            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet()) {
-                for (String className : entry.getKey().getBeanClasses()) {
-                    if (className.equals(DefinitionException.class.getName())) {
-                        found = true;
-                    }
+            for (BeanDeploymentArchive beanDeploymentArchive : Container.instance().beanDeploymentArchives().keySet()) {
+                if (beanDeploymentArchive.getBeanClasses().contains(DefinitionException.class.getName())) {
+                    found = true;
+                    break;
                 }
             }
             assertTrue(found);
