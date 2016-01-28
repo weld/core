@@ -30,19 +30,16 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.bootstrap.events.BuilderInterceptorInstance;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Category(Integration.class)
 public class InterceptorBuilderTest {
 
     @Inject
@@ -55,12 +52,10 @@ public class InterceptorBuilderTest {
     BeanManager bm;
 
     @Deployment
-    public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(InterceptorBuilderTest.class, Utils.ARCHIVE_TYPE.WAR))
+    public static Archive<?> createTestArchive() {
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorBuilderTest.class))
                 .addPackage(InterceptorBuilderTest.class.getPackage())
-                .addAsServiceProvider(Extension.class, BuilderExtension.class)
-                .addClass(Utils.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsServiceProvider(Extension.class, BuilderExtension.class).addClass(Utils.class);
     }
 
     @Test

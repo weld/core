@@ -31,15 +31,16 @@ public class BuilderInterceptorInstance implements Serializable {
 
     private final SerializableForwardingBean<?> interceptedBean;
 
-    public BuilderInterceptorInstance() {
+    BuilderInterceptorInstance() {
         this(null, null);
     }
 
-    public BuilderInterceptorInstance(Bean<?> interceptedBean, String contextId) {
-        this.interceptedBean = SerializableForwardingBean.of(contextId, interceptedBean);
+    BuilderInterceptorInstance(Bean<?> interceptedBean, String contextId) {
+        this.interceptedBean = interceptedBean != null ? SerializableForwardingBean.of(contextId, interceptedBean) : null;
     }
 
     public Bean<?> getInterceptedBean() {
         return interceptedBean;
     }
+
 }

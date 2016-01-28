@@ -161,27 +161,21 @@ public class BuilderInterceptorBean implements Interceptor<BuilderInterceptorIns
 
     @Override
     public BuilderInterceptorInstance create(CreationalContext<BuilderInterceptorInstance> creationalContext) {
-        BuilderInterceptorInstance interceptorInstance;
-
         if (this.interceptorMetadataFunction != null) {
             WeldCreationalContext<?> interceptorContext = getParentCreationalContext(creationalContext);
             Contextual<?> interceptedContextual = interceptorContext.getContextual();
             if (interceptedContextual instanceof Bean<?>) {
-                Bean<?> bean = (Bean<?>) interceptedContextual;
-                interceptorInstance = new BuilderInterceptorInstance(bean, beanManager.getContextId());
-                return interceptorInstance;
+                return new BuilderInterceptorInstance((Bean<?>) interceptedContextual, beanManager.getContextId());
             } else {
                 throw BeanLogger.LOG.cannotCreateContextualInstanceOfBuilderInterceptor(this);
             }
         } else {
-            interceptorInstance = new BuilderInterceptorInstance();
-            return interceptorInstance;
+            return new BuilderInterceptorInstance();
         }
     }
 
     @Override
     public void destroy(BuilderInterceptorInstance instance, CreationalContext<BuilderInterceptorInstance> creationalContext) {
-
     }
 
     @Override
