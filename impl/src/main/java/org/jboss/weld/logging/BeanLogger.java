@@ -499,4 +499,13 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1564, value = "Injection point metadata injected into a stateless session bean may only be accessed within its business method invocation", format = Format.MESSAGE_FORMAT)
     IllegalStateException statelessSessionBeanInjectionPointMetadataNotAvailable();
 
+    @Message(id = 1565, value = "Interceptor builder {0} does not define an interception function.", format = Format.MESSAGE_FORMAT)
+    DefinitionException noInterceptionFunction(Object param1);
+
+    @Message(id = 1566, value = "Interceptor builder {0} does not define any InterceptionType.", format = Format.MESSAGE_FORMAT)
+    DefinitionException noInterceptionType(Object param1);
+
+    @Message(id = 1567, value = "Cannot create contextual instance of {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotCreateContextualInstanceOfBuilderInterceptor(Object param1);
+
 }
