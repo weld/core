@@ -18,15 +18,18 @@ package org.jboss.weld.tests.injectionPoint.custom;
 
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
 
 @Vetoed
 public class Bar {
 
-    @Inject
-    InjectionPoint ip;
+    private final InjectionPoint ip;
 
-    public void ping() {
-        ip.getBean();
+    Bar(InjectionPoint ip) {
+        this.ip = ip;
     }
+
+    InjectionPoint getInjetionPointMetadata() {
+        return ip;
+    }
+
 }

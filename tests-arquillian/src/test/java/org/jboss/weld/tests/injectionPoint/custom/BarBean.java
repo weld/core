@@ -17,6 +17,8 @@
 package org.jboss.weld.tests.injectionPoint.custom;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,44 +26,30 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InjectionTargetFactory;
 
 import org.jboss.weld.literal.DefaultLiteral;
 
 public class BarBean implements Bean<Bar> {
 
-    private BeanManager beanManager;
-    public static CustomInjectionPoint customInjectionPoint = null;
-    public static InjectionPoint obtainedAsBean;
-    public static InjectionPoint obtainedAsInjectableReference;
-    private AnnotatedType<Bar> annotatedType;
+    private final Set<InjectionPoint> injectionPoints;
 
+    private final BeanManager beanManager;
 
-    public BarBean(BeanManager beanManager, AnnotatedField<? super Bar> annotatedField, AnnotatedType<Bar> annotatedType) {
+    public BarBean(BeanManager beanManager) {
         this.beanManager = beanManager;
-        this.annotatedType = annotatedType;
-        customInjectionPoint = new CustomInjectionPoint(this, annotatedField, InjectionPoint.class);
+        this.injectionPoints = Collections.<InjectionPoint> singleton(new InjectionPointMetadataInjectionPoint(this));
     }
 
     @Override
     public Bar create(CreationalContext<Bar> creationalContext) {
-        Bean<Bar> bean = (Bean<Bar>) beanManager.resolve(beanManager.getBeans(Bar.class));
-        InjectionTargetFactory<Bar> injectionTargetFactory = beanManager.getInjectionTargetFactory(annotatedType);
-        InjectionTarget<Bar> injectionTarget = injectionTargetFactory.createInjectionTarget(bean);
-        Bar bar = new Bar();
-        injectionTarget.inject(bar, creationalContext);
-
-        Bean<InjectionPoint> ipBean = (Bean<InjectionPoint>) beanManager.resolve(beanManager.getBeans(InjectionPoint.class));
-        obtainedAsBean = (InjectionPoint) beanManager.getReference(ipBean, InjectionPoint.class, beanManager.createCreationalContext(ipBean));
-        obtainedAsInjectableReference = (InjectionPoint) beanManager.getInjectableReference(customInjectionPoint, creationalContext);
-
-        return bar;
+        InjectionPoint injectionPointMetadata = (InjectionPoint) beanManager.getInjectableReference(injectionPoints.iterator().next(), creationalContext);
+        return new Bar(injectionPointMetadata);
     }
 
     @Override
@@ -78,12 +66,12 @@ public class BarBean implements Bean<Bar> {
 
     @Override
     public Set<Type> getTypes() {
-        return this.<Type>immutableSet(Object.class, Bar.class);
+        return this.<Type> immutableSet(Object.class, Bar.class);
     }
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return immutableSet(DefaultLiteral.INSTANCE);
+        return this.<Annotation> immutableSet(DefaultLiteral.INSTANCE);
     }
 
     @Override
@@ -118,7 +106,97 @@ public class BarBean implements Bean<Bar> {
 
     @Override
     public Set<InjectionPoint> getInjectionPoints() {
-       return Collections.<InjectionPoint>singleton(customInjectionPoint);
+        return injectionPoints;
+    }
+
+    /**
+     * A "synthetic" injection point used to obtain InjectionPoint metadata.
+     */
+    private static class InjectionPointMetadataInjectionPoint implements InjectionPoint {
+
+        private final Bean<?> bean;
+
+        private InjectionPointMetadataInjectionPoint(Bean<?> bean) {
+            this.bean = bean;
+        }
+
+        @Override
+        public Type getType() {
+            return InjectionPoint.class;
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
+        }
+
+        @Override
+        public Bean<?> getBean() {
+            return bean;
+        }
+
+        @Override
+        public Member getMember() {
+            return null;
+        }
+
+        @Override
+        public Annotated getAnnotated() {
+            // Dummy annotated needed for validation
+            return new AnnotatedField<Bar>() {
+
+                @Override
+                public boolean isStatic() {
+                    return false;
+                }
+
+                @Override
+                public AnnotatedType<Bar> getDeclaringType() {
+                    return null;
+                }
+
+                @Override
+                public Type getBaseType() {
+                    return null;
+                }
+
+                @Override
+                public Set<Type> getTypeClosure() {
+                    return null;
+                }
+
+                @Override
+                public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+                    return null;
+                }
+
+                @Override
+                public Set<Annotation> getAnnotations() {
+                    return Collections.emptySet();
+                }
+
+                @Override
+                public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+                    return false;
+                }
+
+                @Override
+                public Field getJavaMember() {
+                    return null;
+                }
+            };
+        }
+
+        @Override
+        public boolean isDelegate() {
+            return false;
+        }
+
+        @Override
+        public boolean isTransient() {
+            return false;
+        }
+
     }
 
 }

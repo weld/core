@@ -16,41 +16,43 @@
  */
 package org.jboss.weld.tests.injectionPoint.custom;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Integration;
-import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Category(Integration.class)
-public class ObtainCustomInjectionPointTest {
+public class CustomBeanInjectionPointMetadataTest {
 
     @Inject
     Bar bar;
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ObtainCustomInjectionPointTest.class, Utils.ARCHIVE_TYPE.WAR))
-                .addPackage(ObtainCustomInjectionPointTest.class.getPackage())
-                .addAsServiceProvider(Extension.class, BarExtension.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomBeanInjectionPointMetadataTest.class))
+                .addPackage(CustomBeanInjectionPointMetadataTest.class.getPackage()).addAsServiceProvider(Extension.class, BarExtension.class);
     }
 
     @Test
-    public void testInjectionPointsAreAvailable() {
-        bar.ping();
-        Assert.assertNotNull(BarBean.obtainedAsBean);
-        Assert.assertNotNull(BarBean.obtainedAsInjectableReference);
+    public void testInjectionPointMetadata() {
+        assertNotNull(bar);
+        // The test class instance is non-contextual object
+        assertNull(bar.getInjetionPointMetadata().getBean());
+        // Verify metadata
+        assertEquals(Bar.class, bar.getInjetionPointMetadata().getType());
+        assertEquals(1, bar.getInjetionPointMetadata().getQualifiers().size());
+        assertEquals(DefaultLiteral.INSTANCE, bar.getInjetionPointMetadata().getQualifiers().iterator().next());
     }
 }
