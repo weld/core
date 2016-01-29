@@ -16,31 +16,15 @@
  */
 package org.jboss.weld.tests.injectionPoint.custom;
 
-import java.lang.reflect.Type;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
 
 public class BarExtension implements Extension {
 
-    void observersABD(@Observes AfterBeanDiscovery event, BeanManager bm) {
-        AnnotatedType<Bar> annotatedType = bm.createAnnotatedType(Bar.class);
-        event.addBean(new BarBean(bm, getAnnotatedField(annotatedType, InjectionPoint.class), annotatedType));
-
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
+        event.addBean(new BarBean(manager));
     }
 
-    private AnnotatedField<? super Bar> getAnnotatedField(AnnotatedType<Bar> annotatedType, Type memberType) {
-
-        for (AnnotatedField<? super Bar> field : annotatedType.getFields()) {
-            if (field.getJavaMember().getType().equals(memberType)) {
-                return field;
-            }
-        }
-        return null;
-    }
 }

@@ -70,7 +70,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1404, value = "The injection point is annotated with @New which cannot be combined with other qualifiers: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException newWithQualifiers(Object param1, Object stackElement);
 
-    @Message(id = 1405, value = "Cannot inject {0} in a class which isn't a bean\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1405, value = "Cannot inject {0} in a class which is not a bean\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException injectionIntoNonBean(Object param1, Object stackElement);
 
     @Message(id = 1406, value = "Cannot inject injection point metadata in a non @Dependent scoped bean: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
