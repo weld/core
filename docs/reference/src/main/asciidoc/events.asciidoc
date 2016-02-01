@@ -61,9 +61,18 @@ public void afterDocumentUpdate(@Observes @Updated Document document) { ... }
 -----------------------------------------------------------------------------
 
 An observer method need not specify any event qualifiers—in this case it
-is interested in _only unqualified_ events of a particular type. If it
-does specify qualifiers, it's only interested in events which have those
-qualifiers.
+is interested in every event whose type is assignable to the observed event type. 
+Such observer will trigger on both events shown below:
+
+[source.JAVA, java]
+-------------------------------------------
+@Inject @Any Event<Document> documentEvent;
+@Inject @Updated Event<Document> anotherDocumentEvent;
+-------------------------------------------
+
+If the observer does specify qualifiers, it will be notified of an event if the event 
+object is assignable to the observed event type, and if the set of observed event 
+qualifiers is a subset of all the event qualifiers of the event.
 
 The observer method may have additional parameters, which are injection
 points:
