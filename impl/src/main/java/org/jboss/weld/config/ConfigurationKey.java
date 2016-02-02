@@ -209,6 +209,15 @@ public enum ConfigurationKey {
     @Description("<strong>DEVELOPMENT MODE</strong> - a regular expression used to limit access to Probe REST API. Matches connections from localhost by default. Might not work properly for an application behind a reverse proxy or a load balancer.")
     PROBE_ALLOW_REMOTE_ADDRESS("org.jboss.weld.probe.allowRemoteAddress", "127.0.0.1|::1|::1%.+|0:0:0:0:0:0:0:1|0:0:0:0:0:0:0:1%.+"),
 
+    /**
+     * Weld supports a non-standard workaround to be able to create proxies for Java types which declare non-private non-static final methods. These methods are
+     * completely ignored during proxy generation, and should never be invoked upon the proxy instance!
+     * <p>
+     * A regular expression. If an unproxyable type matches this pattern, the type is considered proxyable and final methods are ignored.
+     */
+    @Description("Weld supports a non-standard workaround to be able to create proxies for Java types which declare non-private non-static final methods. A regular expression. If an unproxyable type matches this pattern, the type is considered proxyable and final methods are ignored.")
+    PROXY_IGNORE_FINAL_METHODS("org.jboss.weld.proxy.ignoreFinalMethods", ""),
+
     ;
 
     /**

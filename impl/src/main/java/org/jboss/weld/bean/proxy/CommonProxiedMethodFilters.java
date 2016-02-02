@@ -19,6 +19,8 @@ package org.jboss.weld.bean.proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.jboss.weld.util.reflection.Reflections;
+
 final class CommonProxiedMethodFilters {
 
     private CommonProxiedMethodFilters() {
@@ -56,6 +58,32 @@ final class CommonProxiedMethodFilters {
         @Override
         public boolean accept(Method method) {
             return !Modifier.isPrivate(method.getModifiers());
+        }
+    };
+
+    /**
+     * For JDK classes do not accept any package-private method and/or method with package-private parameter types. A generated class is not allowed to use a
+     * package name starting with the identifier <code>java</code>.
+     */
+    static final ProxiedMethodFilter NON_JDK_PACKAGE_PRIVATE = new AbstractProxiedMethodFilter() {
+        @Override
+        public boolean accept(Method method) {
+            Class<?> declaringClass = method.getDeclaringClass();
+            if (declaringClass != null) {
+                Package pack = declaringClass.getPackage();
+                if (pack != null && pack.getName().startsWith(ProxyFactory.JAVA)) {
+                    if (Reflections.isPackagePrivate(method.getModifiers())) {
+                        return false;
+                    }
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    for (Class<?> parameterType : parameterTypes) {
+                        if (Reflections.isPackagePrivate(parameterType.getModifiers())) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
         }
     };
 }

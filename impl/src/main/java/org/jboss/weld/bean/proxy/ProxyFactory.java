@@ -118,7 +118,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     protected static final String INIT_METHOD_NAME = "<init>";
     protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
-    private static final String JAVA = "java";
+    static final String JAVA = "java";
 
     private static final Set<ProxiedMethodFilter> METHOD_FILTERS;
 
@@ -140,6 +140,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         filters.add(CommonProxiedMethodFilters.NON_STATIC);
         filters.add(CommonProxiedMethodFilters.NON_FINAL);
         filters.add(CommonProxiedMethodFilters.OBJECT_TO_STRING);
+        filters.add(CommonProxiedMethodFilters.NON_JDK_PACKAGE_PRIVATE);
         GroovyMethodFilter groovy = new GroovyMethodFilter();
         if (groovy.isEnabled()) {
             filters.add(groovy);
