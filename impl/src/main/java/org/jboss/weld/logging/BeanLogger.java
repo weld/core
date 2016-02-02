@@ -301,6 +301,10 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1504, value = "Intercepted bean method {0} (intercepted by {1}) cannot be declared final", format = Format.MESSAGE_FORMAT)
     DeploymentException finalInterceptedBeanMethodNotAllowed(Object param1, Object param2);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1505, value = "Method {0} cannot be intercepted by {1} - will be ignored by interceptors and should never be invoked upon the proxy instance!", format = Format.MESSAGE_FORMAT)
+    void finalMethodNotIntercepted(Object method, Object interceptor);
+
     @LogMessage(level = Level.TRACE)
     @Message(id = 1506, value = "Created new client proxy of type {0} for bean {1} with ID {2}", format = Format.MESSAGE_FORMAT)
     void createdNewClientProxyType(Object param1, Object param2, Object param3);

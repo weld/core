@@ -38,6 +38,7 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.ExcludeClassInterceptors;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.builder.InterceptionModelBuilder;
@@ -81,6 +82,8 @@ public class InterceptionModelInitializer<T> {
     private final InterceptionModelBuilder builder;
     private boolean hasSerializationOrInvocationInterceptorMethods;
 
+    private final WeldConfiguration configuration;
+
     public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, AnnotatedConstructor<T> constructor, Bean<?> bean) {
         this.constructor = constructor;
         this.manager = manager;
@@ -94,6 +97,7 @@ public class InterceptionModelInitializer<T> {
         }
         this.interceptorsApi = manager.getServices().get(InterceptorsApiAbstraction.class);
         this.ejbApi = manager.getServices().get(EJBApiAbstraction.class);
+        this.configuration = manager.getServices().get(WeldConfiguration.class);
     }
 
     public void init() {
@@ -184,11 +188,16 @@ public class InterceptionModelInitializer<T> {
     private void initInterceptor(InterceptionType interceptionType, AnnotatedMethod<?> method, Collection<Annotation> methodBindingAnnotations) {
         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(interceptionType, methodBindingAnnotations);
         if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
-            if (Reflections.isFinal(method.getJavaMember())) {
-                throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
-            }
             Method javaMethod = method.getJavaMember();
-            builder.intercept(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors));
+            if (Reflections.isFinal(javaMethod)) {
+                if (configuration.isFinalMethodIgnored(javaMethod.getDeclaringClass().getName())) {
+                    BeanLogger.LOG.finalMethodNotIntercepted(javaMethod, methodBoundInterceptors.get(0).getBeanClass().getName());
+                } else {
+                    throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                }
+            } else {
+                builder.intercept(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors));
+            }
         }
     }
 

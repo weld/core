@@ -163,8 +163,7 @@ public final class ActionSequence {
     public void assertDataEquals(List<String> expected) {
         assertEquals(String.format("%s and expected sequence differ in size.", toString()), expected.size(), data.size());
         for (int i = 0; i < expected.size(); i++) {
-            assertEquals(data.get(i), expected.get(i),
-                    String.format("%s and expected sequence differ on the index %d.", toString(), i));
+            assertEquals(String.format("%s and expected sequence differ on the index %d.", toString(), i), data.get(i), expected.get(i));
         }
     }
 
