@@ -18,6 +18,7 @@ package org.jboss.weld.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
@@ -31,6 +32,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.logging.ValidatorLogger;
@@ -210,8 +212,17 @@ public class Proxies {
             return ValidatorLogger.LOG.notProxyablePrimitive(clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Reflections.isArrayType(clazz)) {
             return ValidatorLogger.LOG.notProxyableArrayType(clazz, getDeclaringBeanInfo(declaringBean));
-        } else if (Reflections.isTypeOrAnyMethodFinal(clazz)) {
-            return ValidatorLogger.LOG.notProxyableFinalTypeOrMethod(clazz, Reflections.getNonPrivateFinalMethodOrType(clazz), getDeclaringBeanInfo(declaringBean));
+        } else if (Reflections.isFinal(clazz)) {
+            return ValidatorLogger.LOG.notProxyableFinalType(clazz, getDeclaringBeanInfo(declaringBean));
+        } else {
+            Method finalMethod = Reflections.getNonPrivateNonStaticFinalMethod(clazz);
+            if (finalMethod != null) {
+                if (services.get(WeldConfiguration.class).isFinalMethodIgnored(clazz.getName())) {
+                    ValidatorLogger.LOG.notProxyableFinalMethodIgnored(finalMethod, getDeclaringBeanInfo(declaringBean));
+                } else {
+                    return ValidatorLogger.LOG.notProxyableFinalMethod(clazz, finalMethod, getDeclaringBeanInfo(declaringBean));
+                }
+            }
         }
 
         UnproxyableResolutionException exception = services.get(ProxyInstantiator.class).validateNoargConstructor(constructor, clazz, declaringBean);

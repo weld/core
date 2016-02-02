@@ -169,13 +169,10 @@ public class Reflections {
      * @return True if final, false otherwise
      */
     public static boolean isTypeOrAnyMethodFinal(Class<?> type) {
-        return getNonPrivateFinalMethodOrType(type) != null;
+        return isFinal(type) || getNonPrivateNonStaticFinalMethod(type) != null;
     }
 
-    public static Object getNonPrivateFinalMethodOrType(Class<?> type) {
-        if (isFinal(type)) {
-            return type;
-        }
+    public static Method getNonPrivateNonStaticFinalMethod(Class<?> type) {
         for (Class<?> clazz = type; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
                 if (isFinal(method) && !isPrivate(method) && !isStatic(method)) {

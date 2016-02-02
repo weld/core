@@ -39,6 +39,7 @@ import javax.interceptor.InterceptorBinding;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
@@ -82,6 +83,8 @@ public class InterceptionModelInitializer<T> {
     private final InterceptionModelBuilder builder;
     private boolean hasSerializationOrInvocationInterceptorMethods;
 
+    private final WeldConfiguration configuration;
+
     public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, EnhancedAnnotatedConstructor<T> constructor, Bean<?> bean) {
         this.constructor = constructor;
         this.manager = manager;
@@ -95,6 +98,7 @@ public class InterceptionModelInitializer<T> {
         }
         this.interceptorsApi = manager.getServices().get(InterceptorsApiAbstraction.class);
         this.timeoutAnnotation = manager.getServices().get(EjbSupport.class).getTimeoutAnnotation();
+        this.configuration = manager.getServices().get(WeldConfiguration.class);
     }
 
     public void init() {
@@ -192,11 +196,16 @@ public class InterceptionModelInitializer<T> {
     private void initInterceptor(InterceptionType interceptionType, AnnotatedMethod<?> method, Set<Annotation> methodBindingAnnotations) {
         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(interceptionType, methodBindingAnnotations);
         if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
-            if (Reflections.isFinal(method.getJavaMember())) {
-                throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
-            }
             Method javaMethod = method.getJavaMember();
-            builder.interceptMethod(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors), methodBindingAnnotations);
+            if (Reflections.isFinal(javaMethod)) {
+                if (configuration.isFinalMethodIgnored(javaMethod.getDeclaringClass().getName())) {
+                    BeanLogger.LOG.finalMethodNotIntercepted(javaMethod, methodBoundInterceptors.get(0).getBeanClass().getName());
+                } else {
+                    throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                }
+            } else {
+                builder.interceptMethod(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors), methodBindingAnnotations);
+            }
         }
     }
 
