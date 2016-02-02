@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.reflect.Method;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -197,13 +199,13 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1436, value = "Type {0} is not proxyable because it has a private constructor {1} - {2}.", format = Format.MESSAGE_FORMAT)
     String notProxyablePrivateConstructor(Object param1, Object param2, Object param3);
 
-    @Message(id = 1437, value = "Normal scoped bean {0} is not proxyable because the type is final or it contains a final method {1} - {2}.", format = Format.MESSAGE_FORMAT)
-    UnproxyableResolutionException notProxyableFinalTypeOrMethod(Object param1, Object param2, Object param3);
+    @Message(id = 1437, value = "Bean type {0} is not proxyable because it is final - {2}.", format = Format.MESSAGE_FORMAT)
+    UnproxyableResolutionException notProxyableFinalType(Object param1, Object param2);
 
-    @Message(id = 1438, value = "Normal scoped bean {0} is not proxyable because it is a primitive - {1}.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1438, value = "Bean type {0} is not proxyable because it is a primitive - {1}.", format = Format.MESSAGE_FORMAT)
     UnproxyableResolutionException notProxyablePrimitive(Object param1, Object param2);
 
-    @Message(id = 1439, value = "Normal scoped bean {0} is not proxyable because it is an array type - {1}.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1439, value = "Bean type {0} is not proxyable because it is an array type - {1}.", format = Format.MESSAGE_FORMAT)
     UnproxyableResolutionException notProxyableArrayType(Object param1, Object param2);
 
     @LogMessage(level = Level.WARN)
@@ -303,5 +305,12 @@ public interface ValidatorLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 1479, value = "Decorator {0} is enabled for the application and for the bean archive {1}. It will only be invoked in the @Priority part of the chain.", format = Format.MESSAGE_FORMAT)
     void decoratorEnabledForApplicationAndBeanArchive(Object decorator, Object beanArchive);
+
+    @Message(id = 1480, value = "Bean type {0} is not proxyable because it contains a final method {1} - {2}.", format = Format.MESSAGE_FORMAT)
+    UnproxyableResolutionException notProxyableFinalMethod(Object beanType, Method finalMethod, Object declaringBean);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1481, value = "Final method will be ignored during proxy generation and should never be invoked upon the proxy instance! {0} - {1}.", format = Format.MESSAGE_FORMAT)
+    void notProxyableFinalMethodIgnored(Method invalidMethod, Object declaringBean);
 
 }

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -107,15 +108,18 @@ public class WeldConfiguration implements Service {
 
     private final File proxyDumpFilePath;
 
+    private final Pattern proxyIgnoreFinalMethodsPattern;
+
     /**
      *
-     * @param bootstrapConfiguration
+     * @param services
      * @param deployment
      */
     public WeldConfiguration(ServiceRegistry services, Deployment deployment) {
         Preconditions.checkArgumentNotNull(deployment, "deployment");
         this.properties = init(services, deployment);
         this.proxyDumpFilePath = initProxyDumpFilePath();
+        this.proxyIgnoreFinalMethodsPattern = initProxyIgnoreFinalMethodsPattern();
         ConfigurationLogger.LOG.configurationInitialized(properties);
     }
 
@@ -166,6 +170,16 @@ public class WeldConfiguration implements Service {
      */
     public File getProxyDumpFilePath() {
         return proxyDumpFilePath;
+    }
+
+    /**
+     *
+     * @param className
+     * @return <code>true</code> if the final methods declared on the given type should be ignored, <code>false</code> otherwise
+     * @see ConfigurationKey#PROXY_IGNORE_FINAL_METHODS
+     */
+    public boolean isFinalMethodIgnored(String className) {
+        return proxyIgnoreFinalMethodsPattern != null ? proxyIgnoreFinalMethodsPattern.matcher(className).matches() : false;
     }
 
     @Override
@@ -264,6 +278,14 @@ public class WeldConfiguration implements Service {
             } else {
                 return tmp;
             }
+        }
+        return null;
+    }
+
+    private Pattern initProxyIgnoreFinalMethodsPattern() {
+        String ignore = getStringProperty(ConfigurationKey.PROXY_IGNORE_FINAL_METHODS);
+        if (!ignore.isEmpty()) {
+            return Pattern.compile(ignore);
         }
         return null;
     }
