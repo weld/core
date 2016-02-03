@@ -104,6 +104,24 @@ extensions. It's highly recommended to use the portable mode whenever
 possible - non-portable mode may lead to unexpected behaviour during
 initialization process.
 
+==== Proxying classes with final methods
+
+Weld offers a non-standard way to create proxies for non-private, non-static final methods.
+When using this option, such final method will be ignored during proxy generation and the Java type
+will be proxied (as opposed to classical behavior when there would be an exception thrown).
+Since the method was ignored during proxy creation, it should never be invoked.
+
+In order to make this work, use the below shown configuration key and pass it a regular expression.
+When Weld finds an unproxyable type which matches this pattern, the final methods will be ignored 
+and the type will be proxied.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.proxy.ignoreFinalMethods` ||If defined, matching classes will be proxied and final methods ignored.
+|=======================================================================
+
 ==== Bounding the cache size for resolved injection points
 
 Weld caches already resolved injection points in order to resolve them
