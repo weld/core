@@ -147,7 +147,7 @@ import org.jboss.weld.config.Description;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
-import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
@@ -864,9 +864,9 @@ final class JsonObjects {
         if (observerMethod instanceof ObserverMethodImpl) {
             ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
             observerBuilder.add(DECLARING_BEAN, createSimpleBeanJson(observerMethodImpl.getDeclaringBean(), probe));
-            if(isUnrestrictedProcessAnnotatedTypeObserver(observerMethodImpl)) {
-                observerBuilder.add(DESCRIPTION, WARNING_UNRESTRICTED_PAT_OBSERVER);
-            }
+        }
+        if(isUnrestrictedProcessAnnotatedTypeObserver(observerMethod)) {
+            observerBuilder.add(DESCRIPTION, WARNING_UNRESTRICTED_PAT_OBSERVER);
         }
         if (observerMethod instanceof Prioritized) {
             final int priority = Prioritized.class.cast(observerMethod).getPriority();
@@ -876,13 +876,13 @@ final class JsonObjects {
         return observerBuilder;
     }
 
-    private static boolean isUnrestrictedProcessAnnotatedTypeObserver(ObserverMethodImpl<?, ?> observerMethod) {
-        if (observerMethod instanceof ExtensionObserverMethodImpl) {
-            ExtensionObserverMethodImpl<?, ?> extensionObserverMethod = (ExtensionObserverMethodImpl<?, ?>) observerMethod;
-            Class<?> rawObserverType = Reflections.getRawType(extensionObserverMethod.getObservedType());
+    private static boolean isUnrestrictedProcessAnnotatedTypeObserver(ObserverMethod<?> observerMethod) {
+        if (observerMethod instanceof ContainerLifecycleEventObserverMethod) {
+            ContainerLifecycleEventObserverMethod<?> containerLifecycleObserverMethod = (ContainerLifecycleEventObserverMethod<?>) observerMethod;
+            Class<?> rawObserverType = Reflections.getRawType(containerLifecycleObserverMethod.getObservedType());
             if ((rawObserverType.equals(ProcessAnnotatedType.class) || rawObserverType.equals(ProcessSyntheticAnnotatedType.class))
-                    && extensionObserverMethod.getRequiredAnnotations().isEmpty()) {
-                Type eventType = extensionObserverMethod.getObservedType();
+                    && containerLifecycleObserverMethod.getRequiredAnnotations().isEmpty()) {
+                Type eventType = containerLifecycleObserverMethod.getObservedType();
                 Type[] typeArguments;
                 if (eventType instanceof ParameterizedType) {
                     typeArguments = ((ParameterizedType) eventType).getActualTypeArguments();

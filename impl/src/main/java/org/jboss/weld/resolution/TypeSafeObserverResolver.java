@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
@@ -73,12 +73,12 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         if (!Beans.containsAllQualifiers(QualifierInstance.of(observer.getObservedQualifiers(), metaAnnotationStore), resolvable.getQualifiers())) {
             return false;
         }
-        if (observer instanceof ExtensionObserverMethodImpl<?, ?>) {
-            ExtensionObserverMethodImpl<?, ?> extensionObserver = (ExtensionObserverMethodImpl<?, ?>) observer;
-            if (resolvable instanceof ProcessAnnotatedTypeEventResolvable && !extensionObserver.getRequiredAnnotations().isEmpty()) {
+        if (observer instanceof ContainerLifecycleEventObserverMethod) {
+            ContainerLifecycleEventObserverMethod<?> lifecycleObserver = (ContainerLifecycleEventObserverMethod<?>) observer;
+            if (resolvable instanceof ProcessAnnotatedTypeEventResolvable && !lifecycleObserver.getRequiredAnnotations().isEmpty()) {
                 // this is a ProcessAnnotatedType observer method with @WithAnnotations and a resolvable for ProcessAnnotatedType
                 ProcessAnnotatedTypeEventResolvable patResolvable = (ProcessAnnotatedTypeEventResolvable) resolvable;
-                return patResolvable.containsRequiredAnnotations(extensionObserver.getRequiredAnnotations());
+                return patResolvable.containsRequiredAnnotations(lifecycleObserver.getRequiredAnnotations());
             }
         } else {
             return !isContainerLifecycleEvent(resolvable); // container lifecycle events are only delivered to extensions

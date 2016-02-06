@@ -57,9 +57,9 @@ public class WeldSEBeanRegistrant implements Extension {
         if (ignoreEvent(event)) {
             return;
         }
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager));
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InstanceManager.class, manager));
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager));
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager), ParametersFactory.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InstanceManager.class, manager), InstanceManager.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager), RunnableDecorator.class.getName());
     }
 
     public void registerWeldSEContexts(@Observes ExperimentalAfterBeanDiscovery event, BeanManager manager) {
