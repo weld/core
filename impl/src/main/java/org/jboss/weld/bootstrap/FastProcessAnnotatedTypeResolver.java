@@ -32,7 +32,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
-import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -108,24 +108,24 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
     }
 
-    private final Set<ExtensionObserverMethodImpl<?, ?>> catchAllObservers;
-    private final Map<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>> observers;
+    private final Set<ContainerLifecycleEventObserverMethod<?>> catchAllObservers;
+    private final Map<ContainerLifecycleEventObserverMethod<?>, Predicate<ClassFileInfo>> observers;
 
     public FastProcessAnnotatedTypeResolver(Iterable<ObserverMethod<?>> observers) throws UnsupportedObserverMethodException {
         this.catchAllObservers = new HashSet<>();
-        this.observers = new LinkedHashMap<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>>();
+        this.observers = new LinkedHashMap<ContainerLifecycleEventObserverMethod<?>, Predicate<ClassFileInfo>>();
         for (ObserverMethod<?> o : observers) {
-            if (o instanceof ExtensionObserverMethodImpl<?, ?>) {
+            if (o instanceof ContainerLifecycleEventObserverMethod<?>) {
                 final Set<Annotation> qualifiers = o.getObservedQualifiers();
                 // only process observer methods with no qualifiers or with @Any
                 if (qualifiers.isEmpty() || (qualifiers.size() == 1 && Any.class.equals(qualifiers.iterator().next().annotationType()))) {
-                    process((ExtensionObserverMethodImpl<?, ?>) o, o.getObservedType());
+                    process((ContainerLifecycleEventObserverMethod<?>) o, o.getObservedType());
                 }
             }
         }
     }
 
-    private void process(ExtensionObserverMethodImpl<?, ?> observer, Type observedType) throws UnsupportedObserverMethodException {
+    private void process(ContainerLifecycleEventObserverMethod<?> observer, Type observedType) throws UnsupportedObserverMethodException {
         if (Object.class.equals(observedType)) {
             // void observe(Object event)
             catchAllObservers.add(observer);
@@ -163,7 +163,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
     }
 
-    private void checkBounds(ExtensionObserverMethodImpl<?, ?> observer, Type[] bounds) throws UnsupportedObserverMethodException {
+    private void checkBounds(ContainerLifecycleEventObserverMethod<?> observer, Type[] bounds) throws UnsupportedObserverMethodException {
         for (Type type : bounds) {
             if (!(type instanceof Class<?>)) {
                 throw new UnsupportedObserverMethodException(observer);
@@ -171,7 +171,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
     }
 
-    private void defaultRules(ExtensionObserverMethodImpl<?, ?> observer, Type observedType) throws UnsupportedObserverMethodException {
+    private void defaultRules(ContainerLifecycleEventObserverMethod<?> observer, Type observedType) throws UnsupportedObserverMethodException {
         if (ProcessAnnotatedType.class.equals(observedType)) {
             catchAllObservers.add(observer);
         } else if (observedType instanceof ParameterizedType) {
@@ -204,13 +204,13 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
      * @param className the specified class name
      * @return the set of resolved ProcessAnnotatedType observer methods
      */
-    public Set<ExtensionObserverMethodImpl<?, ?>> resolveProcessAnnotatedTypeObservers(ClassFileServices classFileServices, String className) {
-        Set<ExtensionObserverMethodImpl<?, ?>> result = new HashSet<ExtensionObserverMethodImpl<?, ?>>();
+    public Set<ContainerLifecycleEventObserverMethod<?>> resolveProcessAnnotatedTypeObservers(ClassFileServices classFileServices, String className) {
+        Set<ContainerLifecycleEventObserverMethod<?>> result = new HashSet<ContainerLifecycleEventObserverMethod<?>>();
         result.addAll(catchAllObservers);
 
         ClassFileInfo classInfo = classFileServices.getClassFileInfo(className);
-        for (Map.Entry<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>> entry : observers.entrySet()) {
-            ExtensionObserverMethodImpl<?, ?> observer = entry.getKey();
+        for (Map.Entry<ContainerLifecycleEventObserverMethod<?>, Predicate<ClassFileInfo>> entry : observers.entrySet()) {
+            ContainerLifecycleEventObserverMethod<?> observer = entry.getKey();
             if (containsRequiredAnnotation(classInfo, observer) && entry.getValue().test(classInfo)) {
                 result.add(observer);
             }
@@ -218,7 +218,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         return result;
     }
 
-    private boolean containsRequiredAnnotation(ClassFileInfo classInfo, ExtensionObserverMethodImpl<?, ?> observer) {
+    private boolean containsRequiredAnnotation(ClassFileInfo classInfo, ContainerLifecycleEventObserverMethod<?> observer) {
         if (observer.getRequiredAnnotations().isEmpty()) {
             return true;
         }

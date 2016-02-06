@@ -8,6 +8,7 @@ import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.environment.logging.Category;
 import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 
 /**
  * A source of localized log/bundle messages and exceptions. Note that this interface extends {@link WeldEnvironmentLogger} so that regular logger methods are
@@ -60,5 +61,15 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
 
     @Message(id = 2009, value = "Weld SE container cannot be initialized - no bean archives found")
     IllegalStateException weldContainerCannotBeInitializedNoBeanArchivesFound();
+
+    @Message(id = 2010, value = "The observed type {0} is not a container lifecycle event type", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException observedTypeNotContonainerLifecycleEventType(Object type);
+
+    @Message(id = 2011, value = "The observed type {0} does not match the container lifecycle event type {1}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException observedTypeDoesNotMatchContonainerLifecycleEventType(Object type, Object eventType);
+
+    @Message(id = 2012, value = "The container lifecycle observer is not properly initialized: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException containerLifecycleObserverNotInitialized(Object info);
+
 
 }

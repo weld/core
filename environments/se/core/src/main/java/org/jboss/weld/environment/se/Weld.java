@@ -78,6 +78,7 @@ import org.jboss.weld.environment.deployment.discovery.ClassPathBeanArchiveScann
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.logging.CommonLogger;
+import org.jboss.weld.environment.se.ContainerLifecycleObserver.ContainerLifecycleObserverExtension;
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.util.BeanArchives;
@@ -213,6 +214,8 @@ public class Weld implements ContainerInstanceFactory {
 
     private final List<BeanBuilderImpl<?>> beanBuilders;
 
+    private final List<ContainerLifecycleObserver<?>> containerLifecycleObservers;
+
     private ResourceLoader resourceLoader;
 
     public Weld() {
@@ -236,6 +239,7 @@ public class Weld implements ContainerInstanceFactory {
         this.properties = new HashMap<String, Object>();
         this.packages = new HashSet<PackInfo>();
         this.beanBuilders = new ArrayList<BeanBuilderImpl<?>>();
+        this.containerLifecycleObservers = new ArrayList<>();
         this.resourceLoader = new WeldResourceLoader();
     }
 
@@ -351,6 +355,18 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld addExtension(Extension extension) {
         extensions.add(new MetadataImpl<Extension>(extension, SYNTHETIC_LOCATION_PREFIX + extension.getClass().getName()));
+        return this;
+    }
+
+    /**
+     * Add a synthetic container lifecycle event observer.
+     *
+     * @param observer
+     * @return self
+     * @see ContainerLifecycleObserver
+     */
+    public Weld addContainerLifecycleObserver(ContainerLifecycleObserver<?> observer) {
+        containerLifecycleObservers.add(observer);
         return this;
     }
 
@@ -791,6 +807,9 @@ public class Weld implements ContainerInstanceFactory {
         if(Boolean.valueOf(AccessController.doPrivileged(new GetSystemPropertyAction(DEV_MODE_SYSTEM_PROPERTY)))) {
             // The development mode is enabled - register the Probe extension
             result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
+        }
+        if (!containerLifecycleObservers.isEmpty()) {
+            result.add(new MetadataImpl<Extension>(new ContainerLifecycleObserverExtension(containerLifecycleObservers), SYNTHETIC_LOCATION_PREFIX + ContainerLifecycleObserver.class.getName()));
         }
         return result;
     }

@@ -50,7 +50,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
+public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> implements ContainerLifecycleEventObserverMethod<T> {
 
     private final Container containerLifecycleEventDeliveryLock;
     private final Set<Class<? extends Annotation>> requiredTypeAnnotations;

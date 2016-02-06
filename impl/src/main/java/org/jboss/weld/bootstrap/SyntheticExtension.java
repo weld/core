@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2016, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,24 +16,32 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.util.Collection;
+
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 
 /**
- * Thrown when {@link FastProcessAnnotatedTypeResolver} cannot be created due to unsupported observed type.
+ * A synthetic extension. This extension is not registered as a bean, Weld only registers the synthetic container lifecycle observer methods.
  *
- * @author Jozef Hartinger
- *
+ * @author Martin Kouba
  */
-class UnsupportedObserverMethodException extends Exception {
+public interface SyntheticExtension extends Extension {
 
-    private static final long serialVersionUID = -2164722035016351775L;
-    private final ContainerLifecycleEventObserverMethod<?> observer;
+    /**
+     *
+     * @return
+     */
+    Collection<ContainerLifecycleEventObserverMethod<?>> getObservers();
 
-    public UnsupportedObserverMethodException(ContainerLifecycleEventObserverMethod<?> observer) {
-        this.observer = observer;
+    /**
+     * Allows to initialize the synthetic observers before put into service.
+     *
+     * @param beanManager
+     */
+    default void initialize(BeanManager beanManager) {
     }
 
-    public ContainerLifecycleEventObserverMethod<?> getObserver() {
-        return observer;
-    }
 }

@@ -42,7 +42,7 @@ import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
-import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.logging.EventLogger;
@@ -90,7 +90,7 @@ public class Observers {
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {
         return CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(method.getObservedType()))
-                || (Object.class.equals(method.getObservedType()) && method instanceof ExtensionObserverMethodImpl<?, ?>);
+                || (Object.class.equals(method.getObservedType()) && method instanceof ContainerLifecycleEventObserverMethod);
     }
 
     public static boolean isObserverMethodEnabled(ObserverMethod<?> method, BeanManagerImpl manager) {

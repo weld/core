@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -49,6 +50,7 @@ import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -79,7 +81,7 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     }
 
     public void processObserverMethod(ObserverMethod<?> observer) {
-        if (observer instanceof ExtensionObserverMethodImpl<?, ?>) {
+        if (observer instanceof ContainerLifecycleEventObserverMethod) {
             processObserverMethodType(observer.getObservedType());
         }
     }
@@ -148,7 +150,7 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         if (!isProcessAnnotatedTypeObserved()) {
             return null;
         }
-        final Set<ExtensionObserverMethodImpl<?, ?>> observers = annotatedTypeContext.getResolvedProcessAnnotatedTypeObservers();
+        final Set<ContainerLifecycleEventObserverMethod<?>> observers = annotatedTypeContext.getResolvedProcessAnnotatedTypeObservers();
         final SlimAnnotatedType<T> annotatedType = annotatedTypeContext.getAnnotatedType();
         // if the fast resolver resolved an empty set of observer methods, skip this event
         if (observers != null && observers.isEmpty()) {
@@ -168,7 +170,7 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
             fireProcessAnnotatedType(event, beanManager);
         } else {
             BootstrapLogger.LOG.patFastResolver(annotatedType);
-            fireProcessAnnotatedType(event, annotatedTypeContext.getResolvedProcessAnnotatedTypeObservers());
+            fireProcessAnnotatedType(event, annotatedTypeContext.getResolvedProcessAnnotatedTypeObservers(), beanManager);
         }
         return event;
     }
@@ -190,11 +192,11 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
      * extension observers resolved by FastProcessAnnotatedTypeResolver.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ExtensionObserverMethodImpl<?, ?>> observers) {
+    private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ContainerLifecycleEventObserverMethod<?>> observers, BeanManagerImpl beanManager) {
         List<Throwable> errors = new LinkedList<Throwable>();
-        for (ExtensionObserverMethodImpl observer : observers) {
+        for (ContainerLifecycleEventObserverMethod observer : observers) {
             // FastProcessAnnotatedTypeResolver does not consider special scope inheritance rules (see CDI - section 4.1)
-            if (checkScopeInheritanceRules(event.getOriginalAnnotatedType(), observer)) {
+            if (checkScopeInheritanceRules(event.getOriginalAnnotatedType(), observer, beanManager)) {
                 try {
                     observer.notify(event);
                 } catch (Throwable e) {
@@ -207,9 +209,15 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         }
     }
 
-    private boolean checkScopeInheritanceRules(SlimAnnotatedType<?> type, ExtensionObserverMethodImpl<?, ?> observer) {
-        Collection<Class<? extends Annotation>> scopes = observer.getRequiredScopeAnnotations();
-        if (!scopes.isEmpty() && scopes.size() == observer.getRequiredScopeAnnotations().size()) {
+    private boolean checkScopeInheritanceRules(SlimAnnotatedType<?> type, ContainerLifecycleEventObserverMethod<?> observer, BeanManagerImpl beanManager) {
+        Collection<Class<? extends Annotation>> scopes;
+        if (observer instanceof ExtensionObserverMethodImpl) {
+            ExtensionObserverMethodImpl<?, ?> extensionObserver = (ExtensionObserverMethodImpl<?, ?>) observer;
+            scopes = extensionObserver.getRequiredScopeAnnotations();
+        } else {
+            scopes = observer.getRequiredAnnotations().stream().filter((a) -> beanManager.isScope(a)).collect(Collectors.toSet());
+        }
+        if (!scopes.isEmpty() && scopes.size() == observer.getRequiredAnnotations().size()) {
             // this check only works if only scope annotations are listed within @WithAnnotations
             // performing a complete check would be way too expensive - eliminating the benefit of ClassFileServices
             for (Class<? extends Annotation> annotation : scopes) {
@@ -221,7 +229,6 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         }
         return true;
     }
-
 
     public void fireProcessBean(BeanManagerImpl beanManager, Bean<?> bean) {
         if (isProcessBeanObserved()) {

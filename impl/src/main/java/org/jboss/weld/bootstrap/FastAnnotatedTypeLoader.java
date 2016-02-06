@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
-import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -73,7 +73,7 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
             }
 
             // secondly, let's resolve PAT observers for this class
-            Set<ExtensionObserverMethodImpl<?, ?>> observerMethods = Collections.emptySet();
+            Set<ContainerLifecycleEventObserverMethod<?>> observerMethods = Collections.emptySet();
             if (containerLifecycleEvents.isProcessAnnotatedTypeObserved()) {
                 observerMethods = resolver.resolveProcessAnnotatedTypeObservers(classFileServices, className);
                 if (!observerMethods.isEmpty()) {
@@ -98,10 +98,10 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
     }
 
     private <T> SlimAnnotatedTypeContext<T> createContext(String className, ClassFileInfo classFileInfo,
-            Set<ExtensionObserverMethodImpl<?, ?>> observerMethods, String bdaId) {
+            Set<ContainerLifecycleEventObserverMethod<?>> observerMethods, String bdaId) {
         final SlimAnnotatedType<T> type = loadSlimAnnotatedType(this.<T> loadClass(className), bdaId);
         if (type != null) {
-            return SlimAnnotatedTypeContext.of(type, classFileInfo, observerMethods, classTransformer);
+            return SlimAnnotatedTypeContext.of(type, classFileInfo, observerMethods);
         }
         return null;
     }

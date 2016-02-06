@@ -101,7 +101,7 @@ class AnnotatedTypeLoader {
 
     protected <T> SlimAnnotatedTypeContext<T> createContext(SlimAnnotatedType<T> type) {
         if (type != null) {
-            return SlimAnnotatedTypeContext.of(type, classTransformer);
+            return SlimAnnotatedTypeContext.of(type);
         }
         return null;
     }

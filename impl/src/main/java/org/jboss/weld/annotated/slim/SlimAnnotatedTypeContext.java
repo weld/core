@@ -20,8 +20,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.event.ExtensionObserverMethodImpl;
-import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.resources.spi.ClassFileServices;
 
@@ -37,30 +36,28 @@ import org.jboss.weld.resources.spi.ClassFileServices;
 public class SlimAnnotatedTypeContext<T> {
 
     public static <T> SlimAnnotatedTypeContext<T> of(SlimAnnotatedType<T> type, ClassFileInfo classInfo,
-            Set<ExtensionObserverMethodImpl<?, ?>> resolvedProcessAnnotatedTypeObservers, ClassTransformer transformer) {
-        return new SlimAnnotatedTypeContext<T>(type, classInfo, resolvedProcessAnnotatedTypeObservers, transformer, null);
+            Set<ContainerLifecycleEventObserverMethod<?>> resolvedProcessAnnotatedTypeObservers) {
+        return new SlimAnnotatedTypeContext<T>(type, classInfo, resolvedProcessAnnotatedTypeObservers, null);
     }
 
-    public static <T> SlimAnnotatedTypeContext<T> of(SlimAnnotatedType<T> type, ClassTransformer transformer) {
-        return new SlimAnnotatedTypeContext<T>(type, null, null, transformer, null);
+    public static <T> SlimAnnotatedTypeContext<T> of(SlimAnnotatedType<T> type) {
+        return new SlimAnnotatedTypeContext<T>(type, null, null, null);
     }
 
-    public static <T> SlimAnnotatedTypeContext<T> of(SlimAnnotatedType<T> type, ClassTransformer transformer, Extension extension) {
-        return new SlimAnnotatedTypeContext<T>(type, null, null, transformer, extension);
+    public static <T> SlimAnnotatedTypeContext<T> of(SlimAnnotatedType<T> type, Extension extension) {
+        return new SlimAnnotatedTypeContext<T>(type, null, null, extension);
     }
 
     private final SlimAnnotatedType<T> type;
     private final ClassFileInfo classInfo;
-    private final Set<ExtensionObserverMethodImpl<?, ?>> resolvedProcessAnnotatedTypeObservers;
-    private final ClassTransformer transformer;
+    private final Set<ContainerLifecycleEventObserverMethod<?>> resolvedProcessAnnotatedTypeObservers;
     private final Extension extension;
 
     private SlimAnnotatedTypeContext(SlimAnnotatedType<T> type, ClassFileInfo classInfo,
-            Set<ExtensionObserverMethodImpl<?, ?>> resolvedProcessAnnotatedTypeObservers, ClassTransformer transformer, Extension extension) {
+            Set<ContainerLifecycleEventObserverMethod<?>> resolvedProcessAnnotatedTypeObservers, Extension extension) {
         this.type = type;
         this.classInfo = classInfo;
         this.resolvedProcessAnnotatedTypeObservers = resolvedProcessAnnotatedTypeObservers;
-        this.transformer = transformer;
         this.extension = extension;
     }
 
@@ -84,7 +81,7 @@ public class SlimAnnotatedTypeContext<T> {
      *         attribute is only available if the integrator provided {@link ClassFileServices} and the underlying type is comes from scanning (not registered
      *         by an extension).
      */
-    public Set<ExtensionObserverMethodImpl<?, ?>> getResolvedProcessAnnotatedTypeObservers() {
+    public Set<ContainerLifecycleEventObserverMethod<?>> getResolvedProcessAnnotatedTypeObservers() {
         return resolvedProcessAnnotatedTypeObservers;
     }
 

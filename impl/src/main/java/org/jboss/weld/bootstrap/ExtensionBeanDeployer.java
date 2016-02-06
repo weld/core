@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -81,6 +82,17 @@ public class ExtensionBeanDeployer {
         // Locate the BeanDeployment for this extension
         BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue()
                 .getClass());
+
+        // TODO
+        if (extension.getValue() instanceof SyntheticExtension) {
+            SyntheticExtension synthetic = (SyntheticExtension) extension.getValue();
+            synthetic.initialize(beanDeployment.getBeanManager());
+            for (ObserverMethod<?> observer : synthetic.getObservers()) {
+                beanDeployment.getBeanManager().addObserver(observer);
+                containerLifecycleEventObservers.processObserverMethod(observer);
+            }
+            return;
+        }
 
         EnhancedAnnotatedType<E> enchancedAnnotatedType = getEnhancedAnnotatedType(classTransformer, extension, beanDeployment);
 
