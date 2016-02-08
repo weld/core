@@ -9,7 +9,7 @@ ${head}
 <body>
 
    <script type="text/x-handlebars">
-        <div id="navigation-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div id="navigation-menu" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false" aria-controls="navbar">
@@ -23,24 +23,20 @@ ${head}
                 </div>
                 <div id="menu" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
+                        <li>{{#link-to 'dashboard'}}Dashboard{{/link-to}}</li>
                         <li>{{#link-to 'beanArchives'}}Bean Archives{{/link-to}}</li>
                         <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
+                        <li>{{#link-to 'observerList'}}Observers{{/link-to}}</li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Events <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Monitoring <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
                                 <li>{{#link-to 'events'}}Fired Events{{/link-to}}</li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contexts <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
+                                <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
                                 {{#each contexts}}
-                                <li>{{#link-to 'context' id}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}}</li>
+                                <li>{{#link-to 'context' id}}Inspect {{abbr scope 0 title=false suppressHtml=true}}{{/link-to}}</li>
                                 {{/each}}
                             </ul>
                         </li>
-                        <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
                         <li>{{#link-to 'configuration'}}Weld Configuration{{/link-to}}</li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right quick-links">
@@ -55,13 +51,138 @@ ${head}
                             </ul>
                         </li>
                     </ul>
-                    <p class="navbar-text navbar-right version"> <span title="Running on Weld {{unbound version}}"><i class="fa fa-lg fa-cogs"></i> Weld {{unbound versionShort}}</span>  <span title="Application init time: {{unbound initTime}}"><i class="fa fa-lg fa-clock-o"></i> {{initTimeFromNow}}</span></p>
+                    <p class="navbar-text navbar-right version"> <span title="Running on Weld {{unbound version}}"><i class="fa fa-lg fa-cogs"></i> Weld {{unbound versionShort}}</span> &nbsp; <span title="Application init time: {{unbound initTime}}"><i class="fa fa-lg fa-clock-o"></i> {{initTimeFromNow}}</span> &nbsp; </p>
                 </div>
             </div>
         </div>
         <div class="container-fluid content">
         {{outlet}}
         </div>
+    </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="dashboard">
+
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'dashboard'}}Dashboard{{/link-to}}
+        </div>
+
+        <h1>Dashboard</h1>
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Application</div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Uptime:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{controllers.application.initTimeFromNow}} <span title="Init time: {{unbound controllers.application.initTime}}"><i class="fa fa-lg fa-clock-o"></i></span></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Bean archives:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{#link-to 'beanArchives' (query-params hideAddBda=true)}}{{appBdas}}{{/link-to}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Beans:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{#link-to 'beanList' (query-params bda='probe-filterAdditionalBdas')}}{{controllers.application.dashboard.application.beans}}{{/link-to}}</p>
+                                </div>
+                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Observer methods:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{#link-to 'observerList' (query-params bda='probe-filterAdditionalBdas')}}{{controllers.application.dashboard.application.observers}}{{/link-to}}</p>
+                                </div>
+                            </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Monitoring</div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Last update:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{lastUpdate}} &nbsp; <button {{action 'refreshData'}} class="btn btn-default btn-xs"><i class="fa fa-refresh"></i> Refresh</button></p>
+                                </div>
+                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Monitored invocations:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{#link-to 'invocationList'}}{{invocations}}{{/link-to}}</p>
+                                </div>
+                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Fired events:</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{#link-to 'events'}}{{fired}}{{/link-to}}</p>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Bootstrap</div>
+                        <div class="panel-body">
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th>Container Lifecycle Event</th>
+                                    <th>Times Fired</th>
+                                    <th>Observers</th>
+                                </tr>
+                                {{#each controllers.application.dashboard.bootstrapStats}}
+                                <tr>
+                                    <td class="text-right">{{abbr type 1 skipIcon=true}}</td>
+                                    <td class="text-left">{{fired}}</td>
+                                    <td class="text-left">{{#link-to 'observerList' (query-params observedType=type)}}{{observers}}{{/link-to}}</td>
+                                </tr>
+                                {{/each}}
+                        </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Probe configuration</div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                            {{#each devmodeProperties}}
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label">{{abbr name 20 skipIcon=true}} {{tip description stripHtml=true}}:</label>
+                                <div class="col-sm-7">
+                                    <p class="form-control-static">{{value}}</p>
+                                </div>
+                             </div>
+                            {{/each}}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </script>
 
     <script
@@ -694,7 +815,7 @@ ${head}
         data-template-name="observerList">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'observerList'}}Observer Methods{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'observerList'}}Observer Methods{{/link-to}}
         </div>
 
         <h1>Observer Methods</h1>
@@ -798,7 +919,7 @@ ${head}
         data-template-name="observerDetail">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'observerList'}}Observer Methods{{/link-to}} / {{#link-to 'observerDetail' id}}{{at}}Observes {{abbr observedType 30 suppressHtml=true}}{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'observerList'}}Observer Methods{{/link-to}} / {{#link-to 'observerDetail' id}}{{at}}Observes {{abbr observedType 30 suppressHtml=true}}{{/link-to}}
         </div>
 
         <h1>Observer Method Detail</h1>
@@ -876,7 +997,7 @@ ${head}
         data-template-name="context">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Contexts / {{#link-to 'context' id}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / Contexts / {{#link-to 'context' id}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}}
         </div>
 
         <h1>Context - {{scope}}</h1>
@@ -940,7 +1061,7 @@ ${head}
       data-template-name="contextInstance">
 
       <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Contexts / {{#link-to 'context' contextId}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}} / {{#link-to 'contextInstance' id}}Context Instance{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / Contexts / {{#link-to 'context' contextId}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}} / {{#link-to 'contextInstance' id}}Context Instance{{/link-to}}
       </div>
 
       <h1>Context Instance</h1>
@@ -998,7 +1119,7 @@ ${head}
       data-template-name="invocationList">
 
       <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}}
       </div>
 
       <h1>Invocation Trees</h1>
@@ -1085,7 +1206,7 @@ ${head}
       data-template-name="invocationDetail">
 
       <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}} / {{#link-to 'invocationDetail' id}}Invocation Tree{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}} / {{#link-to 'invocationDetail' id}}Invocation Tree{{/link-to}}
       </div>
 
       <h1>Invocation Tree</h1>
@@ -1144,7 +1265,7 @@ ${head}
       data-template-name="events">
 
          <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'events'}}Fired Events{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / {{#link-to 'events'}}Fired Events{{/link-to}}
         </div>
 
         <h1>Fired events</h1>

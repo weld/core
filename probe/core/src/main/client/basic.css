@@ -1,10 +1,10 @@
 body {
   margin: 25px;
-  font-family: sans-serif;
+  font-family: "Droid Sans", Arial, sans-serif;
 }
 
 h1, h2, h3, h4 {
-  font-family: sans-serif;
+  font-family: "Droid Sans", Arial, sans-serif;
 }
 
 h1 {
@@ -179,19 +179,32 @@ ul.plain-list li {
   margin-top: 25%;
 }
 
+#navigation-menu a, #navigation-menu span {
+  color: silver;
+}
+
+#navigation-menu.navbar {
+  border-width: 0px;
+}
+
+#navigation-menu ul.dropdown-menu li a {
+  color: #1d1d1d;
+}
+
 #navigation-menu a.active, #navigation-menu li.active a.dropdown-toggle
   {
   background-color: #337ab7;
   color: #fff;
   background-image: none;
-  border-radius: 3px;
+}
+
+#navigation-menu a:HOVER, #navigation-menu li.active a.dropdown-toggle:HOVER {
+  background-color: #1d1d1d;
 }
 
 a.nav-link {
   padding: 5px 8px 5px 4px;
   margin-right: 5px;
-  background-image: none;
-  /*border: 1px solid silver;*/
   border-radius: 3px;
 }
 
@@ -200,12 +213,12 @@ a.nav-link {
 }
 
 #navigation-menu a:HOVER {
-  text-decoration: underline;
+  /*text-decoration: underline;*/
 }
 
-#navigation-menu .navbar-nav>li {
-  border-right: 2px solid #f6f4f4;
-}
+/*#navigation-menu .navbar-nav>li {
+  border-right: 2px solid #4D4D4D;
+}*/
 
 div.content {
   padding: 30px 10px 10px 10px;
@@ -254,15 +267,10 @@ div.content {
 
 .quick-links a.dropdown-toggle {
   background-color: Salmon;
-  border-radius: 5px;
 }
 
 #navigation-menu .quick-links a.dropdown-toggle {
   color: white;
-}
-
-#navigation-menu .quick-links a.dropdown-toggle:HOVER {
-  color: black;
 }
 
 .centered {
@@ -298,8 +306,9 @@ a.probe-comp, i.probe-comp, span.probe-comp {
   color: silver;
 }
 
-p.version {
+p.version span {
   padding-right: 10px;
+  color: white;
 }
 
 code {
@@ -310,4 +319,9 @@ code {
   padding: 2px 4px;
   white-space: nowrap;
   font-family: sans-serif;
+}
+
+div.content .panel-default>.panel-heading {
+  background-image: none;
+  font-weight: bold;
 }
