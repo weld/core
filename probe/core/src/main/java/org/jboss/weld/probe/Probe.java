@@ -46,6 +46,9 @@ import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Components.BeanKind;
+import org.jboss.weld.probe.Queries.BeanFilters;
+import org.jboss.weld.probe.Queries.Filters;
+import org.jboss.weld.probe.Queries.ObserverFilters;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.collections.SetMultimap;
 
@@ -94,21 +97,23 @@ class Probe {
 
     private final AtomicLong initTs;
 
+    private final BootstrapStats bootstrapStats;
+
     /**
      *
      */
     Probe() {
-        initTs = new AtomicLong(0);
-        invocations = new ConcurrentHashMap<Integer, Invocation>();
-        events = Collections.synchronizedList(new ArrayList<EventInfo>());
-        beanToId = new HashMap<Bean<?>, String>();
-        idToBean = new HashMap<String, Bean<?>>();
-        beanToManager = new HashMap<Bean<?>, BeanManagerImpl>();
-        idToObserver = new HashMap<String, ObserverMethod<?>>();
-        observerToId = new HashMap<ObserverMethod<?>, String>();
-        beanToDeclaredProducers = SetMultimap.newSetMultimap();
-        bdaToManager = new HashMap<BeanDeploymentArchive, BeanManagerImpl>();
-        beanComparator = new Comparator<Bean<?>>() {
+        this.initTs = new AtomicLong(0);
+        this.invocations = new ConcurrentHashMap<Integer, Invocation>();
+        this.events = Collections.synchronizedList(new ArrayList<EventInfo>());
+        this.beanToId = new HashMap<Bean<?>, String>();
+        this.idToBean = new HashMap<String, Bean<?>>();
+        this.beanToManager = new HashMap<Bean<?>, BeanManagerImpl>();
+        this.idToObserver = new HashMap<String, ObserverMethod<?>>();
+        this.observerToId = new HashMap<ObserverMethod<?>, String>();
+        this.beanToDeclaredProducers = SetMultimap.newSetMultimap();
+        this.bdaToManager = new HashMap<BeanDeploymentArchive, BeanManagerImpl>();
+        this.beanComparator = new Comparator<Bean<?>>() {
             @Override
             public int compare(Bean<?> o1, Bean<?> o2) {
                 if (o1.getBeanClass().equals(o2.getBeanClass())) {
@@ -145,6 +150,7 @@ class Probe {
                 return result == 0 ? bda1.getId().compareTo(bda2.getId()) : result;
             }
         };
+        this.bootstrapStats = new BootstrapStats();
     }
 
     /**
@@ -419,6 +425,28 @@ class Probe {
 
     long getInitTs() {
         return initTs.get();
+    }
+
+    BootstrapStats getBootstrapStats() {
+        return bootstrapStats;
+    }
+
+    int getApplicationBeansCount() {
+        return Queries.find(getBeans(), 0, 0, new BeanFilters(this, Filters.FILTER_ADDITIONAL_BDAS_MARKER)).getTotal();
+    }
+
+    int getApplicationObserversCount() {
+        return Queries.find(getObservers(), 0, 0, new ObserverFilters(this, null, Filters.FILTER_ADDITIONAL_BDAS_MARKER)).getTotal();
+    }
+
+    int getInvocationsCount() {
+        return invocations.size();
+    }
+
+    int getFiredEventsCount() {
+        synchronized (events) {
+            return events.size();
+        }
     }
 
     private void putBean(ContextualStore contextualStore, Bean<?> bean) {

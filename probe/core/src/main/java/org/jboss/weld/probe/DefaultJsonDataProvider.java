@@ -135,4 +135,9 @@ public class DefaultJsonDataProvider implements JsonDataProvider {
         return Json.objectBuilder().add(REMOVED_EVENTS, probe.clearEvents()).build();
     }
 
+    @Override
+    public String receiveMonitoringStats() {
+        return JsonObjects.createMonitoringStatsJson(probe).build();
+    }
+
 }

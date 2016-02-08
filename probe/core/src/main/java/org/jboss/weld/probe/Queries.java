@@ -166,7 +166,7 @@ final class Queries {
 
         private static final char VALUE_QUOTE = '"';
 
-        protected static final String FILTER_ADDITIONAL_BDAS_MARKER = "probe-filterAdditionalBdas";
+        static final String FILTER_ADDITIONAL_BDAS_MARKER = "probe-filterAdditionalBdas";
 
         protected final Probe probe;
 
@@ -347,6 +347,11 @@ final class Queries {
             super(probe);
         }
 
+        BeanFilters(Probe probe, String bda) {
+            super(probe);
+            this.bda = bda;
+        }
+
         @Override
         public boolean test(Bean<?> bean) {
             return testBda(bda, bean) && testEquals(kind, BeanKind.from(bean)) && testContainsIgnoreCase(beanClass, bean.getBeanClass())
@@ -408,6 +413,12 @@ final class Queries {
 
         ObserverFilters(Probe probe) {
             super(probe);
+        }
+
+        ObserverFilters(Probe probe, String observedType, String bda) {
+            super(probe);
+            this.observedType = observedType;
+            this.bda = bda;
         }
 
         @Override
