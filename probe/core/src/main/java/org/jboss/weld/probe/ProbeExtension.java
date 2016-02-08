@@ -67,6 +67,7 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.probe.BootstrapStats.EventType;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -112,6 +113,7 @@ public class ProbeExtension implements Extension {
     }
 
     public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event, BeanManager beanManager) {
+        probe.getBootstrapStats().increment(EventType.PBA);
         final BeanAttributes<T> beanAttributes = event.getBeanAttributes();
         final WeldManager weldManager = (WeldManager) beanManager;
         if (isMonitored(event.getAnnotated(), beanAttributes, weldManager)) {
@@ -176,16 +178,19 @@ public class ProbeExtension implements Extension {
     }
 
     public void processAnnotatedTypes(@Observes ProcessAnnotatedType<?> event, BeanManager beanManager) {
+        probe.getBootstrapStats().increment(EventType.PAT);
         addContainerLifecycleEvent(event, null, beanManager);
     }
 
     public void processInjectionPoints(@Observes ProcessInjectionPoint<?, ?> event, BeanManager beanManager) {
+        probe.getBootstrapStats().increment(EventType.PIP);
         if (eventMonitorContainerLifecycleEvents) {
             addContainerLifecycleEvent(event, formatMember(event.getInjectionPoint().getMember()), beanManager);
         }
     }
 
     public void processInjectionTargets(@Observes ProcessInjectionTarget<?> event, BeanManager beanManager) {
+        probe.getBootstrapStats().increment(EventType.PIT);
         if (eventMonitorContainerLifecycleEvents) {
             addContainerLifecycleEvent(event, Formats.formatType(event.getAnnotatedType().getBaseType(), false), beanManager);
         }
@@ -196,6 +201,7 @@ public class ProbeExtension implements Extension {
     }
 
     public void processObserverMethods(@Observes ProcessObserverMethod<?, ?> event, BeanManager beanManager) {
+        probe.getBootstrapStats().increment(EventType.POM);
         if (eventMonitorContainerLifecycleEvents) {
             addContainerLifecycleEvent(event,
                     event.getAnnotatedMethod() != null ? formatMember(event.getAnnotatedMethod().getJavaMember()) : event.getObserverMethod().toString(),
@@ -204,12 +210,14 @@ public class ProbeExtension implements Extension {
     }
 
     public void processProducers(@Observes ProcessProducer<?, ?> event, BeanManager beanManager) {
+        probe.getBootstrapStats().increment(EventType.PP);
         if (eventMonitorContainerLifecycleEvents) {
             addContainerLifecycleEvent(event, formatMember(event.getAnnotatedMember().getJavaMember()), beanManager);
         }
     }
 
     public void processBeans(@Observes ProcessBean<?> event, BeanManager beanManager) {
+        probe.getBootstrapStats().increment(EventType.PB);
         if (eventMonitorContainerLifecycleEvents) {
             Object info;
             if (event instanceof ProcessProducerMethod) {

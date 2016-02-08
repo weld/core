@@ -102,6 +102,10 @@ public final class Strings {
     public static final String ASSOCIATED_TO = "associatedTo";
     public static final String REMOVED_EVENTS = "removedEvents";
     public static final String INIT_TS = "initTs";
+    public static final String DASHBOARD = "dashboard";
+    public static final String BOOSTRAP_STATS = "bootstrapStats";
+    public static final String FIRED = "fired";
+    public static final String INVOCATIONS = "invocations";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";

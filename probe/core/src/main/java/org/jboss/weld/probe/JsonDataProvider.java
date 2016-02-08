@@ -158,4 +158,12 @@ public interface JsonDataProvider {
     @Description("Removes all monitoring data - fired events.")
     String clearEvents();
 
+    /**
+    *
+    * @return the JSON result
+    * @see Resource#MONITORING_STATS
+    */
+   @Description("Receives monitoring stats.")
+   String receiveMonitoringStats();
+
 }

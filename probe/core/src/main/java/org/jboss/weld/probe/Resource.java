@@ -167,7 +167,14 @@ enum Resource {
                 throws IOException {
             append(resp, jsonDataProvider.clearEvents());
         }
-    }), /**
+    }),
+    MONITORING_STATS("/monitoring", new Handler() {
+        @Override
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveMonitoringStats());
+        }
+    }),
+    /**
          * A default HTML client resource.
          */
     CLIENT_RESOURCE("/client/{[a-zA-Z_0-9-]+\\.\\w+}", new Handler() {
