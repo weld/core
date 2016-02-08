@@ -28,6 +28,7 @@ import static org.jboss.weld.probe.Strings.BEANS;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.BINDINGS;
+import static org.jboss.weld.probe.Strings.BOOSTRAP_STATS;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.CIDS;
 import static org.jboss.weld.probe.Strings.CLASS;
@@ -35,6 +36,7 @@ import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.CONTEXTS;
 import static org.jboss.weld.probe.Strings.CONTEXT_ID;
+import static org.jboss.weld.probe.Strings.DASHBOARD;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
@@ -52,6 +54,7 @@ import static org.jboss.weld.probe.Strings.DISPOSAL_METHOD;
 import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
 import static org.jboss.weld.probe.Strings.EVENT_INFO;
+import static org.jboss.weld.probe.Strings.FIRED;
 import static org.jboss.weld.probe.Strings.ID;
 import static org.jboss.weld.probe.Strings.INFO;
 import static org.jboss.weld.probe.Strings.INFO_FETCHING_LAZILY;
@@ -59,6 +62,7 @@ import static org.jboss.weld.probe.Strings.INIT_TS;
 import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
 import static org.jboss.weld.probe.Strings.INTERCEPTORS;
+import static org.jboss.weld.probe.Strings.INVOCATIONS;
 import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.IS_POTENTIAL;
 import static org.jboss.weld.probe.Strings.KIND;
@@ -112,6 +116,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.ConversationScoped;
@@ -150,10 +155,12 @@ import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.probe.BootstrapStats.EventType;
 import org.jboss.weld.probe.Components.BeanKind;
 import org.jboss.weld.probe.Components.Dependency;
 import org.jboss.weld.probe.Json.JsonArrayBuilder;
 import org.jboss.weld.probe.Json.JsonObjectBuilder;
+import org.jboss.weld.probe.Queries.ObserverFilters;
 import org.jboss.weld.probe.Queries.Page;
 import org.jboss.weld.probe.Resource.Representation;
 import org.jboss.weld.util.AnnotationApiAbstraction;
@@ -289,6 +296,17 @@ final class JsonObjects {
 
         // INSPECTABLE CONTEXTS
         deploymentBuilder.add(CONTEXTS, createContextsJson(beanManager, probe));
+
+        // DASHBOARD DATA
+        JsonObjectBuilder dashboardBuilder = Json.objectBuilder();
+        // Application
+        JsonObjectBuilder appBuilder = Json.objectBuilder();
+        appBuilder.add(BEANS, probe.getApplicationBeansCount());
+        appBuilder.add(OBSERVERS, probe.getApplicationObserversCount());
+        dashboardBuilder.add(APPLICATION, appBuilder);
+        // Bootstrap
+        dashboardBuilder.add(BOOSTRAP_STATS, createBootstrapStatsJson(probe));
+        deploymentBuilder.add(DASHBOARD, dashboardBuilder);
 
         return deploymentBuilder.build();
     }
@@ -1103,6 +1121,35 @@ final class JsonObjects {
         bdaBuilder.add(ID, Components.getId(bdaId));
         return bdaBuilder;
     }
+
+    static JsonArrayBuilder createBootstrapStatsJson(Probe probe) {
+        JsonArrayBuilder builder = Json.arrayBuilder();
+        Map<EventType, AtomicLong> counts = probe.getBootstrapStats().getCounts();
+        List<EventType> sortedKeys = new ArrayList<>(counts.keySet());
+        Collections.sort(sortedKeys, new Comparator<EventType>() {
+            @Override
+            public int compare(EventType o1, EventType o2) {
+                return Integer.compare(o1.getPriority(), o2.getPriority());
+            }
+        });
+        for (EventType eventType : sortedKeys) {
+            JsonObjectBuilder eventBuilder = Json.objectBuilder();
+            eventBuilder.add(NAME, eventType.toString());
+            eventBuilder.add(TYPE, eventType.getType());
+            eventBuilder.add(FIRED, counts.get(eventType).get());
+            eventBuilder.add(OBSERVERS, Queries.find(probe.getObservers(), 1, 0, new ObserverFilters(probe, eventType.getType(), null)).getTotal());
+            builder.add(eventBuilder);
+        }
+        return builder;
+    }
+
+    static JsonObjectBuilder createMonitoringStatsJson(Probe probe) {
+        JsonObjectBuilder builder = Json.objectBuilder();
+        builder.add(FIRED, probe.getFiredEventsCount());
+        builder.add(INVOCATIONS, probe.getInvocationsCount());
+        return builder;
+    }
+
 
     private static String simplifiedScope(Class<? extends Annotation> scope) {
         return "@" + (Components.isBuiltinScope(scope) ? scope.getSimpleName() : scope.getName());

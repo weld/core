@@ -17,8 +17,11 @@ Probe.ResetScroll = Ember.Mixin.create({
 });
 
 Probe.Router.map(function() {
-    this.route('beanArchives', {
+    this.route('dashboard', {
         path : '/'
+    });
+    this.route('beanArchives', {
+        path : '/beanArchives'
     });
     this.route('beanArchive', {
         path : '/bda/:id'
@@ -111,12 +114,51 @@ Probe.ApplicationRoute = Ember.Route
                         var qualifierStart = data.version.indexOf('(');
                         data.versionShort = qualifierStart != -1 ? data.version
                             .substring(0, qualifierStart) : data.version;
+                        controller.set('dashboard', data.dashboard);
                         return data;
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                     alert('Unable to get JSON data: ' + textStatus);
                 });
         }
     });
+
+Probe.DashboardRoute = Ember.Route.extend({
+    model : function() {
+        var appController = this.controllerFor('application');
+        return $.getJSON(appController.get('restUrlBase') + 'monitoring').done(
+            function(data) {
+                var devmodeProperties = new Array();
+                appController.get('configuration').forEach(
+                    function(property, index, array) {
+                        if (property.name.indexOf('probe') != -1) {
+                            var devproperty = new Object();
+                            devproperty.name = property.name;
+                            devproperty.value = property.value;
+                            devproperty.description = property.description;
+                            devmodeProperties.push(devproperty);
+                        }
+                    });
+                data.devmodeProperties = devmodeProperties;
+                var appBdas = 0;
+                appController.get('bdas').forEach(
+                    function(bda) {
+                        if (!isAdditionalBda(appController
+                            .get('additionalBdaSuffix'), bda.bdaId)) {
+                            appBdas++;
+                        }
+                    });
+                data.appBdas = appBdas;
+                return data;
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert('Unable to get JSON data: ' + textStatus);
+        });
+    },
+    actions : {
+        refreshData : function() {
+            this.refresh();
+        }
+    }
+});
 
 Probe.BeanArchivesRoute = Ember.Route.extend({
     model : function() {
@@ -597,7 +639,7 @@ Probe.ApplicationController = Ember.ObjectController
                 'YYYY-MM-DD HH:mm:ss');
         }.property(),
         initTimeFromNow : function() {
-            return moment(this.get("content").initTs).fromNow();
+            return moment(this.get("content").initTs).fromNow(true);
         }.property("initTime"),
         startWatchingTime : function() {
             var self = this;
@@ -605,8 +647,23 @@ Probe.ApplicationController = Ember.ObjectController
                 self.notifyPropertyChange("initTime");
                 self.startWatchingTime();
             }, 5 * 1000 * 60);
-        }
+        },
+        dashboard : null
     });
+
+Probe.DashboardController = Ember.ObjectController.extend({
+    needs : [ 'application' ],
+    lastUpdate : null,
+    onModelChanged : function() {
+        this.set('lastUpdate', moment(new Date()).format(
+        'YYYY-MM-DD HH:mm:ss'));
+    }.observes('model'),
+    actions : {
+        refresh : function() {
+            this.send('refreshData');
+        }
+    }
+});
 
 Probe.BeanArchivesController = Ember.ArrayController.extend({
     needs : [ 'application' ],
@@ -629,6 +686,7 @@ Probe.BeanArchivesController = Ember.ArrayController.extend({
     visibleBdas : Ember.computed.filterBy('bdas', 'visible', true),
     selectedBdas : Ember.computed.filterBy('visibleBdas', 'selected', true),
     selectedBdasUnwrapped : Ember.computed.mapBy('selectedBdas', 'content'),
+    queryParams : [ 'hideAddBda' ],
     actions : {
         settingHasChanged : function(checkTooMuchData) {
             var controller = this;
@@ -872,17 +930,18 @@ Ember.Handlebars.registerBoundHelper('eachLiAbbr', function(types, limit,
 
 /*
  * This helper takes two params: text and limit. Furthermore it's possible to
- * specify optional hash arguments: title and suppressHtml.
+ * specify optional hash arguments: title, suppressHtml and skipIcon.
  */
 Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, options) {
     var addTitle = options.hash.title || true;
     var suppresshtmlOutput = options.hash.suppressHtml || false;
+    var skipIcon = options.hash.skipIcon || false;
     var escaped = Handlebars.Utils.escapeExpression(text);
     if (escaped.length > limit) {
         var ret = '';
         ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
-            !suppresshtmlOutput, addTitle) : abbreviateType(escaped,
-            !suppresshtmlOutput, addTitle);
+            !suppresshtmlOutput, addTitle, skipIcon) : abbreviateType(escaped,
+            !suppresshtmlOutput, addTitle, skipIcon);
         escaped = ret;
     }
     return new Handlebars.SafeString(escaped);
@@ -904,6 +963,10 @@ Ember.Handlebars
  * This helper is used to render a tooltip-like icon.
  */
 Ember.Handlebars.registerBoundHelper('tip', function(text, options) {
+    var stripHtml = options.hash.stripHtml || false;
+    if (stripHtml) {
+        text = text.replace(/(<([^>]+)>)/ig,"");
+    }
     return new Handlebars.SafeString(
         '<i class="fa fa-lg fa-info-circle" title="' + text + '"></i>');
 });
@@ -2068,9 +2131,10 @@ function isAdditionalBda(additionalBdaSuffix, bdaId) {
  * @param type
  * @param htmlOutput
  * @param title
+ * @param skipIcon
  * @returns {String}
  */
-function abbreviateType(type, htmlOutput, title) {
+function abbreviateType(type, htmlOutput, title, skipIcon) {
     var parts = type.split('.');
     var ret = '';
     var lastIdx = parts.length - 1;
@@ -2095,7 +2159,9 @@ function abbreviateType(type, htmlOutput, title) {
         if (title) {
             ret += '</span>';
         }
-        ret += ' <i class="fa fa-compress abbreviated"></i>';
+        if (!skipIcon) {
+            ret += ' <i class="fa fa-compress abbreviated"></i>';
+        }
     }
     return ret;
 }
@@ -2106,9 +2172,10 @@ function abbreviateType(type, htmlOutput, title) {
  * @param annotation
  * @param htmlOutput
  * @param title
+ * @param skipIcon
  * @returns {String}
  */
-function abbreviateAnnotation(annotation, htmlOutput, title) {
+function abbreviateAnnotation(annotation, htmlOutput, title, skipIcon) {
     var ret = (htmlOutput && title) ? ' <span title="' + annotation + '">@'
         : '@';
     if (annotation.indexOf('(') !== -1) {
@@ -2136,7 +2203,9 @@ function abbreviateAnnotation(annotation, htmlOutput, title) {
         if (title) {
             ret += '</span>';
         }
-        ret += ' <i class="fa fa-compress abbreviated"></i>';
+        if (!skipIcon) {
+            ret += ' <i class="fa fa-compress abbreviated"></i>';
+        }
     }
     return ret;
 }
