@@ -131,7 +131,7 @@ public class ProbeFilter implements Filter {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         if (allowRemoteAddressPattern != null && !allowRemoteAddressPattern.matcher(request.getRemoteAddr()).matches()) {
-            ProbeLogger.LOG.requestDenied(request.getRemoteAddr(), httpRequest.getRequestURI());
+            ProbeLogger.LOG.requestDenied(httpRequest.getRequestURI(), request.getRemoteAddr());
             httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
