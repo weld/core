@@ -312,6 +312,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludedGroups>integration,javaee-full</excludedGroups>
+                            <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
                             <systemPropertyVariables>
                                 <arquillian.launch>weld</arquillian.launch>
                                 <!-- Specified system properties are not

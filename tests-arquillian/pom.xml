@@ -191,6 +191,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludedGroups>org.jboss.weld.tests.category.Integration,org.jboss.weld.tests.category.Broken,org.jboss.weld.tests.category.Performance</excludedGroups>
+                            <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
                             <systemProperties>
                                 <arquillian.xml>arquillian.xml</arquillian.xml>
                             </systemProperties>
