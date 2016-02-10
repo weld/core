@@ -195,6 +195,8 @@
                                 <arquillian.xml>arquillian.xml</arquillian.xml>
                             </systemProperties>
                             <test>${test}</test>
+                            <!-- Travis CI build workaround -->
+                            <argLine>${travis.surefire.argLine}</argLine>
                         </configuration>
                     </plugin>
                 </plugins>

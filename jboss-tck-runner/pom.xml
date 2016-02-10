@@ -318,6 +318,8 @@
                                     available during in-container test execution -->
                                 <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
                                 <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
+                                <!-- Travis CI build workaround -->
+                                <argLine>${travis.surefire.argLine}</argLine>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
