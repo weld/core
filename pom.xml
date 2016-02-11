@@ -35,7 +35,7 @@
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.1.7.Final</arquillian.version>
-        <arquillian.drone.version>2.0.0.Alpha5</arquillian.drone.version>
+        <arquillian.drone.version>2.0.0.Beta1</arquillian.drone.version>
         <arquillian.graphene.version>2.1.0.Alpha2</arquillian.graphene.version>
         <arquillian.weld.version>1.0.0.CR9</arquillian.weld.version>
         <arquillian.se.container.version>1.0.0.CR2</arquillian.se.container.version>
