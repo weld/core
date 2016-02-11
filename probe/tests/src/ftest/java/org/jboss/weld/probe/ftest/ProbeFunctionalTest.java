@@ -17,8 +17,10 @@
 package org.jboss.weld.probe.ftest;
 
 import static junit.framework.Assert.assertTrue;
+
 import static org.jboss.arquillian.graphene.Graphene.guardAjax;
 import static org.jboss.arquillian.graphene.Graphene.guardNoRequest;
+import static org.jboss.arquillian.graphene.Graphene.waitAjax;
 import static org.jboss.arquillian.graphene.Graphene.waitModel;
 
 import java.net.MalformedURLException;
@@ -27,7 +29,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Model;
@@ -35,6 +36,7 @@ import javax.enterprise.inject.Model;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
+import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -55,9 +57,11 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 /**
  * @author Tomas Remes
+ * @author Matej Novotny
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -66,19 +70,6 @@ public class ProbeFunctionalTest {
     protected static final String PROBE = "weld-probe";
     protected static final String ARCHIVE_NAME = "probe-ftest";
     protected static final String SERVLET_INVOKED = "GET /probe-ftest/test";
-    protected By BEAN_ARCHIVES = By.linkText("Bean Archives");
-    protected By BEANS = By.linkText("Beans");
-    protected By MODEL_BEAN_LINK = By.partialLinkText(ModelBean.class.getSimpleName());
-    protected By FORM_CONTROL_CLASS = By.className("form-control-static");
-    protected By ARCHIVE_LINK = By.partialLinkText(ARCHIVE_NAME);
-    protected By EVENTS_LINK = By.partialLinkText("Events");
-    protected By OBSERVER_METHODS_LINK = By.partialLinkText("Observer Methods");
-    protected By OBSERVER_LINK = By.partialLinkText(ApplicationScopedObserver.class.getSimpleName());
-    protected By CONTEXTS_LINK = By.linkText("Contexts");
-    protected By SESSIONSCOPED_LINK = By.partialLinkText(SessionScoped.class.getSimpleName());
-    protected By SESSIONSCOPEDBEAN_LINK = By.partialLinkText(SessionScopedBean.class.getSimpleName());
-    protected By INVOCATIONS_TREES_LINK = By.linkText("Invocation Trees");
-    protected By TD_TAG = By.tagName("td");
 
     @Drone
     WebDriver driver;
@@ -86,6 +77,12 @@ public class ProbeFunctionalTest {
     @ArquillianResource
     private URL contextPath;
 
+    @Page
+    private PageFragment page;
+    
+    @FindBy(className = "form-control-static")
+    List<WebElement> listOfTargetElements;
+    
     @Deployment(testable = false)
     public static WebArchive createTestDeployment1() {
         WebArchive webArchive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME + ".war")
@@ -99,63 +96,69 @@ public class ProbeFunctionalTest {
 
     @Before
     public void openStartUrl() throws MalformedURLException {
+        // By default you land on Dashboard tab
         driver.navigate().to(new URL(contextPath.toString() + PROBE));
-        waitModel().until().element(BEAN_ARCHIVES).is().present();
+        waitModel().until().element(page.getBeanArchivesTab()).is().present();
     }
 
     @Test
     public void testBeanArchiveDetail() {
-        guardNoRequest(driver.findElement(ARCHIVE_LINK)).click();
-        List<WebElement> beanArchiveAttributes = driver.findElements(FORM_CONTROL_CLASS);
-        assertTrue(checkListContainsElementWithText(beanArchiveAttributes, BeanDiscoveryMode.ALL.name()));
-        assertTrue(checkListContainsElementWithPartialText(beanArchiveAttributes, InvocationMonitor.class.getName()));
-        assertTrue(checkListContainsElementWithPartialText(beanArchiveAttributes, ARCHIVE_NAME));
+        page.getBeanArchivesTab().click();
+        waitAjax(driver).until().element(By.partialLinkText(ARCHIVE_NAME)).is().visible();
+        guardNoRequest(driver.findElement(By.partialLinkText(ARCHIVE_NAME))).click();
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, BeanDiscoveryMode.ALL.name()));
+        assertTrue(checkListContainsElementWithPartialText(listOfTargetElements, InvocationMonitor.class.getName()));
+        assertTrue(checkListContainsElementWithPartialText(listOfTargetElements, ARCHIVE_NAME));
     }
 
     @Test
     public void testBeanDetail() {
-        guardAjax(driver.findElement(BEANS)).click();
-        WebElement modelBeanLink = driver.findElement(MODEL_BEAN_LINK);
-        assertTrue("Cannot find element for " + MODEL_BEAN_LINK.toString(), modelBeanLink.isDisplayed());
+        guardAjax(page.getBeansTab()).click();
+        String className = ModelBean.class.getSimpleName();
+        waitAjax(driver).until().element(By.partialLinkText(className)).is().visible();
+        WebElement modelBeanLink = driver.findElement(By.partialLinkText(className));
+        assertTrue("Cannot find element for " + className, modelBeanLink.isDisplayed());
         guardAjax(modelBeanLink).click();
-        List<WebElement> modelBeanAttributes = driver.findElements(FORM_CONTROL_CLASS);
-        assertTrue(checkListContainsElementWithText(modelBeanAttributes, ModelBean.class.getName()));
-        assertTrue(checkListContainsElementWithText(modelBeanAttributes, "@" + RequestScoped.class.getSimpleName()));
-        assertTrue(checkListContainsElementWithText(modelBeanAttributes, JSONTestUtil.BeanType.MANAGED.name()));
-        assertTrue(checkListContainsElementWithText(modelBeanAttributes, Model.class.getName()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, ModelBean.class.getName()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, "@" + RequestScoped.class.getSimpleName()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, JSONTestUtil.BeanType.MANAGED.name()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, Model.class.getName()));
     }
 
     @Test
     public void testObserverMethodDetail() {
-        guardNoRequest(driver.findElement(EVENTS_LINK)).click();
-        guardAjax(driver.findElement(OBSERVER_METHODS_LINK)).click();
-        WebElement observerLink = driver.findElement(OBSERVER_LINK);
-        assertTrue("Cannot find element for " + OBSERVER_LINK.toString(), observerLink.isDisplayed());
+        page.getObserversTab().click();
+        waitAjax().until().element(By.partialLinkText("Observer Methods")).is().visible();
+        WebElement observerLink = driver.findElement(By.partialLinkText(ApplicationScopedObserver.class.getSimpleName()));
+        assertTrue("Cannot find element for " + ApplicationScopedObserver.class.getSimpleName(), observerLink.isDisplayed());
         guardAjax(observerLink).click();
-        List<WebElement> observerDetailAttributes = driver.findElements(FORM_CONTROL_CLASS);
-        assertTrue(checkListContainsElementWithText(observerDetailAttributes, ApplicationScopedObserver.class.getName()));
-        assertTrue(checkListContainsElementWithText(observerDetailAttributes, "@" + ApplicationScoped.class.getSimpleName()));
-        assertTrue(checkListContainsElementWithText(observerDetailAttributes, JSONTestUtil.BeanType.MANAGED.name()));
-        assertTrue(checkListContainsElementWithText(observerDetailAttributes, "@" + Default.class.getSimpleName()));
-        assertTrue(checkListContainsElementWithPartialText(observerDetailAttributes, Reception.ALWAYS.name()));
-        assertTrue(checkListContainsElementWithPartialText(observerDetailAttributes, Reception.IF_EXISTS.name()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, ApplicationScopedObserver.class.getName()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, "@" + ApplicationScoped.class.getSimpleName()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, JSONTestUtil.BeanType.MANAGED.name()));
+        assertTrue(checkListContainsElementWithText(listOfTargetElements, "@" + Default.class.getSimpleName()));
+        assertTrue(checkListContainsElementWithPartialText(listOfTargetElements, Reception.ALWAYS.name()));
+        assertTrue(checkListContainsElementWithPartialText(listOfTargetElements, Reception.IF_EXISTS.name()));
     }
 
     @Test
-    public void testContextsView() throws MalformedURLException {
+    public void testMonitoringSessionScopeContext() throws MalformedURLException {
         invokeServletAndReturnToProbeClient();
 
-        guardNoRequest(driver.findElement(CONTEXTS_LINK)).click();
-        guardAjax(driver.findElement(SESSIONSCOPED_LINK)).click();
-        WebElement sesionScopedBeanLink = driver.findElement(SESSIONSCOPEDBEAN_LINK);
-        assertTrue("Cannot find element for " + SESSIONSCOPEDBEAN_LINK.toString(), sesionScopedBeanLink.isDisplayed());
+        page.getMonitoringTab().click();
+        waitAjax(driver).until().element(page.getSessionScopedContext()).is().visible();
+        guardAjax(page.getSessionScopedContext()).click();
+        WebElement sesionScopedBean = driver.findElement(By.partialLinkText(SessionScopedBean.class.getSimpleName()));
+        assertTrue("Cannot find element for " + SessionScopedBean.class.getSimpleName(), sesionScopedBean.isDisplayed());
     }
 
     @Test
-    public void testInvocationTreeView() throws MalformedURLException {
+    public void testMonitoringInvocationTree() throws MalformedURLException {
         invokeServletAndReturnToProbeClient();
-        guardAjax(driver.findElement(INVOCATIONS_TREES_LINK)).click();
-        List<WebElement> invocationTableValues = driver.findElements(TD_TAG);
+        
+        page.getMonitoringTab().click();
+        waitAjax(driver).until().element(page.getInvocationTrees()).is().visible();
+        guardAjax(page.getInvocationTrees()).click();
+        List<WebElement> invocationTableValues = driver.findElements(By.tagName("td"));
         assertTrue(checkListContainsElementWithText(invocationTableValues, ProbeFilter.class.getName()));
         assertTrue(checkListContainsElementWithText(invocationTableValues, SERVLET_INVOKED));
     }
@@ -163,7 +166,7 @@ public class ProbeFunctionalTest {
     private void invokeServletAndReturnToProbeClient() throws MalformedURLException {
         driver.navigate().to(new URL(contextPath.toString() + "test"));
         driver.navigate().to(new URL(contextPath.toString() + PROBE));
-        waitModel().until().element(BEAN_ARCHIVES).is().present();
+        waitModel().until().element(page.getBeanArchivesTab()).is().present();
     }
 
     private boolean checkListContainsElementWithText(List<WebElement> elements, String text) {
