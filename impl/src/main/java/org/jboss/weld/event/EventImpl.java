@@ -132,7 +132,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
     private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
         getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
-        return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), subtype, getQualifiers(), newQualifiers),
+        return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Event.class, subtype, getQualifiers(), newQualifiers),
                 getBeanManager());
     }
 
