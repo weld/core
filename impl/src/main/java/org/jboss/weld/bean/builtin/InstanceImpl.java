@@ -138,7 +138,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
-        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), subtype, getQualifiers(),
+        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class, subtype, getQualifiers(),
                 newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
