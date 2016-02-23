@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.event.subtype;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -34,18 +36,17 @@ import org.junit.runner.RunWith;
 public class EventSelectTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventSelectTest.class))
-                .addPackage(EventSelectTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventSelectTest.class)).addPackage(EventSelectTest.class.getPackage());
     }
 
     @Inject
-    private Event<Object> event;
+    Event<Object> event;
 
     @Inject
     Event<Bar> barEvent;
 
     @Inject
-    private Observers observers;
+    Observers observers;
 
     @Test
     public void testSelectSubType() {
@@ -63,6 +64,27 @@ public class EventSelectTest {
         barEvent.fire(new FooBarImpl());
         assertNotNull(observers.getBar());
         assertNotNull(observers.getFoo());
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void testSelectSubtypeWithWildcard() {
+        observers.reset();
+        Event<Baz<?>> child = event.select(new TypeLiteral<Baz<?>>() {
+        });
+        Baz<?> baz = new BazImpl();
+        child.fire(baz);
+        assertNotNull(observers.getBaz());
+        assertEquals("ok", observers.getBaz().get());
+    }
+
+    static class BazImpl extends Baz<String> {
+
+        @Override
+        String get() {
+            return "ok";
+        }
+
     }
 
 }
