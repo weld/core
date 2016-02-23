@@ -30,6 +30,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -74,6 +75,7 @@ public class ObserverNotifier {
     private final boolean strict;
     protected final CurrentEventMetadata currentEventMetadata;
     private final ComputingCache<Type, RuntimeException> eventTypeCheckCache;
+    private final ComputingCache<Type, RuntimeException> eventSubtypeCheckCache;
     private final Executor asyncEventExecutor;
     private final SecurityServices securityServices;
     private final LazyValueHolder<RequestContext> requestContextHolder;
@@ -84,15 +86,19 @@ public class ObserverNotifier {
         this.strict = strict;
         this.currentEventMetadata = services.get(CurrentEventMetadata.class);
         if (strict) {
-            eventTypeCheckCache = ComputingCacheBuilder.newBuilder().build(new EventTypeCheck());
+            this.eventTypeCheckCache = ComputingCacheBuilder.newBuilder().build(new EventTypeCheck());
+            this.eventSubtypeCheckCache = ComputingCacheBuilder.newBuilder().build(new EventSubtypeCheck());
         } else {
-            eventTypeCheckCache = null; // not necessary
+            // not necessary
+            this.eventTypeCheckCache = null;
+            this.eventSubtypeCheckCache = null;
         }
         // fall back to FJP.commonPool() if ExecutorServices are not installed
         this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
         this.securityServices = services.getRequired(SecurityServices.class);
         // LazyValueHolder is used because contexts are not ready yet at the point when ObserverNotifier is first initialized
-        this.requestContextHolder = LazyValueHolder.forSupplier(() -> Container.instance(contextId).deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get());
+        this.requestContextHolder = LazyValueHolder
+                .forSupplier(() -> Container.instance(contextId).deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get());
     }
 
     /**
@@ -104,7 +110,7 @@ public class ObserverNotifier {
      */
     public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
         checkEventObjectType(eventType);
-        return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
+        return this.<T> resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
     /**
@@ -116,7 +122,7 @@ public class ObserverNotifier {
      */
     public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         checkEventObjectType(eventType);
-        return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
+        return this.<T> resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
     /**
@@ -174,22 +180,14 @@ public class ObserverNotifier {
     protected Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         Set<Type> typeClosure = sharedObjectCache.getTypeClosureHolder(eventType).get();
-        return new ResolvableBuilder(resolver.getMetaAnnotationStore())
-            .addTypes(typeClosure)
-            .addType(Object.class)
-            .addQualifiers(qualifiers)
-            .addQualifierUnchecked(QualifierInstance.ANY)
-            .create();
+        return new ResolvableBuilder(resolver.getMetaAnnotationStore()).addTypes(typeClosure).addType(Object.class).addQualifiers(qualifiers)
+                .addQualifierUnchecked(QualifierInstance.ANY).create();
     }
 
     protected Resolvable buildEventResolvable(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ResolvableBuilder(resolver.getMetaAnnotationStore())
-            .addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get())
-            .addType(Object.class)
-            .addQualifiers(qualifiers)
-            .addQualifierUnchecked(QualifierInstance.ANY)
-            .create();
+        return new ResolvableBuilder(resolver.getMetaAnnotationStore()).addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get()).addType(Object.class)
+                .addQualifiers(qualifiers).addQualifierUnchecked(QualifierInstance.ANY).create();
     }
 
     /**
@@ -224,22 +222,34 @@ public class ObserverNotifier {
         }
     }
 
+    /**
+     *
+     * @param subtype
+     * @throws org.jboss.weld.exceptions.IllegalArgumentException if the strict mode is enabled and the subtype contains a type variable
+     * @see Event#select(javax.enterprise.util.TypeLiteral, Annotation...)
+     */
+    public void checkEventSubtype(Type subtype) {
+        if (strict) {
+            RuntimeException exception = eventSubtypeCheckCache.getValue(subtype);
+            if (exception != NO_EXCEPTION_MARKER) {
+                throw exception;
+            }
+        }
+    }
+
     private static class EventTypeCheck implements Function<Type, RuntimeException> {
 
         @Override
         public RuntimeException apply(Type eventType) {
             Type resolvedType = Types.getCanonicalType(eventType);
-
             /*
              * If the runtime type of the event object contains a type variable, the container must throw an IllegalArgumentException.
              */
             if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
                 return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
             }
-
             /*
-             * If the runtime type of the event object is assignable to the type of a container lifecycle event, IllegalArgumentException
-             * is thrown.
+             * If the runtime type of the event object is assignable to the type of a container lifecycle event, IllegalArgumentException is thrown.
              */
             Class<?> resolvedClass = Reflections.getRawType(eventType);
             for (Class<?> containerEventType : Observers.CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES) {
@@ -251,9 +261,21 @@ public class ObserverNotifier {
         }
     }
 
+    private static class EventSubtypeCheck implements Function<Type, RuntimeException> {
+
+        @Override
+        public RuntimeException apply(Type eventType) {
+            Type resolvedType = Types.getCanonicalType(eventType);
+            if (Types.containsTypeVariable(resolvedType)) {
+                return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
+            }
+            return NO_EXCEPTION_MARKER;
+        }
+    }
+
     /**
-     * Delivers the given synchronous event object to synchronous and transactional observer methods. Event metadata is made available for injection into observer methods, if needed.
-     * Asynchronous observer methods are ignored.
+     * Delivers the given synchronous event object to synchronous and transactional observer methods. Event metadata is made available for injection into
+     * observer methods, if needed. Asynchronous observer methods are ignored.
      *
      * @param observers the given observer methods
      * @param event the given event object
@@ -266,7 +288,6 @@ public class ObserverNotifier {
         notifySyncObservers(observers.getImmediateSyncObservers(), event, metadata, ObserverExceptionHandler.IMMEDIATE_HANDLER);
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata, ObserverExceptionHandler.IMMEDIATE_HANDLER);
     }
-
 
     protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata, ObserverExceptionHandler handler) {
         if (observers.isEmpty()) {
@@ -286,18 +307,19 @@ public class ObserverNotifier {
         }
     }
 
-    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata, ObserverExceptionHandler handler) {
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata,
+            ObserverExceptionHandler handler) {
         notifySyncObservers(observers, event, metadata, ObserverExceptionHandler.IMMEDIATE_HANDLER); // no transaction support
     }
 
     /**
      * Delivers the given asynchronous event object to given observer asynchronous observer methods.
      *
-     * Asynchronous observer methods are scheduled to be notified in a separate thread. Note that this method exits just after
-     * event delivery to asynchronous observer methods is scheduled. {@link EventMetadata} is made available for injection into observer methods, if needed.
+     * Asynchronous observer methods are scheduled to be notified in a separate thread. Note that this method exits just after event delivery to asynchronous
+     * observer methods is scheduled. {@link EventMetadata} is made available for injection into observer methods, if needed.
      *
-     * Note that if any of the observer methods throws an exception, it is never thrown out of this method. Instead, all the exceptions are grouped together using {@link CompletionException}
-     * and the returned {@link CompletionStage} fails with this compound exception.
+     * Note that if any of the observer methods throws an exception, it is never thrown out of this method. Instead, all the exceptions are grouped together
+     * using {@link CompletionException} and the returned {@link CompletionStage} fails with this compound exception.
      *
      * If an executor is provided then observer methods are notified using this executor. Otherwise, Weld's task executor is used.
      *
@@ -362,10 +384,10 @@ public class ObserverNotifier {
     }
 
     /**
-     * There are two different strategies of exception handling for observer methods. When an exception is raised by a synchronous or transactional observer
-     * for a synchronous event, this exception stops the notification chain and the exception is propagated immediately. On the other hand, an exception thrown
-     * during asynchronous event delivery never is never propagated directly. Instead, all the exceptions for a given asynchronous event are collected and then made
-     * available together using FireAsyncException.
+     * There are two different strategies of exception handling for observer methods. When an exception is raised by a synchronous or transactional observer for
+     * a synchronous event, this exception stops the notification chain and the exception is propagated immediately. On the other hand, an exception thrown
+     * during asynchronous event delivery never is never propagated directly. Instead, all the exceptions for a given asynchronous event are collected and then
+     * made available together using FireAsyncException.
      *
      * @author Jozef Hartinger
      *
