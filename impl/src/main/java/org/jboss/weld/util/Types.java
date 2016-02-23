@@ -181,6 +181,26 @@ public class Types {
         return false;
     }
 
+    public static boolean containsTypeVariable(Type type) {
+        type = Types.getCanonicalType(type);
+        if (type instanceof TypeVariable<?>) {
+            return true;
+        }
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            for (Type t : parameterizedType.getActualTypeArguments()) {
+                if (containsTypeVariable(t)) {
+                    return true;
+                }
+            }
+        }
+        if (type instanceof GenericArrayType) {
+            GenericArrayType genericArrayType = (GenericArrayType) type;
+            return containsTypeVariable(genericArrayType.getGenericComponentType());
+        }
+        return false;
+    }
+
     public static Set<Class<?>> getRawTypes(Set<Type> types) {
         return ImmutableSet.copyOf(Iterables.transform(types, TYPE_TO_CLASS_FUNCTION));
     }

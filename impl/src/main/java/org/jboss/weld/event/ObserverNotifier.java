@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -78,6 +79,7 @@ public class ObserverNotifier {
     private final boolean strict;
     protected final CurrentEventMetadata currentEventMetadata;
     private final LoadingCache<Type, RuntimeException> eventTypeCheckCache;
+    private final LoadingCache<Type, RuntimeException> eventSubtypeCheckCache;
 
     protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         this.resolver = resolver;
@@ -85,9 +87,12 @@ public class ObserverNotifier {
         this.strict = strict;
         this.currentEventMetadata = services.get(CurrentEventMetadata.class);
         if (strict) {
-            eventTypeCheckCache = CacheBuilder.newBuilder().build(new EventTypeCheck());
+            this.eventTypeCheckCache = CacheBuilder.newBuilder().build(new EventTypeCheck());
+            this.eventSubtypeCheckCache = CacheBuilder.newBuilder().build(new EventSubtypeCheck());
         } else {
-            eventTypeCheckCache = null; // not necessary
+            // not necessary
+            this.eventTypeCheckCache = null;
+            this.eventSubtypeCheckCache = null;
         }
     }
 
@@ -220,19 +225,32 @@ public class ObserverNotifier {
         }
     }
 
+    /**
+     *
+     * @param subtype
+     * @throws org.jboss.weld.exceptions.IllegalArgumentException if the strict mode is enabled and the subtype contains a type variable
+     * @see Event#select(javax.enterprise.util.TypeLiteral, Annotation...)
+     */
+    public void checkEventSubtype(Type subtype) {
+        if (strict) {
+            RuntimeException exception = getCacheValue(eventSubtypeCheckCache, subtype);
+            if (exception != NO_EXCEPTION_MARKER) {
+                throw exception;
+            }
+        }
+    }
+
     private static class EventTypeCheck extends CacheLoader<Type, RuntimeException> {
 
         @Override
         public RuntimeException load(Type eventType) {
             Type resolvedType = Types.getCanonicalType(eventType);
-
             /*
              * If the runtime type of the event object contains a type variable, the container must throw an IllegalArgumentException.
              */
             if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
                 return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
             }
-
             /*
              * If the runtime type of the event object is assignable to the type of a container lifecycle event, IllegalArgumentException
              * is thrown.
@@ -242,6 +260,18 @@ public class ObserverNotifier {
                 if (containerEventType.isAssignableFrom(resolvedClass)) {
                     return UtilLogger.LOG.eventTypeNotAllowed(eventType);
                 }
+            }
+            return NO_EXCEPTION_MARKER;
+        }
+    }
+
+    private static class EventSubtypeCheck extends CacheLoader<Type, RuntimeException> {
+
+        @Override
+        public RuntimeException load(Type eventType) {
+            Type resolvedType = Types.getCanonicalType(eventType);
+            if (Types.containsTypeVariable(resolvedType)) {
+                return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
             }
             return NO_EXCEPTION_MARKER;
         }
