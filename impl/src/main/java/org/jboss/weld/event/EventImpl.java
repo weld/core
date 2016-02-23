@@ -131,7 +131,8 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
-        getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
+        // A separate check for select() will not be necessary if CDI-494 gets rejected
+        getBeanManager().getGlobalStrictObserverNotifier().checkEventSubtype(subtype);
         return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Event.class, subtype, getQualifiers(), newQualifiers),
                 getBeanManager());
     }
