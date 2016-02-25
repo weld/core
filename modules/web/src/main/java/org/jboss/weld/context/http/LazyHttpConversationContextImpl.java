@@ -24,8 +24,8 @@ import javax.enterprise.context.NonexistentConversationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.logging.ConversationLogger;
-import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.servlet.ConversationContextActivator;
 
 /**
@@ -45,8 +45,8 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
 
     private final ThreadLocal<Object> initialized;
 
-    public LazyHttpConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
-        super(contextId, beanIdentifierIndex);
+    public LazyHttpConversationContextImpl(String contextId, ServiceRegistry services) {
+        super(contextId, services);
         this.initialized = new ThreadLocal<Object>();
         this.transientConversationInitializationCallback = new ThreadLocal<>();
     }

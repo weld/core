@@ -218,7 +218,17 @@ public enum ConfigurationKey {
     @Description("Weld supports a non-standard workaround to be able to create proxies for Java types which declare non-private non-static final methods. A regular expression. If an unproxyable type matches this pattern, the type is considered proxyable and final methods are ignored.")
     PROXY_IGNORE_FINAL_METHODS("org.jboss.weld.proxy.ignoreFinalMethods", ""),
 
-    ;
+    /**
+     *  Conversation timeout in milliseconds. Default value is 600 000 ms.
+     */
+    @Description("The maximum inactivity time of conversation in milliseconds.")
+    CONVERSATION_TIMEOUT("org.jboss.weld.conversation.timeout", 10 * 60 * 1000L),
+
+    /**
+     *  Conversation concurrent access timeout in milliseconds represents maximum time to wait on the conversation concurrent lock. Default value is 1000 ms.
+     */
+    @Description("The maximum time to wait on the lock of conversation in milliseconds.")
+    CONVERSATION_CONCURRENT_ACCESS_TIMEOUT("org.jboss.weld.conversation.concurrentAccessTimeout", 1000L);
 
     /**
      *

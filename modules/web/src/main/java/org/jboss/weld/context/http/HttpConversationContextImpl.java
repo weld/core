@@ -5,12 +5,12 @@ import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
-import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.servlet.SessionHolder;
 import org.jboss.weld.util.collections.EnumerationIterator;
 
@@ -19,8 +19,8 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
     // There is no need to store FQCN in a session key
     private static final String NAMING_SCHEME_PREFIX = "WELD_C";
 
-    public HttpConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
-        super(contextId, beanIdentifierIndex);
+    public HttpConversationContextImpl(String contextId, ServiceRegistry services) {
+        super(contextId, services);
     }
 
     @Override
