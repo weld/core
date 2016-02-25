@@ -206,6 +206,21 @@ Some features of the <<devmode,development mode>> may have negative impact on th
 
 TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.
 
+[[config-conversation-timeout]]
+==== Conversation timeout and Conversation concurrent access timeout
+
+Weld provides configuration properties to override values for default conversation
+timeout and default conversation concurrent access timeout which represents the maximum time
+to wait on the conversation concurrent lock.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.conversation.timeout` |600000 ms| Conversation timeout represent the maximum time during which is the conversation active.
+|`org.jboss.weld.conversation.concurrentAccessTimeout` |1000 ms| Conversation concurrent access timeout represent the maximum time to wait on the conversation concurrent lock.
+|=======================================================================
+
 === Excluding classes from scanning and deployment
 
 CDI 1.1 allows you to exclude classes in your archive from being
@@ -315,3 +330,4 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 
 </web-app>
 -----------------------------------------------------------------------------------------------------------
+

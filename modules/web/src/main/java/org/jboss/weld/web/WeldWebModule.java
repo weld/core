@@ -83,7 +83,7 @@ public class WeldWebModule implements WeldModule {
             // Register the Http contexts if not in
             ctx.addContext(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, index), HttpSessionContext.class, HttpLiteral.INSTANCE));
             ctx.addContext(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, index), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
-            ctx.addContext(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId, index), HttpConversationContext.class, HttpLiteral.INSTANCE));
+            ctx.addContext(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId, ctx.getServices()), HttpConversationContext.class, HttpLiteral.INSTANCE));
             ctx.addContext(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, HttpLiteral.INSTANCE));
         }
     }

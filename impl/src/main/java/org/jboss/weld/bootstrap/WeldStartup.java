@@ -555,7 +555,7 @@ public class WeldStartup {
         contexts.add(new ContextHolder<ApplicationContext>(new ApplicationContextImpl(contextId), ApplicationContext.class, UnboundLiteral.INSTANCE));
         contexts.add(new ContextHolder<SingletonContext>(new SingletonContextImpl(contextId), SingletonContext.class, UnboundLiteral.INSTANCE));
         contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(contextId, beanIdentifierIndex), BoundSessionContext.class, BoundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId, beanIdentifierIndex), BoundConversationContext.class, BoundLiteral.INSTANCE));
+        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId, services), BoundConversationContext.class, BoundLiteral.INSTANCE));
         contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(contextId), BoundRequestContext.class, BoundLiteral.INSTANCE));
         contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(contextId), RequestContext.class, UnboundLiteral.INSTANCE));
         contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, UnboundLiteral.INSTANCE));
