@@ -232,6 +232,11 @@ a hint to the container, which is free to ignore the setting.
 conversation.setTimeout(timeoutInMillis);
 -----------------------------------------
 
+Another option how to set conversation timeout is to provide configuration
+property defining the new time value. See <<config-conversation-timeout>>.
+However note that any conversation might be destroyed any time sooner when
+HTTP session invalidation or timeout occurs.
+
 ==== CDI Conversation filter
 
 The conversation management is not always smooth. For example, if the

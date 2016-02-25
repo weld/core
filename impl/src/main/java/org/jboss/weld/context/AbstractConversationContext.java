@@ -41,6 +41,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.enterprise.context.ConversationScoped;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.ConversationNamingScheme;
@@ -70,8 +73,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     public static final String DESTRUCTION_QUEUE_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".destructionQueue";
     private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
 
-    private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000L;
-    private static final long CONCURRENT_ACCESS_TIMEOUT = 1000L;
     private static final String PARAMETER_NAME = "cid";
 
     private final AtomicReference<String> parameterName;
@@ -90,14 +91,15 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     };
 
-    public AbstractConversationContext(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
+    public AbstractConversationContext(String contextId, ServiceRegistry services) {
         super(contextId, true);
         this.parameterName = new AtomicReference<String>(PARAMETER_NAME);
-        this.defaultTimeout = new AtomicLong(DEFAULT_TIMEOUT);
-        this.concurrentAccessTimeout = new AtomicLong(CONCURRENT_ACCESS_TIMEOUT);
+        WeldConfiguration configuration = services.get(WeldConfiguration.class);
+        this.defaultTimeout = new AtomicLong(configuration.getLongProperty(ConfigurationKey.CONVERSATION_TIMEOUT));
+        this.concurrentAccessTimeout = new AtomicLong(configuration.getLongProperty(ConfigurationKey.CONVERSATION_CONCURRENT_ACCESS_TIMEOUT));
         this.associated = new ThreadLocal<R>();
         this.manager = Container.instance(contextId).deploymentManager();
-        this.beanIdentifierIndex = beanIdentifierIndex;
+        this.beanIdentifierIndex = services.get(BeanIdentifierIndex.class);
     }
 
     @Override
