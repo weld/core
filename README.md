@@ -1,6 +1,9 @@
 Weld
 ====
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/weld/user)
+[![Travis CI Build Status](https://img.shields.io/travis/weld/core/2.3.svg)](https://travis-ci.org/weld/core)
+
 Weld is the reference implementation of CDI: Contexts and Dependency Injection for the Java EE Platform which is the Java standard for dependency injection and contextual lifecycle management and one of the most important and popular parts of the Java EE platform.
 
 Weld is integrated into many Java EE application servers such as WildFly, JBoss Enterprise Application Platform, GlassFish, Oracle WebLogic and others. Weld can also be used in a Servlet-only environment (Tomcat, Jetty) or plain Java SE environment.
