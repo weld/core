@@ -568,7 +568,7 @@ try (WeldContainer container = weld.initialize()) {
 -----------------------------------------------------------------
 
 Furthermore, it is also possible to create several independent Weld instances.
-Code snippet below shows how achieve that:
+Code snippet below shows how to achieve that:
 
 [source.JAVA, java]
 -----------------------------------------------------------------
@@ -587,6 +587,28 @@ WeldContainer.instance("one").shutdown();
 // Shutdown all the containers initialized by the builder instance
 weld.shutdown();
 -----------------------------------------------------------------
+==== Request Context
+
+Weld introduces `@ActivateRequestScope` interceptor binding and
+related `ActivateRequestScopeInterceptor` which enables you to
+explicitly activate the request scope and use`@RequestScoped` beans in Java SE.
+Following example shows how to achieve that:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+public class Foo {
+
+  @Inject
+  MyRequestScopedBean bean;
+
+  @ActivateRequestScope
+  public void executeInRequestContext() {
+    bean.ping()
+  }
+
+}
+-----------------------------------------------------------------
+
 
 ==== Thread Context
 
