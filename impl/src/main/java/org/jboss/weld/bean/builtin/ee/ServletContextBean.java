@@ -19,7 +19,7 @@ package org.jboss.weld.bean.builtin.ee;
 import java.lang.annotation.Annotation;
 import java.security.AccessController;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.servlet.ServletContext;
@@ -57,6 +57,6 @@ public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<S
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return RequestScoped.class;
+        return ApplicationScoped.class;
     }
 }
