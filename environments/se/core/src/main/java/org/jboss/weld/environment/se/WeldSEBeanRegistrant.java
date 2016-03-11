@@ -35,6 +35,7 @@ import org.jboss.weld.bootstrap.events.BeanBuilderImpl;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
+import org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScopeInterceptor;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
@@ -60,6 +61,8 @@ public class WeldSEBeanRegistrant implements Extension {
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager), ParametersFactory.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InstanceManager.class, manager), InstanceManager.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager), RunnableDecorator.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateThreadScopeInterceptor.class, manager),
+                ActivateThreadScopeInterceptor.class.getName());
     }
 
     public void registerWeldSEContexts(@Observes ExperimentalAfterBeanDiscovery event, BeanManager manager) {
@@ -77,7 +80,7 @@ public class WeldSEBeanRegistrant implements Extension {
                 .produceWith(() -> WeldContainer.instance(contextId));
 
         // Process queued bean builders
-        if(beanBuilders != null) {
+        if (beanBuilders != null) {
             for (BeanBuilder<?> beanBuilder : beanBuilders) {
                 event.addBean(beanBuilder.build());
             }
