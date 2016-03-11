@@ -38,8 +38,9 @@ import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
-import org.jboss.weld.environment.se.contexts.activators.ActivateRequestScopeInterceptor;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
+import org.jboss.weld.environment.se.contexts.activators.ActivateRequestScopeInterceptor;
+import org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScopeInterceptor;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
@@ -65,6 +66,7 @@ public class WeldSEBeanRegistrant implements Extension {
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InstanceManager.class, manager));
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager));
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateRequestScopeInterceptor.class, manager));
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateThreadScopeInterceptor.class, manager));
     }
 
     public void registerWeldSEContexts(@Observes AfterBeanDiscovery event, BeanManager manager) {
