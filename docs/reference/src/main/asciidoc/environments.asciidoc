@@ -612,6 +612,24 @@ afterwards.
 </beans>
 -----------------------------------------------------------------------------
 
+Another option how to use thread context is to enable it at class or method
+level by `@ActivateThreadScope` interceptor binding and related `ActivateThreadScopeInterceptor`.
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+public class Foo {
+
+  @Inject
+  MyThreadScopedBean bean;
+
+  @ActivateThreadScope
+  public void executeInThreadContext() {
+    bean.ping()
+  }
+
+}
+-----------------------------------------------------------------
+
 NOTE: It is not necessary to use `@ThreadScoped` in all multithreaded
 applications. The thread context is not intended as a replacement for
 defining your own application-specific contexts. It is generally only

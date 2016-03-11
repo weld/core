@@ -11,9 +11,10 @@
       <protocol type="simple-jmx" />
       <configuration>
          <property name="librariesPath">${libPath}</property>
-         <property name="debug">false</property>
+         <property name="debug">${weld.se.debug}</property>
          <property name="logLevel">INFO</property>
          <property name="keepDeploymentArchives">false</property>
+         <property name="additionalJavaOpts">${jacoco.agent}</property>
          <property name="waitTime">15</property>
       </configuration>
    </container>
