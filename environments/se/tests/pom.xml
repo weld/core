@@ -113,6 +113,7 @@
                   <arquillian.launch>weld-se</arquillian.launch>
                   <libPath>${project.build.outputDirectory}</libPath>
                   <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                  <weld.se.debug>false</weld.se.debug>
                </systemProperties>
             </configuration>
          </plugin>
