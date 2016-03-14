@@ -66,7 +66,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
 
     @Override
     public synchronized Bootstrap startContainer(String contextId, Environment environment, Deployment deployment) {
-        weldRuntime = weldStartup.startContainer(stripArchiveIdSuffix(contextId), environment, deployment);
+        weldRuntime = weldStartup.startContainer(contextId, environment, deployment);
         return this;
     }
 
@@ -150,12 +150,4 @@ public class WeldBootstrap implements CDI11Bootstrap {
             throw BootstrapLogger.LOG.callingBootstrapMethodAfterContainerHasBeenInitialized();
         }
     }
-
-    static String stripArchiveIdSuffix(String archiveId) {
-        int idx = archiveId.indexOf(ARCHIVE_SUFFIX_DELIMITER);
-        return archiveId.substring(0, idx >= 0 ? idx : archiveId.length());
-    }
-
-
-    private static final String ARCHIVE_SUFFIX_DELIMITER = "..";
 }
