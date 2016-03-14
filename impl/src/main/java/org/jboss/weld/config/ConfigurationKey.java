@@ -34,6 +34,13 @@ public enum ConfigurationKey {
      * Otherwise, single-threaded version of Deployer and Validator are used.
      *
      * By default, concurrent deployment is enabled.
+     *//**
+     * Indicates whether ConcurrentDeployer and ConcurrentValidator should be enabled. If enabled, ConcurrentDeployer and ConcurrentValidator execute their
+     * subtasks using {@link org.jboss.weld.manager.api.ExecutorServices} which can be configured separately.
+     *
+     * Otherwise, single-threaded version of Deployer and Validator are used.
+     *
+     * By default, concurrent deployment is enabled.
      */
     @Description("Indicates whether the concurrent deployment is enabled.")
     CONCURRENT_DEPLOYMENT("org.jboss.weld.bootstrap.concurrentDeployment", true),
@@ -228,8 +235,17 @@ public enum ConfigurationKey {
      *  Conversation concurrent access timeout in milliseconds represents maximum time to wait on the conversation concurrent lock. Default value is 1000 ms.
      */
     @Description("The maximum time to wait on the lock of conversation in milliseconds.")
-    CONVERSATION_CONCURRENT_ACCESS_TIMEOUT("org.jboss.weld.conversation.concurrentAccessTimeout", 1000L);
+    CONVERSATION_CONCURRENT_ACCESS_TIMEOUT("org.jboss.weld.conversation.concurrentAccessTimeout", 1000L),
 
+    /**
+     * The delimiter is used while generating IDs, such as bean ID. The original ID, obtained from
+     * <code>BeanDeploymentArchive.getId()</code>, will be abbreviated based on the provided delimiter.
+     * An example: Given an application with two versions going by the names test__1.1.war and test__1.2.war, Weld normally
+     * cannot replicate sessions between these two deployments. Passing in this option with delimiter "__" will allow Weld to
+     * see both applications simply as test.war, hence allowing for session replication.
+     */
+    @Description("The delimiter is used while generating IDs, such as bean ID. The original ID will be abbreviated based on the provided delimiter.")
+    ROLLING_UPGRADES_ID_DELIMITER("org.jboss.weld.clustering.rollingUpgradesIdDelimiter", "");
     /**
      *
      * @param key The string representation of the key

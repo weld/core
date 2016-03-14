@@ -187,6 +187,21 @@ This optimization is used to reduce the HTTP session replication overhead. Howev
 
 NOTE: This optimization is disabled by default in <<weld-servlet,Servlet containers>>.
 
+==== Rolling upgrades ID delimiter
+
+The delimiter is used while generating IDs, such as bean ID. The original ID, obtained from
+`BeanDeploymentArchive.getId()`, will be abbreviated based on the provided delimiter.
+An example: Given an application with two versions going by the names __test+++__+++1-1.war__ and __test+++__+++1-2.war__, Weld normally
+cannot replicate sessions between these two deployments. Using this configuration option with delimiter "__" will allow Weld to
+see both applications simply as test.war, hence allowing for session replication.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.clustering.rollingUpgradesIdDelimiter` ||The delimiter used during ID generation.
+|=======================================================================
+
 [[config-dev-mode]]
 ==== Development Mode
 
