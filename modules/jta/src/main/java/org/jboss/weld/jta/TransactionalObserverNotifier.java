@@ -18,10 +18,12 @@ package org.jboss.weld.jta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.transaction.RollbackException;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.event.ObserverNotifier;
@@ -58,7 +60,8 @@ class TransactionalObserverNotifier extends ObserverNotifier {
      *
      * @param metadata The event object
      */
-    private <T> void deferNotification(T event, final EventMetadata metadata, final ObserverMethod<? super T> observer, final List<DeferredEventNotification<?>> notifications) {
+    private <T> void deferNotification(T event, final EventMetadata metadata, final ObserverMethod<? super T> observer,
+            final List<DeferredEventNotification<?>> notifications) {
         TransactionPhase transactionPhase = observer.getTransactionPhase();
         boolean before = transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION);
         Status status = Status.valueOf(transactionPhase);
@@ -66,7 +69,8 @@ class TransactionalObserverNotifier extends ObserverNotifier {
     }
 
     @Override
-    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata, final ObserverExceptionHandler handler) {
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata,
+            final ObserverExceptionHandler handler) {
         if (observers.isEmpty()) {
             return;
         }
@@ -78,7 +82,23 @@ class TransactionalObserverNotifier extends ObserverNotifier {
             for (ObserverMethod<? super T> observer : observers) {
                 deferNotification(event, metadata, observer, notifications);
             }
-            transactionServices.registerSynchronization(new TransactionNotificationSynchronization(notifications));
+            try {
+                transactionServices.registerSynchronization(new TransactionNotificationSynchronization(notifications));
+            } catch (Exception e) {
+                if (e.getCause() instanceof RollbackException || e.getCause() instanceof IllegalStateException) {
+                    List<ObserverMethod<? super T>> filteredObservers = observers.stream()
+                            .filter(observerMethod -> !observerMethod.getTransactionPhase().equals(TransactionPhase.AFTER_SUCCESS))
+                            .sorted((o1, o2) -> {
+                                // using descending order since we only need to ensure that BEFORE_COMPLETION precedes AFTER_COMPLETION
+                                return o2.getTransactionPhase().toString().compareTo(o1.getTransactionPhase().toString());
+                            })
+                            .collect(Collectors.toList());
+                    notifySyncObservers(filteredObservers, event, metadata, handler);
+                } else {
+                    throw e;
+                }
+
+            }
         }
     }
 }
