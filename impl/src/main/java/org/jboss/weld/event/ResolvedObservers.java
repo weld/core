@@ -16,8 +16,7 @@
  */
 package org.jboss.weld.event;
 
-import static com.google.common.collect.ImmutableSet.copyOf;
-
+import static com.google.common.collect.ImmutableList.copyOf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,9 +26,8 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
-import org.jboss.weld.util.Observers;
-
 import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.Observers;
 
 /**
  * Immutable information about observer methods resolved for a type/qualifiers combination.
@@ -40,7 +38,7 @@ import com.google.common.collect.ImmutableSet;
  */
 public class ResolvedObservers<T> {
 
-    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.<ObserverMethod<? super Object>>emptySet(), Collections.<ObserverMethod<? super Object>>emptySet(), false) {
+    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.<ObserverMethod<? super Object>>emptyList(), Collections.<ObserverMethod<? super Object>>emptyList(), false) {
         public boolean isEmpty() {
             return true;
         }
@@ -67,21 +65,21 @@ public class ResolvedObservers<T> {
         return new ResolvedObservers<T>(copyOf(immediateObservers), copyOf(transactionObservers), metadataRequired);
     }
 
-    private final Set<ObserverMethod<? super T>> immediateObservers;
-    private final Set<ObserverMethod<? super T>> transactionObservers;
+    private final List<ObserverMethod<? super T>> immediateObservers;
+    private final List<ObserverMethod<? super T>> transactionObservers;
     private final boolean metadataRequired;
 
-    private ResolvedObservers(Set<ObserverMethod<? super T>> immediateObservers, Set<ObserverMethod<? super T>> transactionObservers, boolean metadataRequired) {
+    private ResolvedObservers(List<ObserverMethod<? super T>> immediateObservers, List<ObserverMethod<? super T>> transactionObservers, boolean metadataRequired) {
         this.immediateObservers = immediateObservers;
         this.transactionObservers = transactionObservers;
         this.metadataRequired = metadataRequired;
     }
 
-    Set<ObserverMethod<? super T>> getImmediateObservers() {
+    List<ObserverMethod<? super T>> getImmediateObservers() {
         return immediateObservers;
     }
 
-    Set<ObserverMethod<? super T>> getTransactionObservers() {
+    List<ObserverMethod<? super T>> getTransactionObservers() {
         return transactionObservers;
     }
 

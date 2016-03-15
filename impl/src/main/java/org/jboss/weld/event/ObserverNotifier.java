@@ -21,6 +21,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.EventMetadata;
@@ -261,7 +262,7 @@ public class ObserverNotifier {
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
     }
 
-    protected <T> void notifySyncObservers(Set<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
+    protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         if (observers.isEmpty()) {
             return;
         }
@@ -275,7 +276,7 @@ public class ObserverNotifier {
         }
     }
 
-    protected <T> void notifyTransactionObservers(Set<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         notifySyncObservers(observers, event, metadata); // no transaction support
     }
 }

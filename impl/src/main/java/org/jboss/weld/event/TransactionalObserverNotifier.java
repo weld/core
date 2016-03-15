@@ -16,11 +16,16 @@
  */
 package org.jboss.weld.event;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.transaction.RollbackException;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
@@ -30,7 +35,6 @@ import org.jboss.weld.transaction.spi.TransactionServices;
  * {@link ObserverNotifier} with support for transactional observer methods.
  *
  * @author Jozef Hartinger
- *
  */
 public class TransactionalObserverNotifier extends ObserverNotifier {
 
@@ -65,7 +69,7 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
     }
 
     @Override
-    protected <T> void notifyTransactionObservers(Set<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         if (observers.isEmpty()) {
             return;
         }
@@ -73,8 +77,35 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
             // Transaction is not active - no deferred notifications
             notifySyncObservers(observers, event, metadata);
         } else {
-            for (ObserverMethod<? super T> observer : observers) {
-                deferNotification(event, metadata, observer);
+            List<ObserverMethod<? super T>> failedObservers = new ArrayList<>(observers);
+            try {
+                for (ObserverMethod<? super T> observer : observers) {
+                    deferNotification(event, metadata, observer);
+                    failedObservers.remove(observer);
+                }
+            } catch (Exception e) {
+                if (e.getCause() instanceof RollbackException || e.getCause() instanceof IllegalStateException) {
+
+                    List<ObserverMethod<? super T>> filteredObservers = new ArrayList<>(failedObservers);
+                    for (Iterator<ObserverMethod<? super T>> it = filteredObservers.iterator(); it.hasNext(); ) {
+                        ObserverMethod<? super T> observerMethod = it.next();
+                        if (observerMethod.getTransactionPhase().equals(TransactionPhase.AFTER_SUCCESS)) {
+                            it.remove();
+                        }
+                    }
+
+                    Collections.sort(filteredObservers, new Comparator<ObserverMethod<? super T>>() {
+                        @Override
+                        public int compare(ObserverMethod<? super T> o1, ObserverMethod<? super T> o2) {
+                            // using descending order since we only need to ensure that BEFORE_COMPLETION precedes AFTER_COMPLETION
+                            return o2.getTransactionPhase().toString().compareTo(o1.getTransactionPhase().toString());
+                        }
+                    });
+                    notifySyncObservers(filteredObservers, event, metadata);
+                } else {
+                    throw e;
+                }
+
             }
         }
     }
