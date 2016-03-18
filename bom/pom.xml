@@ -5,13 +5,6 @@
     <packaging>pom</packaging>
     <version>3.0.0-SNAPSHOT</version>
 
-    <parent>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-core-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-
     <name>Weld Core BOM</name>
 
     <!-- Minimal project metadata, for more see parent/pom.xml -->
@@ -35,89 +28,107 @@
         </developer>
     </developers>
 
-    <dependencies>
+    <properties>
+        <weld.api.bom.version>3.0.Alpha17</weld.api.bom.version>
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <!-- Weld API BOM-->
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-api-bom</artifactId>
+                <version>${weld.api.bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-api-bom</artifactId>
-            <version>${weld.api.version}</version>
-            <!-- This seems to cause a NPE if removed -->
-            <scope>import</scope>
-            <type>pom</type>
-        </dependency>
+            <!-- Weld core implementation -->
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-core-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-impl</artifactId>
-        </dependency>
+            <!--Weld EJB module-->
+            <dependency>
+                <groupId>org.jboss.weld.module</groupId>
+                <artifactId>weld-ejb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld.module</groupId>
-            <artifactId>weld-ejb</artifactId>
-        </dependency>
+            <!--Weld JSF module-->
+            <dependency>
+                <groupId>org.jboss.weld.module</groupId>
+                <artifactId>weld-jsf</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld.module</groupId>
-            <artifactId>weld-jsf</artifactId>
-        </dependency>
+            <!--Weld JTA module-->
+            <dependency>
+                <groupId>org.jboss.weld.module</groupId>
+                <artifactId>weld-jta</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld.module</groupId>
-            <artifactId>weld-jta</artifactId>
-        </dependency>
+            <!--Weld web module-->
+            <dependency>
+                <groupId>org.jboss.weld.module</groupId>
+                <artifactId>weld-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld.module</groupId>
-            <artifactId>weld-web</artifactId>
-        </dependency>
+            <!-- Weld servlet uber Jar -->
+            <dependency>
+                <groupId>org.jboss.weld.servlet</groupId>
+                <artifactId>weld-servlet-shaded</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-        </dependency>
+            <!--Weld servlet core-->
+            <dependency>
+                <groupId>org.jboss.weld.servlet</groupId>
+                <artifactId>weld-servlet-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-test</artifactId>
-        </dependency>
+            <!-- Weld SE uber Jar -->
+            <dependency>
+                <groupId>org.jboss.weld.se</groupId>
+                <artifactId>weld-se-shaded</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet-shaded</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.weld.servlet</groupId>
-            <artifactId>weld-servlet-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-shaded</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.classfilewriter</groupId>
-            <artifactId>jboss-classfilewriter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject-tck</artifactId>
-        </dependency>
-    </dependencies>
+            <!--Weld SE core-->
+            <dependency>
+                <groupId>org.jboss.weld.se</groupId>
+                <artifactId>weld-se-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- SCM and distribution management -->
     <scm>
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-      <tag>3.0.0-SNAPSHOT</tag>
-  </scm>
+        <tag>3.0.0-SNAPSHOT</tag>
+    </scm>
+    
+    <distributionManagement>
+        <repository>
+            <id>jboss-releases-repository</id>
+            <name>JBoss Releases Repository</name>
+            <url>${jboss.releases.repo.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>jboss-snapshots-repository</id>
+            <name>JBoss Snapshots Repository</name>
+            <url>${jboss.snapshots.repo.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
