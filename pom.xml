@@ -84,6 +84,7 @@
         <module>modules/jta</module>
         <module>modules/web</module>
         <module>probe</module>
+        <module>bom</module>
     </modules>
 
     <!-- Dependency management. KEEP IN ALPHABETICAL ORDER -->
