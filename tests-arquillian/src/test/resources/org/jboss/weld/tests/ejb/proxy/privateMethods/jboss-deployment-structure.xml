@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.3"
+                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                            xsi:schemaLocation="urn:jboss:deployment-structure:1.3">
+    <!-- Not strictly portable, but avoids having to rewrite archive manifests -->
+    <ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+</jboss-deployment-structure>
