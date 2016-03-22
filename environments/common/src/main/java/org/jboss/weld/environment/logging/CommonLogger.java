@@ -137,4 +137,8 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 38, value = "Development mode is enabled but the following Probe component is not found on the classpath: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException probeComponentNotFoundOnClasspath(Object component);
 
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 39, value = "Bean archive reference {0} handled by {1}", format = Format.MESSAGE_FORMAT)
+    void beanArchiveReferenceHandled(Object beanArchiveRef, Object handler);
+
 }
