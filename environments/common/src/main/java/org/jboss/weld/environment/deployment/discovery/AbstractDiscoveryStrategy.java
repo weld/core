@@ -94,6 +94,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
             for (BeanArchiveHandler handler : handlers) {
                 builder = handler.handle(ref);
                 if (builder != null) {
+                    CommonLogger.LOG.beanArchiveReferenceHandled(ref, handler);
                     builder.setId(scanResult.getBeanArchiveId());
                     builder.setBeansXml(scanResult.getBeansXml());
                     beanArchiveBuilders.add(builder);
