@@ -77,7 +77,7 @@ public class WoodlandExtension implements Extension {
         injectCalled = false;
         postConstructCalled = false;
         preDestroyCalled = false;
-        preDestroyCalled = false;
+        produceCalled = false;
     }
 
     public static boolean isInjectCalled() {
