@@ -26,6 +26,7 @@ import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.EventLogger;
+import org.jboss.weld.util.Observers;
 
 /**
  * A task that will notify the observer of a specific event at some future time.
@@ -72,7 +73,7 @@ class DeferredEventNotification<T> implements Runnable {
                 protected void execute() {
                     final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
                     try {
-                        observer.notify(event);
+                        Observers.notify(observer, event, metadata);
                     } finally {
                         stack.pop();
                     }

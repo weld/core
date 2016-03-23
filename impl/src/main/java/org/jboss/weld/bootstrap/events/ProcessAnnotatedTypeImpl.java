@@ -17,17 +17,21 @@
 package org.jboss.weld.bootstrap.events;
 
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.builder.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
- * Container lifecycle event for each Java class or interface discovered by
- * the container.
+ * Container lifecycle event for each Java class or interface discovered by the container.
  *
  * @author pmuir
  * @author David Allen
@@ -39,7 +43,11 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     private final SlimAnnotatedType<X> originalAnnotatedType;
     private final BeanManagerImpl manager;
     private AnnotatedType<X> annotatedType;
+    private AnnotatedTypeConfiguratorImpl<X> configurator;
     private boolean veto;
+
+    // TODO CDI-596
+    private boolean annotatedTypeSet;
 
     public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType) {
         this(beanManager, annotatedType, ProcessAnnotatedType.class);
@@ -60,7 +68,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     /**
      * Call this method after all observer methods of this event have been invoked to get the final value of this {@link AnnotatedType}.
      *
-     * @return
+     * @return the resulting annotated type
      */
     public SlimAnnotatedType<X> getResultingAnnotatedType() {
         if (isDirty()) {
@@ -76,16 +84,29 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
 
     @Override
     public void setAnnotatedType(AnnotatedType<X> type) {
+        // TODO CDI-596
+        if (configurator != null) {
+            throw new IllegalStateException("Configurator used");
+        }
         checkWithinObserverNotification();
         if (type == null) {
             throw BootstrapLogger.LOG.annotationTypeNull(this);
         }
-        if (!this.originalAnnotatedType.getJavaClass().equals(type.getJavaClass())) {
-            throw BootstrapLogger.LOG.annotatedTypeJavaClassMismatch(this.annotatedType.getJavaClass(), type.getJavaClass());
-        }
-        AnnotatedTypeValidator.validateAnnotatedType(type);
+        replaceAnnotatedType(type);
+        annotatedTypeSet = true;
         BootstrapLogger.LOG.setAnnotatedTypeCalled(getReceiver(), annotatedType, type);
-        this.annotatedType = type;
+    }
+
+    @Override
+    public AnnotatedTypeConfigurator<X> configureAnnotatedType() {
+        if (annotatedTypeSet) {
+            throw new IllegalStateException("setAnnotatedType() used");
+        }
+        checkWithinObserverNotification();
+        if (configurator == null) {
+            configurator = new AnnotatedTypeConfiguratorImpl<>(annotatedType);
+        }
+        return configurator;
     }
 
     @Override
@@ -103,8 +124,26 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     }
 
     @Override
+    public void postNotify(Extension extension) {
+        super.postNotify(extension);
+        if (configurator != null) {
+            replaceAnnotatedType(new AnnotatedTypeBuilderImpl<>(configurator).build());
+            configurator = null;
+        }
+        annotatedTypeSet = false;
+    }
+
+    @Override
     public String toString() {
         return annotatedType.toString();
+    }
+
+    private void replaceAnnotatedType(AnnotatedType<X> type) {
+        if (!this.originalAnnotatedType.getJavaClass().equals(type.getJavaClass())) {
+            throw BootstrapLogger.LOG.annotatedTypeJavaClassMismatch(this.annotatedType.getJavaClass(), type.getJavaClass());
+        }
+        AnnotatedTypeValidator.validateAnnotatedType(type);
+        this.annotatedType = type;
     }
 
 }

@@ -37,6 +37,8 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Prioritized;
+import javax.enterprise.inject.spi.builder.BeanConfigurator;
+import javax.enterprise.inject.spi.builder.ObserverMethodConfigurator;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
@@ -45,8 +47,11 @@ import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
+import org.jboss.weld.bootstrap.events.builder.BeanBuilderImpl;
+import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.builder.ObserverMethodBuilderImpl;
+import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
 import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.logging.BeanLogger;
@@ -75,12 +80,16 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         super(beanManager, ExperimentalAfterBeanDiscovery.class, bdaMapping, deployment, contexts);
         this.slimAnnotatedTypeStore = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
         this.containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
+        this.additionalBeans = new LinkedList<BeanRegistration>();
+        this.additionalObservers = new LinkedList<ObserverMethod<?>>();
+        this.additionalObserverConfigurators = new LinkedList<ObserverMethodConfigurator<?>>();
     }
 
     private final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
     private final ContainerLifecycleEvents containerLifecycleEvents;
-    private final List<BeanRegistration> additionalBeans = new LinkedList<BeanRegistration>();
-    private final List<ObserverMethod<?>> additionalObservers = new LinkedList<ObserverMethod<?>>();
+    private final List<BeanRegistration> additionalBeans;
+    private final List<ObserverMethod<?>> additionalObservers;
+    private final List<ObserverMethodConfigurator<?>> additionalObserverConfigurators;
 
     @Override
     public void addBean(Bean<?> bean) {
@@ -88,8 +97,16 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         Preconditions.checkArgumentNotNull(bean, "bean");
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, getBeanManager());
         validateBean(bean);
-        additionalBeans.add(new BeanRegistration(bean));
+        additionalBeans.add(BeanRegistration.of(bean));
         BootstrapLogger.LOG.addBeanCalled(getReceiver(), bean);
+    }
+
+    @Override
+    public <T> BeanConfigurator<T> addBean() {
+        checkWithinObserverNotification();
+        BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(getReceiver().getClass(), getBeanDeploymentFinder());
+        additionalBeans.add(BeanRegistration.of(configurator));
+        return configurator;
     }
 
     @Override
@@ -120,6 +137,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     @Override
+    public <T> ObserverMethodConfigurator<T> addObserverMethod() {
+        checkWithinObserverNotification();
+        ObserverMethodConfiguratorImpl<T> configurator = new ObserverMethodConfiguratorImpl<>();
+        additionalObserverConfigurators.add(configurator);
+        return configurator;
+    }
+
+    @Override
     public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
         checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
@@ -134,25 +159,13 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     @Override
-    public <T> BeanBuilder<T> addBean() {
-        BeanBuilderImpl<T> builder = new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeploymentFinder());
-        additionalBeans.add(new BeanRegistration(builder));
-        return builder;
-    }
-
-    @Override
-    public <T> BeanBuilder<T> beanBuilder() {
-        return new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeploymentFinder());
-    }
-
-    @Override
     public InterceptorBuilder interceptorBuilder() {
         return new InterceptorBuilderImpl(getBeanManager());
     }
 
     public InterceptorBuilder addInterceptor() {
         InterceptorBuilderImpl builder = new InterceptorBuilderImpl(getBeanManager());
-        additionalBeans.add(new BeanRegistration(builder));
+        additionalBeans.add(BeanRegistration.of(builder));
         return builder;
 
     }
@@ -165,6 +178,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
         } else {
             // Also validate the bean produced by a builder
+            ExternalBeanAttributesFactory.validateBeanAttributes(bean, getBeanManager());
             validateBean(bean);
         }
 
@@ -244,16 +258,25 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
                 processBeanRegistration(registration, globalEnablementBuilder);
             }
             for (ObserverMethod<?> observer : additionalObservers) {
-                BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
-                if (Observers.isObserverMethodEnabled(observer, manager)) {
-                    ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observer);
-                    if (processedObserver != null) {
-                        manager.addObserver(processedObserver);
-                    }
-                }
+                processAdditionalObserver(observer);
+            }
+            for (ObserverMethodConfigurator<?> configurator : additionalObserverConfigurators) {
+                ObserverMethod<?> observer = new ObserverMethodBuilderImpl<>(cast(configurator)).build();
+                validateObserverMethod(observer, getBeanManager(), null);
+                processAdditionalObserver(observer);
             }
         } catch (Exception e) {
             throw new DefinitionException(e);
+        }
+    }
+
+    private void processAdditionalObserver(ObserverMethod<?> observer) {
+        BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
+        if (Observers.isObserverMethodEnabled(observer, manager)) {
+            ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observer);
+            if (processedObserver != null) {
+                manager.addObserver(processedObserver);
+            }
         }
     }
 
@@ -265,24 +288,44 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
         private final Bean<?> bean;
 
-        private final AbstractBeanBuilder builder;
+        private final BeanBuilderImpl<?> beanBuilder;
 
-        BeanRegistration(Bean<?> bean) {
-            this.bean = bean;
-            this.builder = null;
+        private final InterceptorBuilderImpl interceptorBuilder;
+
+        static BeanRegistration of(Bean<?> bean) {
+            return new BeanRegistration(bean, null, null);
         }
 
-        BeanRegistration(AbstractBeanBuilder builder) {
-            this.builder = builder;
-            this.bean = null;
+        static BeanRegistration of(BeanConfiguratorImpl<?> configurator) {
+            return new BeanRegistration(null, cast(new BeanBuilderImpl<>(configurator)),null);
+        }
+
+        static BeanRegistration of(InterceptorBuilderImpl interceptorBuilder) {
+            return new BeanRegistration(null, null, interceptorBuilder);
+        }
+
+        BeanRegistration(Bean<?> bean, BeanBuilderImpl<?> beanBuilder, InterceptorBuilderImpl interceptorBuilder) {
+            this.bean = bean;
+            this.beanBuilder = beanBuilder;
+            this.interceptorBuilder = interceptorBuilder;
         }
 
         public Bean<?> getBean() {
-            return bean != null ? bean : (Bean<?>) builder.build();
+            if(bean != null) {
+                return bean;
+            } else if(beanBuilder != null) {
+                return beanBuilder.build();
+            }
+            return interceptorBuilder.build();
         }
 
         protected BeanManagerImpl getBeanManager() {
-            return builder != null ? builder.getBeanManager() : null;
+            if(bean != null) {
+                return null;
+            } else if(beanBuilder != null) {
+                return beanBuilder.getBeanManager();
+            }
+            return interceptorBuilder.getBeanManager();
         }
 
     }

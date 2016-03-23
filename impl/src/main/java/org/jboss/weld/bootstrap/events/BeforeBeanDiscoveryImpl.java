@@ -22,9 +22,11 @@ import java.util.Collection;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.builder.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
@@ -42,7 +44,9 @@ import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements BeforeBeanDiscovery {
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
-        new BeforeBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts).fire();
+        BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts);
+        event.finish();
+        event.fire();
     }
 
     protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
@@ -116,6 +120,14 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
     }
 
     @Override
+    public <T> AnnotatedTypeConfigurator<T> addAnnotatedType(String id, Class<T> type) {
+        checkWithinObserverNotification();
+        AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(type));
+        additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));
+        return configurator;
+    }
+
+    @Override
     public void addQualifier(AnnotatedType<? extends Annotation> qualifier) {
         checkWithinObserverNotification();
         addSyntheticAnnotation(qualifier, QualifierLiteral.INSTANCE);
@@ -137,4 +149,5 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         getBeanManager().getServices().get(ClassTransformer.class).addSyntheticAnnotation(annotation, getBeanManager().getId());
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(annotation.getJavaClass());
     }
+
 }
