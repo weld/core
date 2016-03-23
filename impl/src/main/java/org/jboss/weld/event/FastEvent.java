@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Observers;
 
 /**
  * An optimized internal facility for dispatching events.
@@ -82,7 +83,7 @@ public class FastEvent<T> {
         }
     }
 
-    private final ResolvedObservers<T> resolvedObserverMethods;
+    protected final ResolvedObservers<T> resolvedObserverMethods;
 
     private FastEvent(ResolvedObservers<T> resolvedObserverMethods) {
         this.resolvedObserverMethods = resolvedObserverMethods;
@@ -99,8 +100,7 @@ public class FastEvent<T> {
         private final EventMetadata metadata;
         private final CurrentEventMetadata metadataService;
 
-        private FastEventWithMetadataPropagation(ResolvedObservers<T> resolvedObserverMethods, EventMetadata metadata,
-                CurrentEventMetadata metadataService) {
+        private FastEventWithMetadataPropagation(ResolvedObservers<T> resolvedObserverMethods, EventMetadata metadata, CurrentEventMetadata metadataService) {
             super(resolvedObserverMethods);
             this.metadata = metadata;
             this.metadataService = metadataService;
@@ -110,7 +110,9 @@ public class FastEvent<T> {
         public void fire(T event) {
             final ThreadLocalStackReference<EventMetadata> stack = metadataService.pushIfNotNull(metadata);
             try {
-                super.fire(event);
+                for (ObserverMethod<? super T> observer : resolvedObserverMethods.getImmediateSyncObservers()) {
+                    Observers.notify(observer, event, metadata);
+                }
             } finally {
                 stack.pop();
             }

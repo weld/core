@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,18 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events;
+package org.jboss.weld.util.annotated;
 
-import javax.enterprise.inject.spi.BeanAttributes;
+import java.lang.reflect.Constructor;
 
-import org.jboss.weld.manager.BeanManagerImpl;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
- * @author Tomas Remes
+ * Forwarding implementation of {@link AnnotatedConstructor}.
+ *
+ * @author Jozef Hartinger
+ *
+ * @param <X>
  */
-abstract class AbstractBeanBuilder {
+public abstract class ForwardingAnnotatedConstructor<X> extends ForwardingAnnotatedCallable<X> implements AnnotatedConstructor<X> {
 
-    abstract BeanAttributes<?> build();
+    @Override
+    protected abstract AnnotatedConstructor<X> delegate();
 
-    abstract BeanManagerImpl getBeanManager();
+    @Override
+    public Constructor<X> getJavaMember() {
+        return delegate().getJavaMember();
+    }
 }

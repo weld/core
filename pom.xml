@@ -34,7 +34,7 @@
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.1.7.Final</arquillian.version>
+        <arquillian.version>1.1.11.Final</arquillian.version>
         <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
         <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
         <arquillian.weld.version>1.0.0.CR9</arquillian.weld.version>
@@ -46,7 +46,7 @@
         <build.config.version>9</build.config.version>
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.8.Final</cdi.tck-1-2.version>
-        <cdi.tck-2-0.version>2.0.0.Alpha6</cdi.tck-2-0.version>
+        <cdi.tck-2-0.version>2.0.0-SNAPSHOT</cdi.tck-2-0.version>
         <classfilewriter.version>1.1.2.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
@@ -72,7 +72,7 @@
         <shrinkwrap.version>1.1.3</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>5.10</testng.version>
-        <weld.api.version>3.0.Alpha18</weld.api.version>
+        <weld.api.version>3.0-SNAPSHOT</weld.api.version>
         <weld.logging.tools.version>1.0.1.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
     </properties>

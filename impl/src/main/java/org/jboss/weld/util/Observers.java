@@ -43,7 +43,9 @@ import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
+import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.event.SyntheticObserverMethod;
 import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -58,32 +60,16 @@ public class Observers {
     /*
      * Contains all container lifecycle event types
      */
-    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = ImmutableSet.of(
-            BeforeBeanDiscovery.class,
-            AfterTypeDiscovery.class,
-            AfterBeanDiscovery.class,
-            AfterDeploymentValidation.class,
-            BeforeShutdown.class,
-            ProcessAnnotatedType.class,
-            ProcessInjectionPoint.class,
-            ProcessInjectionTarget.class,
-            ProcessProducer.class,
-            ProcessBeanAttributes.class,
-            ProcessBean.class,
-            ProcessObserverMethod.class);
+    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = ImmutableSet.of(BeforeBeanDiscovery.class, AfterTypeDiscovery.class,
+            AfterBeanDiscovery.class, AfterDeploymentValidation.class, BeforeShutdown.class, ProcessAnnotatedType.class, ProcessInjectionPoint.class,
+            ProcessInjectionTarget.class, ProcessProducer.class, ProcessBeanAttributes.class, ProcessBean.class, ProcessObserverMethod.class);
     /*
      * Contains only top superinterfaces of each chain of container lifecycle event types.
      */
-    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>>builder()
-            .addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
-            .addAll(
-                    ProcessSyntheticAnnotatedType.class,
-                    ProcessSessionBean.class,
-                    ProcessManagedBean.class,
-                    ProcessProducerMethod.class,
-                    ProcessProducerField.class,
-                    ExperimentalProcessObserverMethod.class
-            ).build();
+    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>> builder().addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
+            .addAll(ProcessSyntheticAnnotatedType.class, ProcessSessionBean.class, ProcessManagedBean.class, ProcessProducerMethod.class,
+                    ProcessProducerField.class, ExperimentalProcessObserverMethod.class)
+            .build();
 
     private Observers() {
     }
@@ -103,6 +89,7 @@ public class Observers {
 
     /**
      * Validates given external observer method.
+     *
      * @param observerMethod the given observer method
      * @param beanManager
      * @param originalObserverMethod observer method replaced by given observer method (this parameter is optional)
@@ -131,11 +118,26 @@ public class Observers {
      * Determines whether the given observer method is either extension-provided or contains an injection point with {@link EventMetadata} type.
      */
     public static boolean isEventMetadataRequired(ObserverMethod<?> observer) {
-        if (observer instanceof ObserverMethodImpl<?, ?>) {
-            ObserverMethodImpl<?, ?> observerImpl = (ObserverMethodImpl<?, ?>) observer;
-            return observerImpl.isEventMetadataRequired();
+        if (observer instanceof EventMetadataAwareObserverMethod) {
+            EventMetadataAwareObserverMethod<?> eventMetadataAware = (EventMetadataAwareObserverMethod<?>) observer;
+            return eventMetadataAware.isEventMetadataRequired();
         } else {
             return true;
+        }
+    }
+
+    /**
+     *
+     * @param observerMethod
+     * @param event
+     * @param eventMetadata May be null
+     */
+    public static <T> void notify(ObserverMethod<? super T> observerMethod, T event, EventMetadata eventMetadata) {
+        if (observerMethod instanceof SyntheticObserverMethod) {
+            SyntheticObserverMethod<? super T> syntheticObserverMethod = (SyntheticObserverMethod<? super T>) observerMethod;
+            syntheticObserverMethod.notify(event, eventMetadata);
+        } else {
+            observerMethod.notify(event);
         }
     }
 }

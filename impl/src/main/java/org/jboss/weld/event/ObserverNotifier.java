@@ -297,7 +297,7 @@ public class ObserverNotifier {
         try {
             for (ObserverMethod<? super T> observer : observers) {
                 try {
-                    observer.notify(event);
+                    Observers.notify(observer, event, metadata);
                 } catch (Throwable throwable) {
                     handler.handle(throwable);
                 }
@@ -354,7 +354,7 @@ public class ObserverNotifier {
                 // Note that all async observers are notified serially in a single worker thread
                 for (ObserverMethod<? super T> observer : observers) {
                     try {
-                        observer.notify(event);
+                        Observers.notify(observer, event, metadata);
                     } catch (Throwable e) {
                         handler.handle(e);
                     }

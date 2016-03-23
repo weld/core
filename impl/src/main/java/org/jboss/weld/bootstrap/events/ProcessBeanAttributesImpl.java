@@ -20,8 +20,13 @@ import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import javax.enterprise.inject.spi.builder.BeanAttributesConfigurator;
 
+import org.jboss.weld.bootstrap.events.builder.BeanAttributesBuilderImpl;
+import org.jboss.weld.bootstrap.events.builder.BeanAttributesConfiguratorImpl;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -49,8 +54,12 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     private final Annotated annotated;
     private BeanAttributes<T> attributes;
+    private BeanAttributesConfiguratorImpl<T> configurator;
     private boolean veto;
     private boolean dirty;
+
+    // TODO CDI-596
+    private boolean beanAttributesSet;
 
     @Override
     public Annotated getAnnotated() {
@@ -70,10 +79,28 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     @Override
     public void setBeanAttributes(BeanAttributes<T> beanAttributes) {
+        // TODO CDI-596
+        if (configurator != null) {
+            throw new IllegalStateException("Configurator used");
+        }
         checkWithinObserverNotification();
         BootstrapLogger.LOG.setBeanAttributesCalled(getReceiver(), attributes, beanAttributes);
         attributes = beanAttributes;
         dirty = true;
+        beanAttributesSet = true;
+    }
+
+    @Override
+    public BeanAttributesConfigurator<T> configureBeanAttributes() {
+        // TODO CDI-596
+        if (beanAttributesSet) {
+            throw new IllegalStateException("setAnnotatedType() used");
+        }
+        checkWithinObserverNotification();
+        if (configurator == null) {
+            configurator = new BeanAttributesConfiguratorImpl<>(attributes);
+        }
+        return configurator;
     }
 
     @Override
@@ -88,5 +115,16 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     public boolean isDirty() {
         return dirty;
+    }
+
+    @Override
+    public void postNotify(Extension extension) {
+        super.postNotify(extension);
+        if (configurator != null) {
+            attributes = new BeanAttributesBuilderImpl<>(configurator).build();
+            configurator = null;
+            dirty = true;
+        }
+        beanAttributesSet = false;
     }
 }

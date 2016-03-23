@@ -43,7 +43,7 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  * @param <T> the class of the bean instance
  * @param <B> the current builder class
  */
-abstract class BeanAttributesBuilder<T, B> extends AbstractBeanBuilder {
+abstract class BeanAttributesBuilder<T, B> {
 
     static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
 

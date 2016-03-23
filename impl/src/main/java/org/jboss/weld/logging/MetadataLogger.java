@@ -122,4 +122,7 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1125, value = "Illegal bean type {0} ignored on {1}", format = Format.MESSAGE_FORMAT)
     void illegalBeanTypeIgnored(Object type, Object annotated);
 
+    @Message(id = 1126, value = "BeanAttributesConfigurator is not able to read {0} - missing BeanManager", format = Format.MESSAGE_FORMAT)
+    IllegalStateException beanAttributesConfiguratorCannotReadAnnotatedType(Object type);
+
 }

@@ -43,7 +43,7 @@ import org.jboss.weld.util.reflection.Formats;
 /**
  * @author Tomas Remes
  */
-public class BuilderInterceptorBean implements Interceptor<BuilderInterceptorInstance>, Prioritized, PassivationCapable {
+class BuilderInterceptorBean implements Interceptor<BuilderInterceptorInstance>, Prioritized, PassivationCapable {
 
     private final Set<Annotation> bindings;
 
