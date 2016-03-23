@@ -19,6 +19,12 @@ package org.jboss.weld.util.collections;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 import org.jboss.weld.util.Preconditions;
 
@@ -46,12 +52,26 @@ public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
 
     /**
      * Creates an immutable singleton instance.
+     *
      * @param key
      * @param value
      * @return
      */
     public static <K, V> Map<K, V> of(K key, V value) {
         return new ImmutableMapEntry<K, V>(key, value);
+    }
+
+    /**
+     * Returns a collector that accumulates elements into an immutable map.
+     * <p>
+     * Duplicate mappings are not merged - the old value is replaced.
+     *
+     * @param keyMapper
+     * @param valueMapper
+     * @return collector
+     */
+    public static <T, K, V> ImmutableMapCollector<T, K, V> collector(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+        return new ImmutableMapCollector<>(keyMapper, valueMapper);
     }
 
     /**
@@ -95,6 +115,11 @@ public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
             return this;
         }
 
+        HashMapBuilder<K, V> putAll(HashMapBuilder<K, V> items) {
+            map.putAll(items.map);
+            return this;
+        }
+
         @Override
         public Map<K, V> build() {
             if (map.isEmpty()) {
@@ -104,6 +129,45 @@ public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
                 return new ImmutableMapEntry<K, V>(map.entrySet().iterator().next());
             }
             return Collections.unmodifiableMap(map);
+        }
+    }
+
+    private static class ImmutableMapCollector<T, K, V> implements Collector<T, HashMapBuilder<K, V>, Map<K, V>> {
+
+        private static final Set<Characteristics> CHARACTERISTICS = ImmutableSet.of();
+
+        private final Function<T, K> keyMapper;
+
+        private final Function<T, V> valueMapper;
+
+        private ImmutableMapCollector(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+            this.keyMapper = keyMapper;
+            this.valueMapper = valueMapper;
+        }
+
+        @Override
+        public Supplier<HashMapBuilder<K, V>> supplier() {
+            return HashMapBuilder::new;
+        }
+
+        @Override
+        public BiConsumer<HashMapBuilder<K,V>, T> accumulator() {
+            return (b, i) -> b.put(keyMapper.apply(i), valueMapper.apply(i));
+        }
+
+        @Override
+        public BinaryOperator<HashMapBuilder<K,V>> combiner() {
+            return (builder1, builder2) -> builder1.putAll(builder2);
+        }
+
+        @Override
+        public Function<HashMapBuilder<K,V>, Map<K,V>> finisher() {
+            return HashMapBuilder::build;
+        }
+
+        @Override
+        public Set<java.util.stream.Collector.Characteristics> characteristics() {
+            return CHARACTERISTICS;
         }
     }
 }

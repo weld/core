@@ -23,14 +23,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.util.TypeLiteral;
-
-import org.jboss.weld.experimental.BeanBuilder;
-import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
 
 /**
  *
@@ -45,7 +43,7 @@ public class BuilderExtension implements Extension {
     }
 
     @SuppressWarnings("serial")
-    public void afterBeanDiscovery(@Observes ExperimentalAfterBeanDiscovery event, BeanManager beanManager) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
 
         AnnotatedType<Foo> annotatedType = beanManager.createAnnotatedType(Foo.class);
 
@@ -58,10 +56,8 @@ public class BuilderExtension implements Extension {
                     return foo;
                 });
 
-        // Detached builder, read from AT, add qualifier, set id
-        BeanBuilder<Foo> builder = event.beanBuilder().read(annotatedType);
-        builder.id("BAZinga").addQualifier(Juicy.Literal.INSTANCE);
-        event.addBean(builder.build());
+        // Read from AT, add qualifier, set id
+        event.addBean().read(annotatedType).id("BAZinga").addQualifier(Juicy.Literal.INSTANCE);
 
         // Read from AT, set the scope
         event.addBean().read(beanManager.createAnnotatedType(Bar.class)).scope(Dependent.class);

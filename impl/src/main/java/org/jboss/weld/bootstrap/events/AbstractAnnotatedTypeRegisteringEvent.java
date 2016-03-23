@@ -18,22 +18,30 @@ package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.DefinitionException;
 
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
 public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscoveryEvent {
 
+    protected final List<AnnotatedTypeRegistration<?>> additionalAnnotatedTypes;
+
     protected AbstractAnnotatedTypeRegisteringEvent(BeanManagerImpl beanManager, Type rawType, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, rawType, bdaMapping, deployment, contexts);
+        this.additionalAnnotatedTypes = new LinkedList<>();
     }
 
     protected void addSyntheticAnnotatedType(AnnotatedType<?> type, String id) {
@@ -46,5 +54,28 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
 
     protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id) {
         deployment.getBeanDeployer().addSyntheticClass(type, getReceiver(), id);
+    }
+
+    protected void finish() {
+        try {
+            for (AnnotatedTypeRegistration<?> annotatedTypeRegistration : additionalAnnotatedTypes) {
+                addSyntheticAnnotatedType(new AnnotatedTypeBuilderImpl<>(annotatedTypeRegistration.configurator).build(), annotatedTypeRegistration.id);
+            }
+        } catch (Exception e) {
+            throw new DefinitionException(e);
+        }
+    }
+
+    protected static class AnnotatedTypeRegistration<T> {
+
+        private final AnnotatedTypeConfiguratorImpl<T> configurator;
+
+        private final String id;
+
+        AnnotatedTypeRegistration(AnnotatedTypeConfiguratorImpl<T> configurator, String id) {
+            this.configurator = configurator;
+            this.id = id;
+        }
+
     }
 }

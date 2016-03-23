@@ -23,6 +23,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.builder.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
@@ -31,6 +32,7 @@ import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -38,9 +40,10 @@ import org.jboss.weld.resources.ClassTransformer;
 
 public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements AfterTypeDiscovery {
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
-            Collection<ContextHolder<? extends Context>> contexts) {
-        new AfterTypeDiscoveryImpl(beanManager, bdaMapping, deployment, contexts).fire();
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+        AfterTypeDiscoveryImpl event = new AfterTypeDiscoveryImpl(beanManager, bdaMapping, deployment, contexts);
+        event.finish();
+        event.fire();
     }
 
     private final GlobalEnablementBuilder builder;
@@ -80,6 +83,14 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
         checkWithinObserverNotification();
         addSyntheticAnnotatedType(type, id);
         BootstrapLogger.LOG.addAnnotatedTypeCalled(getReceiver(), type);
+    }
+
+    @Override
+    public <T> AnnotatedTypeConfigurator<T> addAnnotatedType(String id, Class<T> type) {
+        checkWithinObserverNotification();
+        AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(type));
+        additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));
+        return configurator;
     }
 
     @Override
