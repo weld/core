@@ -72,7 +72,7 @@
         <shrinkwrap.version>1.1.3</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>5.10</testng.version>
-        <weld.api.version>3.0.Alpha17</weld.api.version>
+        <weld.api.version>3.0.Alpha18</weld.api.version>
         <weld.logging.tools.version>1.0.1.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -305,6 +305,15 @@
             <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-api-bom</artifactId>
+                <version>${weld.api.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <!-- Import managed dependencies from API parent -->
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-api-parent</artifactId>
                 <version>${weld.api.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
