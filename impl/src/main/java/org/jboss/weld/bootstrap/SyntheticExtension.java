@@ -32,7 +32,7 @@ public interface SyntheticExtension extends Extension {
 
     /**
      *
-     * @return
+     * @return a collection of synthetic container lifecycle observer methods
      */
     Collection<ContainerLifecycleEventObserverMethod<?>> getObservers();
 
