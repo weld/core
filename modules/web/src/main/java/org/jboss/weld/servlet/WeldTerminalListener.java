@@ -22,13 +22,22 @@
  */
 package org.jboss.weld.servlet;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.context.http.HttpSessionDestructionContext;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagers;
 
 /**
  * This listener activates the HttpSessionDestructionContext in sessionDestroyed(), but only if HttpSessionContext is not
@@ -46,7 +55,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class WeldTerminalListener implements HttpSessionListener {
 
     @Inject
-    private BeanManagerImpl beanManager;
+    private volatile BeanManagerImpl beanManager;
 
     public WeldTerminalListener() {
     }
@@ -61,6 +70,25 @@ public class WeldTerminalListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
+        final ServletContext ctx = event.getSession().getServletContext();
+        // First try to use the context id obtained from the servlet context (OSGi, Servlet containers, etc.)
+        if (beanManager == null) {
+            synchronized (this) {
+                if (beanManager == null) {
+                    String contextId = ctx.getInitParameter(Container.CONTEXT_ID_KEY);
+                    if (contextId != null) {
+                        List<BeanManagerImpl> managers = new ArrayList<BeanManagerImpl>(Container.instance(contextId).beanDeploymentArchives().values());
+                        Collections.sort(managers, BeanManagers.ID_COMPARATOR);
+                        beanManager = managers.get(0);
+                    }
+                }
+                // servlet containers may not be able to inject fields in a servlet listener
+                if (beanManager == null) {
+                    beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
+                }
+            }
+        }
+
         if (!getSessionContext().isActive()) {
             HttpSessionDestructionContext context = getHttpSessionDestructionContext();
             context.associate(event.getSession());
