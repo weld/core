@@ -21,51 +21,25 @@ import java.lang.reflect.Modifier;
 
 import org.jboss.weld.util.reflection.Reflections;
 
-final class CommonProxiedMethodFilters {
+public final class CommonProxiedMethodFilters {
 
     private CommonProxiedMethodFilters() {
     }
 
-    private abstract static class AbstractProxiedMethodFilter implements ProxiedMethodFilter {
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-    }
+    public static final ProxiedMethodFilter NON_STATIC = (m) -> !Modifier.isStatic(m.getModifiers());
 
-    static final ProxiedMethodFilter NON_STATIC = new AbstractProxiedMethodFilter() {
-        @Override
-        public boolean accept(Method method) {
-            return !Modifier.isStatic(method.getModifiers());
-        }
-    };
+    public static final ProxiedMethodFilter NON_FINAL = (m) -> !Modifier.isFinal(m.getModifiers());
 
-    static final ProxiedMethodFilter NON_FINAL = new AbstractProxiedMethodFilter() {
-        @Override
-        public boolean accept(Method method) {
-            return !Modifier.isFinal(method.getModifiers());
-        }
-    };
+    public static final ProxiedMethodFilter OBJECT_TO_STRING = (m) -> m.getDeclaringClass() != Object.class || m.getName().equals("toString");
 
-    static final ProxiedMethodFilter OBJECT_TO_STRING = new AbstractProxiedMethodFilter() {
-        @Override
-        public boolean accept(Method method) {
-            return method.getDeclaringClass() != Object.class || method.getName().equals("toString");
-        }
-    };
-
-    static final ProxiedMethodFilter NON_PRIVATE = new AbstractProxiedMethodFilter() {
-        @Override
-        public boolean accept(Method method) {
-            return !Modifier.isPrivate(method.getModifiers());
-        }
-    };
+    public static final ProxiedMethodFilter NON_PRIVATE = (m) -> !Modifier.isPrivate(m.getModifiers());
 
     /**
      * For JDK classes do not accept any package-private method and/or method with package-private parameter types. A generated class is not allowed to use a
      * package name starting with the identifier <code>java</code>.
      */
-    static final ProxiedMethodFilter NON_JDK_PACKAGE_PRIVATE = new AbstractProxiedMethodFilter() {
+    public static final ProxiedMethodFilter NON_JDK_PACKAGE_PRIVATE = new ProxiedMethodFilter() {
+
         @Override
         public boolean accept(Method method) {
             Class<?> declaringClass = method.getDeclaringClass();

@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
+import org.jboss.weld.bean.proxy.CommonProxiedMethodFilters;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BeanLogger;
@@ -70,5 +71,10 @@ class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
     @Override
     protected String getProxyNameSuffix() {
         return SUFFIX;
+    }
+
+    @Override
+    protected boolean isMethodAccepted(Method method) {
+        return super.isMethodAccepted(method) && CommonProxiedMethodFilters.NON_PRIVATE.accept(method);
     }
 }
