@@ -72,4 +72,9 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
     protected String getProxyNameSuffix() {
         return SUFFIX;
     }
+
+    @Override
+    protected boolean isMethodAccepted(Method method) {
+        return super.isMethodAccepted(method) && CommonProxiedMethodFilters.NON_PRIVATE.accept(method);
+    }
 }
