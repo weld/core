@@ -30,15 +30,18 @@ import java.lang.reflect.Method;
  * @see WELD-840
  *
  * @author Jozef Hartinger
- *
+ * @author Martin Kouba
  */
-interface ProxiedMethodFilter {
+@FunctionalInterface
+public interface ProxiedMethodFilter {
 
     /**
      * Determines whether this filter is enabled. E.g. GroovyMethodFilter is only enabled in Groovy environment
      * @return true if this method filter should be used
      */
-    boolean isEnabled();
+    default boolean isEnabled() {
+        return true;
+    }
 
     /**
      * Determines, whether the given method should be implemented by the proxy / subclass or not.
