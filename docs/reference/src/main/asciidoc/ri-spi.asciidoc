@@ -577,11 +577,11 @@ If you are integrating Weld into a Servlet environment you must register
 either automatically, or through user configuration, for each CDI
 application which uses Servlet.
 
-You must ensure that `WeldListener` is called before any other
+You must ensure that `WeldInitialListener` is called before any other
 application-defined listener is called and that `WeldTerminalListener`
 is called only after all application-defined listeners have been called.
 
-You must ensure that `WeldListener.contextInitialized()` is called after
+You must ensure that `WeldInitialListener.contextInitialized()` is called after
 beans are deployed is complete (`Bootstrap.deployBeans()` has been
 called).
 
@@ -600,7 +600,7 @@ Conversation Filter'', the integrator is required to register
 `org.jboss.weld.servlet.ConversationFilter` as a filter with ``CDI
 Conversation Filter'' as its filter name. If no such mapping exists in
 the application, the integrator is not required to register the filter.
-In that case, WeldListener will take care of conversation context
+In that case, `WeldInitialListener` will take care of conversation context
 activation/deactivation at the beginning of HTTP request processing.
 
 ==== JSF
