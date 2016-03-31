@@ -90,7 +90,7 @@ public class ProbeExtension implements Extension {
 
     private final Probe probe;
 
-    private JsonDataProvider jsonDataProvider;
+    private volatile JsonDataProvider jsonDataProvider;
 
     private volatile Pattern invocationMonitorExcludePattern;
 

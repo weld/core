@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -107,7 +108,7 @@ class Probe {
     Probe() {
         this.initTs = new AtomicLong(0);
         this.invocations = new ConcurrentHashMap<Integer, Invocation>();
-        this.events = Collections.synchronizedList(new ArrayList<EventInfo>());
+        this.events = Collections.synchronizedList(new LinkedList<EventInfo>());
         this.beanToId = new HashMap<Bean<?>, String>();
         this.idToBean = new HashMap<String, Bean<?>>();
         this.beanToManager = new HashMap<Bean<?>, BeanManagerImpl>();
