@@ -156,6 +156,23 @@ Probe.DashboardRoute = Ember.Route.extend({
     actions : {
         refreshData : function() {
             this.refresh();
+        },
+        clearData : function() {
+            var route = this;
+            var promises = new Array();
+            promises.push($.ajax(
+                route.controllerFor('application').get('restUrlBase')
+                + 'invocations', {
+                'type' : 'DELETE'
+            }));
+            promises.push($.ajax(
+                route.controllerFor('application').get('restUrlBase')
+                + 'events', {
+                'type' : 'DELETE'
+            }));
+            return Ember.RSVP.all(promises).then(function(values) {
+                route.refresh();
+            });
         }
     }
 });
@@ -930,21 +947,26 @@ Ember.Handlebars.registerBoundHelper('eachLiAbbr', function(types, limit,
 
 /*
  * This helper takes two params: text and limit. Furthermore it's possible to
- * specify optional hash arguments: title, suppressHtml and skipIcon.
+ * specify optional hash arguments: title, suppressHtml, skipIcon and simple.
  */
 Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, options) {
+    var escaped = Handlebars.Utils.escapeExpression(text);
+    if (escaped.length <= limit) {
+        return new Handlebars.SafeString(escaped);
+    }
     var addTitle = options.hash.title || true;
     var suppresshtmlOutput = options.hash.suppressHtml || false;
     var skipIcon = options.hash.skipIcon || false;
-    var escaped = Handlebars.Utils.escapeExpression(text);
-    if (escaped.length > limit) {
-        var ret = '';
+    var ret = '';
+    if (options.hash.simple) {
+        ret = abbreviateSimple(escaped, limit, !suppresshtmlOutput, addTitle,
+            skipIcon);
+    } else {
         ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
             !suppresshtmlOutput, addTitle, skipIcon) : abbreviateType(escaped,
             !suppresshtmlOutput, addTitle, skipIcon);
-        escaped = ret;
     }
-    return new Handlebars.SafeString(escaped);
+    return new Handlebars.SafeString(ret);
 });
 
 Ember.Handlebars.registerBoundHelper('detail-icon', function() {
@@ -1030,8 +1052,8 @@ Probe.DependencyGraph = Ember.View
                 "marker").attr("id", function(d) {
                 return d;
             }).attr("viewBox", "0 -5 10 10").attr("refX", 20).attr("refY", 0)
-                .attr("markerWidth", 6).attr("markerHeight", 6).attr("orient",
-                    "auto").append("path").attr("d", "M0,-5L10,0L0,5");
+                .attr("markerWidth", 5).attr("markerHeight", 5).attr("orient",
+                    "auto").style("fill", "#323232").append("path").attr("d", "M0,-5L10,0L0,5");
 
             // Links - lines
             var link = svg.selectAll("line.link").data(links).enter().append(
@@ -1062,6 +1084,8 @@ Probe.DependencyGraph = Ember.View
                 } else if (d.type == 'declaredBy') {
                     return 'LightBlue';
                 }
+            }).style("stroke-width", function(d) {
+                    return "3px";
             });
 
             // Links - labels
@@ -1150,11 +1174,11 @@ Probe.DependencyGraph = Ember.View
 
             node.append("circle").attr("r", 16).style("stroke", function(d) {
                 if (d.isRoot) {
-                    return "black";
+                    return "#323232";
                 }
             }).style("stroke-width", function(d) {
                 if (d.isRoot) {
-                    return "3";
+                    return "4";
                 }
             }).style(
                 "fill",
@@ -2155,6 +2179,32 @@ function abbreviateType(type, htmlOutput, title, skipIcon) {
             }
         }
     }
+    if (htmlOutput) {
+        if (title) {
+            ret += '</span>';
+        }
+        if (!skipIcon) {
+            ret += ' <i class="fa fa-compress abbreviated"></i>';
+        }
+    }
+    return ret;
+}
+
+/**
+ *
+ * @param text
+ * @param htmlOutput
+ * @param title
+ * @param skipIcon
+ * @returns {String}
+ */
+function abbreviateSimple(text, limit, htmlOutput, title, skipIcon) {
+    var ret = '';
+    if (htmlOutput && title) {
+        ret += ' <span title="' + text + '">';
+    }
+    ret += text.substring(0, limit - 3);
+    ret += "...";
     if (htmlOutput) {
         if (title) {
             ret += '</span>';

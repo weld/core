@@ -102,7 +102,10 @@ ${head}
                                     <p class="form-control-static">{{#link-to 'observerList' (query-params bda='probe-filterAdditionalBdas')}}{{controllers.application.dashboard.application.observers}}{{/link-to}}</p>
                                 </div>
                             </div>
-
+                            <div class="alert alert-info alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <strong>Heads up!</strong> Synthetic bean archives are not included. {{tip "Such additional archives are automatically created for beans and extensions which do not belong to any regular bean archive"}}
+                            </div>
                             </form>
                         </div>
                     </div>
@@ -116,7 +119,7 @@ ${head}
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Last update:</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-static">{{lastUpdate}} &nbsp; <button {{action 'refreshData'}} class="btn btn-default btn-xs"><i class="fa fa-refresh"></i> Refresh</button></p>
+                                    <p class="form-control-static">{{lastUpdate}}</p>
                                 </div>
                              </div>
                             <div class="form-group">
@@ -129,6 +132,11 @@ ${head}
                                 <label class="col-sm-4 control-label">Fired events:</label>
                                 <div class="col-sm-8">
                                     <p class="form-control-static">{{#link-to 'events'}}{{fired}}{{/link-to}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-4 col-sm-12">
+                                    <button {{action 'refreshData'}} class="btn btn-default btn-lg"><i class="fa fa-refresh"></i> Refresh</button> <button {{action 'clearData'}} class="btn btn-default btn-lg"><i class="fa fa-remove"></i> Clear all data</button>
                                 </div>
                             </div>
                             </form>
@@ -170,7 +178,7 @@ ${head}
                                 <div class="form-group">
                                     <label class="col-sm-5 control-label">{{abbr name 20 skipIcon=true}} {{tip description stripHtml=true}}:</label>
                                 <div class="col-sm-7">
-                                    <p class="form-control-static">{{value}}</p>
+                                    <p class="form-control-static">{{abbr value 55 simple=true skipIcon=true}}</p>
                                 </div>
                              </div>
                             {{/each}}
@@ -1287,7 +1295,7 @@ ${head}
                 <th/>
                 <th>Kind {{view 'select' content=eventKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
-                    Event {{tip "Limited portion of the eventPayload.toString() value"}}
+                    Event {{tip "Usually limited portion of eventPayload.toString() or other important info"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=eventInfo class="form-control" placeholder="Contains"}}
                     </form>
