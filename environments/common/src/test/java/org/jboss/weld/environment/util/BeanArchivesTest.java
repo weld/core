@@ -62,4 +62,16 @@ public class BeanArchivesTest {
         }
     }
 
+    @Test
+    public void testExtractBeanArchiveId() {
+        assertEquals("/foo_/WEB-INF/classes",
+                BeanArchives.extractBeanArchiveId("/tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/classes", "/foo", "/WEB-INF"));
+        assertEquals("_/WEB-INF/classes",
+                BeanArchives.extractBeanArchiveId("/tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/classes", "", "/WEB-INF"));
+        assertEquals("/foo_/WEB-INF/lib/bar.jar",
+                BeanArchives.extractBeanArchiveId("file:///tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/lib/bar.jar", "/foo", "/WEB-INF"));
+        assertEquals("/foo_/WEB-INF/classes",
+                BeanArchives.extractBeanArchiveId("C:\\tmp\\tomcat\\webapps\\87b26796-2e95-4f64-8039-409ae1d1b705\\WEB-INF\\classes", "/foo", "/WEB-INF"));
+    }
+
 }
