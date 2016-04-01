@@ -68,12 +68,8 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
     @Override
     public List<ScanResult> scan() {
 
-        String separator = servletContext.getContextPath();
-        if (separator.length() == 0) {
-            // Root context
-            separator = WEB_INF;
-        }
-
+        // We use context path as a base for bean archive ids
+        String contextPath = servletContext.getContextPath();
         List<ScanResult> results = new ArrayList<>(super.scan());
 
         // All previous results for WEB-INF/classes must be ignored
@@ -83,7 +79,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
             if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES)) {
                 iterator.remove();
             } else {
-                result.extractBeanArchiveId(separator);
+                result.extractBeanArchiveId(contextPath, WEB_INF);
             }
         }
 
@@ -106,7 +102,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 if (accept(beansXml)) {
                     File webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
                     if (webInfClasses != null) {
-                        results.add(new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(separator));
+                        results.add(new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath, WEB_INF));
                     } else {
                         // The WAR is not extracted to the file system - make use of ServletContext.getResourcePaths()
                         results.add(new ScanResult(beansXml, WEB_INF_CLASSES));
