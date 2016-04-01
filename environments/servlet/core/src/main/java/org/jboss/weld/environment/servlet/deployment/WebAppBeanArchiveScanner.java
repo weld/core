@@ -52,7 +52,6 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
     static final String[] RESOURCES = { WEB_INF_BEANS_XML, WEB_INF_CLASSES_BEANS_XML };
 
     private final ServletContext servletContext;
-    private final ResourceLoader resourceLoader;
 
     /**
      *
@@ -62,19 +61,14 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
      */
     public WebAppBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, ServletContext servletContext) {
         super(resourceLoader, bootstrap);
-        this.resourceLoader = resourceLoader;
         this.servletContext = servletContext;
     }
 
     @Override
     public Map<URL, ScanResult> scan() {
 
-        String separator = servletContext.getContextPath();
-        if (separator.length() == 0) {
-            // Root context
-            separator = WEB_INF;
-        }
-
+        // We use context path as a base for bean archive ids
+        String contextPath = servletContext.getContextPath();
         Map<URL, ScanResult> resultsMap = super.scan();
 
         // All previous results for WEB-INF/classes must be ignored
@@ -84,7 +78,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
             if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES)) {
                 iterator.remove();
             } else {
-                entry.getValue().extractBeanArchiveId(separator);
+                entry.getValue().extractBeanArchiveId(contextPath, WEB_INF);
             }
         }
 
@@ -107,7 +101,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 if (accept(beansXml)) {
                     File webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
                     if (webInfClasses != null) {
-                        resultsMap.put(beansXmlUrl, new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(separator));
+                        resultsMap.put(beansXmlUrl, new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath, WEB_INF));
                     } else {
                         // The WAR is not extracted to the file system - make use of ServletContext.getResourcePaths()
                         resultsMap.put(beansXmlUrl, new ScanResult(beansXml, WEB_INF_CLASSES));

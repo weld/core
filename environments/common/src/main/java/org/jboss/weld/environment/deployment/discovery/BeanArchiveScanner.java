@@ -20,7 +20,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.environment.util.BeanArchives;
 
 /**
  * Scans the application for bean archives.
@@ -71,17 +71,14 @@ public interface BeanArchiveScanner {
         }
 
         /**
-         * The id should be consistent between multiple occurrences of the deployment. It's no-op if
-         * the reference does not contain the specified separator.
          *
+         * @param base
          * @param separator
          * @return self
+         * @see BeanArchives#extractBeanArchiveId(String, String, String)
          */
-        public ScanResult extractBeanArchiveId(String separator) {
-            Preconditions.checkArgumentNotNull(separator, "separator");
-            if (beanArchiveRef.contains(separator)) {
-                this.beanArchiveId = beanArchiveRef.substring(beanArchiveRef.indexOf(separator), beanArchiveRef.length());
-            }
+        public ScanResult extractBeanArchiveId(String base, String separator) {
+            this.beanArchiveId = BeanArchives.extractBeanArchiveId(beanArchiveRef, base, separator);
             return this;
         }
 
