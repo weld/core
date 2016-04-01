@@ -34,6 +34,8 @@ import org.jboss.weld.util.collections.SetMultimap;
  */
 public final class BeanArchives {
 
+    public static final String BEAN_ARCHIVE_ID_BASE_DELIMITER = "_";
+
     private BeanArchives() {
     }
 
@@ -51,7 +53,8 @@ public final class BeanArchives {
         SetMultimap<String, BeanDeploymentArchive> problems = SetMultimap.newSetMultimap();
 
         if (beanArchives.size() == 2) {
-            // Find the set that contains all bean classes of the first bean archive that also belong to the second bean archive
+            // Find the set that contains all bean classes of the first bean
+            // archive that also belong to the second bean archive
             Iterator<B> iterator = beanArchives.iterator();
             BeanDeploymentArchive first = iterator.next();
             BeanDeploymentArchive second = iterator.next();
@@ -79,6 +82,33 @@ public final class BeanArchives {
             }
         }
         return problems;
+    }
+
+    /**
+     * Takes the {@link #getBeanArchiveRef()} value and extracts the bean archive id.
+     * <ol>
+     * <li>First, the windows file separators found in beanArchiveRef are converted to slashes</li>
+     * <li>{@code base} value is appended</li>
+     * <li>{@link BeanArchives#BEAN_ARCHIVE_ID_BASE_DELIMITER} is appended</li>
+     * <li>If the {@code beanArchiveRef} contains the separator, the substring (beginning at the separator index) is appended</li>
+     * <li>Otherwise, the whole {@code beanArchiveRef} value is appended</li>
+     * </ol>
+     * The id should be consistent between multiple occurrences of the deployment.
+     *
+     * @param beanArchiveRef
+     * @param base
+     * @param separator
+     * @return
+     */
+    public static String extractBeanArchiveId(String beanArchiveRef, String base, String separator) {
+        beanArchiveRef = beanArchiveRef.replace('\\', '/');
+        StringBuilder id = new StringBuilder();
+        id.append(base);
+        id.append(BeanArchives.BEAN_ARCHIVE_ID_BASE_DELIMITER);
+        if (beanArchiveRef.contains(separator)) {
+            id.append(beanArchiveRef.substring(beanArchiveRef.indexOf(separator), beanArchiveRef.length()));
+        }
+        return id.toString();
     }
 
 }
