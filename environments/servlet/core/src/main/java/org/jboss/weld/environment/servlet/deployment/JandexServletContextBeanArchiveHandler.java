@@ -34,14 +34,11 @@ public class JandexServletContextBeanArchiveHandler extends ServletContextBeanAr
 
     private final Indexer indexer = new Indexer();
 
-    private final ServletContext servletContext;
-
     /**
      * @param servletContext
      */
     public JandexServletContextBeanArchiveHandler(ServletContext servletContext) {
         super(servletContext);
-        this.servletContext = servletContext;
     }
 
     @Override
@@ -50,7 +47,6 @@ public class JandexServletContextBeanArchiveHandler extends ServletContextBeanAr
         if (builder == null) {
             return null;
         }
-
         builder.setAttribute(Jandex.INDEX_ATTRIBUTE_NAME, buildIndex());
         return builder;
     }
