@@ -140,6 +140,8 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1029, value = "org.jboss.weld.environment.servlet.Listener is in an inconsistent state - Weld Servlet cannot be shut down properly")
     void noServletLifecycleToDestroy();
 
-    // Messages with ids 1030 and 1031 were removed
+    @LogMessage(level = Level.ERROR)
+    @Message(id = 1030, value = "Error handling library: {0}.", format = Format.MESSAGE_FORMAT)
+    void cannotHandleLibrary(Object path, @Cause Throwable cause);
 
 }
