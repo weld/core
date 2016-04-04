@@ -16,7 +16,14 @@
  */
 package org.jboss.weld.environment.servlet.deployment;
 
+import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_WAR_PART;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.servlet.ServletContext;
 
@@ -26,9 +33,12 @@ import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.util.Files;
 
 /**
- * Handles the paths to resources within a web application. It's used if a WAR archive is not extracted to the file system.
+ * Handles the paths to resources within a web application if a WAR archive is not extracted to the file system.
+ * <p>
+ * For {@code WEB-INF/classes}, {@link ServletContext#getResourcePaths(String)} is used. For libraries, only {@code war} protocol is supported.
  *
  * @author Martin Kouba
+ * @author Thomas Meyer
  */
 public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
 
@@ -36,7 +46,7 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
 
     protected static final String DOT = ".";
 
-    private final ServletContext servletContext;
+    protected final ServletContext servletContext;
 
     /**
      * @param servletContext
@@ -47,13 +57,24 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
 
     @Override
     public BeanArchiveBuilder handle(String path) {
-        if (!path.equals(WebAppBeanArchiveScanner.WEB_INF_CLASSES)) {
-            return null;
+        if (path.equals(WebAppBeanArchiveScanner.WEB_INF_CLASSES)) {
+            BeanArchiveBuilder builder = new BeanArchiveBuilder();
+            handleResourcePath(path, path, builder);
+            return builder;
+        } else if (path.startsWith(PROTOCOL_WAR_PART)) {
+            try {
+                URL url = new URL(path);
+                InputStream in = url.openStream();
+                if (in != null) {
+                    BeanArchiveBuilder builder = new BeanArchiveBuilder();
+                    handleLibrary(url, in, builder);
+                    return builder;
+                }
+            } catch (IOException e) {
+                WeldServletLogger.LOG.cannotHandleLibrary(path, e);
+            }
         }
-
-        BeanArchiveBuilder builder = new BeanArchiveBuilder();
-        handleResourcePath(path, path, builder);
-        return builder;
+        return null;
     }
 
     protected void add(String rootPath, String subpath, BeanArchiveBuilder builder) {
@@ -64,10 +85,8 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
     }
 
     private void handleResourcePath(String rootPath, String resourcePath, BeanArchiveBuilder builder) {
-
         WeldServletLogger.LOG.debugv("Handle resource path: {0}", resourcePath);
         Set<String> subpaths = servletContext.getResourcePaths(resourcePath);
-
         if (subpaths != null && !subpaths.isEmpty()) {
             for (String subpath : subpaths) {
                 if (subpath.endsWith(SLASH)) {
@@ -75,6 +94,18 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
                     handleResourcePath(rootPath, subpath, builder);
                 } else if (subpath.endsWith(Files.CLASS_FILE_EXTENSION)) {
                     add(rootPath, subpath, builder);
+                }
+            }
+        }
+    }
+
+    private void handleLibrary(URL url, InputStream in, BeanArchiveBuilder builder) throws IOException {
+        WeldServletLogger.LOG.debugv("Handle library: {0}", url);
+        try (ZipInputStream zip = new ZipInputStream(in)) {
+            ZipEntry entry = null;
+            while ((entry = zip.getNextEntry()) != null) {
+                if (Files.isClass(entry.getName())) {
+                    builder.addClass(Files.filenameToClassname(entry.getName()));
                 }
             }
         }
