@@ -22,6 +22,7 @@ import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_HTTP;
 import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_HTTPS;
 import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_JAR;
 import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_FILE_PART;
+import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_WAR_PART;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -90,7 +91,7 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
 
     /**
      * @param url
-     * @return
+     * @return an adapted bean archive reference
      * @throws URISyntaxException
      */
     protected String getBeanArchiveReference(URL url) {
@@ -106,9 +107,8 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
         if(PROCOTOL_FILE.equals(url.getProtocol())) {
             // Adapt file URL, e.g. "file:///home/weld/META-INF/beans.xml" becomes "/home/weld"
             ref = new File(uri.getSchemeSpecificPart()).getParentFile().getParent();
-
         } else if(PROCOTOL_JAR.equals(url.getProtocol())) {
-            // Adapt JAR file URL, e.g. "jar:file:/home/duke/duke.jar!/META-INF/beans.xml" becomes "/home/duke/duke.jar"
+            // Attempt to adapt JAR file URL, e.g. "jar:file:/home/duke/duke.jar!/META-INF/beans.xml" becomes "/home/duke/duke.jar"
             // NOTE: Some class loaders may support nested jars, e.g. "jar:file:/home/duke/duke.jar!/lib/foo.jar!/META-INF/beans.xml" becomes
             // "/home/duke/duke.jar!/lib/foo.jar"
 
@@ -131,6 +131,10 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
         // jar:file:
         if (path.startsWith(PROTOCOL_FILE_PART)) {
             return path.substring(PROTOCOL_FILE_PART.length());
+        }
+        if (path.startsWith(PROTOCOL_WAR_PART)) {
+            // E.g. for Tomcat with unpackWARs=false return war:file:/webapp.war/WEB-INF/lib/foo.jar
+            return path;
         }
         // jar:http:
         if (path.startsWith(PROCOTOL_HTTP) || path.startsWith(PROCOTOL_HTTPS)) {
