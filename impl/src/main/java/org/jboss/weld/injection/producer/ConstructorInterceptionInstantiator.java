@@ -63,7 +63,6 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                 registerAroundConstructCallback(weldCtx, manager);
             }
         }
-
         return delegate().newInstance(ctx, manager);
     }
 
@@ -114,6 +113,7 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
         };
 
         ctx.registerAroundConstructCallback(callback);
+        ctx.setAroundConstructInterceptionContext(interceptionContext);
     }
 
     @Override

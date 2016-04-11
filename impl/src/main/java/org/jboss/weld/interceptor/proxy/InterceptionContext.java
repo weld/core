@@ -50,15 +50,24 @@ import com.google.common.collect.ImmutableSet;
  * Holds interceptor metadata and interceptor instances throughout the lifecycle of the intercepted instance.
  *
  * @author Jozef Hartinger
+ * @author Martin Kouba
  *
  */
 public class InterceptionContext implements Serializable {
 
-    private static final Set<InterceptionType> CONSTRUCTOR_INTERCEPTION_TYPES = ImmutableSet.of(InterceptionType.AROUND_CONSTRUCT);
     private static final Set<InterceptionType> METHOD_INTERCEPTION_TYPES = ImmutableSet.of(AROUND_INVOKE, AROUND_TIMEOUT, POST_CONSTRUCT, PRE_DESTROY, POST_ACTIVATE, PRE_PASSIVATE);
 
+    /**
+     * The context returned by this method may be later reused for other interception types.
+     *
+     * @param interceptionModel
+     * @param ctx
+     * @param manager
+     * @param type
+     * @return the interception context to be used for the AroundConstruct chain
+     */
     public static InterceptionContext forConstructorInterception(InterceptionModel interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
-        return of(interceptionModel, ctx, manager, CONSTRUCTOR_INTERCEPTION_TYPES, type);
+        return of(interceptionModel, ctx, manager, null, type);
     }
 
     public static InterceptionContext forNonConstructorInterception(InterceptionModel interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
@@ -84,13 +93,18 @@ public class InterceptionContext implements Serializable {
         this.annotatedType = type;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Map<Class<?>, Object> initInterceptorInstanceMap(InterceptionModel model, CreationalContext ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes) {
         Map<Class<?>, Object> interceptorInstances = new HashMap<Class<?>, Object>();
         for (InterceptorClassMetadata<?> interceptor : model.getAllInterceptors()) {
-            for (InterceptionType interceptionType : interceptionTypes) {
-                if (interceptor.isEligible(interceptionType)) {
-                    interceptorInstances.put(interceptor.getJavaClass(), interceptor.getInterceptorFactory().create(ctx, manager));
+            if(interceptionTypes != null) {
+                for (InterceptionType interceptionType : interceptionTypes) {
+                    if (interceptor.isEligible(interceptionType)) {
+                        interceptorInstances.put(interceptor.getJavaClass(), interceptor.getInterceptorFactory().create(ctx, manager));
+                    }
                 }
+            } else {
+                interceptorInstances.put(interceptor.getJavaClass(), interceptor.getInterceptorFactory().create(ctx, manager));
             }
         }
         return immutableMap(interceptorInstances);
