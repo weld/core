@@ -34,6 +34,7 @@ import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
 import org.jboss.weld.interceptor.proxy.WeldInvocationContext;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -103,7 +104,12 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                 } catch (Exception e) {
                     throw new WeldException(e);
                 }
-                return target.get();
+                T instance = target.get();
+                if (instance == null) {
+                    // CDI-598
+                    throw InterceptorLogger.LOG.targetInstanceNotCreated(constructor);
+                }
+                return instance;
             }
         };
 
