@@ -44,7 +44,18 @@
             </class>
 
             <!-- Issues in the TCK -->
-            
+            <!-- CDITCK-517 -->
+            <class name="org.jboss.cdi.tck.interceptors.tests.bindings.resolution.InterceptorBindingResolutionTest">
+                <methods>
+                    <exclude name="testConstructorInterceptorBindings"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.interceptors.tests.contract.interceptorLifeCycle.aroundConstruct.AroundConstructLifeCycleTest">
+                <methods>
+                    <exclude name="testInstanceNotCreatedUnlessInvocationContextProceedCalled"/>
+                </methods>
+            </class>
+
             <!-- changes in Weld 3 which were not reflected in TCK yet -->
             <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
                 <methods>
