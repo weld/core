@@ -21,11 +21,13 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
+import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * A wrapper over {@link SubclassedComponentInstantiator} that registers interceptors within the method handler. This class is
@@ -48,10 +50,16 @@ public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T
 
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        InterceptionContext interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager, annotatedType);
-
+        InterceptionContext interceptionContext = null;
+        if (ctx instanceof CreationalContextImpl<?>) {
+            CreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
+            interceptionContext = weldCtx.getAroundConstructInterceptionContext();
+        }
+        if (interceptionContext == null) {
+            // There is no interception context to reuse
+            interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager, annotatedType);
+        }
         T instance = delegate().newInstance(ctx, manager);
-
         applyInterceptors(instance, interceptionContext);
         return instance;
     }
