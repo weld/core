@@ -32,6 +32,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;
+import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -64,6 +65,8 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     private transient boolean constructorInterceptionSuppressed;
 
     private transient List<AroundConstructCallback<T>> aroundConstructCallbacks;
+
+    private transient InterceptionContext aroundConstructInterceptionContext;
 
     public CreationalContextImpl(Contextual<T> contextual) {
         this(contextual, null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
@@ -250,6 +253,18 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             this.aroundConstructCallbacks = new LinkedList<AroundConstructCallback<T>>();
         }
         this.aroundConstructCallbacks.add(callback);
+    }
+
+    /**
+     *
+     * @return the interception context used for Weld-managed AroundConstruct interceptors or <code>null</code> if no such interceptors were applied
+     */
+    public InterceptionContext getAroundConstructInterceptionContext() {
+        return aroundConstructInterceptionContext;
+    }
+
+    public void setAroundConstructInterceptionContext(InterceptionContext aroundConstructInterceptionContext) {
+        this.aroundConstructInterceptionContext = aroundConstructInterceptionContext;
     }
 
     /**
