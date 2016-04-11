@@ -24,6 +24,7 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.DefinitionException;
 
 /**
@@ -53,4 +54,7 @@ public interface InterceptorLogger extends WeldLogger {
 
     @Message(id = 1704, value = "@Intercepted Bean<?> can only be injected into an interceptor: {0}", format= Format.MESSAGE_FORMAT)
     IllegalArgumentException interceptedBeanCanOnlyBeInjectedIntoInterceptor(Object injectionPoint);
+
+    @Message(id = 1705, value = "Target instance not created - one of the interceptor methods in the AroundConstruct chain did not invoke InvocationContext.proceed() for: {0}", format= Format.MESSAGE_FORMAT)
+    CreationException targetInstanceNotCreated(Object constructor);
 }
