@@ -232,32 +232,6 @@
             </build>
         </profile>
 
-        <profile>
-            <id>tck20</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>tck20</name>
-                </property>
-            </activation>
-            <properties>
-                <cdi.tck.version>${cdi.tck-2-0.version}</cdi.tck.version>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/tck20/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <!-- Run the TCK in standalone mode -->
         <profile>
             <id>weld-embedded</id>
