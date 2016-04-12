@@ -145,8 +145,8 @@ import org.jboss.weld.util.collections.WeldCollections;
  *
  *
  * <p>
- * In the same manner, it is possible to explicitly declare interceptors, decorators, extensions and Weld-specific options (such
- * as relaxed construction) using the builder.
+ * In the same manner, it is possible to explicitly declare interceptors, decorators, extensions and Weld-specific options (such as relaxed construction) using
+ * the builder.
  * </p>
  *
  * <pre>
@@ -172,12 +172,26 @@ import org.jboss.weld.util.collections.WeldCollections;
 @Vetoed
 public class Weld implements ContainerInstanceFactory {
 
+    /**
+     * By default, bean archive isolation is enabled. If set to false, Weld will use a "flat" deployment structure - all bean classes share the same bean
+     * archive and all beans.xml descriptors are automatically merged into one.
+     * <p>
+     * This key can be also used through {@link #property(String, Object)}.
+     */
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
 
-    // This system property is used to activate the development mode
+    /**
+     * By default, the development mode is disabled. If set to true, the development mode is activated
+     * <p>
+     * This key can be also used through {@link #property(String, Object)}.
+     */
     public static final String DEV_MODE_SYSTEM_PROPERTY = "org.jboss.weld.development";
 
-    // System property used to skip the registration of a shutdown hook
+    /**
+     * By default, Weld automatically registers shutdown hook during initialization. If set to false, the registration of a shutdown hook is skipped.
+     * <p>
+     * This key can be also used through {@link #property(String, Object)}.
+     */
     public static final String SHUTDOWN_HOOK_SYSTEM_PROPERTY = "org.jboss.weld.se.shutdownHook";
 
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
@@ -479,6 +493,10 @@ public class Weld implements ContainerInstanceFactory {
      * @param key
      * @param value
      * @return self
+     * @see #ARCHIVE_ISOLATION_SYSTEM_PROPERTY
+     * @see #SHUTDOWN_HOOK_SYSTEM_PROPERTY
+     * @see #DEV_MODE_SYSTEM_PROPERTY
+     * @see ConfigurationKey
      */
     public Weld property(String key, Object value) {
         properties.put(key, value);
@@ -616,7 +634,7 @@ public class Weld implements ContainerInstanceFactory {
         bootstrap.endInitialization();
 
         final WeldManager manager = bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class));
-        final WeldContainer weldContainer = WeldContainer.initialize(containerId, manager, bootstrap);
+        final WeldContainer weldContainer = WeldContainer.initialize(containerId, manager, bootstrap, isEnabled(SHUTDOWN_HOOK_SYSTEM_PROPERTY, true));
 
         initializedContainers.put(containerId, weldContainer);
         return weldContainer;
@@ -727,16 +745,14 @@ public class Weld implements ContainerInstanceFactory {
             }
         }
 
-        String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));
-
-        if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
+        if (isEnabled(ARCHIVE_ISOLATION_SYSTEM_PROPERTY, true)) {
+            deployment = new WeldDeployment(resourceLoader, bootstrap, beanArchives, extensions);
+            CommonLogger.LOG.archiveIsolationEnabled();
+        } else {
             Set<WeldBeanDeploymentArchive> flatDeploymentArchives = new HashSet<WeldBeanDeploymentArchive>();
             flatDeploymentArchives.add(WeldBeanDeploymentArchive.merge(bootstrap, beanArchives));
             deployment = new WeldDeployment(resourceLoader, bootstrap, flatDeploymentArchives, extensions);
             CommonLogger.LOG.archiveIsolationDisabled();
-        } else {
-            deployment = new WeldDeployment(resourceLoader, bootstrap, beanArchives, extensions);
-            CommonLogger.LOG.archiveIsolationEnabled();
         }
 
         deployment.getServices().addAll(additionalServices.entrySet());
@@ -804,7 +820,7 @@ public class Weld implements ContainerInstanceFactory {
             weldSEBeanRegistrant.setBeanBuilders(beanBuilders);
         }
 
-        if(Boolean.valueOf(AccessController.doPrivileged(new GetSystemPropertyAction(DEV_MODE_SYSTEM_PROPERTY)))) {
+        if (isEnabled(DEV_MODE_SYSTEM_PROPERTY, false)) {
             // The development mode is enabled - register the Probe extension
             result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
         }
@@ -930,6 +946,18 @@ public class Weld implements ContainerInstanceFactory {
 
     private String[] splitBySlash(String value) {
         return value.split("/");
+    }
+
+    private boolean isEnabled(String key, boolean defaultValue) {
+        Object value = properties.get(key);
+        if (value != null) {
+            return Boolean.TRUE.equals(value);
+        }
+        String system = AccessController.doPrivileged(new GetSystemPropertyAction(key));
+        if (system != null) {
+            return Boolean.valueOf(system);
+        }
+        return defaultValue;
     }
 
     private static class PackInfo {

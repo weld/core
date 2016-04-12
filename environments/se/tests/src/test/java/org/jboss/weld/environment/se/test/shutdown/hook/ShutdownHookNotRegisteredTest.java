@@ -18,35 +18,21 @@ package org.jboss.weld.environment.se.test.shutdown.hook;
 
 import static org.junit.Assert.assertFalse;
 
-import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployer;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  *
  * @author Martin Kouba
  * @see https://issues.jboss.org/browse/WELD-2051
  */
-@RunWith(Arquillian.class)
-public class ShutdownHookNotRegisteredTest {
+public abstract class ShutdownHookNotRegisteredTest {
 
-    private static final String DEPLOYMENT_NAME = "foo";
-
-    @Deployment(managed = false, name = DEPLOYMENT_NAME)
-    public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(ShutdownHookNotRegisteredTest.class, Foo.class))
-                .addSystemProperty(Weld.SHUTDOWN_HOOK_SYSTEM_PROPERTY, "false").build();
-    }
+    protected static final String DEPLOYMENT_NAME = "foo";
 
     @ArquillianResource
     private Deployer deployer;
@@ -69,8 +55,10 @@ public class ShutdownHookNotRegisteredTest {
     @Test
     public void testFooPing() {
         // Initialize weld, use Foo bean instance but don't call shutdown
-        new Weld().initialize().select(Foo.class).get().ping();
+        initWeld().select(Foo.class).get().ping();
     }
+
+    protected abstract WeldContainer initWeld();
 
     @RunAsClient
     @InSequence(3)
