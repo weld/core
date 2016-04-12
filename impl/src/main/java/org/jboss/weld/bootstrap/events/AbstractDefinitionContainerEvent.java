@@ -17,6 +17,7 @@
 package org.jboss.weld.bootstrap.events;
 
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
 
@@ -35,6 +36,7 @@ public abstract class AbstractDefinitionContainerEvent extends AbstractContainer
         Preconditions.checkArgumentNotNull(t, "Throwable t");
         checkWithinObserverNotification();
         getErrors().add(t);
+        BootstrapLogger.LOG.addDefinitionErrorCalled(getReceiver(), t);
     }
 
     @Override

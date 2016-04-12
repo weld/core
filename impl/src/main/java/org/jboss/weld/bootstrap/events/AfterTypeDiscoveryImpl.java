@@ -32,12 +32,14 @@ import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
 public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements AfterTypeDiscovery {
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
+            Collection<ContextHolder<? extends Context>> contexts) {
         new AfterTypeDiscoveryImpl(beanManager, bdaMapping, deployment, contexts).fire();
     }
 
@@ -46,7 +48,8 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     private final ClassTransformer transformer;
     private final SlimAnnotatedTypeStore store;
 
-    protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
+    protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment,
+            Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, AfterTypeDiscovery.class, bdaMapping, deployment, contexts);
         this.builder = beanManager.getServices().get(GlobalEnablementBuilder.class);
         this.events = beanManager.getServices().get(ContainerLifecycleEvents.class);
@@ -76,6 +79,7 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
         checkWithinObserverNotification();
         addSyntheticAnnotatedType(type, id);
+        BootstrapLogger.LOG.addAnnotatedTypeCalled(getReceiver(), type);
     }
 
     @Override
@@ -88,7 +92,7 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
         if (event == null) {
             deployment.getBeanDeployer().getEnvironment().addAnnotatedType(annotatedTypeContext);
             store.put(annotatedType);
-        } else  if (event.isVeto()) {
+        } else if (event.isVeto()) {
             return;
         } else {
             annotatedType = event.getResultingAnnotatedType();
