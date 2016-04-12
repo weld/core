@@ -78,6 +78,7 @@
         <module>jsf</module>
         <module>bundles/impl</module>
         <module>probe</module>
+        <module>bom</module>
     </modules>
 
     <!-- Dependency management. KEEP IN ALPHABETICAL ORDER -->
@@ -118,8 +119,8 @@
             </dependency>
 
             <dependency>
-               <groupId>org.jboss.spec.javax.el</groupId>
-               <artifactId>jboss-el-api_3.0_spec</artifactId>
+                <groupId>org.jboss.spec.javax.el</groupId>
+                <artifactId>jboss-el-api_3.0_spec</artifactId>
                 <version>${jboss.spec.el-api.version}</version>
             </dependency>
 
@@ -136,22 +137,22 @@
             </dependency>
 
             <dependency>
-              <groupId>org.jboss.logging</groupId>
-              <artifactId>jboss-logging-processor</artifactId>
-              <version>${jboss.logging.processor.version}</version>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging-processor</artifactId>
+                <version>${jboss.logging.processor.version}</version>
             </dependency>
 
             <dependency>
-              <groupId>org.jboss.logging</groupId>
-              <artifactId>jboss-logging</artifactId>
-              <version>${jboss.logging.version}</version>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>${jboss.logging.version}</version>
             </dependency>
 
             <dependency>
-              <groupId>org.jboss.logmanager</groupId>
-              <artifactId>jboss-logmanager</artifactId>
-              <version>${jboss.logmanager.version}</version>
-              <scope>test</scope>
+                <groupId>org.jboss.logmanager</groupId>
+                <artifactId>jboss-logmanager</artifactId>
+                <version>${jboss.logmanager.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -305,6 +306,14 @@
             <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-api-bom</artifactId>
+                <version>${weld.api.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-api-parent</artifactId>
                 <version>${weld.api.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
@@ -484,7 +493,7 @@
                     <version>${selenium.maven.plugin.version}</version>
                 </plugin>
                 <!-- So m2e doesn't throw errors for features it doesn't
-                    support in the POM -->
+                support in the POM -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -532,8 +541,8 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
 
     <profiles>
