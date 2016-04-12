@@ -74,12 +74,12 @@ the session context before other listeners are invoked (note that the
 listeners are notified in reverse order when a session is being
 destroyed).
 
-When working with multiple deployments in servlet environment, Weld Servlet 
-allows to define context identifier per application deployed. Each different 
-context identifier will create a new Weld container instance. If not specified, 
-Weld falls back to the default value - `STATIC_INSTANCE`. While using custom 
+When working with multiple deployments in servlet environment, Weld Servlet
+allows to define context identifier per application deployed. Each different
+context identifier will create a new Weld container instance. If not specified,
+Weld falls back to the default value - `STATIC_INSTANCE`. While using custom
 identifiers is neither required nor commonly used, it certainly has some use-cases.
-For instance managing several deployments with Arquillian Tomcat container. 
+For instance managing several deployments with Arquillian Tomcat container.
 Setting the identifier is as simple as adding one context parameter into `web.xml`:
 
 [source.XML, xml]
@@ -421,10 +421,9 @@ public class HelloWorld
 }
 ------------------------------------------------------------------------------------------------------
 
-NOTE: Weld automatically registers shutdown hook during initialization in order to properly terminate
-all running containers should the VM be terminated or program exited. Even though it is possible to register 
-an alternative hook and implement the logic, it is not recommended. The behavior across OS platforms may 
-differ and specifically on Windows it proves to be problematic.
+NOTE: Weld automatically registers shutdown hook during initialization in order to properly terminate all running containers should the VM be terminated or program exited.
+Even though it's possible to change this behavior (either by setting a system property `org.jboss.weld.se.shutdownHook` to `false` or through the `Weld.property()` method) and register an alternative hook and implement the logic, it is not recommended.
+The behavior across OS platforms may differ and specifically on Windows it proves to be problematic.
 
 ==== Bootstrapping CDI SE
 
@@ -684,9 +683,11 @@ declare a dependency such as:
 
 ==== Bean Archive Isolation
 
-By default, bean archive isolation is enabled. It means that alternatives, interceptors and decorators can be selected/enabled for a bean archive by using a beans.xml descriptor.
+By default, bean archive isolation is enabled.
+It means that alternatives, interceptors and decorators can be selected/enabled for a bean archive by using a beans.xml descriptor.
 
-This behaviour can be changed by providing a system property `org.jboss.weld.se.archive.isolation` with value of `false`. In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application.
+This behaviour can be changed by setting a system property `org.jboss.weld.se.archive.isolation` to `false` or through the `Weld.property()` method.
+In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application.
 
 NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.0.Final. Previous versions only operated with the "flat" deployment structure.
 

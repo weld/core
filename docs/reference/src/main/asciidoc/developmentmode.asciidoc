@@ -38,6 +38,20 @@ For a Java SE application, set the system property `org.jboss.weld.development` 
 java -cp myCoolApp.jar -Dorg.jboss.weld.development=true com.foo.MyMain
 -----------------------------------------------------------------------------------------------------------
 
+or use the `Weld.property()` method:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+org.jboss.weld.environment.se.Weld;
+
+public static void main(String[] args) {
+   Weld weld = new Weld().property("org.jboss.weld.development", true);
+   try (WeldContainer container = weld.initialize()) {
+      ...
+   }
+}
+-----------------------------------------------------------------
+
 ==== Is The Development Mode Enabled?
 
 You should see the following log message during initialization of your application:
