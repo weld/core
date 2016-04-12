@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.se;
 
-import java.security.AccessController;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -38,7 +37,6 @@ import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.collections.ImmutableList;
 
 
@@ -133,7 +131,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      * @param bootstrap
      * @return the initialized Weld container
      */
-    static WeldContainer initialize(String id, WeldManager manager, Bootstrap bootstrap) {
+    static WeldContainer initialize(String id, WeldManager manager, Bootstrap bootstrap, boolean isShutdownHookEnabled) {
         if (SINGLETON.isSet(id)) {
             throw WeldSELogger.LOG.weldContainerAlreadyRunning(id);
         }
@@ -143,7 +141,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
         WeldSELogger.LOG.weldContainerInitialized(id);
         manager.fireEvent(new ContainerInitialized(id), InitializedLiteral.APPLICATION);
         // If needed, register one shutdown hook for all containers
-        if (isShutdownHookNeeded() && shutdownHook == null) {
+        if (shutdownHook == null && isShutdownHookEnabled) {
             synchronized (LOCK) {
                 if (shutdownHook == null) {
                     shutdownHook = new ShutdownHook();
@@ -152,11 +150,6 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
             }
         }
         return weldContainer;
-    }
-
-    private static boolean isShutdownHookNeeded() {
-        String property = AccessController.doPrivileged(new GetSystemPropertyAction(Weld.SHUTDOWN_HOOK_SYSTEM_PROPERTY));
-        return property == null || Boolean.TRUE.equals(Boolean.valueOf(property));
     }
 
     // This replicates org.jboss.weld.Container.contextId
