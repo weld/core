@@ -25,6 +25,7 @@ import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -75,6 +76,7 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
     @Override
     public void setInjectionPoint(InjectionPoint injectionPoint) {
         checkWithinObserverNotification();
+        BootstrapLogger.LOG.setInjectionPointCalled(getReceiver(), ip, injectionPoint);
         ip = injectionPoint;
         dirty = true;
     }
