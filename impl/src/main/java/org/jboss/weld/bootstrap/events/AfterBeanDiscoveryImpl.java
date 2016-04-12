@@ -44,6 +44,7 @@ import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.logging.MetadataLogger;
@@ -80,6 +81,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, getBeanManager());
         validateBean(bean);
         additionalBeans.add(bean);
+        BootstrapLogger.LOG.addBeanCalled(getReceiver(), bean);
     }
 
     protected <T> void processBean(Bean<T> bean) {
@@ -153,6 +155,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             throw ContextLogger.LOG.cannotRegisterContext(scope, context);
         }
         getBeanManager().addContext(context);
+        BootstrapLogger.LOG.addContext(getReceiver(), context);
     }
 
     @Override
@@ -161,6 +164,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         validateObserverMethod(observerMethod, getBeanManager());
         additionalObservers.add(observerMethod);
+        BootstrapLogger.LOG.addObserverMethodCalled(getReceiver(), observerMethod);
     }
 
     @Override

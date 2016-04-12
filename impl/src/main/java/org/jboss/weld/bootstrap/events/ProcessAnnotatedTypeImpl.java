@@ -59,6 +59,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
 
     /**
      * Call this method after all observer methods of this event have been invoked to get the final value of this {@link AnnotatedType}.
+     *
      * @return
      */
     public SlimAnnotatedType<X> getResultingAnnotatedType() {
@@ -83,6 +84,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
             throw BootstrapLogger.LOG.annotatedTypeJavaClassMismatch(this.annotatedType.getJavaClass(), type.getJavaClass());
         }
         AnnotatedTypeValidator.validateAnnotatedType(type);
+        BootstrapLogger.LOG.setAnnotatedTypeCalled(getReceiver(), annotatedType, type);
         this.annotatedType = type;
     }
 
