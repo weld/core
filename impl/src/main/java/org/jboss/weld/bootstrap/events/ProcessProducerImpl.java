@@ -17,6 +17,7 @@
 package org.jboss.weld.bootstrap.events;
 
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -25,7 +26,6 @@ import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-
 
 public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessProducer<T, X> {
 
@@ -40,7 +40,7 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
     private AbstractProducerBean<T, X, ?> bean;
 
     private ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean) {
-        super(beanManager, ProcessProducer.class, new Type[]{bean.getAnnotated().getDeclaringType().getBaseType(), bean.getAnnotated().getBaseType()});
+        super(beanManager, ProcessProducer.class, new Type[] { bean.getAnnotated().getDeclaringType().getBaseType(), bean.getAnnotated().getBaseType() });
         this.bean = bean;
         this.annotatedMember = annotatedMember;
     }
@@ -57,6 +57,7 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
 
     public void setProducer(Producer<X> producer) {
         checkWithinObserverNotification();
+        BootstrapLogger.LOG.setProducerCalled(getReceiver(), getProducer(), producer);
         this.bean.setProducer(producer);
     }
 

@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
-
 
 public class ProcessSimpleInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X> {
 
@@ -44,6 +44,7 @@ public class ProcessSimpleInjectionTarget<X> extends AbstractProcessInjectionTar
 
     public void setInjectionTarget(InjectionTarget<X> injectionTarget) {
         checkWithinObserverNotification();
+        BootstrapLogger.LOG.setInjectionTargetCalled(getReceiver(), getInjectionTarget(), injectionTarget);
         this.injectionTarget = injectionTarget;
     }
 

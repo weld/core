@@ -55,6 +55,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         getTypeStore().add(bindingType, QualifierLiteral.INSTANCE);
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
+        BootstrapLogger.LOG.addQualifierCalled(getReceiver(), bindingType);
     }
 
     @Override
@@ -67,6 +68,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         }
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
+        BootstrapLogger.LOG.addInterceptorBindingCalled(getReceiver(), bindingType);
     }
 
     @Override
@@ -82,6 +84,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(scopeType);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(scopeType);
         getBeanManager().getServices().get(ReflectionCache.class).cleanup();
+        BootstrapLogger.LOG.addScopeCalled(getReceiver(), scopeType);
     }
 
     @Override
@@ -94,6 +97,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         }
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(stereotype);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(stereotype);
+        BootstrapLogger.LOG.addStereoTypeCalled(getReceiver(), stereotype);
     }
 
     @Override
@@ -101,24 +105,28 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         checkWithinObserverNotification();
         BootstrapLogger.LOG.deprecatedAddAnnotatedTypeMethodUsed(source.getJavaClass());
         addAnnotatedType(source, null);
+        BootstrapLogger.LOG.addAnnotatedTypeCalledInBBD(getReceiver(), source);
     }
 
     @Override
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
         checkWithinObserverNotification();
         addSyntheticAnnotatedType(type, id);
+        BootstrapLogger.LOG.addAnnotatedTypeCalledInBBD(getReceiver(), type);
     }
 
     @Override
     public void addQualifier(AnnotatedType<? extends Annotation> qualifier) {
         checkWithinObserverNotification();
         addSyntheticAnnotation(qualifier, QualifierLiteral.INSTANCE);
+        BootstrapLogger.LOG.addQualifierCalled(getReceiver(), qualifier);
     }
 
     @Override
     public void addInterceptorBinding(AnnotatedType<? extends Annotation> bindingType) {
         checkWithinObserverNotification();
         addSyntheticAnnotation(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
+        BootstrapLogger.LOG.addInterceptorBindingCalled(getReceiver(), bindingType);
     }
 
     private <A extends Annotation> void addSyntheticAnnotation(AnnotatedType<A> annotation, Annotation requiredMetaAnnotation) {

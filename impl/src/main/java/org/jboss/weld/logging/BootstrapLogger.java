@@ -35,7 +35,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 
 /**
  * Log messages for bootstrap
- *
+ * <p>
  * Message Ids: 000100 - 000199
  */
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
@@ -202,4 +202,65 @@ public interface BootstrapLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 147, value = "Decorator {0} declares inappropriate constructor therefore will not available as a managed bean!", format = Format.MESSAGE_FORMAT)
     void decoratorWithNonCdiConstructor(String clazzName);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 148, value = "ProcessAnnotatedType.setAnnotatedType() called by {0}: {1} replaced by {2}", format = Format.MESSAGE_FORMAT)
+    void setAnnotatedTypeCalled(Object extensionName, Object original, Object newer);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 149, value = "ProcessBeanAttributes.setBeanAttributes() called by {0}: {1} replaced by {2}", format = Format.MESSAGE_FORMAT)
+    void setBeanAttributesCalled(Object extensionName, Object original, Object newer);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 150, value = "ProcessInjectionPoint.setInjectionPoint() called by {0}: {1} replaced by {2}", format = Format.MESSAGE_FORMAT)
+    void setInjectionPointCalled(Object extensionName, Object original, Object newer);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 151, value = "ProcessInjectionTarget.setInjectionTarget() called by {0}: {1} replaced by {2}", format = Format.MESSAGE_FORMAT)
+    void setInjectionTargetCalled(Object extensionName, Object original, Object newer);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 152, value = "ProcessProducer.setProducer() called by {0}: {1} replaced by {2}", format = Format.MESSAGE_FORMAT)
+    void setProducerCalled(Object extensionName, Object original, Object newer);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 153, value = "AfterTypeDiscovery.addAnnotatedType() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addAnnotatedTypeCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 154, value = "AfterBeanDiscovery.addBean() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addBeanCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 155, value = "AfterBeanDiscovery.addObserverMethod() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addObserverMethodCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 156, value = "AfterBeanDiscovery.addContext() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addContext(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 157, value = "AfterBeanDiscovery.addDefinitionError() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addDefinitionErrorCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 158, value = "BeforeBeanDiscovery.addQualifier() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addQualifierCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 159, value = "BeforeBeanDiscovery.addScope() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addScopeCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 160, value = "BeforeBeanDiscovery.addStereoType() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addStereoTypeCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 161, value = "BeforeBeanDiscovery.addInterceptorBindingCalled() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addInterceptorBindingCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 162, value = "BeforeBeanDiscovery.addAnnotatedType() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addAnnotatedTypeCalledInBBD(Object extensionName, Object type);
+
 }

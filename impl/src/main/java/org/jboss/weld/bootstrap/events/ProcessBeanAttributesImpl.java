@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -70,6 +71,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     @Override
     public void setBeanAttributes(BeanAttributes<T> beanAttributes) {
         checkWithinObserverNotification();
+        BootstrapLogger.LOG.setBeanAttributesCalled(getReceiver(), attributes, beanAttributes);
         attributes = beanAttributes;
         dirty = true;
     }
