@@ -64,6 +64,7 @@ import org.jboss.weld.security.GetProtectionDomainAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.ClassFileUtils;
@@ -200,10 +201,11 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             this.classLoader = resolveClassLoaderForBeanProxy(contextId, proxiedBeanType, typeInfo);
         }
         // hierarchy order
-        List<Class<?>> list = new ArrayList<Class<?>>(additionalInterfaces);
-        Collections.sort(list, ClassHierarchyComparator.INSTANCE);
-        additionalInterfaces.clear();
-        additionalInterfaces.addAll(list);
+        if (additionalInterfaces.size() > 1) {
+            LinkedHashSet<Class<?>> sorted = Proxies.sortInterfacesHierarchy(additionalInterfaces);
+            additionalInterfaces.clear();
+            additionalInterfaces.addAll(sorted);
+        }
 
         this.proxyInstantiator = Container.instance(contextId).services().get(ProxyInstantiator.class);
     }
