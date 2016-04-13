@@ -23,7 +23,6 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class MethodSignatureImpl implements MethodSignature {
@@ -100,7 +99,7 @@ public class MethodSignatureImpl implements MethodSignature {
     }
 
     public String[] getParameterTypes() {
-        return Arrays2.copyOf(parameterTypes, parameterTypes.length);
+        return Arrays.copyOf(parameterTypes, parameterTypes.length);
     }
 
     @Override
