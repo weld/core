@@ -18,6 +18,7 @@ package org.jboss.weld.security;
 
 import java.lang.reflect.Method;
 import java.security.PrivilegedExceptionAction;
+import java.util.Arrays;
 
 /**
  * Returns a method from the class or any class/interface in the inheritance hierarchy
@@ -51,6 +52,6 @@ public class MethodLookupAction extends GetDeclaredMethodAction implements Privi
                 // Expected, nothing to see here.
             }
         }
-        throw new NoSuchMethodException();
+        throw new NoSuchMethodException(javaClass + ", method: " + methodName + ", paramTypes: " + Arrays.toString(parameterTypes));
     }
 }

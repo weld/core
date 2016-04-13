@@ -22,6 +22,7 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -169,7 +170,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     }
 
     public Type[] getActualTypeArguments() {
-        return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
+        return Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
     }
 
     public Set<Type> getInterfaceClosure() {
