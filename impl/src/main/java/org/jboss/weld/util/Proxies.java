@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -37,6 +38,7 @@ import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.security.GetDeclaredConstructorAction;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -235,5 +237,44 @@ public class Proxies {
 
     public static Object getDeclaringBeanInfo(Bean<?> bean) {
         return (bean != null) ? bean : "<unknown javax.enterprise.inject.spi.Bean instance>";
+    }
+
+    /**
+     *
+     * @param interfaces
+     * @return the sorted set of interfaces
+     */
+    public static LinkedHashSet<Class<?>> sortInterfacesHierarchy(Set<Class<?>> interfaces) {
+        LinkedHashSet<Class<?>> sorted = new LinkedHashSet<>(interfaces.size());
+        processSuperinterface(null, interfaces, sorted);
+        if (interfaces.size() != sorted.size()) {
+            // Interface may not processed due to incomplete type closure
+            Set<Class<?>> unprocessed = new HashSet<>(interfaces);
+            unprocessed.removeAll(sorted);
+            for (Class<?> unprocessedInterface : unprocessed) {
+                processSuperinterface(unprocessedInterface, interfaces, sorted);
+                sorted.add(unprocessedInterface);
+            }
+        }
+        return sorted;
+    }
+
+    private static void processSuperinterface(Class<?> superinterface, Set<Class<?>> interfaces, LinkedHashSet<Class<?>> sorted) {
+        for (Class<?> interfaceClass : interfaces) {
+            if (isInterfaceExtending(interfaceClass, superinterface)) {
+                processSuperinterface(interfaceClass, interfaces, sorted);
+                sorted.add(interfaceClass);
+            }
+        }
+    }
+
+    private static boolean isInterfaceExtending(Class<?> interfaceClass, Class<?> superinterface) {
+        if (interfaceClass.equals(superinterface)) {
+            return false;
+        } else if (superinterface == null) {
+            return interfaceClass.getInterfaces().length == 0;
+        } else {
+            return Arrays2.contains(interfaceClass.getInterfaces(), superinterface);
+        }
     }
 }

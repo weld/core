@@ -21,8 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import org.jboss.weld.util.collections.Arrays2;
-
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
@@ -46,7 +44,7 @@ public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
     }
 
     public Type[] getActualTypeArguments() {
-        return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
+        return Arrays.copyOf(actualTypeArguments, actualTypeArguments.length);
     }
 
     public Type getOwnerType() {
