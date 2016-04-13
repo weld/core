@@ -70,6 +70,7 @@ import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
+import org.jboss.weld.environment.deployment.discovery.ClassPathBeanArchiveScanner;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.logging.CommonLogger;
@@ -187,6 +188,14 @@ public class Weld implements ContainerInstanceFactory {
      * This key can be also used through {@link #property(String, Object)}.
      */
     public static final String SHUTDOWN_HOOK_SYSTEM_PROPERTY = "org.jboss.weld.se.shutdownHook";
+
+    /**
+     * By default, Weld SE does not support implicit bean archives without beans.xml. If set to true, Weld scans the class path entries and implicit bean
+     * archives which don't contain a beans.xml file are also supported.
+     * <p>
+     * This key can be also used through {@link #property(String, Object)}.
+     */
+    public static final String SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY = "org.jboss.weld.se.scan.classpath.entries";
 
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
@@ -552,8 +561,8 @@ public class Weld implements ContainerInstanceFactory {
      * @see WeldContainer#shutdown()
      */
     public WeldContainer initialize() {
-        // If also building a synthetic bean archive the check for beans.xml is not necessary
-        if (!isSyntheticBeanArchiveRequired() && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
+        // If also building a synthetic bean archive or the implicit scan is enabled, the check for beans.xml is not necessary
+        if (!isSyntheticBeanArchiveRequired() && !isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false) && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
             throw CommonLogger.LOG.missingBeansXml();
         }
 
@@ -658,6 +667,9 @@ public class Weld implements ContainerInstanceFactory {
                     ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
                             // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
                             .add(ThreadScoped.class).build());
+            if (isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false)) {
+                strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
+            }
             beanArchives.addAll(strategy.performDiscovery());
             ClassFileServices classFileServices = strategy.getClassFileServices();
             if (classFileServices != null) {
@@ -817,7 +829,7 @@ public class Weld implements ContainerInstanceFactory {
         if (packDir != null && packDir.exists() && packDir.canRead()) {
             for (File file : packDir.listFiles()) {
                 if (file.isFile()) {
-                    if (Files.isUsable(file) && Files.isClass(file.getName())) {
+                    if (file.canRead() && Files.isClass(file.getName())) {
                         foundClasses.add(Files.filenameToClassname(packName + "." + file.getName()));
                     }
                 }

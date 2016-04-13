@@ -1,6 +1,5 @@
 package org.jboss.weld.environment.logging;
 
-
 import java.net.URL;
 
 import javax.enterprise.inject.UnsatisfiedResolutionException;
@@ -129,7 +128,14 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 33, value = "Invalid bean archive scanning result - found multiple results with the same reference: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException invalidScanningResult(Object beanArchiveRef);
 
-    // Messages with ids 34, 35 and 36 will likely be added - assuming that CDI 2.0 "implicit scan" feature will be backported
+    @Message(id = 34, value = "Cannot scan class path entry: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotScanClassPathEntry(Object entry, @Cause Throwable cause);
+
+    @Message(id = 35, value = "Class path entry does not exist or cannot be read: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotReadClassPathEntry(Object entry);
+
+    @Message(id = 36, value = "Weld cannot read the java class path system property!", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotReadJavaClassPathSystemProperty();
 
     @Message(id = 37, value = "Unable to initialize the Probe component: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToInitializeProbeComponent(Object component, @Cause Throwable cause);

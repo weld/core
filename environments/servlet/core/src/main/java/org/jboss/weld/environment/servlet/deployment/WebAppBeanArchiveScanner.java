@@ -19,9 +19,9 @@ package org.jboss.weld.environment.servlet.deployment;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
@@ -31,6 +31,8 @@ import org.jboss.weld.environment.deployment.discovery.DefaultBeanArchiveScanner
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.util.Servlets;
 import org.jboss.weld.resources.spi.ResourceLoader;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Web application bean archive scanner.
@@ -65,20 +67,20 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
     }
 
     @Override
-    public Map<URL, ScanResult> scan() {
+    public List<ScanResult> scan() {
 
         // We use context path as a base for bean archive ids
         String contextPath = servletContext.getContextPath();
-        Map<URL, ScanResult> resultsMap = super.scan();
+        List<ScanResult> results = new ArrayList<>(super.scan());
 
         // All previous results for WEB-INF/classes must be ignored
-        for (Iterator<Entry<URL, ScanResult>> iterator = resultsMap.entrySet().iterator(); iterator.hasNext();) {
-            Entry<URL, ScanResult> entry = iterator.next();
-            String path = entry.getKey().toString();
+        for (Iterator<ScanResult> iterator = results.iterator(); iterator.hasNext();) {
+            ScanResult result = iterator.next();
+            String path = result.getBeanArchiveRef().toString();
             if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES)) {
                 iterator.remove();
             } else {
-                entry.getValue().extractBeanArchiveId(contextPath, WEB_INF);
+                result.extractBeanArchiveId(contextPath, WEB_INF);
             }
         }
 
@@ -97,20 +99,20 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 }
             }
             if (beansXmlUrl != null) {
-                BeansXml beansXml = bootstrap.parse(beansXmlUrl);
+                BeansXml beansXml = parseBeansXml(beansXmlUrl);
                 if (accept(beansXml)) {
                     File webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
                     if (webInfClasses != null) {
-                        resultsMap.put(beansXmlUrl, new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath, WEB_INF));
+                        results.add(new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath, WEB_INF));
                     } else {
                         // The WAR is not extracted to the file system - make use of ServletContext.getResourcePaths()
-                        resultsMap.put(beansXmlUrl, new ScanResult(beansXml, WEB_INF_CLASSES));
+                        results.add(new ScanResult(beansXml, WEB_INF_CLASSES));
                     }
                 }
             }
         } catch (MalformedURLException e) {
             throw WeldServletLogger.LOG.errorLoadingResources(e);
         }
-        return resultsMap;
+        return ImmutableList.copyOf(results);
     }
 }
