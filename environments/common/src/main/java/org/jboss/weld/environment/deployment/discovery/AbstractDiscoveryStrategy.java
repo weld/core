@@ -20,10 +20,12 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -40,6 +42,8 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Jozef Hartinger
  */
 public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
+
+    private static final Logger logger = Logger.getLogger(AbstractDiscoveryStrategy.class);
 
     protected final ResourceLoader resourceLoader;
 
@@ -76,10 +80,10 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
             scanner = new DefaultBeanArchiveScanner(resourceLoader, bootstrap);
         }
 
-        final Collection<BeanArchiveBuilder> beanArchiveBuilders = new ArrayList<BeanArchiveBuilder>();
+        final List<BeanArchiveBuilder> beanArchiveBuilders = new ArrayList<BeanArchiveBuilder>();
         final Set<String> processedRefs = new HashSet<String>();
 
-        for (ScanResult scanResult : scanner.scan().values()) {
+        for (ScanResult scanResult : scanner.scan()) {
             final String ref = scanResult.getBeanArchiveRef();
             if (processedRefs.contains(ref)) {
                 throw CommonLogger.LOG.invalidScanningResult(ref);
@@ -105,20 +109,26 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         beforeDiscovery(beanArchiveBuilders);
         Set<WeldBeanDeploymentArchive> archives = new HashSet<WeldBeanDeploymentArchive>();
 
-        for (BeanArchiveBuilder builder : beanArchiveBuilders) {
+        for (Iterator<BeanArchiveBuilder> iterator = beanArchiveBuilders.iterator(); iterator.hasNext();) {
+            BeanArchiveBuilder builder = iterator.next();
             BeansXml beansXml = builder.getBeansXml();
-            switch (beansXml.getBeanDiscoveryMode()) {
-                case ALL:
-                    addToArchives(archives, processAllDiscovery(builder));
-                    break;
-                case ANNOTATED:
-                    addToArchives(archives, processAnnotatedDiscovery(builder));
-                    break;
-                case NONE:
-                    addToArchives(archives, processNoneDiscovery(builder));
-                    break;
-                default:
-                    CommonLogger.LOG.undefinedBeanDiscoveryValue(beansXml.getBeanDiscoveryMode());
+            if(beansXml != null) {
+                switch (beansXml.getBeanDiscoveryMode()) {
+                    case ALL:
+                        addToArchives(archives, processAllDiscovery(builder));
+                        break;
+                    case ANNOTATED:
+                        addToArchives(archives, processAnnotatedDiscovery(builder));
+                        break;
+                    case NONE:
+                        addToArchives(archives, processNoneDiscovery(builder));
+                        break;
+                    default:
+                        CommonLogger.LOG.undefinedBeanDiscoveryValue(beansXml.getBeanDiscoveryMode());
+                }
+            } else {
+                // A candidate for an implicit bean archive with no beans.xml
+                addToArchives(archives, processAnnotatedDiscovery(builder));
             }
         }
         for (WeldBeanDeploymentArchive archive : archives) {
@@ -135,9 +145,15 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
     }
 
     protected void addToArchives(Set<WeldBeanDeploymentArchive> deploymentArchives, WeldBeanDeploymentArchive bda) {
-        if (bda != null) {
-            deploymentArchives.add(bda);
+        if (bda == null) {
+            return;
         }
+        if (bda.isEmpty()) {
+            // Most probably an unsuccessful candidate for an implicit bean archive with no beans.xml
+            logger.debugv("Empty bean deployment archive ignored: {0}", bda.getId());
+            return;
+        }
+        deploymentArchives.add(bda);
     }
 
     /**

@@ -351,7 +351,10 @@ NOTE: Bean archive isolation is supported (and enabled by default) from version 
 ==== Implicit Bean Archive Support
 
 CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>).
-This mode may bring additional overhead during container bootstrap. Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
+This mode may bring additional overhead during container bootstrap.
+Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process.
+Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
+It's also possible to generate the Jandex index beforehand.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
 In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld Servlet, i.e. it's excluded from discovery.
@@ -693,11 +696,16 @@ NOTE: Bean archive isolation is supported (and enabled by default) from version 
 
 ==== Implicit Bean Archive Support
 
-CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>). This mode may bring additional overhead during container bootstrap.
-Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
+CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>).
+This mode may bring additional overhead during container bootstrap.
+Therefore, Weld SE supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process.
+Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
+It's also possible to generate the Jandex index beforehand.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
-In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld SE, i.e. it's excluded from discovery.
+In general, an implicit bean archive does not have to contain a beans.xml descriptor.
+However, such a bean archive is not supported by default in Weld SE (i.e. it's excluded from discovery).
+This behaviour can be changed by setting a system property `org.jboss.weld.se.scan.classpath.entries` to `true` or through the `Weld.property()` method - if set to `true` Weld scans the class path entries and implicit bean archives which don't contain a beans.xml descriptor are also supported.
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 

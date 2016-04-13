@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.util;
+package org.jboss.weld.environment.se.test.implicit.directory;
 
-/**
- *
- * @author Martin Kouba
- */
-public final class Files {
+import javax.enterprise.context.Dependent;
 
-    public static final String CLASS_FILE_EXTENSION = ".class";
+@Dependent
+public class Bravo {
 
-    private Files() {
-    }
-
-    public static boolean isClass(String name) {
-        return name.endsWith(CLASS_FILE_EXTENSION);
-    }
-
-    public static String filenameToClassname(String filename) {
-        return filename.substring(0, filename.lastIndexOf(CLASS_FILE_EXTENSION)).replace('/', '.').replace('\\', '.');
+    public int ping() {
+        return 1;
     }
 
 }
