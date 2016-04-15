@@ -77,6 +77,9 @@ First of all, let's see what types of thread pools are available:
 
 Now let's see how to configure Weld to use a particular thread pool type:
 
+IMPORTANT: An integrator may choose to use custom implementation of `org.jboss.weld.manager.api.ExecutorServices`. If that's the case, all configuration described in this section 
+might be ignored. An example of such integrator is WildFly.
+
 .Supported configuration properties
 [cols=",,",options="header",]
 |=======================================================================
