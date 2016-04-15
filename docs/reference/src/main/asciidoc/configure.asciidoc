@@ -62,6 +62,9 @@ NOTE: The bootstrap configuration may be altered using the deprecated `org.jboss
 For certain types of tasks Weld uses its own thread pool. The thread
 pool is represented by the `ExecutorServices` service.
 
+IMPORTANT: An integrator may choose to use custom implementation of `org.jboss.weld.manager.api.ExecutorServices`. If that's the case, all configuration described in this section 
+might be ignored. An example of such integrator is WildFly.
+
 .Supported configuration properties
 [cols=",,",options="header",]
 |=======================================================================
