@@ -29,7 +29,7 @@
     </developers>
 
     <properties>
-        <weld.api.bom.version>3.0.Alpha17</weld.api.bom.version>
+        <weld.api.bom.version>3.0.Alpha18</weld.api.bom.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
     </properties>
