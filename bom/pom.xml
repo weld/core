@@ -29,9 +29,11 @@
     </developers>
 
     <properties>
-        <weld.api.bom.version>2.3.SP1</weld.api.bom.version>
+        <weld.api.bom.version>2.3.SP2</weld.api.bom.version>
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <!-- Weld API BOM-->
@@ -42,7 +44,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <!-- Weld core implementation -->
             <dependency>
                 <groupId>org.jboss.weld</groupId>
