@@ -180,7 +180,9 @@ ensuring deterministic behavior, and
 Decorators enabled using `@Priority` are called before decorators
 enabled using `beans.xml`, the lower priority values are called first.
 
-NOTE: Decorators with the `@Priority` that are listed in the `beans.xml`
-descriptor will be called twice in Weld. However, this behaviour is
-non-portable and this combination should not be used as it can behave
-differently in other implementations!
+NOTE: Having a decorator enabled by `@Priority` and in the same time listed
+in `beans.xml` leads to a non-portable behaviour! This combination of enablement 
+should therefore be avoided in order to maintain consistent behaviour across 
+different CDI implementations.
+As for Weld, such decorator is only invoked once in the `@Priority part of the 
+invocation chain. E.g. the enablement via `beans.xml` will be ignored.
