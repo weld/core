@@ -35,8 +35,8 @@
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.1.7.Final</arquillian.version>
-        <arquillian.drone.version>2.0.0.Beta1</arquillian.drone.version>
-        <arquillian.graphene.version>2.1.0.Alpha2</arquillian.graphene.version>
+        <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
+        <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
         <arquillian.weld.version>1.0.0.CR9</arquillian.weld.version>
         <arquillian.se.container.version>1.0.0.CR2</arquillian.se.container.version>
         <arquillian.tomcat.version>1.0.0.CR6</arquillian.tomcat.version>
@@ -51,7 +51,7 @@
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
-        <htmlunit.version>2.17</htmlunit.version>
+        <htmlunit.version>2.20</htmlunit.version>
         <jacoco.version>0.7.2.201409121644</jacoco.version>
         <jandex.version>1.2.1.Final</jandex.version>
         <javax.activation.version>1.1</javax.activation.version>
