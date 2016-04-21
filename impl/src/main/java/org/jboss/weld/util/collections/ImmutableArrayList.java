@@ -62,7 +62,9 @@ class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Se
     @Override
     @SuppressWarnings("unchecked")
     public E get(int index) {
-        checkIndex(index);
+        if (index < 0 || index >= size()) {
+            throw indexOutOfBoundsException(index);
+        }
         return (E) elements[index];
     }
 
@@ -106,14 +108,20 @@ class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Se
 
     @Override
     public ListIterator<E> listIterator(int index) {
-        checkIndex(index);
+        if (index < 0 || index > elements.length) {
+            throw indexOutOfBoundsException(index);
+        }
         return new ListIteratorImpl(index);
     }
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        checkIndex(fromIndex);
-        checkIndex(toIndex - 1);
+        if (fromIndex < 0 || fromIndex > toIndex) {
+            throw indexOutOfBoundsException(fromIndex);
+        }
+        if (toIndex > elements.length) {
+            throw indexOutOfBoundsException(toIndex);
+        }
         if (fromIndex == toIndex) {
             return Collections.emptyList();
         }

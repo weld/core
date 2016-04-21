@@ -16,7 +16,12 @@
  */
 package org.jboss.weld.tests.unit.util.collections;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Stream;
 
 import org.jboss.weld.util.collections.ImmutableList;
@@ -71,5 +76,17 @@ public class ImmutableListTest {
 
         List<String> list2 = ImmutableList.copyOf(list);
         Assert.assertEquals(list, list2);
+    }
+
+    @Test
+    public void testListIterator() {
+        List<String> list = ImmutableList.of("foo", "bar", "buu");
+        List<String> expected = new ArrayList<>(list);
+        Collections.reverse(expected);
+        List<String> result = new ArrayList<>();
+        for (ListIterator<String> iterator = list.listIterator(list.size()); iterator.hasPrevious();) {
+            result.add(iterator.previous());
+        }
+        assertEquals(expected, result);
     }
 }

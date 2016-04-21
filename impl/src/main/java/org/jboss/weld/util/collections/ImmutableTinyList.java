@@ -71,16 +71,16 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
             if (index == 0 || index == 1) {
                 return new SingletonIterator(index);
             }
-            throw new IndexOutOfBoundsException(String.valueOf(index));
+            throw indexOutOfBoundsException(index);
         }
 
         @Override
         public List<E> subList(int fromIndex, int toIndex) {
             if (fromIndex < 0 || fromIndex > toIndex) {
-                throw new IndexOutOfBoundsException(String.valueOf(fromIndex));
+                throw indexOutOfBoundsException(fromIndex);
             }
             if (toIndex > size()) {
-                throw new IndexOutOfBoundsException(String.valueOf(toIndex));
+                throw indexOutOfBoundsException(toIndex);
             }
             if (fromIndex == toIndex) {
                 return Collections.emptyList();
@@ -99,7 +99,7 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
             if (index == 0) {
                 return element;
             }
-            throw new IndexOutOfBoundsException(String.valueOf(index));
+            throw indexOutOfBoundsException(index);
         }
 
         @Override
