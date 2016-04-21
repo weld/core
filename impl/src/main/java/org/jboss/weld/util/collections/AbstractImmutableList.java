@@ -108,9 +108,8 @@ abstract class AbstractImmutableList<E> extends AbstractList<E> {
         return Spliterators.spliterator(this, Spliterator.ORDERED | Spliterator.IMMUTABLE | Spliterator.NONNULL);
     }
 
-    void checkIndex(int index) {
-        if (index < 0 || index >= size()) {
-            throw new IndexOutOfBoundsException("Index: " + String.valueOf(index) + ", Size: " + size());
-        }
+    protected IndexOutOfBoundsException indexOutOfBoundsException(int index) {
+        return new IndexOutOfBoundsException("Index: " + String.valueOf(index) + ", Size: " + size());
     }
+
 }
