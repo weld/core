@@ -32,6 +32,7 @@ import javax.inject.Singleton;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.bootstrap.events.BeanBuilderImpl;
+import org.jboss.weld.bootstrap.events.InterceptorBuilderImpl;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
@@ -40,6 +41,7 @@ import org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScopeIn
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
+import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
@@ -54,6 +56,8 @@ public class WeldSEBeanRegistrant implements Extension {
     private ThreadContext threadContext;
 
     private List<BeanBuilderImpl<?>> beanBuilders;
+
+    private List<InterceptorBuilderImpl> interceptorBuilders;
 
     public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
@@ -88,6 +92,11 @@ public class WeldSEBeanRegistrant implements Extension {
                 event.addBean(beanBuilder.build());
             }
         }
+        if (interceptorBuilders != null) {
+            for (InterceptorBuilder interceptorBuilder : interceptorBuilders) {
+                event.addBean(interceptorBuilder.build());
+            }
+        }
     }
 
     /**
@@ -103,6 +112,10 @@ public class WeldSEBeanRegistrant implements Extension {
 
     void setBeanBuilders(List<BeanBuilderImpl<?>> beanBuilders) {
         this.beanBuilders = beanBuilders;
+    }
+
+    void setInterceptorBuilders(List<InterceptorBuilderImpl> interceptorBuilders) {
+        this.interceptorBuilders = interceptorBuilders;
     }
 
     private static class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {

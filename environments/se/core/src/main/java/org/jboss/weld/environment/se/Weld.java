@@ -62,6 +62,7 @@ import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.events.BeanBuilderImpl;
+import org.jboss.weld.bootstrap.events.InterceptorBuilderImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -85,6 +86,7 @@ import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.experimental.BeanBuilder;
+import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.MetadataImpl;
@@ -228,6 +230,8 @@ public class Weld implements ContainerInstanceFactory {
 
     private final List<BeanBuilderImpl<?>> beanBuilders;
 
+    private final List<InterceptorBuilderImpl> interceptorBuilders;
+
     private final List<ContainerLifecycleObserver<?>> containerLifecycleObservers;
 
     private ResourceLoader resourceLoader;
@@ -253,6 +257,7 @@ public class Weld implements ContainerInstanceFactory {
         this.properties = new HashMap<String, Object>();
         this.packages = new HashSet<PackInfo>();
         this.beanBuilders = new ArrayList<BeanBuilderImpl<?>>();
+        this.interceptorBuilders = new ArrayList<>();
         this.containerLifecycleObservers = new ArrayList<>();
         this.resourceLoader = new WeldResourceLoader();
     }
@@ -526,6 +531,17 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
+     * The {@link InterceptorBuilder#build()} is invoked automatically and the resulting interceptor bean is registered after all observers are notified.
+     *
+     * @return  a builder for a custom interceptor
+     */
+    public InterceptorBuilder addInterceptor() {
+        InterceptorBuilderImpl interceptorBuilder = new InterceptorBuilderImpl();
+        interceptorBuilders.add(interceptorBuilder);
+        return interceptorBuilder;
+    }
+
+    /**
      * Reset the synthetic bean archive (bean classes and enablement), explicitly added extensions and custom beans added via {@link #addBean()}.
      *
      * @return self
@@ -627,6 +643,12 @@ public class Weld implements ContainerInstanceFactory {
             BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
             for (BeanBuilderImpl<?> beanBuilder : beanBuilders) {
                 beanBuilder.setBeanDeploymentFinder(beanDeploymentFinder);
+            }
+        }
+        if (!interceptorBuilders.isEmpty()) {
+            BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
+            for (InterceptorBuilderImpl interceptorBuilder : interceptorBuilders) {
+                interceptorBuilder.setBeanDeploymentFinder(beanDeploymentFinder);
             }
         }
         bootstrap.deployBeans();
@@ -820,6 +842,9 @@ public class Weld implements ContainerInstanceFactory {
             weldSEBeanRegistrant.setBeanBuilders(beanBuilders);
         }
 
+        if (!interceptorBuilders.isEmpty()) {
+            weldSEBeanRegistrant.setInterceptorBuilders(interceptorBuilders);
+        }
         if (isEnabled(DEV_MODE_SYSTEM_PROPERTY, false)) {
             // The development mode is enabled - register the Probe extension
             result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
