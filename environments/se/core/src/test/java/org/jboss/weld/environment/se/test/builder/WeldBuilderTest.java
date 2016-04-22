@@ -27,6 +27,7 @@ import java.util.List;
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.DefinitionException;
+import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
@@ -226,6 +227,25 @@ public class WeldBuilderTest {
         builder.addBean().addType(Integer.class).produceWith(() -> val).addQualifier(Juicy.Literal.INSTANCE);
         try (WeldContainer container = builder.initialize()) {
             assertEquals(Integer.valueOf(42), container.select(Integer.class, Juicy.Literal.INSTANCE).get());
+        }
+    }
+
+    @Test
+    public void testInterceptorBuilder() {
+        Weld weldBuilder = new Weld().disableDiscovery().beanClasses(Coorge.class, BuilderInterceptorBinding.class);
+        weldBuilder.addInterceptor().intercept(InterceptionType.AROUND_INVOKE, invocationContext -> {
+
+            try {
+                Integer result = ((Integer) invocationContext.proceed());
+                return result + 10;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).addBinding(new BuilderInterceptorBinding.BuilderInterceptorBindingLiteral()).priority(2500);
+        try (WeldContainer container = weldBuilder.initialize()) {
+            Coorge coorge = container.select(Coorge.class).get();
+            assertEquals(coorge.ping(), 11);
         }
     }
 

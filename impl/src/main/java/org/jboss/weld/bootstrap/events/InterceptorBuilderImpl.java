@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -48,6 +49,12 @@ public class InterceptorBuilderImpl extends AbstractBeanBuilder implements Inter
     private BiFunction<InvocationContext, Bean<?>, Object> interceptorBiFunction;
 
     private BeanManagerImpl beanManager;
+
+    private BeanDeploymentFinder beanDeploymentFinder;
+
+    public InterceptorBuilderImpl() {
+        this(null);
+    }
 
     public InterceptorBuilderImpl(BeanManagerImpl beanManager) {
         this.bindings = new HashSet<>();
@@ -110,6 +117,9 @@ public class InterceptorBuilderImpl extends AbstractBeanBuilder implements Inter
         if (interceptorFunction == null && interceptorBiFunction == null) {
             throw BeanLogger.LOG.noInterceptionFunction(this);
         }
+        if (beanDeploymentFinder != null) {
+            beanManager = beanDeploymentFinder.getOrCreateBeanDeployment(BuilderInterceptorInstance.class).getBeanManager();
+        }
         if (interceptorBiFunction != null) {
             interceptor = new BuilderInterceptorBean(bindings, type, priority, beanManager, interceptorBiFunction);
         } else {
@@ -121,6 +131,10 @@ public class InterceptorBuilderImpl extends AbstractBeanBuilder implements Inter
     @Override
     BeanManagerImpl getBeanManager() {
         return beanManager;
+    }
+
+    public void setBeanDeploymentFinder(BeanDeploymentFinder beanDeploymentFinder) {
+        this.beanDeploymentFinder = beanDeploymentFinder;
     }
 
 }
