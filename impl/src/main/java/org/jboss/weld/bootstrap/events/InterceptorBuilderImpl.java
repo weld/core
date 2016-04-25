@@ -35,7 +35,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 /**
  * @author Tomas Remes
  */
-public class InterceptorBuilderImpl extends AbstractBeanBuilder implements InterceptorBuilder {
+public class InterceptorBuilderImpl implements InterceptorBuilder {
 
     private int priority = javax.interceptor.Interceptor.Priority.APPLICATION;
 
@@ -118,8 +118,7 @@ public class InterceptorBuilderImpl extends AbstractBeanBuilder implements Inter
         return interceptor;
     }
 
-    @Override
-    BeanManagerImpl getBeanManager() {
+    public BeanManagerImpl getBeanManager() {
         return beanManager;
     }
 

@@ -72,7 +72,7 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  * @author Jozef Hartinger
  * @author Marko Luksa
  */
-public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
+public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadataAwareObserverMethod<T> {
 
     public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
 
@@ -409,6 +409,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         return isAsync;
     }
 
+    @Override
     public boolean isEventMetadataRequired() {
         return eventMetadataRequired;
     }

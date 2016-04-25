@@ -78,12 +78,6 @@ public final class EventMetadataImpl implements EventMetadata {
     }
 
     @Override
-    public boolean isAsync() {
-        // TODO remove this method once the up-to-date CDI 2.0 API is available
-        return false;
-    }
-
-    @Override
     public String toString() {
         return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + "]";
     }
