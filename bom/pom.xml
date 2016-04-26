@@ -73,6 +73,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!--Weld OSGI module-->
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-osgi-bundle</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!--Weld web module-->
             <dependency>
                 <groupId>org.jboss.weld.module</groupId>
