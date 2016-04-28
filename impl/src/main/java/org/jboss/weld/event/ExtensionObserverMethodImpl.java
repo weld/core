@@ -34,6 +34,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bootstrap.events.NotificationListener;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
@@ -123,6 +124,14 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         synchronized (containerLifecycleEventDeliveryLock) {
             super.sendEvent(event, receiver, creationalContext);
         }
+    }
+
+    protected String createTypeId(RIBean<?> declaringBean) {
+        if (declaringBean instanceof ExtensionBean) {
+            ExtensionBean<?> extensionBean = (ExtensionBean<?>) declaringBean;
+            return extensionBean.getAnnotatedType().getIdentifier().asString();
+        }
+        return super.createTypeId(declaringBean);
     }
 
     public Collection<Class<? extends Annotation>> getRequiredAnnotations() {
