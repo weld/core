@@ -178,7 +178,12 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
         return false;
     }
 
-    protected static String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
+    protected String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
+        return new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR)
+                .append(createTypeId(declaringBean)).append(".").append(observer.getSignature()).toString();
+    }
+
+    protected String createTypeId(RIBean<?> declaringBean) {
         String typeId = null;
         if (declaringBean instanceof AbstractClassBean<?>) {
             AbstractClassBean<?> classBean = (AbstractClassBean<?>) declaringBean;
@@ -186,8 +191,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
         } else {
             typeId = declaringBean.getBeanClass().getName();
         }
-        return new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(typeId)
-                .append(".").append(observer.getSignature()).toString();
+        return typeId;
     }
 
     protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean,
