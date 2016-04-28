@@ -25,10 +25,10 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -41,18 +41,18 @@ import org.jboss.weld.util.Proxies;
  */
 public class ExtensionBean<E extends Extension> extends AbstractBuiltInBean<E> {
 
-    private final AnnotatedType<E> annotatedType;
+    private final SlimAnnotatedType<E> annotatedType;
     private final Metadata<E> instance;
     private final boolean passivationCapable;
     private final boolean proxiable;
 
-    public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<E> clazz, Metadata<E> instance) {
-        super(new StringBeanIdentifier(BeanIdentifiers.forExtension(clazz)), manager, clazz.getJavaClass());
-        this.annotatedType = clazz.slim();
+    public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<E> enhancedAnnotatedType, Metadata<E> instance) {
+        super(new StringBeanIdentifier(BeanIdentifiers.forExtension(enhancedAnnotatedType)), manager, enhancedAnnotatedType.getJavaClass());
+        this.annotatedType = enhancedAnnotatedType.slim();
         this.instance = instance;
-        this.passivationCapable = clazz.isSerializable();
-        this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType(), manager.getServices());
-        checkPublicFields(clazz);
+        this.passivationCapable = enhancedAnnotatedType.isSerializable();
+        this.proxiable = Proxies.isTypeProxyable(enhancedAnnotatedType.getBaseType(), manager.getServices());
+        checkPublicFields(enhancedAnnotatedType);
     }
 
     private void checkPublicFields(EnhancedAnnotatedType<E> clazz) {
@@ -88,6 +88,10 @@ public class ExtensionBean<E extends Extension> extends AbstractBuiltInBean<E> {
     @Override
     public Class<? extends Annotation> getScope() {
         return ApplicationScoped.class;
+    }
+
+    public SlimAnnotatedType<E> getAnnotatedType() {
+        return annotatedType;
     }
 
     @Override
