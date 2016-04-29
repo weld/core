@@ -630,7 +630,12 @@ public class Weld implements ContainerInstanceFactory {
                 // weld-se uses relaxed construction by default
                 .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true);
         for (Entry<String, Object> property : properties.entrySet()) {
-            configurationBuilder.add(property.getKey(), property.getValue());
+            String key = property.getKey();
+            if (SHUTDOWN_HOOK_SYSTEM_PROPERTY.equals(key) || ARCHIVE_ISOLATION_SYSTEM_PROPERTY.equals(key) || DEV_MODE_SYSTEM_PROPERTY.equals(key)
+                    || SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY.equals(key)) {
+                continue;
+            }
+            configurationBuilder.add(key, property.getValue());
         }
         deployment.getServices().add(ExternalConfiguration.class, configurationBuilder.build());
 
