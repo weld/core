@@ -17,8 +17,8 @@ Tomcat 8.x profile
 
 To enable **tomcat8** profile:
 
-        mvn clean test -Dincontainer -Dtomcat=8
+        mvn clean test -Dincontainer -Dtomcat8
 
 To override the default Tomcat 8 version:
 
-        mvn clean test -Dincontainer -Dtomcat=8 -Dtomcat.version=8.0.1
+        mvn clean test -Dincontainer -Dtomcat8 -Dtomcat.version=8.0.1
