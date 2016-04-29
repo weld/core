@@ -39,7 +39,6 @@
         <dependency>
             <groupId>org.jboss.weld.module</groupId>
             <artifactId>weld-jsf</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
