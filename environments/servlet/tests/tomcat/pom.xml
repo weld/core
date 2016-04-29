@@ -49,18 +49,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-impl</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.weld.module</groupId>
-            <artifactId>weld-jsf</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.spec.javax.faces</groupId>
             <artifactId>jboss-jsf-api_2.2_spec</artifactId>
         </dependency>
