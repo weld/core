@@ -196,6 +196,20 @@ public class Weld implements ContainerInstanceFactory {
      */
     public static final String SHUTDOWN_HOOK_SYSTEM_PROPERTY = "org.jboss.weld.se.shutdownHook";
 
+    /**
+     * By default, Weld SE does not support implicit bean archives without beans.xml. If set to true, Weld scans the class path entries and implicit bean
+     * archives which don't contain a beans.xml file are also supported.
+     * <p>
+     * This key can be also used through {@link #property(String, Object)}.
+     */
+    public static final String SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY = "org.jboss.weld.se.scan.classpath.entries";
+
+    /**
+     * See also the CDI specification, section <b>15.1 Bean archive in Java SE</b>.
+     */
+    public static final String JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT = "javax.enterprise.inject.scan.implicit";
+
+
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
     static {
@@ -632,7 +646,7 @@ public class Weld implements ContainerInstanceFactory {
         for (Entry<String, Object> property : properties.entrySet()) {
             String key = property.getKey();
             if (SHUTDOWN_HOOK_SYSTEM_PROPERTY.equals(key) || ARCHIVE_ISOLATION_SYSTEM_PROPERTY.equals(key) || DEV_MODE_SYSTEM_PROPERTY.equals(key)
-                    || SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY.equals(key)) {
+                    || SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY.equals(key) || JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT.equals(key)) {
                 continue;
             }
             configurationBuilder.add(key, property.getValue());
@@ -811,8 +825,7 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     private boolean isImplicitScanEnabled() {
-        return Boolean.TRUE.equals(properties.get(ConfigurationKey.IMPLICIT_SCAN.get()))
-                || Boolean.valueOf(System.getProperty(ConfigurationKey.IMPLICIT_SCAN.get()));
+        return isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false) || isEnabled(JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, false);
     }
 
     private boolean isSyntheticBeanArchiveRequired() {

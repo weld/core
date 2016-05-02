@@ -26,7 +26,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
@@ -45,7 +44,7 @@ public class ImplicitScanSmokeTest {
 
     @Test
     public void testDiscovery() {
-        try (WeldContainer container = new Weld().property(ConfigurationKey.IMPLICIT_SCAN.get(), Boolean.TRUE).initialize()) {
+        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.TRUE).initialize()) {
             Foo foo = container.select(Foo.class).get();
             assertNotNull(foo);
             assertEquals(1, foo.ping());

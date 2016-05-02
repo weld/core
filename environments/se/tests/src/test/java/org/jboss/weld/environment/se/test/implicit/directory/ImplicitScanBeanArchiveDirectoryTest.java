@@ -25,7 +25,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
@@ -42,7 +41,7 @@ public class ImplicitScanBeanArchiveDirectoryTest {
 
     @Test
     public void testDiscovery() {
-        try (WeldContainer container = new Weld().property(ConfigurationKey.IMPLICIT_SCAN.get(), Boolean.TRUE).initialize()) {
+        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.TRUE).initialize()) {
             AlphaFromDirectory alpha = container.select(AlphaFromDirectory.class).get();
             assertNotNull(alpha);
             assertEquals(1, alpha.ping());

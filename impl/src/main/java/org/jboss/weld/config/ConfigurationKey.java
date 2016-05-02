@@ -176,12 +176,6 @@ public enum ConfigurationKey {
     CONTEXT_ATTRIBUTES_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
 
     /**
-     * This configuration key is only applicable in Java SE. See also the CDI specification, section <b>15.1 Bean archive in Java SE</b>.
-     */
-    @Description("This configuration key is only applicable in Java SE. See also the CDI specification, section <a href=\"https://docs.jboss.org/cdi/spec/2.0.EDR1/cdi-spec.html#bootstrap-se\">15.1 Bean archive in Java SE</a>.")
-    IMPLICIT_SCAN("javax.enterprise.inject.scan.implicit", false),
-
-    /**
      * If set to <code>true</code> one or more MBean components may be registered so that it is possible to use JMX to access the Probe development tool data.
      */
     @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> one or more MBean components may be registered so that it is possible to use JMX to access the Probe development tool data.")

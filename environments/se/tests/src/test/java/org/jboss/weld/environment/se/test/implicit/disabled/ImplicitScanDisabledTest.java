@@ -27,7 +27,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class ImplicitScanDisabledTest {
 
     @Test
     public void testDiscovery() {
-        try (WeldContainer container = new Weld().property(ConfigurationKey.IMPLICIT_SCAN.get(), Boolean.FALSE).initialize()) {
+        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.FALSE).initialize()) {
             // Beans from an implicit bean archive with no beans.xml file are not registered
             assertTrue(container.select(Alpha.class).isUnsatisfied());
             Bravo bravo = container.select(Bravo.class).get();
