@@ -45,7 +45,7 @@ jar file which is available as:
 [source.XML, xml, subs="normal"]
 <dependency>
     <groupId>org.jboss.weld.servlet</groupId>
-    <artifactId>weld-servlet-shaded</artifactId>
+    <artifactId>weld-servlet</artifactId>
     <version>{weldVersion}</version>
 </dependency>
 
