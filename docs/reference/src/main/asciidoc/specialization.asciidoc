@@ -161,7 +161,7 @@ explicitly declare that it _specializes_ the second bean:
 
 [source.JAVA, java]
 --------------------------------------------
-@Alternative @Specializes
+@Specializes
 public class MockCreditCardPaymentProcessor
       extends CreditCardPaymentProcessor {
    ...
