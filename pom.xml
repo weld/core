@@ -38,14 +38,14 @@
         <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
         <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
         <arquillian.weld.version>1.0.0.CR9</arquillian.weld.version>
-        <arquillian.se.container.version>1.0.0.CR2</arquillian.se.container.version>
+        <arquillian.se.container.version>1.0.0.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.0.0.CR6</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>
         <build.config.version>9</build.config.version>
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
-        <cdi.tck-1-2.version>1.2.8.Final</cdi.tck-1-2.version>
+        <cdi.tck-1-2.version>1.2.9.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.0.Alpha7</cdi.tck-2-0.version>
         <classfilewriter.version>1.1.2.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
