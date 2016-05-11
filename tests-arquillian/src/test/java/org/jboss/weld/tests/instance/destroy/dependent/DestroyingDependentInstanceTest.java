@@ -33,6 +33,7 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.CDI;
 /**
  * Test for CDI-139. It verifies that Instance.destroy() can be used to destroy a dependent bean instance.
  *
@@ -66,5 +67,13 @@ public class DestroyingDependentInstanceTest {
         Interceptor.reset();
         instance.destroy(reference);
         assertTrue(Interceptor.isDestroyed());
+    }
+
+    @Test // test that destroy doesn't fail with exception
+    public void testSLSessionBeanDependentInstanceDestroy() {
+        Instance<SLSessionBean> sessionBeanInstance = CDI.current().select(SLSessionBean.class);
+        SLSessionBean sessionBean = sessionBeanInstance.get();
+        sessionBean.ping();
+        sessionBeanInstance.destroy(sessionBean);
     }
 }
