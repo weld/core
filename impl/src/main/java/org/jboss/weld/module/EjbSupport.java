@@ -44,7 +44,8 @@ import org.jboss.weld.util.collections.SetMultimap;
 public interface EjbSupport extends Service {
 
     /**
-     * Creates a {@link BeanAttributes} object for a session bean from the given annotated type and ejb descriptor
+     * Creates a {@link BeanAttributes} object for a session bean from the given annotated type and ejb descriptor.
+     *
      * @param type annotated type that defines the session bean
      * @param descriptor session bean descriptor
      * @param manager the bean manager
@@ -54,6 +55,7 @@ public interface EjbSupport extends Service {
 
     /**
      * Creates an {@link InjectionTarget} implementation for a given session bean.
+     *
      * @param type annotated type that defines the session bean
      * @param descriptor session bean descriptor
      * @param manager the bean manager
@@ -62,7 +64,8 @@ public interface EjbSupport extends Service {
     <T> BasicInjectionTarget<T> createSessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl manager);
 
     /**
-     * Creates an {@link InjectionTarget} implementation for a message-driven bean
+     * Creates an {@link InjectionTarget} implementation for a message-driven bean.
+     *
      * @param type annotated type that defines the message-driven bean
      * @param descriptor message-driven bean descriptor
      * @param manager the bean manager
@@ -72,6 +75,7 @@ public interface EjbSupport extends Service {
 
     /**
      * Creates session beans and registers them within the given environment.
+     *
      * @param environment
      * @param classes
      * @param manager
@@ -80,6 +84,7 @@ public interface EjbSupport extends Service {
 
     /**
      * Creates {@link New} session beans and registers them within the given environment.
+     *
      * @param environment
      * @param classes
      * @param manager
@@ -87,27 +92,31 @@ public interface EjbSupport extends Service {
     void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager);
 
     /**
-     * Returns the class object for the {@link javax.ejb.Timeout} annotation
+     * Returns the class object for the {@link javax.ejb.Timeout} annotation.
+     *
      * @return the class object for the Timeout annotation or null if the annotation is not present
      */
     Class<? extends Annotation> getTimeoutAnnotation();
 
     /**
-     * Initializes interception model for MDBs and propagates them to {@link EjbServices#registerInterceptors(org.jboss.weld.ejb.spi.EjbDescriptor, org.jboss.weld.ejb.spi.InterceptorBindings)}
+     * Initializes interception model for MDBs and propagates them to {@link EjbServices#registerInterceptors(org.jboss.weld.ejb.spi.EjbDescriptor, org.jboss.weld.ejb.spi.InterceptorBindings)}.
+     *
      * @param environment
      * @param manager
      */
     void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager);
 
     /**
-     * Indicates whether an {@link EjbDescriptor} is known for a given class
+     * Indicates whether an {@link EjbDescriptor} is known for a given class.
+     *
      * @param beanClass
-     * @return true iff an EjbDescriptor for the given class exists
+     * @return true if an EjbDescriptor for the given class exists
      */
     boolean isEjb(Class<?> beanClass);
 
     /**
-     * Returns an {@link EjbDescriptor} identified by the given name or null if no such descriptor exists
+     * Returns an {@link EjbDescriptor} identified by the given name or null if no such descriptor exists.
+     *
      * @param beanName
      * @return descriptor identified by the given name or null if no such descriptor exists
      */
@@ -118,6 +127,12 @@ public interface EjbSupport extends Service {
      * @return a collection of all known EJB descriptors
      */
     Collection<? extends EjbDescriptor<?>> getEjbDescriptors();
+
+    /**
+     * @param instance
+     * @return <code>true</code> if the given instance represents an internal reference to a session bean (proxy), <code>false</code> otherwise
+     */
+    boolean isSessionBeanProxy(Object instance);
 
     EjbSupport NOOP_IMPLEMENTATION = new EjbSupport() {
 
@@ -176,5 +191,11 @@ public interface EjbSupport extends Service {
         public <T> EjbDescriptor<T> getEjbDescriptor(String beanName) {
             return null;
         }
+
+        @Override
+        public boolean isSessionBeanProxy(Object instance) {
+            return false;
+        }
+
     };
 }

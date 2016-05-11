@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,10 +31,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.spi.CDI;
 /**
  * Test for CDI-139. It verifies that Instance.destroy() can be used to destroy a dependent bean instance.
  *
@@ -69,6 +70,7 @@ public class DestroyingDependentInstanceTest {
         assertTrue(Interceptor.isDestroyed());
     }
 
+    @Category(Integration.class)
     @Test // test that destroy doesn't fail with exception
     public void testSLSessionBeanDependentInstanceDestroy() {
         Instance<SLSessionBean> sessionBeanInstance = CDI.current().select(SLSessionBean.class);
