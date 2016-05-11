@@ -37,6 +37,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.CDI;
 /**
  * Tests for https://issues.jboss.org/browse/CDI-139
  * 
@@ -124,5 +125,15 @@ public class DestroyingNormalScopedInstanceTest {
     @Test(expected = NullPointerException.class)
     public void testNullParameter(Instance<ApplicationScopedComponent> instance) {
         instance.destroy(null);
+    }
+
+    @Test
+    public void testSFSessionBeanDependentDestroy() {
+        SFSessionBean.DESTROYED.set(false);
+        Instance<SFSessionBean> sessionBeanInstance = CDI.current().select(SFSessionBean.class);
+        SFSessionBean sessionBean = sessionBeanInstance.get();
+        sessionBean.ping();
+        sessionBeanInstance.destroy(sessionBean);
+        assertTrue(SFSessionBean.DESTROYED.get());
     }
 }

@@ -41,7 +41,8 @@ public class ContainerInstanceTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContainerInstanceTest.class)).addClasses(Bar.class, Foo.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContainerInstanceTest.class))
+                .addClasses(Bar.class, Foo.class);
     }
 
     @Test
