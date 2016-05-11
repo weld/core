@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -26,6 +27,7 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
@@ -34,6 +36,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -49,8 +52,6 @@ import org.jboss.weld.resolution.TypeSafeBeanResolver;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.base.Preconditions;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -146,26 +147,35 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     @Override
     public void destroy(T instance) {
-        Preconditions.checkNotNull(instance);
-
-        // check if this is a proxy of a normal-scoped bean
+        checkNotNull(instance);
+        // Attempt to destroy instance which is either a client proxy or a dependent session bean proxy
         if (instance instanceof ProxyObject) {
             ProxyObject proxy = (ProxyObject) instance;
             if (proxy.getHandler() instanceof ProxyMethodHandler) {
                 ProxyMethodHandler handler = (ProxyMethodHandler) proxy.getHandler();
                 Bean<?> bean = handler.getBean();
-                Context context = getBeanManager().getContext(bean.getScope());
-                if (context instanceof AlterableContext) {
-                    AlterableContext alterableContext = (AlterableContext) context;
-                    alterableContext.destroy(bean);
+                if (instance instanceof EnterpriseBeanInstance && Dependent.class.equals(bean.getScope())) {
+                    // Destroy internal reference to a dependent session bean
+                    destroyDependentInstance(instance);
                     return;
                 } else {
-                    throw BeanLogger.LOG.destroyUnsupported(context);
+                    // Destroy contextual instance of a normal-scoped bean
+                    Context context = getBeanManager().getContext(bean.getScope());
+                    if (context instanceof AlterableContext) {
+                        AlterableContext alterableContext = (AlterableContext) context;
+                        alterableContext.destroy(bean);
+                        return;
+                    } else {
+                        throw BeanLogger.LOG.destroyUnsupported(context);
+                    }
                 }
             }
         }
+        // Attempt to destroy dependent instance which is neither a client proxy nor a dependent session bean proxy
+        destroyDependentInstance(instance);
+    }
 
-        // check if this is a dependent instance
+    private void destroyDependentInstance(T instance) {
         CreationalContext<? super T> ctx = getCreationalContext();
         if (ctx instanceof WeldCreationalContext<?>) {
             WeldCreationalContext<? super T> weldCtx = cast(ctx);
