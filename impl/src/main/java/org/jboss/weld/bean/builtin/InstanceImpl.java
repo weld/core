@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.util.Preconditions.checkNotNull;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -26,6 +27,7 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
@@ -43,10 +45,10 @@ import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
-import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -67,6 +69,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     private final transient CurrentInjectionPoint currentInjectionPoint;
     private final transient InjectionPoint ip;
+    private final transient EjbSupport ejbSupport;
 
     public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext,
             BeanManagerImpl beanManager) {
@@ -87,10 +90,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         } else {
             this.bean = null;
         }
-        this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
+        this.currentInjectionPoint = beanManager.getServices().getRequired(CurrentInjectionPoint.class);
         // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the
         // qualifiers and type
         this.ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
+        this.ejbSupport = beanManager.getServices().get(EjbSupport.class);
     }
 
     public T get() {
@@ -145,26 +149,39 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     @Override
     public void destroy(T instance) {
-        Preconditions.checkNotNull(instance);
-
-        // check if this is a proxy of a normal-scoped bean
+        checkNotNull(instance);
+        // Attempt to destroy instance which is either a client proxy or a dependent session bean proxy
         if (instance instanceof ProxyObject) {
             ProxyObject proxy = (ProxyObject) instance;
             if (proxy.getHandler() instanceof ProxyMethodHandler) {
                 ProxyMethodHandler handler = (ProxyMethodHandler) proxy.getHandler();
                 Bean<?> bean = handler.getBean();
-                Context context = getBeanManager().getContext(bean.getScope());
-                if (context instanceof AlterableContext) {
-                    AlterableContext alterableContext = (AlterableContext) context;
-                    alterableContext.destroy(bean);
+                if (isSessionBeanProxy(instance) && Dependent.class.equals(bean.getScope())) {
+                    // Destroy internal reference to a dependent session bean
+                    destroyDependentInstance(instance);
                     return;
                 } else {
-                    throw BeanLogger.LOG.destroyUnsupported(context);
+                    // Destroy contextual instance of a normal-scoped bean
+                    Context context = getBeanManager().getContext(bean.getScope());
+                    if (context instanceof AlterableContext) {
+                        AlterableContext alterableContext = (AlterableContext) context;
+                        alterableContext.destroy(bean);
+                        return;
+                    } else {
+                        throw BeanLogger.LOG.destroyUnsupported(context);
+                    }
                 }
             }
         }
+        // Attempt to destroy dependent instance which is neither a client proxy nor a dependent session bean proxy
+        destroyDependentInstance(instance);
+    }
 
-        // check if this is a dependent instance
+    private boolean isSessionBeanProxy(T instance) {
+        return ejbSupport != null ? ejbSupport.isSessionBeanProxy(instance) : false;
+    }
+
+    private void destroyDependentInstance(T instance) {
         CreationalContext<? super T> ctx = getCreationalContext();
         if (ctx instanceof WeldCreationalContext<?>) {
             WeldCreationalContext<? super T> weldCtx = cast(ctx);

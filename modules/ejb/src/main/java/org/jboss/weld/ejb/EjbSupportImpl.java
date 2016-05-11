@@ -181,4 +181,11 @@ class EjbSupportImpl implements EjbSupport {
     public <T> InternalEjbDescriptor<T> getEjbDescriptor(String beanName) {
         return ejbDescriptors.get(beanName);
     }
+
+    @Override
+    public boolean isSessionBeanProxy(Object instance) {
+        return instance instanceof EnterpriseBeanInstance;
+    }
+
+
 }

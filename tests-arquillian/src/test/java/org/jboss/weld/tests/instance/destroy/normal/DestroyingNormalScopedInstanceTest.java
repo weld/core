@@ -24,6 +24,7 @@ import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
@@ -33,16 +34,16 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.spi.CDI;
 /**
  * Tests for https://issues.jboss.org/browse/CDI-139
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class DestroyingNormalScopedInstanceTest {
@@ -127,6 +128,7 @@ public class DestroyingNormalScopedInstanceTest {
         instance.destroy(null);
     }
 
+    @Category(Integration.class)
     @Test
     public void testSFSessionBeanDependentDestroy() {
         SFSessionBean.DESTROYED.set(false);
