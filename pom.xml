@@ -53,7 +53,7 @@
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <htmlunit.version>2.20</htmlunit.version>
         <jacoco.version>0.7.2.201409121644</jacoco.version>
-        <jandex.version>1.2.1.Final</jandex.version>
+        <jandex.version>2.0.2.Final</jandex.version>
         <javax.activation.version>1.1</javax.activation.version>
         <javax.el.version>3.0.0</javax.el.version>
         <jboss.jms.api.version>1.0.0.Final</jboss.jms.api.version>
