@@ -121,10 +121,15 @@ public class QualifierInstance {
                         method.getJavaMember().setAccessible(true);
                     }
                     builder.put(method.getJavaMember().getName(), method.getJavaMember().invoke(instance));
-                } catch (IllegalAccessException e) {
-                    throw new WeldException(e);
-                } catch (InvocationTargetException e) {
-                    throw new WeldException(e);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new WeldException(
+                    		String.format(
+                    				"Failed to create value for %s on method %s",
+                    				instance.toString(),
+                    				method.getJavaMember().getName()
+                    		),
+                    		e
+                    );
                 }
             }
         }
