@@ -25,18 +25,26 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Provider;
 
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
+
     private static final Type INSTANCE_TYPE = new TypeLiteral<Instance<Object>>() {
         private static final long serialVersionUID = -1246199714407637856L;
     }.getType();
+
     private static final Type PROVIDER_TYPE = new TypeLiteral<Provider<Object>>() {
         private static final long serialVersionUID = -5256050387550468441L;
     }.getType();
-    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
+
+    private static final Type WELD_INSTANCE_TYPE = new TypeLiteral<WeldInstance<Object>>() {
+        private static final long serialVersionUID = -1246199714407637856L;
+    }.getType();
+
+    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, WELD_INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
 
     public InstanceBean(BeanManagerImpl manager) {
         super(manager, Reflections.<Class<Instance<?>>>cast(Instance.class));
