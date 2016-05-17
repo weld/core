@@ -131,8 +131,6 @@
                     </archive>
                 </configuration>
             </plugin>
-	    <!-- There is a problem compiling WeldSELogger with a groovy compiler and there also can't be
-            2 compilers specified for one pom.xml, so the compilation is splitted: javac for main,groovyc for tests. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -149,33 +147,56 @@
                             <target>${maven.compiler.target}</target>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>process-test-sources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <compilerId>groovy-eclipse-compiler</compilerId>
-                            <source>${maven.compiler.source}</source>
-                            <target>${maven.compiler.target}</target>
-                        </configuration>
-                    </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>${groovy.eclipse.compiler.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>${groovy.eclipse.batch.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <!--Groovy compilation is disabled for JDK 1.9+-->
+            <id>weld-groovy-compilation</id>
+            <activation>
+                <jdk>(,1.9)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!-- There is a problem compiling WeldSELogger with a groovy compiler and there also can't be
+                        2 compilers specified for one pom.xml, so the compilation is splitted: javac for main,groovyc for tests. -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.1</version>
+                        <executions>
+                            <execution>
+                                <id>test-compile</id>
+                                <phase>process-test-sources</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                                <configuration>
+                                    <compilerId>groovy-eclipse-compiler</compilerId>
+                                    <source>${maven.compiler.source}</source>
+                                    <target>${maven.compiler.target}</target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-eclipse-compiler</artifactId>
+                                <version>${groovy.eclipse.compiler.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy-eclipse-batch</artifactId>
+                                <version>${groovy.eclipse.batch.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
