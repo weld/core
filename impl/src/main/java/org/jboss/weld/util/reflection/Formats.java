@@ -64,6 +64,10 @@ public class Formats {
             // Throwing an exception here would hide the original exception.
             return "-";
         }
+        return Formats.formatAsStackTraceElement(member);
+    }
+
+    public static String formatAsStackTraceElement(Member member) {
         return member.getDeclaringClass().getName()
             + "." + (member instanceof Constructor<?> ? "<init>" : member.getName())
             + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";

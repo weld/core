@@ -30,12 +30,13 @@ import javax.enterprise.inject.spi.Bean;
 import javax.inject.Named;
 
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ResolutionLogger;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.reflection.Formats;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
@@ -127,9 +128,11 @@ public class QualifierInstance {
                     }
                     builder.put(method.getJavaMember().getName(), method.getJavaMember().invoke(instance));
                 } catch (IllegalAccessException e) {
-                    throw new WeldException(e);
+                    throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), e);
                 } catch (InvocationTargetException e) {
-                    throw new WeldException(e);
+                    throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), e);
+                } catch (IllegalArgumentException e) {
+                    throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), e);
                 }
             }
         }
