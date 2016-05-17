@@ -31,16 +31,20 @@ import javax.enterprise.inject.spi.Bean;
 import javax.inject.Named;
 
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ResolutionLogger;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
- * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
- * faster equals/hashCode methods, that also correctly handle non binding attributes.
+ * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly faster equals/hashCode methods, that also
+ * correctly handle non binding attributes.
+ * <p>
+ * Note that Weld is using this representation for interceptor bindings as well. See also
+ * {@link org.jboss.weld.manager.BeanManagerImpl#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType, java.util.Collection)}
  *
  * @author Stuart Douglas
  * @author Martin Kouba
@@ -106,14 +110,14 @@ public class QualifierInstance {
         final Class<? extends Annotation> annotationClass = instance.annotationType();
         final QualifierModel<? extends Annotation> model = store.getBindingTypeModel(annotationClass);
 
-        if(model.getAnnotatedAnnotation().getMethods().size() == 0) {
+        if (model.getAnnotatedAnnotation().getMethods().size() == 0) {
             return Collections.emptyMap();
         }
 
         final ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
 
         for (final AnnotatedMethod<?> method : model.getAnnotatedAnnotation().getMethods()) {
-            if(!model.getNonBindingMembers().contains(method)) {
+            if (!model.getNonBindingMembers().contains(method)) {
                 try {
                     if (System.getSecurityManager() != null) {
                         AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMember()));
@@ -121,10 +125,8 @@ public class QualifierInstance {
                         method.getJavaMember().setAccessible(true);
                     }
                     builder.put(method.getJavaMember().getName(), method.getJavaMember().invoke(instance));
-                } catch (IllegalAccessException e) {
-                    throw new WeldException(e);
-                } catch (InvocationTargetException e) {
-                    throw new WeldException(e);
+                } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+                    throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), e);
                 }
             }
         }
