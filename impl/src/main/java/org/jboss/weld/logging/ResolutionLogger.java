@@ -19,9 +19,11 @@ package org.jboss.weld.logging;
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
 import org.jboss.logging.Logger;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.exceptions.WeldException;
 
 /**
  * Log messages for resolution classes.
@@ -38,6 +40,7 @@ public interface ResolutionLogger extends WeldLogger {
     @Message(id = 1601, value = "Cannot extract rawType from {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException cannotExtractRawType(Object param1);
 
-    // Last message id used was 1602
+    @Message(id = 1602, value = "Cannot create qualifier instance model for {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    WeldException cannotCreateQualifierInstanceValues(Object annotation, Object stackElement, @Cause Exception cause);
 
 }
