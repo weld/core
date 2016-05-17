@@ -19,9 +19,11 @@ package org.jboss.weld.logging;
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
 import org.jboss.logging.Logger;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.exceptions.WeldException;
 
 /**
  * Log messages for resolution classes.
@@ -51,5 +53,8 @@ public interface ResolutionLogger extends WeldLogger {
     @Deprecated
     @Message(id = 1602, value = "Unable to extract type information from {0}", format = Format.MESSAGE_FORMAT)
     String cannotExtractTypeInformation(Object param1);
+
+    @Message(id = 1603, value = "Cannot create qualifier instance model for {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    WeldException cannotCreateQualifierInstanceValues(Object annotation, Object stackElement, @Cause Exception cause);
 
 }
