@@ -41,6 +41,7 @@ import javax.inject.Provider;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
@@ -208,7 +209,12 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     @Override
     protected Iterable<? extends T> getAllBeans(Resolvable resolvable) {
-        if (resolvable.getTypes().contains(Object.class) || Instance.class.equals(resolvable.getJavaClass()) || Event.class.equals(resolvable.getJavaClass()) || Provider.class.equals(resolvable.getJavaClass()) || resolvable.getTypes().contains(Serializable.class)) {
+        if (resolvable.getTypes().contains(Object.class)
+                || Instance.class.equals(resolvable.getJavaClass())
+                || Event.class.equals(resolvable.getJavaClass())
+                || Provider.class.equals(resolvable.getJavaClass())
+                || WeldInstance.class.equals(resolvable.getJavaClass())
+                || resolvable.getTypes().contains(Serializable.class)) {
             return super.getAllBeans(resolvable);
         }
         Set<T> beans = new HashSet<T>();

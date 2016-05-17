@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.BeanLogger;
@@ -60,7 +62,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Gavin King
  */
 @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD" }, justification = "Uses SerializationProxy")
-public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements Instance<T>, Serializable {
+public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements WeldInstance<T>, Serializable {
 
     private static final long serialVersionUID = -376721889693284887L;
 
@@ -127,19 +129,19 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         return allBeans.isEmpty();
     }
 
-    public Instance<T> select(Annotation... qualifiers) {
+    public WeldInstance<T> select(Annotation... qualifiers) {
         return selectInstance(this.getType(), qualifiers);
     }
 
-    public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldInstance<U> select(Class<U> subtype, Annotation... qualifiers) {
         return selectInstance(subtype, qualifiers);
     }
 
-    public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldInstance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         return selectInstance(subtype.getType(), qualifiers);
     }
 
-    private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
+    private <U extends T> WeldInstance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
         InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class, subtype, getQualifiers(),
                 newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
@@ -173,6 +175,21 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         }
         // Attempt to destroy dependent instance which is neither a client proxy nor a dependent session bean proxy
         destroyDependentInstance(instance);
+    }
+
+    @Override
+    public Handler<T> getHandler() {
+        return new HandlerImpl<T>(get(), this, bean);
+    }
+
+    @Override
+    public boolean isResolvable() {
+        return !isUnsatisfied() && !isAmbiguous();
+    }
+
+    @Override
+    public Iterator<Handler<T>> handlerIterator() {
+        return new HandlerIterator(allBeans);
     }
 
     private void destroyDependentInstance(T instance) {
@@ -216,12 +233,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     }
 
-    final class InstanceImplIterator implements Iterator<T> {
+    abstract class BeanIterator<I> implements Iterator<I> {
 
-        private final Iterator<Bean<?>> delegate;
+        protected final Iterator<Bean<?>> delegate;
 
-        private InstanceImplIterator(Set<Bean<?>> beans) {
-            super();
+        private BeanIterator(Set<Bean<?>> beans) {
             this.delegate = beans.iterator();
         }
 
@@ -231,14 +247,81 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         }
 
         @Override
-        public T next() {
-            return getBeanInstance(delegate.next());
-        }
-
-        @Override
         public void remove() {
             throw BeanLogger.LOG.instanceIteratorRemoveUnsupported();
         }
 
     }
+
+    class InstanceImplIterator extends BeanIterator<T> {
+
+        private InstanceImplIterator(Set<Bean<?>> beans) {
+            super(beans);
+        }
+
+        @Override
+        public T next() {
+            return getBeanInstance(delegate.next());
+        }
+
+    }
+
+    class HandlerIterator extends BeanIterator<Handler<T>> {
+
+        private HandlerIterator(Set<Bean<?>> beans) {
+            super(beans);
+        }
+
+        @Override
+        public Handler<T> next() {
+            Bean<?> bean = delegate.next();
+            return new HandlerImpl<>(getBeanInstance(bean), InstanceImpl.this, bean);
+        }
+
+    }
+
+    private static class HandlerImpl<T> implements Handler<T> {
+
+        private final T value;
+
+        private final Bean<?> bean;
+
+        private final WeakReference<WeldInstance<T>> weldInstance;
+
+        private boolean destroyed;
+
+        HandlerImpl(T value, WeldInstance<T> instance, Bean<?> bean) {
+            this.value = value;
+            this.bean = bean;
+            this.weldInstance = new WeakReference<>(instance);
+            this.destroyed = false;
+        }
+
+        @Override
+        public T get() {
+            return value;
+        }
+
+        @Override
+        public Bean<?> getBean() {
+            return bean;
+        }
+
+        @Override
+        public void destroy() {
+            WeldInstance<T> instance = weldInstance.get();
+            if (instance == null || destroyed) {
+                return;
+            }
+            instance.destroy(value);
+            destroyed = true;
+        }
+
+        @Override
+        public void close() {
+            destroy();
+        }
+
+    }
+
 }
