@@ -706,7 +706,9 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @Override
     public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
-        return Collections.unmodifiableSet(new ArraySet<Annotation>(declaredMetaAnnotationMap.get(metaAnnotationType)));
+        return declaredMetaAnnotationMap.containsKey(metaAnnotationType)
+                ? Collections.unmodifiableSet(new ArraySet<Annotation>(declaredMetaAnnotationMap.get(metaAnnotationType)))
+                : Collections.<Annotation> emptySet();
     }
 
     @Override
