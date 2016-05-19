@@ -37,7 +37,8 @@ public class Multimaps {
     }
 
     /**
-     * Note that {@link Multimap#get(Object)} returns unmodifiable collections.
+     * Note that {@link Multimap#get(Object)} always returns unmodifiable collections. Moreover, it does not trigger initialization of a new value collection
+     * (i.e. when no collection of values for a given key exists).
      *
      * @param multimap
      * @return an unmodifiable view of the given multimap
@@ -87,9 +88,16 @@ public class Multimaps {
             return delegate.isEmpty();
         }
 
+        /**
+         * Returns unmodifiable collections. Moreover, it does not trigger initialization of a new value collection (i.e. when no collection of values for a
+         * given key exists).
+         */
         @Override
         public Collection<V> get(K key) {
-            return unmodifiableValueCollection(delegate.get(key));
+            if (delegate.containsKey(key)) {
+                return unmodifiableValueCollection(delegate.get(key));
+            }
+            return Collections.emptyList();
         }
 
         @Override
@@ -159,21 +167,6 @@ public class Multimaps {
         }
 
         @Override
-        public boolean put(K key, V value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public boolean putAll(K key, Collection<? extends V> values) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Collection<V> replaceValues(K key, Iterable<? extends V> values) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public boolean containsKey(Object key) {
             return false;
         }
@@ -199,7 +192,23 @@ public class Multimaps {
         }
 
         @Override
+        public boolean put(K key, V value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean putAll(K key, Collection<? extends V> values) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Collection<V> replaceValues(K key, Iterable<? extends V> values) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public void clear() {
+            throw new UnsupportedOperationException();
         }
 
         public boolean equals(Object o) {

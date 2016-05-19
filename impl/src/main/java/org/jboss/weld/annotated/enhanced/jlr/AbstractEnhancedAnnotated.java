@@ -42,6 +42,8 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Multimap;
+import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
@@ -94,7 +96,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     private final Map<Class<? extends Annotation>, Annotation> annotationMap;
     // The meta-annotation map (annotation type -> set of annotations containing
     // meta-annotation) of the item
-    private final SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
+    private final Multimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
 
     private final Class<T> rawType;
     private final Type[] actualTypeArguments;
@@ -123,7 +125,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         this.annotationMap = immutableMapView(annotationMap);
         SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = SetMultimap.newSetMultimap();
         processMetaAnnotations(metaAnnotationMap, annotationMap.values(), classTransformer, false);
-        this.metaAnnotationMap = metaAnnotationMap;
+        this.metaAnnotationMap = Multimaps.unmodifiableMultimap(metaAnnotationMap);
 
         if (declaredAnnotationMap == null) {
             throw ReflectionLogger.LOG.declaredAnnotationMapNull();
