@@ -44,7 +44,7 @@ public interface Multimap<K, V> {
     boolean isEmpty();
 
     /**
-     * This method never returns null.
+     * This method never returns null. If no collection of values for a given key exists a new value collection is initialized.
      *
      * @param key
      * @return the collection of values for the given key
