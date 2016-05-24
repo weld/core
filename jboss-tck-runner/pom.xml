@@ -22,6 +22,7 @@
     <properties>
         <htmlunit.version>2.9</htmlunit.version>
         <shrinkwrap.version>1.0.1</shrinkwrap.version>
+        <jaxws-api.version>2.2.11</jaxws-api.version>
     </properties>
 
     <dependencies>
@@ -56,6 +57,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+            <version>${jaxws-api.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.jboss.weld.module</groupId>
             <artifactId>weld-ejb</artifactId>
@@ -162,7 +169,8 @@
                 <configuration>
                     <!-- http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4425695 -->
                     <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true</argLine>
-                    <forkMode>once</forkMode>
+                    <forkCount>1</forkCount>
+                    <reuseForks>true</reuseForks>
                     <properties>
                         <property>
                             <name>usedefaultlisteners</name>
