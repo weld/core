@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.config.ConfigurationKey.ROLLING_UPGRADES_ID_DELIMITER;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -163,8 +165,22 @@ public class WeldStartup {
 
         checkApiVersion();
 
-        Container.currentId.set(contextId);
-        this.contextId = contextId;
+        final ServiceRegistry registry = deployment.getServices();
+
+        // initiate part of registry in order to allow access to WeldConfiguration
+        new AdditionalServiceLoader(deployment).loadAdditionalServices(registry);
+
+        // Resource Loader has to be loaded prior to WeldConfiguration
+        if (!registry.contains(ResourceLoader.class)) {
+            registry.add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
+        }
+
+        WeldConfiguration configuration = new WeldConfiguration(registry, deployment);
+        registry.add(WeldConfiguration.class, configuration);
+
+        String finalContextId = BeanDeployments.getFinalId(contextId,
+            registry.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER));
+        this.contextId = finalContextId;
         this.deployment = deployment;
         this.environment = environment;
 
@@ -172,20 +188,9 @@ public class WeldStartup {
             setExtensions(deployment.getExtensions());
         }
 
-        final ServiceRegistry registry = deployment.getServices();
-
+        // Finish the rest of registry init, setupInitialServices() requires already changed finalContextId
         setupInitialServices();
         registry.addAll(initialServices.entrySet());
-
-        new AdditionalServiceLoader(deployment).loadAdditionalServices(registry);
-
-        if (!registry.contains(ResourceLoader.class)) {
-            registry.add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
-        }
-
-        // Weld configuration - must be set after the ResourceLoader fallback
-        WeldConfiguration configuration = new WeldConfiguration(registry, deployment);
-        registry.add(WeldConfiguration.class, configuration);
 
         if (!registry.contains(ProxyServices.class)) {
             registry.add(ProxyServices.class, new SimpleProxyServices());
@@ -201,9 +206,9 @@ public class WeldStartup {
             BootstrapLogger.LOG.jtaUnavailable();
         }
 
-        this.deploymentManager = BeanManagerImpl.newRootManager(contextId, "deployment", registry);
+        this.deploymentManager = BeanManagerImpl.newRootManager(finalContextId, "deployment", registry);
 
-        Container.initialize(contextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
+        Container.initialize(finalContextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
         getContainer().setState(ContainerState.STARTING);
 
         this.contexts = createContexts(registry);
@@ -221,9 +226,7 @@ public class WeldStartup {
         // as caused by the presence of beans.xml
         deploymentVisitor.visit();
 
-        Container.currentId.remove();
-
-        return new WeldRuntime(contextId, deploymentManager, bdaMapping.getBdaToBeanManagerMap());
+        return new WeldRuntime(finalContextId, deploymentManager, bdaMapping.getBdaToBeanManagerMap());
     }
 
     private void checkApiVersion() {

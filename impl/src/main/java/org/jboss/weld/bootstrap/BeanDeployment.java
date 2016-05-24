@@ -17,6 +17,8 @@
 package org.jboss.weld.bootstrap;
 
 import static java.util.Collections.emptyList;
+
+import static org.jboss.weld.config.ConfigurationKey.ROLLING_UPGRADES_ID_DELIMITER;
 import static org.jboss.weld.config.ConfigurationKey.CONCURRENT_DEPLOYMENT;
 
 import java.util.Collection;
@@ -104,7 +106,9 @@ public class BeanDeployment {
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
-        this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
+        String finalContextId = BeanDeployments.getFinalId(beanDeploymentArchive.getId(),
+            services.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER));
+        this.beanManager = BeanManagerImpl.newManager(deploymentManager, finalContextId, services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
 
         services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager, beanDeploymentArchive);
