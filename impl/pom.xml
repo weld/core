@@ -79,6 +79,12 @@
             <version>1.3.2</version>
             <optional>true</optional>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.bcel</groupId>
+            <artifactId>bcel</artifactId>
+            <version>5.2</version>
+        </dependency>
 
         <!-- test dependencies -->
 
