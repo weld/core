@@ -17,9 +17,8 @@
 package org.jboss.weld.bootstrap;
 
 import static java.util.Collections.emptyList;
-
-import static org.jboss.weld.config.ConfigurationKey.ROLLING_UPGRADES_ID_DELIMITER;
 import static org.jboss.weld.config.ConfigurationKey.CONCURRENT_DEPLOYMENT;
+import static org.jboss.weld.config.ConfigurationKey.ROLLING_UPGRADES_ID_DELIMITER;
 
 import java.util.Collection;
 import java.util.Set;
@@ -87,7 +86,8 @@ public class BeanDeployment {
         this(beanDeploymentArchive, deploymentManager, deploymentServices, contexts, false);
     }
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, boolean additionalBeanArchive) {
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices,
+            Collection<ContextHolder<? extends Context>> contexts, boolean additionalBeanArchive) {
         this.beanDeploymentArchive = beanDeploymentArchive;
 
         ServiceRegistry registry = beanDeploymentArchive.getServices();
@@ -106,9 +106,8 @@ public class BeanDeployment {
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
-        String finalContextId = BeanDeployments.getFinalId(beanDeploymentArchive.getId(),
-            services.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER));
-        this.beanManager = BeanManagerImpl.newManager(deploymentManager, finalContextId, services);
+        this.beanManager = BeanManagerImpl.newManager(deploymentManager, BeanDeployments.getFinalId(beanDeploymentArchive.getId(),
+                services.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER)), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
 
         services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager, beanDeploymentArchive);
@@ -119,7 +118,8 @@ public class BeanDeployment {
         } else {
             beanDeployer = new BeanDeployer(beanManager, deploymentServices);
         }
-        beanManager.getServices().get(SpecializationAndEnablementRegistry.class).registerEnvironment(beanManager, beanDeployer.getEnvironment(), additionalBeanArchive);
+        beanManager.getServices().get(SpecializationAndEnablementRegistry.class).registerEnvironment(beanManager, beanDeployer.getEnvironment(),
+                additionalBeanArchive);
 
         // Must at the Manager bean straight away, as it can be injected during startup!
         beanManager.addBean(new BeanManagerBean(beanManager));
