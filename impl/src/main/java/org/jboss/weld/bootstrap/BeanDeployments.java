@@ -16,26 +16,32 @@
  */
 package org.jboss.weld.bootstrap;
 
+import org.jboss.weld.config.ConfigurationKey;
+
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 class BeanDeployments {
 
-    /** Takes archiveId and removes the delimiter and anything beyond that.
-     * Used while creating archives if there was a delimiter specified.
+    /**
      *
-     * @param archiveId The ID of archive to be stripped of its affix
-     * @param delimiter Delimiter defined via ConfigurationKey, empty String otherwise
-     * @return archiveId if the delimiter was empty String, a substring of archiveId from index zero to the first occurrence of delimiter
+     * @param beanArchiveId
+     * @param delimiter
+     * @return the abbreviated bean archive id
+     * @see ConfigurationKey#ROLLING_UPGRADES_ID_DELIMITER
      */
-    static String getFinalId(String archiveId, String delimiter) {
+    static String getFinalId(String beanArchiveId, String delimiter) {
         if (delimiter.isEmpty()) {
-            return archiveId;
-        } else {
-            int idx = archiveId.indexOf(delimiter);
-            return archiveId.substring(0, idx >= 0 ? idx : archiveId.length());
+            return beanArchiveId;
         }
+        int idx = beanArchiveId.indexOf(delimiter);
+        if (idx < 0) {
+            return beanArchiveId;
+        }
+        String beforeDelimiter = beanArchiveId.substring(0, idx);
+        int suffixIdx = beanArchiveId.lastIndexOf(".");
+        return suffixIdx < 0 ? beforeDelimiter : beforeDelimiter + beanArchiveId.substring(suffixIdx, beanArchiveId.length());
     }
 
     private BeanDeployments() {

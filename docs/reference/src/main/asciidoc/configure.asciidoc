@@ -77,7 +77,7 @@ First of all, let's see what types of thread pools are available:
 
 Now let's see how to configure Weld to use a particular thread pool type:
 
-IMPORTANT: An integrator may choose to use custom implementation of `org.jboss.weld.manager.api.ExecutorServices`. If that's the case, all configuration described in this section 
+IMPORTANT: An integrator may choose to use custom implementation of `org.jboss.weld.manager.api.ExecutorServices`. If that's the case, all configuration described in this section
 might be ignored. An example of such integrator is WildFly.
 
 .Supported configuration properties
@@ -130,7 +130,7 @@ will be proxied (as opposed to classical behavior when there would be an excepti
 Since the method was ignored during proxy creation, it should never be invoked.
 
 In order to make this work, use the below shown configuration key and pass it a regular expression.
-When Weld finds an unproxyable type which matches this pattern, the final methods will be ignored 
+When Weld finds an unproxyable type which matches this pattern, the final methods will be ignored
 and the type will be proxied.
 
 .Supported configuration properties
@@ -192,11 +192,21 @@ NOTE: This optimization is disabled by default in <<weld-servlet,Servlet contain
 
 ==== Rolling upgrades ID delimiter
 
-The delimiter is used while generating IDs, such as bean ID. The original ID, obtained from
-`BeanDeploymentArchive.getId()`, will be abbreviated based on the provided delimiter.
-An example: Given an application with two versions going by the names __test+++__+++1-1.war__ and __test+++__+++1-2.war__, Weld normally
-cannot replicate sessions between these two deployments. Using this configuration option with delimiter "__" will allow Weld to
-see both applications simply as test.war, hence allowing for session replication.
+NOTE: This configuration property should only be used if experiencing problems with rolling upgrades.
+
+The delimiter is used to abbreviate a bean archive identifier (which is usually derived from the archive name) before used as a part of an identifier of an internal component (such as bean).
+
+The abbreviation proceeds as follows:
+
+* Try to find the first occurrence of the specified delimiter
+* If not found, the identifier is not abbreviated
+* If found, try to extract the archive suffix (`.war`, `.ear`, etc.) and the final value consists of the part before the delimiter and the archive suffix (if extracted)
+
+Note that the delimiter is used for all bean archives forming the application.
+
+An example: Given an application with two versions going by the names `test__1-1.war` and `test__1-2.war`.
+Weld normally cannot support replication of `@SessionScoped` beans between these two deployments.
+Using this configuration option with delimiter "__" will allow Weld to see both applications simply as `test.war`, hence allowing for session replication.
 
 .Supported configuration properties
 [cols=",,",options="header",]
@@ -204,6 +214,8 @@ see both applications simply as test.war, hence allowing for session replication
 |Configuration key |Default value |Description
 |`org.jboss.weld.clustering.rollingUpgradesIdDelimiter` ||The delimiter used during ID generation.
 |=======================================================================
+
+WARNING: Bean archive identifiers are provided by integrators. Therefore, the abbreviation algorithm may not always function properly.
 
 [[config-dev-mode]]
 ==== Development Mode
