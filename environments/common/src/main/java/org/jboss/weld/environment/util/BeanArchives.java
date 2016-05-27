@@ -100,7 +100,7 @@ public final class BeanArchives {
      * @param beanArchiveRef
      * @param base
      * @param separator
-     * @return
+     * @return the extracted bean archive id
      */
     public static String extractBeanArchiveId(String beanArchiveRef, String base, String separator) {
         beanArchiveRef = beanArchiveRef.replace('\\', '/');
@@ -109,6 +109,8 @@ public final class BeanArchives {
         id.append(BeanArchives.BEAN_ARCHIVE_ID_BASE_DELIMITER);
         if (beanArchiveRef.contains(separator)) {
             id.append(beanArchiveRef.substring(beanArchiveRef.indexOf(separator), beanArchiveRef.length()));
+        } else {
+            id.append(beanArchiveRef);
         }
         return id.toString();
     }
