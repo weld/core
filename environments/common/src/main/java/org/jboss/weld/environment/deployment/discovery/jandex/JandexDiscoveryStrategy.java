@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.deployment.discovery.jandex;
 
+import static org.jboss.weld.environment.util.Reflections.hasBeanDefiningMetaAnnotationSpecified;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jboss.jandex.AnnotationInstance;
@@ -37,6 +40,7 @@ import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -87,7 +91,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
         while (classIterator.hasNext()) {
             String className = classIterator.next();
             ClassInfo cinfo = cindex.getClassByName(DotName.createSimple(className));
-            if (!containsBeanDefiningAnnotation(cinfo.annotations().keySet())) {
+            if (!containsBeanDefiningAnnotation(cinfo, className)) {
                 classIterator.remove();
             }
         }
@@ -131,10 +135,21 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
         return false;
     }
 
-    private boolean containsBeanDefiningAnnotation(Set<DotName> annotations) {
-        for (DotName name : annotations) {
-            if (beanDefiningAnnotations.contains(name)) {
+    private boolean containsBeanDefiningAnnotation(ClassInfo cinfo, String className) {
+        for (Entry<DotName, List<AnnotationInstance>> entry : cinfo.annotations().entrySet()) {
+            if (beanDefiningAnnotations.contains(entry.getKey())) {
                 return true;
+            }
+            if (isDeclaredOnBeanClass(entry, cinfo) && cindex.getClassByName(entry.getKey()) == null) {
+                // Annotation not found in the composite index - falling back to reflection
+                Class<?> clazz = Reflections.loadClass(className, resourceLoader);
+                if (clazz != null) {
+                    for (Class<? extends Annotation> metaAnnotation : metaAnnotations) {
+                        if (hasBeanDefiningMetaAnnotationSpecified(clazz.getAnnotations(), metaAnnotation)) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
         return false;
@@ -142,6 +157,15 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     public CompositeIndex getCompositeJandexIndex() {
         return cindex;
+    }
+
+    private boolean isDeclaredOnBeanClass(Entry<DotName, List<AnnotationInstance>> entry, ClassInfo cinfo) {
+        for (AnnotationInstance annotationInstance : entry.getValue()) {
+            if(annotationInstance.target().equals(cinfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

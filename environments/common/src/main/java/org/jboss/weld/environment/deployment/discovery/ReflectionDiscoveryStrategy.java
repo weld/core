@@ -20,20 +20,14 @@ import static org.jboss.weld.environment.util.Reflections.hasBeanDefiningMetaAnn
 
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.Stereotype;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * This implementation supports bean-discovery-mode="annotated" and makes use of reflection to detect a class with a bean defining annotation.
@@ -43,13 +37,10 @@ import com.google.common.collect.ImmutableList;
  */
 public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
-    private final List<Class<? extends Annotation>> metaAnnotations;
-
     private final AtomicBoolean annotatedDiscoveryProcessed;
 
     public ReflectionDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
         super(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
-        this.metaAnnotations = ImmutableList.of(Stereotype.class, NormalScope.class);
         this.annotatedDiscoveryProcessed = new AtomicBoolean(false);
         registerHandler(new FileSystemBeanArchiveHandler());
     }
