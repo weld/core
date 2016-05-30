@@ -220,6 +220,37 @@ to wait on the conversation concurrent lock.
 |`org.jboss.weld.conversation.concurrentAccessTimeout` |1000 ms| Conversation concurrent access timeout represent the maximum time to wait on the conversation concurrent lock.
 |=======================================================================
 
+=== Defining external configuration
+
+Weld allows integrators to provide an external configuration - a class which implements `org.jboss.weld.configuration.spi.ExternalConfiguration` interface. 
+This interface has `getConfigurationProperties` method which returns a `Map` with provided configuration and also inherits a `cleanup` method because it extends `org.jboss.weld.bootstrap.api.Service`. 
+Below is a short example of `ExternalConfiguration` implementation:
+
+[source.JAVA, java]
+--------------------------------------------------------------------------
+public class MyExternalConfiguration implements ExternalConfiguration {
+    @Override
+    public void cleanup() {
+	// cleanup code
+    }
+
+    @Override
+    public Map<String, Object> getConfigurationProperties() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false);
+        properties.put(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), 200);
+        properties.put(ConfigurationKey.PROXY_DUMP.get(), "/home/weld");
+        return properties;
+    }
+}
+--------------------------------------------------------------------------
+
+Bear in mind that because `ExternalConfiguration` extends a `Service` it is required that any custom external configuration implementation is explicitly registered. See <<_the_weld_spi>> for more information.
+
+Last but not least external configuration is considered a source with the lowest priority which means that the properties specified there can be overriden by other sources such as system properties.
+For information on supported configuration keys, see <<_weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead 
+to deployment problem.
+
 === Excluding classes from scanning and deployment
 
 CDI 1.1 allows you to exclude classes in your archive from being
