@@ -36,9 +36,8 @@ Weld supports multiple environments. An environment is defined by an
 implementation of the `Environment` interface. A number of standard
 environments are built in, and described by the `Environments`
 enumeration. Different environments require different services to be
-present (for example a Servlet container doesn't require transaction,
-EJB or JPA services). By default an EE environment is assumed, but you
-can adjust the environment by calling `bootstrap.setEnvironment()`.
+present. For example a Servlet container doesn't require transaction,
+EJB or JPA services.
 
 Weld uses services to communicate with its environment. A service is a
 java class that implements the `org.jboss.weld.bootstrap.api.Service`
@@ -301,9 +300,9 @@ Just as EJB resolution is delegated to the container, resolution of
 `@PersistenceContext` for injection into managed beans (with the
 `InjectionPoint` provided), is delegated to the container.
 
-To allow JPA integration, the `JpaServices` interface should be
-implemented. This service is not required if the implementation of <<_injection_services>>
-takes care of `@PersistenceContext` injection.
+To allow JPA integration, the `org.jboss.weld.injection.spi.JpaInjectionServices` interface 
+should be implemented. This service is not required if the implementation of 
+<<_injection_services>> takes care of `@PersistenceContext` injection.
 
 [NOTE]
 ====
@@ -417,8 +416,9 @@ identity, the container should provide an implementation of
 The `org.jboss.weld.bootstrap.api.Bootstrap` interface defines the
 initialization for Weld, bean deployment and bean validation. To boot
 Weld, you must create an instance of
-`org.jboss.weld.bootstrap.WeldBeansBootstrap` (which implements
-`Bootstrap`), tell it about the services in use, and then request the
+`org.jboss.weld.bootstrap.WeldBootstrap` which implements 
+`org.jboss.weld.bootstrap.api.CDI11Bootstrap` which extends the above mentioned
+`Bootstrap`. Then you need to tell it about the services in use, and finally request the
 container start.
 
 [source.JAVA, java]
@@ -449,11 +449,10 @@ To initialize the container, you call `Bootstrap.startInitialization()`.
 Before calling `startInitialization()`, you must register any services
 required by the environment. You can do this by calling, for example,
 `bootstrap.getManager().getServices().add(JpaServices.class, new
-            MyJpaServices())`. You must also provide the application
-context bean store.
+            MyJpaServices())`.
 
-Having called `startInitialization()`, the `Manager` for each BDA can be
-obtained by calling `Bootstrap.getManager(BeanDeploymentArchive bda)`.
+Having called `startInitialization()`, the `org.jboss.weld.manager.api.WeldManager` 
+for each BDA can be obtained by calling `Bootstrap.getManager(BeanDeploymentArchive bda)`.
 
 To deploy the discovered beans, call `Bootstrap.deployBeans()`.
 
