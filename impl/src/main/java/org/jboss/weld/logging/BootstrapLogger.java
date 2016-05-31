@@ -263,4 +263,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 162, value = "BeforeBeanDiscovery.addAnnotatedType() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
     void addAnnotatedTypeCalledInBBD(Object extensionName, Object type);
 
+    @Message(id = 163, value = "Non-unique bean deployment identifier detected: {0}", format = Format.MESSAGE_FORMAT)
+    DeploymentException nonuniqueBeanDeploymentIdentifier(Object info);
+
 }

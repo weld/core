@@ -71,7 +71,7 @@
         <shade.plugin.version>2.3</shade.plugin.version>
         <shrinkwrap.version>1.1.3</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
-        <testng.version>5.10</testng.version>
+        <testng.version>6.8.8</testng.version>
         <weld.api.version>3.0.Alpha19</weld.api.version>
         <weld.logging.tools.version>1.0.1.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
@@ -431,13 +431,6 @@
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>${testng.version}</version>
-                <classifier>jdk15</classifier>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
