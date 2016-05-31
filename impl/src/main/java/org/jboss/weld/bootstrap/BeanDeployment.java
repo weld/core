@@ -273,4 +273,19 @@ public class BeanDeployment {
         beanDeployer.doAfterBeanDiscovery(beanManager.getInterceptors());
         beanDeployer.registerCdiInterceptorsForMessageDrivenBeans();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("BeanDeployment ");
+        builder.append("[beanDeploymentArchiveId=");
+        builder.append(beanDeploymentArchive.getId());
+        if (!beanDeploymentArchive.getId().equals(beanManager.getId())) {
+            builder.append(", beanManagerId=");
+            builder.append(beanManager.getId());
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

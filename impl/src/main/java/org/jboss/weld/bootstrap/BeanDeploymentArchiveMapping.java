@@ -2,7 +2,10 @@ package org.jboss.weld.bootstrap;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -34,4 +37,16 @@ public class BeanDeploymentArchiveMapping {
     public ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> getBdaToBeanManagerMap() {
         return beanManagers;
     }
+
+    boolean isNonuniqueIdentifierDetected() {
+        Set<String> beanDeploymentArchiveIds = new HashSet<>();
+        Set<String> beanManagerIds = new HashSet<>();
+        for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
+            if (!beanDeploymentArchiveIds.add(entry.getKey().getId()) || !beanManagerIds.add(entry.getValue().getBeanManager().getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
