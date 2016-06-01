@@ -235,11 +235,11 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES);
             checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
 
-            List<Class<?>> interceptorClasses = transform(beansXml.getEnabledInterceptors(), loader);
+            List<Class<?>> interceptorClasses = new ArrayList<>(transform(beansXml.getEnabledInterceptors(), loader));
             moduleInterceptorsBuilder.addAll(filter(interceptorClasses, globallyEnabledInterceptors, ValidatorLogger.INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE,
                     deployment));
 
-            List<Class<?>> decoratorClasses = transform(beansXml.getEnabledDecorators(), loader);
+            List<Class<?>> decoratorClasses = new ArrayList<>(transform(beansXml.getEnabledDecorators(), loader));
             moduleDecoratorsBuilder.addAll(filter(decoratorClasses, globallyEnabledDecorators, ValidatorLogger.DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE,
                     deployment));
 
