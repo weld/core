@@ -53,9 +53,9 @@ import org.jboss.weld.util.reflection.Reflections;
  * Each property may be set in three different sources (by priority in descending order):
  * </p>
  * <ol>
- * <li>Bootstrap configuration provided by an integrator</li>
- * <li>System property</li>
- * <li>Properties file <code>weld.properties</code></li>
+ * <li>In a properties file named `weld.properties`</li>
+ * <li>As a system property</li>
+ * <li>By a bootstrap configuration provided by an integrator</li>
  * </ol>
  *
  * <p>
