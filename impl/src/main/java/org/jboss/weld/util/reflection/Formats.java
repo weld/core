@@ -21,11 +21,13 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.net.URL;
 import java.util.ArrayList;
@@ -78,10 +80,13 @@ public class Formats {
     private static final String BUILD_PROPERTIES_VERSION = "version";
     private static final String BUILD_PROPERTIES_TIMESTAMP = "timestamp";
 
+    private static final String UPPER_BOUND = " extends ";
     private static final String WILDCARD = "?";
-    private static final String WILDCARD_UPPER_BOUND = WILDCARD + " extends ";
+    private static final String WILDCARD_UPPER_BOUND = WILDCARD + UPPER_BOUND;
     private static final String WILDCARD_LOWER_BOUND = WILDCARD + " super ";
 
+    private static final String GT = ">";
+    private static final String LT = "<";
 
     private Formats() {
     }
@@ -321,6 +326,8 @@ public class Formats {
         } else if (baseType instanceof GenericArrayType) {
             GenericArrayType gat = (GenericArrayType) baseType;
             return formatType(gat.getGenericComponentType(), simpleNames) + SQUARE_BRACKETS;
+        } else if (baseType instanceof TypeVariable) {
+            return formatTypeVariable((TypeVariable<?>) baseType, simpleNames);
         }
         return baseType.toString();
     }
@@ -471,7 +478,7 @@ public class Formats {
                 return commaDelimiterFunction().apply(formatType(from), position);
             }
 
-        }), "<", ">");
+        }), LT, GT);
     }
 
     public static String wrapIfNecessary(String string, String prepend, String append) {
@@ -656,6 +663,24 @@ public class Formats {
         } else {
             return "[unknown]";
         }
+    }
+
+    public static <D extends GenericDeclaration> String formatTypeParameters(TypeVariable<D>[] typeParams) {
+        return wrapIfNecessary(formatIterable(typeParams, new Function<TypeVariable<D>>() {
+            @Override
+            public String apply(TypeVariable<D> from, int position) {
+                return spaceDelimiterFunction().apply(formatTypeVariable(from, true), position);
+            }
+
+        }), LT, GT);
+    }
+
+    private static <D extends GenericDeclaration> String formatTypeVariable(TypeVariable<D> typeVariable, boolean simpleNames) {
+        Type[] bounds = typeVariable.getBounds();
+        if (Reflections.isEmptyBoundArray(bounds)) {
+            return typeVariable.getName();
+        }
+        return typeVariable.getName() + UPPER_BOUND + formatType(bounds[0], simpleNames);
     }
 
     private static Properties getBuildProperties() {
