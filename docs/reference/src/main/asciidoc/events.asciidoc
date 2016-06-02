@@ -226,9 +226,9 @@ Event qualifiers may be combined, for example:
 if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);
 -------------------------------------------------------------------------------------------
 
-An observer method is only notified if all the observed qualifiers are
-specified when the event is fired. Assume the following observers in
-this example:
+The above shown event is fired with two qualifiers - `@Blog` and `@Updated`. 
+An observer method is notified if the set of observer qualifiers is a subset of the fired event's qualifiers.
+Assume the following observers in this example:
 
 [source.JAVA, java]
 -------------------------------------------------------------------------------
@@ -259,8 +259,8 @@ However, if there were also an observer method:
 public void afterPersonalBlogUpdate(@Observes @Updated @Personal @Blog Document document) { ... }
 -------------------------------------------------------------------------------------------------
 
-It would not be notified, as `@Personal` is not a qualifier of the event
-being fired.
+It would not be notified, as `@Personal` is not a qualifier of the event being fired.
+Or to put it more formally, `@Updated` and `@Personal` do not form a subset of `@Blog` and `@Updated`.
 
 === Transactional observers
 
