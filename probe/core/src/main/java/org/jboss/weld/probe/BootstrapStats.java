@@ -17,7 +17,7 @@
 package org.jboss.weld.probe;
 
 import java.util.EnumMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
@@ -34,25 +34,23 @@ import javax.enterprise.inject.spi.ProcessProducer;
  */
 class BootstrapStats {
 
-    private final EnumMap<EventType, AtomicLong> counts;
+    private final EnumMap<EventType, AtomicInteger> counts;
 
     BootstrapStats() {
         this.counts = new EnumMap<>(EventType.class);
+        for (EventType type : EventType.values()) {
+            this.counts.put(type, new AtomicInteger(0));
+        }
     }
 
     void increment(EventType evenType) {
-        AtomicLong count = counts.get(evenType);
-        if (count != null) {
-            count.incrementAndGet();
-        } else {
-            counts.put(evenType, new AtomicLong(1));
-        }
+        counts.get(evenType).incrementAndGet();
     }
 
     /**
      * @return the counts
      */
-    EnumMap<EventType, AtomicLong> getCounts() {
+    EnumMap<EventType, AtomicInteger> getCounts() {
         return counts;
     }
 
