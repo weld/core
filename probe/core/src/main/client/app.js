@@ -1001,6 +1001,15 @@ Ember.Handlebars
                 '<i class="fa fa-lg fa-info-circle probe-comp" title="Probe internal component"></i>');
         });
 
+Ember.Handlebars.registerBoundHelper('highlight', function(source, options) {
+    if (source == undefined || source == null || source == '') {
+        return new Handlebars.SafeString('');
+    }
+    var lang = options.hash.lang || 'Java';
+    return new Handlebars.SafeString(hljs.highlight(lang, source, true).value);
+});
+
+
 // VIEWS
 
 Probe.DependencyGraph = Ember.View
@@ -1971,7 +1980,6 @@ function findLinksDeclaredBean(bean, links, nodes) {
             type : 'declaredBy',
             info : 'Declared by'
         });
-        console.log(bean);
     }
 }
 

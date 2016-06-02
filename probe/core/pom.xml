@@ -184,6 +184,8 @@
                     href="basic.css" /&gt;
                     &lt;link rel="stylesheet" type="text/css"
                     href="font-awesome.min-4.2.0.css" /&gt;
+                    &lt;link rel="stylesheet" type="text/css"
+                    href="highlight-default.min-8.9.1.css" /&gt;
                 </head>
                 <scripts>
                     &lt;script type="text/javascript"
@@ -201,7 +203,9 @@
                     &lt;script type="text/javascript"
                     src="moment.min-2.8.4.js"&gt;&lt;/script&gt;
                     &lt;script type="text/javascript"
-                    src="app.js"&gt;&lt;/script&gt; </scripts>
+                    src="app.js"&gt;&lt;/script&gt;
+                    &lt;script type="text/javascript"
+                    src="highlight.min-8.9.1.js"&gt;&lt;/script&gt; </scripts>
                 <client.resource.path />
             </properties>
         </profile>
