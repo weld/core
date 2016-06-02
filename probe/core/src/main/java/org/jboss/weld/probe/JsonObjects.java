@@ -117,7 +117,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.ConversationScoped;
@@ -1130,7 +1130,7 @@ final class JsonObjects {
 
     static JsonArrayBuilder createBootstrapStatsJson(Probe probe) {
         JsonArrayBuilder builder = Json.arrayBuilder();
-        Map<EventType, AtomicLong> counts = probe.getBootstrapStats().getCounts();
+        Map<EventType, AtomicInteger> counts = probe.getBootstrapStats().getCounts();
         List<EventType> sortedKeys = new ArrayList<>(counts.keySet());
         Collections.sort(sortedKeys, new Comparator<EventType>() {
             @Override
