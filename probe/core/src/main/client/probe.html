@@ -622,7 +622,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Producer Method:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">{{producerMethod}}</p>
+                            <p class="form-control-static">{{highlight producerMethod}}</p>
                         </div>
                     </div>
                     {{/if}}
@@ -630,7 +630,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Producer Field:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">{{producerField}}</p>
+                            <p class="form-control-static">{{highlight producerField}}</p>
                         </div>
                     </div>
                     {{/if}}
@@ -638,7 +638,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Disposal Method:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">{{disposalMethod}}</p>
+                            <p class="form-control-static">{{highlight disposalMethod}}</p>
                         </div>
                     </div>
                     {{/if}}
@@ -648,9 +648,13 @@ ${head}
                         <div class="col-sm-10">
                             {{#each declaredObservers}}
                             <p class="form-control-static">
+                                {{increment _view.contentIndex}}.
                                 <span class="{{unbound reception}} boxed">{{unbound reception}}</span>
                                 <span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span>
-                                {{detail-icon}} {{#link-to 'observerDetail' id}}{{observedType}}{{/link-to}}
+                                {{detail-icon}} {{#link-to 'observerDetail' id}}Go to detail{{/link-to}}
+                            </p>
+                            <p class="form-control-static">
+                                {{highlight annotatedMethod}}
                             </p>
                             {{/each}}
                         </div>
@@ -662,10 +666,12 @@ ${head}
                         <div class="col-sm-10">
                             {{#each declaredProducers}}
                             <p class="form-control-static">
+                                {{increment _view.contentIndex}}.
                                 <span class="{{unbound kind}} boxed">{{unbound kind}}</span>
-                                {{detail-icon}} {{#link-to 'beanDetail' id}}
-                                    {{#if producerInfo}}{{unbound producerInfo}}{{else}}Unknown{{/if}}
-                                {{/link-to}}
+                                {{detail-icon}} {{#link-to 'beanDetail' id}}Go to detail{{/link-to}}
+                            </p>
+                            <p class="form-control-static">
+                                {{highlight producerInfo}}
                             </p>
                             {{/each}}
                         </div>
@@ -939,7 +945,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Annotated Method:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">{{annotatedMethod}}</p>
+                            <p class="form-control-static">{{highlight annotatedMethod}}</p>
                         </div>
                     </div>
                     <div class="form-group">

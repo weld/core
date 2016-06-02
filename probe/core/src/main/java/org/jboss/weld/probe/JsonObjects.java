@@ -107,6 +107,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -472,7 +473,7 @@ final class JsonObjects {
                     JsonObjectBuilder observerBuilder = createSimpleObserverJson(observerMethodImpl, probe);
                     observerBuilder.add(RECEPTION, observerMethodImpl.getReception().toString());
                     observerBuilder.add(TX_PHASE, observerMethodImpl.getTransactionPhase().toString());
-                    // observerBuilder.add(ANNOTATED_METHOD, annotatedMethodToString(observerMethodImpl.getMethod().getAnnotated(), bean.getBeanClass()));
+                    observerBuilder.add(ANNOTATED_METHOD, annotatedMethodToString(observerMethodImpl.getMethod().getAnnotated(), bean.getBeanClass()));
                     declaredObservers.add(observerBuilder);
                 }
             }
@@ -1058,11 +1059,16 @@ final class JsonObjects {
         StringBuilder builder = new StringBuilder();
         builder.append(Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations())));
         builder.append(Formats.formatModifiers(method.getJavaMember().getModifiers()));
+        TypeVariable<Method>[] typeParams = method.getJavaMember().getTypeParameters();
         builder.append(' ');
-        builder.append(method.getJavaMember().getReturnType().getName());
+        if (typeParams.length > 0) {
+            builder.append(Formats.formatTypeParameters(typeParams));
+            builder.append(' ');
+        }
+        builder.append(Formats.formatType(method.getJavaMember().getGenericReturnType()));
         builder.append(' ');
         if (!beanClass.getName().equals(method.getDeclaringType().getJavaClass().getName())) {
-            builder.append(method.getDeclaringType().getJavaClass().getName());
+            builder.append(Formats.formatType(method.getDeclaringType().getJavaClass()));
             builder.append('.');
         }
         builder.append(method.getJavaMember().getName());
@@ -1075,10 +1081,10 @@ final class JsonObjects {
         builder.append(Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations())));
         builder.append(Formats.formatModifiers(field.getJavaMember().getModifiers()));
         builder.append(' ');
-        builder.append(field.getJavaMember().getType().getName());
+        builder.append(Formats.formatType(field.getJavaMember().getType()));
         builder.append(' ');
         if (!beanClass.getName().equals(field.getDeclaringType().getJavaClass().getName())) {
-            builder.append(field.getDeclaringType().getJavaClass().getName());
+            builder.append(Formats.formatType(field.getDeclaringType().getJavaClass()));
             builder.append('.');
         }
         builder.append(field.getJavaMember().getName());
