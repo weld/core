@@ -67,7 +67,6 @@ class Configurators {
                     break;
                 }
             }
-            annotatedParameters.add(parameter);
         }
         return annotatedParameters;
     }
