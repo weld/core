@@ -80,6 +80,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     public void veto() {
         checkWithinObserverNotification();
         veto = true;
+        BootstrapLogger.LOG.beanAttributesVetoed(getReceiver(), attributes);
     }
 
     public boolean isVeto() {
