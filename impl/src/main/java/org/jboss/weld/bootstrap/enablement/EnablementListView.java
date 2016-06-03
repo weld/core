@@ -18,10 +18,14 @@ package org.jboss.weld.bootstrap.enablement;
 
 import static org.jboss.weld.util.Preconditions.checkNotNull;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.util.collections.ListView;
 
 /**
@@ -31,6 +35,15 @@ import org.jboss.weld.util.collections.ListView;
  */
 abstract class EnablementListView extends ListView<Item, Class<?>> {
 
+    protected abstract ViewType getViewType();
+
+    protected abstract Extension getExtension();
+
+    private static final String ADD_OPERATION = "adds";
+    private static final String REMOVE_OPERATION = "removes";
+    private static final String SET_OPERATION = "sets";
+    private static final String RETAIN_OPERATION = "retains";
+
     @SuppressWarnings("checkstyle:magicnumber")
     private static final int DEFAULT_PRIORITY = javax.interceptor.Interceptor.Priority.APPLICATION + 500;
 
@@ -39,6 +52,9 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         checkNotNull(element);
         List<Item> list = getDelegate();
         synchronized (list) {
+            if (getExtension() != null) {
+                BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), element, ADD_OPERATION, getViewType());
+            }
             return list.add(createSource(element, list.isEmpty() ? null : list.get(list.size() - 1), null));
         }
     }
@@ -50,6 +66,9 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         synchronized (list) {
             if (index < 0 || index >= list.size()) {
                 throw new IndexOutOfBoundsException();
+            }
+            if (getExtension() != null) {
+                BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), element, SET_OPERATION, getViewType());
             }
             return toView(getDelegate().set(index, createSource(element, list.get(index).getPriority())));
         }
@@ -65,8 +84,52 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
             }
             Item previous = (index > 0) ? list.get(index - 1) : null;
             Item next = (index <= (list.size() - 1)) ? list.get(index) : null;
+            if (getExtension() != null) {
+                BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), element, ADD_OPERATION, getViewType());
+            }
             list.add(index, createSource(element, previous, next));
         }
+    }
+
+    @Override
+    public Class<?> remove(int index) {
+        Item removedItem = getDelegate().remove(index);
+        if (getExtension() != null) {
+            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), removedItem.getClass(), REMOVE_OPERATION, getViewType());
+        }
+        return toView(removedItem);
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        if (getExtension() != null) {
+            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), c, REMOVE_OPERATION, getViewType());
+        }
+        return getDelegate().removeAll(c);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        if (getExtension() != null) {
+            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), o, REMOVE_OPERATION, getViewType());
+        }
+        return getDelegate().remove(o);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        if (getExtension() != null) {
+            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), c, RETAIN_OPERATION, getViewType());
+        }
+        return getDelegate().retainAll(c);
+    }
+
+    @Override
+    public void clear() {
+        if (getExtension() != null) {
+            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), "", REMOVE_OPERATION + " all classes", getViewType());
+        }
+        getDelegate().clear();
     }
 
     @Override
@@ -148,17 +211,48 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         }
 
         @Override
-        public void set(Class<?> e) {
-            delegate.set(EnablementListView.this.createSource(e, lastItem.getPriority()));
+        public void set(Class<?> clazz) {
+            if (getExtension() != null) {
+                BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), clazz, SET_OPERATION, getViewType());
+            }
+            delegate.set(EnablementListView.this.createSource(clazz, lastItem.getPriority()));
         }
 
         @Override
-        public void add(Class<?> e) {
+        public void add(Class<?> clazz) {
             Item previous = hasPrevious() ? EnablementListView.this.getDelegate().get(previousIndex()) : null;
             Item next = hasNext() ? EnablementListView.this.getDelegate().get(nextIndex()) : null;
-            delegate.add(EnablementListView.this.createSource(e, previous, next));
+            if (getExtension() != null) {
+                BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), clazz, ADD_OPERATION, getViewType());
+            }
+            delegate.add(EnablementListView.this.createSource(clazz, previous, next));
         }
 
+        @Override
+        public void remove() {
+            if (getExtension() != null) {
+                BootstrapLogger.LOG
+                        .typeModifiedInAfterTypeDiscovery(getExtension(), getDelegate().get(delegate.nextIndex()).getJavaClass(), REMOVE_OPERATION, getViewType());
+            }
+            delegate.remove();
+        }
+
+    }
+
+    enum ViewType {
+        ALTERNATIVES("getAlternatives()"),
+        INTERCEPTORS("getInterceptors()"),
+        DECORATORS("getDecorators()");
+
+        private final String name;
+
+        ViewType(String s) {
+            name = s;
+        }
+
+        public String toString() {
+            return this.name;
+        }
     }
 
 }

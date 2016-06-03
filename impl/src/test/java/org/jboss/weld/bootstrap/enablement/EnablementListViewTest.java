@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import javax.enterprise.inject.spi.Extension;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -40,6 +41,16 @@ public class EnablementListViewTest {
     public void testBasicOperations() {
         final List<Item> list = new ArrayList<>();
         EnablementListView view = new EnablementListView() {
+            @Override
+            protected ViewType getViewType() {
+                return null;
+            }
+
+            @Override
+            protected Extension getExtension() {
+                return null;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return list;
@@ -94,6 +105,16 @@ public class EnablementListViewTest {
 
         final List<Item> list = new ArrayList<>();
         EnablementListView view = new EnablementListView() {
+            @Override
+            protected ViewType getViewType() {
+                return null;
+            }
+
+            @Override
+            protected Extension getExtension() {
+                return null;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return list;
