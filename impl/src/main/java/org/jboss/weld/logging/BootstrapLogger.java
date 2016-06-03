@@ -264,4 +264,12 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 163, value = "Non-unique bean deployment identifier detected: {0}", format = Format.MESSAGE_FORMAT)
     DeploymentException nonuniqueBeanDeploymentIdentifier(Object info);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 164, value = "ProcessAnnotatedType.veto() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void annotatedTypeVetoed(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 165, value = "ProcessBeanAttributes.veto() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void beanAttributesVetoed(Object extensionName, Object type);
+
 }

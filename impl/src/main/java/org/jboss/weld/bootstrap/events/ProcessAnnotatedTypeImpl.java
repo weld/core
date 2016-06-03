@@ -92,6 +92,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     public void veto() {
         checkWithinObserverNotification();
         this.veto = true;
+        BootstrapLogger.LOG.annotatedTypeVetoed(getReceiver(), annotatedType);
     }
 
     public boolean isVeto() {
