@@ -24,10 +24,9 @@ import java.util.ListIterator;
 /**
  * Provides a view of type List<VIEW> for a List<SOURCE>. Changes to the view list are reflected within the source list and vice versa.
  *
- * @author Jozef Hartinger
- *
  * @param <SOURCE> the source type
- * @param <VIEW> the view type
+ * @param <VIEW>   the view type
+ * @author Jozef Hartinger
  */
 public abstract class ListView<SOURCE, VIEW> extends AbstractList<VIEW> {
 

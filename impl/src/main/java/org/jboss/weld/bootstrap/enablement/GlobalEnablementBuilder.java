@@ -46,6 +46,8 @@ import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
 
+import javax.enterprise.inject.spi.Extension;
+
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
  *
@@ -90,9 +92,20 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         addItem(decorators, javaClass, priority);
     }
 
-    public List<Class<?>> getAlternativeList() {
+    public List<Class<?>> getAlternativeList(final Extension extension) {
         initialize();
         return new EnablementListView() {
+
+            @Override
+            protected Extension getExtension() {
+                return extension;
+            }
+
+            @Override
+            protected ViewType getViewType() {
+                return ViewType.ALTERNATIVES;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return alternatives;
@@ -100,19 +113,42 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         };
     }
 
-    public List<Class<?>> getInterceptorList() {
+    public List<Class<?>> getInterceptorList(final Extension extension) {
         initialize();
         return new EnablementListView() {
+
+            @Override
+            protected Extension getExtension() {
+                return extension;
+            }
+
+            @Override
+            protected ViewType getViewType() {
+                return ViewType.INTERCEPTORS;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return interceptors;
             }
+
         };
     }
 
-    public List<Class<?>> getDecoratorList() {
+    public List<Class<?>> getDecoratorList(final Extension extension) {
         initialize();
         return new EnablementListView() {
+
+            @Override
+            protected Extension getExtension() {
+                return extension;
+            }
+
+            @Override
+            protected ViewType getViewType() {
+                return ViewType.DECORATORS;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return decorators;
@@ -135,7 +171,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private Map<Class<?>, Integer> getGlobalAlternativeMap() {
         if (cachedAlternativeMap == null || dirty) {
             Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
-            for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext();) {
+            for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext(); ) {
                 Item item = iterator.next();
                 map.put(item.getJavaClass(), iterator.previousIndex());
             }
@@ -162,13 +198,13 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         Set<Class<?>> alternativeClasses = null;
         Set<Class<? extends Annotation>> alternativeStereotypes = null;
 
-        List<Class<?>> globallyEnabledInterceptors = getInterceptorList();
-        List<Class<?>> globallyEnabledDecorators = getDecoratorList();
+        List<Class<?>> globallyEnabledInterceptors = getInterceptorList(null);
+        List<Class<?>> globallyEnabledDecorators = getDecoratorList(null);
 
-        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>> builder();
+        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>>builder();
         moduleInterceptorsBuilder.addAll(globallyEnabledInterceptors);
 
-        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>> builder();
+        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>>builder();
         moduleDecoratorsBuilder.addAll(globallyEnabledDecorators);
 
         if (beansXml != null) {
@@ -235,7 +271,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
      */
     private <T> List<Class<?>> filter(List<Class<?>> enabledClasses, List<Class<?>> globallyEnabledClasses, LogMessageCallback logMessageCallback,
             BeanDeployment deployment) {
-        for (Iterator<Class<?>> iterator = enabledClasses.iterator(); iterator.hasNext();) {
+        for (Iterator<Class<?>> iterator = enabledClasses.iterator(); iterator.hasNext(); ) {
             Class<?> enabledClass = iterator.next();
             if (globallyEnabledClasses.contains(enabledClass)) {
                 logMessageCallback.log(enabledClass, deployment.getBeanDeploymentArchive().getId());
@@ -264,5 +300,4 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             }
         }
     }
-
 }
