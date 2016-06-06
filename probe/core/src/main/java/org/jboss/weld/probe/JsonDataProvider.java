@@ -22,8 +22,7 @@ import org.jboss.weld.probe.ProbeDynamicMBean.Description;
 import org.jboss.weld.probe.ProbeDynamicMBean.ParamName;
 
 /**
- * A component which loads JSON data for a specific {@link Resource}. This interface also represents a MXBean which allows to access Probe
- * JSON data via JMX.
+ * A component which loads JSON data for a specific {@link Resource}. This interface also represents a MXBean which allows to access Probe JSON data via JMX.
  *
  * @author Martin Kouba
  */
@@ -49,7 +48,7 @@ public interface JsonDataProvider {
      */
     @Description("Receives a collection of beans.")
     String receiveBeans(@ParamName("pageIndex") int pageIndex, @ParamName("pageSize") int pageSize,
-            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:Foo scope:myScope.") String filters,
+            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" scope:\"myScope\".") String filters,
             @ParamName("representation") String representation);
 
     /**
@@ -81,7 +80,7 @@ public interface JsonDataProvider {
      */
     @Description("Receives a collection of observer methods.")
     String receiveObservers(@ParamName("pageIndex") int pageIndex, @ParamName("pageSize") int pageSize,
-            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:Foo qualifier:any.") String filters);
+            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" qualifier:\"any\".") String filters);
 
     /**
      *
@@ -119,7 +118,7 @@ public interface JsonDataProvider {
      */
     @Description("Receives a collection of invocation trees.")
     String receiveInvocations(@ParamName("pageIndex") int pageIndex, @ParamName("pageSize") int pageSize,
-            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:Foo description:bar.") String filters);
+            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" description:\"bar\".") String filters);
 
     /**
      *
@@ -148,7 +147,7 @@ public interface JsonDataProvider {
      */
     @Description("Receives a collection of fired events.")
     String receiveEvents(@ParamName("pageIndex") int pageIndex, @ParamName("pageSize") int pageSize,
-            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:Foo description:bar.") String filters);
+            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" description:\"bar\".") String filters);
 
     /**
      *
@@ -159,11 +158,25 @@ public interface JsonDataProvider {
     String clearEvents();
 
     /**
-    *
-    * @return the JSON result
-    * @see Resource#MONITORING_STATS
-    */
-   @Description("Receives monitoring stats.")
-   String receiveMonitoringStats();
+     *
+     * @return the JSON result
+     * @see Resource#MONITORING_STATS
+     */
+    @Description("Receives monitoring stats.")
+    String receiveMonitoringStats();
+
+    /**
+     *
+     * @param pageIndex
+     * @param pageSize
+     * @param filters
+     * @param representation
+     * @return the JSON data
+     * @see Resource#AVAILABLE_BEANS
+     */
+    @Description("Receives a collection of beans availabe in a specific bean deployment archive.")
+    String receiveAvailableBeans(@ParamName("pageIndex") int pageIndex, @ParamName("pageSize") int pageSize,
+            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g requiredType:\"com.foo.Bar\" resolve:false.") String filters,
+            @ParamName("representation") String representation);
 
 }

@@ -74,66 +74,74 @@ enum Resource {
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             append(resp, jsonDataProvider.receiveDeployment());
         }
-    }), /**
-         * A collection of beans.
-         */
+    }),
+    /**
+     * A collection of beans.
+     */
     BEANS("/beans", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             append(resp, jsonDataProvider.receiveBeans(getPage(req), getPageSize(req), req.getParameter(FILTERS), req.getParameter(REPRESENTATION)));
         }
-    }), /**
-         * A single bean detail.
-         */
+    }),
+    /**
+     * A single bean detail.
+     */
     BEAN("/beans/{.+}", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             appendFound(resp, jsonDataProvider.receiveBean(resourcePathParts[1], Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENCIES)),
                     Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENTS))));
         }
-    }), /**
-         * A contextual instance of a bean. This is only supported for a limited set of scopes.
-         */
+    }),
+    /**
+     * A contextual instance of a bean. This is only supported for a limited set of scopes.
+     */
     BEAN_INSTANCE("/beans/{.+}/instance", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             appendFound(resp, jsonDataProvider.receiveBeanInstance(resourcePathParts[1]));
         }
-    }), /**
-         * A collection of observers methods.
-         */
+    }),
+    /**
+     * A collection of observers methods.
+     */
     OBSERVERS("/observers", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             append(resp, jsonDataProvider.receiveObservers(getPage(req), getPageSize(req), req.getParameter(FILTERS)));
         }
-    }), /**
-         * A single observer.
-         */
+    }),
+    /**
+     * A single observer.
+     */
     OBSERVER("/observers/{.+}", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             appendFound(resp, jsonDataProvider.receiveObserver(resourcePathParts[1]));
         }
-    }), /**
-         * A collection of inspectable contexts.
-         */
+    }),
+    /**
+     * A collection of inspectable contexts.
+     */
     CONTEXTS("/contexts", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             append(resp, jsonDataProvider.receiveContexts());
         }
-    }), /**
-         * A collection of contextual instances for the given inspectable context.
-         */
+    }),
+    /**
+     * A collection of contextual instances for the given inspectable context.
+     */
     CONTEXT("/contexts/{[a-zA-Z_0]+}", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             appendFound(resp, jsonDataProvider.receiveContext(resourcePathParts[1]));
         }
-    }), /**
-         * A collection of invocation trees.
-         */
+    }),
+    /**
+     * A collection of invocation trees.
+     */
     INVOCATIONS("/invocations", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -145,17 +153,19 @@ enum Resource {
                 throws IOException {
             append(resp, jsonDataProvider.clearInvocations());
         }
-    }), /**
-         * A single invocation tree.
-         */
+    }),
+    /**
+     * A single invocation tree.
+     */
     INVOCATION("/invocations/{.+}", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
             appendFound(resp, jsonDataProvider.receiveInvocation(resourcePathParts[1]));
         }
-    }), /**
-         * The event bus
-         */
+    }),
+    /**
+     * The event bus
+     */
     EVENTS("/events", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -174,9 +184,15 @@ enum Resource {
             append(resp, jsonDataProvider.receiveMonitoringStats());
         }
     }),
+    AVAILABLE_BEANS("/availableBeans", new Handler() {
+        @Override
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveAvailableBeans(getPage(req), getPageSize(req), req.getParameter(FILTERS), req.getParameter(REPRESENTATION)));
+        }
+    }),
     /**
-         * A default HTML client resource.
-         */
+     * A default HTML client resource.
+     */
     CLIENT_RESOURCE("/client/{[a-zA-Z_0-9-]+\\.\\w+}", new Handler() {
         @Override
         protected void handle(HttpMethod method, JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req,
