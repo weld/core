@@ -40,15 +40,13 @@ import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.util.Preconditions;
-import org.jboss.weld.util.collections.ListView;
-import org.jboss.weld.util.collections.ViewProvider;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import javax.enterprise.inject.spi.Extension;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
@@ -57,80 +55,6 @@ import com.google.common.collect.ImmutableSet;
  *
  */
 public class GlobalEnablementBuilder extends AbstractBootstrapService {
-
-    private static class Item implements Comparable<Item> {
-
-        private final Class<?> javaClass;
-
-        private final Integer priority;
-
-        private Item(Class<?> javaClass) {
-            this(javaClass, null);
-        }
-
-        private Item(Class<?> javaClass, Integer priority) {
-            Preconditions.checkArgumentNotNull(javaClass, "javaClass");
-            this.javaClass = javaClass;
-            this.priority = priority;
-        }
-
-        @Override
-        public int compareTo(Item o) {
-            if (priority.equals(o.priority)) {
-                /*
-                 * The spec does not specify what happens if two records have the same priority. Instead of giving random results, we compare the records based
-                 * on their class name lexicographically.
-                 */
-                return javaClass.getName().compareTo(o.javaClass.getName());
-            }
-            return priority - o.priority;
-        }
-
-        @Override
-        public int hashCode() {
-            return javaClass.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj instanceof Item) {
-                Item that = (Item) obj;
-                return Objects.equal(javaClass, that.javaClass);
-            }
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return "[Class=" + javaClass + ", priority=" + priority + "]";
-        }
-    }
-
-    private static class ItemViewProvider implements ViewProvider<Item, Class<?>> {
-
-        private static ItemViewProvider ITEM_VIEW_PROVIDER = new ItemViewProvider();
-
-        @Override
-        public Class<?> toView(Item item) {
-            return item.javaClass;
-        }
-
-        @Override
-        public Item fromView(Class<?> javaClass) {
-            return new Item(javaClass);
-        }
-    }
-
-    private abstract static class AbstractEnablementListView extends ListView<Item, Class<?>> {
-
-        @Override
-        protected ViewProvider<Item, Class<?>> getViewProvider() {
-            return ItemViewProvider.ITEM_VIEW_PROVIDER;
-        }
-    }
 
     private final List<Item> alternatives = Collections.synchronizedList(new ArrayList<Item>());
     private final List<Item> interceptors = Collections.synchronizedList(new ArrayList<Item>());
@@ -155,9 +79,20 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         addItem(decorators, javaClass, priority);
     }
 
-    public List<Class<?>> getAlternativeList() {
+    public List<Class<?>> getAlternativeList(final Extension extension) {
         initialize();
-        return new AbstractEnablementListView() {
+        return new EnablementListView() {
+
+            @Override
+            protected Extension getExtension() {
+                return extension;
+            }
+
+            @Override
+            protected ViewType getViewType() {
+                return ViewType.ALTERNATIVES;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return alternatives;
@@ -165,19 +100,42 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         };
     }
 
-    public List<Class<?>> getInterceptorList() {
+    public List<Class<?>> getInterceptorList(final Extension extension) {
         initialize();
-        return new AbstractEnablementListView() {
+        return new EnablementListView() {
+
+            @Override
+            protected Extension getExtension() {
+                return extension;
+            }
+
+            @Override
+            protected ViewType getViewType() {
+                return ViewType.INTERCEPTORS;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return interceptors;
             }
+
         };
     }
 
-    public List<Class<?>> getDecoratorList() {
+    public List<Class<?>> getDecoratorList(final Extension extension) {
         initialize();
-        return new AbstractEnablementListView() {
+        return new EnablementListView() {
+
+            @Override
+            protected Extension getExtension() {
+                return extension;
+            }
+
+            @Override
+            protected ViewType getViewType() {
+                return ViewType.DECORATORS;
+            }
+
             @Override
             protected List<Item> getDelegate() {
                 return decorators;
@@ -192,9 +150,9 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private Map<Class<?>, Integer> getGlobalAlternativeMap() {
         if (cachedAlternativeMap == null) {
             Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
-            for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext();) {
+            for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext(); ) {
                 Item item = iterator.next();
-                map.put(item.javaClass, iterator.previousIndex());
+                map.put(item.getJavaClass(), iterator.previousIndex());
             }
             cachedAlternativeMap = ImmutableMap.copyOf(map);
         }
@@ -219,13 +177,13 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         Set<Class<?>> alternativeClasses = null;
         Set<Class<? extends Annotation>> alternativeStereotypes = null;
 
-        List<Class<?>> globallyEnabledInterceptors = getInterceptorList();
-        List<Class<?>> globallyEnabledDecorators = getDecoratorList();
+        List<Class<?>> globallyEnabledInterceptors = getInterceptorList(null);
+        List<Class<?>> globallyEnabledDecorators = getDecoratorList(null);
 
-        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>> builder();
+        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>>builder();
         moduleInterceptorsBuilder.addAll(globallyEnabledInterceptors);
 
-        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>> builder();
+        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>>builder();
         moduleDecoratorsBuilder.addAll(globallyEnabledDecorators);
 
         if (beansXml != null) {
@@ -289,7 +247,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
      */
     private <T> List<Class<?>> filter(List<Class<?>> enabledClasses, List<Class<?>> globallyEnabledClasses, LogMessageCallback logMessageCallback,
             BeanDeployment deployment) {
-        for (Iterator<Class<?>> iterator = enabledClasses.iterator(); iterator.hasNext();) {
+        for (Iterator<Class<?>> iterator = enabledClasses.iterator(); iterator.hasNext(); ) {
             Class<?> enabledClass = iterator.next();
             if (globallyEnabledClasses.contains(enabledClass)) {
                 logMessageCallback.log(enabledClass, deployment.getBeanDeploymentArchive().getId());
@@ -318,5 +276,4 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             }
         }
     }
-
 }

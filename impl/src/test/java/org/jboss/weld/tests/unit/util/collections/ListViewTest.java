@@ -39,18 +39,13 @@ public class ListViewTest {
         }
 
         @Override
-        protected ViewProvider<Student, String> getViewProvider() {
-            return new ViewProvider<Student, String>() {
-                @Override
-                public String toView(Student from) {
-                    return from.getName();
-                }
+        protected String toView(Student student) {
+            return student.getName();
+        }
 
-                @Override
-                public Student fromView(String to) {
-                    return new Student(to, -1);
-                }
-            };
+        @Override
+        protected Student createSource(String s) {
+            return new Student(s, -1);
         }
     };
 
