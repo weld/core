@@ -106,6 +106,8 @@ public final class Strings {
     public static final String BOOSTRAP_STATS = "bootstrapStats";
     public static final String FIRED = "fired";
     public static final String INVOCATIONS = "invocations";
+    public static final String RESOLVE = "resolve";
+    public static final String HASH = "hash";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";
@@ -114,6 +116,7 @@ public final class Strings {
     public static final String DATA = "data";
     public static final String FILTERS = "filters";
     public static final String REPRESENTATION = "representation";
+    public static final String ERROR = "error";
 
     public static final String PARAM_TRANSIENT_DEPENDENCIES = "transientDependencies";
     public static final String PARAM_TRANSIENT_DEPENDENTS = "transientDependents";
@@ -148,6 +151,18 @@ public final class Strings {
     static final String SUFFIX_ICO = "ico";
 
     static final String SLASH = "/";
+    static final String QUTATION_MARK = "\"";
+    static final String EQUALS = "=";
+    static final String COMMA = ",";
+    static final String PARENTHESES_LEFT = "(";
+    static final String PARENTHESES_RIGHT = ")";
+    static final String CHEVRONS_LEFT = "<";
+    static final String CHEVRONS_RIGHT = ">";
+    static final String WILDCARD = "?";
+    static final String WILDCARD_EXTENDS = WILDCARD + " extends";
+    static final String WILDCARD_SUPER = WILDCARD + " super";
+    static final String ARRAY = "[]";
+    static final String AMPERSAND = "@";
 
     static final String FILE_CLIENT_HTML = "probe.html";
     static final String PATH_META_INF_CLIENT = "/META-INF/client/";

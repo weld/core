@@ -87,19 +87,19 @@ ${head}
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Bean archives:</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-static">{{#link-to 'beanArchives' (query-params hideAddBda=true)}}{{appBdas}}{{/link-to}}</p>
+                                    <p class="form-control-static">{{#link-to 'beanArchives' (query-params hideAddBda=true)}}{{detailIcon}} {{appBdas}}{{/link-to}}</p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Beans:</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-static">{{#link-to 'beanList' (query-params bda='probe-filterAdditionalBdas')}}{{controllers.application.dashboard.application.beans}}{{/link-to}}</p>
+                                    <p class="form-control-static">{{#link-to 'beanList' (query-params bda='probe-filterAdditionalBdas')}}{{detailIcon}} {{controllers.application.dashboard.application.beans}}{{/link-to}}</p>
                                 </div>
                              </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Observer methods:</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-static">{{#link-to 'observerList' (query-params bda='probe-filterAdditionalBdas')}}{{controllers.application.dashboard.application.observers}}{{/link-to}}</p>
+                                    <p class="form-control-static">{{#link-to 'observerList' (query-params bda='probe-filterAdditionalBdas')}}{{detailIcon}} {{controllers.application.dashboard.application.observers}}{{/link-to}}</p>
                                 </div>
                             </div>
                             <div class="alert alert-info alert-dismissible" role="alert">
@@ -125,13 +125,13 @@ ${head}
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Monitored invocations:</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-static">{{#link-to 'invocationList'}}{{invocations}}{{/link-to}}</p>
+                                    <p class="form-control-static">{{#link-to 'invocationList'}}{{detailIcon}} {{invocations}}{{/link-to}}</p>
                                 </div>
                              </div>
                             <div class="form-group">
                                 <label class="col-sm-4 control-label">Fired events:</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-static">{{#link-to 'events'}}{{fired}}{{/link-to}}</p>
+                                    <p class="form-control-static">{{#link-to 'events'}}{{detailIcon}} {{fired}}{{/link-to}}</p>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -198,7 +198,7 @@ ${head}
         data-template-name="beanArchives">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Bean Archives
         </div>
 
         <h1>Bean Archives</h1>
@@ -212,8 +212,8 @@ ${head}
         <table class="table table-bordered table-striped">
             <col width="3%">
             <col width="5%">
-            <col width="13%">
-            <col width="57%">
+            <col width="11%">
+            <col width="59%">
             <col width="18%">
             <tr>
                 <th>Index</th>
@@ -241,9 +241,14 @@ ${head}
             <tr>
                 <td><div class="boxed centered let-width-3" style="background-color: {{unbound color}};">{{idx}}</div></td>
                 <td class="centered">{{input type="checkbox" name="selected" checked=selected}}</td>
-                <td><div class="boxed bda-beans let-width-3">{{beans}}</div> &nbsp;<i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=id) class='nav-link'}}Overview{{/link-to}}<i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter{{/link-to}}</td>
                 <td>
-                    {{detail-icon}} {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}
+                    <div class="boxed bda-beans let-width-3">{{beans}}</div>
+                    {{#link-to 'overview' (query-params bda=id)}}{{stackIcon "fa-eye" title="Overview Graph"}}{{/link-to}}
+                    {{#link-to 'beanList' (query-params bda=id)}}{{stackIcon "fa-filter" title="Filter - show beans from the specific archive"}}{{/link-to}}
+                    {{#link-to 'availableBeans' (query-params bda=id)}}{{stackIcon "fa-binoculars" title="Test Bean Availability"}}{{/link-to}}
+                </td>
+                <td>
+                    {{detailIcon}} {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
             </tr>
@@ -268,7 +273,7 @@ ${head}
         data-template-name="overview">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / {{#link-to 'overview'}}Overview Graph{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / Overview Graph
         </div>
 
         <h1>Overview Graph</h1>
@@ -295,12 +300,16 @@ ${head}
         data-template-name="beanArchive">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / {{#link-to 'beanArchive' id class='nav-link'}}Bean Archive {{idx}}{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / Bean Archive {{idx}}
         </div>
 
         <h1>Bean Archive</h1>
 
-        <div class="btn-line"><i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=id) class='nav-link'}}Overview{{/link-to}} <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter{{/link-to}}</div>
+        <div class="btn-line">
+             {{#link-to 'overview' (query-params bda=id)}}{{stackIcon "fa-eye" title="Overview Graph"}}{{/link-to}}
+             {{#link-to 'beanList' (query-params bda=id)}}{{stackIcon "fa-filter" title="Filter - show beans from the specific archive"}}{{/link-to}}
+             {{#link-to 'availableBeans' (query-params bda=id)}}{{stackIcon "fa-binoculars" title="Test Bean Availability"}}{{/link-to}}
+        </div>
 
         <div class="panel panel-default">
             <div class="panel-body">
@@ -336,9 +345,9 @@ ${head}
                             {{#each enablement.interceptors}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
                             {{#if probeComponent}}
-                                {{detail-icon}} {{#link-to 'beanDetail' id class='probe-comp'}}{{beanClass}}{{/link-to}} {{probe-comp}}
+                                {{detailIcon}} {{#link-to 'beanDetail' id class='probe-comp'}}{{beanClass}}{{/link-to}} {{probe-comp}}
                             {{else}}
-                                {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
+                                {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
                             {{/if}}
                             </p>
                             {{/each}}
@@ -352,7 +361,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.decorators}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
+                            {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                             <hr/>
@@ -365,7 +374,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.alternatives}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
+                            {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>
@@ -382,7 +391,7 @@ ${head}
         data-template-name="configuration">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'configuration'}}Weld Configuration{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Weld Configuration
         </div>
 
         <h1>Weld Configuration</h1>
@@ -415,7 +424,7 @@ ${head}
         data-template-name="beanList">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanList'}}Beans{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Beans
         </div>
 
         <h1>Beans</h1>
@@ -457,13 +466,13 @@ ${head}
                     </form>
                 </th>
                 <th>
-                    Bean class
+                    Bean Class
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
                 <th>
-                    Bean types {{tip "The set does not contain java.lang.Object"}}
+                    Bean Types {{tip "The set does not contain java.lang.Object"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanType class="form-control" placeholder="Any contains"}}
                     </form>
@@ -478,11 +487,11 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
-                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{/if}}</td>
+                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detailIcon}}&nbsp;{{/link-to}}{{/if}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{abbr scope 30}}</td>
                 <td>
-                    {{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}
+                    {{detailIcon}}{{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}
                     {{#if isAlternative}}<i class="fa fa-check-square fa-lg" title="Selected alternative"></i>{{/if}}
                 </td>
                 <td>
@@ -511,7 +520,7 @@ ${head}
         data-template-name="beanDetail">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanList'}}Beans{{/link-to}} / {{#link-to 'beanDetail' id}}{{abbr beanClass 30 suppressHtml=true}}{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanList'}}Beans{{/link-to}} / {{abbr beanClass 30 suppressHtml=true}}
         </div>
 
         <h1>Bean Detail</h1>
@@ -525,9 +534,10 @@ ${head}
                          <div class="col-sm-10">
                             <div class="form-control-static">
                                 <div class="boxed centered let-width-3" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div>
-                                <i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=bdaId) class='nav-link'}}Overview{{/link-to}}
-                                <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=bdaId) class='nav-link'}}Filter beans{{/link-to}}
-                                {{detail-icon}} {{#link-to 'beanArchive' bdaId class='nav-link'}} {{bda.bdaId}}{{/link-to}}
+                                {{#link-to 'overview' (query-params bda=bda.id)}}{{stackIcon "fa-eye" title="Overview Graph"}}{{/link-to}}
+                                {{#link-to 'beanList' (query-params bda=bda.id)}}{{stackIcon "fa-filter" title="Filter - show beans from the specific archive"}}{{/link-to}}
+                                {{#link-to 'availableBeans' (query-params bda=bda.id)}}{{stackIcon "fa-binoculars" title="Test Bean Availability"}}{{/link-to}}
+                                {{#link-to 'beanArchive' bdaId}}{{detailIcon}} {{bda.bdaId}}{{/link-to}}
                             </div>
                         </div>
                     </div>
@@ -614,7 +624,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Declaring Bean:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{detailIcon}} {{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{/if}}
@@ -651,7 +661,7 @@ ${head}
                                 {{increment _view.contentIndex}}.
                                 <span class="{{unbound reception}} boxed">{{unbound reception}}</span>
                                 <span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span>
-                                {{detail-icon}} {{#link-to 'observerDetail' id}}Go to detail{{/link-to}}
+                                {{#link-to 'observerDetail' id}}{{detailIcon}}{{/link-to}}
                             </p>
                             <p class="form-control-static">
                                 {{highlight annotatedMethod}}
@@ -668,7 +678,7 @@ ${head}
                             <p class="form-control-static">
                                 {{increment _view.contentIndex}}.
                                 <span class="{{unbound kind}} boxed">{{unbound kind}}</span>
-                                {{detail-icon}} {{#link-to 'beanDetail' id}}Go to detail{{/link-to}}
+                                {{#link-to 'beanDetail' id}}{{detailIcon}}{{/link-to}}
                             </p>
                             <p class="form-control-static">
                                 {{highlight producerInfo}}
@@ -692,7 +702,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.bdas}}
                             <p class="form-control-static">
-                                {{detail-icon}} {{#link-to 'beanArchive' id class='nav-link'}}{{unbound bdaId}}{{/link-to}}
+                                {{detailIcon}} {{#link-to 'beanArchive' id class='nav-link'}}{{unbound bdaId}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>
@@ -760,7 +770,7 @@ ${head}
                         <label class="col-sm-2 control-label">Associated Decorators:</label>
                         <div class="col-sm-10">
                             {{#each decorators}}
-                                <p class="form-control-static"><span class="{{unbound kind}} boxed">{{kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
+                                <p class="form-control-static"><span class="{{unbound kind}} boxed">{{kind}}</span> {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
                             {{/each}}
                         </div>
                     </div>
@@ -770,7 +780,7 @@ ${head}
                         <label class="col-sm-2 control-label">Associated To:</label>
                         <div class="col-sm-10">
                             {{#each associatedTo}}
-                                <p class="form-control-static"><span class="{{unbound kind}} boxed">{{kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
+                                <p class="form-control-static"><span class="{{unbound kind}} boxed">{{kind}}</span> {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
                             {{/each}}
                         </div>
                     </div>
@@ -829,7 +839,7 @@ ${head}
         data-template-name="observerList">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'observerList'}}Observer Methods{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Observer Methods
         </div>
 
         <h1>Observer Methods</h1>
@@ -891,17 +901,17 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
-                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{else}}-{{/if}}</td>
+                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detailIcon}}&nbsp;{{/link-to}}{{else}}-{{/if}}</td>
                 <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{else}}-{{/if}}</td>
                 <td>
                     {{#if declaringBean}}
-                        {{#link-to 'beanDetail' declaringBean.id}}{{abbr declaringBean.beanClass 45}}{{/link-to}}
+                        {{detailIcon}}{{#link-to 'beanDetail' declaringBean.id}}{{abbr declaringBean.beanClass 45}}{{/link-to}}
                     {{else}}
                         {{unbound beanClass}}
                     {{/if}}
                 </td>
                 <td>
-                    {{#link-to 'observerDetail' id}}{{abbr observedType 50}}{{/link-to}}
+                    {{detailIcon}}{{#link-to 'observerDetail' id}}{{abbr observedType 50}}{{/link-to}}
                     {{#if description}}<i class="fa fa-lg fa-exclamation-triangle" title="{{unbound description}}"></i>{{/if}}
                 </td>
                 <td>
@@ -933,7 +943,7 @@ ${head}
         data-template-name="observerDetail">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'observerList'}}Observer Methods{{/link-to}} / {{#link-to 'observerDetail' id}}{{at}}Observes {{abbr observedType 30 suppressHtml=true}}{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'observerList'}}Observer Methods{{/link-to}} / {{at}}Observes {{abbr observedType 30 suppressHtml=true}}
         </div>
 
         <h1>Observer Method Detail</h1>
@@ -969,7 +979,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Declaring Bean:</label>
                          <div class="col-sm-10">
-                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> {{detailIcon}} {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{else}}
@@ -1011,7 +1021,7 @@ ${head}
         data-template-name="context">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Monitoring / Contexts / {{#link-to 'context' id}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / Contexts / {{abbr scope 0 title=false suppressHtml=true}}
         </div>
 
         <h1>Context - {{scope}}</h1>
@@ -1051,7 +1061,7 @@ ${head}
             {{#each instances}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
-                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{/if}}</td>
+                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detailIcon}}&nbsp;{{/link-to}}{{/if}}</td>
                 <td>{{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}</td>
                 <td>
                 {{#if parentThis.cid}}
@@ -1075,16 +1085,47 @@ ${head}
       data-template-name="contextInstance">
 
       <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Monitoring / Contexts / {{#link-to 'context' contextId}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}} / {{#link-to 'contextInstance' id}}Context Instance{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / Contexts / {{#link-to 'context' contextId}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}} / Contextual Instance
       </div>
 
-      <h1>Context Instance</h1>
+      <h1>Contextual Instance</h1>
 
       <div class="btn-line">
             &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
       </div>
 
+       <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">Object</h2>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Class:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{class}}</p>
+                        </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">toString() {{tip "Limited portion of the value"}}:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{asString}}</p>
+                        </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">hashCode():</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{hash}}</p>
+                        </div>
+                </div>
+            </form>
+        </div>
+      </div>
+
       <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">Bean</h2>
+        </div>
         <div class="panel-body">
             <form class="form-horizontal">
                 <div class="form-group">
@@ -1102,16 +1143,17 @@ ${head}
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Bean Class:</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static">{{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
+                        <p class="form-control-static">{{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
                     </div>
                 </div>
             </form>
         </div>
       </div>
 
-      <h2>Properties</h2>
-
       <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">Properties</h2>
+        </div>
         <div class="panel-body">
             <form class="form-horizontal">
                 {{#each properties}}
@@ -1133,7 +1175,7 @@ ${head}
       data-template-name="invocationList">
 
       <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Monitoring / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / Invocation Trees
       </div>
 
       <h1>Invocation Trees</h1>
@@ -1220,7 +1262,7 @@ ${head}
       data-template-name="invocationDetail">
 
       <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Monitoring / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}} / {{#link-to 'invocationDetail' id}}Invocation Tree{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}} / Invocation Tree
       </div>
 
       <h1>Invocation Tree</h1>
@@ -1233,7 +1275,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Intercepted Bean {{tip "Or the declaring class if the bean is not available"}}:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">{{#if interceptedBean}}{{detail-icon}} {{#link-to 'beanDetail' interceptedBean.id}}{{interceptedBean.beanClass}}{{/link-to}}{{else}}{{declaringClass}}{{/if}}</p>
+                            <p class="form-control-static">{{#if interceptedBean}}{{detailIcon}} {{#link-to 'beanDetail' interceptedBean.id}}{{interceptedBean.beanClass}}{{/link-to}}{{else}}{{declaringClass}}{{/if}}</p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -1279,7 +1321,7 @@ ${head}
       data-template-name="events">
 
          <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Monitoring / {{#link-to 'events'}}Fired Events{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Monitoring / Fired Events
         </div>
 
         <h1>Fired events</h1>
@@ -1360,6 +1402,124 @@ ${head}
         </div>
 
    </script>
+
+   <script
+        type="text/x-handlebars"
+        data-template-name="availableBeans">
+
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / Bean Availability Test
+        </div>
+
+        <h1>Bean Availability Test</h1>
+
+        <div class="btn-line form-control-like">
+            <form class="form-horizontal form-medium" {{action "lookup" on="submit"}} style="width:50%;">
+                <div class="form-group">
+                    <label class="control-label">From Within Bean Archive:</label>
+                    {{view "select"
+                        value=bda
+                        content=bdas
+                        optionValuePath="content.id"
+                        optionLabelPath="content.bdaId"
+                        class="form-control form-control-auto-width"
+                    }}
+                </div>
+                <div class="form-group">
+                    <label class="control-label">With Required Type:</label>
+                    <div class="input-group">
+                    {{input value=requiredType class="form-control" placeholder="java.lang.Object if not specified"}}
+                    <span class="input-group-addon"><a class="centered" role="button" data-toggle="collapse" href="#helpReqType" aria-expanded="false" aria-controls="helpReqType"><i class="fa fa-lg fa-question-circle" title="Help"></i></a></span>
+                    </div>
+                    <div class="collapse" id="helpReqType">
+                        <div class="alert alert-info" role="alert">
+                            <ul>
+                                <li>Only use <strong>fully qualified names</strong> of classes</li>
+                                <li>Wildcards are supported</li>
+                                <li>Type variables are NOT supported</li>
+                                <li>Multidimensional arrays are NOT supported</li>
+                            </ul>
+                            Examples: <code>java.util.Map&lt;java.lang.String,java.lang.Boolean&gt;</code>, <code>java.lang.Comparable&lt;? super java.lang.Integer&gt;</code>, <code>java.lang.Integer[]</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">With Qualifiers:</label>
+                    <div class="input-group">
+                    {{input value=qualifiers class="form-control" placeholder="Comma-separated list of qualifiers, javax.enterprise.inject.Default if not specified"}}
+                    <span class="input-group-addon"><a class="centered" role="button" data-toggle="collapse" href="#helpQual" aria-expanded="false" aria-controls="helpQual"><i class="fa fa-lg fa-question-circle" title="Help"></i></a></span>
+                    </div>
+                    <div class="collapse" id="helpQual">
+                        <div class="alert alert-info" role="alert">
+                            <ul>
+                                <li>Comma-separated list of qualifiers</li>
+                                <li>Only use <strong>fully qualified names</strong> of classes</li>
+                                <li>Annotation-valued and array-valued members are NOT supported - these should be annotated <code>@Nonbinding</code> in a portable application</li>
+                                <li>Default members are optional - values are obtained automatically</li>
+                            </ul>
+                            Examples: <code>@javax.inject.Named(value="controller")</code>, <code>javax.enterprise.inject.Any,com.foo.Bar(name="foo",age=10)</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Resolution:</label>
+                    <div><label>{{input type="checkbox" name="resolve" checked=resolve}} Apply the ambiguous dependency resolution rules to the result</label></div>
+                </div>
+                <div class="form-group">
+                    <button {{action 'lookup'}} class="btn btn-default">Lookup</button>
+                </div>
+            </form>
+        </div>
+
+        <hr>
+
+        {{#unless data}}
+            <div class="alert alert-info" role="alert"><strong>No beans available for injection.</strong></div>
+            {{#if error}}<div class="alert alert-warning" role="alert"><strong>{{error}}</strong></div>{{/if}}
+        {{/unless}}
+
+        {{#if data}}
+        <div>Total Available: {{total}}</div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th></th>
+                <th>Bean Archive</th>
+                <th>Kind</th>
+                <th>Scope {{tip "Packages of built-in scopes are not displayed"}}</th>
+                <th>Bean class</th>
+                <th>Bean types {{tip "The set does not contain java.lang.Object"}}</th>
+                <th>Qualifiers {{tip "The set does not contain javax.enterprise.inject.Any"}}</th>
+            </tr>
+            {{#each data}}
+            <tr>
+                <td>{{increment _view.contentIndex}}</td>
+                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detailIcon}}&nbsp;{{/link-to}}{{/if}}</td>
+                <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
+                <td>{{abbr scope 30}}</td>
+                <td>
+                    {{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}
+                    {{#if isAlternative}}<i class="fa fa-check-square fa-lg" title="Selected alternative"></i>{{/if}}
+                </td>
+                <td>
+                    {{eachLiAbbr types 50}}
+                </td>
+                <td>
+                    {{eachLiAbbr qualifiers 40}}
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+
+        <div class="btn-line">
+            <ul class="pagination no-margin">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'availableBeans' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+        {{/if}}
+
+    </script>
 
    ${scripts}
 
