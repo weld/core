@@ -101,7 +101,15 @@ public class QualifierInstance {
         this(annotationClass, Collections.<String, Object>emptyMap());
     }
 
-    private QualifierInstance(Class<? extends Annotation> annotationClass, Map<String, Object> values) {
+    /**
+     * Constructs a qualifier instance without any checks. This method should be used with care.
+     *
+     * @param annotationClass
+     * @param values
+     * @see QualifierInstance#of(Annotation, MetaAnnotationStore)
+     * @see QualifierInstance#of(Bean, MetaAnnotationStore)
+     */
+    public QualifierInstance(Class<? extends Annotation> annotationClass, Map<String, Object> values) {
         this.annotationClass = annotationClass;
         this.values = values;
         this.hashCode = Objects.hashCode(annotationClass, values);
@@ -143,7 +151,6 @@ public class QualifierInstance {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         final QualifierInstance that = (QualifierInstance) o;
 
         if (!annotationClass.equals(that.annotationClass)) {
@@ -152,12 +159,15 @@ public class QualifierInstance {
         if (!values.equals(that.values)) {
             return false;
         }
-
         return true;
     }
 
     public Class<? extends Annotation> getAnnotationClass() {
         return annotationClass;
+    }
+
+    public Object getValue(String name) {
+        return values.get(name);
     }
 
     @Override
@@ -167,10 +177,7 @@ public class QualifierInstance {
 
     @Override
     public String toString() {
-        return "QualifierInstance {" +
-                "annotationClass=" + annotationClass +
-                ", values=" + values +
-                '}';
+        return "QualifierInstance {" + "annotationClass=" + annotationClass + ", values=" + values + '}';
     }
 
 }

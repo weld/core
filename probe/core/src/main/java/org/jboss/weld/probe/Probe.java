@@ -240,6 +240,16 @@ class Probe {
 
     /**
      *
+     * @return an ordered list of beans
+     */
+    List<Bean<?>> getOrderedBeans(Set<Bean<?>> beans) {
+        List<Bean<?>> data = new ArrayList<Bean<?>>(beans);
+        Collections.sort(data, beanComparator);
+        return data;
+    }
+
+    /**
+     *
      * @param bean
      * @return the generated id for the given bean
      */
@@ -433,6 +443,20 @@ class Probe {
 
     BootstrapStats getBootstrapStats() {
         return bootstrapStats;
+    }
+
+    /**
+    *
+    * @param id
+    * @return the bean for the given generated id
+    */
+    BeanManagerImpl getBeanManager(String id) {
+        for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : bdaToManager.entrySet()) {
+            if (Components.getId(entry.getKey().getId()).equals(id)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     int getApplicationBeansCount() {

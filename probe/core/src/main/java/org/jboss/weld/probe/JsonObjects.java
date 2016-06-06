@@ -55,6 +55,7 @@ import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
 import static org.jboss.weld.probe.Strings.EVENT_INFO;
 import static org.jboss.weld.probe.Strings.FIRED;
+import static org.jboss.weld.probe.Strings.HASH;
 import static org.jboss.weld.probe.Strings.ID;
 import static org.jboss.weld.probe.Strings.INFO;
 import static org.jboss.weld.probe.Strings.INFO_FETCHING_LAZILY;
@@ -910,6 +911,9 @@ final class JsonObjects {
             JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
             builder.add(SCOPE, simplifiedScope(bean.getScope()));
             builder.add(CONTEXT_ID, Components.getInspectableScopeId(bean.getScope()));
+            builder.add(CLASS, contextualInstance.getClass().getName());
+            builder.add(HASH, contextualInstance.hashCode());
+            builder.add(AS_STRING, Strings.abbreviate(contextualInstance.toString(), CONTEXTUAL_INSTANCE_TO_STRING_LIMIT));
 
             JsonArrayBuilder propertiesBuilder = Json.arrayBuilder();
             Class<?> definingClass = contextualInstance.getClass();
