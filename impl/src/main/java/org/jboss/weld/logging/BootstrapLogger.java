@@ -274,4 +274,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 165, value = "ProcessBeanAttributes.veto() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
     void beanAttributesVetoed(Object extensionName, Object type);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 166, value = "AfterTypeDiscovery.{3} modified by {0} {2} {1}", format = Format.MESSAGE_FORMAT)
+    void typeModifiedInAfterTypeDiscovery(Object extensionName, Object type, Object operation, Object types);
+
 }
