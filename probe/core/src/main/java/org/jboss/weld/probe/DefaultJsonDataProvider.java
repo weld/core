@@ -16,10 +16,20 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.BDA_ID;
+import static org.jboss.weld.probe.Strings.ERROR;
+import static org.jboss.weld.probe.Strings.QUALIFIERS;
 import static org.jboss.weld.probe.Strings.REMOVED_EVENTS;
 import static org.jboss.weld.probe.Strings.REMOVED_INVOCATIONS;
+import static org.jboss.weld.probe.Strings.REQUIRED_TYPE;
+import static org.jboss.weld.probe.Strings.RESOLVE;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -30,6 +40,10 @@ import org.jboss.weld.probe.Queries.EventsFilters;
 import org.jboss.weld.probe.Queries.InvocationsFilters;
 import org.jboss.weld.probe.Queries.ObserverFilters;
 import org.jboss.weld.probe.Resource.Representation;
+import org.jboss.weld.resolution.QualifierInstance;
+import org.jboss.weld.resolution.Resolvable;
+import org.jboss.weld.resolution.ResolvableBuilder;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  *
@@ -138,6 +152,58 @@ public class DefaultJsonDataProvider implements JsonDataProvider {
     @Override
     public String receiveMonitoringStats() {
         return JsonObjects.createMonitoringStatsJson(probe).build();
+    }
+
+    @Override
+    public String receiveAvailableBeans(int pageIndex, int pageSize, String filters, String representation) {
+        Map<String, String> filterValues = Queries.Filters.parseFilters(filters);
+        // First validate input
+        if (!filterValues.containsKey(BDA_ID)) {
+            return getError("Bean deployment archive id (bdaId) must be specified: " + filters);
+        }
+        // Find the bean deployment archive
+        BeanManagerImpl beanManager = probe.getBeanManager(filterValues.get(BDA_ID));
+        if (beanManager == null) {
+            return getError("Unable to find the bean deployment archive for: " + filterValues.get(BDA_ID));
+        }
+        Set<Bean<?>> beans = null;
+        // Parse required type
+        Type requiredType;
+        if (filterValues.get(REQUIRED_TYPE) != null) {
+            requiredType = Parsers.parseType(filterValues.get(REQUIRED_TYPE), beanManager.getServices().get(ResourceLoader.class));
+        } else {
+            requiredType = Object.class;
+        }
+        if (requiredType == null) {
+            return getError("Invalid required type: parsing error or the type is not accessible from the specified bean archive!");
+        }
+        ResolvableBuilder resolvableBuilder = new ResolvableBuilder(requiredType, beanManager);
+        // Parse qualifiers
+        List<QualifierInstance> qualifierInstances;
+        if (filterValues.get(QUALIFIERS) != null) {
+            qualifierInstances = Parsers.parseQualifiers(filterValues.get(QUALIFIERS), beanManager.getServices().get(ResourceLoader.class), beanManager);
+        } else {
+            qualifierInstances = Collections.singletonList(QualifierInstance.DEFAULT);
+        }
+        for (QualifierInstance qualifierInstance : qualifierInstances) {
+            if (qualifierInstance == null) {
+                return getError("Invalid qualifiers: parsing error or one of the qualifier types is not accessible from the specified bean archive!");
+            }
+            resolvableBuilder.addQualifierUnchecked(qualifierInstance);
+        }
+        Resolvable resolvable = resolvableBuilder.create();
+        // Lookup beans
+        beans = beanManager.getBeanResolver().resolve(resolvable, false);
+        if (Boolean.valueOf(filterValues.get(RESOLVE))) {
+            // Apply resolution rules
+            beans = beanManager.getBeanResolver().resolve(beans);
+        }
+        return JsonObjects.createBeansJson(Queries.find(probe.getOrderedBeans(beans), pageIndex, pageSize, null), probe, beanManager,
+                Representation.from(representation));
+    }
+
+    private String getError(String description) {
+        return Json.objectBuilder().add(ERROR, description).build();
     }
 
 }
