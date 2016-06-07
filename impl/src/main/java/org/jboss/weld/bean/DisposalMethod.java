@@ -125,7 +125,7 @@ public class DisposalMethod<X, T> {
             SessionBean<?> sessionBean = (SessionBean<?>) declaringBean;
             Set<MethodSignature> localBusinessMethodSignatures = sessionBean.getLocalBusinessMethodSignatures();
             Set<MethodSignature> remoteBusinessMethodSignatures = sessionBean.getRemoteBusinessMethodSignatures();
-            if (!localBusinessMethodSignatures.contains(enhancedAnnotatedMethod.getSignature()) && !remoteBusinessMethodSignatures
+            if (!localBusinessMethodSignatures.contains(enhancedAnnotatedMethod.getSignature()) || remoteBusinessMethodSignatures
                     .contains(enhancedAnnotatedMethod.getSignature())) {
                 throw BeanLogger.LOG.methodNotBusinessMethod("Disposer", enhancedAnnotatedMethod, declaringBean,
                         Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
