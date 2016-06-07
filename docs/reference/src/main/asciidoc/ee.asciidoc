@@ -261,7 +261,7 @@ archive.
 
 NOTE: Any scope type is a bean defining annotation. If you place a scope type
 on a bean class, then it has a bean defining annotation. See
-http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#bean_defining_annotations[2.5.
+http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations[2.5.1.
 Bean defining annotations] to learn more.
 
 ==== What archive is not a bean archive
