@@ -388,7 +388,7 @@ To fix an _ambiguous dependency_, either:
 * introduce a qualifier to distinguish between the two implementations
 of the bean type,
 * exclude one of the beans from discovery (either by means of
-http://docs.jboss.org/cdi/api/1.1/javax/enterprise/inject/Vetoed.html[@Vetoed]
+http://docs.jboss.org/cdi/api/1.2/javax/enterprise/inject/Vetoed.html[@Vetoed]
 or `beans.xml`),
 * disable one of the beans by annotating it `@Alternative`,
 * move one of the implementations to a module that is not in the

@@ -511,7 +511,7 @@ bytecode-scanning capabilities to Weld. If present, Weld will try to use
 the service to avoid loading of classes that do not need to be loaded.
 These are classes that:
 
-* are not http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#what_classes_are_beans[CDI managed beans] and
+* are not http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#what_classes_are_beans[CDI managed beans] and
 * are not assignable to any ProcessAnnotatedType observer
 
 This usually yields improved bootstrap performance especially in large
