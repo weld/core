@@ -18,6 +18,7 @@ package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -230,6 +231,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         } else {
             if(Beans.isDecoratorDeclaringInAppropriateConstructor(annotatedType)){
                 BootstrapLogger.LOG.decoratorWithNonCdiConstructor(annotatedType.getJavaClass().getName());
+            }
+            Class<? extends Annotation> scopeClass = Beans.getBeanDefiningAnnotationScope(annotatedType);
+            if (scopeClass != null && !Beans.hasSimpleCdiConstructor(annotatedType)) {
+                BootstrapLogger.LOG.annotatedTypeNotRegisteredAsBeanDueToMissingAppropriateConstructor(annotatedType.getJavaClass().getName(),
+                        scopeClass.getSimpleName());
             }
             getCacheValue(otherWeldClasses, annotatedType.getJavaClass()).add(annotatedType);
         }

@@ -276,4 +276,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 166, value = "AfterTypeDiscovery.{3} modified by {0} {2} {1}", format = Format.MESSAGE_FORMAT)
     void typeModifiedInAfterTypeDiscovery(Object extensionName, Object type, Object operation , Object types);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 167, value = "Class {0} is annotated with @{1} but it does not declare an appropriate constructor therefore is not registered as a bean!", format = Format.MESSAGE_FORMAT)
+    void annotatedTypeNotRegisteredAsBeanDueToMissingAppropriateConstructor(String clazzName, String annotationName);
+
 }

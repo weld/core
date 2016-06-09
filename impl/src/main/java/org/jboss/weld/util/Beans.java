@@ -44,6 +44,7 @@ import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Contextual;
@@ -645,6 +646,15 @@ public class Beans {
     public static boolean hasBuiltinScope(Bean<?> bean) {
         return RequestScoped.class.equals(bean.getScope()) || SessionScoped.class.equals(bean.getScope()) || ApplicationScoped.class.equals(bean.getScope())
                 || ConversationScoped.class.equals(bean.getScope()) || Dependent.class.equals(bean.getScope());
+    }
+
+    public static Class<? extends Annotation> getBeanDefiningAnnotationScope(AnnotatedType<?> annotatedType) {
+        for (Annotation annotation : annotatedType.getAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(NormalScope.class) || annotation.annotationType().equals(Dependent.class)) {
+                return annotation.annotationType();
+            }
+        }
+        return null;
     }
 
     /**
