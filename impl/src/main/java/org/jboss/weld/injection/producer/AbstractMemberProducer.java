@@ -128,7 +128,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         if (disposalMethod != null) {
             // CreationalContext is only created if we need it to obtain the receiver
             // MethodInvocationStrategy takes care of creating CC for parameters, if needed
-            if (getAnnotated().isStatic()) {
+            if (disposalMethod.getAnnotated().isStatic()) {
                 disposalMethod.invokeDisposeMethod(null, instance, null);
             } else {
                 WeldCreationalContext<X> ctx = null;
