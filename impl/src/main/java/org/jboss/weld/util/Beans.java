@@ -38,6 +38,7 @@ import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Contextual;
@@ -583,8 +584,16 @@ public class Beans {
                 || ConversationScoped.class.equals(bean.getScope()) || Dependent.class.equals(bean.getScope());
     }
 
+    public static Class<? extends Annotation> getBeanDefiningAnnotationScope(AnnotatedType<?> annotatedType) {
+        for (Annotation annotation : annotatedType.getAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(NormalScope.class) || annotation.annotationType().equals(Dependent.class)) {
+                return annotation.annotationType();
+            }
+        }
+        return null;
+    }
+
     /**
-     *
      * @param types The initial set of types
      * @param annotated
      * @param additionalTypes Types to add to the initial set

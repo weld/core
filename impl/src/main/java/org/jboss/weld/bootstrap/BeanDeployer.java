@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashSet;
@@ -221,6 +222,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         } else {
             if(Beans.isDecoratorDeclaringInAppropriateConstructor(annotatedType)){
                 BootstrapLogger.LOG.decoratorWithNonCdiConstructor(annotatedType.getJavaClass().getName());
+            }
+            Class<? extends Annotation> scopeClass = Beans.getBeanDefiningAnnotationScope(annotatedType);
+            if (scopeClass != null && !Beans.hasSimpleCdiConstructor(annotatedType)) {
+                BootstrapLogger.LOG.annotatedTypeNotRegisteredAsBeanDueToMissingAppropriateConstructor(annotatedType.getJavaClass().getName(),
+                        scopeClass.getSimpleName());
             }
             otherWeldClasses.put(annotatedType.getJavaClass(), annotatedType);
         }
