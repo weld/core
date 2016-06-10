@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>33</version>
+        <version>34</version>
     </parent>
 
     <prerequisites>
@@ -43,7 +43,8 @@
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>
-        <build.config.version>9</build.config.version>
+        <!-- Might be used to override the version declared in weld-parent -->
+        <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.9.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.0.Alpha7</cdi.tck-2-0.version>
