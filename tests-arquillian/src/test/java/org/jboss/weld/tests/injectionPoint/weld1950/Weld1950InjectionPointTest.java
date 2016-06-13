@@ -1,8 +1,8 @@
 package org.jboss.weld.tests.injectionPoint.weld1950;
 
-import javax.inject.Inject;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -27,6 +27,6 @@ public class Weld1950InjectionPointTest {
     @Test
     public void testInjectionPointGetBean(UserProducer producer) {
         modelBean.ping();
-        Assert.assertEquals(TestDependentBean.class, producer.getIp().getBean().getBeanClass());
+        assertEquals(TestDependentBean.class, producer.getIp().getBean().getBeanClass());
     }
 }
