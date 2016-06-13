@@ -57,6 +57,7 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
 
     public ProducerMethodProducer(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, DisposalMethod<?, ?> disposalMethod) {
         super(enhancedAnnotatedMethod, disposalMethod);
+        // Note that for producer method injection points the declaring bean is the producer method itself
         this.method = InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.PRODUCER, enhancedAnnotatedMethod, getBean(), enhancedAnnotatedMethod.getDeclaringType().getJavaClass(), null, getBeanManager());
         checkProducerMethod(enhancedAnnotatedMethod);
         checkDelegateInjectionPoints();

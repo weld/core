@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.producer.disposer.decorated;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
@@ -64,6 +64,7 @@ public class DecoratedProducerMethodTest {
 
     @Test
     public void testProducerWithDecorator(BeanManager manager) {
+        ActionSequence.reset();
         // instances with @Default, increments counters
         privateWorker.select(Default.Literal.INSTANCE).get().doStuff();
         protectedWorker.select(Default.Literal.INSTANCE).get().doStuff();
@@ -73,35 +74,39 @@ public class DecoratedProducerMethodTest {
         // verify decorator invocation
         ActionSequence.assertSequenceDataContainsAll(PrivateWorker.class.getName(), ProtectedWorker.class.getName(),
             PublicWorker.class.getName(), PackagePrivateWorker.class.getName(), WorkerDecorator.class.getName());
-        assertTrue(ActionSequence.getSequenceSize() == 8);
+        assertEquals(8, ActionSequence.getSequenceSize());
         ActionSequence.reset();
 
         // force creation of beans with @Lazy
         PrivateWorker lazyPrivate = privateWorker.select(Lazy.Literal.INSTANCE).get();
+        lazyPrivate.doStuff();
         ProtectedWorker lazyProtected = protectedWorker.select(Lazy.Literal.INSTANCE).get();
+        lazyProtected.doStuff();
         PublicWorker lazyPublic = publicWorker.select(Lazy.Literal.INSTANCE).get();
+        lazyPublic.doStuff();
         PackagePrivateWorker lazyPackPrivate = packPrivateWorker.select(Lazy.Literal.INSTANCE).get();
+        lazyPackPrivate.doStuff();
 
         // assert expected results, beans created with @Lazy should already see counter == 1
         int expectedFieldValue = 1;
-        assertTrue(ActionSequence.getSequenceSize() == 4);
+        assertEquals(8, ActionSequence.getSequenceSize());
         ActionSequence.assertSequenceDataContainsAll(PublicWorker.class.getName() + "-" + expectedFieldValue);
         ActionSequence.assertSequenceDataContainsAll(ProtectedWorker.class.getName() + "-" + expectedFieldValue);
         ActionSequence.assertSequenceDataContainsAll(PackagePrivateWorker.class.getName() + "-" + expectedFieldValue);
-        ActionSequence.assertSequenceDataContainsAll(PrivateWorker.class.getName() + "-" + expectedFieldValue);        
+        ActionSequence.assertSequenceDataContainsAll(PrivateWorker.class.getName() + "-" + expectedFieldValue);
         ActionSequence.reset();
-        
+
         // invoke disposer methods and assert
         privateWorker.destroy(lazyPrivate);
         protectedWorker.destroy(lazyProtected);
         publicWorker.destroy(lazyPublic);
         packPrivateWorker.destroy(lazyPackPrivate);
-        
+
         assertTrue(ActionSequence.getSequenceSize() == 4);
         ActionSequence.assertSequenceDataContainsAll(PublicWorker.class.getName() + "-" + expectedFieldValue);
         ActionSequence.assertSequenceDataContainsAll(ProtectedWorker.class.getName() + "-" + expectedFieldValue);
         ActionSequence.assertSequenceDataContainsAll(PackagePrivateWorker.class.getName() + "-" + expectedFieldValue);
         ActionSequence.assertSequenceDataContainsAll(PrivateWorker.class.getName() + "-" + expectedFieldValue);
-        
+
     }
 }
