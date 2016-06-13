@@ -36,6 +36,7 @@ import javax.inject.Qualifier;
 @Qualifier
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
 public @interface Lazy {
+    @SuppressWarnings("serial")
     public static class Literal extends AnnotationLiteral<Lazy> implements Lazy {
 
         private Literal() {

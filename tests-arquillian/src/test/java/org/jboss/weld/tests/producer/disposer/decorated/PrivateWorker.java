@@ -43,7 +43,8 @@ public class PrivateWorker implements Worker {
         ActionSequence.addAction(PrivateWorker.class.getName() + "-" + hiddenField);
         return new PrivateWorker();
     }
-    
+
+    @SuppressWarnings("unused")
     private void dispose(@Disposes @Lazy PrivateWorker worker) {
         ActionSequence.addAction(PrivateWorker.class.getName() + "-" + hiddenField);
     }
