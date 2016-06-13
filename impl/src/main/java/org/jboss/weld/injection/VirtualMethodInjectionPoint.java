@@ -29,6 +29,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableMap;
 
@@ -59,8 +61,9 @@ class VirtualMethodInjectionPoint<T, X> extends StaticMethodInjectionPoint<T, X>
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = getAnnotated().getJavaMember();
-            if (MethodInjectionPointType.INITIALIZER.equals(type) && (isPrivate(delegate) || isPackagePrivate(delegate.getModifiers()) && !Objects.equals(delegate.getDeclaringClass().getPackage(), receiver.getClass().getPackage()))) {
-                // Initializer methods - overriding does not apply to private methods and package-private methods where the subclass is in a different package
+            if ((hasDecorators() || MethodInjectionPointType.INITIALIZER.equals(type)) && (isPrivate(delegate) || isPackagePrivate(delegate.getModifiers())
+                    && !Objects.equals(delegate.getDeclaringClass().getPackage(), receiver.getClass().getPackage()))) {
+                // Initializer methods and decorated beans - overriding does not apply to private methods and package-private methods where the subclass is in a different package
                 method = accessibleMethod;
             } else {
                 method = SecurityActions.lookupMethod(receiver.getClass(), delegate.getName(), delegate.getParameterTypes());
@@ -70,5 +73,15 @@ class VirtualMethodInjectionPoint<T, X> extends StaticMethodInjectionPoint<T, X>
             this.methods = newMethods;
         }
         return method;
+    }
+
+    private boolean hasDecorators() {
+        if (getBean() instanceof AbstractClassBean) {
+            return ((AbstractClassBean<?>) getBean()).hasDecorators();
+        }
+        if (getBean() instanceof AbstractProducerBean) {
+            return ((AbstractProducerBean<?, ?, ?>) getBean()).getDeclaringBean().hasDecorators();
+        }
+        return false;
     }
 }
