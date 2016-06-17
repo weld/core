@@ -16,15 +16,16 @@
  */
 package org.jboss.weld.tests.unit.resource;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
 import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.AbstractDeployment;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -46,18 +47,19 @@ public class StaticResourceTest {
         // Create the BDA in which we will deploy FooExtension. This BDA does not have access to bda2
         final BeanDeploymentArchive bda = new BeanDeploymentArchiveImpl("1", InjectedClass.class) {
             @Override
-            protected void configureServices() {
+            protected void configureServices(Environment environment) {
                 getServices().add(InjectionServices.class, new TestInjectionServices());
             }
         };
 
         // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
-        Deployment deployment = new AbstractDeployment(new BeanDeploymentArchive[] { bda }) {
+        Deployment deployment = new FlatDeployment(new BeanDeploymentArchive[] { bda }, Environments.EE) {
 
             @Override
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 return bda;
             }
+
         };
 
         final WeldBootstrap bootstrap = new WeldBootstrap();

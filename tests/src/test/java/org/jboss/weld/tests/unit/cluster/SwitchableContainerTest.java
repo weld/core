@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;

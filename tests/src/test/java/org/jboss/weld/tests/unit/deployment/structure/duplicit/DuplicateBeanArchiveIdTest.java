@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.duplicit;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.mock.AbstractDeployment;
 import org.testng.annotations.Test;
 
 /**
@@ -59,7 +59,7 @@ public class DuplicateBeanArchiveIdTest {
             }
         };
 
-        Deployment deployment = new AbstractDeployment(bda1, bda2) {
+        Deployment deployment = new FlatDeployment(new BeanDeploymentArchive[] { bda1, bda2 }) {
 
             @Override
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
