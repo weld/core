@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.bootstrap;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bootstrap.api.Environments;

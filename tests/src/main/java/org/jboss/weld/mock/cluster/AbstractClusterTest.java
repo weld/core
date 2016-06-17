@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.mock.cluster;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
-import org.jboss.weld.mock.FlatDeployment;
+import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.context.bound.BoundSessionContext;
