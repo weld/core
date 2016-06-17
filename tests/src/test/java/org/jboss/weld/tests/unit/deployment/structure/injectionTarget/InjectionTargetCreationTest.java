@@ -16,15 +16,14 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.injectionTarget;
 
-import static org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment.transform;
 import static org.testng.Assert.assertNotNull;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.weld.mock.AbstractDeployment;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.testng.annotations.Test;
@@ -44,7 +43,7 @@ public class InjectionTargetCreationTest {
         final FooExtension extension = new FooExtension();
 
         // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
-        Deployment deployment = new AbstractDeployment(ImmutableSet.of(bda1, bda2), transform(extension)) {
+        Deployment deployment = new FlatDeployment(new BeanDeploymentArchive[] { bda1, bda2 }, extension) {
 
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 // Return bda2 if it is Observer2. Stick anything else which this test isn't about in bda1

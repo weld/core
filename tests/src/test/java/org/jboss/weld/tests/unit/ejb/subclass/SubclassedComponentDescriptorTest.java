@@ -26,8 +26,10 @@ import java.util.Collections;
 
 import javax.enterprise.inject.spi.SessionBeanType;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
@@ -37,7 +39,6 @@ import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.mock.AbstractDeployment;
 import org.jboss.weld.mock.MockEjbServices;
 import org.jboss.weld.util.reflection.Reflections;
 import org.testng.annotations.AfterClass;
@@ -79,14 +80,14 @@ public class SubclassedComponentDescriptorTest {
             }
         };
 
-        final Deployment deployment = new AbstractDeployment(bda) {
+        final Deployment deployment = new FlatDeployment(bda) {
             @Override
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 return bda;
             }
             @Override
-            protected void configureServices() {
-                super.configureServices();
+            protected void configureServices(Environment environment) {
+                super.configureServices(environment);
                 getServices().add(EjbServices.class, new MockEjbServices());
             }
 

@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockEjBServices;
+import org.jboss.arquillian.container.weld.embedded.mock.MockEjBServices;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 

@@ -23,7 +23,7 @@ import java.util.Collections;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.context.bound.BoundConversationContext;
 import org.jboss.weld.context.bound.BoundRequest;
