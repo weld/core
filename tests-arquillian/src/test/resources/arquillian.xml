@@ -11,6 +11,7 @@
     <container qualifier="weld" default="true">
         <configuration>
             <property name="enableConversationScope">true</property>
+            <property name="environment">EE_INJECT</property>
         </configuration>
     </container>
 </arquillian>

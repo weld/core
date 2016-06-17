@@ -37,7 +37,7 @@
         <arquillian.version>1.1.11.Final</arquillian.version>
         <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
         <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
-        <arquillian.weld.version>1.0.0.CR9</arquillian.weld.version>
+        <arquillian.weld.version>2.0.0.Beta2</arquillian.weld.version>
         <arquillian.se.container.version>1.0.0.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.0.0.CR6</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
@@ -230,7 +230,7 @@
 
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+                <artifactId>arquillian-weld-embedded</artifactId>
                 <version>${arquillian.weld.version}</version>
             </dependency>
 
