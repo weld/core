@@ -14,12 +14,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.jboss.weld.environment.se.contexts.interceptors;
+package org.jboss.weld.environment.se.contexts.activators;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.interceptor.InterceptorBinding;
 
 import static java.lang.annotation.ElementType.METHOD;
@@ -34,7 +35,9 @@ import static java.lang.annotation.ElementType.TYPE;
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ TYPE, METHOD })
-@Deprecated
 public @interface ActivateThreadScope {
 
+    public static class Literal extends AnnotationLiteral<ActivateThreadScope> implements ActivateThreadScope {
+        public static Literal INSTANCE = new Literal();
+    }
 }
