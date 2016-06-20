@@ -21,7 +21,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.weld.environment.se.contexts.interceptors.ActivateRequestScope;
+import org.jboss.weld.environment.se.contexts.activators.ActivateRequestScope;
 import org.junit.Assert;
 
 @Dependent
