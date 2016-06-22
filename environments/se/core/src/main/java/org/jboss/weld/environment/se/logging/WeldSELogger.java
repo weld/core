@@ -71,5 +71,6 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     @Message(id = 2012, value = "The container lifecycle observer is not properly initialized: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException containerLifecycleObserverNotInitialized(Object info);
 
+    // 2013 used in Weld 2.3
 
 }
