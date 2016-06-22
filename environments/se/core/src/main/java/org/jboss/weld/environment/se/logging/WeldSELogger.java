@@ -62,7 +62,7 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     IllegalStateException weldContainerCannotBeInitializedNoBeanArchivesFound();
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 2010, value = "Usage of deprecated @{0} detected. You must replace it with @{1}", format = Format.MESSAGE_FORMAT)
-    void deprecatedActivatorAnnotationUsed(Object deprecateAnnotation, Object newAnnotation);
+    @Message(id = 2010, value = "Deprecated @{0} detected on {2} - replace it with @{1}", format = Format.MESSAGE_FORMAT)
+    void deprecatedActivatorAnnotationUsed(Object deprecateAnnotation, Object newAnnotation, Object type);
 
 }

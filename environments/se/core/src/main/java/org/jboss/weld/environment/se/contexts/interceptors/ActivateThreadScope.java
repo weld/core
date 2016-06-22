@@ -16,20 +16,21 @@
 */
 package org.jboss.weld.environment.se.contexts.interceptors;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.interceptor.InterceptorBinding;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-
 /**
  * Interceptor binding providing {@link org.jboss.weld.environment.se.contexts.ThreadScoped} activation in SE environment.
  * Scope is activated for all class defined methods when specified at target level TYPE.
  *
  * @author Tomas Remes
+ * @see org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope
  */
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)

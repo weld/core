@@ -58,6 +58,7 @@ public class ActivateRequestScopeInterceptor {
                 boundRequestContext.invalidate();
                 boundRequestContext.deactivate();
                 boundRequestContext.dissociate(storage);
+                storage.clear();
             }
         } else {
             return invocationContext.proceed();

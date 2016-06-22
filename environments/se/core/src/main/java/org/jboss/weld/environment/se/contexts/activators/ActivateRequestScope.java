@@ -38,6 +38,9 @@ import javax.interceptor.InterceptorBinding;
 public @interface ActivateRequestScope {
 
     public static class Literal extends AnnotationLiteral<ActivateRequestScope> implements ActivateRequestScope {
+
         public static final Literal INSTANCE = new Literal();
+
+        private static final long serialVersionUID = 1L;
     }
 }

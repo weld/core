@@ -43,7 +43,6 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.inject.Singleton;
 
-import com.google.common.collect.ImmutableSet;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.environment.se.beans.InstanceManager;
@@ -57,6 +56,8 @@ import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Explicitly registers all of the 'built-in' Java SE related beans and contexts.
@@ -91,6 +92,13 @@ public class WeldSEBeanRegistrant implements Extension {
 
         // Register WeldContainer as a singleton
         event.addBean(new WeldContainerBean(contextId));
+    }
+
+    <T> void replaceDeprecatedActivator(@Observes @WithAnnotations(ActivateThreadScope.class) ProcessAnnotatedType<T> event) {
+        final AnnotatedType<T> annotatedType = event.getAnnotatedType();
+        WeldSELogger.LOG.deprecatedActivatorAnnotationUsed(ActivateThreadScope.class.getName(),
+                org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope.class.getName(), annotatedType.getJavaClass());
+        event.setAnnotatedType(new AnnotatedTypeWrapper<>(annotatedType));
     }
 
     /**
@@ -169,7 +177,7 @@ public class WeldSEBeanRegistrant implements Extension {
 
         @Override
         public Set<Type> getTypes() {
-            return ImmutableSet.<Type>of(WeldContainer.class, Object.class);
+            return ImmutableSet.<Type> of(WeldContainer.class, Object.class);
         }
 
         @Override
@@ -214,179 +222,171 @@ public class WeldSEBeanRegistrant implements Extension {
 
     }
 
-    void observesPATofDeprecatedActivator(@Observes @WithAnnotations(ActivateThreadScope.class) ProcessAnnotatedType<?> event) {
-        final AnnotatedType<?> originalAT = event.getAnnotatedType();
-        WeldSELogger.LOG.deprecatedActivatorAnnotationUsed(ActivateThreadScope.class.getName(),
-                org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope.class.getName());
-        event.setAnnotatedType(new AnnotatedTypeWrapper(originalAT));
+    static class AnnotatedTypeWrapper<X> implements AnnotatedType<X> {
+
+        private final AnnotatedType<X> delegate;
+        private final ImmutableSet<AnnotatedMethod<? super X>> annotatedMethods;
+        private final ImmutableSet<Annotation> annotations;
+
+        public AnnotatedTypeWrapper(AnnotatedType<X> annotatedType) {
+            this.delegate = annotatedType;
+            this.annotatedMethods = replaceDeprecatedAnnotatedMethods(delegate.getMethods());
+            this.annotations = replaceDeprecatedAnnotations(delegate.getAnnotations());
+        }
+
+        @Override
+        public Class<X> getJavaClass() {
+            return delegate.getJavaClass();
+        }
+
+        @Override
+        public Set<AnnotatedConstructor<X>> getConstructors() {
+            return delegate.getConstructors();
+        }
+
+        @Override
+        public Set<AnnotatedMethod<? super X>> getMethods() {
+            return annotatedMethods;
+        }
+
+        @Override
+        public Set<AnnotatedField<? super X>> getFields() {
+            return delegate.getFields();
+        }
+
+        @Override
+        public Type getBaseType() {
+            return delegate.getBaseType();
+        }
+
+        @Override
+        public Set<Type> getTypeClosure() {
+            return delegate.getTypeClosure();
+        }
+
+        @Override
+        public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+            for (Annotation annotation : annotations) {
+                if (annotation.annotationType().equals(annotationType)) {
+                    return annotationType.cast(annotation);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public Set<Annotation> getAnnotations() {
+            return annotations;
+        }
+
+        @Override
+        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+            return getAnnotation(annotationType) != null;
+        }
+
+        private ImmutableSet<AnnotatedMethod<? super X>> replaceDeprecatedAnnotatedMethods(Set<AnnotatedMethod<? super X>> delegateMethods) {
+            ImmutableSet.Builder<AnnotatedMethod<? super X>> annotatedMethodBuilder = ImmutableSet.builder();
+            for (final AnnotatedMethod<? super X> originalMethod : delegateMethods) {
+                if (originalMethod.isAnnotationPresent(ActivateThreadScope.class)) {
+                    annotatedMethodBuilder.add(new AnnotatedMethodWrapper<>(originalMethod));
+                } else {
+                    annotatedMethodBuilder.add(originalMethod);
+                }
+            }
+            return annotatedMethodBuilder.build();
+        }
+
+        private ImmutableSet<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
+            ImmutableSet.Builder<Annotation> annotationBuilder = ImmutableSet.builder();
+            Iterator<Annotation> it = delegateAnnotations.iterator();
+            while (it.hasNext()) {
+                Annotation annotation = it.next();
+                if (annotation.annotationType().equals(ActivateThreadScope.class)) {
+                    annotationBuilder.add(org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope.Literal.INSTANCE);
+                } else {
+                    annotationBuilder.add(annotation);
+                }
+
+            }
+            return annotationBuilder.build();
+        }
+
     }
+
+    static class AnnotatedMethodWrapper<X> implements AnnotatedMethod<X> {
+
+        private final AnnotatedMethod<X> delegate;
+        private final ImmutableSet<Annotation> annotations;
+
+        public AnnotatedMethodWrapper(AnnotatedMethod<X> annotatedMethod) {
+            this.delegate = annotatedMethod;
+            this.annotations = replaceDeprecatedAnnotations(delegate.getAnnotations());
+        }
+
+        @Override
+        public Method getJavaMember() {
+            return delegate.getJavaMember();
+        }
+
+        @Override
+        public List<AnnotatedParameter<X>> getParameters() {
+            return delegate.getParameters();
+        }
+
+        @Override
+        public boolean isStatic() {
+            return delegate.isStatic();
+        }
+
+        @Override
+        public AnnotatedType<X> getDeclaringType() {
+            return delegate.getDeclaringType();
+        }
+
+        @Override
+        public Type getBaseType() {
+            return delegate.getBaseType();
+        }
+
+        @Override
+        public Set<Type> getTypeClosure() {
+            return delegate.getTypeClosure();
+        }
+
+        @Override
+        public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+            for (Annotation annotation : annotations) {
+                if (annotation.annotationType().equals(annotationType)) {
+                    return annotationType.cast(annotation);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public Set<Annotation> getAnnotations() {
+            return annotations;
+        }
+
+        @Override
+        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+            return getAnnotation(annotationType) != null;
+        }
+
+        private ImmutableSet<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
+            ImmutableSet.Builder<Annotation> annotationBuilder = ImmutableSet.builder();
+            Iterator<Annotation> it = delegateAnnotations.iterator();
+            while (it.hasNext()) {
+                Annotation annotation = it.next();
+                if (annotation.annotationType().equals(ActivateThreadScope.class)) {
+                    annotationBuilder.add(org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope.Literal.INSTANCE);
+                } else {
+                    annotationBuilder.add(annotation);
+                }
+
+            }
+            return annotationBuilder.build();
+        }
+    }
+
 }
-
-class AnnotatedTypeWrapper<X> implements AnnotatedType<X> {
-
-    private final AnnotatedType<X> delegate;
-    private final ImmutableSet<AnnotatedMethod<? super X>> annotatedMethods;
-    private final ImmutableSet<Annotation> annotations;
-
-    public AnnotatedTypeWrapper(AnnotatedType<X> annotatedType) {
-        this.delegate = annotatedType;
-        this.annotatedMethods = replaceDeprecatedAnnotatedMethods(delegate.getMethods());
-        this.annotations = replaceDeprecatedAnnotations(delegate.getAnnotations());
-    }
-
-    @Override
-    public Class<X> getJavaClass() {
-        return delegate.getJavaClass();
-    }
-
-    @Override
-    public Set<AnnotatedConstructor<X>> getConstructors() {
-        return delegate.getConstructors();
-    }
-
-    @Override
-    public Set<AnnotatedMethod<? super X>> getMethods() {
-        return annotatedMethods;
-    }
-
-    @Override
-    public Set<AnnotatedField<? super X>> getFields() {
-        return delegate.getFields();
-    }
-
-    @Override
-    public Type getBaseType() {
-        return delegate.getBaseType();
-    }
-
-    @Override
-    public Set<Type> getTypeClosure() {
-        return delegate.getTypeClosure();
-    }
-
-    @Override
-    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        for (Annotation annotation : annotations) {
-            if (annotation.annotationType().equals(annotationType)) {
-                return annotationType.cast(annotation);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Set<Annotation> getAnnotations() {
-        return annotations;
-    }
-
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        return getAnnotation(annotationType) != null;
-    }
-
-    private ImmutableSet<AnnotatedMethod<? super X>> replaceDeprecatedAnnotatedMethods(Set<AnnotatedMethod<? super X>> delegateMethods) {
-        ImmutableSet.Builder<AnnotatedMethod<? super X>> annotatedMethodBuilder = ImmutableSet.builder();
-        for (final AnnotatedMethod<? super X> originalMethod : delegateMethods) {
-            if (originalMethod.isAnnotationPresent(ActivateThreadScope.class)) {
-                annotatedMethodBuilder.add(new AnnotatedMethodWrapper(originalMethod));
-            } else {
-                annotatedMethodBuilder.add(originalMethod);
-            }
-        }
-        return annotatedMethodBuilder.build();
-    }
-
-    private ImmutableSet<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
-        ImmutableSet.Builder<Annotation> annotationBuilder = ImmutableSet.builder();
-        Iterator<Annotation> it = delegateAnnotations.iterator();
-        while (it.hasNext()) {
-            Annotation annotation = it.next();
-            if (annotation.annotationType().equals(ActivateThreadScope.class)) {
-                annotationBuilder.add(org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope.Literal.INSTANCE);
-            } else{
-                annotationBuilder.add(annotation);
-            }
-
-        }
-        return annotationBuilder.build();
-    }
-
-}
-
-class AnnotatedMethodWrapper<X> implements AnnotatedMethod<X> {
-
-    private final AnnotatedMethod<X> delegate;
-    private final ImmutableSet<Annotation> annotations;
-
-    public AnnotatedMethodWrapper(AnnotatedMethod<X> annotatedMethod) {
-        this.delegate = annotatedMethod;
-        this.annotations = replaceDeprecatedAnnotations(delegate.getAnnotations());
-    }
-
-    @Override
-    public Method getJavaMember() {
-        return delegate.getJavaMember();
-    }
-
-    @Override
-    public List<AnnotatedParameter<X>> getParameters() {
-        return delegate.getParameters();
-    }
-
-    @Override
-    public boolean isStatic() {
-        return delegate.isStatic();
-    }
-
-    @Override
-    public AnnotatedType<X> getDeclaringType() {
-        return delegate.getDeclaringType();
-    }
-
-    @Override
-    public Type getBaseType() {
-        return delegate.getBaseType();
-    }
-
-    @Override
-    public Set<Type> getTypeClosure() {
-        return delegate.getTypeClosure();
-    }
-
-    @Override
-    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        for (Annotation annotation : annotations) {
-            if (annotation.annotationType().equals(annotationType)) {
-                return annotationType.cast(annotation);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Set<Annotation> getAnnotations() {
-        return annotations;
-    }
-
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        return getAnnotation(annotationType) != null;
-    }
-
-    private ImmutableSet<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
-        ImmutableSet.Builder<Annotation> annotationBuilder = ImmutableSet.builder();
-        Iterator<Annotation> it = delegateAnnotations.iterator();
-        while (it.hasNext()) {
-            Annotation annotation = it.next();
-            if (annotation.annotationType().equals(ActivateThreadScope.class)) {
-                annotationBuilder.add(org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope.Literal.INSTANCE);
-            } else{
-                annotationBuilder.add(annotation);
-            }
-
-        }
-        return annotationBuilder.build();
-    }
-}
-
-

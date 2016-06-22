@@ -16,15 +16,15 @@
 */
 package org.jboss.weld.environment.se.contexts.activators;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.enterprise.util.AnnotationLiteral;
 import javax.interceptor.InterceptorBinding;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
 
 /**
  * Interceptor binding providing {@link org.jboss.weld.environment.se.contexts.ThreadScoped} activation in SE environment.
@@ -38,6 +38,10 @@ import static java.lang.annotation.ElementType.TYPE;
 public @interface ActivateThreadScope {
 
     public static class Literal extends AnnotationLiteral<ActivateThreadScope> implements ActivateThreadScope {
+
         public static Literal INSTANCE = new Literal();
+
+        private static final long serialVersionUID = 1L;
+
     }
 }
