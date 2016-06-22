@@ -61,8 +61,10 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     @Message(id = 2009, value = "Weld SE container cannot be initialized - no bean archives found")
     IllegalStateException weldContainerCannotBeInitializedNoBeanArchivesFound();
 
+    // 2010 - 2012 used in Weld 3
+
     @LogMessage(level = Level.WARN)
-    @Message(id = 2010, value = "Deprecated @{0} detected on {2} - replace it with @{1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 2013, value = "Deprecated @{0} detected on {2} - replace it with @{1}", format = Format.MESSAGE_FORMAT)
     void deprecatedActivatorAnnotationUsed(Object deprecateAnnotation, Object newAnnotation, Object type);
 
 }
