@@ -196,7 +196,13 @@ public class ArraySet<E> implements Set<E>, Serializable {
 
     @Override
     public int hashCode() {
-        return elements.hashCode();
+        int hashCode = 0;
+        for (E element : this) {
+            if (element != null) {
+                hashCode += element.hashCode();
+            }
+        }
+        return hashCode;
     }
 
     @Override
