@@ -161,7 +161,7 @@ class EjbSupportImpl implements EjbSupport {
                 }
                 InterceptionModel model = manager.getInterceptorModelRegistry().get(type.slim());
                 if (model != null) {
-                    ejbServices.registerInterceptors(descriptor, new InterceptorBindingsAdapter(model));
+                    ejbServices.registerInterceptors(descriptor.delegate(), new InterceptorBindingsAdapter(model));
                 }
             }
         }
