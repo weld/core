@@ -75,5 +75,6 @@ public class InjectionTargetCreationTest {
          * Verify that the BeanManager for BDA2 (which can see SimpleBean) is used to inject FooTarget
          */
         assertNotNull(instance.getBean());
+        container.stopContainer();
     }
 }
