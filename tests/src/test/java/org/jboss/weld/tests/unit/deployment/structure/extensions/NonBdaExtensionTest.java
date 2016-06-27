@@ -84,6 +84,7 @@ public class NonBdaExtensionTest {
         Assert.assertTrue(observer2.isProcessInjectionTargetCalled());
         Assert.assertTrue(observer2.isProcessManagedBeanCalled());
         Assert.assertTrue(observer2.isProcessProducerCalled());
+        container.stopContainer();
     }
 
     /*
@@ -130,6 +131,7 @@ public class NonBdaExtensionTest {
         Assert.assertEquals(1, observer2.getBeforeBeanDiscovery());
         Assert.assertEquals(1, observer2.getProcessFooManagedBean());
         Assert.assertEquals(1, observer2.getProcessBarManagedBean());
+        container.stopContainer();
     }
 
 }

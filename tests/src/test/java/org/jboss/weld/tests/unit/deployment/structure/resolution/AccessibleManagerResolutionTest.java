@@ -58,6 +58,7 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.web.WeldWebModule;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -66,6 +67,7 @@ public class AccessibleManagerResolutionTest {
     private ClassTransformer classTransformer;
     private TypeStore typeStore;
     private ServiceRegistry services;
+    private BeanManagerImpl root;
 
     @BeforeMethod
     public void beforeMethod() {
@@ -74,6 +76,7 @@ public class AccessibleManagerResolutionTest {
         this.typeStore = new TypeStore();
         this.classTransformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
         this.services = new SimpleServiceRegistry();
+        
         this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         this.services.add(ContextualStore.class, new ContextualStoreImpl(STATIC_INSTANCE, beanIdentifierIndex));
         this.services.add(ClassTransformer.class, classTransformer);
@@ -83,12 +86,25 @@ public class AccessibleManagerResolutionTest {
         this.services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));
         this.services.add(ExpressionLanguageSupport.class, WeldWebModule.EL_SUPPORT);
-        this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager(STATIC_INSTANCE, "foo", services)));
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
         this.services.add(ProxyInstantiator.class, DefaultProxyInstantiator.INSTANCE);
         this.services.add(ResourceInjectionFactory.class, new ResourceInjectionFactory());
         this.services.add(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
+        
+        // create BeanManagerImpl and initialize container
+        root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
+        Container.initialize(root, services);
+        
+        // add injection target service; has to be done once container was initialized
+        this.services.add(InjectionTargetService.class, new InjectionTargetService(root));
+    }
+    
+    @AfterMethod
+    public void cleanup() {
+        if (root != null) {
+            Container.instance(root).cleanup();
+        }
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {
@@ -102,8 +118,6 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testAccessibleDynamicallySingleLevel() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
-        Container.initialize(root, services);
         BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
         addBean(root, Cow.class);
         Assert.assertEquals(1, root.getBeans(Cow.class).size());
@@ -117,8 +131,6 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testAccessibleThreeLevelsWithMultiple() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
-        Container.initialize(root, services);
         BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
         BeanManagerImpl child1 = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child1", services);
         BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "grandchild", services);
@@ -158,8 +170,6 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testSameManagerAddedTwice() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
-        Container.initialize(root, services);
         BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
         BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "grandchild", services);
         grandchild.addAccessibleBeanManager(child);
@@ -181,8 +191,6 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testCircular() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
-        Container.initialize(root, services);
         BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
         BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "grandchild", services);
         grandchild.addAccessibleBeanManager(child);
