@@ -128,7 +128,7 @@ public class ProbeFunctionalTest {
     @Test
     public void testObserverMethodDetail() {
         page.getObserversTab().click();
-        waitAjax().until().element(By.partialLinkText("Observer Methods")).is().visible();
+        waitAjax().until().element(By.xpath("//h1[text()='Observer Methods']")).is().visible();
         WebElement observerLink = driver.findElement(By.partialLinkText(ApplicationScopedObserver.class.getSimpleName()));
         assertTrue("Cannot find element for " + ApplicationScopedObserver.class.getSimpleName(), observerLink.isDisplayed());
         guardAjax(observerLink).click();
