@@ -140,6 +140,7 @@ public class TransitiveResolutionTest {
         Assert.assertNotNull(bar.getBeanManager());
         Assert.assertEquals(warBeanManager, bar.getBeanManager());
         Assert.assertEquals(ejbJarBeanManager, bar.getFoo().getBeanManager());
+        container.stopContainer();
     }
 
     /*
@@ -189,6 +190,7 @@ public class TransitiveResolutionTest {
         Assert.assertNotNull(BasicInterceptor.getTarget());
         Assert.assertTrue(BasicInterceptor.getTarget() instanceof Complex);
         assertEquals("14", ((Complex) BasicInterceptor.getTarget()).getId());
+        container.stopContainer();
     }
 
     /*
@@ -237,6 +239,7 @@ public class TransitiveResolutionTest {
         });
         blah.ping(10);
         assertEquals(11, blah.getI());
+        container.stopContainer();
     }
 
 }
