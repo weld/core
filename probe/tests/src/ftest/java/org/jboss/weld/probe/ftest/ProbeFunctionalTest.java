@@ -128,7 +128,7 @@ public class ProbeFunctionalTest {
     @Test
     public void testObserverMethodDetail() {
         page.getObserversTab().click();
-        waitAjax().until().element(By.partialLinkText("Observer Methods")).is().visible();
+        waitAjax().until().element(By.xpath("//h1[text()='Observer Methods']")).is().visible();
         WebElement observerLink = driver.findElement(By.partialLinkText(ApplicationScopedObserver.class.getSimpleName()));
         assertTrue("Cannot find element for " + ApplicationScopedObserver.class.getSimpleName(), observerLink.isDisplayed());
         guardAjax(observerLink).click();
@@ -158,7 +158,7 @@ public class ProbeFunctionalTest {
         page.getMonitoringTab().click();
         waitAjax(driver).until().element(page.getInvocationTrees()).is().visible();
         guardAjax(page.getInvocationTrees()).click();
-        waitAjax(driver).until().element(By.linkText("Invocation Trees")).is().visible();
+        waitAjax(driver).until().element(By.xpath("//h1[text()='Invocation Trees']")).is().visible();
         List<WebElement> invocationTableValues = driver.findElements(By.tagName("td"));
         assertTrue(invocationTableValues.stream().anyMatch(webElement -> webElement.getText().equals(ProbeFilter.class.getName())));
         assertTrue(invocationTableValues.stream().anyMatch(webElement -> webElement.getText().equals(SERVLET_INVOKED)));
