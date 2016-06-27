@@ -41,6 +41,7 @@ import org.jboss.weld.mock.AbstractDeployment;
 import org.jboss.weld.mock.MockEjbServices;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -54,7 +55,8 @@ import org.testng.annotations.Test;
 public class SubclassedComponentDescriptorTest {
 
     private BeanManagerImpl manager;
-
+    private TestContainer container;
+    
     @BeforeClass
     public void prepareContainer() {
         final EjbDescriptor<Foo> fooDescriptor = new EjbDescriptorImpl<Foo>(Foo.class, Foo.class, EnhancedFoo.class, SessionBeanType.STATEFUL);
@@ -89,8 +91,13 @@ public class SubclassedComponentDescriptorTest {
 
         };
 
-        final TestContainer container = new TestContainer(deployment).startContainer();
+        container = new TestContainer(deployment).startContainer();
         manager = (BeanManagerImpl) container.getBeanManager(bda);
+    }
+    
+    @AfterClass
+    public void cleanup() {
+        container.stopContainer();
     }
 
     @Test
