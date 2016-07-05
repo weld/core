@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.undertow;
 
-import org.jboss.weld.environment.Container;
-import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.servlet.Container;
+import org.jboss.weld.environment.servlet.ContainerContext;
 import org.jboss.weld.environment.servlet.logging.UndertowLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
