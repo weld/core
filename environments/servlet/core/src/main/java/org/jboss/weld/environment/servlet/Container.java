@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.environment;
+package org.jboss.weld.environment.servlet;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
 
