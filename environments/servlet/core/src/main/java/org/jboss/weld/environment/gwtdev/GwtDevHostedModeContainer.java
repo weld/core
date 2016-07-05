@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.environment.Container;
-import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.servlet.Container;
+import org.jboss.weld.environment.servlet.ContainerContext;
 import org.jboss.weld.environment.jetty.AbstractJettyContainer;
 import org.jboss.weld.environment.jetty.JettyWeldInjector;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;

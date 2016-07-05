@@ -17,9 +17,9 @@
 
 package org.jboss.weld.environment.tomcat;
 
-import org.jboss.weld.environment.AbstractContainer;
-import org.jboss.weld.environment.Container;
-import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.servlet.AbstractContainer;
+import org.jboss.weld.environment.servlet.Container;
+import org.jboss.weld.environment.servlet.ContainerContext;
 import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.TomcatLogger;
 

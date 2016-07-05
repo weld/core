@@ -15,31 +15,40 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.environment;
+package org.jboss.weld.environment.servlet;
 
-import org.jboss.weld.environment.util.Reflections;
-import org.jboss.weld.resources.spi.ResourceLoader;
+import javax.servlet.ServletContext;
+
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.util.Preconditions;
 
 /**
- * Abstract container.
+ * Wrap listener arguments.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public abstract class AbstractContainer implements Container {
+public class ContainerContext {
 
-    /**
-     * Get class name to check is we can use this container.
-     *
-     * @return the class name to check
-     */
-    protected abstract String classToCheck();
+    private ServletContext servletContext;
 
-    @Override
-    public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
-        Reflections.classForName(resourceLoader, classToCheck());
-        return true;
+    private WeldManager manager;
+
+    public ContainerContext(ServletContext context, WeldManager manager) {
+        Preconditions.checkArgumentNotNull(context, "servlet context");
+
+        this.servletContext = context;
+        if (manager == null) {
+            manager = (WeldManager) context.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
+        }
+        this.manager = manager;
     }
 
-    public void destroy(ContainerContext context) {
+
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
+
+    public WeldManager getManager() {
+        return manager;
     }
 }

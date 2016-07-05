@@ -15,21 +15,31 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.environment.jetty;
+package org.jboss.weld.environment.servlet;
 
-import org.jboss.weld.environment.servlet.AbstractContainer;
-import org.jboss.weld.environment.servlet.ContainerContext;
+import org.jboss.weld.environment.util.Reflections;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * Abstract Jetty container.
+ * Abstract container.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public abstract class AbstractJettyContainer extends AbstractContainer {
+public abstract class AbstractContainer implements Container {
 
-    public static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
+    /**
+     * Get class name to check is we can use this container.
+     *
+     * @return the class name to check
+     */
+    protected abstract String classToCheck();
+
+    @Override
+    public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
+        Reflections.classForName(resourceLoader, classToCheck());
+        return true;
+    }
 
     public void destroy(ContainerContext context) {
-        context.getServletContext().removeAttribute(INJECTOR_ATTRIBUTE_NAME);
     }
 }
