@@ -25,7 +25,9 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -34,6 +36,7 @@ import org.junit.runner.RunWith;
  * @see WELD-2093
  */
 @RunWith(Arquillian.class)
+@Category(EmbeddedContainer.class)
 public class InterfaceDefaultMethodInterceptedTest {
 
     @Deployment
