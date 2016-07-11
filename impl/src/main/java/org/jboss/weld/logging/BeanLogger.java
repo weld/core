@@ -18,13 +18,10 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
-import org.jboss.logging.Logger;
-import org.jboss.logging.Logger.Level;
-import org.jboss.logging.annotations.Cause;
-import org.jboss.logging.annotations.LogMessage;
-import org.jboss.logging.annotations.Message;
-import org.jboss.logging.annotations.Message.Format;
-import org.jboss.logging.annotations.MessageLogger;
+import java.text.Format;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -511,5 +508,8 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1567, value = "Cannot create contextual instance of {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotCreateContextualInstanceOfBuilderInterceptor(Object param1);
+
+    @Message(id = 1568, value = "Unable to instantiate {0}: {1}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToInstantiate(Object param1, Object param2);
 
 }
