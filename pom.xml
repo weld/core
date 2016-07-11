@@ -42,7 +42,7 @@
         <atinject.tck.version>1</atinject.tck.version>
         <build.config.version>10</build.config.version>
         <cdi.tck-1-2.version>1.2.9.Final</cdi.tck-1-2.version>
-        <classfilewriter.version>1.1.2.Final</classfilewriter.version>
+        <classfilewriter.version>1.2.0.Beta1</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
