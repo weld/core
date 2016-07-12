@@ -149,6 +149,26 @@
 
     <profiles>
         <profile>
+            <id>jdk9</id>
+            <activation>
+                <!--auto-activate on JDK 1.9+-->
+                <jdk>[1.9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <!-- Temporary workaround to ensure BCEL internal classes are available in JDK 9. Force-exports these packages into unnamed module.-->
+                        <!-- Later on we should seek another approach! -->
+                        <configuration>
+                            <argLine>-XaddExports:java.xml/com.sun.org.apache.bcel.internal=ALL-UNNAMED -XaddExports:java.xml/com.sun.org.apache.bcel.internal.classfile=ALL-UNNAMED</argLine>                            
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>javax.xml.ws</id>
             <activation>
                 <jdk>1.5</jdk>
