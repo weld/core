@@ -709,6 +709,61 @@ This behaviour can be changed by setting a system property `org.jboss.weld.se.sc
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
+=== Weld SE and Weld Servlet cooperation
+
+Sometimes it could be convenient to start Servlet container programmatically.
+In this case a cooperation with Weld SE might come handy.
+This cooperation is based on passing `Weld`, `WeldContainer` or `BeanManager` instance to `ServletContextHandler` (in case of Jetty).
+You can either set a context attribute or use `org.jboss.weld.environment.servlet.Listener`.
+Check following examples.
+
+Adding `WeldContainer` instance as a context attribute:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+        try (WeldContainer weld = new Weld().disableDiscovery().beanClasses(Cat.class).initialize()) {
+              ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+              context.addEventListener(new Listener());
+              context.setAttribute(Listener.CONTAINER_ATTRIBUTE_NAME, weld);
+
+              Server server = new Server(8080);
+              context.setContextPath("/");
+              server.setHandler(context);
+              context.addServlet(TestServlet.class, "/test");
+              server.start();
+        }
+-----------------------------------------------------------------
+
+Adding `BeanManager` instance as a context attribute:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+        Weld weld = new Weld();
+        WeldContainer container = weld.initialize();
+
+        Server server = new Server(8080);
+        context.setContextPath("/");
+        server.setHandler(context);
+        context.addServlet(TestServlet.class, "/test");
+        context.setAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, container.getBeanManager());
+        server.start();
+-----------------------------------------------------------------
+
+Adding `Weld` instance as event listener with usage of `org.jboss.weld.environment.servlet.Listener`:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+        Weld builder = new Weld().disableDiscovery().beanClasses(Cat.class);
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addEventListener(Listener.using(builder));
+
+        Server server = new Server(8080);
+        context.setContextPath("/");
+        server.setHandler(context);
+        context.addServlet(TestServlet.class, "/test");
+        server.start();
+-----------------------------------------------------------------
+
 === OSGi
 
 Weld supports OSGi environment through Pax CDI. For more information on
