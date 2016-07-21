@@ -16,25 +16,21 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.mock.AbstractDeployment;
-import org.jboss.weld.mock.FlatDeployment;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static java.util.Arrays.asList;
 import static org.jboss.weld.test.util.Utils.getReference;
 import static org.testng.Assert.assertEquals;
 
@@ -44,7 +40,8 @@ public class TransitiveResolutionTest {
     */
     @Test
     public void testBeansXmlIsolation() {
-        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Collections.singletonList(Alt.class.getName()), null, null, null), Alt.class);
+        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar",
+                new BeansXmlImpl(Collections.singletonList(Alt.class.getName()), null, null, null), Alt.class);
         BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", Alt2.class);
         BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
         war.getBeanDeploymentArchives().add(jar1);
@@ -73,8 +70,10 @@ public class TransitiveResolutionTest {
     */
     @Test
     public void testBeansXmlMultipleEnabling() {
-        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Collections.singletonList(Alt.class.getName()), null, null, null), Alt.class);
-        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Collections.singletonList(Alt2.class.getName()), Collections.<String>emptyList(), null, null), Alt2.class);
+        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar",
+                new BeansXmlImpl(Collections.singletonList(Alt.class.getName()), null, null, null), Alt.class);
+        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar",
+                new BeansXmlImpl(Collections.singletonList(Alt2.class.getName()), Collections.<String>emptyList(), null, null), Alt2.class);
         BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
         war.getBeanDeploymentArchives().add(jar1);
         war.getBeanDeploymentArchives().add(jar2);
@@ -115,7 +114,7 @@ public class TransitiveResolutionTest {
 
         // Create a deployment, any other classes are put into the ejb-jar (not
         // relevant to test)
-        Deployment deployment = new AbstractDeployment(war, ejbJar) {
+        Deployment deployment = new FlatDeployment(new BeanDeploymentArchive[] { war, ejbJar }) {
 
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 return ejbJar;
@@ -162,7 +161,7 @@ public class TransitiveResolutionTest {
 
         // Create a deployment, any other classes are put into the ejb-jar (not
         // relevant to test)
-        Deployment deployment = new AbstractDeployment(ejbJar, war) {
+        Deployment deployment = new FlatDeployment(new BeanDeploymentArchive[] { ejbJar, war }) {
 
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 return ejbJar;
@@ -177,7 +176,6 @@ public class TransitiveResolutionTest {
         // Get the bean manager for war and ejb jar
         BeanManager warBeanManager = container.getBeanManager(war);
         BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
-
 
         BasicInterceptor.reset();
         Simple simple = getReference(ejbJarBeanManager, Simple.class);
@@ -212,7 +210,7 @@ public class TransitiveResolutionTest {
 
         // Create a deployment, any other classes are put into the ejb-jar (not
         // relevant to test)
-        Deployment deployment = new AbstractDeployment(war, ejbJar) {
+        Deployment deployment = new FlatDeployment(new BeanDeploymentArchive[] { war, ejbJar }) {
 
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 return ejbJar;
@@ -227,7 +225,6 @@ public class TransitiveResolutionTest {
         // Get the bean manager for war and ejb jar
         BeanManager warBeanManager = container.getBeanManager(war);
         BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
-
 
         BasicInterceptor.reset();
         Blah blah = getReference(ejbJarBeanManager, Blah.class);

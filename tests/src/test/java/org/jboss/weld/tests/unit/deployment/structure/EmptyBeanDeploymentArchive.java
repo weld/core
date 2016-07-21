@@ -19,9 +19,9 @@ package org.jboss.weld.tests.unit.deployment.structure;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockEjbInjectionServices;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockJpaInjectionServices;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockResourceInjectionServices;
+import org.jboss.arquillian.container.weld.embedded.mock.MockEjbInjectionServices;
+import org.jboss.arquillian.container.weld.embedded.mock.MockJpaInjectionServices;
+import org.jboss.arquillian.container.weld.embedded.mock.MockResourceInjectionServices;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;

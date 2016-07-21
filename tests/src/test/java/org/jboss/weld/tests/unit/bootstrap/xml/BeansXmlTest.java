@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner.Runnable;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer.Runner;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer.Runner.Runnable;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.XmlLogger;

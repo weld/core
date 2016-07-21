@@ -11,10 +11,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 public class ThreadLocalTestCase {
@@ -117,7 +116,7 @@ public class ThreadLocalTestCase {
         Map<Object, Object> values = new HashMap<Object, Object>();
         if (map != null) {
             Method mapRemove = map.getClass().getDeclaredMethod("remove", new Class[]
-                    {ThreadLocal.class});
+                    { ThreadLocal.class });
 
             mapRemove.setAccessible(true);
             Object[] table = (Object[]) (Object[]) internalTableField.get(map);
