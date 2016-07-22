@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.se;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
-
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -30,10 +28,10 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -42,13 +40,13 @@ import com.google.common.collect.ImmutableSet;
  */
 public class WeldSEProvider implements CDIProvider {
 
-    private final LoadingCache<String, WeldContainer> containers;
+    private final ComputingCache<String, WeldContainer> containers;
 
     // Used for caller detection
     private final Set<String> knownClassNames;
 
     public WeldSEProvider() {
-        this.containers = CacheBuilder.newBuilder().weakValues().build(new ClassNameToWeldContainer());
+        this.containers = ComputingCacheBuilder.newBuilder().setWeakValues().build(new ClassNameToWeldContainer());
         ImmutableSet.Builder<String> names = ImmutableSet.builder();
         for (Class<?> clazz = getClass(); clazz != Object.class; clazz = clazz.getSuperclass()) {
             names.add(clazz.getName());
@@ -70,7 +68,7 @@ public class WeldSEProvider implements CDIProvider {
         WeldSELogger.LOG.multipleContainersRunning(ids);
         String caller = getCallingClassName();
         if (caller != null) {
-            return getCacheValue(containers, caller);
+            return containers.getValue(caller);
         }
         // We are not able to determine the caller - return the first container initialized
         return WeldContainer.instance(ids.get(0));
@@ -91,10 +89,10 @@ public class WeldSEProvider implements CDIProvider {
         return null;
     }
 
-    private static class ClassNameToWeldContainer extends CacheLoader<String, WeldContainer> {
+    private static class ClassNameToWeldContainer implements Function<String, WeldContainer> {
 
         @Override
-        public WeldContainer load(String callerClassName) throws Exception {
+        public WeldContainer apply(String callerClassName) {
             List<String> ids = WeldContainer.getRunningContainerIds();
 
             for (String containerId : ids) {

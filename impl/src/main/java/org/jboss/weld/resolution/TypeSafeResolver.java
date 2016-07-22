@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
@@ -26,11 +25,10 @@ import java.util.Set;
 
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.WeldCollections;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 /**
  * Implementation of type safe bean resolution
@@ -41,7 +39,7 @@ import com.google.common.cache.LoadingCache;
  */
 public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collection<T>, F> {
 
-    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>, F> extends CacheLoader<R, F> {
+    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>, F> implements Function<R, F> {
 
         private final TypeSafeResolver<R, T, C, F> resolver;
 
@@ -49,14 +47,14 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
             this.resolver = resolver;
         }
 
-        public F load(R from) {
+        public F apply(R from) {
             return resolver.makeResultImmutable(resolver.sortResult(resolver.filterResult(resolver.findMatching(from))));
         }
 
     }
 
     // The resolved injection points
-    private final LoadingCache<R, F> resolved;
+    private final ComputingCache<R, F> resolved;
     // The beans to search
     private final Iterable<? extends T> allBeans;
     private final ResolvableToBeanCollection<R, T, C, F> resolverFunction;
@@ -66,7 +64,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      */
     public TypeSafeResolver(Iterable<? extends T> allBeans, WeldConfiguration configuration) {
         this.resolverFunction = new ResolvableToBeanCollection<R, T, C, F>(this);
-        this.resolved = CacheBuilder.newBuilder().maximumSize(configuration.getLongProperty(ConfigurationKey.RESOLUTION_CACHE_SIZE)).build(resolverFunction);
+        this.resolved = ComputingCacheBuilder.newBuilder().setMaxSize(configuration.getLongProperty(ConfigurationKey.RESOLUTION_CACHE_SIZE)).build(resolverFunction);
         this.allBeans = allBeans;
     }
 
@@ -74,8 +72,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      * Reset all cached resolutions
      */
     public void clear() {
-        this.resolved.invalidateAll();
-        this.resolved.cleanUp();
+        this.resolved.clear();
     }
 
     /**
@@ -87,9 +84,9 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     public F resolve(R resolvable, boolean cache) {
         R wrappedResolvable = wrap(resolvable);
         if (cache) {
-            return getCacheValue(resolved, wrappedResolvable);
+            return resolved.getValue(wrappedResolvable);
         } else {
-            return resolverFunction.load(wrappedResolvable);
+            return resolverFunction.apply(wrappedResolvable);
         }
     }
 
@@ -141,7 +138,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     }
 
     public boolean isCached(R resolvable) {
-        return resolved.getIfPresent(wrap(resolvable)) != null;
+        return resolved.getValueIfPresent(wrap(resolvable)) != null;
     }
 
     /**

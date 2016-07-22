@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,10 +24,10 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 /**
  * Implementation of name based bean resolution
@@ -38,7 +36,7 @@ import com.google.common.cache.LoadingCache;
  */
 public class NameBasedResolver {
 
-    private static class NameToBeanSet extends CacheLoader<String, Set<Bean<?>>> {
+    private static class NameToBeanSet implements Function<String, Set<Bean<?>>> {
 
         private final BeanManagerImpl beanManager;
         private final Iterable<? extends Bean<?>> allBeans;
@@ -50,7 +48,7 @@ public class NameBasedResolver {
             this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         }
 
-        public Set<Bean<?>> load(String from) {
+        public Set<Bean<?>> apply(String from) {
             Set<Bean<?>> matchedBeans = new HashSet<Bean<?>>();
             for (Bean<?> bean : allBeans) {
                 if ((bean.getName() == null && from == null) || (bean.getName() != null && bean.getName().equals(from))) {
@@ -63,13 +61,13 @@ public class NameBasedResolver {
     }
 
     // The resolved names
-    private LoadingCache<String, Set<Bean<?>>> resolvedNames;
+    private ComputingCache<String, Set<Bean<?>>> resolvedNames;
 
     /**
      * Constructor
      */
     public NameBasedResolver(BeanManagerImpl manager, Iterable<? extends Bean<?>> allBeans) {
-        this.resolvedNames = CacheBuilder.newBuilder().build(new NameToBeanSet(manager, allBeans));
+        this.resolvedNames = ComputingCacheBuilder.newBuilder().build(new NameToBeanSet(manager, allBeans));
     }
 
     /**
@@ -77,7 +75,7 @@ public class NameBasedResolver {
      * points when you add a bean to the manager
      */
     public void clear() {
-        this.resolvedNames.invalidateAll();
+        this.resolvedNames.clear();
     }
 
     /**
@@ -87,7 +85,7 @@ public class NameBasedResolver {
      * @return The set of matching beans
      */
     public Set<Bean<?>> resolve(final String name) {
-        return getCacheValue(resolvedNames, name);
+        return resolvedNames.getValue(name);
     }
 
     /**

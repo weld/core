@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
@@ -35,10 +34,10 @@ import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
@@ -51,10 +50,10 @@ import com.google.common.collect.Multisets;
  */
 public class SpecializationAndEnablementRegistry extends AbstractBootstrapService {
 
-    private class SpecializedBeanResolverForBeanManager extends CacheLoader<BeanManagerImpl, SpecializedBeanResolver> {
+    private class SpecializedBeanResolverForBeanManager implements Function<BeanManagerImpl, SpecializedBeanResolver> {
 
         @Override
-        public SpecializedBeanResolver load(BeanManagerImpl manager) {
+        public SpecializedBeanResolver apply(BeanManagerImpl manager) {
             return new SpecializedBeanResolver(buildAccessibleBeanDeployerEnvironments(manager));
         }
 
@@ -76,10 +75,10 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         }
     }
 
-    private class BeansSpecializedByBean extends CacheLoader<Bean<?>, Set<? extends AbstractBean<?, ?>>> {
+    private class BeansSpecializedByBean implements Function<Bean<?>, Set<? extends AbstractBean<?, ?>>> {
 
         @Override
-        public Set<? extends AbstractBean<?, ?>> load(Bean<?> specializingBean) {
+        public Set<? extends AbstractBean<?, ?>> apply(Bean<?> specializingBean) {
             Set<? extends AbstractBean<?, ?>> result = null;
             if (specializingBean instanceof AbstractClassBean<?>) {
                 result = apply((AbstractClassBean<?>) specializingBean);
@@ -105,19 +104,19 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         }
 
         private SpecializedBeanResolver getSpecializedBeanResolver(RIBean<?> bean) {
-            return getCacheValue(specializedBeanResolvers, bean.getBeanManager());
+            return specializedBeanResolvers.getValue(bean.getBeanManager());
         }
     }
 
-    private final LoadingCache<BeanManagerImpl, SpecializedBeanResolver> specializedBeanResolvers;
+    private final ComputingCache<BeanManagerImpl, SpecializedBeanResolver> specializedBeanResolvers;
     private final Map<BeanManagerImpl, BeanDeployerEnvironment> environmentByManager = new ConcurrentHashMap<BeanManagerImpl, BeanDeployerEnvironment>();
     // maps specializing beans to the set of specialized beans
-    private final LoadingCache<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
+    private final ComputingCache<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
     // fast lookup structure that allows us to figure out if a given bean is specialized in any of the bean deployments
     private final Multiset<AbstractBean<?, ?>> specializedBeansSet = ConcurrentHashMultiset.create();
 
     public SpecializationAndEnablementRegistry() {
-        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
+        ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
         this.specializedBeanResolvers = cacheBuilder.build(new SpecializedBeanResolverForBeanManager());
         this.specializedBeans = cacheBuilder.build(new BeansSpecializedByBean());
     }
@@ -129,20 +128,20 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         if (specializingBean instanceof AbstractClassBean<?>) {
             AbstractClassBean<?> abstractClassBean = (AbstractClassBean<?>) specializingBean;
             if (abstractClassBean.isSpecializing()) {
-                return getCacheValue(specializedBeans, specializingBean);
+                return specializedBeans.getValue(specializingBean);
             }
         }
         if (specializingBean instanceof ProducerMethod<?, ?>) {
             ProducerMethod<?, ?> producerMethod = (ProducerMethod<?, ?>) specializingBean;
             if (producerMethod.isSpecializing()) {
-                return getCacheValue(specializedBeans, specializingBean);
+                return specializedBeans.getValue(specializingBean);
             }
         }
         return Collections.emptySet();
     }
 
     public void vetoSpecializingBean(Bean<?> bean) {
-        Set<? extends AbstractBean<?, ?>> noLongerSpecializedBeans = specializedBeans.getIfPresent(bean);
+        Set<? extends AbstractBean<?, ?>> noLongerSpecializedBeans = specializedBeans.getValueIfPresent(bean);
         if (noLongerSpecializedBeans != null) {
             specializedBeans.invalidate(bean);
             for (AbstractBean<?, ?> noLongerSpecializedBean : noLongerSpecializedBeans) {
@@ -193,9 +192,9 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
 
     @Override
     public void cleanupAfterBoot() {
-        specializedBeanResolvers.invalidateAll();
+        specializedBeanResolvers.clear();
         environmentByManager.clear();
-        specializedBeans.invalidateAll();
+        specializedBeans.clear();
         specializedBeansSet.clear();
     }
 

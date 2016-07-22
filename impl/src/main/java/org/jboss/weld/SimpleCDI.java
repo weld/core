@@ -24,10 +24,9 @@ import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 /**
  * Provides convenient way to access the CDI container.
@@ -37,13 +36,13 @@ import com.google.common.cache.LoadingCache;
  */
 public class SimpleCDI extends AbstractCDI<Object> {
 
-    private class ClassNameToBeanManager extends CacheLoader<String, BeanManagerProxy> {
+    private class ClassNameToBeanManager implements Function<String, BeanManagerProxy> {
 
         /**
          * Determines the correct {@link BeanManagerImpl} based on a class name of the caller.
          */
         @Override
-        public BeanManagerProxy load(String callerClassName) {
+        public BeanManagerProxy apply(String callerClassName) {
             return new BeanManagerProxy(findBeanManager(callerClassName));
         }
 
@@ -70,7 +69,7 @@ public class SimpleCDI extends AbstractCDI<Object> {
         }
     }
 
-    private final LoadingCache<String, BeanManagerProxy> beanManagers;
+    private final ComputingCache<String, BeanManagerProxy> beanManagers;
     private final Container container;
 
     public SimpleCDI() {
@@ -79,7 +78,7 @@ public class SimpleCDI extends AbstractCDI<Object> {
 
     public SimpleCDI(Container container) {
         this.container = container;
-        beanManagers = CacheBuilder.newBuilder().weakValues().build(new ClassNameToBeanManager());
+        beanManagers = ComputingCacheBuilder.newBuilder().setWeakValues().build(new ClassNameToBeanManager());
     }
 
     /**
@@ -102,7 +101,7 @@ public class SimpleCDI extends AbstractCDI<Object> {
         if (state.equals(ContainerState.STOPPED) || state.equals(ContainerState.SHUTDOWN)) {
             throw BeanManagerLogger.LOG.beanManagerNotAvailable();
         }
-        return beanManagers.getUnchecked(getCallingClassName());
+        return beanManagers.getValue(getCallingClassName());
     }
 
     @Override
@@ -115,6 +114,6 @@ public class SimpleCDI extends AbstractCDI<Object> {
     }
 
     public void cleanup() {
-        beanManagers.invalidateAll();
+        beanManagers.clear();
     }
 }
