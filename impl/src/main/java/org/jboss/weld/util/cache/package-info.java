@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -17,3 +17,4 @@
 @Vetoed
 package org.jboss.weld.util.cache;
 import javax.enterprise.inject.Vetoed;
+

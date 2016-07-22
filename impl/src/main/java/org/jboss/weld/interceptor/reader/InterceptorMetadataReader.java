@@ -1,6 +1,5 @@
 package org.jboss.weld.interceptor.reader;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import javax.enterprise.inject.spi.Interceptor;
 
@@ -11,11 +10,9 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-
-import com.google.common.base.Function;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 /**
  * InterceptorMetadata reader. The reader produces InterceptorMetadata instances for plain interceptors, CDI interceptors and components' target classes.
@@ -28,27 +25,27 @@ import com.google.common.cache.LoadingCache;
 public class InterceptorMetadataReader {
 
     private final BeanManagerImpl manager;
-    private final LoadingCache<Class<?>, InterceptorClassMetadata<?>> plainInterceptorMetadataCache;
-    private final LoadingCache<Interceptor<?>, InterceptorClassMetadata<?>> cdiInterceptorMetadataCache;
+    private final ComputingCache<Class<?>, InterceptorClassMetadata<?>> plainInterceptorMetadataCache;
+    private final ComputingCache<Interceptor<?>, InterceptorClassMetadata<?>> cdiInterceptorMetadataCache;
     private final Function<Interceptor<?>, InterceptorClassMetadata<?>> interceptorToInterceptorMetadataFunction;
 
     public InterceptorMetadataReader(final BeanManagerImpl manager) {
         this.manager = manager;
-        final CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
+        final ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
 
-        this.plainInterceptorMetadataCache = cacheBuilder.build(new CacheLoader<Class<?>, InterceptorClassMetadata<?>>() {
+        this.plainInterceptorMetadataCache = cacheBuilder.build(new Function<Class<?>, InterceptorClassMetadata<?>>() {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
-            public InterceptorClassMetadata<?> load(Class<?> key) throws Exception {
+            public InterceptorClassMetadata<?> apply(Class<?> key) {
                 EnhancedAnnotatedType<?> type = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(key, manager.getId());
                 InterceptorFactory<?> factory = PlainInterceptorFactory.of(key, manager);
                 return new InterceptorMetadataImpl(key, factory, InterceptorMetadataUtils.buildMethodMap(type, false, manager));
             }
         });
 
-        this.cdiInterceptorMetadataCache = cacheBuilder.build(new CacheLoader<Interceptor<?>, InterceptorClassMetadata<?>>() {
+        this.cdiInterceptorMetadataCache = cacheBuilder.build(new Function<Interceptor<?>, InterceptorClassMetadata<?>>() {
             @Override
-            public InterceptorClassMetadata<?> load(Interceptor<?> key) throws Exception {
+            public InterceptorClassMetadata<?> apply(Interceptor<?> key) {
                 return CustomInterceptorMetadata.of(key);
             }
         });
@@ -61,7 +58,7 @@ public class InterceptorMetadataReader {
     }
 
     public <T> InterceptorClassMetadata<T> getPlainInterceptorMetadata(Class<T> clazz) {
-        return getCastCacheValue(plainInterceptorMetadataCache, clazz);
+        return plainInterceptorMetadataCache.getCastValue(clazz);
     }
 
     public <T> TargetClassInterceptorMetadata getTargetClassInterceptorMetadata(EnhancedAnnotatedType<T> type) {
@@ -73,7 +70,7 @@ public class InterceptorMetadataReader {
             InterceptorImpl<T> interceptorImpl = (InterceptorImpl<T>) interceptor;
             return interceptorImpl.getInterceptorMetadata();
         }
-        return getCastCacheValue(cdiInterceptorMetadataCache, interceptor);
+        return cdiInterceptorMetadataCache.getCastValue(interceptor);
     }
 
     public Function<Interceptor<?>, InterceptorClassMetadata<?>> getInterceptorToInterceptorMetadataFunction() {
@@ -81,9 +78,7 @@ public class InterceptorMetadataReader {
     }
 
     public void cleanAfterBoot() {
-        plainInterceptorMetadataCache.invalidateAll();
-        plainInterceptorMetadataCache.cleanUp();
-        cdiInterceptorMetadataCache.invalidateAll();
-        cdiInterceptorMetadataCache.cleanUp();
+        plainInterceptorMetadataCache.clear();
+        cdiInterceptorMetadataCache.clear();
     }
 }

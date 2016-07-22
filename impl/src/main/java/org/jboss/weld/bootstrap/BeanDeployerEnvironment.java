@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -62,18 +61,18 @@ import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.InjectionPoints;
+import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
 
 public class BeanDeployerEnvironment {
 
     private final Set<SlimAnnotatedTypeContext<?>> annotatedTypes;
     private final Set<Class<?>> vetoedClasses;
-    private final LoadingCache<Class<?>, Set<AbstractClassBean<?>>> classBeanMap;
-    private final LoadingCache<WeldMethodKey, Set<ProducerMethod<?, ?>>> producerMethodBeanMap;
+    private final ComputingCache<Class<?>, Set<AbstractClassBean<?>>> classBeanMap;
+    private final ComputingCache<WeldMethodKey, Set<ProducerMethod<?, ?>>> producerMethodBeanMap;
     private final Set<ProducerField<?, ?>> producerFields;
     private final Set<RIBean<?>> beans;
     private final Set<ObserverInitializationContext<?, ?>> observers;
@@ -110,9 +109,9 @@ public class BeanDeployerEnvironment {
     protected BeanDeployerEnvironment(
             Set<SlimAnnotatedTypeContext<?>> annotatedTypes,
             Set<Class<?>> vetoedClasses,
-            LoadingCache<Class<?>, Set<AbstractClassBean<?>>> classBeanMap,
+            ComputingCache<Class<?>, Set<AbstractClassBean<?>>> classBeanMap,
             Set<ProducerField<?, ?>> producerFields,
-            LoadingCache<WeldMethodKey, Set<ProducerMethod<?, ?>>> producerMethodBeanMap,
+            ComputingCache<WeldMethodKey, Set<ProducerMethod<?, ?>>> producerMethodBeanMap,
             Set<RIBean<?>> beans,
             Set<ObserverInitializationContext<?, ?>> observers,
             Set<DisposalMethod<?, ?>> allDisposalBeans,
@@ -184,7 +183,7 @@ public class BeanDeployerEnvironment {
 
     public Set<ProducerMethod<?, ?>> getProducerMethod(Class<?> declaringClass, MethodSignature signature) {
         WeldMethodKey key = new WeldMethodKey(declaringClass, signature);
-        Set<ProducerMethod<?, ?>> beans = getCacheValue(producerMethodBeanMap, key);
+        Set<ProducerMethod<?, ?>> beans = producerMethodBeanMap.getValue(key);
         for (ProducerMethod<?, ?> producerMethod : beans) {
             producerMethod.initialize(this);
         }
@@ -192,7 +191,7 @@ public class BeanDeployerEnvironment {
     }
 
     public Set<AbstractClassBean<?>> getClassBeans(Class<?> clazz) {
-        Set<AbstractClassBean<?>> beans = getCacheValue(classBeanMap, clazz);
+        Set<AbstractClassBean<?>> beans = classBeanMap.getValue(clazz);
         for (AbstractClassBean<?> bean : beans) {
             bean.preInitialize();
         }
@@ -200,7 +199,7 @@ public class BeanDeployerEnvironment {
     }
 
     public void addProducerMethod(ProducerMethod<?, ?> bean) {
-        getCacheValue(producerMethodBeanMap, WeldMethodKey.of(bean)).add(bean);
+        producerMethodBeanMap.getValue(WeldMethodKey.of(bean)).add(bean);
         addAbstractBean(bean);
     }
 
@@ -219,7 +218,7 @@ public class BeanDeployerEnvironment {
 
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
         if (!(bean instanceof NewBean)) {
-            getCacheValue(classBeanMap, bean.getBeanClass()).add(bean);
+            classBeanMap.getValue(bean.getBeanClass()).add(bean);
         }
         addAbstractBean(bean);
     }
@@ -400,7 +399,7 @@ public class BeanDeployerEnvironment {
     public void vetoBean(AbstractBean<?, ?> bean) {
         beans.remove(bean);
         if (bean instanceof AbstractClassBean<?>) {
-            getCacheValue(classBeanMap, bean.getBeanClass()).remove(bean);
+            classBeanMap.getValue(bean.getBeanClass()).remove(bean);
             if (bean instanceof InterceptorImpl<?>) {
                 interceptors.remove(bean);
             }
@@ -410,7 +409,7 @@ public class BeanDeployerEnvironment {
         }
         if (bean instanceof ProducerMethod<?, ?>) {
             ProducerMethod<?, ?> producerMethod = cast(bean);
-            getCacheValue(producerMethodBeanMap, WeldMethodKey.of(producerMethod)).remove(producerMethod);
+            producerMethodBeanMap.getValue(WeldMethodKey.of(producerMethod)).remove(producerMethod);
         }
         if (bean instanceof ProducerField<?, ?>) {
             producerFields.remove(bean);
@@ -418,11 +417,11 @@ public class BeanDeployerEnvironment {
     }
 
     public Iterable<AbstractClassBean<?>> getClassBeans() {
-        return Iterables.concat(classBeanMap.asMap().values());
+        return Iterables.concat(classBeanMap.getAllPresentValues());
     }
 
     public Iterable<ProducerMethod<?, ?>> getProducerMethodBeans() {
-        return Iterables.concat(producerMethodBeanMap.asMap().values());
+        return Iterables.concat(producerMethodBeanMap.getAllPresentValues());
     }
 
     public Set<ProducerField<?, ?>> getProducerFields() {
@@ -432,8 +431,8 @@ public class BeanDeployerEnvironment {
     public void cleanup() {
         this.annotatedTypes.clear();
         this.vetoedClasses.clear();
-        this.classBeanMap.invalidateAll();
-        this.producerMethodBeanMap.invalidateAll();
+        this.classBeanMap.clear();
+        this.producerMethodBeanMap.clear();
         this.producerFields.clear();
         this.allDisposalBeans.clear();
         this.resolvedDisposalBeans.clear();

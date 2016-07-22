@@ -27,4 +27,6 @@ public interface ValueHolder<T> {
 
     T get();
 
+    T getIfPresent();
+
 }

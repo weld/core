@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,18 +16,22 @@
  */
 package org.jboss.weld.util;
 
+import java.lang.ref.WeakReference;
+
 /**
- * Represents a lazily computed value.
+ * {@link LazyValueHolder} that uses {@link WeakReference}.
  *
- * @author Stuart Douglas
+ * @author Jozef Hartinger
+ *
+ * @param <T>
  */
-public abstract class LazyValueHolder<T> implements ValueHolder<T> {
+public abstract class WeakLazyValueHolder<T> implements ValueHolder<T> {
 
     public static <V> Function<V, ValueHolder<V>> forValue() {
         return new Function<V, ValueHolder<V>>() {
             @Override
             public ValueHolder<V> apply(final V value) {
-                return new LazyValueHolder<V>() {
+                return new WeakLazyValueHolder<V>() {
                     @Override
                     protected V computeValue() {
                         return value;
@@ -37,43 +41,40 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T> {
         };
     }
 
-    private transient volatile T value;
+    private volatile WeakReference<T> reference;
 
     public T get() {
-        T valueCopy = value;
-        if (valueCopy != null) {
-            return valueCopy;
+        WeakReference<T> reference = this.reference;
+        T value = null;
+        if (reference != null) {
+            value = reference.get();
+        }
+        if (value != null) {
+            return value;
         }
         synchronized (this) {
-            if (value == null) {
-                value = computeValue();
+            if (this.reference == reference) {
+                T newValue = computeValue();
+                this.reference = new WeakReference<T>(newValue);
             }
-            return value;
+            return this.reference.get();
         }
     }
 
     @Override
     public T getIfPresent() {
-        return value;
+        WeakReference<T> reference = this.reference;
+        if (reference != null) {
+            return reference.get();
+        }
+        return null;
     }
 
     public void clear() {
         synchronized (this) {
-            value = null;
+            reference = null;
         }
     }
 
     protected abstract T computeValue();
-
-    /**
-     * {@link LazyValueHolder} that implements {@link java.io.Serializable}.
-     *
-     * @author Jozef Hartinger
-     *
-     * @param <T> the lazily-computed type
-     */
-    public abstract static class Serializable<T> extends LazyValueHolder<T> implements java.io.Serializable {
-
-        private static final long serialVersionUID = 1L;
-    }
 }
