@@ -35,8 +35,7 @@ import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Preconditions;
-
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * An optional per deployment service.

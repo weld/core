@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static com.google.common.collect.ImmutableList.copyOf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +25,9 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
-import com.google.common.collect.ImmutableSet;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Immutable information about observer methods resolved for a type/qualifiers combination.
@@ -62,7 +62,7 @@ public class ResolvedObservers<T> {
                 metadataRequired = true;
             }
         }
-        return new ResolvedObservers<T>(copyOf(immediateObservers), copyOf(transactionObservers), metadataRequired);
+        return new ResolvedObservers<T>(ImmutableList.copyOf(immediateObservers), ImmutableList.copyOf(transactionObservers), metadataRequired);
     }
 
     private final List<ObserverMethod<? super T>> immediateObservers;

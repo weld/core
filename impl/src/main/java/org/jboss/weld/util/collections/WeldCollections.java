@@ -28,10 +28,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
 /**
  * Collection utilities.
  *

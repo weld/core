@@ -78,7 +78,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.api.ServletListener;
 
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  *

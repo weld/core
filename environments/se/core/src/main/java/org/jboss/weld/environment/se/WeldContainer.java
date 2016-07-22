@@ -37,8 +37,7 @@ import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
-
-import com.google.common.collect.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Represents a Weld SE container.

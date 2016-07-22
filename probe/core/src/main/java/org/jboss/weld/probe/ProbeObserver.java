@@ -35,9 +35,8 @@ import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Formats;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Catch-all observer that captures all events within the application.

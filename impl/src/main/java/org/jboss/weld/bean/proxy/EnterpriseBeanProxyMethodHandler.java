@@ -31,10 +31,9 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
+import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Method handler for enterprise bean client proxies

@@ -25,10 +25,9 @@ import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Primitives;
-
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 abstract class AbstractInvocationContext implements InvocationContext {
 

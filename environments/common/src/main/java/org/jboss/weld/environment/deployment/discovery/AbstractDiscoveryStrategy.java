@@ -37,8 +37,7 @@ import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-
-import com.google.common.collect.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  *
