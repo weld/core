@@ -26,9 +26,9 @@ import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.ImmutableSet;
 
 public class InjectionTargetCreationTest {
 

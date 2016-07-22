@@ -32,10 +32,10 @@ import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Preconditions;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * If the component is not intercepted this implementation takes care of invoking its lifecycle callback methods. If the

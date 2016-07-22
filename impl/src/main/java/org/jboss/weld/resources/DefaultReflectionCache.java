@@ -21,6 +21,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,8 +36,7 @@ import org.jboss.weld.util.Function;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.Arrays2;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
 
@@ -60,7 +60,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
                 this.annotationSet = Collections.emptySet();
             } else {
                 this.annotations = annotations;
-                this.annotationSet = ImmutableSet.copyOf(annotations);
+                this.annotationSet = ImmutableSet.copyOf(Arrays.asList(annotations));
             }
         }
     }
@@ -105,9 +105,9 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
             public Set<Annotation> apply(BackedAnnotatedParameter<?> parameter) {
                 final Member member = parameter.getDeclaringCallable().getJavaMember();
                 if (member instanceof Method) {
-                    return ImmutableSet.copyOf( getParameterAnnotations((Method) member, parameter.getPosition()));
+                    return ImmutableSet.of(getParameterAnnotations((Method) member, parameter.getPosition()));
                 } else {
-                    return ImmutableSet.copyOf( getParameterAnnotations((Constructor<?>) member, parameter.getPosition()));
+                    return ImmutableSet.of(getParameterAnnotations((Constructor<?>) member, parameter.getPosition()));
                 }
             }
 

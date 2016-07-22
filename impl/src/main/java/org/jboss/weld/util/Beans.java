@@ -98,12 +98,12 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
 
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Helper class for bean inspection
@@ -688,7 +688,7 @@ public class Beans {
     static Set<Type> getLegalBeanTypes(Set<Type> types, EnhancedAnnotated<?, ?> annotated, Type... additionalTypes) {
         if (additionalTypes != null && additionalTypes.length > 0) {
             // Micro-optimization is not possible
-            return omitIllegalBeanTypes(types, annotated).add(additionalTypes).build();
+            return omitIllegalBeanTypes(types, annotated).addAll(additionalTypes).build();
         }
         for (Type type : types) {
             if (Types.isIllegalBeanType(type)) {

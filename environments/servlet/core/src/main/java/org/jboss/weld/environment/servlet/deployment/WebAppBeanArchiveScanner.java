@@ -31,8 +31,7 @@ import org.jboss.weld.environment.deployment.discovery.DefaultBeanArchiveScanner
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.util.Servlets;
 import org.jboss.weld.resources.spi.ResourceLoader;
-
-import com.google.common.collect.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Web application bean archive scanner.

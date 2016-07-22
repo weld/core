@@ -31,8 +31,7 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Function;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Metadata singleton for holding EJB metadata, scope models etc.

@@ -42,7 +42,7 @@ import org.jboss.weld.environment.deployment.WeldResourceLoader;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
-import com.google.common.collect.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Scans the classpath and tries to process all "META-INF/beans.xml" resources.

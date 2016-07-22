@@ -30,7 +30,7 @@ import org.jboss.weld.resources.spi.ClassFileServices;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Jandex implementation of the {@link ClassFileServices}), which is a service that is a faster alternative to get info about class without a need to load it

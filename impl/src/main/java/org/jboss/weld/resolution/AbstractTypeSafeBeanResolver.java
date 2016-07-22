@@ -48,9 +48,8 @@ import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * @author pmuir

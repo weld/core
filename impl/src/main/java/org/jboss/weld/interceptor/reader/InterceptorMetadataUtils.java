@@ -13,9 +13,8 @@ import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.BeanMethods;
+import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.Formats;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * @author Marius Bogoevici

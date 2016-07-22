@@ -30,10 +30,10 @@ import org.jboss.cdi.tck.tests.implementation.simple.lifecycle.unproxyable.Unpro
 import org.jboss.cdi.tck.tests.lookup.clientProxy.unproxyable.beanConstructor.BeanConstructorWithParametersTest;
 import org.jboss.cdi.tck.tests.lookup.clientProxy.unproxyable.privateConstructor.PrivateConstructorTest;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.testng.IMethodInstance;
 import org.testng.ITestContext;
 
-import com.google.common.collect.ImmutableSet;
 
 /**
  * If unsafe proxies are enabled, this interceptor disables a set of TCK tests that are known to fail with unsafe proxies (because with unsafe proxies Weld is

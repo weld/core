@@ -44,9 +44,9 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
