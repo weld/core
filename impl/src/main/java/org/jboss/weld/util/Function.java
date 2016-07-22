@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2016, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,19 +17,21 @@
 package org.jboss.weld.util;
 
 /**
- * Backport of Guava/JDK8 consumer interface.
+ *  Backport of Guava/JDK8 function.
  *
  * @author Martin Kouba
  *
  * @param <T>
+ * @param <R>
  */
-public interface Consumer<T> {
+public interface Function<T, R> {
 
     /**
-     * Performs operation on the given argument.
+     * Applies the function to the argument and returns the result.
      *
-     * @param input
+     * @param t
+     * @return the result
      */
-    void accept(T input);
+    R apply(T t);
 
 }

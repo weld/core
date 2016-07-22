@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2016, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,19 +17,18 @@
 package org.jboss.weld.util;
 
 /**
- * Backport of Guava/JDK8 consumer interface.
+ * Backport of Guava/JDK8 predicate.
  *
  * @author Martin Kouba
  *
  * @param <T>
  */
-public interface Consumer<T> {
+public interface Predicate<T> {
 
     /**
-     * Performs operation on the given argument.
      *
-     * @param input
+     * @return <code>true</code> if the input argument matches the predicate, <code>false</code> otherwise
      */
-    void accept(T input);
+    boolean test(T t);
 
 }
