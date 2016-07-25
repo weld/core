@@ -29,9 +29,8 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.collections.Iterators;
 
 /**
  * Hosts a {@link ObserverNotifier} that uses the global {@link TypeSafeObserverResolver} which has access to every enabled
@@ -43,7 +42,7 @@ import com.google.common.collect.Iterators;
  */
 public class GlobalObserverNotifierService implements BootstrapService {
 
-    private static class BeanManagerToObserverMethodIterable implements Function <BeanManagerImpl, Iterator<ObserverMethod<?>>> {
+    private static class BeanManagerToObserverMethodIterable implements Function<BeanManagerImpl, Iterator<ObserverMethod<?>>> {
         @Override
         public Iterator<ObserverMethod<?>> apply(BeanManagerImpl manager) {
             return manager.getObservers().iterator();

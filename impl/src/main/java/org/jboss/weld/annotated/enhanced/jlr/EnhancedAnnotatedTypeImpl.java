@@ -56,6 +56,7 @@ import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -63,7 +64,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.google.common.collect.Sets;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 

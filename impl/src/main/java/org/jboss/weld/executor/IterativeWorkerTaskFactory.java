@@ -23,8 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.jboss.weld.manager.api.ExecutorServices;
-
-import com.google.common.collect.Iterables;
+import org.jboss.weld.util.collections.Iterables;
 
 /**
  * Used for decomposition of loops in which independent tasks are processed sequentially.

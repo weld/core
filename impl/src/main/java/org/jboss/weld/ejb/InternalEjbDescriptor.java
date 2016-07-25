@@ -30,11 +30,11 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 
 /**
  * More powerful version of {@link EjbDescriptor} that exposes Maps for some
@@ -85,7 +85,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
         if (interfaceDescriptors == null) {
             return Collections.emptySet();
         }
-        return ImmutableSet.copyOf(Collections2.transform(interfaceDescriptors, BusinessInterfaceDescriptorToClassFunction.INSTANCE));
+        return ImmutableSet.copyOf(Iterables.transform(interfaceDescriptors, BusinessInterfaceDescriptorToClassFunction.INSTANCE));
     }
 
     @Override

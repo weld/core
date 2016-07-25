@@ -134,10 +134,9 @@ import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Permissions;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.Iterables;
 
 /**
  * Common bootstrapping functionality that is run at application startup and

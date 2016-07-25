@@ -19,9 +19,7 @@ package org.jboss.weld.manager;
 import java.util.Comparator;
 
 import org.jboss.weld.manager.api.WeldManager;
-
-import com.google.common.base.Function;
-
+import org.jboss.weld.util.Function;
 
 public final class BeanManagers {
 

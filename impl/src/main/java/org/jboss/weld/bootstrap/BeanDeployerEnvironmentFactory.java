@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -33,8 +34,6 @@ import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Multimaps;
 
-import com.google.common.collect.Sets;
-
 public class BeanDeployerEnvironmentFactory {
 
     private BeanDeployerEnvironmentFactory() {
@@ -49,19 +48,19 @@ public class BeanDeployerEnvironmentFactory {
      */
     public static BeanDeployerEnvironment newConcurrentEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         return new BeanDeployerEnvironment(
-                Sets.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
                 Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
-                Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
                 Multimaps.<WeldMethodKey, ProducerMethod<?, ?>>newConcurrentSetMultimap(),
-                Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<ObserverInitializationContext<?, ?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<DecoratorImpl<?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<InterceptorImpl<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<ObserverInitializationContext<?, ?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<DecoratorImpl<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<InterceptorImpl<?>, Boolean>()),
                 ejbDescriptors,
-                Sets.newSetFromMap(new ConcurrentHashMap<EnhancedAnnotatedType<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<EnhancedAnnotatedType<?>, Boolean>()),
                 new ConcurrentHashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
                 manager);
     }

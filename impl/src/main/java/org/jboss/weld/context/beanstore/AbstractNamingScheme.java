@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.Iterables;
 
 public abstract class AbstractNamingScheme implements NamingScheme {
 
@@ -75,11 +75,11 @@ public abstract class AbstractNamingScheme implements NamingScheme {
     }
 
     public Collection<BeanIdentifier> deprefix(Collection<String> ids) {
-        return new ArrayList<BeanIdentifier>(Collections2.transform(ids, deprefixerFunction));
+        return new ArrayList<BeanIdentifier>(ImmutableList.copyOf(Iterables.transform(ids, deprefixerFunction)));
     }
 
     public Collection<String> prefix(Collection<BeanIdentifier> ids) {
-        return new ArrayList<String>(Collections2.transform(ids, prefixerFunction));
+        return new ArrayList<String>(ImmutableList.copyOf(Iterables.transform(ids, prefixerFunction)));
     }
 
     protected abstract String getPrefix();

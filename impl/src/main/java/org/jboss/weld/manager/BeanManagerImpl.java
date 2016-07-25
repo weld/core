@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.manager;
 
-import static com.google.common.collect.Iterables.concat;
 import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
 import static org.jboss.weld.util.collections.Iterables.flatMap;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -153,11 +152,13 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.ForwardingBeanManager;
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -448,8 +449,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return contextId;
     }
 
-    private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform) {
-        return concat(flatMap(getAccessibleManagers(), transform), transform.transform(this));
+    private <T> Iterable<T> createDynamicAccessibleIterable(final Function<BeanManagerImpl, Iterable<T>> transform) {
+        return Iterables.concat(flatMap(getAccessibleManagers(), transform), transform.apply(this));
     }
 
     public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager) {

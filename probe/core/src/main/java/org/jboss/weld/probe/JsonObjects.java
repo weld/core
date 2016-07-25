@@ -167,10 +167,9 @@ import org.jboss.weld.probe.Queries.Page;
 import org.jboss.weld.probe.Resource.Representation;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.Sets;
 
 /**
  * Lots of utility methods for creating JSON data.
