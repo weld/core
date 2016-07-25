@@ -28,12 +28,11 @@ import java.util.Set;
 import org.jboss.weld.resolution.CovariantTypes;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 
 /**
  * Utility class for Types

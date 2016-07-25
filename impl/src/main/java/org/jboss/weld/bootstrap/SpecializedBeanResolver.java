@@ -24,8 +24,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerMethod;
-
-import com.google.common.collect.Iterables;
+import org.jboss.weld.util.collections.Iterables;
 
 /**
  * Provides operations for resolving specialized beans. Since such resolutions are required during bootstrap when

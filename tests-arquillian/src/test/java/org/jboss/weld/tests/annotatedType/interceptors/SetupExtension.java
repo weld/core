@@ -2,6 +2,7 @@ package org.jboss.weld.tests.annotatedType.interceptors;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
@@ -11,12 +12,9 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Sets;
 
 public class SetupExtension implements Extension {
 
@@ -55,7 +53,16 @@ public class SetupExtension implements Extension {
             @Override
             @SuppressWarnings({ "unchecked", "rawtypes" })
             public Set<AnnotatedMethod<? super Box>> getMethods() {
-                return Sets.newHashSet(Collections2.transform(delegate().getMethods(), new MethodWrappingFunction()));
+                Set<AnnotatedMethod<? super Box>> methods = new HashSet<>();
+                Set<AnnotatedMethod<? super Box>> annotatedMethods = delegate().getMethods();
+                for (final AnnotatedMethod<? super Box> annotatedMethod : annotatedMethods) {
+                    methods.add(new NoAnnotationMethodWrapper() {
+                        protected AnnotatedMethod<? super Box> delegate() {
+                            return annotatedMethod;
+                        }
+                    });
+                }
+                return methods;
             }
         };
 

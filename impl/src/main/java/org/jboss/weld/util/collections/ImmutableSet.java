@@ -64,6 +64,17 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
         return ImmutableSet.<T> builder().addAll(collection).build();
     }
 
+    public static <T> Set<T> copyOf(Iterable<? extends T> iterable) {
+        Preconditions.checkNotNull(iterable);
+        if (iterable instanceof AbstractImmutableSet<?>) {
+            return (Set<T>) iterable;
+        }
+        if (!iterable.iterator().hasNext()) {
+            return Collections.emptySet();
+        }
+        return ImmutableSet.<T> builder().addAll(iterable).build();
+    }
+
     /**
      * Creates a new immutable set that consists of given elements.
      *

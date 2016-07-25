@@ -29,13 +29,12 @@ import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.BeanMethods;
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.Preconditions;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.Iterables;
 
 /**
  * If the component is not intercepted this implementation takes care of invoking its lifecycle callback methods. If the
@@ -69,7 +68,7 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
     }
 
     private List<Method> initMethodList(List<? extends AnnotatedMethod<?>> methods) {
-         return ImmutableList.copyOf(Lists.transform(methods, ACCESSIBLE_METHOD_FUNCTION));
+         return ImmutableList.copyOf(Iterables.transform(methods, ACCESSIBLE_METHOD_FUNCTION));
     }
 
     @Override

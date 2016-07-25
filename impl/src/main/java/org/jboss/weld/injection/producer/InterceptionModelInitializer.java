@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,10 +52,10 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Functions;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.Lists;
 
 /**
  * Initializes {@link InterceptionModel} for a {@link Bean} or a non-contextual component.
@@ -114,7 +115,8 @@ public class InterceptionModelInitializer<T> {
                 throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(annotatedType.getJavaClass());
             }
             if (Reflections.isPrivate(constructor.getJavaMember())) {
-                throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass(), constructor, annotatedType.getJavaClass()));
+                throw new DeploymentException(
+                        ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass(), constructor, annotatedType.getJavaClass()));
             }
             manager.getInterceptorModelRegistry().put(annotatedType.slim(), interceptionModel);
         }
@@ -124,10 +126,11 @@ public class InterceptionModelInitializer<T> {
         if (!Beans.isInterceptor(annotatedType)) {
             TargetClassInterceptorMetadata interceptorClassMetadata = reader.getTargetClassInterceptorMetadata(annotatedType);
             builder.setTargetClassInterceptorMetadata(interceptorClassMetadata);
-            hasSerializationOrInvocationInterceptorMethods = interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
-                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT)
-                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)
-                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE);
+            hasSerializationOrInvocationInterceptorMethods =
+                    interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
+                            || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT)
+                            || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)
+                            || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE);
         } else {
             // an interceptor does not have lifecycle methods of its own, but it intercepts the methods of the
             // target class
@@ -214,7 +217,8 @@ public class InterceptionModelInitializer<T> {
         initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, constructorBindings);
     }
 
-    private Collection<Annotation> getMemberBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
+    private Collection<Annotation> getMemberBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations,
+            Set<Annotation> memberAnnotations) {
         Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
         return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
     }
@@ -263,7 +267,8 @@ public class InterceptionModelInitializer<T> {
         Class<?>[] constructorDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
         if (constructorDeclaredInterceptors != null) {
             for (Class<?> clazz : constructorDeclaredInterceptors) {
-                builder.intercept(InterceptionType.AROUND_CONSTRUCT, Collections.<InterceptorClassMetadata<?>>singleton(reader.getPlainInterceptorMetadata(clazz)));
+                builder.intercept(InterceptionType.AROUND_CONSTRUCT,
+                        Collections.<InterceptorClassMetadata<?>>singleton(reader.getPlainInterceptorMetadata(clazz)));
             }
         }
     }
@@ -290,7 +295,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private List<InterceptorClassMetadata<?>> getMethodDeclaredInterceptorMetadatas(Class<?>[] methodDeclaredInterceptors) {
-        List<InterceptorClassMetadata<?>> list = Lists.newLinkedList();
+        List<InterceptorClassMetadata<?>> list = new LinkedList<>();
         for (Class<?> clazz : methodDeclaredInterceptors) {
             list.add(reader.getPlainInterceptorMetadata(clazz));
         }
@@ -325,6 +330,6 @@ public class InterceptionModelInitializer<T> {
     }
 
     private List<InterceptorClassMetadata<?>> asInterceptorMetadata(List<Interceptor<?>> interceptors) {
-        return Lists.transform(interceptors, Functions.toGuavaFunction(reader.getInterceptorToInterceptorMetadataFunction()));
+        return ImmutableList.copyOf(Iterables.transform(interceptors, reader.getInterceptorToInterceptorMetadataFunction()));
     }
 }

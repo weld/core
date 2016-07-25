@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 
-import com.google.common.base.Function;
+import org.jboss.weld.util.Function;
 
 public abstract class Transform<T> implements Function<BeanManagerImpl, Iterable<T>> {
 
@@ -61,9 +61,8 @@ public abstract class Transform<T> implements Function<BeanManagerImpl, Iterable
         }
     };
 
-    public static final Transform<ObserverMethod<?>> OBSERVER = new Transform<ObserverMethod<?>>() {
-        @Override
-        public Iterable<ObserverMethod<?>> transform(BeanManagerImpl beanManager) {
+    public static final Function<BeanManagerImpl, Iterable<ObserverMethod<?>>> OBSERVER = new Function<BeanManagerImpl, Iterable<ObserverMethod<?>>>() {
+        public Iterable<ObserverMethod<?>> apply(BeanManagerImpl beanManager) {
             return beanManager.getObservers();
         }
     };
