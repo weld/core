@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.resources;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -33,11 +31,11 @@ import javax.inject.Scope;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedParameter;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.Arrays2;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
@@ -67,44 +65,44 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         }
     }
 
-    private final LoadingCache<AnnotatedElement, Annotations> annotations;
-    private final LoadingCache<AnnotatedElement, Annotations> declaredAnnotations;
-    private final LoadingCache<Constructor<?>, Annotation[][]> constructorParameterAnnotations;
-    private final LoadingCache<Method, Annotation[][]> methodParameterAnnotations;
-    private final LoadingCache<BackedAnnotatedParameter<?>, Set<Annotation>> parameterAnnotationSet;
-    private final LoadingCache<Class<?>, Set<Annotation>> backedAnnotatedTypeAnnotations;
-    private final LoadingCache<Class<? extends Annotation>, Boolean> isScopeAnnotation;
+    private final ComputingCache<AnnotatedElement, Annotations> annotations;
+    private final ComputingCache<AnnotatedElement, Annotations> declaredAnnotations;
+    private final ComputingCache<Constructor<?>, Annotation[][]> constructorParameterAnnotations;
+    private final ComputingCache<Method, Annotation[][]> methodParameterAnnotations;
+    private final ComputingCache<BackedAnnotatedParameter<?>, Set<Annotation>> parameterAnnotationSet;
+    private final ComputingCache<Class<?>, Set<Annotation>> backedAnnotatedTypeAnnotations;
+    private final ComputingCache<Class<? extends Annotation>, Boolean> isScopeAnnotation;
 
     public DefaultReflectionCache(TypeStore store) {
         this.store = store;
-        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
-        this.annotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Annotations>() {
+        ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
+        this.annotations = cacheBuilder.build(new Function<AnnotatedElement, Annotations>() {
             @Override
-            public Annotations load(AnnotatedElement input) {
+            public Annotations apply(AnnotatedElement input) {
                 return new Annotations(internalGetAnnotations(input));
             }
         });
-        this.declaredAnnotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Annotations>() {
+        this.declaredAnnotations = cacheBuilder.build(new Function<AnnotatedElement, Annotations>() {
             @Override
-            public Annotations load(AnnotatedElement input) {
+            public Annotations apply(AnnotatedElement input) {
                 return new Annotations(internalGetDeclaredAnnotations(input));
             }
         });
-        this.constructorParameterAnnotations = cacheBuilder.build(new CacheLoader<Constructor<?>, Annotation[][]>() {
+        this.constructorParameterAnnotations = cacheBuilder.build(new Function<Constructor<?>, Annotation[][]>() {
             @Override
-            public Annotation[][] load(Constructor<?> input) {
+            public Annotation[][] apply(Constructor<?> input) {
                 return input.getParameterAnnotations();
             }
         });
-        this.methodParameterAnnotations = cacheBuilder.build(new CacheLoader<Method, Annotation[][]>() {
+        this.methodParameterAnnotations = cacheBuilder.build(new Function<Method, Annotation[][]>() {
             @Override
-            public Annotation[][] load(Method input) {
+            public Annotation[][] apply(Method input) {
                 return input.getParameterAnnotations();
             }
         });
-        this.parameterAnnotationSet = cacheBuilder.build(new CacheLoader<BackedAnnotatedParameter<?>, Set<Annotation>>() {
+        this.parameterAnnotationSet = cacheBuilder.build(new Function<BackedAnnotatedParameter<?>, Set<Annotation>>() {
             @Override
-            public Set<Annotation> load(BackedAnnotatedParameter<?> parameter) throws Exception {
+            public Set<Annotation> apply(BackedAnnotatedParameter<?> parameter) {
                 final Member member = parameter.getDeclaringCallable().getJavaMember();
                 if (member instanceof Method) {
                     return ImmutableSet.copyOf( getParameterAnnotations((Method) member, parameter.getPosition()));
@@ -120,63 +118,63 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
 
     @Override
     public Annotation[] getAnnotations(AnnotatedElement element) {
-        return getCacheValue(annotations, element).annotations;
+        return annotations.getValue(element).annotations;
     }
 
     @Override
     public Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
-        return getCacheValue(declaredAnnotations, element).annotations;
+        return declaredAnnotations.getValue(element).annotations;
     }
 
     @Override
     public Annotation[] getParameterAnnotations(Constructor<?> constructor, int parameterPosition) {
-        return getCacheValue(constructorParameterAnnotations, constructor)[parameterPosition];
+        return constructorParameterAnnotations.getValue(constructor)[parameterPosition];
     }
 
     @Override
     public Annotation[] getParameterAnnotations(Method method, int parameterPosition) {
-        return getCacheValue(methodParameterAnnotations, method)[parameterPosition];
+        return methodParameterAnnotations.getValue(method)[parameterPosition];
     }
 
     @Override
     public void cleanupAfterBoot() {
-        annotations.invalidateAll();
-        declaredAnnotations.invalidateAll();
-        constructorParameterAnnotations.invalidateAll();
-        methodParameterAnnotations.invalidateAll();
-        backedAnnotatedTypeAnnotations.invalidateAll();
-        isScopeAnnotation.invalidateAll();
-        parameterAnnotationSet.invalidateAll();
+        annotations.clear();
+        declaredAnnotations.clear();
+        constructorParameterAnnotations.clear();
+        methodParameterAnnotations.clear();
+        backedAnnotatedTypeAnnotations.clear();
+        isScopeAnnotation.clear();
+        parameterAnnotationSet.clear();
     }
 
     @Override
     public Set<Annotation> getAnnotationSet(AnnotatedElement element) {
-        return getCacheValue(annotations, element).annotationSet;
+        return annotations.getValue(element).annotationSet;
     }
 
     @Override
     public Set<Annotation> getDeclaredAnnotationSet(AnnotatedElement element) {
-        return getCacheValue(declaredAnnotations, element).annotationSet;
+        return declaredAnnotations.getValue(element).annotationSet;
     }
 
     @Override
     public Set<Annotation> getParameterAnnotationSet(BackedAnnotatedParameter<?> parameter) {
-        return getCacheValue(parameterAnnotationSet, parameter);
+        return parameterAnnotationSet.getValue(parameter);
     }
 
     @Override
     public Set<Annotation> getBackedAnnotatedTypeAnnotationSet(Class<?> javaClass) {
-        return getCacheValue(backedAnnotatedTypeAnnotations, javaClass);
+        return backedAnnotatedTypeAnnotations.getValue(javaClass);
     }
 
-    private class BackedAnnotatedTypeAnnotationsFunction extends CacheLoader<Class<?>, Set<Annotation>> {
+    private class BackedAnnotatedTypeAnnotationsFunction implements Function<Class<?>, Set<Annotation>> {
 
         @Override
-        public Set<Annotation> load(Class<?> javaClass) {
+        public Set<Annotation> apply(Class<?> javaClass) {
             Set<Annotation> annotations = getAnnotationSet(javaClass);
             boolean scopeFound = false;
             for (Annotation annotation : annotations) {
-                boolean isScope = getCacheValue(isScopeAnnotation, annotation.annotationType());
+                boolean isScope = isScopeAnnotation.getValue(annotation.annotationType());
                 if (isScope && scopeFound) {
                     // there are at least two scopes, we need to choose one using scope inheritance rules (4.1)
                     return applyScopeInheritanceRules(annotations, javaClass);
@@ -191,7 +189,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         public Set<Annotation> applyScopeInheritanceRules(Set<Annotation> annotations, Class<?> javaClass) {
             Set<Annotation> result = new HashSet<Annotation>();
             for (Annotation annotation : annotations) {
-                if (!getCacheValue(isScopeAnnotation, annotation.annotationType())) {
+                if (!isScopeAnnotation.getValue(annotation.annotationType())) {
                     result.add(annotation);
                 }
             }
@@ -203,7 +201,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
             for (Class<?> clazz = javaClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
                 Set<Annotation> scopes = new HashSet<Annotation>();
                 for (Annotation annotation : getDeclaredAnnotations(clazz)) {
-                    if (getCacheValue(isScopeAnnotation, annotation.annotationType())) {
+                    if (isScopeAnnotation.getValue(annotation.annotationType())) {
                         scopes.add(annotation);
                     }
                 }
@@ -215,10 +213,10 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         }
     }
 
-    private class IsScopeAnnotationFunction extends CacheLoader<Class<? extends Annotation>, Boolean> {
+    private class IsScopeAnnotationFunction implements Function<Class<? extends Annotation>, Boolean> {
 
         @Override
-        public Boolean load(Class<? extends Annotation> input) {
+        public Boolean apply(Class<? extends Annotation> input) {
             if (input.isAnnotationPresent(NormalScope.class)) {
                 return true;
             }

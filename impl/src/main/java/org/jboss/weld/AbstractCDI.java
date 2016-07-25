@@ -16,7 +16,6 @@
  */
 package org.jboss.weld;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -31,10 +30,10 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Function;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -51,7 +50,7 @@ public abstract class AbstractCDI<T> extends CDI<T> {
     // used for caller detection
     protected final Set<String> knownClassNames;
 
-    private final LoadingCache<BeanManagerImpl, Instance<T>> instanceCache;
+    private final ComputingCache<BeanManagerImpl, Instance<T>> instanceCache;
 
     public AbstractCDI() {
         ImmutableSet.Builder<String> names = ImmutableSet.builder();
@@ -60,10 +59,10 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         }
         names.add(Unmanaged.class.getName());
         this.knownClassNames = names.build();
-        this.instanceCache = CacheBuilder.newBuilder().build(new CacheLoader<BeanManagerImpl, Instance<T>>() {
+        this.instanceCache = ComputingCacheBuilder.newBuilder().build(new Function<BeanManagerImpl, Instance<T>>() {
 
             @Override
-            public Instance<T> load(BeanManagerImpl beanManager) throws Exception {
+            public Instance<T> apply(BeanManagerImpl beanManager) {
                 return cast(beanManager.getInstance(beanManager.createCreationalContext(null)));
             }
         });
@@ -133,7 +132,7 @@ public abstract class AbstractCDI<T> extends CDI<T> {
      * @return the {@link Instance} the relevant calls are delegated to
      */
     protected Instance<T> getInstance() {
-        return getCastCacheValue(instanceCache, BeanManagerProxy.unwrap(getBeanManager()));
+        return instanceCache.getValue(BeanManagerProxy.unwrap(getBeanManager()));
     }
 
 }

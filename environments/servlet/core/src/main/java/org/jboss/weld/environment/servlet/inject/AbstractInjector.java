@@ -17,18 +17,15 @@
 
 package org.jboss.weld.environment.servlet.inject;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.Preconditions;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 /**
  * Provides support for Weld injection into servlets, servlet filters etc.
@@ -38,15 +35,17 @@ import com.google.common.cache.LoadingCache;
  * @author Ales Justin
  */
 public abstract class AbstractInjector {
+
     private final WeldManager manager;
-    private final LoadingCache<Class<?>, InjectionTarget<?>> cache;
+
+    private final ComputingCache<Class<?>, InjectionTarget<?>> cache;
 
     protected AbstractInjector(final WeldManager manager) {
         Preconditions.checkArgumentNotNull(manager, "manager");
         this.manager = manager;
-        this.cache = CacheBuilder.newBuilder().weakValues().build(new CacheLoader<Class<?>, InjectionTarget<?>>() {
+        this.cache = ComputingCacheBuilder.newBuilder().setWeakValues().build(new Function<Class<?>, InjectionTarget<?>>() {
             @Override
-            public InjectionTarget<?> load(Class<?> key) throws Exception {
+            public InjectionTarget<?> apply(Class<?> key) {
                 AnnotatedType<?> type = manager.createAnnotatedType(key);
                 return manager.createInjectionTargetBuilder(type)
                     .setResourceInjectionEnabled(false)
@@ -57,14 +56,14 @@ public abstract class AbstractInjector {
     }
 
     protected void inject(Object instance) {
-        final InjectionTarget<Object> it = getCastCacheValue(cache, instance.getClass());
+        final InjectionTarget<Object> it = cache.getCastValue(instance.getClass());
         CreationalContext<Object> cc = manager.createCreationalContext(null);
         it.inject(instance, cc);
     }
 
     public void destroy(Object instance) {
         if (instance != null) {
-            final InjectionTarget<Object> it = getCastCacheValue(cache, instance.getClass());
+            final InjectionTarget<Object> it = cache.getCastValue(instance.getClass());
             it.dispose(instance);
         }
     }

@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.resources;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
-
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
@@ -26,12 +23,11 @@ import java.util.Set;
 import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.WeldCollections;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 /**
  * Allows classes to share Maps/Sets to conserve memory.
@@ -45,46 +41,46 @@ public class SharedObjectCache implements BootstrapService {
         return manager.getServices().get(SharedObjectCache.class);
     }
 
-    private final LoadingCache<Set<?>, Set<?>> sharedSets = CacheBuilder.newBuilder().build(new CacheLoader<Set<?>, Set<?>>() {
+    private final ComputingCache<Set<?>, Set<?>> sharedSets = ComputingCacheBuilder.newBuilder().build(new Function<Set<?>, Set<?>>() {
         @Override
-        public Set<?> load(Set<?> from) {
+        public Set<?> apply(Set<?> from) {
             return WeldCollections.immutableSet(from);
         }
     });
 
-    private final LoadingCache<Map<?, ?>, Map<?, ?>> sharedMaps = CacheBuilder.newBuilder().build(
-            new CacheLoader<Map<?, ?>, Map<?, ?>>() {
+    private final ComputingCache<Map<?, ?>, Map<?, ?>> sharedMaps = ComputingCacheBuilder.newBuilder().build(
+            new Function<Map<?, ?>, Map<?, ?>>() {
                 @Override
-                public Map<?, ?> load(Map<?, ?> from) {
+                public Map<?, ?> apply(Map<?, ?> from) {
             return WeldCollections.immutableMap(from);
         }
     });
 
-    private final LoadingCache<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = CacheBuilder.newBuilder().build(
-            new CacheLoader<Type, LazyValueHolder<Set<Type>>>() {
+    private final ComputingCache<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = ComputingCacheBuilder.newBuilder().build(
+            new Function<Type, LazyValueHolder<Set<Type>>>() {
         @Override
-                public LazyValueHolder<Set<Type>> load(Type input) {
+                public LazyValueHolder<Set<Type>> apply(Type input) {
             return new TypeClosureLazyValueHolder(input);
         }
     });
 
     public <T> Set<T> getSharedSet(Set<T> set) {
-        return getCastCacheValue(sharedSets, set);
+        return sharedSets.getCastValue(set);
     }
 
     public <K, V> Map<K, V> getSharedMap(Map<K, V> map) {
-        return getCastCacheValue(sharedMaps, map);
+        return sharedMaps.getCastValue(map);
     }
 
     public LazyValueHolder<Set<Type>> getTypeClosureHolder(Type type) {
-        return getCacheValue(typeClosureHolders, type);
+        return typeClosureHolders.getValue(type);
     }
 
     @Override
     public void cleanupAfterBoot() {
-        sharedSets.invalidateAll();
-        sharedMaps.invalidateAll();
-        typeClosureHolders.invalidateAll();
+        sharedSets.clear();
+        sharedMaps.clear();
+        typeClosureHolders.clear();
     }
 
     @Override
