@@ -71,10 +71,9 @@ import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.probe.BootstrapStats.EventType;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * This extension adds {@link AnnotatedType}s needed for monitoring. Furthermore, {@link BeanAttributes} of all suitable beans are modified so that a stereotype

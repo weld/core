@@ -73,9 +73,9 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This

@@ -25,10 +25,10 @@ import java.util.Set;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  *

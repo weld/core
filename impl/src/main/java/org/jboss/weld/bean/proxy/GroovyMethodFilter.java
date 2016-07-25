@@ -22,9 +22,8 @@ import java.util.Set;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * {@link ProxiedMethodFilter} implementation for Groovy. Methods declared by groovy.lang.GroovyObject

@@ -27,12 +27,12 @@ import java.util.Set;
 
 import org.jboss.weld.resolution.CovariantTypes;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 /**
@@ -202,7 +202,7 @@ public class Types {
     }
 
     public static Set<Class<?>> getRawTypes(Set<Type> types) {
-        return ImmutableSet.copyOf(Iterables.transform(types, TYPE_TO_CLASS_FUNCTION));
+       return ImmutableSet.<Class<?>> builder().addAll(Iterables.transform(types, TYPE_TO_CLASS_FUNCTION)).build();
     }
 
     public static Class<?>[] getRawTypes(Type[] types) {

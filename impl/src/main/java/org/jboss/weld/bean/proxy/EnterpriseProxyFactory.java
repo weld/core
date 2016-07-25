@@ -27,8 +27,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * This factory produces client proxies specific for enterprise beans, in

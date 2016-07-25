@@ -62,7 +62,7 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * A few utility methods and classes related to CDI components.

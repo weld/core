@@ -48,13 +48,13 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 

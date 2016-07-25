@@ -32,7 +32,7 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * {@link MethodInjectionPoint} that invokes virtual methods.

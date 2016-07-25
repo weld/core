@@ -27,10 +27,10 @@ import java.util.Map.Entry;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
 /**

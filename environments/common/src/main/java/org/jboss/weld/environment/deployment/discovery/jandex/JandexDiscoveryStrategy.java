@@ -40,9 +40,9 @@ import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.ImmutableSet;
 
 /**
  * An implementation of {@link DiscoveryStrategy} that is used when the jandex is available.

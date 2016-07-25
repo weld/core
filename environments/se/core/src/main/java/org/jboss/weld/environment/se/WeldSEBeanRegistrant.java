@@ -57,7 +57,7 @@ import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Explicitly registers all of the 'built-in' Java SE related beans and contexts.
@@ -225,8 +225,8 @@ public class WeldSEBeanRegistrant implements Extension {
     static class AnnotatedTypeWrapper<X> implements AnnotatedType<X> {
 
         private final AnnotatedType<X> delegate;
-        private final ImmutableSet<AnnotatedMethod<? super X>> annotatedMethods;
-        private final ImmutableSet<Annotation> annotations;
+        private final Set<AnnotatedMethod<? super X>> annotatedMethods;
+        private final Set<Annotation> annotations;
 
         public AnnotatedTypeWrapper(AnnotatedType<X> annotatedType) {
             this.delegate = annotatedType;
@@ -284,7 +284,7 @@ public class WeldSEBeanRegistrant implements Extension {
             return getAnnotation(annotationType) != null;
         }
 
-        private ImmutableSet<AnnotatedMethod<? super X>> replaceDeprecatedAnnotatedMethods(Set<AnnotatedMethod<? super X>> delegateMethods) {
+        private Set<AnnotatedMethod<? super X>> replaceDeprecatedAnnotatedMethods(Set<AnnotatedMethod<? super X>> delegateMethods) {
             ImmutableSet.Builder<AnnotatedMethod<? super X>> annotatedMethodBuilder = ImmutableSet.builder();
             for (final AnnotatedMethod<? super X> originalMethod : delegateMethods) {
                 if (originalMethod.isAnnotationPresent(ActivateThreadScope.class)) {
@@ -296,7 +296,7 @@ public class WeldSEBeanRegistrant implements Extension {
             return annotatedMethodBuilder.build();
         }
 
-        private ImmutableSet<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
+        private Set<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
             ImmutableSet.Builder<Annotation> annotationBuilder = ImmutableSet.builder();
             Iterator<Annotation> it = delegateAnnotations.iterator();
             while (it.hasNext()) {
@@ -316,7 +316,7 @@ public class WeldSEBeanRegistrant implements Extension {
     static class AnnotatedMethodWrapper<X> implements AnnotatedMethod<X> {
 
         private final AnnotatedMethod<X> delegate;
-        private final ImmutableSet<Annotation> annotations;
+        private final Set<Annotation> annotations;
 
         public AnnotatedMethodWrapper(AnnotatedMethod<X> annotatedMethod) {
             this.delegate = annotatedMethod;
@@ -373,7 +373,7 @@ public class WeldSEBeanRegistrant implements Extension {
             return getAnnotation(annotationType) != null;
         }
 
-        private ImmutableSet<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
+        private Set<Annotation> replaceDeprecatedAnnotations(Set<Annotation> delegateAnnotations) {
             ImmutableSet.Builder<Annotation> annotationBuilder = ImmutableSet.builder();
             Iterator<Annotation> it = delegateAnnotations.iterator();
             while (it.hasNext()) {

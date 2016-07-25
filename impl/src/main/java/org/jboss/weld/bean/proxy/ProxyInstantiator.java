@@ -28,9 +28,8 @@ import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Implementations of this interface are capable of creating instances of a given proxy class. This can either be done simply by calling

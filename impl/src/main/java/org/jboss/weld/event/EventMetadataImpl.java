@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.literal.AnyLiteral;
 
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Simple {@link EventMetadata} implementation.
@@ -62,7 +62,7 @@ public final class EventMetadataImpl implements EventMetadata {
         if (qualifiers != null) {
             return builder.addAll(qualifiers).build();
         } else if (qualifierArray != null) {
-            return builder.add(qualifierArray).build();
+            return builder.addAll(qualifierArray).build();
         } else {
             throw new IllegalStateException();
         }

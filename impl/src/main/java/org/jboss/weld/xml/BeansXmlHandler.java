@@ -21,13 +21,13 @@ import org.jboss.weld.metadata.FilterImpl;
 import org.jboss.weld.metadata.ScanningImpl;
 import org.jboss.weld.metadata.SystemPropertyActivationImpl;
 import org.jboss.weld.metadata.WeldFilterImpl;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.google.common.collect.ImmutableSet;
 
 /**
  * An implementation of the beans.xml parser written using SAX

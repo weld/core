@@ -43,9 +43,8 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Represents an immutable per-deployment Weld configuration.
