@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.contexts.activators;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.jboss.weld.context.activator;
 
 import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.context.bound.BoundRequestContext;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.unbound.Unbound;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author Tomas Remes
+ * @author Martin Kouba
  */
 @Vetoed
 @Interceptor
@@ -38,29 +39,32 @@ import org.jboss.weld.context.bound.BoundRequestContext;
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 100)
 public class ActivateRequestScopeInterceptor {
 
-    private final BoundRequestContext boundRequestContext;
+    private final BeanManagerImpl beanManager;
+
+    private final RequestContext requestContext;
 
     @Inject
-    public ActivateRequestScopeInterceptor(BoundRequestContext boundRequestContext) {
-        this.boundRequestContext = boundRequestContext;
+    public ActivateRequestScopeInterceptor(@Unbound RequestContext requestContext, BeanManagerImpl beanManager) {
+        this.requestContext = requestContext;
+        this.beanManager = beanManager;
     }
 
     @AroundInvoke
-    Object invoke(InvocationContext invocationContext) throws Exception {
-
-        if (!boundRequestContext.isActive()) {
-            Map<String, Object> storage = new HashMap<>();
-            try {
-                boundRequestContext.associate(storage);
-                boundRequestContext.activate();
-                return invocationContext.proceed();
-            } finally {
-                boundRequestContext.invalidate();
-                boundRequestContext.deactivate();
-                boundRequestContext.dissociate(storage);
-            }
+    Object invoke(InvocationContext ctx) throws Exception {
+        if (isRequestContextActive()) {
+            return ctx.proceed();
         } else {
-            return invocationContext.proceed();
+            try {
+                requestContext.activate();
+                return ctx.proceed();
+            } finally {
+                requestContext.invalidate();
+                requestContext.deactivate();
+            }
         }
+    }
+
+    protected boolean isRequestContextActive() {
+        return beanManager.isContextActive(RequestScoped.class);
     }
 }

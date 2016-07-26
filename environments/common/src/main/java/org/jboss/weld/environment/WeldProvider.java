@@ -19,13 +19,11 @@ package org.jboss.weld.environment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 
 import org.jboss.weld.SimpleCDI;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
 
@@ -61,16 +59,6 @@ public class WeldProvider implements CDIProvider {
     @Override
     public CDI<Object> getCDI() {
         return new EnvironmentCDI();
-    }
-
-    @Override
-    public boolean isInitialized() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public CDI<Object> initialize(Map<String, Object> params) {
-        throw new UnsupportedOperationException();
     }
 
 }

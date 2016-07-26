@@ -16,14 +16,10 @@
  */
 package org.jboss.weld.environment.se;
 
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
@@ -36,13 +32,12 @@ import org.jboss.weld.bootstrap.events.builder.BeanBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
-import org.jboss.weld.environment.se.contexts.activators.ActivateRequestScopeInterceptor;
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScopeInterceptor;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
 import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
+import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 
 /**
  * Explicitly registers all of the 'built-in' Java SE related beans and contexts.
@@ -64,8 +59,6 @@ public class WeldSEBeanRegistrant implements Extension {
         }
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager), ParametersFactory.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager), RunnableDecorator.class.getName());
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateRequestScopeInterceptor.class, manager),
-                ActivateRequestScopeInterceptor.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateThreadScopeInterceptor.class, manager),
                 ActivateThreadScopeInterceptor.class.getName());
     }
@@ -116,49 +109,4 @@ public class WeldSEBeanRegistrant implements Extension {
         this.interceptorBuilders = interceptorBuilders;
     }
 
-    private static class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {
-
-        static <T> VetoedSuppressedAnnotatedType<T> from(Class<T> clazz, BeanManager beanManager) {
-            return new VetoedSuppressedAnnotatedType<T>(beanManager.createAnnotatedType(clazz));
-        }
-
-        private final AnnotatedType<T> annotatedType;
-
-        public VetoedSuppressedAnnotatedType(AnnotatedType<T> annotatedType) {
-            this.annotatedType = annotatedType;
-        }
-
-        @Override
-        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-            if (annotationType == Vetoed.class) {
-                return null;
-            }
-            return annotatedType.getAnnotation(annotationType);
-        }
-
-        @Override
-        public Set<Annotation> getAnnotations() {
-            Set<Annotation> annotations = new HashSet<Annotation>();
-            for (Annotation a : annotatedType.getAnnotations()) {
-                if (a.annotationType() != Vetoed.class) {
-                    annotations.add(a);
-                }
-            }
-            return annotations;
-        }
-
-        @Override
-        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-            if (annotationType == Vetoed.class) {
-                return false;
-            }
-            return annotatedType.isAnnotationPresent(annotationType);
-        }
-
-        @Override
-        public AnnotatedType<T> delegate() {
-            return annotatedType;
-        }
-
-    }
 }
