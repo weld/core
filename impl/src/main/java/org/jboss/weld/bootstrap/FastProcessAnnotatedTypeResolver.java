@@ -36,10 +36,10 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.util.Types;
+import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Sets;
 
 /**
  * ProcessAnnotatedType observer method resolver. It uses {@link ClassFileServices} for resolution and thus entirely avoids loading the classes which speeds up

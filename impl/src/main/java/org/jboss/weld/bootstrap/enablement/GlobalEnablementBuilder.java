@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap.enablement;
 
-import static com.google.common.collect.Lists.transform;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -43,10 +42,11 @@ import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
-import com.google.common.base.Function;
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Iterables;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
@@ -193,16 +193,22 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES);
             checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
 
-            List<Class<?>> interceptorClasses = new ArrayList<>(transform(beansXml.getEnabledInterceptors(), loader));
+            List<Class<?>> interceptorClasses = new ArrayList<>();
+            for (Metadata<String> stringMetadata : beansXml.getEnabledInterceptors()) {
+                interceptorClasses.add(loader.apply(stringMetadata));
+            }
             moduleInterceptorsBuilder.addAll(filter(interceptorClasses, globallyEnabledInterceptors, ValidatorLogger.INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE,
                     deployment));
 
-            List<Class<?>> decoratorClasses = new ArrayList<>(transform(beansXml.getEnabledDecorators(), loader));
+            List<Class<?>> decoratorClasses = new ArrayList<>();
+            for (Metadata<String> stringMetadata : beansXml.getEnabledDecorators()) {
+                decoratorClasses.add(loader.apply(stringMetadata));
+            }
             moduleDecoratorsBuilder.addAll(filter(decoratorClasses, globallyEnabledDecorators, ValidatorLogger.DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE,
                     deployment));
 
-            alternativeClasses = ImmutableSet.copyOf(transform(beansXml.getEnabledAlternativeClasses(), loader));
-            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(beansXml.getEnabledAlternativeStereotypes(), loader)));
+            alternativeClasses = ImmutableSet.copyOf(Iterables.transform(beansXml.getEnabledAlternativeClasses(), loader));
+            alternativeStereotypes = cast(ImmutableSet.copyOf(Iterables.transform(beansXml.getEnabledAlternativeStereotypes(), loader)));
         } else {
             alternativeClasses = Collections.emptySet();
             alternativeStereotypes = Collections.emptySet();

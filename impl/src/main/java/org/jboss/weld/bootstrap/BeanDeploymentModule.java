@@ -38,7 +38,7 @@ import org.jboss.weld.manager.Transform;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 
-import com.google.common.collect.Iterables;
+import org.jboss.weld.util.collections.Iterables;
 
 /**
  * Represents an EE module that holds bean archives. This is a war, ejb jar, ear/lib or possibly a different module. This construct allows a given event to be

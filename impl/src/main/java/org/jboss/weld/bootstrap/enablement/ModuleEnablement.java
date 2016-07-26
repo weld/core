@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bootstrap.enablement;
 
-import static com.google.common.collect.Sets.union;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
@@ -32,6 +30,7 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.collections.Sets;
 
 /**
  * Holds information about interceptors, decorators and alternatives that are enabled in this module.
@@ -133,7 +132,7 @@ public class ModuleEnablement {
     }
 
     public Set<Class<?>> getAllAlternatives() {
-        return union(union(localAlternativeClasses, localAlternativeStereotypes), getGlobalAlternatives());
+        return Sets.union(Sets.union(localAlternativeClasses, localAlternativeStereotypes), getGlobalAlternatives());
     }
 
     private static class EnablementComparator<T extends Bean<?>> implements Comparator<T>, Serializable {

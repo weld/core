@@ -90,9 +90,9 @@ import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.collections.WeldCollections;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
 /**

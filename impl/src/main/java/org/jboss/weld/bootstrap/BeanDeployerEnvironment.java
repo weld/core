@@ -64,8 +64,7 @@ import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.Iterables;
+import org.jboss.weld.util.collections.Iterables;
 
 public class BeanDeployerEnvironment {
 

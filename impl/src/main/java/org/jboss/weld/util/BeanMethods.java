@@ -53,23 +53,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 public class BeanMethods {
-
-    @SuppressWarnings("rawtypes")
-    private static final Predicate<EnhancedAnnotatedMethod<?,?>> METHOD_FILTER_PREDICATE = new Predicate<EnhancedAnnotatedMethod<?,?>>() {
-
-        @Override
-        @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
-        public boolean apply(EnhancedAnnotatedMethod<?,?> method) {
-            Preconditions.checkArgumentNotNull(method, "method");
-            return !method.getJavaMember().isBridge() && !method.getJavaMember().isSynthetic();
-        }
-    };
 
     private BeanMethods() {
     }
@@ -325,7 +309,13 @@ public class BeanMethods {
      * @see https://issues.jboss.org/browse/WELD-2019
      */
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        return Collections2.filter(methods, METHOD_FILTER_PREDICATE);
+        List<EnhancedAnnotatedMethod<?, ? super T>> filteredMethods = new ArrayList<>();
+        for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
+            if (!method.getJavaMember().isBridge() && !method.getJavaMember().isSynthetic()) {
+                filteredMethods.add(method);
+            }
+        }
+        return Collections.unmodifiableList(filteredMethods);
     }
 
     public static <T> List<Method> getInterceptorMethods(EnhancedAnnotatedType<T> type, final InterceptionType interceptionType, final boolean targetClass) {
