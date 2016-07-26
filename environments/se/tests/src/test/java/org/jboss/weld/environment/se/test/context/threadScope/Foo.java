@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
-import org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScope;
+import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope;
 import org.junit.Assert;
 
 @Dependent

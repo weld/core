@@ -63,8 +63,6 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
 
     // 2010 - 2012 used in Weld 3
 
-    @LogMessage(level = Level.WARN)
-    @Message(id = 2013, value = "Deprecated @{0} detected on {2} - replace it with @{1}", format = Format.MESSAGE_FORMAT)
-    void deprecatedActivatorAnnotationUsed(Object deprecateAnnotation, Object newAnnotation, Object type);
+    // 2013 used to warn on deprecated org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScope
 
 }
