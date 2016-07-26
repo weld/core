@@ -71,6 +71,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.ApplicationContext;
@@ -187,6 +188,8 @@ public class WeldStartup {
         if (this.extensions == null) {
             setExtensions(deployment.getExtensions());
         }
+        // Add extension to register built-in components
+        this.extensions.add(MetadataImpl.from(new WeldExtension()));
 
         // Finish the rest of registry init, setupInitialServices() requires already changed finalContextId
         setupInitialServices();

@@ -17,7 +17,6 @@
 package org.jboss.weld.environment.se;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
@@ -113,16 +112,6 @@ public class WeldSEProvider implements CDIProvider {
             }
             return WeldContainer.instance(ids.get(0));
         }
-    }
-
-    @Override
-    public boolean isInitialized() {
-        return !WeldContainer.getRunningContainerIds().isEmpty();
-    }
-
-    @Override
-    public CDI<Object> initialize(Map<String, Object> params) {
-        return new Weld().properties(params).initialize();
     }
 
 }

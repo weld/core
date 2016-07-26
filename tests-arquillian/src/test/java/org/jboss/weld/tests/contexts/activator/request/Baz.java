@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.context.requestScope;
+package org.jboss.weld.tests.contexts.activator.request;
 
 import javax.inject.Inject;
 
 import org.jboss.weld.context.activator.ActivateRequestScope;
-
 
 @ActivateRequestScope
 public class Baz {

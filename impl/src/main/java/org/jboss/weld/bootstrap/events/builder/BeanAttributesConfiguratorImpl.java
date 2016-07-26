@@ -23,11 +23,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.builder.BeanAttributesConfigurator;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Named;
 
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
@@ -70,7 +73,20 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         read(beanAttributes);
     }
 
-    BeanAttributesConfigurator<T> read(BeanAttributes<?> beanAttributes) {
+    @Override
+    public <U extends T> BeanAttributesConfigurator<U> read(AnnotatedType<U> type) {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <U extends T> BeanAttributesConfigurator<U> read(AnnotatedMember<U> member) {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public BeanAttributesConfigurator<T> read(BeanAttributes<?> beanAttributes) {
         name(beanAttributes.getName());
         qualifiers(beanAttributes.getQualifiers());
         scope(beanAttributes.getScope());
