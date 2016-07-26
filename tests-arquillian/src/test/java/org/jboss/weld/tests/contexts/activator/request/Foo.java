@@ -14,30 +14,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.context.requestScope;
+package org.jboss.weld.tests.contexts.activator.request;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.jboss.weld.context.activator.ActivateRequestScope;
+import org.junit.Assert;
 
+@Dependent
+public class Foo {
 
-@ActivateRequestScope
-public class Baz {
+    @Inject
+    BeanManager beanManager;
 
     @Inject
     Bar bar;
 
-    private void first() {
-        bar.increment();
-        second();
-    }
-
-    private void second() {
-        bar.increment();
-    }
-
+    @ActivateRequestScope
     public int ping() {
-        first();
+        Assert.assertTrue("RequestScoped is not active!", beanManager.getContext(RequestScoped.class).isActive());
+        return 1;
+    }
+
+    @ActivateRequestScope
+    public int pingNested() {
+        bar.increment();
+        notInterceptedCall();
         return bar.increment();
     }
+
+    @ActivateRequestScope
+    public void pong() {
+        beanManager.getContext(RequestScoped.class);
+    }
+
+    public void notInterceptedCall() {
+        bar.increment();
+    }
+
+
 }

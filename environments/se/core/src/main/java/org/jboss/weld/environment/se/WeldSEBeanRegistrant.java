@@ -19,14 +19,12 @@ package org.jboss.weld.environment.se;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -38,12 +36,11 @@ import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
-import org.jboss.weld.environment.se.contexts.activators.ActivateRequestScopeInterceptor;
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScopeInterceptor;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
+import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
@@ -63,7 +60,6 @@ public class WeldSEBeanRegistrant implements Extension {
         }
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager));
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager));
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateRequestScopeInterceptor.class, manager));
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateThreadScopeInterceptor.class, manager));
     }
 
@@ -90,52 +86,6 @@ public class WeldSEBeanRegistrant implements Extension {
 
     public ThreadContext getThreadContext() {
         return threadContext;
-    }
-
-    private static class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {
-
-        static <T> VetoedSuppressedAnnotatedType<T> from(Class<T> clazz, BeanManager beanManager) {
-            return new VetoedSuppressedAnnotatedType<T>(beanManager.createAnnotatedType(clazz));
-        }
-
-        private final AnnotatedType<T> annotatedType;
-
-        public VetoedSuppressedAnnotatedType(AnnotatedType<T> annotatedType) {
-            this.annotatedType = annotatedType;
-        }
-
-        @Override
-        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-            if (annotationType == Vetoed.class) {
-                return null;
-            }
-            return annotatedType.getAnnotation(annotationType);
-        }
-
-        @Override
-        public Set<Annotation> getAnnotations() {
-            Set<Annotation> annotations = new HashSet<Annotation>();
-            for (Annotation a : annotatedType.getAnnotations()) {
-                if (a.annotationType() != Vetoed.class) {
-                    annotations.add(a);
-                }
-            }
-            return annotations;
-        }
-
-        @Override
-        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-            if (annotationType == Vetoed.class) {
-                return false;
-            }
-            return annotatedType.isAnnotationPresent(annotationType);
-        }
-
-        @Override
-        public AnnotatedType<T> delegate() {
-            return annotatedType;
-        }
-
     }
 
     private static class WeldContainerBean implements Bean<WeldContainer> {
