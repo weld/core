@@ -34,7 +34,6 @@ import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.bootstrap.events.InterceptorBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
-import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.contexts.activators.ActivateRequestScopeInterceptor;
@@ -64,7 +63,6 @@ public class WeldSEBeanRegistrant implements Extension {
             return;
         }
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager), ParametersFactory.class.getName());
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InstanceManager.class, manager), InstanceManager.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager), RunnableDecorator.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateRequestScopeInterceptor.class, manager),
                 ActivateRequestScopeInterceptor.class.getName());
