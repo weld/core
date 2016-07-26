@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
+import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 
 import java.net.MalformedURLException;
@@ -96,8 +97,8 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                assertEquals(1, enabled.getInterceptors().size());
-                assertEquals(Int.class, enabled.getInterceptors().iterator().next());
+                assertEquals(2, enabled.getInterceptors().size());
+                assertTrue(enabled.getInterceptors().contains(Int.class));
             }
         });
     }
@@ -108,11 +109,11 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                Assert.assertEquals(1, enabled.getAlternativeClasses().size());
+                Assert.assertEquals(enabled.getAlternativeClasses().size(), 1);
                 Assert.assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next());
-                Assert.assertEquals(1, enabled.getInterceptors().size());
-                Assert.assertEquals(Int.class, enabled.getInterceptors().iterator().next());
-                Assert.assertEquals(1, enabled.getDecorators().size());
+                Assert.assertEquals(enabled.getInterceptors().size(), 2);
+                Assert.assertTrue(enabled.getInterceptors().contains(Int.class));
+                Assert.assertEquals(enabled.getDecorators().size(), 1);
                 Assert.assertEquals(Dec.class, enabled.getDecorators().iterator().next());
             }
         });
