@@ -160,26 +160,6 @@ public class Types {
         return type;
     }
 
-    public static boolean containsUnresolvedTypeVariableOrWildcard(Type type) {
-        type = Types.getCanonicalType(type);
-        if (type instanceof TypeVariable<?> || type instanceof WildcardType) {
-            return true;
-        }
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            for (Type t : parameterizedType.getActualTypeArguments()) {
-                if (containsUnresolvedTypeVariableOrWildcard(t)) {
-                    return true;
-                }
-            }
-        }
-        if (type instanceof GenericArrayType) {
-            GenericArrayType genericArrayType = (GenericArrayType) type;
-            return containsUnresolvedTypeVariableOrWildcard(genericArrayType.getGenericComponentType());
-        }
-        return false;
-    }
-
     public static boolean containsTypeVariable(Type type) {
         type = Types.getCanonicalType(type);
         if (type instanceof TypeVariable<?>) {

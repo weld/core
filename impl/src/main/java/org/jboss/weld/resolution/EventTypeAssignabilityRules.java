@@ -130,14 +130,13 @@ public class EventTypeAssignabilityRules extends AbstractAssignabilityRules {
              */
             return matches(observedParameter, eventParameter);
         }
-        // Uncomment the following snippet if CDI-494 gets rejected
-        // if (observedParameter instanceof WildcardType && eventParameter instanceof WildcardType) {
-        /// *
-        // * both the observed event type parameter and the event type parameter are wildcards, and the event type parameter is assignable to the observed event
-        // * type
-        // */
-        // return CovariantTypes.isAssignableFrom(observedParameter, eventParameter);
-        // }
+        if (observedParameter instanceof WildcardType && eventParameter instanceof WildcardType) {
+            /*
+             * both the observed event type parameter and the event type parameter are wildcards, and the event type parameter is assignable to the observed event
+             * type
+             */
+            return CovariantTypes.isAssignableFrom(observedParameter, eventParameter);
+        }
         if (observedParameter instanceof WildcardType) {
             /*
              * the observed event type parameter is a wildcard and the event type parameter is assignable
