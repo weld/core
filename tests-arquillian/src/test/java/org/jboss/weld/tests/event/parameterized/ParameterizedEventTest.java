@@ -68,9 +68,16 @@ public class ParameterizedEventTest {
     @Inject
     private StringObserver stringObserver;
 
+    @Inject
+    Event<Foo<? extends Number>> fooEvent;
+
+    @Inject
+    Event<Foo<?>> fooEventUnbound;
+
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ParameterizedEventTest.class)).addPackage(ParameterizedEventTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ParameterizedEventTest.class))
+                .addPackage(ParameterizedEventTest.class.getPackage());
     }
 
     @Test
@@ -92,7 +99,6 @@ public class ParameterizedEventTest {
         assertFalse(stringObserver.isFooObserved());
         assertFalse(stringObserver.isBarObserved());
     }
-
 
     @Test
     public void testSelectedEventTypeUsedForResolvingEventTypeArguments2() {
@@ -201,6 +207,29 @@ public class ParameterizedEventTest {
         } catch (IllegalArgumentException expected) {
         }
     }
+
+    @Test
+    public void testWildcardIsResolvable() {
+        reset();
+        fooEvent.fire(new Bar<Integer>());
+        assertTrue(observer.isIntegerFooObserved());
+    }
+
+    @Test
+    public <T extends Number> void testWildcardIsResolvable2() {
+        reset();
+        fooEvent.fire(new Bar<T>());
+        assertTrue(observer.isIntegerFooObserved());
+    }
+
+    @Test
+    public <T> void testWildcardIsResolvable3() {
+        reset();
+        fooEventUnbound.fire(new Bar<T>());
+        assertFalse(observer.isIntegerFooObserved());
+    }
+
+
 
     private void reset() {
         observer.reset();

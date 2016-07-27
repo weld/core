@@ -110,7 +110,7 @@ class DecoratedMethods {
         for (int i = 0; i < candidate.getParameterTypes().length; i++) {
             Type decoratedMethodParamType = decoratedMethod.getJavaMember().getGenericParameterTypes()[i];
             Type candidateParamType = candidate.getGenericParameterTypes()[i];
-            if (Types.containsUnresolvedTypeVariableOrWildcard(decoratedMethodParamType) || Types.containsUnresolvedTypeVariableOrWildcard(candidateParamType)) {
+            if (Types.containsTypeVariable(decoratedMethodParamType) || Types.containsTypeVariable(candidateParamType)) {
                 if (!decoratedMethod.getJavaMember().getParameterTypes()[i].isAssignableFrom(candidate.getParameterTypes()[i])) {
                     return false;
                 }

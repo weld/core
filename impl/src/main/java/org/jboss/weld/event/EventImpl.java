@@ -153,21 +153,20 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
-        // A separate check for select() will not be necessary if CDI-494 gets rejected
-        getBeanManager().getGlobalStrictObserverNotifier().checkEventSubtype(subtype);
+        getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
         return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Event.class, subtype, getQualifiers(), newQualifiers),
                 getBeanManager());
     }
 
     protected Type getEventType(Class<?> runtimeType) {
         Type resolvedType = runtimeType;
-        if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
+        if (Types.containsTypeVariable(resolvedType)) {
             /*
              * If the container is unable to resolve the parameterized type of the event object, it uses the specified type to infer the parameterized type of the event types.
              */
             resolvedType = injectionPointTypeHierarchy.resolveType(resolvedType);
         }
-        if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
+        if (Types.containsTypeVariable(resolvedType)) {
             /*
              * Examining the hierarchy of the specified type did not help. This may still be one of the cases when combining the
              * event type and the specified type reveals the actual values for type variables. Let's try that.
