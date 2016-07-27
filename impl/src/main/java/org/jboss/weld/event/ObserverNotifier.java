@@ -30,7 +30,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
-import javax.enterprise.event.Event;
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -75,7 +74,6 @@ public class ObserverNotifier {
     private final boolean strict;
     protected final CurrentEventMetadata currentEventMetadata;
     private final ComputingCache<Type, RuntimeException> eventTypeCheckCache;
-    private final ComputingCache<Type, RuntimeException> eventSubtypeCheckCache;
     private final Executor asyncEventExecutor;
     private final SecurityServices securityServices;
     private final LazyValueHolder<RequestContext> requestContextHolder;
@@ -87,11 +85,9 @@ public class ObserverNotifier {
         this.currentEventMetadata = services.get(CurrentEventMetadata.class);
         if (strict) {
             this.eventTypeCheckCache = ComputingCacheBuilder.newBuilder().build(new EventTypeCheck());
-            this.eventSubtypeCheckCache = ComputingCacheBuilder.newBuilder().build(new EventSubtypeCheck());
         } else {
             // not necessary
             this.eventTypeCheckCache = null;
-            this.eventSubtypeCheckCache = null;
         }
         // fall back to FJP.commonPool() if ExecutorServices are not installed
         this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
@@ -222,21 +218,6 @@ public class ObserverNotifier {
         }
     }
 
-    /**
-     *
-     * @param subtype
-     * @throws org.jboss.weld.exceptions.IllegalArgumentException if the strict mode is enabled and the subtype contains a type variable
-     * @see Event#select(javax.enterprise.util.TypeLiteral, Annotation...)
-     */
-    public void checkEventSubtype(Type subtype) {
-        if (strict) {
-            RuntimeException exception = eventSubtypeCheckCache.getValue(subtype);
-            if (exception != NO_EXCEPTION_MARKER) {
-                throw exception;
-            }
-        }
-    }
-
     private static class EventTypeCheck implements Function<Type, RuntimeException> {
 
         @Override
@@ -245,7 +226,7 @@ public class ObserverNotifier {
             /*
              * If the runtime type of the event object contains a type variable, the container must throw an IllegalArgumentException.
              */
-            if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
+            if (Types.containsTypeVariable(resolvedType)) {
                 return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
             }
             /*
@@ -256,18 +237,6 @@ public class ObserverNotifier {
                 if (containerEventType.isAssignableFrom(resolvedClass)) {
                     return UtilLogger.LOG.eventTypeNotAllowed(eventType);
                 }
-            }
-            return NO_EXCEPTION_MARKER;
-        }
-    }
-
-    private static class EventSubtypeCheck implements Function<Type, RuntimeException> {
-
-        @Override
-        public RuntimeException apply(Type eventType) {
-            Type resolvedType = Types.getCanonicalType(eventType);
-            if (Types.containsTypeVariable(resolvedType)) {
-                return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
             }
             return NO_EXCEPTION_MARKER;
         }
