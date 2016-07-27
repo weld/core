@@ -12,7 +12,7 @@ import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
-import org.jboss.weld.metadata.MetadataImpl;
+import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 
 public class BeansXmlImpl implements BeansXml {
 
