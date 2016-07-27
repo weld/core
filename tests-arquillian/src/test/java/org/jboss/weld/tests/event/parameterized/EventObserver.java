@@ -30,6 +30,7 @@ public class EventObserver {
     private boolean integerListBarObserved;
     private boolean bazObserved;
     private boolean characterListObserved;
+    private boolean integerFooObserved;
 
     public void observeIntegerFooable(@Observes Fooable<List<Integer>> event) {
         this.integerListFooableObserved = true;
@@ -39,7 +40,7 @@ public class EventObserver {
         this.stringListFooableObserved = true;
     }
 
-    public void observeIntegerFoo(@Observes Foo<List<Integer>> event) {
+    public void observeListIntegerFoo(@Observes Foo<List<Integer>> event) {
         this.integerListFooObserved = true;
     }
 
@@ -53,6 +54,10 @@ public class EventObserver {
 
     public void observeCharacterList(@Observes List<Character> event) {
         this.characterListObserved = true;
+    }
+
+    public void observeIntegerFoo(@Observes Foo<? extends Number> event) {
+        this.integerFooObserved = true;
     }
 
     public boolean isStringListFooableObserved() {
@@ -75,6 +80,10 @@ public class EventObserver {
         return bazObserved;
     }
 
+    public boolean isIntegerFooObserved() {
+        return integerFooObserved;
+    }
+
     public boolean isCharacterListObserved() {
         return characterListObserved;
     }
@@ -86,6 +95,7 @@ public class EventObserver {
         this.integerListFooObserved = false;
         this.bazObserved = false;
         this.characterListObserved = false;
+        this.integerFooObserved = false;
     }
 
 }
