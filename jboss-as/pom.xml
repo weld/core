@@ -29,7 +29,7 @@
     <properties>
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
             as the release plugin won't deal with double evaluation -->
-        <weld.update.version>2.3.6-SNAPSHOT</weld.update.version>
+        <weld.update.version>2.4.0-SNAPSHOT</weld.update.version>
     </properties>
 
     <dependencies>
