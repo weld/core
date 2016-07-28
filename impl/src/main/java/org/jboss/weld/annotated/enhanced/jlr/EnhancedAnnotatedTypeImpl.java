@@ -268,11 +268,6 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             this.declaredMethods = new ArraySet<EnhancedAnnotatedMethod<?, ? super T>>(declaredMethodsTemp);
         }
 
-//<<<<<<< HEAD
-//        this.declaredMethods.trimToSize();
-//        this.declaredAnnotatedMethods.trimToSize();
-//        this.declaredMethodsByAnnotatedParameters.trimToSize();
-//
             SetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = SetMultimap.newSetMultimap();
             for (Annotation declaredAnnotation : declaredAnnotationMap.values()) {
 
