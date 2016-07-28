@@ -23,7 +23,6 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,7 +68,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         this.interceptorMetadata = initInterceptorMetadata();
         this.serializable = type.isSerializable();
         Set<Annotation> interceptorBindingTypesSet = new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values());
-        this.interceptorBindingTypes = Collections.unmodifiableSet(interceptorBindingTypesSet);
+//        this.interceptorBindingTypes = Collections.unmodifiableSet(interceptorBindingTypesSet);
+        this.interceptorBindingTypes = new HashSet<>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values());
 
         if (Beans.findInterceptorBindingConflicts(beanManager, interceptorBindingTypes)) {
             throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(getType()));
