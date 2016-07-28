@@ -90,9 +90,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
                 if (isEnabledInAnyBeanDeployment(specializingBean)) {
                     for (AbstractBean<?, ?> specializedBean : result) {
                         // replacement for computeIfAbsent and uses AtomicLong instead of LongAdder
-                        if ((! specializedBeansMap.containsKey(result)) || specializedBeansMap.get(specializedBean) == null) {
-                            specializedBeansMap.put(specializedBean, new AtomicLong(1));
-                        }
+                        specializedBeansMap.putIfAbsent(specializedBean, new AtomicLong(1));
                     }
                 }
                 return result;
