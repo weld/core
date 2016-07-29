@@ -20,10 +20,13 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -37,10 +40,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Function;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
-
-import com.google.common.collect.ConcurrentHashMultiset;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Multisets;
+import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Holds information about specialized beans.
@@ -88,7 +89,14 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
             }
             if (result != null) {
                 if (isEnabledInAnyBeanDeployment(specializingBean)) {
-                    specializedBeansSet.addAll(result);
+                    for (AbstractBean<?, ?> specializedBean : result) {
+                        // not present yet
+                        if (specializedBeansMap.get(specializedBean) == null) {
+                            specializedBeansMap.put(specializedBean, new AtomicLong(1));
+                        } else {
+                            specializedBeansMap.put(specializedBean, new AtomicLong(specializedBeansMap.get(specializedBean).get() + 1));
+                        }
+                    }
                 }
                 return result;
             }
@@ -113,7 +121,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
     // maps specializing beans to the set of specialized beans
     private final ComputingCache<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
     // fast lookup structure that allows us to figure out if a given bean is specialized in any of the bean deployments
-    private final Multiset<AbstractBean<?, ?>> specializedBeansSet = ConcurrentHashMultiset.create();
+    private final ConcurrentHashMap<AbstractBean<?, ?>, AtomicLong> specializedBeansMap = new ConcurrentHashMap<AbstractBean<?,?>, AtomicLong>();
 
     public SpecializationAndEnablementRegistry() {
         ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
@@ -145,13 +153,18 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         if (noLongerSpecializedBeans != null) {
             specializedBeans.invalidate(bean);
             for (AbstractBean<?, ?> noLongerSpecializedBean : noLongerSpecializedBeans) {
-                specializedBeansSet.remove(noLongerSpecializedBean);
+                // We should never get null here but just to be sure
+                AtomicLong count = specializedBeansMap.get(noLongerSpecializedBean);
+                if (count != null) {
+                    count.decrementAndGet();
+                }
             }
         }
     }
 
     public boolean isSpecializedInAnyBeanDeployment(Bean<?> bean) {
-        return specializedBeansSet.contains(bean);
+        AtomicLong count = specializedBeansMap.get(bean);
+        return count != null && count.longValue() > 0;
     }
 
     public boolean isEnabledInAnyBeanDeployment(Bean<?> bean) {
@@ -195,14 +208,20 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         specializedBeanResolvers.clear();
         environmentByManager.clear();
         specializedBeans.clear();
-        specializedBeansSet.clear();
+        specializedBeansMap.clear();
     }
 
     public Set<AbstractBean<?, ?>> getBeansSpecializedInAnyDeployment() {
-        return specializedBeansSet.elementSet();
+        return ImmutableSet.copyOf(specializedBeansMap.keySet());
     }
 
-    public Multiset<AbstractBean<?, ?>> getBeansSpecializedInAnyDeploymentAsMultiset() {
-        return Multisets.unmodifiableMultiset(specializedBeansSet);
+    public Map<AbstractBean<?, ?>, Long> getBeansSpecializedInAnyDeploymentAsMap() {
+        Set<Entry<AbstractBean<?, ?>, AtomicLong>> entrySet = specializedBeansMap.entrySet();
+        Map<AbstractBean<?, ?>, Long> resultingMap = new HashMap<>();
+        for (Entry<AbstractBean<?, ?>, AtomicLong> entry : entrySet ) {
+            resultingMap.put(entry.getKey(), entry.getValue().longValue());
+        }
+
+        return ImmutableMap.copyOf(resultingMap);
     }
 }
