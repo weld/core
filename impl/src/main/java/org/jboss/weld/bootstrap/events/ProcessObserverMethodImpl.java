@@ -31,7 +31,6 @@ import javax.enterprise.inject.spi.builder.ObserverMethodConfigurator;
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.WeldCollections;
@@ -43,7 +42,7 @@ import org.jboss.weld.util.collections.WeldCollections;
  * @author Martin Kouba
  */
 public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainerEvent
-        implements ProcessObserverMethod<T, X>, ExperimentalProcessObserverMethod<T, X> {
+        implements ProcessObserverMethod<T, X> {
 
     public static <T, X> ObserverMethod<T> fire(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
         ProcessObserverMethodImpl<T, X> event = new ProcessObserverMethodImpl<T, X>(beanManager, beanMethod, observerMethod) {
@@ -65,7 +64,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     private boolean observerMethodSet;
 
     private ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
-        super(beanManager, ExperimentalProcessObserverMethod.class, new Type[] { observerMethod.getObservedType(), observerMethod.getBeanClass() });
+        super(beanManager, ProcessObserverMethod.class, new Type[] { observerMethod.getObservedType(), observerMethod.getBeanClass() });
         this.beanMethod = beanMethod;
         this.initialObserverMethod = observerMethod;
         this.observerMethod = observerMethod;

@@ -46,7 +46,6 @@ import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.event.SyntheticObserverMethod;
-import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -68,7 +67,7 @@ public class Observers {
      */
     public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>> builder().addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
             .addAll(ProcessSyntheticAnnotatedType.class, ProcessSessionBean.class, ProcessManagedBean.class, ProcessProducerMethod.class,
-                    ProcessProducerField.class, ExperimentalProcessObserverMethod.class)
+                    ProcessProducerField.class, ProcessObserverMethod.class)
             .build();
 
     private Observers() {
