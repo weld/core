@@ -78,17 +78,24 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
      * Creates a new instance backed by a {@link ConcurrentHashMap} and synchronized {@link HashSet}.
      */
     public static <K, V> SetMultimap<K, V> newConcurrentSetMultimap() {
-        return new SetMultimap<K, V>(new Supplier<Map<K, Set<V>>>() {
-            @Override
-            public ConcurrentHashMap<K, Set<V>> get() {
-                return new ConcurrentHashMap<K, Set<V>>();
-            }
-        }, new Supplier<Set<V>>() {
+        return newConcurrentSetMultimap(new Supplier<Set<V>>() {
             @Override
             public Set<V> get() {
                 return Collections.synchronizedSet(new HashSet<V>());
             }
-        }, null);
+        });
+    }
+
+    /**
+     * Creates a new instance backed by a {@link ConcurrentHashMap} and synchronized {@link HashSet}.
+     */
+    public static <K, V> SetMultimap<K, V> newConcurrentSetMultimap(Supplier<Set<V>> valueSupplier) {
+        return new SetMultimap<K, V>(new Supplier<Map<K, Set<V>>>() {
+            @Override
+            public Map<K, Set<V>> get() {
+                return new ConcurrentHashMap<K, Set<V>>();
+            }
+        }, valueSupplier, null);
     }
 
     /**
