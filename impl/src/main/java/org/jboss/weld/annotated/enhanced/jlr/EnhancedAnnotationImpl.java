@@ -17,7 +17,6 @@
 package org.jboss.weld.annotated.enhanced.jlr;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,10 +30,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.HashSetSupplier;
-
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  * Represents an annotated annotation
@@ -76,7 +72,7 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
         super(annotatedType, annotationMap, declaredAnnotationMap, classTransformer);
         this.clazz = annotatedType.getJavaClass();
         members = new HashSet<EnhancedAnnotatedMethod<?, ?>>();
-        annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<EnhancedAnnotatedMethod<?, ?>>>(), HashSetSupplier.<EnhancedAnnotatedMethod<?, ?>>instance());
+        annotatedMembers = SetMultimap.newSetMultimap();
         for (AnnotatedMethod<? super T> annotatedMethod : annotatedType.getMethods()) {
             EnhancedAnnotatedMethod<?, ? super T> enhancedAnnotatedMethod = EnhancedAnnotatedMethodImpl.of(annotatedMethod, this, classTransformer);
             members.add(enhancedAnnotatedMethod);

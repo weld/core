@@ -17,23 +17,18 @@
 package org.jboss.weld.metadata;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.inject.Scope;
 
 import org.jboss.weld.bootstrap.api.Service;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
+import org.jboss.weld.util.Supplier;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
- * This class requires happens-before action between {@link #add(Class, Annotation)}
- * and subsequent {@link #get(Class)} or {@link #isExtraScope(Class)}. In order to guarantee
- * this implicitly, {@link #add(Class, Annotation)} should only be called from within a {@link BeforeBeanDiscovery}
- * observer.
+ * This class is thread-safe.
  *
  * @author pmuir
  * @author Jozef Hartinger
@@ -44,8 +39,13 @@ public class TypeStore implements Service {
     private final Set<Class<? extends Annotation>> extraScopes;
 
     public TypeStore() {
-        this.extraAnnotations = HashMultimap.create();
-        this.extraScopes = new HashSet<Class<? extends Annotation>>();
+        this.extraAnnotations = SetMultimap.newConcurrentSetMultimap(new Supplier<Set<Annotation>>() {
+            @Override
+            public Set<Annotation> get() {
+                return new CopyOnWriteArraySet<Annotation>();
+            }
+        });
+        this.extraScopes = new CopyOnWriteArraySet<>();
     }
 
     public Set<Annotation> get(Class<? extends Annotation> annotationType) {

@@ -26,11 +26,11 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -107,16 +107,11 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.collections.HashSetSupplier;
+import org.jboss.weld.util.collections.Multimap;
+import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.Multiset.Entry;
-import com.google.common.collect.SetMultimap;
 
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses
@@ -489,9 +484,9 @@ public class Validator implements Service {
 
     public void validateSpecialization(BeanManagerImpl manager) {
         SpecializationAndEnablementRegistry registry = manager.getServices().get(SpecializationAndEnablementRegistry.class);
-        for (Entry<AbstractBean<?, ?>> entry : registry.getBeansSpecializedInAnyDeploymentAsMultiset().entrySet()) {
-            if (entry.getCount() > 1) {
-                throw ValidatorLogger.LOG.beanSpecializedTooManyTimes(entry.getElement());
+        for (Entry<AbstractBean<?, ?>, Long> entry : registry.getBeansSpecializedInAnyDeploymentAsMap().entrySet()) {
+            if (entry.getValue() > 1) {
+                throw ValidatorLogger.LOG.beanSpecializedTooManyTimes(entry.getKey());
             }
         }
     }
@@ -626,7 +621,7 @@ public class Validator implements Service {
     }
 
     public void validateBeanNames(BeanManagerImpl beanManager) {
-        SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), HashSetSupplier.<Bean<?>>instance());
+        SetMultimap<String, Bean<?>> namedAccessibleBeans = SetMultimap.newSetMultimap();
         for (Bean<?> bean : beanManager.getAccessibleBeans()) {
             if (bean.getName() != null) {
                 namedAccessibleBeans.put(bean.getName(), bean);
@@ -707,7 +702,7 @@ public class Validator implements Service {
             Map<String, Class<?>> loadedClasses = buildClassNameMap(beanManager.getEnabled().getAlternativeClasses());
 
             // lookup structure for validation of alternatives
-            Multimap<Class<?>, Bean<?>> beansByClass = HashMultimap.create();
+            Multimap<Class<?>, Bean<?>> beansByClass = SetMultimap.newSetMultimap();
             for (Bean<?> bean : beanManager.getAccessibleBeans()) {
                 if (!(bean instanceof NewBean)) {
                     beansByClass.put(bean.getBeanClass(), bean);

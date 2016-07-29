@@ -56,7 +56,6 @@ import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Reflections;
 
-
 /**
  * Initializes {@link InterceptionModel} for a {@link Bean} or a non-contextual component.
  *
