@@ -17,10 +17,9 @@
 
 package org.jboss.weld.util.collections;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.SetMultimap;
-
 import java.util.Set;
+
+import org.jboss.weld.util.Supplier;
 
 /**
  * Provides new instances of {@link ArraySet} to Google collections.

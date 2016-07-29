@@ -18,7 +18,6 @@ package org.jboss.weld.ejb;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,10 +26,7 @@ import java.util.Set;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.util.collections.HashSetSupplier;
-
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  * EJB descriptors by EJB implementation class or name
@@ -50,7 +46,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
      */
     public EjbDescriptors() {
         this.ejbByName = new HashMap<String, InternalEjbDescriptor<?>>();
-        this.ejbByClass = Multimaps.newSetMultimap(new HashMap<Class<?>, Collection<String>>(), HashSetSupplier.<String>instance());
+        this.ejbByClass = SetMultimap.newSetMultimap();
     }
 
     /**

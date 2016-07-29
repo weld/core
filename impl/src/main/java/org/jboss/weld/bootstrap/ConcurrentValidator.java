@@ -19,7 +19,6 @@ package org.jboss.weld.bootstrap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,11 +37,8 @@ import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.HashSetSupplier;
+import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
-
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
 
 /**
  * Processes validation of beans, decorators and interceptors in parallel.
@@ -113,7 +109,7 @@ public class ConcurrentValidator extends Validator {
 
     @Override
     public void validateBeanNames(final BeanManagerImpl beanManager) {
-        final SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), HashSetSupplier.<Bean<?>> instance());
+        final SetMultimap<String, Bean<?>> namedAccessibleBeans = SetMultimap.newSetMultimap();
 
         for (Bean<?> bean : beanManager.getAccessibleBeans()) {
             if (bean.getName() != null) {
