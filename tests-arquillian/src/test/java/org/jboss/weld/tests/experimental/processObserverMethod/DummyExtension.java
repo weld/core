@@ -27,19 +27,19 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.ProcessObserverMethod;
 
-import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.literal.NamedLiteral;
 
 public class DummyExtension implements Extension {
 
-    void vetoObserverMethod(@Observes ExperimentalProcessObserverMethod<String, ?> event) {
+    void vetoObserverMethod(@Observes ProcessObserverMethod<String, ?> event) {
         if (checkExperimentalObserver(event.getObserverMethod().getObservedQualifiers())) {
             event.veto();
         }
     }
 
-    void replaceObserverMethod(@Observes ExperimentalProcessObserverMethod<Number, ?> event) {
+    void replaceObserverMethod(@Observes ProcessObserverMethod<Number, ?> event) {
         if (!checkExperimentalObserver(event.getObserverMethod().getObservedQualifiers())) {
             return;
         }
