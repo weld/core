@@ -17,6 +17,7 @@
 package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.config.ConfigurationKey.CONCURRENT_DEPLOYMENT;
+import static org.jboss.weld.config.ConfigurationKey.ROLLING_UPGRADES_ID_DELIMITER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -118,7 +119,8 @@ public class BeanDeployment {
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
         services.add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
-        this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
+        this.beanManager = BeanManagerImpl.newManager(deploymentManager, BeanDeployments.getFinalId(beanDeploymentArchive.getId(),
+            services.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER)), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
         if (beanManager.getServices().contains(EjbServices.class)) {
             // Must populate EJB cache first, as we need it to detect whether a

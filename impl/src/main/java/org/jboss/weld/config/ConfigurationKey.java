@@ -230,7 +230,28 @@ public enum ConfigurationKey {
      *  Conversation concurrent access timeout in milliseconds represents maximum time to wait on the conversation concurrent lock. Default value is 1000 ms.
      */
     @Description("The maximum time to wait on the lock of conversation in milliseconds.")
-    CONVERSATION_CONCURRENT_ACCESS_TIMEOUT("org.jboss.weld.conversation.concurrentAccessTimeout", 1000L);
+    CONVERSATION_CONCURRENT_ACCESS_TIMEOUT("org.jboss.weld.conversation.concurrentAccessTimeout", 1000L),
+
+    /**
+     * This configuration property should only be used if experiencing problems with rolling upgrades.
+     * <p>
+     * The delimiter is used to abbreviate a bean archive identifier (which is usually derived from the archive name) before used as a part of an identifier of
+     * an internal component (such as bean). Note that the delimiter is used for all bean archives forming the application.
+     * <p>
+     * The abbreviation proceeds as follows:
+     * <ul>
+     * <li>Try to find the first occurrence of the specified delimiter</li>
+     * <li>If not found, the identifier is not abbreviated</li>
+     * <li>If found, try to extract the archive suffix (`.war`, `.ear`, etc.) and the final value consists of the part before the delimiter and the archive
+     * suffix (if extracted)</li>
+     * </ul>
+     * <p>
+     * An example: Given an application with two versions going by the names <code>test__1.1.war</code> and <code>test__1.2.war</code>. Weld normally cannot
+     * support replication of <code>@SessionScoped</code> beans between these two deployments. Passing in this option with delimiter "__" will allow Weld to see
+     * both applications simply as test.war, hence allowing for session replication.
+     */
+    @Description("The delimiter is used to abbreviate a bean archive identifier before used as a part of an identifier of an internal component (such as bean).")
+    ROLLING_UPGRADES_ID_DELIMITER("org.jboss.weld.clustering.rollingUpgradesIdDelimiter", "");
 
     /**
      *
