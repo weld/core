@@ -91,9 +91,8 @@ import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
+import org.jboss.weld.util.collections.Multimap;
 import org.jboss.weld.util.collections.WeldCollections;
-
-import com.google.common.collect.Multimap;
 
 /**
  * <p>
@@ -698,7 +697,7 @@ public class Weld implements ContainerInstanceFactory {
         Multimap<String, BeanDeploymentArchive> problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(beanArchives);
         if (!problems.isEmpty()) {
             // Right now, we only log a warning for each bean class deployed in multiple bean archives
-            for (Entry<String, Collection<BeanDeploymentArchive>> entry : problems.asMap().entrySet()) {
+            for (Entry<String, Collection<BeanDeploymentArchive>> entry : problems.entrySet()) {
                 WeldSELogger.LOG.beanClassDeployedInMultipleBeanArchives(entry.getKey(), WeldCollections.toMultiRowString(entry.getValue()));
             }
         }

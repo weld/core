@@ -23,12 +23,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableSetMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.SetMultimap;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.Multimap;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  *
@@ -48,13 +45,11 @@ public final class BeanArchives {
      */
     public static <B extends BeanDeploymentArchive> Multimap<String, BeanDeploymentArchive> findBeanClassesDeployedInMultipleBeanArchives(Set<B> beanArchives) {
 
+        SetMultimap<String, BeanDeploymentArchive> problems = SetMultimap.newSetMultimap();
+
         if (beanArchives.size() == 1) {
-            return ImmutableSetMultimap.of();
-        }
-
-        SetMultimap<String, BeanDeploymentArchive> problems = HashMultimap.create();
-
-        if (beanArchives.size() == 2) {
+            return problems;
+        } else if (beanArchives.size() == 2) {
             // Find the set that contains all bean classes of the first bean
             // archive that also belong to the second bean archive
             Iterator<B> iterator = beanArchives.iterator();
@@ -70,14 +65,14 @@ public final class BeanArchives {
             }
         } else if (beanArchives.size() > 2) {
             // First collect the data
-            SetMultimap<String, BeanDeploymentArchive> beanClassOccurrences = HashMultimap.create();
+            SetMultimap<String, BeanDeploymentArchive> beanClassOccurrences = SetMultimap.newSetMultimap();
             for (BeanDeploymentArchive beanArchive : beanArchives) {
                 for (String beanClass : beanArchive.getBeanClasses()) {
                     beanClassOccurrences.put(beanClass, beanArchive);
                 }
             }
             // Then identify problematic bean classes
-            for (Entry<String, Collection<BeanDeploymentArchive>> entry : beanClassOccurrences.asMap().entrySet()) {
+            for (Entry<String, Collection<BeanDeploymentArchive>> entry : beanClassOccurrences.entrySet()) {
                 if (entry.getValue().size() > 1) {
                     problems.putAll(entry.getKey(), entry.getValue());
                 }

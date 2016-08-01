@@ -16,14 +16,12 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
-import static java.util.Collections.emptyList;
 import static org.jboss.weld.config.ConfigurationKey.CONCURRENT_DEPLOYMENT;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 import javax.enterprise.context.spi.Context;
 
@@ -73,13 +71,12 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.AnnotationApiAbstraction;
+import org.jboss.weld.util.Function;
 import org.jboss.weld.util.JtaApiAbstraction;
+import org.jboss.weld.util.Predicate;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 /**
  * @author Pete Muir
@@ -176,23 +173,43 @@ public class BeanDeployment {
             if (getBeanDeploymentArchive().getBeansXml().getScanning().getIncludes() != null) {
                 includeFilters = getBeanDeploymentArchive().getBeansXml().getScanning().getIncludes();
             } else {
-                includeFilters = emptyList();
+                includeFilters = Collections.emptyList();
             }
             Collection<Metadata<Filter>> excludeFilters;
             if (getBeanDeploymentArchive().getBeansXml().getScanning().getExcludes() != null) {
                 excludeFilters = getBeanDeploymentArchive().getBeansXml().getScanning().getExcludes();
             } else {
-                excludeFilters = emptyList();
+                excludeFilters = Collections.emptyList();
             }
-
             /*
             * Take a copy of the transformed collection, this means that the
             * filter predicate is only built once per filter predicate
             */
-            Collection<Predicate<String>> includes = new ArrayList<Predicate<String>>(transform(includeFilters, filterToPredicateFunction));
-            Collection<Predicate<String>> excludes = new ArrayList<Predicate<String>>(transform(excludeFilters, filterToPredicateFunction));
+            Collection<Predicate<String>> includes;
+            if (includeFilters.isEmpty()) {
+                includes = Collections.emptyList();
+            } else {
+                includes = new ArrayList<Predicate<String>>(includeFilters.size());
+                for (Metadata<Filter> includeFilter : includeFilters) {
+                    includes.add(filterToPredicateFunction.apply(includeFilter));
+                }
+            }
+            Collection<Predicate<String>> excludes;
+            if (excludeFilters.isEmpty()) {
+                excludes = Collections.emptyList();
+            } else {
+                excludes = new ArrayList<Predicate<String>>(excludeFilters.size());
+                for (Metadata<Filter> excludeFilter : excludeFilters) {
+                    excludes.add(filterToPredicateFunction.apply(excludeFilter));
+                }
+            }
             Predicate<String> filters = new ScanningPredicate<String>(includes, excludes);
-            classNames = filter(beanDeploymentArchive.getBeanClasses(), filters);
+            classNames = new HashSet<>();
+            for (String beanClass : beanDeploymentArchive.getBeanClasses()) {
+                if(filters.test(beanClass)) {
+                    classNames.add(beanClass);
+                }
+            }
         } else {
             classNames = beanDeploymentArchive.getBeanClasses();
         }

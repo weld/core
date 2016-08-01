@@ -38,12 +38,11 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.XmlLogger;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.ScanningImpl;
+import org.jboss.weld.util.Function;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-
-import com.google.common.base.Function;
 
 /**
  * Simple parser for beans.xml

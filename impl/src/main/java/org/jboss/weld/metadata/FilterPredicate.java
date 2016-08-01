@@ -1,6 +1,9 @@
 package org.jboss.weld.metadata;
 
-import com.google.common.base.Predicate;
+import java.security.AccessController;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -9,10 +12,7 @@ import org.jboss.weld.bootstrap.spi.WeldFilter;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.security.GetSystemPropertyAction;
-
-import java.security.AccessController;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+import org.jboss.weld.util.Predicate;
 
 /**
  * A predicate which selects classes to process based on a filter.
@@ -106,7 +106,7 @@ public class FilterPredicate implements Predicate<String> {
         }
     }
 
-    public boolean apply(String className) {
+    public boolean test(String className) {
         if (active) {
             return matcher.matches(className);
         } else {

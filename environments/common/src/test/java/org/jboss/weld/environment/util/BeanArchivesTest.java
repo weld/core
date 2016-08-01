@@ -29,9 +29,8 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Multimap;
 import org.junit.Test;
-
-import com.google.common.collect.Multimap;
 
 /**
  *
@@ -52,7 +51,7 @@ public class BeanArchivesTest {
         problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(ImmutableSet.of(bda1, bda2));
         assertFalse(problems.isEmpty());
         assertEquals(1, problems.keySet().size());
-        Entry<String, Collection<BeanDeploymentArchive>> entry = problems.asMap().entrySet().iterator().next();
+        Entry<String, Collection<BeanDeploymentArchive>> entry = problems.entrySet().iterator().next();
         assertEquals(beanClass, entry.getKey());
         assertEquals(2, entry.getValue().size());
         for (BeanDeploymentArchive bda : entry.getValue()) {

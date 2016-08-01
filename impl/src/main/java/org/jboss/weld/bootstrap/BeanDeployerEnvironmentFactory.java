@@ -32,7 +32,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment.WeldMethodKey;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.Multimaps;
+import org.jboss.weld.util.collections.SetMultimap;
 
 public class BeanDeployerEnvironmentFactory {
 
@@ -50,9 +50,9 @@ public class BeanDeployerEnvironmentFactory {
         return new BeanDeployerEnvironment(
                 Collections.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
-                Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
+                SetMultimap.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
                 Collections.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
-                Multimaps.<WeldMethodKey, ProducerMethod<?, ?>>newConcurrentSetMultimap(),
+                SetMultimap.<WeldMethodKey, ProducerMethod<?, ?>>newConcurrentSetMultimap(),
                 Collections.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<ObserverInitializationContext<?, ?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
