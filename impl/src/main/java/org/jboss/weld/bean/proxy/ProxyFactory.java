@@ -299,10 +299,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         return encl == null ? "" : getEnclosingPrefix(encl) + encl.getSimpleName() + '$';
     }
 
-    protected boolean isCreatingProxy() {
-        return true;
-    }
-
     /**
      * Adds an additional interface that the proxy should implement. The default
      * implementation will be to forward invocations to the bean instance.
@@ -373,15 +369,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             }
         }
         return proxyClass;
-    }
-
-    protected Class<T> getCachedProxyClass(String proxyClassName) {
-        try {
-            // Check to see if we already have this proxy class
-            return cast(classLoader.loadClass(proxyClassName));
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
     }
 
     /**

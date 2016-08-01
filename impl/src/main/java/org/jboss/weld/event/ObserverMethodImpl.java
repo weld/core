@@ -173,10 +173,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         return Collections.unmodifiableSet(injectionPoints);
     }
 
-    public Set<WeldInjectionPointAttributes<?, ?>> getNewInjectionPoints() {
-        return Collections.unmodifiableSet(newInjectionPoints);
-    }
-
     /**
      * Performs validation of the observer method for compliance with the specifications.
      */

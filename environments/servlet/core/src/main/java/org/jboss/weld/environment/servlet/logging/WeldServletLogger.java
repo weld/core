@@ -56,9 +56,7 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1004, value = "Found both WEB-INF/beans.xml and WEB-INF/classes/META-INF/beans.xml. It is not portable to use both locations at the same time. Weld is going to use: {0}", format = Format.MESSAGE_FORMAT)
     void foundBothConfiguration(Object param1);
 
-    @LogMessage(level = Level.TRACE)
-    @Message(id = 1005, value = "Exactly one constructor ({0}) annotated with @Inject defined, using it as the bean constructor for {1}", format = Format.MESSAGE_FORMAT)
-    void foundOneInjectableConstructor(Object param1, Object param2);
+    // log message with id 1005 was removed
 
     @LogMessage(level = Level.INFO)
     @Message(id = 1006, value = "org.jboss.weld.environment.servlet.EnhancedListener used for ServletContext notifications")
@@ -112,11 +110,8 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1019, value = "Error creating JNDI context")
     IllegalStateException errorCreatingJNDIContext(@Cause Throwable cause);
 
-    @Message(id = 1020, value = "Cannot instantiate instance of {0} with no-argument constructor.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException cannotInstantiateInstance(Object param1, @Cause Throwable cause);
-
-    @Message(id = 1021, value = "Cannot load class for {0}.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException cannotLoadClass(Object param1, @Cause Throwable cause);
+    // log message with id 1020 was removed
+    // log message with id 1021 was removed
 
     @Message(id = 1022, value = "No ServiceLoader class available!")
     IllegalStateException noServiceLoaderClassAvailable();
@@ -130,8 +125,7 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1025, value = "Could not create InitialContext to bind BeanManager reference in JNDI: {0}.", format = Format.MESSAGE_FORMAT)
     RuntimeException couldNotCreateInitialContext(Object param1);
 
-    @Message(id = 1027, value = "Error loading Weld listener, check that Weld is on the classpath.")
-    IllegalStateException errorLoadingWeldListener(@Cause Throwable cause);
+    // log message with id 1027 was removed
 
     @Message(id = 1028, value = "Error loading Weld ELContext Listener, check that Weld is on the classpath.")
     IllegalStateException errorLoadingWeldELContextListener(@Cause Throwable cause);

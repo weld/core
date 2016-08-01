@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.jboss.weld.util.collections.ViewProvider;
 import org.jboss.weld.util.collections.ListView;
 import org.junit.Test;
 

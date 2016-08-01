@@ -303,12 +303,6 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         }
     }
 
-    public void preloadProcessInjectionPoint(Type... typeParameters) {
-        if (preloader != null && isProcessInjectionPointObserved()) {
-            preloader.preloadContainerLifecycleEvent(ProcessInjectionPoint.class, typeParameters);
-        }
-    }
-
     public void preloadProcessInjectionTarget(Class<?> type) {
         if (preloader != null && isProcessInjectionTargetObserved()) {
             preloader.preloadContainerLifecycleEvent(ProcessInjectionTarget.class, type);

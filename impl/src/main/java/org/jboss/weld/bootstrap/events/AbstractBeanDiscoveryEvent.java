@@ -48,13 +48,6 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
     }
 
     /**
-     * @return the bdaMapping
-     */
-    protected BeanDeploymentArchiveMapping getBeanDeployments() {
-        return bdaMapping;
-    }
-
-    /**
      * @return the deployment
      */
     protected Deployment getDeployment() {

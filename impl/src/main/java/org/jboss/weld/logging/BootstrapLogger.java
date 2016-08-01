@@ -114,8 +114,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 124, value = "Using {0} threads for bootstrap", format = Format.MESSAGE_FORMAT)
     void threadsInUse(Object param1);
 
-    @Message(id = 125, value = "Invalid thread pool size: {0}", format = Format.MESSAGE_FORMAT)
-    DeploymentException invalidThreadPoolSize(Object param1);
+    // log message with id 125 was removed
 
     @LogMessage(level = Level.WARN)
     @Message(id = 126, value = "Timeout shutting down thread pool {0} at {1}", format = Format.MESSAGE_FORMAT)
@@ -124,8 +123,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 127, value = "Invalid thread pool type: {0}", format = Format.MESSAGE_FORMAT)
     DeploymentException invalidThreadPoolType(Object param1);
 
-    @Message(id = 128, value = "Invalid value for property {0}: {1}", format = Format.MESSAGE_FORMAT)
-    DeploymentException invalidPropertyValue(Object param1, Object param2);
+    // log message with id 128 was removed
 
     @Message(id = 130, value = "Cannot replace AnnotatedType for {0} with AnnotatedType for {1}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException annotatedTypeJavaClassMismatch(Object param1, Object param2);

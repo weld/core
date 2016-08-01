@@ -53,10 +53,6 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
         return new BasicInjectionTarget<T>(type, bean, beanManager, injector, invoker);
     }
 
-    public static <T> BasicInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        return new BasicInjectionTarget<T>(type, bean, beanManager, null);
-    }
-
     public static <T> BasicInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Instantiator<T> instantiator) {
         return new BasicInjectionTarget<T>(type, bean, beanManager, instantiator);
     }

@@ -6,7 +6,6 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 
@@ -72,10 +71,6 @@ public class Deployments {
      */
     public static String extendDefaultWebXml(String extension) {
         return DEFAULT_WEB_XML_PREFIX + extension + DEFAULT_WEB_XML_SUFFIX;
-    }
-
-    public static <T extends Archive<T>> T skipProcessor(T archive) {
-        return archive.add(EmptyAsset.INSTANCE, MARKER_SKIP_PROCESSOR);
     }
 
     public static <T extends Archive<?>> boolean isProcessorSkipped(T archive) {

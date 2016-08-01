@@ -25,8 +25,4 @@ public class XmlMetadata<T> extends FileMetadata<T> {
         }
     }
 
-    public String getQName() {
-        return qName;
-    }
-
 }
