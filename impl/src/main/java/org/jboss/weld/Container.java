@@ -38,8 +38,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class Container {
     public static final String CONTEXT_ID_KEY = "WELD_CONTEXT_ID_KEY";
 
-    public static final ThreadLocal<String> currentId = new ThreadLocal<String>();
-
     private static Singleton<Container> instance;
 
     static {
