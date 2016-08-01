@@ -57,7 +57,7 @@ public final class Sets {
         checkArgumentNotNull(set2, "set2");
 
         // Set 2 minus set 1
-        final Set<E> difference = new HashSet<>(set2);
+        final Set<? extends E> difference = new HashSet<>(set2);
         difference.removeAll(set1);
         // Following stream does not compile on some JDKs
         // See also https://bugs.openjdk.java.net/browse/JDK-8051443

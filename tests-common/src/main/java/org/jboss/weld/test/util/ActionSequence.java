@@ -160,7 +160,7 @@ public final class ActionSequence {
      *
      * @param expected
      */
-    public void assertDataEquals(List<String> expected) {
+    public void assertDataEquals(List<? extends String> expected) {
         assertEquals(String.format("%s and expected sequence differ in size.", toString()), expected.size(), data.size());
         for (int i = 0; i < expected.size(); i++) {
             assertEquals(String.format("%s and expected sequence differ on the index %d.", toString(), i), data.get(i), expected.get(i));
@@ -191,7 +191,7 @@ public final class ActionSequence {
      *
      * @param expected
      */
-    public void assertDataContainsAll(Collection<String> expected) {
+    public void assertDataContainsAll(Collection<? extends String> expected) {
         for (String s : expected) {
             assertTrue(String.format("%s does not contain %s", toString(), s), data.contains(s));
         }
@@ -443,7 +443,7 @@ public final class ActionSequence {
          *
          * @throws IllegalArgumentException in case of a null argument
          */
-        public static <F, T> List<T> transform(final Function<? super F, ? extends T> function, final Collection<F> fromCollection) {
+        public static <F, T> List<? extends T> transform(final Function<? super F, ? extends T> function, final Collection<F> fromCollection) {
             checkNotNull(fromCollection);
             checkNotNull(function);
             List<T> result = new ArrayList<T>(fromCollection.size());
@@ -457,7 +457,7 @@ public final class ActionSequence {
          * Returns a list that applies {@code function} to each element of {@code inputElements}.
          */
         @SafeVarargs
-        public static <F, T> List<T> transform(final Function<? super F, ? extends T> function, final F... inputElements) {
+        public static <F, T> List<? extends T> transform(final Function<? super F, ? extends T> function, final F... inputElements) {
             return transform(function, Arrays.asList(inputElements));
         }
 
