@@ -108,7 +108,7 @@ public final class Iterables {
         return new Iterable<R>() {
             @Override
             public Iterator<R> iterator() {
-                return new Iterators.TransformingIterator<>(iterable.iterator(), function);
+                return new Iterators.TransformingIterator<T, R>(iterable.iterator(), function);
             }
         };
 
