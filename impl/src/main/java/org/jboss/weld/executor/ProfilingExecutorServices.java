@@ -26,8 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
-
-import com.google.common.util.concurrent.ForwardingExecutorService;
+import org.jboss.weld.util.ForwardingExecutorService;
 
 public class ProfilingExecutorServices implements ExecutorServices {
 

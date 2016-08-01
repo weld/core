@@ -18,15 +18,9 @@ package org.jboss.weld.util.collections;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-
-import org.jboss.weld.util.Function;
-import org.jboss.weld.util.cache.ComputingCache;
-import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 /**
  * Multimap utilities.
@@ -37,22 +31,6 @@ import org.jboss.weld.util.cache.ComputingCacheBuilder;
 public class Multimaps {
 
     private Multimaps() {
-    }
-
-    private static final ComputingCacheBuilder CACHE_BUILDER = ComputingCacheBuilder.newBuilder();
-
-    private static class ConcurrentSetMultimapValueSupplier<K, V> implements Function<K, Set<V>> {
-        @Override
-        public Set<V> apply(K input) {
-            return Collections.synchronizedSet(new HashSet<V>());
-        }
-    }
-
-    /**
-     * Creates a {@link ConcurrentMap} instance whose values are populated with synchronized HashSet instances.
-     */
-    public static <K, V> ComputingCache<K, Set<V>> newConcurrentSetMultimap() {
-        return CACHE_BUILDER.build(new ConcurrentSetMultimapValueSupplier<K, V>());
     }
 
     /**

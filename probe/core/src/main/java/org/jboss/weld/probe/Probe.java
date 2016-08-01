@@ -51,9 +51,7 @@ import org.jboss.weld.probe.Queries.BeanFilters;
 import org.jboss.weld.probe.Queries.Filters;
 import org.jboss.weld.probe.Queries.ObserverFilters;
 import org.jboss.weld.serialization.spi.ContextualStore;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  * This component holds all the mapping and monitoring data.
@@ -114,7 +112,7 @@ class Probe {
         this.beanToManager = new HashMap<Bean<?>, BeanManagerImpl>();
         this.idToObserver = new HashMap<String, ObserverMethod<?>>();
         this.observerToId = new HashMap<ObserverMethod<?>, String>();
-        this.beanToDeclaredProducers = HashMultimap.create();
+        this.beanToDeclaredProducers = SetMultimap.newSetMultimap();
         this.bdaToManager = new HashMap<BeanDeploymentArchive, BeanManagerImpl>();
         this.beanComparator = new Comparator<Bean<?>>() {
             @Override
