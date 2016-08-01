@@ -111,14 +111,6 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         return field.get(obj);
     }
 
-    public static void restoreInstanceManager(ServletContext context) {
-        StandardContext stdContext = getStandardContext(context);
-        InstanceManager im = getInstanceManager(stdContext);
-        if (im instanceof WeldForwardingInstanceManager) {
-            setInstanceManager(stdContext, ((WeldForwardingInstanceManager) im).firstProcessor);
-        }
-    }
-
     private static InstanceManager getInstanceManager(StandardContext stdContext) {
         try {
             Method method = SecurityActions.lookupMethod(stdContext.getClass(), INSTANCE_MANAGER_GETTER_NAME);

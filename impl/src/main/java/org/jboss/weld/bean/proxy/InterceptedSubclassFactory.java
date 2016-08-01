@@ -405,11 +405,6 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected boolean isCreatingProxy() {
-        return false;
-    }
-
-    @Override
     protected Class<? extends MethodHandler> getMethodHandlerType() {
         return CombinedInterceptorAndDecoratorStackMethodHandler.class;
     }

@@ -72,10 +72,6 @@ public class Namespace {
         return qualifiedName;
     }
 
-    protected Map<String, Namespace> getChildren() {
-        return children;
-    }
-
     protected String getName() {
         return name;
     }

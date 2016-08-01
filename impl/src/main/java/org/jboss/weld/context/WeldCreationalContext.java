@@ -46,8 +46,6 @@ public interface WeldCreationalContext<T> extends org.jboss.weld.construction.ap
 
     <S> S getIncompleteInstance(Contextual<S> bean);
 
-    boolean containsIncompleteInstance(Contextual<?> bean);
-
     void addDependentInstance(ContextualInstance<?> contextualInstance);
 
     void release();

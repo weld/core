@@ -18,12 +18,8 @@ package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Interceptor;
 
 /**
@@ -50,14 +46,6 @@ public class NoopLifecycleCallbackInvoker<T> implements LifecycleCallbackInvoker
     @Override
     public void preDestroy(T instance, Instantiator<T> instantiator) {
         // noop
-    }
-
-    public List<AnnotatedMethod<? super T>> getPreDestroyMethods() {
-        return Collections.emptyList();
-    }
-
-    public List<AnnotatedMethod<? super T>> getPostConstructMethods() {
-        return Collections.emptyList();
     }
 
     @Override

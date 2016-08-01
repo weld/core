@@ -41,7 +41,6 @@ import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewBean;
-import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
@@ -206,10 +205,6 @@ public class BeanDeployerEnvironment {
     public void addSessionBean(SessionBean<?> bean) {
         Preconditions.checkArgument(bean instanceof AbstractClassBean<?>, bean);
         addAbstractClassBean((AbstractClassBean<?>) bean);
-    }
-
-    public void addNewManagedBean(NewManagedBean<?> bean) {
-        beans.add(bean);
     }
 
     protected void addAbstractBean(AbstractBean<?, ?> bean) {
