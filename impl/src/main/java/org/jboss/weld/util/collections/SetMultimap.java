@@ -23,7 +23,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.util.Supplier;
+
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * A {@link Multimap} whose collections of values are backed by a {@link Set}.
@@ -46,7 +48,8 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
             public HashMap<K, Set<V>> get() {
                 return new HashMap<K, Set<V>>();
             }
-        }, new Supplier<Set<V>>() {
+        }, null,
+            new Supplier<Set<V>>() {
             @Override
             public HashSet<V> get() {
                 return new HashSet<V>();
@@ -66,7 +69,8 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
             public HashMap<K, Set<V>> get() {
                 return new HashMap<K, Set<V>>();
             }
-        }, new Supplier<Set<V>>() {
+        }, null,
+            new Supplier<Set<V>>() {
             @Override
             public HashSet<V> get() {
                 return new HashSet<V>();
@@ -90,9 +94,9 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
      * Creates a new instance backed by a {@link ConcurrentHashMap} and synchronized {@link HashSet}.
      */
     public static <K, V> SetMultimap<K, V> newConcurrentSetMultimap(Supplier<Set<V>> valueSupplier) {
-        return new SetMultimap<K, V>(new Supplier<Map<K, Set<V>>>() {
+        return new SetMultimap<K, V>(null, new Supplier<ConcurrentMap<K, Set<V>>>() {
             @Override
-            public Map<K, Set<V>> get() {
+            public ConcurrentMap<K, Set<V>> get() {
                 return new ConcurrentHashMap<K, Set<V>>();
             }
         }, valueSupplier, null);
@@ -104,8 +108,8 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
      * @param collectionSupplier
      * @param multimap
      */
-    private SetMultimap(Supplier<Map<K, Set<V>>> mapSupplier, Supplier<Set<V>> collectionSupplier, Multimap<K, V> multimap) {
-        super(mapSupplier, collectionSupplier, multimap);
+    private SetMultimap(Supplier<Map<K, Set<V>>> mapSupplier, Supplier<ConcurrentMap<K, Set<V>>> concurrentMapSupplier, Supplier<Set<V>> collectionSupplier, Multimap<K, V> multimap) {
+        super(mapSupplier, concurrentMapSupplier, collectionSupplier, multimap);
     }
 
 }

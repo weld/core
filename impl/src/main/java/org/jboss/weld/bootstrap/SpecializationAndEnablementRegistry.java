@@ -90,12 +90,15 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
             if (result != null) {
                 if (isEnabledInAnyBeanDeployment(specializingBean)) {
                     for (AbstractBean<?, ?> specializedBean : result) {
-                        // not present yet
-                        if (specializedBeansMap.get(specializedBean) == null) {
-                            specializedBeansMap.put(specializedBean, new AtomicLong(1));
-                        } else {
-                            specializedBeansMap.put(specializedBean, new AtomicLong(specializedBeansMap.get(specializedBean).get() + 1));
+                        AtomicLong value = specializedBeansMap.get(specializedBean);
+                        if (value == null) {
+                            value = new AtomicLong(0);
+                            AtomicLong previous = specializedBeansMap.putIfAbsent(specializedBean, value);
+                            if (previous != null) {
+                                value = previous;
+                            }
                         }
+                        value.incrementAndGet();
                     }
                 }
                 return result;
@@ -121,7 +124,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
     // maps specializing beans to the set of specialized beans
     private final ComputingCache<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
     // fast lookup structure that allows us to figure out if a given bean is specialized in any of the bean deployments
-    private final ConcurrentHashMap<AbstractBean<?, ?>, AtomicLong> specializedBeansMap = new ConcurrentHashMap<AbstractBean<?,?>, AtomicLong>();
+    private final ConcurrentHashMap<AbstractBean<?, ?>, AtomicLong> specializedBeansMap = new ConcurrentHashMap<AbstractBean<?, ?>, AtomicLong>();
 
     public SpecializationAndEnablementRegistry() {
         ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
@@ -218,7 +221,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
     public Map<AbstractBean<?, ?>, Long> getBeansSpecializedInAnyDeploymentAsMap() {
         Set<Entry<AbstractBean<?, ?>, AtomicLong>> entrySet = specializedBeansMap.entrySet();
         Map<AbstractBean<?, ?>, Long> resultingMap = new HashMap<>();
-        for (Entry<AbstractBean<?, ?>, AtomicLong> entry : entrySet ) {
+        for (Entry<AbstractBean<?, ?>, AtomicLong> entry : entrySet) {
             resultingMap.put(entry.getKey(), entry.getValue().longValue());
         }
 
