@@ -1,7 +1,5 @@
 package org.jboss.weld.environment.logging;
 
-import java.net.URL;
-
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 
 import org.jboss.logging.Logger;
@@ -46,9 +44,7 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 7, value = "Error handling file path\n  File: {0}\n  Path: {1}", format = Format.MESSAGE_FORMAT)
     void cannotHandleFilePath(Object file, Object path, @Cause Throwable cause);
 
-    @LogMessage(level = Level.ERROR)
-    @Message(id = 8, value = "Error loading file {0}", format = Format.MESSAGE_FORMAT)
-    void errorLoadingFile(Object param1);
+    // log message with id 8 was removed
 
     @LogMessage(level = Level.WARN)
     @Message(id = 10, value = "Could not open the stream on the url {0} when adding to the jandex index.", format = Format.MESSAGE_FORMAT)
@@ -84,13 +80,8 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 20, value = "Using jandex for bean discovery", format = Format.MESSAGE_FORMAT)
     void usingJandex();
 
-    @LogMessage(level = Level.WARN)
-    @Message(id = 21, value = "Could not close the stream for of the jandex index file for {0}.", format = Format.MESSAGE_FORMAT)
-    void couldNotCloseStreamOfJandexIndex(Object param1, @Cause Throwable cause);
-
-    @LogMessage(level = Level.INFO)
-    @Message(id = 22, value = "Found jandex index at {0}", format = Format.MESSAGE_FORMAT)
-    void foundJandexIndex(URL url);
+    // log message with id 21 was removed
+    // log message with id 22 was removed
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 23, value = "Archive isolation disabled - only one bean archive will be created", format = Format.MESSAGE_FORMAT)

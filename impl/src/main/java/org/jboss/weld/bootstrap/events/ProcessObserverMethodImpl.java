@@ -25,8 +25,6 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Implementation of the event used to notify observers for each observer
@@ -63,10 +61,6 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     public ObserverMethod<T> getObserverMethod() {
         checkWithinObserverNotification();
         return observerMethod;
-    }
-
-    public List<Throwable> getDefinitionErrors() {
-        return Collections.unmodifiableList(getErrors());
     }
 
 }

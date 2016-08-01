@@ -44,8 +44,6 @@ import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewBean;
-import org.jboss.weld.bean.NewManagedBean;
-import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
@@ -154,10 +152,6 @@ public class BeanDeployerEnvironment {
         return Collections.unmodifiableSet(annotatedTypes);
     }
 
-    public void removeAnnotatedType(SlimAnnotatedTypeContext<?> annotatedType) {
-        annotatedTypes.remove(annotatedType);
-    }
-
     public void removeAnnotatedTypes(Collection<SlimAnnotatedTypeContext<?>> annotatedTypes) {
         this.annotatedTypes.removeAll(annotatedTypes);
     }
@@ -226,14 +220,6 @@ public class BeanDeployerEnvironment {
 
     public void addSessionBean(SessionBean<?> bean) {
         addAbstractClassBean(bean);
-    }
-
-    public void addNewManagedBean(NewManagedBean<?> bean) {
-        beans.add(bean);
-    }
-
-    public void addNewSessionBean(NewSessionBean<?> bean) {
-        beans.add(bean);
     }
 
     protected void addAbstractBean(AbstractBean<?, ?> bean) {

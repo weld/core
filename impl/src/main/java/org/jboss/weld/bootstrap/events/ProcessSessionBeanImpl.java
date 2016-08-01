@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -39,10 +37,6 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
 
     private ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean) {
         super(beanManager, ProcessSessionBean.class, new Type[]{bean.getAnnotated().getBaseType()}, bean);
-    }
-
-    public AnnotatedType<X> getAnnotatedSessionBeanClass() {
-        return cast(getBean().getAnnotated());
     }
 
     public String getEjbName() {

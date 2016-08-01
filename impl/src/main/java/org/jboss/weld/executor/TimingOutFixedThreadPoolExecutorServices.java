@@ -67,10 +67,6 @@ public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorSe
         return threadPoolSize;
     }
 
-    public long getKeepAliveTime() {
-        return keepAliveTime;
-    }
-
     @Override
     public String toString() {
         return String.format("TimingOutFixedThreadPoolExecutorServices [threadPoolSize=%s, keepAliveTime=%s]", threadPoolSize,

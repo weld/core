@@ -80,10 +80,7 @@ public interface ConversationLogger extends WeldLogger {
     @Message(id = 326, value = "Found conversation id {0} in request parameter", format = Format.MESSAGE_FORMAT)
     void foundConversationFromRequest(Object param1);
 
-    // Moved from JsfLogger, id 504
-    @LogMessage(level = Level.DEBUG)
-    @Message(id = 327, value = "Resuming conversation with id {0}", format = Format.MESSAGE_FORMAT)
-    void resumingConversation(Object param1);
+    // log message with id 327 was removed
 
     // Previously 214
     @Message(id = 328, value = "Attempt to call begin() on a long-running conversation")

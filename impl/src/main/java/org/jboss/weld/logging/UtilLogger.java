@@ -29,7 +29,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.exceptions.WeldException;
 
 /**
@@ -44,8 +43,7 @@ public interface UtilLogger extends WeldLogger {
 
     UtilLogger LOG = Logger.getMessageLogger(UtilLogger.class, Category.UTIL.getName());
 
-    @Message(id = 802, value = "XML DOM is readonly")
-    UnsupportedOperationException xmlDomReadonly();
+    // log message with id 802 was removed
 
     @Message(id = 804, value = "{0} is not an enum", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException classNotEnum(Object param1);
@@ -101,8 +99,7 @@ public interface UtilLogger extends WeldLogger {
     @Message(id = 827, value = "Initializer method may not be a generic method: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException initializerMethodIsGeneric(Object param1, Object param2);
 
-    @Message(id = 832, value = "Unable to load the cache value for the key {0}", format = Format.MESSAGE_FORMAT)
-    WeldException unableToLoadCacheValue(Object param1, @Cause Throwable cause);
+    // log message with id 832 was removed
 
     @Message(id = 833, value = "Resource injection point represents a method which doesn't follow JavaBean conventions {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException resourceSetterInjectionNotAJavabean(Object param1);
