@@ -20,7 +20,6 @@ package org.jboss.weld.bootstrap.events;
 import static org.jboss.weld.util.Observers.validateObserverMethod;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Extension;
@@ -33,7 +32,6 @@ import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
-import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * Implementation of the event used to notify observers for each observer method that is added.
@@ -78,10 +76,6 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     public ObserverMethod<T> getObserverMethod() {
         checkWithinObserverNotification();
         return observerMethod;
-    }
-
-    public List<Throwable> getDefinitionErrors() {
-        return WeldCollections.immutableListView(getErrors());
     }
 
     @Override

@@ -26,7 +26,6 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -77,19 +76,6 @@ public class InjectionPoints {
             filtered.add(parameter);
         }
         return filtered.build();
-    }
-
-    public static InjectionPoint getDelegateInjectionPoint(javax.enterprise.inject.spi.Decorator<?> decorator) {
-        if (decorator instanceof DecoratorImpl<?>) {
-            return ((DecoratorImpl<?>) decorator).getDelegateInjectionPoint();
-        } else {
-            for (InjectionPoint injectionPoint : decorator.getInjectionPoints()) {
-                if (injectionPoint.isDelegate()) {
-                    return injectionPoint;
-                }
-            }
-        }
-        return null;
     }
 
     public static <T, X> WeldInjectionPointAttributes<T, ?> getWeldInjectionPoint(InjectionPoint injectionPoint) {

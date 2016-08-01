@@ -203,10 +203,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
         return injectionPoints;
     }
 
-    public Set<WeldInjectionPointAttributes<?, ?>> getNewInjectionPoints() {
-        return newInjectionPoints;
-    }
-
     /**
      * Performs validation of the observer method for compliance with the specifications.
      */
