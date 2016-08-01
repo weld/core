@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.util.Supplier;
 
@@ -44,18 +45,25 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
     protected final Supplier<C> supplier;
 
     private final Map<K, C> map;
+    private final ConcurrentMap<K, C> concurrentMap;
 
-    /**
+    /** Only one map supplier can be provided, otherwise there is an exception
      *
      * @param mapSupplier
+     * @param concurrentMapSupplier
      * @param collectionSupplier
      * @param multimap
      */
-    protected AbstractMultimap(Supplier<Map<K, C>> mapSupplier, Supplier<C> collectionSupplier, Multimap<K, V> multimap) {
-        checkArgumentNotNull(mapSupplier, "mapSupplier");
+    protected AbstractMultimap(Supplier<Map<K, C>> mapSupplier, Supplier<ConcurrentMap<K, C>> concurrentMapSupplier, Supplier<C> collectionSupplier, Multimap<K, V> multimap) {
+        // exactly one map supplier has to have a non-null value
+        if ((mapSupplier == null && concurrentMapSupplier == null) ||(mapSupplier != null && concurrentMapSupplier != null)) {
+            throw new IllegalArgumentException("AbstractMultimap has to have only one map supplier provided");
+        }
         checkArgumentNotNull(collectionSupplier, "collectionSupplier");
         this.supplier = collectionSupplier;
-        this.map = mapSupplier.get();
+        this.concurrentMap = (concurrentMapSupplier != null) ? concurrentMapSupplier.get() : null;
+        this.map = (mapSupplier != null) ? mapSupplier.get() : null;
+
         if (multimap != null) {
             for (Entry<K, Collection<V>> entry : multimap.entrySet()) {
                 C values = supplier.get();
@@ -65,24 +73,48 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
         }
     }
 
+    /**
+     *
+     * @return either ConcurrentMap or Map based on which is not null
+     */
+    private Map<K, C> getMap() {
+        return (concurrentMap != null) ? concurrentMap : map;
+    }
+
     @Override
     public int size() {
-        return map.size();
+        return getMap().size();
     }
 
     @Override
     public boolean isEmpty() {
-        return map.isEmpty();
+        return getMap().isEmpty();
     }
 
     @Override
     public C get(K key) {
-        C value = map.get(key);
-        if (value == null) {
-            value = supplier.get();
-            C previousValue = map.put(key, value);
-            if (previousValue != null) {
-                value = previousValue;
+        C value;
+        if (concurrentMap != null) {
+            value = concurrentMap.get(key);
+            if (value == null ) {
+                value = supplier.get();
+                if (value != null) {
+                    C previousValue = concurrentMap.putIfAbsent(key, value);
+                    if (previousValue != null) {
+                        value = previousValue;
+                    }
+                }
+            }
+        } else {
+            value = map.get(key);
+            if (value == null ) {
+                value = supplier.get();
+                if (value != null) {
+                    C previousValue = map.put(key, value);
+                    if (previousValue != null) {
+                        value = previousValue;
+                    }
+                }
             }
         }
         return value;
@@ -102,28 +134,28 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
     public C replaceValues(K key, Iterable<? extends V> values) {
         C replacement = supplier.get();
         Iterables.addAll(replacement, values);
-        return map.put(key, replacement);
+        return getMap().put(key, replacement);
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return map.containsKey(key);
+        return getMap().containsKey(key);
     }
 
     @Override
     public Set<K> keySet() {
-        return ImmutableSet.copyOf(map.keySet());
+        return ImmutableSet.copyOf(getMap().keySet());
     }
 
     @Override
     public List<V> values() {
-        return ImmutableList.copyOf(Iterables.concat(map.values()));
+        return ImmutableList.copyOf(Iterables.concat(getMap().values()));
     }
 
     @Override
     public Set<V> uniqueValues() {
         ImmutableSet.Builder<V> builder = ImmutableSet.builder();
-        for (C values : map.values()) {
+        for (C values : getMap().values()) {
             builder.addAll(values);
         }
         return builder.build();
@@ -132,7 +164,7 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
     @Override
     public Set<Entry<K, Collection<V>>> entrySet() {
         ImmutableSet.Builder<Entry<K, Collection<V>>> builder = ImmutableSet.builder();
-        for (Entry<K, C> entry : map.entrySet()) {
+        for (Entry<K, C> entry : getMap().entrySet()) {
             builder.add(new MultimapEntry<K, Collection<V>>(entry.getKey(), Multimaps.unmodifiableValueCollection(entry.getValue())));
         }
         return builder.build();
@@ -140,12 +172,12 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
 
     @Override
     public void clear() {
-        map.clear();
+        getMap().clear();
     }
 
     @Override
     public String toString() {
-        return map.toString();
+        return getMap().toString();
     }
 
     /**

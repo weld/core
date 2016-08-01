@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.util.Supplier;
 
@@ -44,7 +45,8 @@ public class ListMultimap<K, V> extends AbstractMultimap<K, V, List<V>> {
             public HashMap<K, List<V>> get() {
                 return new HashMap<K, List<V>>();
             }
-        }, new Supplier<List<V>>() {
+        }, null,
+        new Supplier<List<V>>() {
             @Override
             public ArrayList<V> get() {
                 return new ArrayList<V>();
@@ -63,7 +65,8 @@ public class ListMultimap<K, V> extends AbstractMultimap<K, V, List<V>> {
             public HashMap<K, List<V>> get() {
                 return new HashMap<K, List<V>>();
             }
-        }, new Supplier<List<V>>() {
+        }, null,
+        new Supplier<List<V>>() {
             @Override
             public ArrayList<V> get() {
                 return new ArrayList<V>();
@@ -76,8 +79,8 @@ public class ListMultimap<K, V> extends AbstractMultimap<K, V, List<V>> {
      * @param mapSupplier
      * @param collectionSupplier
      */
-    public ListMultimap(Supplier<Map<K, List<V>>> mapSupplier, Supplier<List<V>> collectionSupplier, Multimap<K, V> multimap) {
-        super(mapSupplier, collectionSupplier, multimap);
+    public ListMultimap(Supplier<Map<K, List<V>>> mapSupplier, Supplier<ConcurrentMap<K, List<V>>> concurrentMapSupplier, Supplier<List<V>> collectionSupplier, Multimap<K, V> multimap) {
+        super(mapSupplier, concurrentMapSupplier, collectionSupplier, multimap);
     }
 
 }
