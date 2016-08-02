@@ -508,11 +508,16 @@ public class Beans {
                 && hasSimpleCdiConstructor(annotatedType);
     }
 
-    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo) {
-        return ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0) && !classFileInfo.isAssignableTo(Extension.class)
-                && (classFileInfo.isTopLevelClass() || Modifier.isStatic(classFileInfo.getModifiers()))
+    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo, boolean checkTypeModifiers) {
+
+        boolean isTypeManagedBean = ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0) && !classFileInfo.isAssignableTo(Extension.class)
                 && classFileInfo.hasCdiConstructor()
                 && (!Modifier.isAbstract(classFileInfo.getModifiers()) || classFileInfo.isAnnotationDeclared(Decorator.class));
+        if (checkTypeModifiers) {
+            return isTypeManagedBean && (classFileInfo.isTopLevelClass() || Modifier.isStatic(classFileInfo.getModifiers()));
+        } else {
+            return isTypeManagedBean;
+        }
     }
 
     public static boolean isDecoratorDeclaringInAppropriateConstructor(ClassFileInfo classFileInfo) {
