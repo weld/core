@@ -15,9 +15,9 @@
     <description>Weld support for Java SE</description>
 
     <properties>
-        <groovy.version>2.1.8</groovy.version>
-        <groovy.eclipse.compiler.version>2.9.1-01</groovy.eclipse.compiler.version>
-        <groovy.eclipse.batch.version>2.3.7-01</groovy.eclipse.batch.version>
+        <groovy.version>2.4.7</groovy.version>
+        <groovy.eclipse.compiler.version>2.9.2-01</groovy.eclipse.compiler.version>
+        <groovy.eclipse.batch.version>2.4.3-01</groovy.eclipse.batch.version>
     </properties>
 
     <url>http://weld.cdi-spec.org</url>
