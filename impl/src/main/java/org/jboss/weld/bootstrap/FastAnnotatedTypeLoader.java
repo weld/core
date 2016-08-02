@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
@@ -32,6 +34,7 @@ import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.resources.spi.ClassFileInfoException;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 
@@ -49,6 +52,7 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
     private final ClassFileServices classFileServices;
     private final FastProcessAnnotatedTypeResolver resolver;
     private final AnnotatedTypeLoader fallback;
+    private final boolean checkTypeModifiers = isJandexSetFlagsAvailable();
 
     FastAnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ClassFileServices classFileServices,
             ContainerLifecycleEvents events, FastProcessAnnotatedTypeResolver resolver) {
@@ -56,6 +60,9 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
         this.fallback = new AnnotatedTypeLoader(manager, transformer, events);
         this.classFileServices = classFileServices;
         this.resolver = resolver;
+        if (!checkTypeModifiers) {
+            BootstrapLogger.LOG.usingOldJandexVersion();
+        }
     }
 
     @Override
@@ -82,12 +89,12 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
                 }
             }
 
-            if(Beans.isDecoratorDeclaringInAppropriateConstructor(classFileInfo)){
+            if (Beans.isDecoratorDeclaringInAppropriateConstructor(classFileInfo)) {
                 BootstrapLogger.LOG.decoratorWithNonCdiConstructor(classFileInfo.getClassName());
             }
 
             // lastly, check if this class fulfills CDI managed bean requirements - if it does, add the class
-            if (Beans.isTypeManagedBeanOrDecoratorOrInterceptor(classFileInfo)) {
+            if (Beans.isTypeManagedBeanOrDecoratorOrInterceptor(classFileInfo, checkTypeModifiers)) {
                 return createContext(className, classFileInfo, observerMethods, bdaId);
             }
             return null;
@@ -115,5 +122,14 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
             }
         }
         return null;
+    }
+
+    private boolean isJandexSetFlagsAvailable() {
+        try {
+            Method setFlags = AccessController.doPrivileged(GetDeclaredMethodAction.of(ClassFileInfo.class, "setFlags", short.class));
+            return setFlags != null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

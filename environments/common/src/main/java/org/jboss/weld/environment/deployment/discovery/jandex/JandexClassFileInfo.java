@@ -106,9 +106,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
 
     @Override
     public boolean isTopLevelClass() {
-        // TODO This is not portable per the JSL
-        // TODO Modify jandex to contain isTopLevelClass attribute
-        return !classInfo.name().local().contains("$");
+        return classInfo.nestingType().equals(ClassInfo.NestingType.TOP_LEVEL);
     }
 
     @Override
@@ -154,7 +152,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
             for (AnnotationInstance instance : annotationInstances) {
                 AnnotationTarget target = instance.target();
                 if (target instanceof MethodInfo) {
-                    MethodInfo methodInfo = (MethodInfo) target;
+                    MethodInfo methodInfo = target.asMethod();
                     if (methodInfo.name().equals(CONSTRUCTOR_METHOD_NAME)) {
                         return true;
                     }
@@ -230,8 +228,8 @@ public class JandexClassFileInfo implements ClassFileInfo {
             return true;
         }
 
-        if (fromClassInfo.interfaces() != null) {
-            for (DotName interfaceName : fromClassInfo.interfaces()) {
+        if (fromClassInfo.interfaceNames() != null) {
+            for (DotName interfaceName : fromClassInfo.interfaceNames()) {
                 if (isAssignableTo(interfaceName, to)) {
                     return true;
                 }

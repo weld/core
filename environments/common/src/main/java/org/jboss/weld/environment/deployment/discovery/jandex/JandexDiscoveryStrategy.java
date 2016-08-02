@@ -105,7 +105,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
                 // find annotations annotated with this meta-annotation
                 for (AnnotationInstance instance : index.getAnnotations(annotationDotName)) {
                     if (instance.target() instanceof ClassInfo) {
-                        ClassInfo classInfo = (ClassInfo) instance.target();
+                        ClassInfo classInfo = instance.target().asClass();
                         if ((classInfo.flags() & ANNOTATION) != 0) {
                             beanDefiningAnnotations.add(classInfo.name());
                         }
