@@ -27,7 +27,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <!-- Travis CI build workaround -->
-        <travis.surefire.argLine>-Xmx1024m -XX:MaxPermSize=256m</travis.surefire.argLine>
+        <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
