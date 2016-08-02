@@ -17,7 +17,6 @@
 package org.jboss.weld.environment.deployment.discovery.jandex;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.jboss.jandex.ClassInfo;
@@ -26,7 +25,6 @@ import org.jboss.jandex.IndexView;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ClassFileInfo;
-import org.jboss.weld.resources.spi.ClassFileInfoException;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.util.Function;
 import org.jboss.weld.util.cache.ComputingCache;
@@ -44,7 +42,6 @@ public class JandexClassFileServices implements ClassFileServices {
     private IndexView index;
     private ComputingCache<DotName, Set<String>> annotationClassAnnotationsCache;
     private final ClassLoader classLoader;
-    private boolean jandexStaticCheckAvailable;
 
     private class AnnotationClassAnnotationLoader implements Function<DotName, Set<String>> {
 
@@ -77,20 +74,10 @@ public class JandexClassFileServices implements ClassFileServices {
         }
         this.classLoader = WeldResourceLoader.getClassLoader();
         this.annotationClassAnnotationsCache = ComputingCacheBuilder.newBuilder().build(new AnnotationClassAnnotationLoader());
-        try {
-            Method setFlags = ClassFileInfo.class.getMethod("setFlags");
-            jandexStaticCheckAvailable = setFlags != null;
-        } catch (NoSuchMethodException e) {
-            jandexStaticCheckAvailable = false;
-            CommonLogger.LOG.usingOldJandexVersion();
-        }
     }
 
     @Override
     public ClassFileInfo getClassFileInfo(String className) {
-        if (!jandexStaticCheckAvailable) {
-            throw new ClassFileInfoException("Using old Jandex version.");
-        }
         return new JandexClassFileInfo(className, index, annotationClassAnnotationsCache, classLoader);
     }
 

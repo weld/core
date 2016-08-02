@@ -282,4 +282,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 168, value = "Extension bean deployed: {0}", format = Format.MESSAGE_FORMAT)
     void extensionBeanDeployed(Object extension);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 169, value = "Jandex cannot distinguish inner and static nested classes! Update Jandex to 2.0.3.Final version or newer to improve scanning performance.", format = Format.MESSAGE_FORMAT)
+    void usingOldJandexVersion();
+
 }

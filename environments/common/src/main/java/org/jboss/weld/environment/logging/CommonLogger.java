@@ -138,8 +138,4 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 39, value = "Bean archive reference {0} handled by {1}", format = Format.MESSAGE_FORMAT)
     void beanArchiveReferenceHandled(Object beanArchiveRef, Object handler);
 
-    @LogMessage(level = Level.WARN)
-    @Message(id = 40, value = "Consider using 2.0.3.Final Jandex version and higher. See JANDEX-37", format = Format.MESSAGE_FORMAT)
-    void usingOldJandexVersion();
-
 }
