@@ -21,6 +21,7 @@ import static org.jboss.weld.config.ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIM
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -64,7 +65,6 @@ import org.jboss.weld.environment.servlet.deployment.ServletContextBeanArchiveHa
 import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
-import org.jboss.weld.environment.servlet.util.ServiceLoader;
 import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.environment.undertow.UndertowContainer;
 import org.jboss.weld.environment.util.DevelopmentMode;
