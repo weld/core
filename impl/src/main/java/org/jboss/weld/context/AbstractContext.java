@@ -135,14 +135,6 @@ public abstract class AbstractContext implements AlterableContext {
         }
     }
 
-    private <T> ContextualInstance<T> getContextualInstance(BeanIdentifier id) {
-        final BeanStore beanStore = getBeanStore();
-        if (beanStore == null) {
-            throw ContextLogger.LOG.noBeanStoreAvailable(this);
-        }
-        return beanStore.get(id);
-    }
-
     private <T> void destroyContextualInstance(ContextualInstance<T> instance) {
         instance.getContextual().destroy(instance.getInstance(), instance.getCreationalContext());
         ContextLogger.LOG.contextualInstanceRemoved(instance, this);
@@ -158,7 +150,7 @@ public abstract class AbstractContext implements AlterableContext {
             throw ContextLogger.LOG.noBeanStoreAvailable(this);
         }
         for (BeanIdentifier id : beanStore) {
-            destroyContextualInstance(getContextualInstance(id));
+            destroyContextualInstance(beanStore.get(id));
         }
         beanStore.clear();
     }
