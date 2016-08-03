@@ -51,7 +51,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
-import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.Service;
@@ -88,6 +87,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.GetClassLoaderAction;
 import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
@@ -660,7 +660,7 @@ public class Weld implements ContainerInstanceFactory {
      */
     protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
 
-        final Iterable<Metadata<Extension>> extensions = getExtensions(WeldResourceLoader.getClassLoader(), bootstrap);
+        final Iterable<Metadata<Extension>> extensions = getExtensions();
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final Deployment deployment;
         final Set<WeldBeanDeploymentArchive> beanArchives = new HashSet<WeldBeanDeploymentArchive>();
@@ -744,10 +744,10 @@ public class Weld implements ContainerInstanceFactory {
         return !beanClasses.isEmpty() || !packages.isEmpty();
     }
 
-    private Iterable<Metadata<Extension>> getExtensions(ClassLoader classLoader, Bootstrap bootstrap) {
+    private Iterable<Metadata<Extension>> getExtensions() {
         Set<Metadata<Extension>> result = new HashSet<Metadata<Extension>>();
         if (discoveryEnabled) {
-            Iterables.addAll(result, bootstrap.loadExtensions(classLoader));
+            Iterables.addAll(result, loadExtensions(resourceLoader));
         }
         if (!extensions.isEmpty()) {
             result.addAll(extensions);
@@ -775,6 +775,10 @@ public class Weld implements ContainerInstanceFactory {
             result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
         }
         return result;
+    }
+
+    private Iterable<Metadata<Extension>> loadExtensions(ResourceLoader resourceLoader) {
+        return ServiceLoader.load(Extension.class, resourceLoader);
     }
 
     private BeansXml buildSyntheticBeansXml() {

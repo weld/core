@@ -278,4 +278,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 167, value = "Class {0} is annotated with @{1} but it does not declare an appropriate constructor therefore is not registered as a bean!", format = Format.MESSAGE_FORMAT)
     void annotatedTypeNotRegisteredAsBeanDueToMissingAppropriateConstructor(String clazzName, String annotationName);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 168, value = "Extension bean deployed: {0}", format = Format.MESSAGE_FORMAT)
+    void extensionBeanDeployed(Object extension);
+
 }
