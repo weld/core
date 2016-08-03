@@ -16,19 +16,20 @@
  */
 package org.jboss.weld.util;
 
-import static java.util.logging.Level.WARNING;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceConfigurationError;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -234,27 +235,18 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
         return serviceClass;
     }
 
-    private S prepareInstance(Class<? extends S> serviceClass) {
-        try {
-            // TODO Support the SM
-            Constructor<? extends S> constructor = serviceClass.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return constructor.newInstance();
-        } catch (LinkageError e) {
-            log.log(WARNING, "Could not instantiate service class " + serviceClass.getName(), e);
-            return null;
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e.getCause());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (SecurityException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
+    private S prepareInstance(final Class<? extends S> serviceClass) {
+        SecurityManager securityManager = System.getSecurityManager();
+        if (securityManager != null) {
+            return AccessController.doPrivileged(new PrivilegedAction<S>() {
+
+                @Override
+                public S run() {
+                    return createInstance(serviceClass);
+                }
+            });
+        } else {
+            return createInstance(serviceClass);
         }
     }
 
@@ -313,5 +305,16 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
 
     public Stream<Metadata<S>> stream() {
         return StreamSupport.stream(spliterator(), false);
+    }
+
+    private <S> S createInstance(Class<? extends S> serviceClass) {
+        Constructor<? extends S> constructor = null;
+        try {
+            constructor = serviceClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (Throwable t) {
+            throw new ServiceConfigurationError(ERROR_INSTANTIATING + ":" + serviceClass.getName(), t);
+        }
     }
 }
