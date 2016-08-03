@@ -75,9 +75,16 @@ public class Multimaps {
             return delegate.isEmpty();
         }
 
+        /**
+         * Returns unmodifiable collections. Moreover, it does not trigger initialization of a new value collection (i.e. when no collection of values for a
+         * given key exists).
+         */
         @Override
         public Collection<V> get(K key) {
-            return unmodifiableValueCollection(delegate.get(key));
+            if (delegate.containsKey(key)) {
+                return unmodifiableValueCollection(delegate.get(key));
+            }
+            return Collections.emptyList();
         }
 
         @Override
