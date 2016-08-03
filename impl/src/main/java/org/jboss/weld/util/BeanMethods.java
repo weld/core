@@ -243,7 +243,7 @@ public class BeanMethods {
         @Override
         public List<Set<MethodInjectionPoint<?, ?>>> create() {
             Collections.reverse(result); // because we want methods that are lower in the hierarchy to be called first
-            return WeldCollections.immutableGuavaList(result);
+            return WeldCollections.immutableList(result);
         }
     }
 

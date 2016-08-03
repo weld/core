@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaList;
 import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 
 import java.lang.annotation.Annotation;
@@ -215,7 +214,7 @@ public class InjectionPointFactory {
                 injectableFieldsList.add(0, fields.build());
             }
         }
-        return immutableGuavaList(injectableFieldsList);
+        return immutableList(injectableFieldsList);
     }
 
     private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField,

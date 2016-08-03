@@ -48,19 +48,6 @@ public class WeldCollections {
         if (set instanceof ImmutableSet<?>) {
             return set;
         }
-        return Collections.unmodifiableSet(set);
-    }
-
-    /**
-     * Returns an immutable view of a given set. If the given set is empty, a shared instance is returned.
-     */
-    public static <T> Set<T> immutableGuavaSet(Set<T> set) {
-        if (set.isEmpty()) {
-            return Collections.emptySet();
-        }
-        if (set instanceof ImmutableSet<?>) {
-            return set;
-        }
         return ImmutableSet.copyOf(set);
     }
 
@@ -78,19 +65,6 @@ public class WeldCollections {
         }
         if (list instanceof ArrayList<?>) {
             ArrayList.class.cast(list).trimToSize();
-        }
-        return Collections.unmodifiableList(list);
-    }
-
-    /**
-     * Returns an immutable view of a given list. If the given list is empty, a shared instance is returned.
-     */
-    public static <T> List<T> immutableGuavaList(List<T> list) {
-        if (list.isEmpty()) {
-            return Collections.emptyList();
-        }
-        if (list instanceof ImmutableList<?>) {
-            return list;
         }
         return ImmutableList.copyOf(list);
     }

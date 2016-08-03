@@ -1,6 +1,6 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -59,17 +59,17 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
         for (AnnotatedConstructor<X> constructor : source.getConstructors()) {
             constructors.add(UnbackedAnnotatedConstructor.of(constructor, this, cache));
         }
-        this.constructors = immutableGuavaSet(constructors);
+        this.constructors = immutableSet(constructors);
         Set<AnnotatedMethod<? super X>> methods = new HashSet<AnnotatedMethod<? super X>>(source.getMethods().size());
         for (AnnotatedMethod<? super X> originalMethod : source.getMethods()) {
             methods.add(UnbackedAnnotatedMethod.of(originalMethod, this, cache));
         }
-        this.methods = immutableGuavaSet(methods);
+        this.methods = immutableSet(methods);
         Set<AnnotatedField<? super X>> fields = new HashSet<AnnotatedField<? super X>>(source.getFields().size());
         for (AnnotatedField<? super X> originalField : source.getFields()) {
             fields.add(UnbackedAnnotatedField.of(originalField, this, cache));
         }
-        this.fields = immutableGuavaSet(fields);
+        this.fields = immutableSet(fields);
         this.identifier = identifier;
     }
 

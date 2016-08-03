@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
@@ -59,7 +59,7 @@ public abstract class AbstractBindingModel<T extends Annotation> extends Annotat
             for (EnhancedAnnotatedMethod<?, ?> method : enhancedMethods) {
                 nonBindingMembers.add(method.slim());
             }
-            this.nonBindingMembers = immutableGuavaSet(nonBindingMembers);
+            this.nonBindingMembers = immutableSet(nonBindingMembers);
         }
     }
 

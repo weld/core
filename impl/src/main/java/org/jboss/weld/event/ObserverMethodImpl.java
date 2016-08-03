@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -131,8 +131,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             }
             injectionPoints.add(injectionPoint);
         }
-        this.injectionPoints = immutableGuavaSet(injectionPoints);
-        this.newInjectionPoints = immutableGuavaSet(newInjectionPoints);
+        this.injectionPoints = immutableSet(injectionPoints);
+        this.newInjectionPoints = immutableSet(newInjectionPoints);
         this.isStatic = observer.isStatic();
         this.eventMetadataRequired = initMetadataRequired(this.injectionPoints);
         this.notificationStrategy = MethodInvocationStrategy.forObserver(observerMethod, beanManager);
