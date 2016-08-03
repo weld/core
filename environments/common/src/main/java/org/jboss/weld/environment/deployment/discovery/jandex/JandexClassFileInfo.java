@@ -106,8 +106,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
 
     @Override
     public boolean isTopLevelClass() {
-        // TODO This is not portable per the JSL
-        // TODO Modify jandex to contain isTopLevelClass attribute
+        // According to JLS "13.1 The Form of a Binary"
         return !classInfo.name().local().contains("$");
     }
 

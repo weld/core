@@ -508,17 +508,16 @@ public class Beans {
                 && hasSimpleCdiConstructor(annotatedType);
     }
 
-    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo) {
-        return ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0) && !classFileInfo.isAssignableTo(Extension.class)
-                /*
-                 * TODO:
-                 * We currently cannot reliably tell if a class is a non-static inner class or not. Therefore, this method
-                 * currently returns true even for non-static inner classes. This does not matter as a reflection check is performed
-                 * later before a Bean instance is created.
-                 */
-                // && (classFileInfo.isTopLevelClass() || Modifier.isStatic(classFileInfo.getModifiers()))
+    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo, boolean checkTypeModifiers) {
+
+        boolean isTypeManagedBean = ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0) && !classFileInfo.isAssignableTo(Extension.class)
                 && classFileInfo.hasCdiConstructor()
                 && (!Modifier.isAbstract(classFileInfo.getModifiers()) || classFileInfo.isAnnotationDeclared(Decorator.class));
+        if (checkTypeModifiers) {
+            return isTypeManagedBean && (classFileInfo.isTopLevelClass() || Modifier.isStatic(classFileInfo.getModifiers()));
+        } else {
+            return isTypeManagedBean;
+        }
     }
 
     public static boolean isDecoratorDeclaringInAppropriateConstructor(ClassFileInfo classFileInfo) {
