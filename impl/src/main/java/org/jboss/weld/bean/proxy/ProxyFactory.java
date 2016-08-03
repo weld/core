@@ -57,6 +57,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.security.GetProtectionDomainAction;
@@ -127,13 +128,26 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     // with older versions we silently fall back to default access flags (no SYNTHETIC support)
     private static final boolean CONFIGURABLE_ACCESS_FLAGS;
 
+    // classloader is configurable since classfilewriter 1.2.0.Beta1
+    private static final boolean CONFIGURABLE_CLASSLOADER;
+    private static Constructor<?> classLoaderParamConstructor = null;
+    private static Constructor<?> accessFlagsParamConstructor = null;
+
     static {
-        Constructor<?> temp = null;
+
         try {
-            temp = ClassFile.class.getConstructor(String.class, int.class, String.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
+            classLoaderParamConstructor = ClassFile.class
+                    .getConstructor(String.class, int.class, String.class, ClassLoader.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
         } catch (NoSuchMethodException ignored) {
         }
-        CONFIGURABLE_ACCESS_FLAGS = temp != null;
+
+        try {
+            accessFlagsParamConstructor = ClassFile.class.getConstructor(String.class, int.class, String.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
+        } catch (NoSuchMethodException ignored) {
+        }
+
+        CONFIGURABLE_ACCESS_FLAGS = accessFlagsParamConstructor != null;
+        CONFIGURABLE_CLASSLOADER = classLoaderParamConstructor != null;
     }
 
     static {
@@ -187,7 +201,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             superClass = proxiedBeanType;
         }
         this.beanType = superClass;
-
 
         addDefaultAdditionalInterfaces();
         baseProxyName = proxyName;
@@ -255,7 +268,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 className = typeInfo.getSuperClass().getSimpleName() + PROXY_SUFFIX;
             }
         }
-
 
         return proxyPackage + '.' + getEnclosingPrefix(proxiedBeanType) + className;
     }
@@ -480,12 +492,22 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         return proxyClass;
     }
 
-    private static ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
-        if (CONFIGURABLE_ACCESS_FLAGS) {
-            return new ClassFile(name, accessFlags, superclass, interfaces);
-        } else {
-            return new ClassFile(name, superclass, interfaces);
+    private ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
+        WeldClassLoaderResourceLoader resourceLoader = WeldClassLoaderResourceLoader.INSTANCE;
+        Class<ClassFile> classFileClass = Reflections.loadClass(ClassFile.class.getName(), resourceLoader);
+        try {
+            if (CONFIGURABLE_CLASSLOADER) {
+                return classFileClass.getConstructor(classLoaderParamConstructor.getParameterTypes())
+                        .newInstance(name, accessFlags, superclass, classLoader, interfaces);
+            } else if (CONFIGURABLE_ACCESS_FLAGS) {
+                return classFileClass.getConstructor(accessFlagsParamConstructor.getParameterTypes()).newInstance(name, accessFlags, superclass, interfaces);
+            } else {
+                return classFileClass.getConstructor(String.class, int.class, Arrays2.EMPTY_STRING_ARRAY.getClass()).newInstance(name, superclass, interfaces);
+            }
+        } catch (Exception e) {
+            BeanLogger.LOG.unableToInstantiate(classFileClass.getName(), e.getCause());
         }
+        return null;
     }
 
     private void dumpToFile(String fileName, byte[] data) {
@@ -614,7 +636,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
-                            createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
+                            if (Reflections.isDefault(method)) {
+                                addConstructedGuardToMethodBody(classMethod);
+                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
+                            } else {
+                                createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
+                            }
                             BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                         }
@@ -679,6 +706,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         createInterceptorBody(proxyClassType, method, staticConstructor);
     }
 
+    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod) {
+        addConstructedGuardToMethodBody(classMethod, classMethod.getClassFile().getSuperclass());
+    }
+
     /**
      * Adds the following code to a delegating method:
      * <p/>
@@ -689,7 +720,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * This means that the proxy will not start to delegate to the underlying
      * bean instance until after the constructor has finished.
      */
-    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod) {
+    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod, String className) {
         if (!proxyInstantiator.isUsingConstructor()) {
             return;
         }
@@ -704,7 +735,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         // this is run when the proxy is being constructed
         cond.aload(0);
         cond.loadMethodParameters();
-        cond.invokespecial(classMethod.getClassFile().getSuperclass(), classMethod.getName(), classMethod.getDescriptor());
+        cond.invokespecial(className, classMethod.getName(), classMethod.getDescriptor());
         cond.returnInstruction();
         cond.branchEnd(jumpMarker);
     }

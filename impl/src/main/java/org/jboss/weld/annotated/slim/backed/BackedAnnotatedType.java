@@ -195,6 +195,14 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
                 }
                 clazz = clazz.getSuperclass();
             }
+            // Also add default methods
+            for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(javaClass)) {
+                for (Method method : SecurityActions.getDeclaredMethods(interfaceClazz)) {
+                    if (Reflections.isDefault(method)) {
+                        methods.add(BackedAnnotatedMethod.of(method, BackedAnnotatedType.this, sharedObjectCache));
+                    }
+                }
+            }
             return immutableSet(methods);
         }
     }

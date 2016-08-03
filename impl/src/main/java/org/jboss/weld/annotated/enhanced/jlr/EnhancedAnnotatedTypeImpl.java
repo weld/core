@@ -248,6 +248,16 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                         current = current.getEnhancedSuperclass();
                     }
                 }
+                // Also add default methods
+                for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(javaClass)) {
+                    EnhancedAnnotatedType<?> interfaceType = classTransformer.getEnhancedAnnotatedType(interfaceClazz, slim.getIdentifier().getBdaId());
+                    for (EnhancedAnnotatedMethod<?, ?> interfaceMethod : interfaceType.getEnhancedMethods()) {
+                        if(Reflections.isDefault(interfaceMethod.getJavaMember())) {
+                            methodsTemp.add((EnhancedAnnotatedMethod<?, ? super T>) interfaceMethod);
+                        }
+                    }
+                }
+
             }
             this.declaredMethods = new ArraySet<EnhancedAnnotatedMethod<?, ? super T>>(declaredMethodsTemp);
         } else {
