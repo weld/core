@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 
 import java.util.List;
 import java.util.Set;
@@ -56,7 +56,7 @@ public class ResourceInjector<T> extends DefaultInjector<T> {
 
     protected ResourceInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
-        this.resourceInjectionsHierarchy = immutableGuavaList(ResourceInjectionFactory.instance().getResourceInjections(bean, type,
+        this.resourceInjectionsHierarchy = immutableList(ResourceInjectionFactory.instance().getResourceInjections(bean, type,
                 beanManager));
     }
 

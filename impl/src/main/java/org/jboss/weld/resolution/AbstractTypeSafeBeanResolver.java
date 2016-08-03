@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.io.Serializable;
 import java.lang.reflect.GenericArrayType;
@@ -89,7 +89,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                     allBeans.add(bean);
                 }
                 if (priorityBeans.isEmpty()) {
-                    return immutableGuavaSet(allBeans);
+                    return immutableSet(allBeans);
                 } else {
                     if (priorityBeans.size() == 1) {
                         return Collections.<Bean<?>>singleton(priorityBeans.iterator().next());
@@ -115,7 +115,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                 Integer priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
                 if (priority == null) {
                     // not all the beans left are alternatives with a priority - we are not able to resolve
-                    return immutableGuavaSet(alternatives);
+                    return immutableSet(alternatives);
                 }
                 if (priority > highestPriority) {
                     highestPriority = priority;
@@ -125,7 +125,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                     selectedAlternativesWithHighestPriority.add(bean);
                 }
             }
-            return immutableGuavaSet(selectedAlternativesWithHighestPriority);
+            return immutableSet(selectedAlternativesWithHighestPriority);
         }
 
     }
