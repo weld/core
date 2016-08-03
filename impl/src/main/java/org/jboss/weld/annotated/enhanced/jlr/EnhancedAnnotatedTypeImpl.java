@@ -95,12 +95,12 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     // The set of abstracted fields
     private final Set<EnhancedAnnotatedField<?, ? super T>> fields;
     // The map from annotation type to abstracted field with annotation
-    private final ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>> annotatedFields;
+    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>> annotatedFields;
 
     // The set of abstracted fields
     private final Set<EnhancedAnnotatedField<?, ? super T>> declaredFields;
     // The map from annotation type to abstracted field with annotation
-    private final ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ? super T>> declaredAnnotatedFields;
+    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ? super T>> declaredAnnotatedFields;
 
     // The set of abstracted methods
     private final Set<EnhancedAnnotatedMethod<?, ? super T>> methods;
@@ -114,9 +114,9 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     // The set of abstracted methods
     private final Set<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods;
     // The map from annotation type to abstracted method with annotation
-    private final ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredAnnotatedMethods;
+    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredAnnotatedMethods;
     // The map from annotation type to method with a parameter with annotation
-    private final ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredMethodsByAnnotatedParameters;
+    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredMethodsByAnnotatedParameters;
 
     // The set of abstracted constructors
     private final Set<EnhancedAnnotatedConstructor<T>> constructors;
@@ -156,7 +156,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         }
 
         // Assign class field information
-        this.declaredAnnotatedFields = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ? super T>>();
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ? super T>> declaredAnnotatedFields = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ? super T>>();
         Set<EnhancedAnnotatedField<?, ? super T>> fieldsTemp = null;
         ArrayList<EnhancedAnnotatedField<?, ? super T>> declaredFieldsTemp = new ArrayList<EnhancedAnnotatedField<?, ? super T>>();
 
@@ -170,7 +170,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                         EnhancedAnnotatedField<?, ? super T> annotatedField = EnhancedAnnotatedFieldImpl.of(field, this, classTransformer);
                         declaredFieldsTemp.add(annotatedField);
                         for (Annotation annotation : annotatedField.getAnnotations()) {
-                            this.declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
+                            declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
                         }
                     }
                 }
@@ -181,7 +181,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             }
             this.declaredFields = new HashSet<EnhancedAnnotatedField<?, ? super T>>(declaredFieldsTemp);
         } else {
-            this.annotatedFields = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>>();
+            Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>> annotatedFields = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>>();
             fieldsTemp = new HashSet<EnhancedAnnotatedField<?, ? super T>>();
             for (AnnotatedField<? super T> annotatedField : annotatedType.getFields()) {
                 EnhancedAnnotatedField<?, ? super T> weldField = EnhancedAnnotatedFieldImpl.of(annotatedField, this, classTransformer);
@@ -190,16 +190,18 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                     declaredFieldsTemp.add(weldField);
                 }
                 for (Annotation annotation : weldField.getAnnotations()) {
-                    this.annotatedFields.put(annotation.annotationType(), weldField);
+                    annotatedFields.put(annotation.annotationType(), weldField);
                     if (annotatedField.getDeclaringType().getJavaClass().equals(javaClass)) {
-                        this.declaredAnnotatedFields.put(annotation.annotationType(), weldField);
+                        declaredAnnotatedFields.put(annotation.annotationType(), weldField);
                     }
                 }
             }
+            this.annotatedFields = Multimaps.unmodifiableMultimap(annotatedFields);
             this.declaredFields = new HashSet<EnhancedAnnotatedField<?, ? super T>>(declaredFieldsTemp);
             fieldsTemp = new HashSet<EnhancedAnnotatedField<?, ? super T>>(fieldsTemp);
         }
         this.fields = fieldsTemp;
+        this.declaredAnnotatedFields = Multimaps.unmodifiableMultimap(declaredAnnotatedFields);
 
         // Assign constructor information
         this.constructors = new HashSet<EnhancedAnnotatedConstructor<T>>();
@@ -212,8 +214,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         }
 
         // Assign method information
-        this.declaredAnnotatedMethods = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>>();
-        this.declaredMethodsByAnnotatedParameters = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>>();
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredAnnotatedMethods = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>>();
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredMethodsByAnnotatedParameters = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>>();
 
         Set<EnhancedAnnotatedMethod<?, ? super T>> methodsTemp = new HashSet<EnhancedAnnotatedMethod<?,? super T>>();
         ArrayList<EnhancedAnnotatedMethod<?, ? super T>> declaredMethodsTemp = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
@@ -224,11 +226,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                         EnhancedAnnotatedMethod<?, ? super T> weldMethod = EnhancedAnnotatedMethodImpl.of(method, this, classTransformer);
                         declaredMethodsTemp.add(weldMethod);
                         for (Annotation annotation : weldMethod.getAnnotations()) {
-                            this.declaredAnnotatedMethods.put(annotation.annotationType(), weldMethod);
+                            declaredAnnotatedMethods.put(annotation.annotationType(), weldMethod);
                         }
                         for (Class<? extends Annotation> annotationType : MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS) {
                             if (weldMethod.getEnhancedParameters(annotationType).size() > 0) {
-                                this.declaredMethodsByAnnotatedParameters.put(annotationType, weldMethod);
+                                declaredMethodsByAnnotatedParameters.put(annotationType, weldMethod);
                             }
                         }
                     }
@@ -253,19 +255,21 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 }
                 for (Annotation annotation : enhancedMethod.getAnnotations()) {
                     if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
-                        this.declaredAnnotatedMethods.put(annotation.annotationType(), enhancedMethod);
+                        declaredAnnotatedMethods.put(annotation.annotationType(), enhancedMethod);
                     }
                 }
                 for (Class<? extends Annotation> annotationType : MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS) {
                     if (enhancedMethod.getEnhancedParameters(annotationType).size() > 0) {
                         if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
-                            this.declaredMethodsByAnnotatedParameters.put(annotationType, enhancedMethod);
+                            declaredMethodsByAnnotatedParameters.put(annotationType, enhancedMethod);
                         }
                     }
                 }
             }
             this.declaredMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>(declaredMethodsTemp);
         }
+        this.declaredAnnotatedMethods = Multimaps.unmodifiableMultimap(declaredAnnotatedMethods);
+        this.declaredMethodsByAnnotatedParameters = Multimaps.unmodifiableMultimap(declaredMethodsByAnnotatedParameters);
 
         SetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = SetMultimap.newSetMultimap();
         for (Annotation declaredAnnotation : declaredAnnotationMap.values()) {
@@ -409,7 +413,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @Override
     public Collection<EnhancedAnnotatedField<?, ? super T>> getDeclaredEnhancedFields(Class<? extends Annotation> annotationType) {
-        return Collections.unmodifiableCollection(declaredAnnotatedFields.get(annotationType));
+        return declaredAnnotatedFields.get(annotationType);
     }
 
     @Override
@@ -436,7 +440,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             return Collections.unmodifiableCollection(aggregatedFields);
         } else {
             // Return results collected directly from AnnotatedType
-            return Collections.unmodifiableCollection(annotatedFields.get(annotationType));
+            return annotatedFields.get(annotationType);
         }
     }
 
@@ -692,7 +696,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     @Override
     public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
         return declaredMetaAnnotationMap.containsKey(metaAnnotationType)
-                ? Collections.unmodifiableSet(new HashSet<Annotation>(declaredMetaAnnotationMap.get(metaAnnotationType)))
+                ? ImmutableSet.copyOf(declaredMetaAnnotationMap.get(metaAnnotationType))
                 : Collections.<Annotation> emptySet();
     }
 
