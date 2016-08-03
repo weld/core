@@ -92,6 +92,7 @@ public class ExtensionBeanDeployer {
                 beanDeployment.getBeanManager().addObserver(observerMethodInitializer.getObserver());
                 containerLifecycleEventObservers.processObserverMethod(observerMethodInitializer.getObserver());
             }
+            BootstrapLogger.LOG.extensionBeanDeployed(bean);
         }
     }
 
