@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.Unmanaged;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Function;
@@ -43,13 +44,13 @@ import org.jboss.weld.util.collections.ImmutableSet;
  *
  * @param <T>
  */
-public abstract class AbstractCDI<T> extends CDI<T> {
+public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
 
     // CDI API / IMPL classes calling CDI.current()
     // used for caller detection
     protected final Set<String> knownClassNames;
 
-    private final ComputingCache<BeanManagerImpl, Instance<T>> instanceCache;
+    private final ComputingCache<BeanManagerImpl, WeldInstance<T>> instanceCache;
 
     public AbstractCDI() {
         ImmutableSet.Builder<String> names = ImmutableSet.builder();
@@ -58,10 +59,10 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         }
         names.add(Unmanaged.class.getName());
         this.knownClassNames = names.build();
-        this.instanceCache = ComputingCacheBuilder.newBuilder().build(new Function<BeanManagerImpl, Instance<T>>() {
+        this.instanceCache = ComputingCacheBuilder.newBuilder().build(new Function<BeanManagerImpl, WeldInstance<T>>() {
 
             @Override
-            public Instance<T> apply(BeanManagerImpl beanManager) {
+            public WeldInstance<T> apply(BeanManagerImpl beanManager) {
                 return cast(beanManager.getInstance(beanManager.createCreationalContext(null)));
             }
         });
@@ -78,17 +79,17 @@ public abstract class AbstractCDI<T> extends CDI<T> {
     }
 
     @Override
-    public Instance<T> select(Annotation... qualifiers) {
+    public WeldInstance<T> select(Annotation... qualifiers) {
         return getInstance().select(qualifiers);
     }
 
     @Override
-    public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldInstance<U> select(Class<U> subtype, Annotation... qualifiers) {
         return getInstance().select(subtype, qualifiers);
     }
 
     @Override
-    public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldInstance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         return getInstance().select(subtype, qualifiers);
     }
 
@@ -105,6 +106,21 @@ public abstract class AbstractCDI<T> extends CDI<T> {
     @Override
     public void destroy(T instance) {
         getInstance().destroy(instance);
+    }
+
+    @Override
+    public Handler<T> getHandler() {
+        return getInstance().getHandler();
+    }
+
+    @Override
+    public boolean isResolvable() {
+        return getInstance().isResolvable();
+    }
+
+    @Override
+    public Iterable<Handler<T>> handlers() {
+        return getInstance().handlers();
     }
 
     /**
@@ -130,7 +146,7 @@ public abstract class AbstractCDI<T> extends CDI<T> {
      *
      * @return the {@link Instance} the relevant calls are delegated to
      */
-    protected Instance<T> getInstance() {
+    protected WeldInstance<T> getInstance() {
         return instanceCache.getValue(BeanManagerProxy.unwrap(getBeanManager()));
     }
 

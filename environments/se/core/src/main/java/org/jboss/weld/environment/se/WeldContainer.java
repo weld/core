@@ -33,6 +33,7 @@ import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -158,7 +159,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     private final Bootstrap bootstrap;
 
-    private final Instance<Object> instance;
+    private final WeldInstance<Object> instance;
 
     private final Event<Object> event;
 
@@ -258,7 +259,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     }
 
     @Override
-    protected Instance<Object> getInstance() {
+    protected WeldInstance<Object> getInstance() {
         return instance;
     }
 
