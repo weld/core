@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.Serializable;
@@ -97,7 +96,6 @@ import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -431,11 +429,11 @@ public class Beans {
     public static Set<Type> getTypes(EnhancedAnnotated<?, ?> annotated) {
         // array and primitive types require special treatment
         if (annotated.getJavaClass().isArray() || annotated.getJavaClass().isPrimitive()) {
-            return new ArraySet<Type>(annotated.getBaseType(), Object.class);
+            return ImmutableSet.<Type>builder().addAll(annotated.getBaseType(), Object.class).build();
         } else {
             if (annotated.isAnnotationPresent(Typed.class)) {
-                return new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()),
-                        annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
+                return ImmutableSet.<Type>builder().addAll(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()),
+                        annotated.getJavaClass(), annotated.getAnnotation(Typed.class))).build();
             } else {
                 if (annotated.getJavaClass().isInterface()) {
                     return getLegalBeanTypes(annotated.getTypeClosure(), annotated, Object.class);
@@ -449,7 +447,7 @@ public class Beans {
      * Bean types of a session bean.
      */
     public static <T> Set<Type> getTypes(EnhancedAnnotated<T, ?> annotated, EjbDescriptor<T> ejbDescriptor) {
-        ArraySet<Type> types = new ArraySet<Type>();
+        ImmutableSet.Builder<Type> types = ImmutableSet.builder();
         // session beans
         Map<Class<?>, Type> typeMap = new LinkedHashMap<Class<?>, Type>();
         HierarchyDiscovery beanClassDiscovery = HierarchyDiscovery.forNormalizedType(ejbDescriptor.getBeanClass());
@@ -475,7 +473,7 @@ public class Beans {
             typeMap.put(Object.class, Object.class);
             types.addAll(typeMap.values());
         }
-        return immutableSet(types);
+        return types.build();
     }
 
     /**

@@ -17,7 +17,6 @@
 package org.jboss.weld.injection;
 
 import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaList;
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
 import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 
 import java.lang.annotation.Annotation;
@@ -49,7 +48,7 @@ import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Factory class that producer {@link InjectionPoint} instances for fields, parameters, methods and constructors. The
@@ -196,31 +195,31 @@ public class InjectionPointFactory {
             Collection<EnhancedAnnotatedField<?, ?>> allFields = type.getEnhancedFields(Inject.class);
 
             for (Class<?> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
-                ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
+                ImmutableSet.Builder<FieldInjectionPoint<?, ?>> fields = ImmutableSet.builder();
                 for (EnhancedAnnotatedField<?, ?> field : allFields) {
                     if (!field.isStatic() && field.getJavaMember().getDeclaringClass().equals(clazz)) {
                         addFieldInjectionPoint(field, fields, declaringBean, type.getJavaClass(), manager);
                     }
                 }
-                injectableFieldsList.add(0, immutableGuavaSet(fields));
+                injectableFieldsList.add(0, fields.build());
             }
         } else {
             for (EnhancedAnnotatedType<?> t = type; t != null && !t.getJavaClass().equals(Object.class); t = t
                     .getEnhancedSuperclass()) {
-                ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
+                ImmutableSet.Builder<FieldInjectionPoint<?, ?>> fields = ImmutableSet.builder();
                 for (EnhancedAnnotatedField<?, ?> annotatedField : t.getDeclaredEnhancedFields(Inject.class)) {
                     if (!annotatedField.isStatic()) {
                         addFieldInjectionPoint(annotatedField, fields, declaringBean, t.getJavaClass(), manager);
                     }
                 }
-                injectableFieldsList.add(0, immutableGuavaSet(fields));
+                injectableFieldsList.add(0, fields.build());
             }
         }
         return immutableGuavaList(injectableFieldsList);
     }
 
     private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField,
-            Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, Class<?> declaringComponentClass,
+            ImmutableSet.Builder<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, Class<?> declaringComponentClass,
             BeanManagerImpl manager) {
         if (annotatedField.isFinal()) {
             throw UtilLogger.LOG.qualifierOnFinalField(annotatedField);

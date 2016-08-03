@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.weld.util.reflection.Reflections;
-
 /**
  * Collection utilities.
  *
@@ -35,8 +33,6 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  */
 public class WeldCollections {
-
-    public static final Map<Object, List<Object>> EMPTY_ARRAY_SET_MULTIMAP = Collections.unmodifiableMap(new ArraySetMultimap<Object, Object>().trimToSize());
 
     private WeldCollections() {
     }
@@ -51,9 +47,6 @@ public class WeldCollections {
         }
         if (set instanceof ImmutableSet<?>) {
             return set;
-        }
-        if (set instanceof ArraySet<?>) {
-            ArraySet.class.cast(set).trimToSize();
         }
         return Collections.unmodifiableSet(set);
     }
@@ -103,20 +96,11 @@ public class WeldCollections {
     }
 
     /**
-     * Returns an immutable view of a given map. If the given map is empty, a shared instance is returned.
+     * Returns an immutable view of a given map.
      */
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
-        if (map.isEmpty()) {
-            if (map instanceof ArraySetMultimap<?, ?>) {
-                return Reflections.cast(EMPTY_ARRAY_SET_MULTIMAP);
-            }
-            return Collections.emptyMap();
-        }
         if (map instanceof ImmutableMap<?, ?>) {
             return map;
-        }
-        if (map instanceof ArraySetMultimap<?, ?>) {
-            ArraySetMultimap.class.cast(map).trimToSize();
         }
         return Collections.unmodifiableMap(map);
     }

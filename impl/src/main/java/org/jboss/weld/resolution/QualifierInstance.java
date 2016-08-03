@@ -35,9 +35,8 @@ import org.jboss.weld.logging.ResolutionLogger;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.security.SetAccessibleAction;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ImmutableMap;
-import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -63,11 +62,11 @@ public class QualifierInstance {
         if (qualifiers.isEmpty()) {
             return Collections.emptySet();
         }
-        final Set<QualifierInstance> ret = new ArraySet<QualifierInstance>();
+        final ImmutableSet.Builder<QualifierInstance> ret = ImmutableSet.builder();
         for (Annotation a : qualifiers) {
             ret.add(QualifierInstance.of(a, store));
         }
-        return WeldCollections.immutableSet(ret);
+        return ret.build();
     }
 
     public static Set<QualifierInstance> of(Bean<?> bean, MetaAnnotationStore store) {
