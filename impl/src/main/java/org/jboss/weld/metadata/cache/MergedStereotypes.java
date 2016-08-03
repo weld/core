@@ -17,6 +17,7 @@
 package org.jboss.weld.metadata.cache;
 
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
@@ -25,8 +26,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
-import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -35,7 +34,7 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class MergedStereotypes<T, E> {
     // The possible scope types
-    private final ArraySet<Annotation> possibleScopeTypes;
+    private final Set<Annotation> possibleScopeTypes;
     // Is the bean name defaulted?
     private boolean beanNameDefaulted;
     // Are any of the stereotypes alternatives
@@ -59,12 +58,10 @@ public class MergedStereotypes<T, E> {
      * @param stereotypeAnnotations The stereotypes to merge
      */
     protected MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager) {
-        this.possibleScopeTypes = new ArraySet<Annotation>();
-        this.stereotypes = new ArraySet<Class<? extends Annotation>>();
+        this.possibleScopeTypes = new HashSet<Annotation>();
+        this.stereotypes = new HashSet<Class<? extends Annotation>>();
         this.manager = manager;
         merge(stereotypeAnnotations);
-        this.possibleScopeTypes.trimToSize();
-        Reflections.<ArraySet<?>>cast(this.stereotypes).trimToSize();
         this.stereotypes = SharedObjectCache.instance(manager).getSharedSet(stereotypes);
     }
 

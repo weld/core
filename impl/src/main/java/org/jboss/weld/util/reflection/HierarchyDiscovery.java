@@ -22,11 +22,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.collections.ArraySet;
 
 /**
  * Utility class that discovers transitive type closure of a given type.
@@ -94,7 +94,7 @@ public class HierarchyDiscovery {
     }
 
     public Set<Type> getTypeClosure() {
-        return new ArraySet<Type>(this.types.values());
+        return new HashSet<Type>(this.types.values());
     }
 
     public Map<Class<?>, Type> getTypeMap() {

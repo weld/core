@@ -71,9 +71,9 @@ import org.jboss.weld.util.bytecode.ConstructorUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Reflections;
 
 
@@ -428,7 +428,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     }
 
     private Class<T> createProxyClass(String proxyClassName) throws Exception {
-        ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(
+        Set<Class<?>> specialInterfaces = Sets.newHashSet(
                 LifecycleMixin.class, TargetInstanceProxy.class, ProxyObject.class);
         addAdditionalInterfaces(specialInterfaces);
         // Remove special interfaces from main set (deserialization scenario)

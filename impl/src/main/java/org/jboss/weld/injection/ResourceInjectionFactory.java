@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.getRawType;
 
 import java.lang.annotation.Annotation;
@@ -49,7 +48,7 @@ import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.ApiAbstraction;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
@@ -182,7 +181,7 @@ public final class ResourceInjectionFactory {
             }
 
             Class<? extends Annotation> marker = getMarkerAnnotation(apiAbstraction);
-            Set<ResourceInjection<?>> resourceInjections = new ArraySet<ResourceInjection<?>>();
+            ImmutableSet.Builder<ResourceInjection<?>> resourceInjections = ImmutableSet.builder();
 
             for (EnhancedAnnotatedField<?, ?> field : type.getDeclaredEnhancedFields(marker)) {
                 if (accept(field, apiAbstraction)) {
@@ -202,7 +201,7 @@ public final class ResourceInjectionFactory {
                             injectionServices, apiAbstraction));
                 }
             }
-            return immutableSet(resourceInjections);
+            return resourceInjections.build();
         }
 
         /**

@@ -1,6 +1,5 @@
 package org.jboss.weld.annotated.slim.backed;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -27,7 +26,7 @@ import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -160,19 +159,19 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         @Override
         protected Set<AnnotatedConstructor<X>> computeValue() {
             Constructor<?>[] declaredConstructors = SecurityActions.getDeclaredConstructors(javaClass);
-            ArraySet<AnnotatedConstructor<X>> constructors = new ArraySet<AnnotatedConstructor<X>>(declaredConstructors.length);
+            ImmutableSet.Builder<AnnotatedConstructor<X>> constructors = ImmutableSet.builder();
             for (Constructor<?> constructor : declaredConstructors) {
                 Constructor<X> c = Reflections.cast(constructor);
                 constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this, sharedObjectCache));
             }
-            return immutableSet(constructors);
+            return constructors.build();
         }
     }
 
     private class BackedAnnotatedFields extends EagerlyInitializedLazyValueHolder<Set<AnnotatedField<? super X>>> {
         @Override
         protected Set<AnnotatedField<? super X>> computeValue() {
-            ArraySet<AnnotatedField<? super X>> fields = new ArraySet<AnnotatedField<? super X>>();
+            ImmutableSet.Builder<AnnotatedField<? super X>> fields = ImmutableSet.builder();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Field field : SecurityActions.getDeclaredFields(clazz)) {
@@ -180,14 +179,14 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
                 }
                 clazz = clazz.getSuperclass();
             }
-            return immutableSet(fields);
+            return fields.build();
         }
     }
 
     private class BackedAnnotatedMethods extends EagerlyInitializedLazyValueHolder<Set<AnnotatedMethod<? super X>>> {
         @Override
         protected Set<AnnotatedMethod<? super X>> computeValue() {
-            ArraySet<AnnotatedMethod<? super X>> methods = new ArraySet<AnnotatedMethod<? super X>>();
+            ImmutableSet.Builder<AnnotatedMethod<? super X>> methods = ImmutableSet.builder();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Method method : SecurityActions.getDeclaredMethods(clazz)) {
@@ -195,7 +194,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
                 }
                 clazz = clazz.getSuperclass();
             }
-            return immutableSet(methods);
+            return methods.build();
         }
     }
 
