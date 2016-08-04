@@ -250,7 +250,15 @@ public enum ConfigurationKey {
      * both applications simply as test.war, hence allowing for session replication.
      */
     @Description("The delimiter is used to abbreviate a bean archive identifier before used as a part of an identifier of an internal component (such as bean).")
-    ROLLING_UPGRADES_ID_DELIMITER("org.jboss.weld.clustering.rollingUpgradesIdDelimiter", "");
+    ROLLING_UPGRADES_ID_DELIMITER("org.jboss.weld.clustering.rollingUpgradesIdDelimiter", ""),
+
+    /**
+     * A regular expression. If a non-empty string, then all annotated types whose {@code javax.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()} matches this pattern are vetoed if not annotated with a bean defining annotation.
+     */
+    @Description("A regular expression. If a non-empty string, then all annotated types whose <code>javax.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()</code> matches this pattern are vetoed if not annotated with a bean defining annotation.")
+    VETO_TYPE_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypeWithoutBeanDefiningAnnotation", ""),
+
+    ;
 
     /**
      *
