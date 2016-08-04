@@ -30,7 +30,6 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.EventMetadata;
@@ -97,7 +96,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
     private final String id;
 
     private final Set<WeldInjectionPointAttributes<?, ?>> injectionPoints;
-    private final Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints;
 
     private final int priority;
     // this turned out to be noticeable faster than observerMethod.getAnnotated().isStatic()
@@ -137,18 +135,13 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
         this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
 
         ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> injectionPoints = ImmutableSet.builder();
-        ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> newInjectionPoints = ImmutableSet.builder();
         for (ParameterInjectionPoint<?, ?> injectionPoint : observerMethod.getParameterInjectionPoints()) {
             if (injectionPoint instanceof SpecialParameterInjectionPoint) {
                 continue;
             }
-            if (injectionPoint.getQualifier(New.class) != null) {
-                newInjectionPoints.add(injectionPoint);
-            }
             injectionPoints.add(injectionPoint);
         }
         this.injectionPoints = injectionPoints.build();
-        this.newInjectionPoints = newInjectionPoints.build();
         Priority priority = eventParameter.getAnnotation(Priority.class);
         if (priority == null) {
             this.priority = DEFAULT_PRIORITY;
