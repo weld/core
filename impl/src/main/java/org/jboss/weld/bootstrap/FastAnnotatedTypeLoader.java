@@ -52,15 +52,18 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
     private final ClassFileServices classFileServices;
     private final FastProcessAnnotatedTypeResolver resolver;
     private final AnnotatedTypeLoader fallback;
-    final boolean checkTypeModifiers = isJandexSetFlagsAvailable();
+    private final boolean checkTypeModifiers;
 
-    FastAnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ClassFileServices classFileServices,
-            ContainerLifecycleEvents events, FastProcessAnnotatedTypeResolver resolver) {
+    FastAnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ClassFileServices classFileServices, ContainerLifecycleEvents events,
+            FastProcessAnnotatedTypeResolver resolver) {
         super(manager, transformer, events);
         this.fallback = new AnnotatedTypeLoader(manager, transformer, events);
         this.classFileServices = classFileServices;
         this.resolver = resolver;
-        if (!checkTypeModifiers) {
+        if (isJandexSetFlagsAvailable()) {
+            this.checkTypeModifiers = true;
+        } else {
+            this.checkTypeModifiers = false;
             BootstrapLogger.LOG.usingOldJandexVersion();
         }
     }
