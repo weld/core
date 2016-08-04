@@ -22,7 +22,7 @@ import static org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVAT
 import static org.jboss.weld.interceptor.spi.model.InterceptionType.POST_CONSTRUCT;
 import static org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_DESTROY;
 import static org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE;
-import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMapView;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectStreamException;
@@ -107,7 +107,7 @@ public class InterceptionContext implements Serializable {
                 interceptorInstances.put(interceptor.getJavaClass(), interceptor.getInterceptorFactory().create(ctx, manager));
             }
         }
-        return immutableMap(interceptorInstances);
+        return immutableMapView(interceptorInstances);
     }
 
     public InterceptionModel getInterceptionModel() {

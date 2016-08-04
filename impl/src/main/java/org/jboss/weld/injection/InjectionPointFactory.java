@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableListView;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -214,7 +214,7 @@ public class InjectionPointFactory {
                 injectableFieldsList.add(0, fields.build());
             }
         }
-        return immutableList(injectableFieldsList);
+        return immutableListView(injectableFieldsList);
     }
 
     private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField,
@@ -252,7 +252,7 @@ public class InjectionPointFactory {
                 parameters.add(createParameterInjectionPoint(parameter, bean, declaringComponentClass, manager));
             }
         }
-        return immutableList(parameters);
+        return immutableListView(parameters);
     }
 
     private boolean isSpecialParameter(EnhancedAnnotatedParameter<?, ?> parameter) {

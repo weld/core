@@ -93,7 +93,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
         } else {
             this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
         }
-        this.injectionPoints = WeldCollections.immutableSet(injectionPoints);
+        this.injectionPoints = WeldCollections.immutableSetView(injectionPoints);
         checkDelegateInjectionPoints();
     }
 

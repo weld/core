@@ -1,12 +1,10 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -20,6 +18,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -55,21 +54,21 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     private UnbackedAnnotatedType(AnnotatedType<X> source, AnnotatedTypeIdentifier identifier, SharedObjectCache cache) {
         super(source.getBaseType(), source.getTypeClosure(), source.getAnnotations());
         this.javaClass = source.getJavaClass();
-        Set<AnnotatedConstructor<X>> constructors = new HashSet<AnnotatedConstructor<X>>(source.getConstructors().size());
+        ImmutableSet.Builder<AnnotatedConstructor<X>> constructors = ImmutableSet.builder();
         for (AnnotatedConstructor<X> constructor : source.getConstructors()) {
             constructors.add(UnbackedAnnotatedConstructor.of(constructor, this, cache));
         }
-        this.constructors = immutableSet(constructors);
-        Set<AnnotatedMethod<? super X>> methods = new HashSet<AnnotatedMethod<? super X>>(source.getMethods().size());
+        this.constructors = constructors.build();
+        ImmutableSet.Builder<AnnotatedMethod<? super X>> methods = ImmutableSet.builder();
         for (AnnotatedMethod<? super X> originalMethod : source.getMethods()) {
             methods.add(UnbackedAnnotatedMethod.of(originalMethod, this, cache));
         }
-        this.methods = immutableSet(methods);
-        Set<AnnotatedField<? super X>> fields = new HashSet<AnnotatedField<? super X>>(source.getFields().size());
+        this.methods = methods.build();
+        ImmutableSet.Builder<AnnotatedField<? super X>> fields = ImmutableSet.builder();
         for (AnnotatedField<? super X> originalField : source.getFields()) {
             fields.add(UnbackedAnnotatedField.of(originalField, this, cache));
         }
-        this.fields = immutableSet(fields);
+        this.fields = fields.build();
         this.identifier = identifier;
     }
 

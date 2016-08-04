@@ -171,18 +171,19 @@ public class BeanAttributesFactory {
             if (qualifiers.isEmpty()) {
                 this.qualifiers = DEFAULT_QUALIFIERS;
             } else {
-                Set<Annotation> normalizedQualifiers = new HashSet<Annotation>(qualifiers.size() + 2);
-                if (qualifiers.size() == 1) {
-                    if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
-                        normalizedQualifiers.add(DefaultLiteral.INSTANCE);
+                ImmutableSet.Builder<Annotation> normalizedQualifiers = ImmutableSet.builder();
+                if (qualifiers.size() == 1 && qualifiers.iterator().next().annotationType().equals(Named.class)) {
+                    normalizedQualifiers.add(DefaultLiteral.INSTANCE);
+                }
+                for (Annotation annotation : qualifiers) {
+                    if (name != null && annotation.equals(NamedLiteral.DEFAULT)) {
+                        normalizedQualifiers.add(new NamedLiteral(name));
+                    } else {
+                        normalizedQualifiers.add(annotation);
                     }
                 }
-                normalizedQualifiers.addAll(qualifiers);
                 normalizedQualifiers.add(AnyLiteral.INSTANCE);
-                if (name != null && normalizedQualifiers.remove(NamedLiteral.DEFAULT)) {
-                    normalizedQualifiers.add(new NamedLiteral(name));
-                }
-                this.qualifiers = SharedObjectCache.instance(manager).getSharedSet(normalizedQualifiers);
+                this.qualifiers = SharedObjectCache.instance(manager).getSharedSet(normalizedQualifiers.build());
             }
         }
 

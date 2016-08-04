@@ -34,6 +34,7 @@ import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttribut
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -47,11 +48,11 @@ public class InjectionPoints {
     }
 
     public static <T extends WeldInjectionPointAttributes<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
-        Set<T> injectionPoints = new HashSet<T>();
+        ImmutableSet.Builder<T> injectionPoints = ImmutableSet.builder();
         for (Set<T> i : fieldInjectionPoints) {
             injectionPoints.addAll(i);
         }
-        return injectionPoints;
+        return injectionPoints.build();
     }
 
     public static Set<ParameterInjectionPoint<?, ?>> flattenParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
@@ -67,14 +68,14 @@ public class InjectionPoints {
     }
 
     public static <X> Set<ParameterInjectionPoint<?, X>> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {
-        Set<ParameterInjectionPoint<?, X>> filtered = new HashSet<ParameterInjectionPoint<?, X>>();
+        ImmutableSet.Builder<ParameterInjectionPoint<?, X>> filtered = ImmutableSet.builder();
         for (ParameterInjectionPoint<?, X> parameter : injectionPoints) {
             if (parameter instanceof SpecialParameterInjectionPoint) {
                 continue;
             }
             filtered.add(parameter);
         }
-        return filtered;
+        return filtered.build();
     }
 
     public static <T, X> WeldInjectionPointAttributes<T, ?> getWeldInjectionPoint(InjectionPoint injectionPoint) {

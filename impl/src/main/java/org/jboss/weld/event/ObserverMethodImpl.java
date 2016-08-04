@@ -16,12 +16,8 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +29,6 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.EventMetadata;
@@ -60,6 +55,7 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
@@ -92,7 +88,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     private final String id;
 
     private final Set<WeldInjectionPointAttributes<?, ?>> injectionPoints;
-    private final Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints;
 
     // this turned out to be noticeable faster than observerMethod.getAnnotated().isStatic()
     private final boolean isStatic;
@@ -120,19 +115,14 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = ObserverFactory.getTransactionalPhase(observer);
 
-        Set<WeldInjectionPointAttributes<?, ?>> injectionPoints = new HashSet<WeldInjectionPointAttributes<?, ?>>();
-        Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints = new HashSet<WeldInjectionPointAttributes<?, ?>>();
+        ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> injectionPoints = ImmutableSet.builder();
         for (ParameterInjectionPoint<?, ?> injectionPoint : observerMethod.getParameterInjectionPoints()) {
             if (injectionPoint instanceof SpecialParameterInjectionPoint) {
                 continue;
             }
-            if (injectionPoint.getQualifier(New.class) != null) {
-                newInjectionPoints.add(injectionPoint);
-            }
             injectionPoints.add(injectionPoint);
         }
-        this.injectionPoints = immutableSet(injectionPoints);
-        this.newInjectionPoints = immutableSet(newInjectionPoints);
+        this.injectionPoints = injectionPoints.build();
         this.isStatic = observer.isStatic();
         this.eventMetadataRequired = initMetadataRequired(this.injectionPoints);
         this.notificationStrategy = MethodInvocationStrategy.forObserver(observerMethod, beanManager);
@@ -170,7 +160,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     }
 
     public Set<WeldInjectionPointAttributes<?, ?>> getInjectionPoints() {
-        return Collections.unmodifiableSet(injectionPoints);
+        return injectionPoints;
     }
 
     /**

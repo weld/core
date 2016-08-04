@@ -1,6 +1,6 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableListView;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
@@ -43,7 +43,7 @@ public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> 
             parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
                     originalParameter.getPosition(), this));
         }
-        this.parameters = immutableList(parameters);
+        this.parameters = immutableListView(parameters);
     }
 
     public Constructor<X> getJavaMember() {

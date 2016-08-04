@@ -1,6 +1,6 @@
 package org.jboss.weld.annotated.slim.backed;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableListView;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
@@ -63,7 +63,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
                 }
                 parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this, sharedObjectCache));
             }
-            return immutableList(parameters);
+            return immutableListView(parameters);
         } else {
             /*
              * We are seeing either http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6520205 or
