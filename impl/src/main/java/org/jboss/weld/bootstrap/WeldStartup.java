@@ -199,8 +199,12 @@ public class WeldStartup {
             setExtensions(deployment.getExtensions());
         }
 
-        // Add extension to register built-in components
+        // Add Weld extensions
         this.extensions.add(MetadataImpl.from(new WeldExtension()));
+        String vetoTypeRegex = configuration.getStringProperty(ConfigurationKey.VETO_TYPE_WITHOUT_BEAN_DEFINING_ANNOTATION);
+        if (!vetoTypeRegex.isEmpty()) {
+            this.extensions.add(MetadataImpl.from(new WeldVetoExtension(vetoTypeRegex)));
+        }
 
         // Finish the rest of registry init, setupInitialServices() requires already changed finalContextId
         setupInitialServices();
