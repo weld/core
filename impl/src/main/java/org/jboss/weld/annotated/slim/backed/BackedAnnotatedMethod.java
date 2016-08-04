@@ -1,6 +1,6 @@
 package org.jboss.weld.annotated.slim.backed;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableListView;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -50,7 +50,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method>
             Type parameterType = genericParameterTypes[i];
             parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this, sharedObjectCache));
         }
-        return immutableList(parameters);
+        return immutableListView(parameters);
     }
 
     public Method getJavaMember() {

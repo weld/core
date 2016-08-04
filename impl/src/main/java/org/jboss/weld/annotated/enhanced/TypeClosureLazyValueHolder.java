@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.annotated.enhanced;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSetView;
 
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -40,7 +40,7 @@ public class TypeClosureLazyValueHolder extends LazyValueHolder<Set<Type>> {
 
     @Override
     protected Set<Type> computeValue() {
-        return immutableSet(new HierarchyDiscovery(type).getTypeClosure());
+        return immutableSetView(new HierarchyDiscovery(type).getTypeClosure());
     }
 
 }

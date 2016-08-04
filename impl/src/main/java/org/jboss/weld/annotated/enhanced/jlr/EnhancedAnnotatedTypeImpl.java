@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSetView;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -328,7 +328,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 }
             }
         }
-        return immutableSet(overriddenMethods);
+        return immutableSetView(overriddenMethods);
     }
 
     protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {

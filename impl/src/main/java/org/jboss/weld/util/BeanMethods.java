@@ -171,7 +171,7 @@ public class BeanMethods {
         @Override
         public List<AnnotatedMethod<? super T>> create() {
             Collections.reverse(result);
-            return WeldCollections.immutableList(result);
+            return WeldCollections.immutableListView(result);
         }
 
         /**
@@ -243,7 +243,7 @@ public class BeanMethods {
         @Override
         public List<Set<MethodInjectionPoint<?, ?>>> create() {
             Collections.reverse(result); // because we want methods that are lower in the hierarchy to be called first
-            return WeldCollections.immutableList(result);
+            return WeldCollections.immutableListView(result);
         }
     }
 

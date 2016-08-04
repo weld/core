@@ -38,41 +38,33 @@ public class WeldCollections {
     }
 
     /**
-     * Returns an immutable view of a given set. If the given set is empty, a shared instance is returned. If the given set is
-     * an instance of {@link ArraySet}, it is trimmed.
+     * Returns an immutable view of a given set.
      */
-    public static <T> Set<T> immutableSet(Set<T> set) {
-        if (set.isEmpty()) {
-            return Collections.emptySet();
-        }
+    public static <T> Set<T> immutableSetView(Set<T> set) {
         if (set instanceof ImmutableSet<?>) {
             return set;
         }
-        return ImmutableSet.copyOf(set);
+        return Collections.unmodifiableSet(set);
     }
 
 
     /**
-     * Returns an immutable view of a given list. If the given list is empty, a shared instance is returned. If the given list
-     * is an instance of {@link ArrayList}, it is trimmed.
+     * Returns an immutable view of a given set.
      */
-    public static <T> List<T> immutableList(List<T> list) {
-        if (list.isEmpty()) {
-            return Collections.emptyList();
-        }
+    public static <T> List<T> immutableListView(List<T> list) {
         if (list instanceof ImmutableList<?>) {
             return list;
         }
         if (list instanceof ArrayList<?>) {
             ArrayList.class.cast(list).trimToSize();
         }
-        return ImmutableList.copyOf(list);
+        return Collections.unmodifiableList(list);
     }
 
     /**
      * Returns an immutable view of a given map.
      */
-    public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
+    public static <K, V> Map<K, V> immutableMapView(Map<K, V> map) {
         if (map instanceof ImmutableMap<?, ?>) {
             return map;
         }

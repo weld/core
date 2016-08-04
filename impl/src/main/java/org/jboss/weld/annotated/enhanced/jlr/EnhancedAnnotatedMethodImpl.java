@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableListView;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -81,7 +81,7 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
             EnhancedAnnotatedParameter<?, X> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this, classTransformer);
             parameters.add(parameter);
         }
-        this.parameters = immutableList(parameters);
+        this.parameters = immutableListView(parameters);
 
         String propertyName = Reflections.getPropertyName(getDelegate());
         if (propertyName == null) {

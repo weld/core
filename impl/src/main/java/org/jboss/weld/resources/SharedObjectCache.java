@@ -44,7 +44,7 @@ public class SharedObjectCache implements BootstrapService {
     private final ComputingCache<Set<?>, Set<?>> sharedSets = ComputingCacheBuilder.newBuilder().build(new Function<Set<?>, Set<?>>() {
         @Override
         public Set<?> apply(Set<?> from) {
-            return WeldCollections.immutableSet(from);
+            return WeldCollections.immutableSetView(from);
         }
     });
 
@@ -52,7 +52,7 @@ public class SharedObjectCache implements BootstrapService {
             new Function<Map<?, ?>, Map<?, ?>>() {
                 @Override
                 public Map<?, ?> apply(Map<?, ?> from) {
-            return WeldCollections.immutableMap(from);
+            return WeldCollections.immutableMapView(from);
         }
     });
 
