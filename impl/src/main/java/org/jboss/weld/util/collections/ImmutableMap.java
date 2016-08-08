@@ -96,11 +96,6 @@ public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
             return this;
         }
 
-        HashMapBuilder<K, V> putAll(HashMapBuilder<K, V> items) {
-            map.putAll(items.map);
-            return this;
-        }
-
         @Override
         public Map<K, V> build() {
             if (map.isEmpty()) {

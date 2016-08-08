@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.util.collections;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
+
 import java.util.AbstractSet;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
 
 /**
  * Static utility methods for {@link Set}.
@@ -82,7 +82,7 @@ public final class Sets {
 
                     @Override
                     public void remove(){
-                        iterator.remove();
+                        throw new UnsupportedOperationException();
                     }
                 };
             }

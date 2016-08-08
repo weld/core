@@ -161,11 +161,6 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
             return this;
         }
 
-        BuilderImpl<T> addAll(BuilderImpl<T> items) {
-            addAll(items.list);
-            return this;
-        }
-
         @Override
         public List<T> build() {
             return ImmutableList.ofInternal(list.toArray());

@@ -64,6 +64,7 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
         return ImmutableSet.<T> builder().addAll(collection).build();
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Set<T> copyOf(Iterable<? extends T> iterable) {
         Preconditions.checkNotNull(iterable);
         if (iterable instanceof AbstractImmutableSet<?>) {
@@ -149,11 +150,6 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
             for (T item : items) {
                 add(item);
             }
-            return this;
-        }
-
-        BuilderImpl<T> addAll(BuilderImpl<T> items) {
-            addAll(items.set);
             return this;
         }
 
