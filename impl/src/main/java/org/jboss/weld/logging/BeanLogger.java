@@ -494,7 +494,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1564, value = "Injection point metadata injected into a stateless session bean may only be accessed within its business method invocation", format = Format.MESSAGE_FORMAT)
     IllegalStateException statelessSessionBeanInjectionPointMetadataNotAvailable();
 
-    @Message(id = 1565, value = "Unable to instantiate {0}: {1}.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToInstantiate(Object param1, Object param2);
+    @Message(id = 1565, value = "Unable to create ClassFile for: {1}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToCreateClassFile(Object name, @Cause Throwable cause);
 
 }

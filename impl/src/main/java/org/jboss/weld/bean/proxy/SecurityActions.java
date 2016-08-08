@@ -17,9 +17,13 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
 
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.GetConstructorAction;
 import org.jboss.weld.security.SetAccessibleAction;
 
 /**
@@ -47,5 +51,21 @@ final class SecurityActions {
             }
         }
     }
+
+    static <T> Constructor<T> getConstructor(Class<T> javaClass, Class<?>... parameterTypes) throws NoSuchMethodException {
+        if (System.getSecurityManager() != null) {
+            try {
+                return AccessController.doPrivileged(GetConstructorAction.of(javaClass, parameterTypes));
+            } catch (PrivilegedActionException e) {
+                if (e.getCause() instanceof NoSuchMethodException) {
+                    throw (NoSuchMethodException) e.getCause();
+                }
+                throw new WeldException(e.getCause());
+            }
+        } else {
+            return javaClass.getConstructor(parameterTypes);
+        }
+    }
+
 
 }
