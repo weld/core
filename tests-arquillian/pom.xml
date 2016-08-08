@@ -177,6 +177,9 @@
                     <name>!incontainer</name>
                 </property>
             </activation>
+            <properties>
+                <classfilewriter.version>1.2.0.Beta1</classfilewriter.version>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>

@@ -57,7 +57,6 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.security.GetProtectionDomainAction;
@@ -129,25 +128,26 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     private static final boolean CONFIGURABLE_ACCESS_FLAGS;
 
     // classloader is configurable since classfilewriter 1.2.0.Beta1
-    private static final boolean CONFIGURABLE_CLASSLOADER;
-    private static Constructor<?> classLoaderParamConstructor = null;
-    private static Constructor<?> accessFlagsParamConstructor = null;
+    // with older versions we silently fall back
+    private static final Constructor<ClassFile> CONFIGURABLE_CLASSLOADER_CONSTRUCTOR;
 
     static {
-
+        Constructor<ClassFile> temp = null;
         try {
-            classLoaderParamConstructor = ClassFile.class
-                    .getConstructor(String.class, int.class, String.class, ClassLoader.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
+            temp = SecurityActions.getConstructor(ClassFile.class, String.class, int.class, String.class, ClassLoader.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
         } catch (NoSuchMethodException ignored) {
         }
-
-        try {
-            accessFlagsParamConstructor = ClassFile.class.getConstructor(String.class, int.class, String.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
-        } catch (NoSuchMethodException ignored) {
+        if (temp != null) {
+            CONFIGURABLE_CLASSLOADER_CONSTRUCTOR = temp;
+            CONFIGURABLE_ACCESS_FLAGS = true;
+        } else {
+            try {
+                temp = SecurityActions.getConstructor(ClassFile.class, String.class, int.class, String.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
+            } catch (NoSuchMethodException ignored) {
+            }
+            CONFIGURABLE_CLASSLOADER_CONSTRUCTOR = null;
+            CONFIGURABLE_ACCESS_FLAGS = temp != null;
         }
-
-        CONFIGURABLE_ACCESS_FLAGS = accessFlagsParamConstructor != null;
-        CONFIGURABLE_CLASSLOADER = classLoaderParamConstructor != null;
     }
 
     static {
@@ -493,21 +493,17 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     }
 
     private ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
-        WeldClassLoaderResourceLoader resourceLoader = WeldClassLoaderResourceLoader.INSTANCE;
-        Class<ClassFile> classFileClass = Reflections.loadClass(ClassFile.class.getName(), resourceLoader);
         try {
-            if (CONFIGURABLE_CLASSLOADER) {
-                return classFileClass.getConstructor(classLoaderParamConstructor.getParameterTypes())
-                        .newInstance(name, accessFlags, superclass, classLoader, interfaces);
+            if (CONFIGURABLE_CLASSLOADER_CONSTRUCTOR != null) {
+                return CONFIGURABLE_CLASSLOADER_CONSTRUCTOR.newInstance(name, accessFlags, superclass, classLoader, interfaces);
             } else if (CONFIGURABLE_ACCESS_FLAGS) {
-                return classFileClass.getConstructor(accessFlagsParamConstructor.getParameterTypes()).newInstance(name, accessFlags, superclass, interfaces);
+                return new ClassFile(name, accessFlags, superclass, interfaces);
             } else {
-                return classFileClass.getConstructor(String.class, int.class, Arrays2.EMPTY_STRING_ARRAY.getClass()).newInstance(name, superclass, interfaces);
+                return new ClassFile(name, superclass, interfaces);
             }
         } catch (Exception e) {
-            BeanLogger.LOG.unableToInstantiate(classFileClass.getName(), e.getCause());
+            throw BeanLogger.LOG.unableToCreateClassFile(name, e.getCause());
         }
-        return null;
     }
 
     private void dumpToFile(String fileName, byte[] data) {
