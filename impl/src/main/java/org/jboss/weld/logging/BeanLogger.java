@@ -509,7 +509,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1567, value = "Cannot create contextual instance of {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotCreateContextualInstanceOfBuilderInterceptor(Object param1);
 
-    @Message(id = 1568, value = "Unable to instantiate {0}: {1}.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToInstantiate(Object param1, Object param2);
+    @Message(id = 1568, value = "Unable to create ClassFile for: {1}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToCreateClassFile(Object name, @Cause Throwable cause);
 
 }
