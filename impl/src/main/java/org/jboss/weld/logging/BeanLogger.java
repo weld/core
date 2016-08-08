@@ -18,10 +18,13 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
-import java.text.Format;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.jboss.logging.Logger;
+import org.jboss.logging.Logger.Level;
+import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.LogMessage;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.Message.Format;
+import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;

@@ -128,7 +128,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     private static final boolean CONFIGURABLE_ACCESS_FLAGS;
 
     // classloader is configurable since classfilewriter 1.2.0.Beta1
-    // with older versions we silently fall back
+    // with older versions we silently fall back - no default method interception support
     private static final Constructor<ClassFile> CONFIGURABLE_CLASSLOADER_CONSTRUCTOR;
 
     static {
