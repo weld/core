@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.bootstrap.MissingDependenciesRegistry;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -34,7 +35,11 @@ import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttribut
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
+import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.logging.ValidatorLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -101,6 +106,26 @@ public class InjectionPoints {
         return bean != null
                 && ((RequestScoped.class.equals(bean.getScope()) && Beans.hasBuiltinScope(resolvedBean)) || (ApplicationScoped.class.equals(bean.getScope()) && ApplicationScoped.class
                         .equals(resolvedBean.getScope())));
+    }
+
+    public static String getUnsatisfiedDependenciesAdditionalInfo(InjectionPoint ij, BeanManagerImpl beanManager) {
+        Set<Bean<?>> beansMatchedByType = beanManager.getBeans(ij.getType(), AnyLiteral.INSTANCE);
+        if (beansMatchedByType.isEmpty()) {
+            Class<?> rawType = Reflections.getRawType(ij.getType());
+            if (rawType != null) {
+                MissingDependenciesRegistry missingDependenciesRegistry = beanManager.getServices().get(MissingDependenciesRegistry.class);
+                String missingDependency = missingDependenciesRegistry.getMissingDependencyForClass(rawType.getName());
+                if (missingDependency != null) {
+                    return ValidatorLogger.LOG.unsatisfiedDependencyBecauseClassIgnored(
+                            rawType.getName(),
+                            missingDependency);
+                }
+            }
+        } else {
+            return ValidatorLogger.LOG.unsatisfiedDependencyBecauseQualifiersDontMatch(
+                    WeldCollections.toMultiRowString(beansMatchedByType));
+        }
+        return "";
     }
 
 }
