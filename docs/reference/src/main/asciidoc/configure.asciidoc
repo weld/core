@@ -114,7 +114,7 @@ will be proxied (as opposed to classical behavior when there would be an excepti
 Since the method was ignored during proxy creation, it should never be invoked.
 
 In order to make this work, use the below shown configuration key and pass it a regular expression.
-When Weld finds an unproxyable type which matches this pattern, the final methods will be ignored 
+When Weld finds an unproxyable type which matches this pattern, the final methods will be ignored
 and the type will be proxied.
 
 .Supported configuration properties
@@ -241,15 +241,37 @@ to wait on the conversation concurrent lock.
 .Supported configuration properties
 [cols=",,",options="header",]
 |=======================================================================
-|Configuration key |Default value |Description
-|`org.jboss.weld.conversation.timeout` |600000 ms| Conversation timeout represent the maximum time during which is the conversation active.
-|`org.jboss.weld.conversation.concurrentAccessTimeout` |1000 ms| Conversation concurrent access timeout represent the maximum time to wait on the conversation concurrent lock.
+|Configuration key |Default value (ms) |Description
+|`org.jboss.weld.conversation.timeout` |600000| Conversation timeout represent the maximum time during which is the conversation active.
+|`org.jboss.weld.conversation.concurrentAccessTimeout` |1000| Conversation concurrent access timeout represent the maximum time to wait on the conversation concurrent lock.
 |=======================================================================
+
+
+[[veto-types-without-bean-defining-annotation]]
+==== Veto types without bean defining annotation
+
+Sometimes it might be useful to process all types during bootstrap, i.e. fire/observe `ProcessAnnotatedType` event for each Java class discovered, but veto types which are not annotated with a bean defining annotation.
+The main reason is that not all classes that meet all of the necessary conditions are intended to become beans.
+And so vetoing such types helps to conserve memory used by the container.
+Note that if you use `bean-discovey-mode=annotated` (implicit bean archive) then no `ProcessAnnotatedType` will be fired for any such type because it's not discovered at all.
+And there might be portable extensions which use `ProcessAnnotatedType` to extract some important information from classes which are not beans.
+
+Therefore, Weld allows to use `bean-discovey-mode=all` (explicit bean archive) and veto types without a bean defining annotation whose `AnnotatedType#getJavaClass().getName()` matches a regular expression.
+In other words, a type is vetoed if its name matches a regular expression and at the same time is not annotated with a bean defining annotation.
+The functionality is implemented as a built-in portable extension processing all types from all bean archives.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation` || A regular expression. If a non-empty string, then all annotated types whose `AnnotatedType#getJavaClass().getName()` matches this pattern are vetoed if not annotated with a bean defining annotation.
+|=======================================================================
+
 
 === Defining external configuration
 
-Weld allows integrators to provide an external configuration - a class which implements `org.jboss.weld.configuration.spi.ExternalConfiguration` interface. 
-This interface has `getConfigurationProperties` method which returns a `Map` with provided configuration and also inherits a `cleanup` method because it extends `org.jboss.weld.bootstrap.api.Service`. 
+Weld allows integrators to provide an external configuration - a class which implements `org.jboss.weld.configuration.spi.ExternalConfiguration` interface.
+This interface has `getConfigurationProperties` method which returns a `Map` with provided configuration and also inherits a `cleanup` method because it extends `org.jboss.weld.bootstrap.api.Service`.
 Below is a short example of `ExternalConfiguration` implementation:
 
 [source.JAVA, java]
@@ -274,7 +296,7 @@ public class MyExternalConfiguration implements ExternalConfiguration {
 Bear in mind that because `ExternalConfiguration` extends a `Service` it is required that any custom external configuration implementation is explicitly registered. See <<_the_weld_spi>> for more information.
 
 Last but not least external configuration is considered a source with the lowest priority which means that the properties specified there can be overriden by other sources such as system properties.
-For information on supported configuration keys, see <<_weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead 
+For information on supported configuration keys, see <<_weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead
 to deployment problem.
 
 === Excluding classes from scanning and deployment
