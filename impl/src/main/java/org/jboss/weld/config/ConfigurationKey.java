@@ -256,7 +256,7 @@ public enum ConfigurationKey {
      * A regular expression. If a non-empty string, then all annotated types whose {@code javax.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()} matches this pattern are vetoed if not annotated with a bean defining annotation.
      */
     @Description("A regular expression. If a non-empty string, then all annotated types whose <code>javax.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()</code> matches this pattern are vetoed if not annotated with a bean defining annotation.")
-    VETO_TYPE_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypeWithoutBeanDefiningAnnotation", ""),
+    VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation", ""),
 
     ;
 
