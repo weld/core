@@ -50,6 +50,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
+import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
@@ -101,9 +102,15 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         if (bean != null) {
             return getBeanInstance(bean);
         } else if (isUnsatisfied()) {
-            throw BeanManagerLogger.LOG.unresolvableElement("Type: " + getType() + "; Qualifiers: " + getQualifiers());
+            throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(
+                    Formats.formatAnnotations(ip.getQualifiers()),
+                    Formats.formatInjectionPointType(ip.getType()),
+                    InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
         } else {
-            throw BeanManagerLogger.LOG.ambiguousBeansForDependency(WeldCollections.toMultiRowString(allBeans));
+            throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(
+                    Formats.formatAnnotations(ip.getQualifiers()),
+                    Formats.formatInjectionPointType(ip.getType()),
+                    WeldCollections.toMultiRowString(allBeans));
         }
     }
 
