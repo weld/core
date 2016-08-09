@@ -41,7 +41,7 @@ import org.jboss.weld.util.collections.ImmutableList;
 /**
  *
  * @author Martin Kouba
- * @see ConfigurationKey#VETO_TYPE_WITHOUT_BEAN_DEFINING_ANNOTATION
+ * @see ConfigurationKey#VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION
  */
 class WeldVetoExtension implements Extension {
 
