@@ -33,13 +33,6 @@
 
             <!-- Issues in the TCK -->
 
-            <!-- CDITCK-510 & CDI-494 -->
-            <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
-                <methods>
-                    <exclude name="testTypeVariableEventTypeFails"/>
-                </methods>
-            </class>
-
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
