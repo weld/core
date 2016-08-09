@@ -201,7 +201,7 @@ public class WeldStartup {
 
         // Add Weld extensions
         this.extensions.add(MetadataImpl.from(new WeldExtension()));
-        String vetoTypeRegex = configuration.getStringProperty(ConfigurationKey.VETO_TYPE_WITHOUT_BEAN_DEFINING_ANNOTATION);
+        String vetoTypeRegex = configuration.getStringProperty(ConfigurationKey.VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION);
         if (!vetoTypeRegex.isEmpty()) {
             this.extensions.add(MetadataImpl.from(new WeldVetoExtension(vetoTypeRegex)));
         }
