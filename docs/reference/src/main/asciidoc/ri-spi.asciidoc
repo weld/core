@@ -300,8 +300,8 @@ Just as EJB resolution is delegated to the container, resolution of
 `@PersistenceContext` for injection into managed beans (with the
 `InjectionPoint` provided), is delegated to the container.
 
-To allow JPA integration, the `org.jboss.weld.injection.spi.JpaInjectionServices` interface 
-should be implemented. This service is not required if the implementation of 
+To allow JPA integration, the `org.jboss.weld.injection.spi.JpaInjectionServices` interface
+should be implemented. This service is not required if the implementation of
 <<_injection_services>> takes care of `@PersistenceContext` injection.
 
 [NOTE]
@@ -416,7 +416,7 @@ identity, the container should provide an implementation of
 The `org.jboss.weld.bootstrap.api.Bootstrap` interface defines the
 initialization for Weld, bean deployment and bean validation. To boot
 Weld, you must create an instance of
-`org.jboss.weld.bootstrap.WeldBootstrap` which implements 
+`org.jboss.weld.bootstrap.WeldBootstrap` which implements
 `org.jboss.weld.bootstrap.api.CDI11Bootstrap` which extends the above mentioned
 `Bootstrap`. Then you need to tell it about the services in use, and finally request the
 container start.
@@ -451,7 +451,7 @@ required by the environment. You can do this by calling, for example,
 `bootstrap.getManager().getServices().add(JpaServices.class, new
             MyJpaServices())`.
 
-Having called `startInitialization()`, the `org.jboss.weld.manager.api.WeldManager` 
+Having called `startInitialization()`, the `org.jboss.weld.manager.api.WeldManager`
 for each BDA can be obtained by calling `Bootstrap.getManager(BeanDeploymentArchive bda)`.
 
 To deploy the discovered beans, call `Bootstrap.deployBeans()`.
@@ -961,3 +961,19 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 * An observer for `@Initialized(ConversationScoped.class)` or `@Destroyed(ConversationScoped.class)` event no longer forces eager conversation context initialization. See also <<_lazy_and_eager_conversation_context_initialization>>.
 
 * `ScheduledExecutorServiceFactory` is deprecated and no default implementation is provided by default. This service has not been used by Weld internals at least since version 1.1.0.Final.
+
+==== Migration from Weld 2.3 to 2.4
+
+* Weld does not depend on `com.google.guava:guava` anymore. The dependency is also not bundled with shaded artifacts for Weld SE and Weld Servlet.
+
+* A wildcard type is not considered an unresolvable type variable - this reflects the output of a clarification issue https://issues.jboss.org/browse/CDI-494[CDI-494].
+
+* Deprecated `org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory` was removed.
+
+* Weld SE:
+
+** Deprecated `org.jboss.weld.environment.se.beans.InstanceManager` was removed.
+
+** Deprecated `org.jboss.weld.environment.se.ShutdownManager` was removed.
+
+** Deprecated `org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScope` was removed.
