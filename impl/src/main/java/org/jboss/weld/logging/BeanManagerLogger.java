@@ -121,6 +121,12 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1333, value = "BeanManager method {0} is not available after shutdown", format = Format.MESSAGE_FORMAT)
     IllegalStateException methodNotAvailableAfterShutdown(Object param1);
 
+    @Message(id = 1334, value = "Unsatisfied dependencies for type {1} with qualifiers {0} {2}", format = Format.MESSAGE_FORMAT)
+    UnsatisfiedResolutionException injectionPointHasUnsatisfiedDependencies(Object param1, Object param2, Object param3);
+
+    @Message(id = 1335, value = "Ambiguous dependencies for type {1} with qualifiers {0}\n Possible dependencies: {2}", format = Format.MESSAGE_FORMAT)
+    AmbiguousResolutionException injectionPointHasAmbiguousDependencies(Object param1, Object param2, Object param3);
+
     // Last message id used was 1335
 
 }
