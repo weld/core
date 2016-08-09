@@ -82,6 +82,7 @@ import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
@@ -90,7 +91,6 @@ import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.interceptor.reader.PlainInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
@@ -104,6 +104,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Decorators;
+import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Multimap;
 import org.jboss.weld.util.collections.SetMultimap;
@@ -362,11 +363,11 @@ public class Validator implements Service {
         Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
         if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
             throw ValidatorLogger.LOG.injectionPointHasUnsatisfiedDependencies(
-                ij,
-                Formats.formatAnnotations(ij.getQualifiers()),
-                Formats.formatInjectionPointType(ij.getType()),
-                Formats.formatAsStackTraceElement(ij),
-                getUnsatisfiedDependenciesAdditionalInfo(ij, beanManager));
+                    ij,
+                    Formats.formatAnnotations(ij.getQualifiers()),
+                    Formats.formatInjectionPointType(ij.getType()),
+                    Formats.formatAsStackTraceElement(ij),
+                    InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ij, beanManager));
         }
         if (resolvedBeans.size() > 1) {
             throw ValidatorLogger.LOG.injectionPointHasAmbiguousDependencies(
@@ -393,26 +394,6 @@ public class Validator implements Service {
         for (PlugableValidator validator : plugableValidators) {
             validator.validateInjectionPointForDeploymentProblems(ij, bean, beanManager);
         }
-    }
-
-    private String getUnsatisfiedDependenciesAdditionalInfo(InjectionPoint ij, BeanManagerImpl beanManager) {
-        Set<Bean<?>> beansMatchedByType = beanManager.getBeans(ij.getType(), AnyLiteral.INSTANCE);
-        if (beansMatchedByType.isEmpty()) {
-            Class<?> rawType = Reflections.getRawType(ij.getType());
-            if (rawType != null) {
-                MissingDependenciesRegistry missingDependenciesRegistry = beanManager.getServices().get(MissingDependenciesRegistry.class);
-                String missingDependency = missingDependenciesRegistry.getMissingDependencyForClass(rawType.getName());
-                if (missingDependency != null) {
-                    return ValidatorLogger.LOG.unsatisfiedDependencyBecauseClassIgnored(
-                        rawType.getName(),
-                        missingDependency);
-                }
-            }
-        } else {
-            return ValidatorLogger.LOG.unsatisfiedDependencyBecauseQualifiersDontMatch(
-                WeldCollections.toMultiRowString(beansMatchedByType));
-        }
-        return "";
     }
 
     public void validateProducers(Collection<Producer<?>> producers, BeanManagerImpl beanManager) {
@@ -936,7 +917,15 @@ public class Validator implements Service {
 
     private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Object> dependencyPath, Set<Bean<?>> validatedBeans) {
         Set<Bean<?>> resolved = beanManager.getBeans(ij);
-        Bean<?> bean = beanManager.resolve(resolved);
+        Bean<?> bean = null;
+        try {
+            bean = beanManager.resolve(resolved);
+        } catch (AmbiguousResolutionException ex) {
+            throw ValidatorLogger.LOG.injectionPointHasAmbiguousDependencies(ij, Formats.formatAnnotations(ij.getQualifiers()),
+                    Formats.formatInjectionPointType(ij.getType()),
+                    Formats.formatAsStackTraceElement(ij),
+                    WeldCollections.toMultiRowString(resolved));
+        }
         if (bean != null) {
             if (!(bean instanceof AbstractBuiltInBean<?>)) {
                 if (!ij.isDelegate()) {
