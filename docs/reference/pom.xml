@@ -30,7 +30,7 @@
         <pdf.name>weld-reference.pdf</pdf.name>
         <weld.version>${project.version}</weld.version>
         <jdocbook.source.directory>target/docbook</jdocbook.source.directory>
-        <jdocbook.plugin.version>2.3.8</jdocbook.plugin.version>
+        <jdocbook.plugin.version>2.3.9</jdocbook.plugin.version>
         <pressgang.version>2.0.2</pressgang.version>
         <documentation.url>http://docs.jboss.org/weld/reference/latest-master/en-US/html</documentation.url>
     </properties>
