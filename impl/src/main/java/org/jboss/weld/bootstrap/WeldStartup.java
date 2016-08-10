@@ -194,8 +194,7 @@ public class WeldStartup {
         // Add Weld extensions
         String vetoTypeRegex = configuration.getStringProperty(ConfigurationKey.VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION);
         if (!vetoTypeRegex.isEmpty()) {
-            // TODO use MetadataImpl.from() - unreleased Weld 3.0.Alpha21
-            this.extensions.add(new MetadataImpl<>(new WeldVetoExtension(vetoTypeRegex), null));
+            this.extensions.add(MetadataImpl.from(new WeldVetoExtension(vetoTypeRegex)));
         }
 
         // Finish the rest of registry init, setupInitialServices() requires already changed finalContextId
