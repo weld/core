@@ -973,6 +973,8 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 
 * Weld SE:
 
+** `org.jboss.weld.environment.se.contexts.activators.ActivateRequestScope` was moved to the Weld API. From now on, the FQCN of the interceptor binding is: `org.jboss.weld.context.activator.ActivateRequestScope`.
+
 ** Deprecated `org.jboss.weld.environment.se.beans.InstanceManager` was removed.
 
 ** Deprecated `org.jboss.weld.environment.se.ShutdownManager` was removed.
