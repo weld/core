@@ -404,7 +404,7 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Enable interceptors for a synthetic bean archive. Interceptor classes are automatically added to the set of bean classes.
+     * Replace interceptors for a synthetic bean archive. Interceptor classes are automatically added to the set of bean classes.
      *
      * @param interceptorClasses
      * @return self
@@ -430,7 +430,7 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Enable decorators for a synthetic bean archive. Decorator classes are automatically added to the set of bean classes for the synthetic bean archive.
+     * Replace decorators for a synthetic bean archive. Decorator classes are automatically added to the set of bean classes for the synthetic bean archive.
      *
      * @param decoratorClasses
      * @return self
@@ -456,7 +456,7 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Select alternatives for a synthetic bean archive.
+     * Replace alternatives for a synthetic bean archive.
      *
      * @param alternativeClasses
      * @return self
@@ -470,12 +470,13 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Add an alternative class to the list of selected alternatives for a synthetic bean archive.
+     * Add an alternative class to the list of selected alternatives for a synthetic bean archive. Alternative classes are automatically added to the set of bean classes for the synthetic bean archive
      *
      * @param alternativeClass
      * @return self
      */
     public Weld addAlternative(Class<?> alternativeClass) {
+        beanClasses.add(alternativeClass);
         selectedAlternatives.add(syntheticMetadata(alternativeClass));
         return this;
     }
