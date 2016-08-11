@@ -42,7 +42,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.Vetoed;
@@ -369,7 +368,7 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Enable interceptors for a synthetic bean archive. Interceptor classes are automatically added to the set of bean classes.
+     * Replace interceptors for a synthetic bean archive.
      *
      * @param interceptorClasses
      * @return self
@@ -389,13 +388,12 @@ public class Weld implements ContainerInstanceFactory {
      * @return self
      */
     public Weld addInterceptor(Class<?> interceptorClass) {
-        beanClasses.add(interceptorClass.getName());
         enabledInterceptors.add(syntheticMetadata(interceptorClass));
         return this;
     }
 
     /**
-     * Enable decorators for a synthetic bean archive. Decorator classes are automatically added to the set of bean classes for the synthetic bean archive.
+     * Replace decorators for a synthetic bean archive.
      *
      * @param decoratorClasses
      * @return self
@@ -415,13 +413,12 @@ public class Weld implements ContainerInstanceFactory {
      * @return self
      */
     public Weld addDecorator(Class<?> decoratorClass) {
-        beanClasses.add(decoratorClass.getName());
         enabledDecorators.add(syntheticMetadata(decoratorClass));
         return this;
     }
 
     /**
-     * Select alternatives for a synthetic bean archive.
+     * Replace alternatives for a synthetic bean archive.
      *
      * @param alternativeClasses
      * @return self
@@ -561,7 +558,8 @@ public class Weld implements ContainerInstanceFactory {
      */
     public WeldContainer initialize() {
         // If also building a synthetic bean archive or the implicit scan is enabled, the check for beans.xml is not necessary
-        if (!isSyntheticBeanArchiveRequired() && !isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false) && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
+        if (!isSyntheticBeanArchiveRequired() && !isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false)
+                && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
             throw CommonLogger.LOG.missingBeansXml();
         }
 
