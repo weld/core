@@ -649,7 +649,7 @@ public class Validator implements Service {
             }
             for (Metadata<String> interceptorClassName : beansXml.getEnabledInterceptors()) {
                 if (!interceptorBeanClasses.contains(interceptorClassName.getValue())) {
-                    throw ValidatorLogger.LOG.interceptorClassDoesNotMatchInterceptorBean(interceptorClassName);
+                    throw ValidatorLogger.LOG.interceptorClassDoesNotMatchInterceptorBean(interceptorClassName.getValue());
                 }
             }
         }
@@ -664,7 +664,7 @@ public class Validator implements Service {
             }
             for (Metadata<String> decoratorClassName : beansXml.getEnabledDecorators()) {
                 if (!decoratorBeanClasses.contains(decoratorClassName.getValue())) {
-                    throw ValidatorLogger.LOG.decoratorClassNotBeanClassOfDecorator(decoratorClassName, WeldCollections.toMultiRowString(decoratorBeanClasses));
+                    throw ValidatorLogger.LOG.decoratorClassNotBeanClassOfDecorator(decoratorClassName.getValue(), WeldCollections.toMultiRowString(decoratorBeanClasses));
                 }
             }
         }
@@ -716,7 +716,7 @@ public class Validator implements Service {
                         }
                     }
                     if (!alternativeBeanFound) {
-                        throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition);
+                        throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition.getValue());
                     }
                 }
             }
