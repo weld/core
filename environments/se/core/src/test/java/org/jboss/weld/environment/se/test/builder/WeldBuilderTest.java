@@ -68,11 +68,11 @@ public class WeldBuilderTest {
             assertEquals(5, container.select(Cat.class).get().getVal());
         }
         // Test interceptor enabled for the synthetic BDA
-        try (WeldContainer container = weld.reset().beanClasses(Qux.class).interceptors(MonitoringInterceptor.class).initialize()) {
+        try (WeldContainer container = weld.reset().beanClasses(Qux.class, MonitoringInterceptor.class).interceptors(MonitoringInterceptor.class).initialize()) {
             assertEquals(Integer.valueOf(11), container.select(Qux.class).get().ping());
         }
         // Test decorator enabled for the synthetic BDA
-        try (WeldContainer container = weld.reset().beanClasses(Foo.class).decorators(CoolDecorator.class).initialize()) {
+        try (WeldContainer container = weld.reset().beanClasses(Foo.class, CoolDecorator.class).decorators(CoolDecorator.class).initialize()) {
             assertEquals("NOK", container.select(Foo.class).get().methodToBeDecorated());
         }
         // Test addBeanClass()

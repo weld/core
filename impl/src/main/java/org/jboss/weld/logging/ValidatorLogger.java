@@ -157,7 +157,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1421, value = "Cannot enable the same alternative stereotype {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeStereotypeSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
-    @Message(id = 1422, value = "Enabled alternative {0} is not an alternative", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1422, value = "Enabled alternative {0} is not an alternative: the class is not found, or not annotated with @Alternative", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotAnnotated(Object param1);
 
     @Message(id = 1424, value = "The following disposal methods were declared but did not resolve to a producer method: {0}", format = Format.MESSAGE_FORMAT)
