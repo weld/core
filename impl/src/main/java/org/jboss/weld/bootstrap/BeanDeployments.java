@@ -41,6 +41,10 @@ class BeanDeployments {
         }
         String beforeDelimiter = beanArchiveId.substring(0, idx);
         int suffixIdx = beanArchiveId.lastIndexOf(".");
+        // if there is no archive suffix, and it clashes with the delimiter, ignore it
+        if(suffixIdx + 1 == idx + delimiter.length()) {
+            suffixIdx = -1;
+        }
         return suffixIdx < 0 ? beforeDelimiter : beforeDelimiter + beanArchiveId.substring(suffixIdx, beanArchiveId.length());
     }
 
