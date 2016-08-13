@@ -83,6 +83,7 @@
                             org.jboss.weld.el;
                             org.jboss.weld.event;
                             org.jboss.weld.exceptions;
+                            org.jboss.weld.inject;
                             org.jboss.weld.injection;
                             org.jboss.weld.interceptor.proxy;
                             org.jboss.weld.interceptor.util.proxy;
