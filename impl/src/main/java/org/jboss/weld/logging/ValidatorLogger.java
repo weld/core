@@ -102,8 +102,8 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1416, value = "Enabled interceptor class {0} specified twice:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     DeploymentException interceptorSpecifiedTwice(Object param1, Object param2, Object param3);
 
-    @Message(id = 1417, value = "Enabled interceptor class {0} does not match an interceptor bean: the class is not found, or not annotated with @Interceptor and still not registered through a portable extension, or not annotated with @Dependent inside an implicit bean archive", format = Format.MESSAGE_FORMAT)
-    DeploymentException interceptorClassDoesNotMatchInterceptorBean(Object param1);
+    @Message(id = 1417, value = "Enabled interceptor class {0} ({1}) does not match an interceptor bean: the class is not found, or not annotated with @Interceptor and still not registered through a portable extension, or not annotated with @Dependent inside an implicit bean archive", format = Format.MESSAGE_FORMAT)
+    DeploymentException interceptorClassDoesNotMatchInterceptorBean(Object value, Object location);
 
     @Message(id = 1418, value = "Enabled decorator class {0} specified twice:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     DeploymentException decoratorSpecifiedTwice(Object param1, Object param2, Object param3);
@@ -117,8 +117,8 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1421, value = "Cannot enable the same alternative stereotype {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeStereotypeSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
-    @Message(id = 1422, value = "Enabled alternative {0} is not an alternative: the class is not found, or not annotated with @Alternative", format = Format.MESSAGE_FORMAT)
-    DeploymentException alternativeBeanClassNotAnnotated(Object param1);
+    @Message(id = 1422, value = "Enabled alternative class {0} ({1}) does not match any bean: the class is not found, or not annotated with @Alternative and still not registered through a portable extension, or not annotated with @Dependent inside an implicit bean archive", format = Format.MESSAGE_FORMAT)
+    DeploymentException alternativeBeanClassNotAnnotated(Object value, Object location);
 
     @Message(id = 1424, value = "The following disposal methods were declared but did not resolve to a producer method: {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException disposalMethodsWithoutProducer(Object param1);

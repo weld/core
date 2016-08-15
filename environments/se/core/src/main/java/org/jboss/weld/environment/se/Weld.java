@@ -404,7 +404,10 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Replace interceptors for a synthetic bean archive.
+     * Enable interceptors for the synthetic bean archive, all previous values are removed.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param interceptorClasses
      * @return self
@@ -418,7 +421,10 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Add an interceptor class to the list of enabled interceptors for a synthetic bean archive.
+     * Add an interceptor class to the list of enabled interceptors for the synthetic bean archive.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param interceptorClass
      * @return self
@@ -427,9 +433,11 @@ public class Weld implements ContainerInstanceFactory {
         enabledInterceptors.add(syntheticMetadata(interceptorClass));
         return this;
     }
-
     /**
-     * Replace decorators for a synthetic bean archive.
+     * Enable decorators for the synthetic bean archive, all previous values are removed.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param decoratorClasses
      * @return self
@@ -443,7 +451,10 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Add a decorator class to the list of enabled decorators for a synthetic bean archive.
+     * Add a decorator class to the list of enabled decorators for the synthetic bean archive.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param decoratorClass
      * @return self
@@ -454,7 +465,10 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Replace alternatives for a synthetic bean archive.
+     * Select alternatives for the synthetic bean archive, all previous values are removed.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param alternativeClasses
      * @return self
@@ -469,6 +483,9 @@ public class Weld implements ContainerInstanceFactory {
 
     /**
      * Add an alternative class to the list of selected alternatives for a synthetic bean archive.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param alternativeClass
      * @return self
@@ -479,7 +496,10 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Select alternative stereotypes for a synthetic bean archive.
+     * Select alternative stereotypes for the synthetic bean archive, all previous values are removed.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param alternativeStereotypeClasses
      * @return self
@@ -495,6 +515,9 @@ public class Weld implements ContainerInstanceFactory {
 
     /**
      * Add an alternative stereotype class to the list of selected alternative stereotypes for a synthetic bean archive.
+     * <p>
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
+     * absence of the <code>beans.xml</code> descriptor.
      *
      * @param alternativeStereotypeClass
      * @return self
