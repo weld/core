@@ -20,9 +20,11 @@ import static org.jboss.weld.probe.Strings.ADDITIONAL_BDA_SUFFIX;
 import static org.jboss.weld.probe.Strings.WEB_INF_CLASSES;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -82,6 +84,8 @@ class Probe {
 
     private final SetMultimap<Bean<?>, AbstractProducerBean<?, ?, ?>> beanToDeclaredProducers;
 
+    private final Set<Bean<?>> unusedBeans;
+
     // Monitoring data
 
     private final ConcurrentMap<Integer, Invocation> invocations;
@@ -113,6 +117,7 @@ class Probe {
         this.idToObserver = new HashMap<String, ObserverMethod<?>>();
         this.observerToId = new HashMap<ObserverMethod<?>, String>();
         this.beanToDeclaredProducers = SetMultimap.newSetMultimap();
+        this.unusedBeans = new HashSet<>();
         this.bdaToManager = new HashMap<BeanDeploymentArchive, BeanManagerImpl>();
         this.beanComparator = new Comparator<Bean<?>>() {
             @Override
@@ -222,6 +227,8 @@ class Probe {
                 beanToDeclaredProducers.put(producerBean.getDeclaringBean(), producerBean);
             }
         }
+
+        findUnusedBeans();
 
         initTs.set(System.currentTimeMillis());
     }
@@ -475,6 +482,10 @@ class Probe {
         }
     }
 
+    boolean isUnused(Bean<?> bean) {
+        return unusedBeans.contains(bean);
+    }
+
     private void putBean(ContextualStore contextualStore, Bean<?> bean) {
         putBean(Components.getId(contextualStore.putIfAbsent(bean)), bean);
     }
@@ -497,6 +508,45 @@ class Probe {
     private void putObserver(String id, ObserverMethod<?> observerMethod) {
         idToObserver.put(id, observerMethod);
         observerToId.put(observerMethod, id);
+    }
+
+    private void findUnusedBeans() {
+        Collection<Bean<?>> beans = idToBean.values();
+        Collection<ObserverMethod<?>> observers = idToObserver.values();
+        for (Bean<?> bean : beans) {
+            BeanKind kind = BeanKind.from(bean);
+            if (BeanKind.BUILT_IN.equals(kind) || BeanKind.EXTENSION.equals(kind) || BeanKind.DECORATOR.equals(kind) || BeanKind.INTERCEPTOR.equals(kind)) {
+                continue;
+            }
+            if (bean.getName() != null) {
+                // Is annotated with @Named
+                continue;
+            }
+            if (!(BeanKind.PRODUCER_FIELD.equals(kind) || BeanKind.PRODUCER_METHOD.equals(kind)) && !getDeclaredProducers(bean).isEmpty()) {
+                // Has declared producers
+                continue;
+            }
+            if (!Components.getDependents(bean, beans, this).isEmpty()) {
+                // Has direct dependents
+                continue;
+            }
+            if (hasDeclaredObservers(bean, observers)) {
+                continue;
+            }
+            unusedBeans.add(bean);
+        }
+    }
+
+    private boolean hasDeclaredObservers(Bean<?> bean, Collection<ObserverMethod<?>> observers) {
+        for (ObserverMethod<?> observerMethod : observers) {
+            if (observerMethod instanceof ObserverMethodImpl) {
+                ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
+                if (bean.equals(observerMethodImpl.getDeclaringBean())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

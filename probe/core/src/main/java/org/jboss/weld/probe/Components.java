@@ -61,7 +61,6 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-
 import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
@@ -154,47 +153,57 @@ final class Components {
      * @return the set of dependents
      */
     static Set<Dependency> getDependents(Bean<?> bean, Probe probe) {
-        Set<Dependency> dependents = new HashSet<Dependency>();
-        for (Bean<?> candidate : probe.getBeans()) {
-            if (candidate.equals(bean)) {
-                continue;
-            }
-            BeanManager beanManager = probe.getBeanManager(candidate);
-            if (beanManager == null) {
-                // Don't process built-in beans
-                continue;
-            }
-            Set<InjectionPoint> injectionPoints = candidate.getInjectionPoints();
-            if (injectionPoints != null && !injectionPoints.isEmpty()) {
-                for (InjectionPoint injectionPoint : injectionPoints) {
-                    if (injectionPoint.isDelegate()) {
-                        // Do not include delegate injection points
-                        continue;
-                    }
-                    // At this point unsatisfied or ambiguous dependency should not exits
-                    Bean<?> candidateDependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
-                            injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
-                    if (candidateDependency.getBeanClass().equals(InstanceImpl.class)) {
-                        Bean<?> lazilyFetched = getInstanceResolvedBean(beanManager, injectionPoint);
-                        if (lazilyFetched != null && lazilyFetched.equals(bean)) {
-                            dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY, true));
-                            continue;
-                        }
-                    }
-                    boolean satisfies = false;
-                    if (isBuiltinBeanButNotExtension(candidateDependency)) {
-                        satisfies = bean.equals(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) candidateDependency)));
-                    } else {
-                        satisfies = bean.equals(candidateDependency);
-                    }
-                    if (satisfies) {
-                        dependents.add(new Dependency(candidate, injectionPoint));
-                    }
-                }
-            }
-        }
-        return dependents;
+        return getDependents(bean, probe.getBeans(), probe);
     }
+
+    /**
+    *
+    * @param bean
+    * @param probe
+    * @return the set of dependents
+    */
+   static Set<Dependency> getDependents(Bean<?> bean, Collection<Bean<?>> beans, Probe probe) {
+       Set<Dependency> dependents = new HashSet<Dependency>();
+       for (Bean<?> candidate : beans) {
+           if (candidate.equals(bean)) {
+               continue;
+           }
+           BeanManager beanManager = probe.getBeanManager(candidate);
+           if (beanManager == null) {
+               // Don't process built-in beans
+               continue;
+           }
+           Set<InjectionPoint> injectionPoints = candidate.getInjectionPoints();
+           if (injectionPoints != null && !injectionPoints.isEmpty()) {
+               for (InjectionPoint injectionPoint : injectionPoints) {
+                   if (injectionPoint.isDelegate()) {
+                       // Do not include delegate injection points
+                       continue;
+                   }
+                   // At this point unsatisfied or ambiguous dependency should not exits
+                   Bean<?> candidateDependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
+                           injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
+                   if (candidateDependency.getBeanClass().equals(InstanceImpl.class)) {
+                       Bean<?> lazilyFetched = getInstanceResolvedBean(beanManager, injectionPoint);
+                       if (lazilyFetched != null && lazilyFetched.equals(bean)) {
+                           dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY, true));
+                           continue;
+                       }
+                   }
+                   boolean satisfies = false;
+                   if (isBuiltinBeanButNotExtension(candidateDependency)) {
+                       satisfies = bean.equals(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) candidateDependency)));
+                   } else {
+                       satisfies = bean.equals(candidateDependency);
+                   }
+                   if (satisfies) {
+                       dependents.add(new Dependency(candidate, injectionPoint));
+                   }
+               }
+           }
+       }
+       return dependents;
+   }
 
     /**
      *

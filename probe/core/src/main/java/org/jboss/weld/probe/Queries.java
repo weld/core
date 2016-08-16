@@ -33,6 +33,7 @@ import static org.jboss.weld.probe.Strings.SCOPE;
 import static org.jboss.weld.probe.Strings.SEARCH;
 import static org.jboss.weld.probe.Strings.STEREOTYPES;
 import static org.jboss.weld.probe.Strings.TX_PHASE;
+import static org.jboss.weld.probe.Strings.UNUSED;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -344,6 +345,8 @@ final class Queries {
 
         private String stereotypes;
 
+        private boolean unused;
+
         BeanFilters(Probe probe) {
             super(probe);
         }
@@ -358,7 +361,11 @@ final class Queries {
             return testBda(bda, bean) && testEquals(kind, BeanKind.from(bean)) && testContainsIgnoreCase(beanClass, bean.getBeanClass())
                     && testContainsIgnoreCase(scope, bean.getScope()) && testAnyContains(beanType, bean.getTypes())
                     && testAnyContains(qualifier, bean.getQualifiers()) && testEquals(isAlternative, bean.isAlternative())
-                    && testAnyContains(stereotypes, bean.getStereotypes());
+                    && testAnyContains(stereotypes, bean.getStereotypes()) && testUnused(bean);
+        }
+
+        boolean testUnused(Bean<?> bean) {
+            return !unused || probe.isUnused(bean);
         }
 
         @Override
@@ -379,19 +386,21 @@ final class Queries {
                 isAlternative = Boolean.valueOf(value);
             } else if (STEREOTYPES.equals(name)) {
                 stereotypes = value;
+            } else if (UNUSED.equals(name) && Boolean.valueOf(value)) {
+                unused = true;
             }
         }
 
         @Override
         public String toString() {
-            return String.format("BeanFilters [kind=%s, beanClass=%s, beanType=%s, qualifier=%s, scope=%s, bda=%s, isAlternative=%s, stereotypes=%s]", kind,
-                    beanClass, beanType, qualifier, scope, bda, isAlternative, stereotypes);
+            return String.format("BeanFilters [kind=%s, beanClass=%s, beanType=%s, qualifier=%s, scope=%s, bda=%s, isAlternative=%s, stereotypes=%s, unused=%s]", kind,
+                    beanClass, beanType, qualifier, scope, bda, isAlternative, stereotypes, unused);
         }
 
         @Override
         boolean isEmpty() {
             return kind == null && beanClass == null && beanType == null && qualifier == null && scope == null && bda == null && isAlternative == null
-                    && stereotypes == null;
+                    && stereotypes == null && !unused;
         }
 
     }

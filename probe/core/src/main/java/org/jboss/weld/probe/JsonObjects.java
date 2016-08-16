@@ -95,6 +95,7 @@ import static org.jboss.weld.probe.Strings.TOTAL;
 import static org.jboss.weld.probe.Strings.TX_PHASE;
 import static org.jboss.weld.probe.Strings.TYPE;
 import static org.jboss.weld.probe.Strings.TYPES;
+import static org.jboss.weld.probe.Strings.UNUSED;
 import static org.jboss.weld.probe.Strings.VALUE;
 import static org.jboss.weld.probe.Strings.VERSION;
 import static org.jboss.weld.probe.Strings.WARNING_UNRESTRICTED_PAT_OBSERVER;
@@ -401,6 +402,10 @@ final class JsonObjects {
         // ALTERNATIVE
         if (bean.isAlternative()) {
             beanBuilder.add(IS_ALTERNATIVE, true);
+        }
+        // UNUSED
+        if (probe.isUnused(bean)) {
+            beanBuilder.add(UNUSED, true);
         }
         return beanBuilder;
     }
