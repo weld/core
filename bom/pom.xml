@@ -29,7 +29,7 @@
     </developers>
 
     <properties>
-        <weld.api.bom.version>2.3.SP2</weld.api.bom.version>
+        <weld.api.bom.version>2.4.CR1</weld.api.bom.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
     </properties>
@@ -79,7 +79,7 @@
                 <artifactId>weld-se</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <!--Weld OSGI module-->
             <dependency>
                 <groupId>org.jboss.weld</groupId>
