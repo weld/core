@@ -79,7 +79,7 @@ i.dep-legend {
 }
 
 i.injects {
-  padding-ritgh: 5px;
+  padding-right: 5px;
   color: #ccc;
 }
 
@@ -324,4 +324,8 @@ code {
 div.content .panel-default>.panel-heading {
   background-image: none;
   font-weight: bold;
+}
+
+span.separator {
+ color: silver;
 }

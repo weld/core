@@ -430,17 +430,23 @@ ${head}
         <h1>Beans</h1>
 
         <div class="btn-line form-control-like">
-            <form class="form-inline">
-                <label class="control-label">Bean Archive:</label>
-                {{view "select"
-                    value=bda
-                    content=filterBdas
-                    optionValuePath="content.id"
-                    optionLabelPath="content.bdaId"
-                    prompt="-- ANY --"
-                    class="form-control form-control-auto-width"
-                }}
-               {{tip "Additional/synthetic bean archives are automatically created for beans and extensions which do not belong to any regular bean archive"}}
+            <div class="form-group">
+                <form class="form-inline">
+                    <label class="control-label">Bean Archive:</label>
+                    {{view "select"
+                        value=bda
+                        content=filterBdas
+                        optionValuePath="content.id"
+                        optionLabelPath="content.bdaId"
+                        prompt="-- ANY --"
+                        class="form-control form-control-auto-width"
+                    }}
+                    {{tip "Additional/synthetic bean archives are automatically created for beans and extensions which do not belong to any regular bean archive"}}
+                    {{inlineFormSep}}
+                    <label class="control-label">
+                        {{input type="checkbox" name="unused" checked=unused}} Unused beans only {{tip "A bean is considered unused if it has no direct dependents, does not declare any observer or producer methods, is not annotated with @Named and is not a built-in bean, extension, interceptor or decorator"}}
+                    </label>
+                </div>
             </form>
         </div>
 
@@ -486,13 +492,16 @@ ${head}
             </tr>
             {{#each data}}
             <tr>
-                <td>{{increment _view.contentIndex}}</td>
+                <td>
+                    {{increment _view.contentIndex}}
+                    {{#if unused}}<i class="fa fa-trash-o fa-lg" title="Probably an unused bean"></i>{{/if}}
+                    {{#if isAlternative}}<i class="fa fa-check-square fa-lg" title="Selected alternative"></i>{{/if}}
+                </td>
                 <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detailIcon}}&nbsp;{{/link-to}}{{/if}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{abbr scope 30}}</td>
                 <td>
                     {{detailIcon}}{{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}
-                    {{#if isAlternative}}<i class="fa fa-check-square fa-lg" title="Selected alternative"></i>{{/if}}
                 </td>
                 <td>
                     {{eachLiAbbr types 50}}
