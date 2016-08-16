@@ -67,6 +67,7 @@ final class Queries {
     /**
      * @param data
      * @param page
+     * @param pageSize
      * @param filters
      * @return the page of data
      */

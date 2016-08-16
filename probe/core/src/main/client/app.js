@@ -323,7 +323,7 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
             filters = appendToFilters(filters, 'declaringBean',
                 params.declaringBean);
             if (params.reception) {
-                receptions.forEach(function(reception) {
+                appController.get('receptions').forEach(function(reception) {
                     if (reception == params.reception) {
                         filters = appendToFilters(filters, 'reception',
                             reception);
@@ -338,7 +338,7 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
                 });
             }
             if (params.txPhase) {
-                txPhases.forEach(function(txPhase) {
+                appController.get('txPhases').forEach(function(txPhase) {
                     if (txPhase == params.txPhase) {
                         filters = appendToFilters(filters, 'txPhase', txPhase);
                     }
