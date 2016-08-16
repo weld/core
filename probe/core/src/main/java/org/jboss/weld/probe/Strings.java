@@ -108,6 +108,7 @@ public final class Strings {
     public static final String INVOCATIONS = "invocations";
     public static final String RESOLVE = "resolve";
     public static final String HASH = "hash";
+    public static final String UNUSED = "unused";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";

@@ -220,6 +220,9 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
         },
         bda : {
             refreshModel : true
+        },
+        unused : {
+            refreshModel : true
         }
     },
     setupController : function(controller, model) {
@@ -246,6 +249,9 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
                     filters = appendToFilters(filters, 'kind', kind);
                 }
             });
+        }
+        if (params.unused) {
+            filters = appendToFilters(filters, 'unused', true);
         }
         query = appendToQuery(query, 'filters', filters);
         if (params.page) {
@@ -831,9 +837,10 @@ Probe.BeanListController = Ember.ObjectController.extend({
     beanClass : '',
     beanType : '',
     qualifier : '',
+    unused : false,
     page : 1,
     queryParams : [ 'bda', 'kind', 'scope', 'beanClass', 'beanType',
-            'qualifier', 'page' ],
+            'qualifier', 'unused', 'page' ],
     actions : {
         clearFilters : function() {
             this.set('page', 1);
@@ -843,6 +850,7 @@ Probe.BeanListController = Ember.ObjectController.extend({
             this.set('beanType', '');
             this.set('qualifier', '');
             this.set('kind', null);
+            this.set('unused', false);
             this.send("refreshData");
         },
         filter : function() {
@@ -1111,6 +1119,10 @@ Ember.Handlebars.registerBoundHelper('stackIcon', function(icon, options) {
     var large = options.hash.lg || false;
     return new Handlebars.SafeString(
         '<span class="fa-stack' + (large ? ' fa-lg':'') + '"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa ' + icon + ' fa-stack-1x" title="' + options.hash.title + '"></i></span>');
+});
+
+Ember.Handlebars.registerBoundHelper('inlineFormSep', function() {
+    return new Handlebars.SafeString('&nbsp;<span class="separator">|</span>&nbsp;');
 });
 
 // VIEWS
