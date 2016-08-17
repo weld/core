@@ -74,7 +74,7 @@ public class DefaultJsonDataProvider implements JsonDataProvider {
     @Override
     public String receiveBean(String id, boolean transientDependencies, boolean transientDependents) {
         Bean<?> bean = probe.getBean(id);
-        return (bean != null) ? JsonObjects.createFullBeanJson(bean, transientDependencies, transientDependents, beanManager, probe) : null;
+        return (bean != null) ? JsonObjects.createFullBeanJson(bean, transientDependencies, transientDependents, beanManager, probe).build() : null;
     }
 
     @Override
@@ -90,9 +90,10 @@ public class DefaultJsonDataProvider implements JsonDataProvider {
     }
 
     @Override
-    public String receiveObservers(int pageIndex, int pageSize, String filters) {
-        return JsonObjects
-                .createObserversJson(Queries.find(probe.getObservers(), pageIndex, pageSize, Queries.initFilters(filters, new ObserverFilters(probe))), probe);
+    public String receiveObservers(int pageIndex, int pageSize, String filters, String representation) {
+        return JsonObjects.createObserversJson(
+                Queries.find(probe.getObservers(), pageIndex, pageSize, Queries.initFilters(filters, new ObserverFilters(probe))), probe,
+                Representation.from(representation));
     }
 
     @Override
@@ -119,9 +120,10 @@ public class DefaultJsonDataProvider implements JsonDataProvider {
     }
 
     @Override
-    public String receiveInvocations(int pageIndex, int pageSize, String filters) {
+    public String receiveInvocations(int pageIndex, int pageSize, String filters, String representation) {
         return JsonObjects.createInvocationsJson(
-                Queries.find(probe.getInvocations(), pageIndex, pageSize, Queries.initFilters(filters, new InvocationsFilters(probe))), probe);
+                Queries.find(probe.getInvocations(), pageIndex, pageSize, Queries.initFilters(filters, new InvocationsFilters(probe))), probe,
+                Representation.from(representation));
     }
 
     @Override

@@ -16,14 +16,11 @@
  */
 package org.jboss.weld.environment.se.test.devmode;
 
-import static org.jboss.weld.environment.se.test.util.ProbeJMXUtil.JMX_CONNECTION_URL;
 import static org.jboss.weld.environment.se.test.util.ProbeJMXUtil.invokeMBeanOperation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
@@ -56,10 +53,7 @@ public class ProbeJmxIntegrationTest {
     public void testReceiveBeans() throws Exception {
         try (WeldContainer container = new Weld().initialize()) {
             assertNotNull(container.select(ProbeExtension.class).get());
-            BeanManager beanManager = container.getBeanManager();
-            Bean<Omega> bean = (Bean<Omega>) beanManager.resolve(beanManager.getBeans(Omega.class));
             container.select(Omega.class).get().ping();
-
             Object[] params = new Object[] { 0, 50, "", "" };
             String[] signature = new String[] { int.class.getName(), int.class.getName(), String.class.getName(), String.class.getName() };
             JsonObject obj = invokeMBeanOperation("receiveBeans", params, signature);
@@ -68,17 +62,14 @@ public class ProbeJmxIntegrationTest {
             assertNotNull(omegaBeanJson);
             assertEquals(omegaBeanJson.getJsonString(Strings.SCOPE).getString(), "@" + Dependent.class.getSimpleName());
         }
-
     }
 
     @Test
     public void testReceiveObservers() throws Exception {
         try (WeldContainer container = new Weld().initialize()) {
             assertNotNull(container.select(ProbeExtension.class).get());
-            BeanManager beanManager = container.getBeanManager();
-
-            Object[] params = new Object[] { 0, 50, "" };
-            String[] signature = new String[] { int.class.getName(), int.class.getName(), String.class.getName() };
+            Object[] params = new Object[] { 0, 50, "", "" };
+            String[] signature = new String[] { int.class.getName(), int.class.getName(), String.class.getName(), String.class.getName() };
             JsonObject obj = invokeMBeanOperation("receiveObservers", params, signature);
             JsonArray beansDataArray = obj.getJsonArray(Strings.DATA);
             JsonObject omegaObserverJson = getJsonObjectByClass(beansDataArray, OmegaObserver.class);
