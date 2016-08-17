@@ -155,6 +155,7 @@ import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -345,7 +346,7 @@ final class JsonObjects {
      * <ul>
      * <li>{@value Representation#SIMPLE} - simple plus dependencies (non-transient)</li>
      * <li>{@value Representation#BASIC} - basic</li>
-     * <li>{@value Representation#FULL} - full plus dependencies (non-transient)</li>
+     * <li>{@value Representation#FULL} - full plus dependencies (including transient)</li>
      * </ul>
      *
      * @param page
@@ -363,12 +364,14 @@ final class JsonObjects {
                 case SIMPLE:
                     beansBuilder.add(createSimpleBeanJsonWithDependencies(bean, probe));
                     break;
-                case FULL:
-                    beansBuilder.add(createFullBeanJson(bean, false, false, beanManager, probe));
-                    break;
-                default:
+                case BASIC:
                     beansBuilder.add(createBasicBeanJson(bean, probe));
                     break;
+                case FULL:
+                    beansBuilder.add(createFullBeanJson(bean, true, true, beanManager, probe));
+                    break;
+                default:
+                    throw new UnsupportedOperationException(representation.toString());
             }
         }
         return createPageJson(page, beansBuilder);
@@ -418,7 +421,7 @@ final class JsonObjects {
      * @param probe
      * @return the full bean representation
      */
-    static String createFullBeanJson(Bean<?> bean, boolean transientDependencies, boolean transientDependents, BeanManagerImpl beanManager, Probe probe) {
+    static JsonObjectBuilder createFullBeanJson(Bean<?> bean, boolean transientDependencies, boolean transientDependents, BeanManagerImpl beanManager, Probe probe) {
         JsonObjectBuilder beanBuilder = createBasicBeanJson(bean, probe);
         // NAME
         if (bean.getName() != null) {
@@ -558,7 +561,7 @@ final class JsonObjects {
             }
         }
 
-        return beanBuilder.build();
+        return beanBuilder;
     }
 
     private static Set<Bean<?>> findDecoratedBeans(Decorator<?> decorator, BeanManagerImpl beanManager, Probe probe) {
@@ -786,10 +789,23 @@ final class JsonObjects {
      * @param probe
      * @return the collection of all observer methods, using basic representation
      */
-    static String createInvocationsJson(Page<Invocation> page, Probe probe) {
+    static String createInvocationsJson(Page<Invocation> page, Probe probe, Representation representation) {
         JsonArrayBuilder invocationsBuilder = Json.arrayBuilder();
+        if (representation == null) {
+            representation = Representation.BASIC;
+        }
         for (Invocation invocation : page.getData()) {
-            invocationsBuilder.add(createBasicInvocationJson(invocation, probe));
+            switch (representation) {
+                case BASIC:
+                    invocationsBuilder.add(createBasicInvocationJson(invocation, probe));
+                    break;
+                case FULL:
+                    invocationsBuilder.add(createFullInvocationJson(invocation, probe));
+                    break;
+                default:
+                    throw new UnsupportedOperationException(representation.toString());
+            }
+
         }
         return createPageJson(page, invocationsBuilder);
     }
@@ -837,10 +853,22 @@ final class JsonObjects {
      * @param probe
      * @return the collection of all observer methods, using basic representation
      */
-    static String createObserversJson(Page<ObserverMethod<?>> page, Probe probe) {
+    static String createObserversJson(Page<ObserverMethod<?>> page, Probe probe, Representation representation) {
         JsonArrayBuilder observersBuilder = Json.arrayBuilder();
+        if (representation == null) {
+            representation = Representation.BASIC;
+        }
         for (ObserverMethod<?> observerMethod : page.getData()) {
-            observersBuilder.add(createBasicObserverJson(observerMethod, probe));
+            switch (representation) {
+                case BASIC:
+                    observersBuilder.add(createBasicObserverJson(observerMethod, probe));
+                    break;
+                case FULL:
+                    observersBuilder.add(createFullObserverJson(observerMethod, probe));
+                    break;
+                default:
+                    throw new UnsupportedOperationException(representation.toString());
+            }
         }
         return createPageJson(page, observersBuilder);
     }

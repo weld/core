@@ -75,12 +75,14 @@ public interface JsonDataProvider {
      * @param pageIndex
      * @param pageSize
      * @param filters
+     * @param representation
      * @return the JSON data
      * @see Resource#OBSERVERS
      */
     @Description("Receives a collection of observer methods.")
     String receiveObservers(@ParamName("pageIndex") int pageIndex, @ParamName("pageSize") int pageSize,
-            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" qualifier:\"any\".") String filters);
+            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" qualifier:\"any\".") String filters,
+            @ParamName("representation") String representation);
 
     /**
      *
@@ -113,12 +115,14 @@ public interface JsonDataProvider {
      * @param pageIndex
      * @param pageSize
      * @param filters
+     * @param representation
      * @return the JSON data
      * @see Resource#INVOCATIONS
      */
     @Description("Receives a collection of invocation trees.")
     String receiveInvocations(@ParamName("pageIndex") int pageIndex, @ParamName("pageSize") int pageSize,
-            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" description:\"bar\".") String filters);
+            @ParamName("filters") @Description("A blank-separated list of key-value pairs. Keys and values are separated by a colon. E.g beanClass:\"Foo\" description:\"bar\".") String filters,
+            @ParamName("representation") String representation);
 
     /**
      *

@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -109,7 +110,7 @@ enum Resource {
     OBSERVERS("/observers", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
-            append(resp, jsonDataProvider.receiveObservers(getPage(req), getPageSize(req), req.getParameter(FILTERS)));
+            append(resp, jsonDataProvider.receiveObservers(getPage(req), getPageSize(req), req.getParameter(FILTERS), req.getParameter(REPRESENTATION)));
         }
     }),
     /**
@@ -145,7 +146,7 @@ enum Resource {
     INVOCATIONS("/invocations", new Handler() {
         @Override
         protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
-            append(resp, jsonDataProvider.receiveInvocations(getPage(req), getPageSize(req), req.getParameter(FILTERS)));
+            append(resp, jsonDataProvider.receiveInvocations(getPage(req), getPageSize(req), req.getParameter(FILTERS), req.getParameter(REPRESENTATION)));
         }
 
         @Override
@@ -226,7 +227,23 @@ enum Resource {
                 }
             }
         }
-    }),;
+    }),
+    EXPORT("/export", new Handler() {
+        @Override
+        protected void handle(HttpMethod method, JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req,
+                HttpServletResponse resp) throws IOException {
+            if (!HttpMethod.GET.equals(method)) {
+                resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                return;
+            }
+            setHeaders(resp, "application/zip");
+            resp.setHeader("Content-disposition", "attachment; filename=\"weld-probe-export.zip\"");
+            ServletOutputStream out = resp.getOutputStream();
+            out.write(Exports.exportJsonData(jsonDataProvider));
+            out.flush();
+        }
+    }),
+    ;
 
     // --- Instance variables
 
