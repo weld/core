@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.probe;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -161,6 +164,7 @@ public class ProbeExtension implements Extension {
             }
         }
         addContainerLifecycleEvent(event, null, beanManager);
+        exportDataIfNeeded(manager);
     }
 
     public void beforeShutdown(@Observes BeforeShutdown event, BeanManager beanManager) {
@@ -313,6 +317,23 @@ public class ProbeExtension implements Extension {
             format.append("()");
         }
         return format.toString();
+    }
+
+    private void exportDataIfNeeded(BeanManagerImpl manager) {
+        String export = manager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_EXPORT_DATA_AFTER_DEPLOYMENT);
+        if (!export.isEmpty()) {
+            File exportPath = new File(export);
+            if (!exportPath.canWrite()) {
+                ProbeLogger.LOG.invalidExportPath(exportPath);
+                return;
+            }
+            try {
+                Files.write(new File(exportPath, "weld-probe-export.zip").toPath(), Exports.exportJsonData(jsonDataProvider));
+            } catch (IOException e) {
+                ProbeLogger.LOG.unableToExportData(e.getCause() != null ? e.getCause() : e);
+                ProbeLogger.LOG.catchingTrace(e);
+            }
+        }
     }
 
 }
