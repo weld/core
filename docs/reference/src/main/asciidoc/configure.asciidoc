@@ -232,6 +232,7 @@ Some features of the <<devmode,development mode>> may have negative impact on th
 |`org.jboss.weld.probe.eventMonitor.containerLifecycleEvents`|<<probe,Probe>>|'false'|If set to `true` all the container lifecycle events are monitored during bootstrap.
 |`org.jboss.weld.probe.embedInfoSnippet`|<<probe,Probe>>|'true' | If set to `true` an informative HTML snippet will be added to every HTTP response with Content-Type of value `text/html`.
 |`org.jboss.weld.probe.jmxSupport`|<<probe,Probe>>|'false' | If set to `true` one or more MBean components may be registered so that it's possible to use JMX to access the Probe development tool data.
+|`org.jboss.weld.probe.exportDataAfterDeployment`|<<probe,Probe>>|'' | If a non-empty string the Probe data will be automatically exported after deployment validation. The value represents the path of the directory where to export the data file.
 |=======================================================================
 
 TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.

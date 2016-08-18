@@ -34,7 +34,7 @@ final class Exports {
     private Exports() {
     }
 
-    public static byte[] exportJsonData(JsonDataProvider jsonDataProvider) throws IOException {
+    static byte[] exportJsonData(JsonDataProvider jsonDataProvider) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(bytes));
         addEntry(out, "deployment", jsonDataProvider.receiveDeployment());
