@@ -102,4 +102,11 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 17, value = "Access to {0} denied for {1}", format = Format.MESSAGE_FORMAT)
     void requestDenied(Object requestInfo, Object remoteAddr);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 18, value = "Export path does not exist or is not writable: {0}", format = Format.MESSAGE_FORMAT)
+    void invalidExportPath(Object path);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 19, value = "Unable to export data: {0}", format = Format.MESSAGE_FORMAT)
+    void unableToExportData(Object cause);
 }

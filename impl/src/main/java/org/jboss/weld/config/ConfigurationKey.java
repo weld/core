@@ -259,6 +259,12 @@ public enum ConfigurationKey {
     @Description("A regular expression. If a non-empty string, then all annotated types whose <code>javax.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()</code> matches this pattern are vetoed if not annotated with a bean defining annotation.")
     VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation", ""),
 
+    /**
+     * If a non-empty string and development mode is enabled, the Probe data will be automatically exported after deployment validation. The value represents a path of the directory where to export the data file.
+     */
+    @Description("If a non-empty string and development mode is enabled, the Probe data will be automatically exported after deployment validation. The value represents a path of the directory where to export the data file.")
+    PROBE_EXPORT_DATA_AFTER_DEPLOYMENT("org.jboss.weld.probe.exportDataAfterDeployment", ""),
+
     ;
 
     /**
