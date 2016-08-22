@@ -879,13 +879,13 @@ final class JsonObjects {
      * @param probe
      * @return
      */
-    static String createFullObserverJson(ObserverMethod<?> observerMethod, Probe probe) {
+    static JsonObjectBuilder createFullObserverJson(ObserverMethod<?> observerMethod, Probe probe) {
         JsonObjectBuilder observerBuilder = createBasicObserverJson(observerMethod, probe);
         if (observerMethod instanceof ObserverMethodImpl) {
             ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
             observerBuilder.add(ANNOTATED_METHOD, annotatedMethodToString(observerMethodImpl.getMethod().getAnnotated(), observerMethodImpl.getBeanClass()));
         }
-        return observerBuilder.build();
+        return observerBuilder;
     }
 
     static JsonObjectBuilder createBasicObserverJson(ObserverMethod<?> observerMethod, Probe probe) {

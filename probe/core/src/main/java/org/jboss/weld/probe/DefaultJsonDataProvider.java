@@ -100,7 +100,7 @@ public class DefaultJsonDataProvider implements JsonDataProvider {
     public String receiveObserver(String id) {
         ObserverMethod<?> observer = probe.getObserver(id);
         if (observer != null) {
-            return JsonObjects.createFullObserverJson(observer, probe);
+            return JsonObjects.createFullObserverJson(observer, probe).build();
         }
         return null;
     }

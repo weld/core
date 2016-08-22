@@ -565,7 +565,7 @@ final class Queries {
         @Override
         boolean test(EventInfo event) {
             return testContainsIgnoreCase(eventInfo, event.getEventString()) && testContainsIgnoreCase(type, event.getType())
-                    && testContainsIgnoreCase(qualifiers, event.getQualifiers()) && (container == null || container == event.isContainerEvent());
+                    && testAnyContains(qualifiers, event.getQualifiers()) && (container == null || container == event.isContainerEvent());
         }
 
         @Override
