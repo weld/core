@@ -469,9 +469,7 @@
                                     <stripVersion>true</stripVersion>
                                     <overWriteReleases>true</overWriteReleases>
                                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                                    <includeGroupIds>
-                                        org.jboss.weld.se
-                                    </includeGroupIds>
+                                    <includeGroupIds>org.jboss.weld.se</includeGroupIds>
                                 </configuration>
                             </execution>
                         </executions>

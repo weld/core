@@ -23,6 +23,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
+import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.AbstractCDI;
@@ -89,7 +90,7 @@ import org.jboss.weld.util.collections.ImmutableList;
  * @see Weld
  */
 @Vetoed
-public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable, ContainerInstance {
+public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable, ContainerInstance, SeContainer {
 
     private static final Singleton<WeldContainer> SINGLETON;
 
