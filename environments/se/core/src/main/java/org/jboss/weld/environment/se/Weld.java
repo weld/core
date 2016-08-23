@@ -48,6 +48,8 @@ import java.util.jar.JarFile;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.Vetoed;
+import javax.enterprise.inject.se.SeContainerInitializer;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -86,6 +88,7 @@ import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.BeansXmlImpl;
@@ -172,7 +175,7 @@ import org.jboss.weld.util.collections.WeldCollections;
  * @see WeldContainer
  */
 @Vetoed
-public class Weld implements ContainerInstanceFactory {
+public class Weld extends SeContainerInitializer implements ContainerInstanceFactory {
 
     /**
      * By default, bean archive isolation is enabled. If set to false, Weld will use a "flat" deployment structure - all bean classes share the same bean
@@ -304,9 +307,7 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld beanClasses(Class<?>... classes) {
         beanClasses.clear();
-        for (Class<?> beanClass : classes) {
-            addBeanClass(beanClass);
-        }
+        addBeanClasses(classes);
         return this;
     }
 
@@ -318,6 +319,14 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld addBeanClass(Class<?> beanClass) {
         beanClasses.add(beanClass);
+        return this;
+    }
+
+    @Override
+    public Weld addBeanClasses(Class<?>... classes) {
+        for (Class<?> aClass : classes) {
+            addBeanClass(aClass);
+        }
         return this;
     }
 
@@ -353,6 +362,36 @@ public class Weld implements ContainerInstanceFactory {
             addPackage(scanRecursively, packageClass);
         }
         return this;
+    }
+
+    @Override
+    public Weld addPackages(Class<?>... packageClasses) {
+        addPackages(false, packageClasses);
+        return this;
+    }
+
+    @Override
+    public Weld addPackages(Package... packages) {
+        addPackages(false, packages);
+        return this;
+    }
+
+    @Override
+    public Weld addPackages(boolean scanRecursively, Package... packages) {
+        for (Package pack : packages) {
+            this.packages.add(new PackInfo(pack, scanRecursively));
+        }
+        return this;
+    }
+
+    @Override
+    public Weld addAnnotatedTypes(AnnotatedType<?>... annotatedTypes) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Weld addBeans(Bean<?>... beans) {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -391,6 +430,27 @@ public class Weld implements ContainerInstanceFactory {
         return this;
     }
 
+    @Override
+    public Weld addExtensions(Extension... extensions) {
+        for (Extension extension : extensions) {
+            addExtension(extension);
+        }
+        return this;
+    }
+
+    @Override
+    public Weld addExtensions(Class<? extends Extension>... extensionClasses) {
+        for (Class<? extends Extension> extensionClass : extensionClasses) {
+            try {
+                Extension extension =  SecurityActions.newInstance(extensionClass);
+                addExtension(extension);
+            } catch (Exception ex) {
+                CommonLogger.LOG.unableToInstantiate(extensionClass, new Object[] {}, ex);
+            }
+        }
+        return this;
+    }
+
     /**
      * Add a synthetic container lifecycle event observer.
      *
@@ -414,9 +474,7 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld interceptors(Class<?>... interceptorClasses) {
         enabledInterceptors.clear();
-        for (Class<?> interceptorClass : interceptorClasses) {
-            addInterceptor(interceptorClass);
-        }
+        addInterceptors(interceptorClasses);
         return this;
     }
 
@@ -433,6 +491,15 @@ public class Weld implements ContainerInstanceFactory {
         enabledInterceptors.add(syntheticMetadata(interceptorClass));
         return this;
     }
+
+    @Override
+    public Weld addInterceptors(Class<?>... interceptorClasses) {
+        for (Class<?> interceptorClass : interceptorClasses) {
+            addInterceptor(interceptorClass);
+        }
+        return this;
+    }
+
     /**
      * Enable decorators for the synthetic bean archive, all previous values are removed.
      * <p>
@@ -444,9 +511,7 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld decorators(Class<?>... decoratorClasses) {
         enabledDecorators.clear();
-        for (Class<?> decoratorClass : decoratorClasses) {
-            addDecorator(decoratorClass);
-        }
+        addDecorators(decoratorClasses);
         return this;
     }
 
@@ -464,6 +529,14 @@ public class Weld implements ContainerInstanceFactory {
         return this;
     }
 
+    @Override
+    public Weld addDecorators(Class<?>... decoratorClasses) {
+        for (Class<?> decoratorClass : decoratorClasses) {
+            addDecorator(decoratorClass);
+        }
+        return this;
+    }
+
     /**
      * Select alternatives for the synthetic bean archive, all previous values are removed.
      * <p>
@@ -475,9 +548,7 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld alternatives(Class<?>... alternativeClasses) {
         selectedAlternatives.clear();
-        for (Class<?> alternativeClass : alternativeClasses) {
-            addAlternative(alternativeClass);
-        }
+        addAlternatives(alternativeClasses);
         return this;
     }
 
@@ -495,6 +566,14 @@ public class Weld implements ContainerInstanceFactory {
         return this;
     }
 
+    @Override
+    public Weld addAlternatives(Class<?>... alternativeClasses) {
+        for (Class<?> alternativeClass : alternativeClasses) {
+            addAlternative(alternativeClass);
+        }
+        return this;
+    }
+
     /**
      * Select alternative stereotypes for the synthetic bean archive, all previous values are removed.
      * <p>
@@ -507,6 +586,12 @@ public class Weld implements ContainerInstanceFactory {
     @SafeVarargs
     public final Weld alternativeStereotypes(Class<? extends Annotation>... alternativeStereotypeClasses) {
         selectedAlternativeStereotypes.clear();
+        addAlternativeStereotypes(alternativeStereotypeClasses);
+        return this;
+    }
+
+    @Override
+    public Weld addAlternativeStereotypes(Class<? extends Annotation>... alternativeStereotypeClasses) {
         for (Class<? extends Annotation> alternativeStereotypeClass : alternativeStereotypeClasses) {
             addAlternativeStereotype(alternativeStereotypeClass);
         }
@@ -551,6 +636,19 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld properties(Map<String, Object> properties) {
         this.properties.putAll(properties);
+        return this;
+    }
+
+    @Override
+    public Weld addProperty(String key, Object value) {
+        property(key, value);
+        return this;
+    }
+
+    @Override
+    public Weld setProperties(Map<String, Object> propertiesMap) {
+        properties.clear();
+        properties.putAll(propertiesMap);
         return this;
     }
 
@@ -916,12 +1014,8 @@ public class Weld implements ContainerInstanceFactory {
 
         for (PackInfo packInfo : packages) {
 
-            ClassLoader cl = packInfo.getClassLoaderRef().get();
-            if (cl == null) {
-                continue;
-            }
             String packName = packInfo.getPackName();
-            URL resourceUrl = cl.getResource(packInfo.getPackClassName().replace('.', '/') + Files.CLASS_FILE_EXTENSION);
+            URL resourceUrl = packInfo.getResourceUrl(resourceLoader);
 
             if (resourceUrl != null) {
 
@@ -931,8 +1025,8 @@ public class Weld implements ContainerInstanceFactory {
                     URI resourceUri = resourceUrl.toURI();
 
                     if (PROCOTOL_FILE.equals(resourceUrl.getProtocol())) {
-                        // Get the package directory, e.g. "file:///home/weld/org/jboss
-                        handleDir(new File(resourceUri).getParentFile(), packInfo.isScanRecursively(), packName, foundClasses);
+                        File file = new File(resourceUri);
+                        handleDir(file.isDirectory() ? file : file.getParentFile(), packInfo.isScanRecursively(), packName, foundClasses);
                     } else if (PROCOTOL_JAR.equals(resourceUrl.getProtocol())) {
                         handleJar(resourceUri, packInfo.isScanRecursively(), packName, foundClasses);
                     } else {
@@ -1037,11 +1131,27 @@ public class Weld implements ContainerInstanceFactory {
 
         private final WeakReference<ClassLoader> classLoaderRef;
 
+
         PackInfo(Class<?> packClass, boolean recursiveScan) {
             this.packName = packClass.getPackage().getName();
             this.packClassName = packClass.getName();
             this.scanRecursively = recursiveScan;
             this.classLoaderRef = new WeakReference<ClassLoader>(AccessController.doPrivileged(new GetClassLoaderAction(packClass)));
+        }
+
+        PackInfo(Package pack, boolean recursiveScan) {
+            this.packName = pack.getName();
+            this.scanRecursively = recursiveScan;
+            this.packClassName = null;
+            this.classLoaderRef = null;
+        }
+
+        public URL getResourceUrl(ResourceLoader resourceLoader) {
+            if (classLoaderRef != null) {
+                return classLoaderRef.get().getResource(this.getPackClassName().replace('.', '/') + Files.CLASS_FILE_EXTENSION);
+            } else {
+                return resourceLoader.getResource(getPackName().replace('.', '/'));
+            }
         }
 
         public String getPackName() {
@@ -1054,10 +1164,6 @@ public class Weld implements ContainerInstanceFactory {
 
         public boolean isScanRecursively() {
             return scanRecursively;
-        }
-
-        public WeakReference<ClassLoader> getClassLoaderRef() {
-            return classLoaderRef;
         }
 
         @Override
