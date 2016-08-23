@@ -26,6 +26,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.transaction.spi.TransactionServices;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -54,6 +55,12 @@ public class StaticResourceTest {
 
         // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
         Deployment deployment = new FlatDeployment(new BeanDeploymentArchive[] { bda }) {
+
+            @Override
+            protected void configureServices(Environment environment) {
+                super.configureServices(environment);
+                getServices().add(TransactionServices.class, new TestTransactionServices());
+            }
 
             @Override
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
