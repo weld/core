@@ -302,18 +302,6 @@
                             </webResources>
                         </configuration>
                     </plugin>
-                    <plugin>
-                        <groupId>com.pyx4j</groupId>
-                        <artifactId>maven-junction-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>link</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
