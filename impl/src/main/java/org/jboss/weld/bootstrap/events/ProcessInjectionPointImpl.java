@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.builder.InjectionPointConfigurator;
 
 import org.jboss.weld.bootstrap.events.builder.InjectionPointBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.InjectionPointConfiguratorImpl;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
@@ -76,7 +75,7 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
     private InjectionPointConfiguratorImpl configurator;
     private boolean dirty;
 
-    // TODO CDI-596
+    // we need this to ensure that configurator and set method are not invoked within one observer
     private boolean injectionPointSet;
 
     @Override
@@ -91,9 +90,8 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
 
     @Override
     public void setInjectionPoint(InjectionPoint injectionPoint) {
-        // TODO CDI-596
         if (configurator != null) {
-            throw new IllegalStateException("Configurator used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessInjectionPoint.class.getSimpleName(), getReceiver());
         }
         checkWithinObserverNotification();
         BootstrapLogger.LOG.setInjectionPointCalled(getReceiver(), ip, injectionPoint);
@@ -104,9 +102,8 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
 
     @Override
     public InjectionPointConfigurator configureInjectionPoint() {
-        // TODO CDI-596
         if (injectionPointSet) {
-            throw new IllegalStateException("setInjectionPoint() used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessInjectionPoint.class.getSimpleName(), getReceiver());
         }
         checkWithinObserverNotification();
         if (configurator == null) {

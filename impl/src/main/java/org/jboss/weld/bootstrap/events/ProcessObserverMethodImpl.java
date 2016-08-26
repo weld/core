@@ -29,7 +29,7 @@ import javax.enterprise.inject.spi.builder.ObserverMethodConfigurator;
 
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
 
@@ -58,7 +58,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     private ObserverMethodConfiguratorImpl<T> configurator;
     private boolean vetoed;
 
-    // TODO CDI-596
+    // we need this to ensure that configurator and set method are not invoked within one observer
     private boolean observerMethodSet;
 
     private ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
@@ -80,9 +80,8 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
 
     @Override
     public void setObserverMethod(ObserverMethod<T> observerMethod) {
-        // TODO CDI-596
         if (configurator != null) {
-            throw new IllegalStateException("Configurator used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessObserverMethod.class.getSimpleName(), getReceiver());
         }
         Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         checkWithinObserverNotification();
@@ -92,9 +91,8 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
 
     @Override
     public ObserverMethodConfigurator<T> configureObserverMethod() {
-        // TODO CDI-596
         if (observerMethodSet) {
-            throw new IllegalStateException("setObserverMethod() used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessObserverMethod.class.getSimpleName(), getReceiver());
         }
         checkWithinObserverNotification();
         if (configurator == null) {
