@@ -26,7 +26,6 @@ import javax.enterprise.inject.spi.builder.BeanAttributesConfigurator;
 
 import org.jboss.weld.bootstrap.events.builder.BeanAttributesBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanAttributesConfiguratorImpl;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -58,7 +57,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     private boolean veto;
     private boolean dirty;
 
-    // TODO CDI-596
+    // we need this to ensure that configurator and set method are not invoked within one observer
     private boolean beanAttributesSet;
 
     @Override
@@ -79,9 +78,8 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     @Override
     public void setBeanAttributes(BeanAttributes<T> beanAttributes) {
-        // TODO CDI-596
         if (configurator != null) {
-            throw new IllegalStateException("Configurator used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessBeanAttributes.class.getSimpleName(), getReceiver());
         }
         checkWithinObserverNotification();
         BootstrapLogger.LOG.setBeanAttributesCalled(getReceiver(), attributes, beanAttributes);
@@ -92,9 +90,8 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     @Override
     public BeanAttributesConfigurator<T> configureBeanAttributes() {
-        // TODO CDI-596
         if (beanAttributesSet) {
-            throw new IllegalStateException("setAnnotatedType() used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessBeanAttributes.class.getSimpleName(), getReceiver());
         }
         checkWithinObserverNotification();
         if (configurator == null) {

@@ -25,7 +25,6 @@ import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -46,7 +45,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     private AnnotatedTypeConfiguratorImpl<X> configurator;
     private boolean veto;
 
-    // TODO CDI-596
+    // we need this to ensure that configurator and set method are not invoked within one observer
     private boolean annotatedTypeSet;
 
     public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType) {
@@ -84,9 +83,8 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
 
     @Override
     public void setAnnotatedType(AnnotatedType<X> type) {
-        // TODO CDI-596
         if (configurator != null) {
-            throw new IllegalStateException("Configurator used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessAnnotatedType.class.getSimpleName(), getReceiver());
         }
         checkWithinObserverNotification();
         if (type == null) {
@@ -100,7 +98,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     @Override
     public AnnotatedTypeConfigurator<X> configureAnnotatedType() {
         if (annotatedTypeSet) {
-            throw new IllegalStateException("setAnnotatedType() used");
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessAnnotatedType.class.getSimpleName(), getReceiver());
         }
         checkWithinObserverNotification();
         if (configurator == null) {

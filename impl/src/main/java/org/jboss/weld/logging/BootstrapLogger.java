@@ -290,4 +290,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 169, value = "Jandex cannot distinguish inner and static nested classes! Update Jandex to 2.0.3.Final version or newer to improve scanning performance.", format = Format.MESSAGE_FORMAT)
     void usingOldJandexVersion();
 
+    @Message(id = 170, value = "{0} observer cannot call both the configurator and set methods. Extension {1} \nStackTrace:", format = Format.MESSAGE_FORMAT)
+    IllegalStateException configuratorAndSetMethodBothCalled(Object observerName, Object extension);
+
 }
