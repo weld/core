@@ -270,4 +270,14 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
         return delegate();
     }
 
+    @Override
+    public <T> AnnotatedType<T> createAnnotatedType(Class<T> type, String id) {
+        return delegate().createAnnotatedType(type, id);
+    }
+
+    @Override
+    public <T> void disposeAnnotatedType(Class<T> type, String id) {
+        delegate().disposeAnnotatedType(type, id);
+    }
+
 }

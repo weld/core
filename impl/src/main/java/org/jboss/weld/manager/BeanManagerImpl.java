@@ -1224,6 +1224,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
+    public <T> AnnotatedType<T> createAnnotatedType(Class<T> type, String id) {
+        return getServices().get(ClassTransformer.class).getBackedAnnotatedType(type, BeanManagerLookupService.lookupBeanManager(type, this).getId(), id);
+    }
+
+    @Override
+    public <T> void disposeAnnotatedType(Class<T> type, String id) {
+        getServices().get(ClassTransformer.class).disposeBackedAnnotatedType(type, BeanManagerLookupService.lookupBeanManager(type, this).getId(), id);
+    }
+
+    @Override
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
         if (beans == null || beans.isEmpty()) {
             return null;

@@ -78,7 +78,7 @@ public class ClassTransformer implements BootstrapService {
         @Override
         public BackedAnnotatedType<?> apply(TypeHolder<?> typeHolder) {
             BackedAnnotatedType<?> type = BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), cache,
-                    reflectionCache, contextId, typeHolder.getBdaId());
+                    reflectionCache, contextId, typeHolder.getBdaId(), typeHolder.getSuffix());
             return updateLookupTable(type);
         }
     }
@@ -96,43 +96,50 @@ public class ClassTransformer implements BootstrapService {
         private final String bdaId;
         private final Class<T> rawType;
         private final Type baseType;
+        private final String suffix;
 
-        private TypeHolder(Class<T> rawType, Type baseType, String bdaId) {
+        private TypeHolder(Class<T> rawType, Type baseType, String bdaId, String suffix) {
             this.rawType = rawType;
             this.baseType = baseType;
             this.bdaId = bdaId;
+            this.suffix = suffix;
         }
 
-        public Type getBaseType() {
+        Type getBaseType() {
             return baseType;
         }
 
-        public Class<T> getRawType() {
+        Class<T> getRawType() {
             return rawType;
         }
 
-        public String getBdaId() {
+        String getBdaId() {
             return bdaId;
+        }
+
+        String getSuffix() {
+            return suffix;
         }
 
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof TypeHolder<?>) {
                 TypeHolder<?> that = (TypeHolder<?>) obj;
-                return Objects.equals(this.getBaseType(), that.getBaseType()) && Objects.equals(this.getBdaId(), that.getBdaId());
+                return Objects.equals(this.getBaseType(), that.getBaseType()) && Objects.equals(this.getBdaId(), that.getBdaId()) && Objects.equals(this.getSuffix(), that.getSuffix());
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.getBaseType(), this.getBdaId());
+            return Objects.hash(this.getBaseType(), this.getBdaId(), this.getSuffix());
         }
 
         @Override
         public String toString() {
-            return getBaseType() + " from " + getBdaId();
+            return "TypeHolder [bdaId=" + bdaId + ", rawType=" + rawType + ", baseType=" + baseType + ", suffix=" + suffix + "]";
         }
+
     }
 
     // The synthetic annotations map (annotation type -> annotated type)
@@ -152,13 +159,9 @@ public class ClassTransformer implements BootstrapService {
 
     public ClassTransformer(TypeStore typeStore, SharedObjectCache cache, ReflectionCache reflectionCache, String contextId) {
         this.contextId = contextId;
-
-        ComputingCacheBuilder defaultBuilder = ComputingCacheBuilder.newBuilder();
-        // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop
-        // it immediately
         this.backedAnnotatedTypes = ComputingCacheBuilder.newBuilder().setWeakValues().build(new TransformClassToBackedAnnotatedType());
-        this.enhancedAnnotatedTypes = defaultBuilder.build(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
-        this.annotations = defaultBuilder.build(new TransformClassToWeldAnnotation());
+        this.enhancedAnnotatedTypes = ComputingCacheBuilder.newBuilder().build(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
+        this.annotations = ComputingCacheBuilder.newBuilder().build(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
         this.cache = cache;
         this.reflectionCache = reflectionCache;
@@ -167,9 +170,9 @@ public class ClassTransformer implements BootstrapService {
 
     // Slim AnnotatedTypes
 
-    public <T> BackedAnnotatedType<T> getBackedAnnotatedType(final Class<T> rawType, final Type baseType, final String bdaId) {
+    public <T> BackedAnnotatedType<T> getBackedAnnotatedType(final Class<T> rawType, final Type baseType, final String bdaId, final String suffix) {
         try {
-            return backedAnnotatedTypes.getCastValue(new TypeHolder<T>(rawType, baseType, bdaId));
+            return backedAnnotatedTypes.getCastValue(new TypeHolder<T>(rawType, baseType, bdaId, suffix));
         } catch (RuntimeException e) {
             if (e instanceof TypeNotPresentException || e instanceof ResourceLoadingException) {
                 BootstrapLogger.LOG.exceptionWhileLoadingClass(rawType.getName(), e);
@@ -185,8 +188,12 @@ public class ClassTransformer implements BootstrapService {
         }
     }
 
-    public <T> BackedAnnotatedType<T> getBackedAnnotatedType(final Class<T> rawType, final String bdaId) {
-        return getBackedAnnotatedType(rawType, rawType, bdaId);
+    public <T> BackedAnnotatedType<T> getBackedAnnotatedType(Class<T> rawType, String bdaId) {
+        return getBackedAnnotatedType(rawType, rawType, bdaId, null);
+    }
+
+    public <T> BackedAnnotatedType<T> getBackedAnnotatedType(Class<T> rawType, String bdaId, String suffix) {
+        return getBackedAnnotatedType(rawType, rawType, bdaId, suffix);
     }
 
     public <T> SlimAnnotatedType<T> getSlimAnnotatedTypeById(AnnotatedTypeIdentifier id) {
@@ -224,7 +231,7 @@ public class ClassTransformer implements BootstrapService {
     }
 
     public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(Class<T> rawType, Type baseType, String bdaId) {
-        return getEnhancedAnnotatedType(getBackedAnnotatedType(rawType, baseType, bdaId));
+        return getEnhancedAnnotatedType(getBackedAnnotatedType(rawType, baseType, bdaId, null));
     }
 
     public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(AnnotatedType<T> annotatedType, String bdaId) {
@@ -270,6 +277,16 @@ public class ClassTransformer implements BootstrapService {
         syntheticAnnotationsAnnotatedTypes.put(annotation.getJavaClass(),
                 getUnbackedAnnotatedType(annotation, bdaId, AnnotatedTypeIdentifier.SYNTHETIC_ANNOTATION_SUFFIX));
         clearAnnotationData(annotation.getJavaClass());
+    }
+
+    public <T> void disposeBackedAnnotatedType(Class<T> rawType, String bdaId, String suffix) {
+        TypeHolder<T> typeHolder = new TypeHolder<>(rawType, rawType, bdaId, suffix);
+        BackedAnnotatedType<T> annotatedType = cast(this.backedAnnotatedTypes.getValueIfPresent(typeHolder));
+        if (annotatedType != null) {
+            this.backedAnnotatedTypes.invalidate(typeHolder);
+            this.slimAnnotatedTypesById.remove(annotatedType.getIdentifier());
+            this.enhancedAnnotatedTypes.invalidate(annotatedType);
+        }
     }
 
     @Override
