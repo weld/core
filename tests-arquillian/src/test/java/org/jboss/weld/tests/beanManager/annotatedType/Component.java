@@ -14,30 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.context.requestScope;
+package org.jboss.weld.tests.beanManager.annotatedType;
 
-import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 
-import org.jboss.weld.context.activator.ActivateRequestContext;
+@Dependent
+public class Component {
 
-
-@ActivateRequestContext
-public class Baz {
-
-    @Inject
-    Bar bar;
-
-    private void first() {
-        bar.increment();
-        second();
+    public void ping() {
     }
 
-    private void second() {
-        bar.increment();
-    }
-
-    public int ping() {
-        first();
-        return bar.increment();
-    }
 }

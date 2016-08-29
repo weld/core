@@ -34,17 +34,17 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 @Vetoed
 @Interceptor
-@ActivateRequestScope
+@ActivateRequestContext
 @SuppressWarnings("checkstyle:magicnumber")
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 100)
-public class ActivateRequestScopeInterceptor {
+public class ActivateRequestContextInterceptor {
 
     private final BeanManagerImpl beanManager;
 
     private final RequestContext requestContext;
 
     @Inject
-    public ActivateRequestScopeInterceptor(@Unbound RequestContext requestContext, BeanManagerImpl beanManager) {
+    public ActivateRequestContextInterceptor(@Unbound RequestContext requestContext, BeanManagerImpl beanManager) {
         this.requestContext = requestContext;
         this.beanManager = beanManager;
     }
