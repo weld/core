@@ -109,7 +109,6 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         checkWithinObserverNotification();
         BootstrapLogger.LOG.deprecatedAddAnnotatedTypeMethodUsed(source.getJavaClass());
         addAnnotatedType(source, null);
-        BootstrapLogger.LOG.addAnnotatedTypeCalledInBBD(getReceiver(), source);
     }
 
     @Override
