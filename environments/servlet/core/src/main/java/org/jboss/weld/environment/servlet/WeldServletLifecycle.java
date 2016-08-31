@@ -19,8 +19,8 @@ package org.jboss.weld.environment.servlet;
 import static org.jboss.weld.config.ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -77,7 +77,6 @@ import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.api.ServletListener;
-
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
@@ -89,6 +88,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
 public class WeldServletLifecycle {
 
     public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
+
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
@@ -309,11 +309,13 @@ public class WeldServletLifecycle {
 
         String isolation = context.getInitParameter(CONTEXT_PARAM_ARCHIVE_ISOLATION);
 
-        if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
-            CommonLogger.LOG.archiveIsolationDisabled();
-            beanDeploymentArchives = Collections.singleton(WeldBeanDeploymentArchive.merge(bootstrap, beanDeploymentArchives));
-        } else {
+        if (isolation == null || Boolean.valueOf(isolation)) {
             CommonLogger.LOG.archiveIsolationEnabled();
+        } else {
+            CommonLogger.LOG.archiveIsolationDisabled();
+            Set<WeldBeanDeploymentArchive> flatDeployment = new HashSet<WeldBeanDeploymentArchive>();
+            flatDeployment.add(WeldBeanDeploymentArchive.merge(bootstrap, beanDeploymentArchives));
+            beanDeploymentArchives = flatDeployment;
         }
 
         for (BeanDeploymentArchive archive : beanDeploymentArchives) {
@@ -322,8 +324,8 @@ public class WeldServletLifecycle {
 
         CDI11Deployment deployment = new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions) {
             @Override
-            protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive(Class<?> beanClass) {
-                WeldBeanDeploymentArchive archive = super.createAdditionalBeanDeploymentArchive(beanClass);
+            protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive() {
+                WeldBeanDeploymentArchive archive = super.createAdditionalBeanDeploymentArchive();
                 archive.getServices().add(EEModuleDescriptor.class, eeModule);
                 return archive;
             }

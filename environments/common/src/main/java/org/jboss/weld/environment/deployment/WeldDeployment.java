@@ -43,7 +43,7 @@ public class WeldDeployment extends AbstractWeldDeployment {
 
     private final ResourceLoader resourceLoader;
 
-    private WeldBeanDeploymentArchive additionalBeanDeploymentArchive = null;
+    private volatile WeldBeanDeploymentArchive additionalBeanDeploymentArchive;
 
     /**
      *
@@ -60,6 +60,7 @@ public class WeldDeployment extends AbstractWeldDeployment {
         setBeanDeploymentArchivesAccessibility();
     }
 
+
     @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
         return Collections.<BeanDeploymentArchive> unmodifiableSet(beanDeploymentArchives);
@@ -67,30 +68,32 @@ public class WeldDeployment extends AbstractWeldDeployment {
 
     @Override
     public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
-        if (beanDeploymentArchives.size() == 1) {
-            // There's only one bean archive or isolation is disabled - additional bean deployment archive does not make much sense
-            return beanDeploymentArchives.iterator().next();
+        WeldBeanDeploymentArchive beanDeploymentArchive = getBeanDeploymentArchive(beanClass);
+        if (beanDeploymentArchive == null) {
+            beanDeploymentArchive = getAndUpdateAdditionalBeanDeploymentArchive(beanClass);
         }
-        BeanDeploymentArchive bda = getBeanDeploymentArchive(beanClass);
-        return bda != null ? bda : createAdditionalBeanDeploymentArchiveIfNeeded(beanClass);
+        return beanDeploymentArchive;
     }
 
     @Override
-    public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
-        for (BeanDeploymentArchive bda : beanDeploymentArchives) {
-            if (bda.getBeanClasses().contains(beanClass.getName())) {
-                return bda;
+    public WeldBeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
+        for (WeldBeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
+            if (beanDeploymentArchive.getBeanClasses().contains(beanClass.getName())) {
+                return beanDeploymentArchive;
             }
         }
         return null;
     }
 
-    protected BeanDeploymentArchive createAdditionalBeanDeploymentArchiveIfNeeded(Class<?> beanClass) {
+    protected WeldBeanDeploymentArchive getAndUpdateAdditionalBeanDeploymentArchive(Class<?> beanClass) {
         if (additionalBeanDeploymentArchive == null) {
-            additionalBeanDeploymentArchive = createAdditionalBeanDeploymentArchive(beanClass);
-        } else {
-            additionalBeanDeploymentArchive.addBeanClass(beanClass.getName());
+            synchronized (this) {
+                if (additionalBeanDeploymentArchive == null) {
+                    additionalBeanDeploymentArchive = createAdditionalBeanDeploymentArchive();
+                }
+            }
         }
+        additionalBeanDeploymentArchive.addBeanClass(beanClass.getName());
         return additionalBeanDeploymentArchive;
     }
 
@@ -100,11 +103,8 @@ public class WeldDeployment extends AbstractWeldDeployment {
      * @param beanClass
      * @return the additional bean deployment archive
      */
-    protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive(Class<?> beanClass) {
-        // At this time only the initial bean class is known
-        Set<String> beanClasses = new HashSet<String>();
-        beanClasses.add(beanClass.getName());
-        WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(ADDITIONAL_BDA_ID, beanClasses, null);
+    protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive() {
+        WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(ADDITIONAL_BDA_ID, Collections.synchronizedSet(new HashSet<String>()), null);
         additionalBda.getServices().add(ResourceLoader.class, resourceLoader);
         additionalBda.getServices().addAll(getServices().entrySet());
         beanDeploymentArchives.add(additionalBda);
@@ -116,8 +116,15 @@ public class WeldDeployment extends AbstractWeldDeployment {
      * By default all bean archives see each other.
      */
     protected void setBeanDeploymentArchivesAccessibility() {
-        for (WeldBeanDeploymentArchive archive : beanDeploymentArchives) {
-            archive.setAccessibleBeanDeploymentArchives(beanDeploymentArchives);
+        for (WeldBeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
+            Set<WeldBeanDeploymentArchive> accessibleArchives = new HashSet<>();
+            for (WeldBeanDeploymentArchive candidate : beanDeploymentArchives) {
+                if (candidate.equals(beanDeploymentArchive)) {
+                    continue;
+                }
+                accessibleArchives.add(candidate);
+            }
+            beanDeploymentArchive.setAccessibleBeanDeploymentArchives(accessibleArchives);
         }
     }
 
