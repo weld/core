@@ -29,7 +29,6 @@ import org.jboss.weld.xml.BeansXmlParser;
 
 /**
  *
- *
  * @author Pete Muir
  * @author Matej Briškár
  * @author Martin Kouba
@@ -40,20 +39,21 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
 
     private final BeansXml beansXml;
 
-    private Set<WeldBeanDeploymentArchive> accessibleBeanDeploymentArchives;
+    private volatile Collection<BeanDeploymentArchive> accessibleBeanDeploymentArchives;
 
     /**
      *
      * @param id
      * @param beanClasses The collection should be mutable
      * @param beansXml
-     * @param beanDeploymentArchives
+     * @param accessibleBeanDeploymentArchives
      */
-    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml,
+            Set<WeldBeanDeploymentArchive> accessibleBeanDeploymentArchives) {
         super(id);
         this.beanClasses = beanClasses;
         this.beansXml = beansXml;
-        this.accessibleBeanDeploymentArchives = beanDeploymentArchives;
+        setAccessibleBeanDeploymentArchives(accessibleBeanDeploymentArchives);
     }
 
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
@@ -67,7 +67,7 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
 
     @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.<BeanDeploymentArchive> unmodifiableCollection(accessibleBeanDeploymentArchives);
+        return accessibleBeanDeploymentArchives;
     }
 
     @Override
@@ -75,8 +75,8 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
         return beansXml;
     }
 
-    public void setAccessibleBeanDeploymentArchives(Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
-        this.accessibleBeanDeploymentArchives = beanDeploymentArchives;
+    public synchronized void setAccessibleBeanDeploymentArchives(Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
+        accessibleBeanDeploymentArchives = Collections.<BeanDeploymentArchive>unmodifiableSet(new HashSet<>(beanDeploymentArchives));
     }
 
     /**
