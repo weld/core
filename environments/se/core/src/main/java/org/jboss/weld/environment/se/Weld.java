@@ -90,7 +90,6 @@ import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.experimental.InterceptorBuilder;
-import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -772,9 +771,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
         deployment.getServices().add(ExternalConfiguration.class, configurationBuilder.build());
 
-        // Set up the container
         bootstrap.startContainer(containerId, Environments.SE, deployment);
-        // Start the container
         bootstrap.startInitialization();
         // Bean configurators - init with bean deployment finder
         if (!beanConfigurators.isEmpty()) {
@@ -793,11 +790,32 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         bootstrap.validateBeans();
         bootstrap.endInitialization();
 
-        final WeldManager manager = bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class));
-        final WeldContainer weldContainer = WeldContainer.initialize(containerId, manager, bootstrap, isEnabled(SHUTDOWN_HOOK_SYSTEM_PROPERTY, true));
+        final WeldContainer weldContainer = WeldContainer.initialize(containerId, bootstrap.getManager(getDeterminingBeanDeploymentArchive(deployment)),
+                bootstrap, isEnabled(SHUTDOWN_HOOK_SYSTEM_PROPERTY, true));
 
         initializedContainers.put(containerId, weldContainer);
         return weldContainer;
+    }
+
+    private BeanDeploymentArchive getDeterminingBeanDeploymentArchive(Deployment deployment) {
+        Collection<BeanDeploymentArchive> beanDeploymentArchives = deployment.getBeanDeploymentArchives();
+        if (beanDeploymentArchives.size() == 1) {
+            // Only one bean archive or isolation is disabled
+            return beanDeploymentArchives.iterator().next();
+        }
+        for (BeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
+            if (WeldDeployment.SYNTHETIC_BDA_ID.equals(beanDeploymentArchive.getId())) {
+                // Synthetic bean archive takes precedence
+                return beanDeploymentArchive;
+            }
+        }
+        for (BeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
+            if (!WeldDeployment.ADDITIONAL_BDA_ID.equals(beanDeploymentArchive.getId())) {
+                // Get the first non-additional bean deployment archive
+                return beanDeploymentArchive;
+            }
+        }
+        return deployment.loadBeanDeploymentArchive(WeldContainer.class);
     }
 
     /**
@@ -867,7 +885,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         final Iterable<Metadata<Extension>> extensions = getExtensions();
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final Deployment deployment;
-        final Set<WeldBeanDeploymentArchive> beanArchives = new HashSet<WeldBeanDeploymentArchive>();
+        final Set<WeldBeanDeploymentArchive> beanDeploymentArchives = new HashSet<WeldBeanDeploymentArchive>();
         final Map<Class<? extends Service>, Service> additionalServices = new HashMap<>();
 
         if (discoveryEnabled) {
@@ -878,7 +896,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             if (isImplicitScanEnabled()) {
                 strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
             }
-            beanArchives.addAll(strategy.performDiscovery());
+            beanDeploymentArchives.addAll(strategy.performDiscovery());
             ClassFileServices classFileServices = strategy.getClassFileServices();
             if (classFileServices != null) {
                 additionalServices.put(ClassFileServices.class, classFileServices);
@@ -890,14 +908,14 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             beanClassesBuilder.addAll(scanPackages());
             WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, beanClassesBuilder.build(), null,
                     buildSyntheticBeansXml(), Collections.emptySet(), ImmutableSet.copyOf(beanClasses));
-            beanArchives.add(syntheticBeanArchive);
+            beanDeploymentArchives.add(syntheticBeanArchive);
         }
 
-        if (beanArchives.isEmpty() && beanConfigurators.isEmpty()) {
+        if (beanDeploymentArchives.isEmpty() && beanConfigurators.isEmpty()) {
             throw WeldSELogger.LOG.weldContainerCannotBeInitializedNoBeanArchivesFound();
         }
 
-        Multimap<String, BeanDeploymentArchive> problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(beanArchives);
+        Multimap<String, BeanDeploymentArchive> problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(beanDeploymentArchives);
         if (!problems.isEmpty()) {
             // Right now, we only log a warning for each bean class deployed in multiple bean archives
             for (Entry<String, Collection<BeanDeploymentArchive>> entry : problems.entrySet()) {
@@ -906,12 +924,12 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
 
         if (isEnabled(ARCHIVE_ISOLATION_SYSTEM_PROPERTY, true)) {
-            deployment = new WeldDeployment(resourceLoader, bootstrap, beanArchives, extensions);
+            deployment = new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions);
             CommonLogger.LOG.archiveIsolationEnabled();
         } else {
-            Set<WeldBeanDeploymentArchive> flatDeploymentArchives = new HashSet<WeldBeanDeploymentArchive>();
-            flatDeploymentArchives.add(WeldBeanDeploymentArchive.merge(bootstrap, beanArchives));
-            deployment = new WeldDeployment(resourceLoader, bootstrap, flatDeploymentArchives, extensions);
+            Set<WeldBeanDeploymentArchive> flatDeployment = new HashSet<WeldBeanDeploymentArchive>();
+            flatDeployment.add(WeldBeanDeploymentArchive.merge(bootstrap, beanDeploymentArchives));
+            deployment = new WeldDeployment(resourceLoader, bootstrap, flatDeployment, extensions);
             CommonLogger.LOG.archiveIsolationDisabled();
         }
 

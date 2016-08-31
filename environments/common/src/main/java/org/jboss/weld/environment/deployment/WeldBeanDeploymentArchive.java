@@ -42,14 +42,14 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
 
     private final BeansXml beansXml;
 
-    private Set<WeldBeanDeploymentArchive> accessibleBeanDeploymentArchives;
+    private volatile Collection<BeanDeploymentArchive> accessibleBeanDeploymentArchives;
 
     /**
      *
      * @param id
      * @param beanClasses The collection should be mutable
      * @param beansXml
-     * @param beanDeploymentArchives
+     * @param accessibleBeanDeploymentArchives
      */
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
         this(id, beanClasses, null, beansXml, beanDeploymentArchives, Collections.emptySet());
@@ -64,13 +64,13 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param beanDeploymentArchives
      * @param loadedBeanClasses
      */
-    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives, Collection<Class<?>> loadedBeanClasses) {
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> accessibleBeanDeploymentArchives, Collection<Class<?>> loadedBeanClasses) {
         super(id);
         this.beanClasses = beanClasses;
         this.knownClasses = knownClasses;
         this.beansXml = beansXml;
-        this.accessibleBeanDeploymentArchives = beanDeploymentArchives;
         this.loadedBeanClasses = loadedBeanClasses;
+        setAccessibleBeanDeploymentArchives(accessibleBeanDeploymentArchives);
     }
 
     /**
@@ -80,7 +80,7 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param beansXml
      */
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
-        this(id, beanClasses, beansXml, Collections.<WeldBeanDeploymentArchive> emptySet());
+        this(id, beanClasses, beansXml, Collections.emptySet());
     }
 
     /**
@@ -111,7 +111,7 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
 
     @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.<BeanDeploymentArchive> unmodifiableCollection(accessibleBeanDeploymentArchives);
+        return accessibleBeanDeploymentArchives;
     }
 
     @Override
@@ -119,8 +119,9 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
         return beansXml;
     }
 
-    public void setAccessibleBeanDeploymentArchives(Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
-        this.accessibleBeanDeploymentArchives = beanDeploymentArchives;
+
+    public synchronized void setAccessibleBeanDeploymentArchives(Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
+        accessibleBeanDeploymentArchives = Collections.unmodifiableSet(new HashSet<>(beanDeploymentArchives));
     }
 
     /**
