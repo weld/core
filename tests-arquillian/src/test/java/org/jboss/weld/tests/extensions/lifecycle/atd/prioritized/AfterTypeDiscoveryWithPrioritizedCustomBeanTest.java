@@ -18,6 +18,7 @@ package org.jboss.weld.tests.extensions.lifecycle.atd.prioritized;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -43,9 +44,10 @@ public class AfterTypeDiscoveryWithPrioritizedCustomBeanTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AfterTypeDiscoveryWithPrioritizedCustomBeanTest.class))
-                .addPackage(AfterTypeDiscoveryWithPrioritizedCustomBeanTest.class.getPackage())
-                .addClasses(ActionSequence.class).addAsServiceProvider(Extension.class, TestExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AfterTypeDiscoveryWithPrioritizedCustomBeanTest.class))
+                .addPackage(AfterTypeDiscoveryWithPrioritizedCustomBeanTest.class.getPackage()).addClasses(ActionSequence.class)
+                .addAsServiceProvider(Extension.class, TestExtension.class);
     }
 
     @Test
@@ -56,9 +58,8 @@ public class AfterTypeDiscoveryWithPrioritizedCustomBeanTest {
         assertNotNull(monitoredService);
         ActionSequence.reset();
         monitoredService.ping();
-        ActionSequence.assertSequenceDataContainsAll(PrioritizedInterceptor.class.getName(),
-                CharlieInterceptor.class.getName(), AlphaInterceptor.class.getName(),
-                LegacyPrioritizedInterceptor.class.getName());
+        ActionSequence.assertSequenceDataContainsAll(PrioritizedInterceptor.class.getName(), CharlieInterceptor.class.getName(),
+                AlphaInterceptor.class.getName(), LegacyPrioritizedInterceptor.class.getName());
         List<String> data = ActionSequence.getSequenceData();
         assertIndexLessThan(data, PrioritizedInterceptor.class.getName(), CharlieInterceptor.class.getName());
         assertIndexLessThan(data, CharlieInterceptor.class.getName(), AlphaInterceptor.class.getName());
@@ -66,7 +67,11 @@ public class AfterTypeDiscoveryWithPrioritizedCustomBeanTest {
     }
 
     private <T> void assertIndexLessThan(List<T> list, T arg1, T arg2) {
-        assertTrue(getIndex(list, arg1) < getIndex(list, arg2));
+        int idx1 = getIndex(list, arg1);
+        int idx2 = getIndex(list, arg2);
+        if (idx1 > idx2) {
+            fail(String.format("Index %s of %s is not less than %s of %s. List: %s", idx1, arg1, idx2, arg2, list));
+        }
     }
 
     private <T> int getIndex(List<T> list, T clazz) {
