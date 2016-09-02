@@ -53,8 +53,9 @@ public class TestExtension implements Extension {
     }
 
     public void observeAfterBeanDiscovery(@Observes AfterBeanDiscovery event) {
-        // Custom prioritized interceptor
-        event.addBean(new PrioritizedInterceptor(1000, Collections.<Annotation> singleton(MonitoredLiteral.INSTANCE)));
+        // We have to use a negative priority value because there might be some interceptors registered automatically and we
+        // want to be sure PrioritizedInterceptor will have lower priority than CharlieInterceptor
+        event.addBean(new PrioritizedInterceptor(-1000, Collections.<Annotation> singleton(MonitoredLiteral.INSTANCE)));
         event.addBean(new LegacyPrioritizedInterceptor(4000, Collections.<Annotation> singleton(MonitoredLiteral.INSTANCE)));
     }
 
