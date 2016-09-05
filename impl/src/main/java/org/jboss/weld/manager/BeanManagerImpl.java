@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -297,6 +298,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ContainerLifecycleEvents containerLifecycleEvents;
 
     private final transient SpecializationAndEnablementRegistry registry;
+
+    /**
+     * Mapping between classes (their names) that are on the classpath and their missing dependencies.
+     */
+    private final transient Map<String, String> classesWithMissingDependencies = new HashMap<String, String>();
 
     /**
      * Create a new, root, manager
@@ -1237,6 +1243,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
         return foundInterceptionBindingTypes;
     }
+
+    public void registerClassWithMissingDependency(String className, String missingClassName) {
+        classesWithMissingDependencies.put(className, missingClassName);
+    }
+
+    public String getMissingDependencyForClass(String className) {
+        return classesWithMissingDependencies.get(className);
+    }
+
 
     private static class InstanceInjectionPoint implements InjectionPoint, Serializable {
 

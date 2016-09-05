@@ -111,23 +111,34 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         try {
             return resourceLoader.classForName(className);
         } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, Formats.getNameOfMissingClassLoaderDependency(e));
-            xlog.catching(DEBUG, e);
+            handleResourceLoadingException(className, e);
             return null;
         }
     }
 
     private <T> SlimAnnotatedType<T> loadAnnotatedType(Class<T> clazz) {
-        if (clazz != null && !clazz.isAnnotation() && !Beans.isVetoed(clazz)) {
-            containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
+        if (clazz != null && !clazz.isAnnotation()) {
             try {
-                return classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
-            } catch (ResourceLoadingException e) {
-                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName(), Formats.getNameOfMissingClassLoaderDependency(e));
-                xlog.catching(DEBUG, e);
+                if (!Beans.isVetoed(clazz)) {   // may throw ArrayStoreException - see bug http://bugs.sun.com/view_bug.do?bug_id=7183985
+                    containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
+                    try {
+                        return classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
+                    } catch (ResourceLoadingException e) {
+                        handleResourceLoadingException(clazz.getName(), e);
+                    }
+                }
+            } catch (ArrayStoreException e) {
+                handleResourceLoadingException(clazz.getName(), e);
             }
         }
         return null;
+    }
+
+    private void handleResourceLoadingException(String className, Throwable e) {
+        String missingDependency = Formats.getNameOfMissingClassLoaderDependency(e);
+        log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, missingDependency);
+        xlog.catching(DEBUG, e);
+        getManager().registerClassWithMissingDependency(className, missingDependency);
     }
 
     private void processPriority(AnnotatedType<?> type) {
