@@ -16,80 +16,35 @@
  */
 package org.jboss.weld.servlet;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.jsf.FacesUrlTransformer;
+import java.io.IOException;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
-import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.IOException;
 
 /**
- * <p>
- * A Filter for handling conversation propagation over redirects.
- * </p>
- * <p/>
- * <p>
- * This fiter intercepts the call to
- * {@link HttpServletResponse#sendRedirect(String)} and appends the conversation
- * id request parameter to the URL if the conversation is long-running, but only
- * if the request parameter is not already present.
- * </p>
+ * This filter is now deprecated and does nothing. It must remain here, because users were instructed to manually
+ * add this filter to web.xml when using weld-servlet.
+ *
+ * See https://issues.jboss.org/browse/WELD-1262 for details.
  *
  * @author Nicklas Karlsson
+ * @author Marko Luksa
  */
+@Deprecated
 public class ConversationPropagationFilter implements Filter {
 
     public void init(FilterConfig config) throws ServletException {
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
-            response = wrapResponse((HttpServletResponse) response, ((HttpServletRequest) request).getContextPath());
-        }
         chain.doFilter(request, response);
     }
 
     public void destroy() {
     }
 
-    private ServletResponse wrapResponse(HttpServletResponse response, final String requestPath) {
-        return new HttpServletResponseWrapper(response) {
-            @Override
-            public void sendRedirect(String path) throws IOException {
-                FacesContext context = FacesContext.getCurrentInstance();
-                if (context != null) { // this is a JSF request
-                    ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
-                    if (conversationContext.isActive()) {
-                        Conversation conversation = conversationContext.getCurrentConversation();
-                        if (!conversation.isTransient()) {
-                            path = new FacesUrlTransformer(path, context)
-                                .toRedirectViewId()
-                                .toActionUrl()
-                                .appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId())
-                                .encode();
-                        }
-                    }
-                }
-                super.sendRedirect(path);
-            }
-        };
-    }
-
-
-    private static Instance<Context> instance() {
-        return Container.instance().deploymentManager().instance().select(Context.class);
-    }
 }
