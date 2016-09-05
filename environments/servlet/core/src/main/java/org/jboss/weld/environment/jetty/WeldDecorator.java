@@ -29,6 +29,8 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import org.eclipse.jetty.util.DecoratedObjectFactory;
+import org.eclipse.jetty.util.Decorator;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
 /**
@@ -36,13 +38,14 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class WeldDecorator implements ServletContextHandler.Decorator {
+public class WeldDecorator implements Decorator {
 
     private ServletContext servletContext;
     private JettyWeldInjector injector;
 
     protected WeldDecorator(ServletContext servletContext) {
         this.servletContext = servletContext;
+
     }
 
     public static void process(ServletContext context) {
@@ -51,7 +54,8 @@ public class WeldDecorator implements ServletContextHandler.Decorator {
             ContextHandler handler = cc.getContextHandler();
             if (handler instanceof ServletContextHandler) {
                 ServletContextHandler sch = (ServletContextHandler) handler;
-                sch.addDecorator(new WeldDecorator(context));
+                DecoratedObjectFactory decObjFact = sch.getObjectFactory();
+                decObjFact.addDecorator(new WeldDecorator(context));
             }
         }
     }

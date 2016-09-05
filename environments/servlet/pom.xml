@@ -28,8 +28,7 @@
         <jsf.version>2.1</jsf.version>
         <tomcat.version>7.0.62</tomcat.version>
         <tomcat8.version>8.0.22</tomcat8.version>
-        <jetty.version>8.1.17.v20150415</jetty.version>
-        <jetty9.version>9.1.5.v20140505</jetty9.version>
+        <jetty9.version>9.3.3.v20150827</jetty9.version>
         <!-- Jetty 6 API is used for GWT support only -->
         <jetty6.version>6.1.26</jetty6.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
@@ -108,37 +107,43 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
-                <version>${jetty.version}</version>
+                <version>${jetty9.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-servlet</artifactId>
-                <version>${jetty.version}</version>
+                <version>${jetty9.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-plus</artifactId>
-                <version>${jetty.version}</version>
+                <version>${jetty9.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jndi</artifactId>
-                <version>${jetty.version}</version>
+                <version>${jetty9.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-webapp</artifactId>
-                <version>${jetty.version}</version>
+                <version>${jetty9.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-annotations</artifactId>
-                <version>${jetty.version}</version>
+                <version>${jetty9.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>${jetty9.version}</version>
             </dependency>
 
             <dependency>
