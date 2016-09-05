@@ -16,12 +16,15 @@
  */
 package org.jboss.weld.util.reflection;
 
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +36,10 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
+import org.jboss.weld.resources.ClassLoaderResourceLoader;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 
 /**
  * Utility class to produce friendly names e.g. for debugging
@@ -47,14 +53,33 @@ public class Formats {
     private static final String SNAPSHOT = "SNAPSHOT";
     private static final String NULL = "null";
 
+    private static final String BCEL_CLASS_PARSER_FQCN = "com.sun.org.apache.bcel.internal.classfile.ClassParser";
+    private static final String BCEL_JAVA_CLASS_FQCN = "com.sun.org.apache.bcel.internal.classfile.JavaClass";
+    private static final String BCEL_METHOD_FQCN = "com.sun.org.apache.bcel.internal.classfile.Method";
+    private static final String BCEL_LINE_NUMBER_TABLE_FQCN = "com.sun.org.apache.bcel.internal.classfile.LineNumberTable";
+    private static final String BCEL_M_PARSE = "parse";
+    private static final String BCEL_M_GET_METHODS = "getMethods";
+    private static final String BCEL_M_GET_LINE_NUMBER_TABLE = "getLineNumberTable";
+    private static final String BCEL_M_GET_SOURCE_LINE = "getSourceLine";
+    private static final String BCEL_M_GET_NAME = "getName";
+    private static final String BCEL_M_GET_MODIFIERS = "getModifiers";
+    private static final String BCEL_M_GET_SIGNATURE = "getSignature";
+
+    private static final String INIT_METHOD_NAME = "<init>";
+
     private Formats() {
     }
 
-    // see WELD-1454
+    /**
+     * See also WELD-1454.
+     *
+     * @param ij
+     * @return the formatted string
+     */
     public static String formatAsStackTraceElement(InjectionPoint ij) {
         Member member;
         if (ij.getAnnotated() instanceof AnnotatedField) {
-            AnnotatedField annotatedField = (AnnotatedField) ij.getAnnotated();
+            AnnotatedField<?> annotatedField = (AnnotatedField<?>) ij.getAnnotated();
             member = annotatedField.getJavaMember();
         } else if (ij.getAnnotated() instanceof AnnotatedParameter<?>) {
             AnnotatedParameter<?> annotatedParameter = (AnnotatedParameter<?>) ij.getAnnotated();
@@ -69,13 +94,104 @@ public class Formats {
 
     public static String formatAsStackTraceElement(Member member) {
         return member.getDeclaringClass().getName()
-            + "." + (member instanceof Constructor<?> ? "<init>" : member.getName())
+            + "." + (member instanceof Constructor<?> ? INIT_METHOD_NAME : member.getName())
             + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
     }
 
-    private static int getLineNumber(Member member) {
-        // TODO find the actual line number where the member is declared
-        return 0;
+    /**
+     * Try to get the line number associated with the given member.
+     *
+     * The reflection API does not expose such an info and so we need to analyse the bytecode. Unfortunately, it seems there is no way to get this kind of
+     * information for fields. Moreover, the <code>LineNumberTable</code> attribute is just optional, i.e. the compiler is not required to store this
+     * information at all. See also <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.1">Java Virtual Machine Specification</a>
+     *
+     * Implementation note: it wouldn't be appropriate to add a bytecode scanning dependency just for this functionality, therefore Apache BCEL included in
+     * Oracle JDK 1.5+ and OpenJDK 1.6+ is used. Other JVMs should not crash as we only use it if it's on the classpath and by means of reflection calls.
+     *
+     * @param member
+     * @param resourceLoader
+     * @return the line number or 0 if it's not possible to find it
+     */
+    public static int getLineNumber(Member member) {
+
+        if (!(member instanceof Method || member instanceof Constructor)) {
+            // We are not able to get this info for fields
+            return 0;
+        }
+
+        if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, WeldClassLoaderResourceLoader.INSTANCE)) {
+            // Apache BCEL classes not on the classpath
+            return 0;
+        }
+
+        String classFile = member.getDeclaringClass().getName().replace('.', '/');
+        ClassLoaderResourceLoader classFileResourceLoader = new ClassLoaderResourceLoader(member.getDeclaringClass().getClassLoader());
+        InputStream in = null;
+
+        try {
+            URL classFileUrl = classFileResourceLoader.getResource(classFile + ".class");
+
+            if (classFileUrl == null) {
+                // The class file is not available
+                return 0;
+            }
+            in = classFileUrl.openStream();
+
+            Class<?> classParserClass = Reflections.loadClass(BCEL_CLASS_PARSER_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+            Class<?> javaClassClass = Reflections.loadClass(BCEL_JAVA_CLASS_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+            Class<?> methodClass = Reflections.loadClass(BCEL_METHOD_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+            Class<?> lntClass = Reflections.loadClass(BCEL_LINE_NUMBER_TABLE_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+
+            Object parser = classParserClass.getConstructor(InputStream.class, String.class).newInstance(in, classFile);
+            Object javaClass = classParserClass.getMethod(BCEL_M_PARSE).invoke(parser);
+
+            // First get all declared methods and constructors
+            // Note that in bytecode constructor is translated into a method
+            Object[] methods = (Object[]) javaClassClass.getMethod(BCEL_M_GET_METHODS).invoke(javaClass);
+            Object match = null;
+
+            String signature;
+            String name;
+            if (member instanceof Method) {
+                signature = DescriptorUtils.methodDescriptor((Method) member);
+                name = member.getName();
+            } else if (member instanceof Constructor) {
+                signature = DescriptorUtils.makeDescriptor((Constructor<?>) member);
+                name = INIT_METHOD_NAME;
+            } else {
+                return 0;
+            }
+
+            for (Object method : methods) {
+                // Matching method must have the same name, modifiers and signature
+                if (methodClass.getMethod(BCEL_M_GET_NAME).invoke(method).equals(name)
+                        && methodClass.getMethod(BCEL_M_GET_MODIFIERS).invoke(method).equals(member.getModifiers())
+                        && methodClass.getMethod(BCEL_M_GET_SIGNATURE).invoke(method).equals(signature)) {
+                    match = method;
+                }
+            }
+            if (match != null) {
+                // If a method is found, try to obtain the optional LineNumberTable attribute
+                Object lineNumberTable = methodClass.getMethod(BCEL_M_GET_LINE_NUMBER_TABLE).invoke(match);
+                if (lineNumberTable != null) {
+                    Integer line = (Integer) lntClass.getMethod(BCEL_M_GET_SOURCE_LINE, int.class).invoke(lineNumberTable, 0);
+                    return line == -1 ? 0 : line;
+                }
+            }
+            // No suitable method found
+            return 0;
+
+        } catch (Throwable t) {
+            return 0;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    return 0;
+                }
+            }
+        }
     }
 
     private static String getFileName(Class<?> clazz) {
@@ -146,7 +262,7 @@ public class Formats {
 
     public static String formatInjectionPointType(Type type) {
         if (type instanceof Class<?>) {
-            return ((Class) type).getSimpleName();
+            return ((Class<?>) type).getSimpleName();
         } else {
             return Formats.formatType(type);
         }
