@@ -67,9 +67,7 @@ public class WeldInitialListener extends AbstractServletListener {
     private BeanManagerImpl beanManager;
     private HttpContextLifecycle lifecycle;
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        final ServletContext ctx = sce.getServletContext();
+    private void init(final ServletContext ctx) {
         // if running in OSGi environment, use the context id obtained from servlet context
         if (beanManager == null) {
             String contextId = ctx.getInitParameter(Container.CONTEXT_ID_KEY);
@@ -93,6 +91,11 @@ public class WeldInitialListener extends AbstractServletListener {
             this.lifecycle.setConversationActivationEnabled(false);
         }
         this.lifecycle.contextInitialized(ctx);
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        init(sce.getServletContext());
     }
 
     private boolean getBooleanInitParameter(ServletContext ctx, String parameterName, boolean defaultValue) {
@@ -141,6 +144,9 @@ public class WeldInitialListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
+        if (lifecycle == null) {
+            init(event.getServletContext());
+        }
         if (!lifecycle.isConversationActivationSet()) {
             Object value = event.getServletContext().getAttribute(CONVERSATION_FILTER_REGISTERED);
             if (Boolean.TRUE.equals(value)) {
