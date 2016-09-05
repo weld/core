@@ -394,6 +394,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
         services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
         services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
+        services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services);
         services.add(GlobalObserverNotifierService.class, observerNotificationService);
