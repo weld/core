@@ -25,6 +25,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
@@ -86,7 +88,16 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
     public void preDestroy(T instance, Instantiator<T> instantiator) {
         // this may be null for NonProducibleInjectionTarget
         if (instantiator != null && instantiator.hasInterceptorSupport()) {
-            InterceptionUtils.executePredestroy(instance);
+            // make sure that if interception InvocationHandler is disabled for this instance
+            // then it does not suppress this preDestroy() call
+            Stack stack = InterceptionDecorationContext.startIfNotEmpty();
+            try {
+                InterceptionUtils.executePredestroy(instance);
+            } finally {
+                if (stack != null) {
+                    stack.end();
+                }
+            }
         } else {
             invokeMethods(accessiblePreDestroyMethods, instance);
         }
