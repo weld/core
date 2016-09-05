@@ -55,7 +55,7 @@ public class JettyContainer extends AbstractJettyContainer {
         String[] split = version.split("\\.");
         int major = Integer.parseInt(split[0]);
         int minor = Integer.parseInt(split[1]);
-        return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
+        return !(major < MAJOR_VERSION || (major == MAJOR_VERSION & minor <= MINOR_VERSION));
     }
 
     public void initialize(ContainerContext context) {
