@@ -588,10 +588,8 @@ weld.shutdown();
 -----------------------------------------------------------------
 ==== Request Context
 
-Weld introduces `@ActivateRequestScope` interceptor binding and
-related `ActivateRequestScopeInterceptor` which enables you to
-explicitly activate the request scope and use`@RequestScoped` beans in Java SE.
-Following example shows how to achieve that:
+Weld introduces an `@ActivateRequestContext` interceptor binding which enables you to explicitly activate the request context and use `@RequestScoped` beans in Java SE.
+The following example shows how to achieve that:
 
 [source.JAVA, java]
 -----------------------------------------------------------------
@@ -600,7 +598,7 @@ public class Foo {
   @Inject
   MyRequestScopedBean bean;
 
-  @ActivateRequestScope
+  @ActivateRequestContext
   public void executeInRequestContext() {
     bean.ping()
   }
