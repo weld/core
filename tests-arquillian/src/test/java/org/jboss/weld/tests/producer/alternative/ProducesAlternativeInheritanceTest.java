@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.producer.alternative;
 
-import javax.enterprise.context.Dependent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -24,9 +27,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.test.util.Utils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +35,7 @@ import org.junit.runner.RunWith;
 public class ProducesAlternativeInheritanceTest {
 
     @Inject
-    WeldInstance<Foo> foo;
+    Instance<Foo> foo;
 
     @Deployment
     public static Archive<?> getDeployment() {
@@ -44,9 +45,12 @@ public class ProducesAlternativeInheritanceTest {
 
     @Test
     public void testProducerScopeIsNotInherited() {
-        Assert.assertEquals(Dependent.class, foo.getHandler().getBean().getScope());
-        Assert.assertNotNull(foo.get());
-        Assert.assertEquals(foo.get().getName(), AlternativeBar.NAME);
+        Foo foo1 = foo.get();
+        Foo foo2 = foo.get();
+        assertEquals(AlternativeBar.NAME, foo1.getName());
+        assertEquals(AlternativeBar.NAME, foo2.getName());
+        // We should get two distinct @Dependent instances
+        assertNotEquals(foo1, foo2);
     }
 
 }
