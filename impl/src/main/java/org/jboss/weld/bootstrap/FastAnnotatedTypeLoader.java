@@ -130,7 +130,7 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
 
     private boolean isJandexSetFlagsAvailable() {
         try {
-            Method setFlags = AccessController.doPrivileged(GetDeclaredMethodAction.of(ClassFileInfo.class, "setFlags", short.class));
+            Method setFlags = AccessController.doPrivileged(GetDeclaredMethodAction.of(org.jboss.jandex.ClassInfo.class, "setFlags", short.class));
             return setFlags != null;
         } catch (Exception e) {
             return false;
