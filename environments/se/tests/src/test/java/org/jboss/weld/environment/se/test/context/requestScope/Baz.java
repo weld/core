@@ -18,10 +18,10 @@ package org.jboss.weld.environment.se.test.context.requestScope;
 
 import javax.inject.Inject;
 
-import org.jboss.weld.context.activator.ActivateRequestScope;
+import org.jboss.weld.context.activator.ActivateRequestContext;
 
 
-@ActivateRequestScope
+@ActivateRequestContext
 public class Baz {
 
     @Inject
