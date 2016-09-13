@@ -39,7 +39,12 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     }
 
     public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String contextId, String bdaId) {
-        return new BackedAnnotatedType<X>(javaClass, baseType, sharedObjectCache, reflectionCache, contextId, bdaId);
+        return of(javaClass, baseType, sharedObjectCache, reflectionCache, contextId, bdaId, null);
+    }
+
+    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache,
+            String contextId, String bdaId, String suffix) {
+        return new BackedAnnotatedType<X>(javaClass, baseType, sharedObjectCache, reflectionCache, contextId, bdaId, suffix);
     }
 
     private final Class<X> javaClass;
@@ -50,16 +55,16 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private final ReflectionCache reflectionCache;
     private final AnnotatedTypeIdentifier identifier;
 
-    private BackedAnnotatedType(Class<X> rawType, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String contextId, String bdaId) {
+    private BackedAnnotatedType(Class<X> rawType, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String contextId,
+            String bdaId, String suffix) {
         super(baseType, sharedObjectCache);
         this.javaClass = rawType;
         this.sharedObjectCache = sharedObjectCache;
         this.reflectionCache = reflectionCache;
-
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
         this.methods = new BackedAnnotatedMethods();
-        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId);
+        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId, suffix);
     }
 
     @Override

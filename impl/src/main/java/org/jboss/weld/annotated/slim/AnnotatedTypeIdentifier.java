@@ -54,7 +54,11 @@ public class AnnotatedTypeIdentifier implements Identifier {
     public static final String SYNTHETIC_ANNOTATION_SUFFIX = "syntheticAnnotation";
 
     public static AnnotatedTypeIdentifier forBackedAnnotatedType(String contextId, Class<?> javaClass, Type type, String bdaId) {
-        return new AnnotatedTypeIdentifier(contextId, bdaId, javaClass.getName(), getTypeId(type), false);
+        return forBackedAnnotatedType(contextId, javaClass, type, bdaId, null);
+    }
+
+    public static AnnotatedTypeIdentifier forBackedAnnotatedType(String contextId, Class<?> javaClass, Type type, String bdaId, String suffix) {
+        return new AnnotatedTypeIdentifier(contextId, bdaId, javaClass.getName(), suffix != null ? suffix : getTypeId(type), false);
     }
 
     public static AnnotatedTypeIdentifier forModifiedAnnotatedType(AnnotatedTypeIdentifier originalIdentifier) {
