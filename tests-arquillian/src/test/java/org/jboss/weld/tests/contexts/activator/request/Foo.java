@@ -21,7 +21,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.weld.context.activator.ActivateRequestScope;
+import org.jboss.weld.context.activator.ActivateRequestContext;
 import org.junit.Assert;
 
 @Dependent
@@ -33,20 +33,20 @@ public class Foo {
     @Inject
     Bar bar;
 
-    @ActivateRequestScope
+    @ActivateRequestContext
     public int ping() {
         Assert.assertTrue("RequestScoped is not active!", beanManager.getContext(RequestScoped.class).isActive());
         return 1;
     }
 
-    @ActivateRequestScope
+    @ActivateRequestContext
     public int pingNested() {
         bar.increment();
         notInterceptedCall();
         return bar.increment();
     }
 
-    @ActivateRequestScope
+    @ActivateRequestContext
     public void pong() {
         beanManager.getContext(RequestScoped.class);
     }

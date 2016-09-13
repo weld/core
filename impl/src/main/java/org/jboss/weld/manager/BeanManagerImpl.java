@@ -1149,6 +1149,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
+    public <T> AnnotatedType<T> createAnnotatedType(Class<T> type, String id) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public <T> void disposeAnnotatedType(Class<T> type, String id) {
+        // TODO
+    }
+
+    @Override
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
         if (beans == null || beans.isEmpty()) {
             return null;
