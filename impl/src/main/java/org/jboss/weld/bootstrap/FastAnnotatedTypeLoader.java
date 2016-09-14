@@ -29,6 +29,7 @@ import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.resources.spi.ClassFileInfoException;
@@ -37,6 +38,7 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Specialized version of {@link AnnotatedTypeLoader}. This implementation uses {@link ClassFileServices} to avoid loading application classes that are not
@@ -52,7 +54,8 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
     private final ClassFileServices classFileServices;
     private final FastProcessAnnotatedTypeResolver resolver;
     private final AnnotatedTypeLoader fallback;
-    private final boolean checkTypeModifiers = isJandexSetFlagsAvailable();
+    private final boolean checkTypeModifiers;
+    private static final String CLASSINFO_CLASS_NAME = "org.jboss.jandex.ClassInfo";
 
     FastAnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ClassFileServices classFileServices,
             ContainerLifecycleEvents events, FastProcessAnnotatedTypeResolver resolver) {
@@ -60,9 +63,7 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
         this.fallback = new AnnotatedTypeLoader(manager, transformer, events);
         this.classFileServices = classFileServices;
         this.resolver = resolver;
-        if (!checkTypeModifiers) {
-            BootstrapLogger.LOG.usingOldJandexVersion();
-        }
+        this.checkTypeModifiers = initCheckTypeModifiers();
     }
 
     @Override
@@ -123,13 +124,21 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
         }
         return null;
     }
+    // checking availability of ClassInfo.setFlags method is just workaround for JANDEX-37
+    private boolean initCheckTypeModifiers() {
 
-    private boolean isJandexSetFlagsAvailable() {
-        try {
-            Method setFlags = AccessController.doPrivileged(GetDeclaredMethodAction.of(org.jboss.jandex.ClassInfo.class, "setFlags", short.class));
-            return setFlags != null;
-        } catch (Exception e) {
-            return false;
+        Class<?> classInfoclass = Reflections.loadClass(CLASSINFO_CLASS_NAME, new ClassLoaderResourceLoader(classFileServices.getClass().getClassLoader()));
+        if (classInfoclass != null) {
+            try {
+                Method setFlags = AccessController.doPrivileged(GetDeclaredMethodAction.of(classInfoclass, "setFlags", short.class));
+                return setFlags != null;
+            } catch (Exception exceptionIgnored) {
+                BootstrapLogger.LOG.usingOldJandexVersion();
+                return false;
+            }
+        } else {
+            return true;
         }
     }
+
 }
