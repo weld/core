@@ -444,6 +444,12 @@ public class Beans {
                 && hasSimpleCdiConstructor(annotatedType);
     }
 
+    /**
+     *
+     * @param classFileInfo
+     * @param checkTypeModifiers - this flag reflects whether Jandex version including fix for JANDEX-37 could be used
+     * @return
+     */
     public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo, boolean checkTypeModifiers) {
 
         boolean isTypeManagedBean = ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0) && !classFileInfo.isAssignableTo(Extension.class)
