@@ -97,8 +97,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 116, value = "Manager has not been initialized")
     IllegalStateException managerNotInitialized();
 
-    @Message(id = 117, value = "Required service {0} has not been specified", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unspecifiedRequiredService(Object param1);
+    @Message(id = 117, value = "Required service {0} has not been specified for {1}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unspecifiedRequiredService(Object service, Object target);
 
     @Message(id = 118, value = "Only normal scopes can be passivating. Scope {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException passivatingNonNormalScopeIllegal(Object param1);

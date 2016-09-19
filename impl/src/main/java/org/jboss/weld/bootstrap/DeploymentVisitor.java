@@ -55,7 +55,7 @@ public class DeploymentVisitor {
     private BeanDeployment visit(BeanDeploymentArchive bda, Set<BeanDeploymentArchive> seenBeanDeploymentArchives) {
         copyService(bda, ResourceLoader.class);
         // Check that the required services are specified
-        WeldStartup.verifyServices(bda.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
+        WeldStartup.verifyServices(bda.getServices(), environment.getRequiredBeanDeploymentArchiveServices(), bda.getId());
 
         // Check the id is not null
         if (bda.getId() == null) {
