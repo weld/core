@@ -215,7 +215,7 @@ public class WeldStartup {
 
         addImplementationServices(registry);
 
-        verifyServices(registry, environment.getRequiredDeploymentServices());
+        verifyServices(registry, environment.getRequiredDeploymentServices(), contextId);
         if (!registry.contains(TransactionServices.class)) {
             BootstrapLogger.LOG.jtaUnavailable();
         }
@@ -591,10 +591,10 @@ public class WeldStartup {
         return contexts;
     }
 
-    protected static void verifyServices(ServiceRegistry services, Set<Class<? extends Service>> requiredServices) {
+    protected static void verifyServices(ServiceRegistry services, Set<Class<? extends Service>> requiredServices, Object target) {
         for (Class<? extends Service> serviceType : requiredServices) {
             if (!services.contains(serviceType)) {
-                throw BootstrapLogger.LOG.unspecifiedRequiredService(serviceType.getName());
+                throw BootstrapLogger.LOG.unspecifiedRequiredService(serviceType.getName(), target);
             }
         }
     }

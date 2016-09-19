@@ -115,8 +115,8 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1331, value = "Declaring bean cannot be null for the non-static member {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException nullDeclaringBean(Object param1);
 
-    @Message(id = 1332, value = "BeanManager method {0} is not available during application initialization", format = Format.MESSAGE_FORMAT)
-    IllegalStateException methodNotAvailableDuringInitialization(Object param1);
+    @Message(id = 1332, value = "BeanManager method {0} is not available during application initialization. Container state: {1}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException methodNotAvailableDuringInitialization(Object param1, Object state);
 
     @Message(id = 1333, value = "BeanManager method {0} is not available after shutdown", format = Format.MESSAGE_FORMAT)
     IllegalStateException methodNotAvailableAfterShutdown(Object param1);

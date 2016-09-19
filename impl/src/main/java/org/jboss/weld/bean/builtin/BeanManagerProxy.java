@@ -239,7 +239,7 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
             throw BeanManagerLogger.LOG.methodNotAvailableAfterShutdown(methodName);
         }
         if (state.compareTo(minimalState) < 0) {
-            throw BeanManagerLogger.LOG.methodNotAvailableDuringInitialization(methodName);
+            throw BeanManagerLogger.LOG.methodNotAvailableDuringInitialization(methodName, state);
         }
     }
 
