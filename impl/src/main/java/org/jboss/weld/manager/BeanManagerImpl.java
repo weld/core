@@ -1119,7 +1119,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public ELResolver getELResolver() {
         if (weldELResolver == null) {
-            throw BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class);
+            throw BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class, id);
         }
         return weldELResolver;
     }
@@ -1127,7 +1127,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory) {
         return services.getOptional(ExpressionLanguageSupport.class)
-                .orElseThrow(() -> BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class)).wrapExpressionFactory(expressionFactory);
+                .orElseThrow(() -> BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class, id)).wrapExpressionFactory(expressionFactory);
     }
 
     @Override
