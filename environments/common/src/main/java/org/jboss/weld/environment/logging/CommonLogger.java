@@ -81,7 +81,7 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     void reflectionFallback();
 
     @Message(id = 15, value = "Unable to load annotation: {0}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToLoadAnnotation(Object param1);
+    ClassFileInfoException unableToLoadAnnotation(Object param1);
 
     @Message(id = 16, value = "Missing beans.xml file in META-INF", format = Format.MESSAGE_FORMAT)
     IllegalStateException missingBeansXml();
