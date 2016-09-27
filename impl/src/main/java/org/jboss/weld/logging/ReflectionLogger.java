@@ -101,9 +101,9 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 621, value = "Interceptor binding {0} with @Target defined as {1} should not be applied on interceptor binding {2} with @Target definition: {3}", format = Format.MESSAGE_FORMAT)
     void invalidInterceptorBindingTargetDeclaration(Object param1, Object param2, Object param3, Object param4);
 
+    // LOGTOOL-104 we had to change the cause type
     @Message(id = 622, value = "IllegalArgumentException invoking {2} on {1} ({0}) with parameters {3}", format = Format.MESSAGE_FORMAT)
-    WeldException illegalArgumentExceptionOnReflectionInvocation(Class<?> clazz, Object instance, Method method, String parameters,
-            @Cause java.lang.IllegalArgumentException cause);
+    WeldException illegalArgumentExceptionOnReflectionInvocation(Class<?> clazz, Object instance, Method method, String parameters, @Cause Throwable cause);
 
     @Message(id = 623, value = "Unknown type {0}.", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException unknownType(Type type);
