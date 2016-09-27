@@ -53,7 +53,7 @@
         <jboss.jms.api.version>1.0.0.Final</jboss.jms.api.version>
         <jboss.jsf.api.version>2.2.4</jboss.jsf.api.version>
         <jboss.logging.version>3.2.1.Final</jboss.logging.version>
-        <jboss.logging.processor.version>1.1.0.Final</jboss.logging.processor.version>
+        <jboss.logging.processor.version>2.0.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
         <jboss.spec.el-api.version>1.0.0.Alpha1</jboss.spec.el-api.version>
         <jsf.impl.version>2.2.10</jsf.impl.version>
@@ -69,7 +69,7 @@
         <weld.api.version>2.4.Final</weld.api.version>
         <weld.logging.tools.version>1.0.1.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
-        
+
         <!--Override for dependecy version from parent pom.xml - use last JDK 7 compatible version of checkstyle-->
         <checkstyle.version>6.19</checkstyle.version>
     </properties>
