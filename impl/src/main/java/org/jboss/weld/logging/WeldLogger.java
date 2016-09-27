@@ -16,17 +16,21 @@
  */
 package org.jboss.weld.logging;
 
+import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
+
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageLogger;
 
 /**
  * A source of localized log/bundle messages and exceptions. Note that this interface extends {@link BasicLogger} so that regular logger methods are available.
  *
  * @author Martin Kouba
  */
+@MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface WeldLogger extends BasicLogger {
 
     String CATCHING_MARKER = "Catching";
