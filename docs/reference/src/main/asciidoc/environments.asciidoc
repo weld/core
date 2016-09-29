@@ -361,6 +361,18 @@ In general, an implicit bean archive does not have to contain a beans.xml descri
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.5.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
+==== Servlet Container Detection
+
+Weld servlet container integration is delivered as a single artifact, so that it's possible to include this artifact in a war and deploy the application to any of the suported servlet containers.
+This approach has advantages but also drawbacks.
+One of them is the fact that Weld attempts to detect the servlet container automatically.
+While this works most of the time, there are few rare cases, when it might be necessary to specify the container manually by setting the servlet initialization parameter `org.jboss.weld.environment.container.class` to:
+
+* `org.jboss.weld.environment.tomcat.TomcatContainer`
+* `org.jboss.weld.environment.jetty.JettyContainer`
+* `org.jboss.weld.environment.undertow.UndertowContainer`
+* or any custom `org.jboss.weld.environment.Container` implementation
+
 === Java SE
 
 In addition to improved integration of the Enterprise Java stack, the
