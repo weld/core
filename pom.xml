@@ -74,7 +74,7 @@
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>6.8.8</testng.version>
         <weld.api.version>3.0.Alpha22</weld.api.version>
-        <weld.logging.tools.version>1.0.1.Final</weld.logging.tools.version>
+        <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
     </properties>
 
@@ -681,6 +681,7 @@
             </modules>
         </profile>
         <profile>
+            <!-- NOTE: groovy compilation must be disabled if using this profile -->
             <id>log-msg-idx</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -701,6 +702,10 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
+                            <!-- We have to specify the processors to skip org.jboss.logging.processor.apt.LoggingToolsProcessor -->
+                            <annotationProcessors>
+                                <annotationProcessor>org.jboss.weld.logging.LogMessageIndexGenerator</annotationProcessor>
+                            </annotationProcessors>
                             <compilerArguments>
                                 <AprojectVersion>${project.version}</AprojectVersion>
                                 <Aartifact>${project.groupId}:${project.artifactId}</Aartifact>
