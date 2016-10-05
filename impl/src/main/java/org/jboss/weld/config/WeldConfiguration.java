@@ -119,7 +119,15 @@ public class WeldConfiguration implements Service {
         this.properties = init(services, deployment);
         this.proxyDumpFilePath = initProxyDumpFilePath();
         this.proxyIgnoreFinalMethodsPattern = initProxyIgnoreFinalMethodsPattern();
-        ConfigurationLogger.LOG.configurationInitialized(properties);
+        StringBuilder logOuputBuilder = new StringBuilder("{");
+        String prefix = "";
+        for (ConfigurationKey key : properties.keySet()) {
+            logOuputBuilder.append(prefix);
+            prefix = ", ";
+            logOuputBuilder.append(key.get() + "=" + properties.get(key));
+        }
+        logOuputBuilder.append("}");
+        ConfigurationLogger.LOG.configurationInitialized(logOuputBuilder.toString());
     }
 
     /**
@@ -198,7 +206,7 @@ public class WeldConfiguration implements Service {
         for (Entry<ConfigurationKey, Object> entry : toMerge.entrySet()) {
             Object existing = original.get(entry.getKey());
             if (existing != null) {
-                ConfigurationLogger.LOG.configurationKeyAlreadySet(entry.getKey(), existing, entry.getValue(), mergedSourceDescription);
+                ConfigurationLogger.LOG.configurationKeyAlreadySet(entry.getKey().get(), existing, entry.getValue(), mergedSourceDescription);
             } else {
                 original.put(entry.getKey(), entry.getValue());
             }
@@ -213,7 +221,7 @@ public class WeldConfiguration implements Service {
      */
     static void checkRequiredType(ConfigurationKey key, Class<?> requiredType) {
         if (!key.isValidValueType(requiredType)) {
-            throw ConfigurationLogger.LOG.configurationPropertyTypeMismatch(key.getDefaultValue().getClass(), requiredType);
+            throw ConfigurationLogger.LOG.configurationPropertyTypeMismatch(key.getDefaultValue().getClass(), requiredType, key.get());
         }
     }
 
@@ -437,10 +445,10 @@ public class WeldConfiguration implements Service {
         if (key.isValidValue(value)) {
             Object previous = properties.put(key, value);
             if (previous != null && !previous.equals(value)) {
-                throw ConfigurationLogger.LOG.configurationKeyHasDifferentValues(key, previous, value);
+                throw ConfigurationLogger.LOG.configurationKeyHasDifferentValues(key.get(), previous, value);
             }
         } else {
-            throw ConfigurationLogger.LOG.invalidConfigurationPropertyValue(value, key);
+            throw ConfigurationLogger.LOG.invalidConfigurationPropertyValue(value, key.get());
         }
     }
 
