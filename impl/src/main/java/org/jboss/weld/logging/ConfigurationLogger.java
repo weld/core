@@ -39,11 +39,11 @@ public interface ConfigurationLogger extends WeldLogger {
     @Message(id = 1900, value = "Invalid configuration property value {0} for key {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException invalidConfigurationPropertyValue(Object value, Object key);
 
-    @Message(id = 1901, value = "Configuration property type {0} does not match the required type {1}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException configurationPropertyTypeMismatch(Object propertyType, Object requiredType);
+    @Message(id = 1901, value = "Configuration property type {0} does not match the required type {1} for configuration key {2}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException configurationPropertyTypeMismatch(Object propertyType, Object requiredType, Object key);
 
     @LogMessage(level = Level.DEBUG)
-    @Message(id = 1902, value = "Configuration initialized: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1902, value = "Following configuration was detected and applied: {0}", format = Format.MESSAGE_FORMAT)
     void configurationInitialized(Object configuration);
 
     @LogMessage(level = Level.DEBUG)
