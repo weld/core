@@ -42,8 +42,8 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
         AfterTypeDiscoveryImpl event = new AfterTypeDiscoveryImpl(beanManager, bdaMapping, deployment, contexts);
-        event.finish();
         event.fire();
+        event.finish();
     }
 
     private final GlobalEnablementBuilder builder;

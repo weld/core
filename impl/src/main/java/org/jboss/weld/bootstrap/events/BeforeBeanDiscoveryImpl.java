@@ -45,8 +45,8 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
         BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts);
-        event.finish();
         event.fire();
+        event.finish();
     }
 
     protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
