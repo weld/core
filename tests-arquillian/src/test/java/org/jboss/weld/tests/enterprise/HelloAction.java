@@ -16,26 +16,34 @@
  */
 package org.jboss.weld.tests.enterprise;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
-public class HelloAction {
+import org.jboss.weld.tests.util.BeanPassivator;
 
-    public static long sleepDuration = 1000 * 2;
+public class HelloAction {
 
     @Inject
     private IHelloBean helloBean;
 
+    
     private String hello;
     private String goodBye;
 
     public void executeRequest() {
         hello = helloBean.sayHello();
         try {
-            Thread.sleep(sleepDuration);
-        } catch (InterruptedException e) {
-            System.out.println("Caught Interruption.");
+            byte[] passivated = BeanPassivator.passivate(helloBean);
+            Object activated = BeanPassivator.activate(passivated);
+            goodBye = ((IHelloBean) activated).sayGoodbye();
+            
+        // following exception are rethrown as they basically mean test failure!
+        } catch (IOException ex) {
+            throw new IllegalStateException("There was a problem with passivation!" + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            throw new IllegalStateException("There was a problem with activation of passivated bean!" + ex.getMessage());
         }
-        goodBye = helloBean.sayGoodbye();
     }
 
     public String getHello() {
