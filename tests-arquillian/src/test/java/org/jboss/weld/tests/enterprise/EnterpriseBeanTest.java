@@ -31,8 +31,8 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.jboss.weld.tests.util.BeanPassivator;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class EnterpriseBeanTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanTest.class))
                 .addPackage(EnterpriseBeanTest.class.getPackage())
-                .addClass(Utils.class);
+                .addClasses(Utils.class, BeanPassivator.class);
     }
 
     @Inject
