@@ -376,6 +376,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 try {
                     proxyClass = cast(classLoader.loadClass(proxyClassName));
                 } catch (ClassNotFoundException e2) {
+                    BeanLogger.LOG.catchingDebug(e1);
                     throw BeanLogger.LOG.unableToLoadProxyClass(bean, proxiedBeanType, classLoader, e1);
                 }
             }
@@ -817,11 +818,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 Boxing.unbox(b, method.getReturnType());
                 b.returnInstruction();
             } else {
-                String castType = method.getReturnType();
-                if (!method.getReturnType().startsWith("[")) {
-                    castType = method.getReturnType().substring(1).substring(0, method.getReturnType().length() - 2);
-                }
-                b.checkcast(castType);
+                b.checkcast(BytecodeUtils.getName(method.getReturnType()));
                 b.returnInstruction();
             }
         }

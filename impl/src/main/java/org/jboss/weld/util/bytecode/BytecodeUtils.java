@@ -120,4 +120,12 @@ public class BytecodeUtils {
             }
         }
     }
+
+    public static String getName(String descriptor) {
+        if (!descriptor.startsWith("[")) {
+            return descriptor.substring(1).substring(0, descriptor.length() - 2);
+        }
+        return descriptor;
+    }
+
 }
