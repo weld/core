@@ -372,11 +372,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                 Boxing.unbox(b,method.getReturnType());
                 b.returnInstruction();
             } else {
-                String castType = methodInfo.getReturnType();
-                if (!methodInfo.getReturnType().startsWith("[")) {
-                    castType = methodInfo.getReturnType().substring(1).substring(0, methodInfo.getReturnType().length() - 2);
-                }
-                b.checkcast(castType);
+                b.checkcast(BytecodeUtils.getName(methodInfo.getReturnType()));
                 b.returnInstruction();
             }
         }
