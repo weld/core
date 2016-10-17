@@ -41,8 +41,6 @@ public class WeldDeployment extends AbstractWeldDeployment {
 
     private final Set<WeldBeanDeploymentArchive> beanDeploymentArchives;
 
-    private final ResourceLoader resourceLoader;
-
     private volatile WeldBeanDeploymentArchive additionalBeanDeploymentArchive;
 
     /**
@@ -55,9 +53,9 @@ public class WeldDeployment extends AbstractWeldDeployment {
     public WeldDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<WeldBeanDeploymentArchive> beanDeploymentArchives,
             Iterable<Metadata<Extension>> extensions) {
         super(bootstrap, extensions);
-        this.resourceLoader = resourceLoader;
         this.beanDeploymentArchives = beanDeploymentArchives;
         setBeanDeploymentArchivesAccessibility();
+        getServices().add(ResourceLoader.class, resourceLoader);
     }
 
 
@@ -105,7 +103,6 @@ public class WeldDeployment extends AbstractWeldDeployment {
      */
     protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive() {
         WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(ADDITIONAL_BDA_ID, Collections.synchronizedSet(new HashSet<String>()), null);
-        additionalBda.getServices().add(ResourceLoader.class, resourceLoader);
         additionalBda.getServices().addAll(getServices().entrySet());
         beanDeploymentArchives.add(additionalBda);
         setBeanDeploymentArchivesAccessibility();
