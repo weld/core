@@ -22,31 +22,47 @@ import java.security.AccessController;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jboss.classfilewriter.AccessFlag;
+import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 
 /**
- * A {@link BytecodeMethodResolver} that looks up the method using the
- * reflection API.
+ * A {@link BytecodeMethodResolver} that looks up the method using the reflection API.
  * <p/>
  *
  * @author Stuart Douglas
+ * @author Martin Kouba
  */
 public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
 
     private static final AtomicLong METHOD_COUNT = new AtomicLong();
 
-    private static final String FIELD_NAME = "weld_proxy_field$$$";
-    public static final String LJAVA_LANG_REFLECT_METHOD = "Ljava/lang/reflect/Method;";
+    private static final String WELD_MEMBER_PREFIX = "weld$$$";
+
+    private static final String LJAVA_LANG_REFLECT_METHOD = "Ljava/lang/reflect/Method;";
 
     @Override
-    public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName, final String[] parameterTypes, ClassMethod staticConstructor) {
+    public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName, final String[] parameterTypes,
+            ClassMethod staticConstructor) {
 
-        String fieldName = FIELD_NAME + METHOD_COUNT.incrementAndGet();
-        staticConstructor.getClassFile().addField(AccessFlag.PRIVATE | AccessFlag.STATIC, fieldName, LJAVA_LANG_REFLECT_METHOD);
+        String weldMemberName = WELD_MEMBER_PREFIX + METHOD_COUNT.incrementAndGet();
+        staticConstructor.getClassFile().addField(AccessFlag.PRIVATE | AccessFlag.STATIC, weldMemberName, LJAVA_LANG_REFLECT_METHOD);
+
         final CodeAttribute code = staticConstructor.getCodeAttribute();
+
+        addInitMethod(declaringClass, methodName, parameterTypes, weldMemberName, staticConstructor.getClassFile());
+        code.invokestatic(staticConstructor.getClassFile().getName(), weldMemberName, "()Ljava/lang/reflect/Method;");
+        code.putstatic(classMethod.getClassFile().getName(), weldMemberName, LJAVA_LANG_REFLECT_METHOD);
+
+        CodeAttribute methodCode = classMethod.getCodeAttribute();
+        methodCode.getstatic(classMethod.getClassFile().getName(), weldMemberName, LJAVA_LANG_REFLECT_METHOD);
+    }
+
+    private void addInitMethod(final String declaringClass, final String methodName, final String[] parameterTypes, String weldMethodName, ClassFile classFile) {
+        ClassMethod initMethod = classFile.addMethod(AccessFlag.of(AccessFlag.PRIVATE, AccessFlag.STATIC), weldMethodName, LJAVA_LANG_REFLECT_METHOD);
+        final CodeAttribute code = initMethod.getCodeAttribute();
         BytecodeUtils.pushClassType(code, declaringClass);
         // now we have the class on the stack
         code.ldc(methodName);
@@ -62,13 +78,13 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
             // and store it in the array
             code.aastore();
         }
-        code.invokestatic(GetDeclaredMethodAction.class.getName(), "wrapException", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/security/PrivilegedAction;");
-        code.invokestatic(AccessController.class.getName(), "doPrivileged", "(Ljava/security/PrivilegedAction;)Ljava/lang/Object;");
-        code.checkcast(Method.class);
-        code.putstatic(classMethod.getClassFile().getName(), fieldName, LJAVA_LANG_REFLECT_METHOD);
-
-        CodeAttribute methodCode = classMethod.getCodeAttribute();
-        methodCode.getstatic(classMethod.getClassFile().getName(), fieldName, LJAVA_LANG_REFLECT_METHOD);
-
+        code.invokestatic(DefaultBytecodeMethodResolver.class.getName(), "getMethod",
+                "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+        code.returnInstruction();
     }
+
+    public static Method getMethod(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
+        return AccessController.doPrivileged(GetDeclaredMethodAction.wrapException(javaClass, methodName, parameterTypes));
+    }
+
 }
