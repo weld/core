@@ -313,7 +313,7 @@ There's an easy way to find out what beans exist in the application:
 
 [source.JAVA, java]
 -------------------------------------------------------------------------------------------
-Set<Bean<?>> allBeans = beanManager.getBeans(Obect.class, new AnnotationLiteral<Any>() {});
+Set<Bean<?>> allBeans = beanManager.getBeans(Object.class, new AnnotationLiteral<Any>() {});
 -------------------------------------------------------------------------------------------
 
 The `Bean` interface makes it possible for a portable extension to
