@@ -188,6 +188,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      * @return the instance
      */
     public Instance<Object> instance() {
+        checkState();
         return instance;
     }
 
@@ -201,6 +202,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      * @return the event
      */
     public Event<Object> event() {
+        checkState();
         return event;
     }
 
@@ -217,6 +219,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      * Provides direct access to the BeanManager.
      */
     public BeanManager getBeanManager() {
+        checkState();
         return manager;
     }
 
@@ -278,6 +281,13 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
                     System.out.println(String.format("Weld SE container %s shut down by shutdown hook", id));
                 }
             }
+        }
+    }
+
+    @Override
+    protected void checkState() {
+        if (!isRunning()) {
+            throw WeldSELogger.LOG.weldContainerAlreadyShutDown(id);
         }
     }
 
