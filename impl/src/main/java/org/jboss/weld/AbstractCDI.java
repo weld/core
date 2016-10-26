@@ -63,41 +63,49 @@ public abstract class AbstractCDI<T> extends CDI<T> {
 
     @Override
     public Iterator<T> iterator() {
+        checkState();
         return getInstance().iterator();
     }
 
     @Override
     public T get() {
+        checkState();
         return getInstance().get();
     }
 
     @Override
     public Instance<T> select(Annotation... qualifiers) {
+        checkState();
         return getInstance().select(qualifiers);
     }
 
     @Override
     public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
+        checkState();
         return getInstance().select(subtype, qualifiers);
     }
 
     @Override
     public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+        checkState();
         return getInstance().select(subtype, qualifiers);
     }
 
     @Override
     public boolean isUnsatisfied() {
+        checkState();
         return getInstance().isUnsatisfied();
     }
 
     @Override
     public boolean isAmbiguous() {
+        checkState();
         return getInstance().isAmbiguous();
     }
 
     @Override
     public void destroy(T instance) {
+        checkState();
         getInstance().destroy(instance);
     }
 
@@ -126,6 +134,13 @@ public abstract class AbstractCDI<T> extends CDI<T> {
      */
     protected Instance<T> getInstance() {
         return instanceCache.getValue(BeanManagerProxy.unwrap(getBeanManager()));
+    }
+
+    /**
+     * Check whether container is running
+     */
+    protected void checkState(){
+      //no-op
     }
 
 }
