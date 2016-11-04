@@ -26,13 +26,13 @@ public final class CommonProxiedMethodFilters {
     private CommonProxiedMethodFilters() {
     }
 
-    public static final ProxiedMethodFilter NON_STATIC = (m) -> !Modifier.isStatic(m.getModifiers());
+    public static final ProxiedMethodFilter NON_STATIC = (m, c) -> !Modifier.isStatic(m.getModifiers());
 
-    public static final ProxiedMethodFilter NON_FINAL = (m) -> !Modifier.isFinal(m.getModifiers());
+    public static final ProxiedMethodFilter NON_FINAL = (m, c) -> !Modifier.isFinal(m.getModifiers());
 
-    public static final ProxiedMethodFilter OBJECT_TO_STRING = (m) -> m.getDeclaringClass() != Object.class || m.getName().equals("toString");
+    public static final ProxiedMethodFilter OBJECT_TO_STRING = (m, c) -> m.getDeclaringClass() != Object.class || m.getName().equals("toString");
 
-    public static final ProxiedMethodFilter NON_PRIVATE = (m) -> !Modifier.isPrivate(m.getModifiers());
+    public static final ProxiedMethodFilter NON_PRIVATE = (m, c) -> !Modifier.isPrivate(m.getModifiers());
 
     /**
      * For JDK classes do not accept any package-private method and/or method with package-private parameter types. A generated class is not allowed to use a
@@ -41,7 +41,7 @@ public final class CommonProxiedMethodFilters {
     public static final ProxiedMethodFilter NON_JDK_PACKAGE_PRIVATE = new ProxiedMethodFilter() {
 
         @Override
-        public boolean accept(Method method) {
+        public boolean accept(Method method, Class<?> proxySuperclass) {
             Class<?> declaringClass = method.getDeclaringClass();
             if (declaringClass != null) {
                 Package pack = declaringClass.getPackage();
