@@ -52,7 +52,8 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
         File file;
 
         if (path.contains(JAR_URL_SEPARATOR)) {
-            // Most probably a nested archive, e.g. "/home/duke/duke.jar!/lib/foo.jar"
+            // Most probably a nested archive, e.g. "/home/duke/duke.jar!/lib/foo.jar",
+            // but could also be, e.g. "/home/duke/duke.jar!/foobar/classes"
             file = new File(path.substring(0, path.indexOf(JAR_URL_SEPARATOR)));
             nested = true;
         } else {
@@ -117,6 +118,9 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
     protected void handleNestedFile(String path, File file, BeanArchiveBuilder builder) throws IOException {
         log.debugv("Handle nested archive\n  File: {0}\n  Path: {1}", file, path);
 
+        // jar:file:/home/duke/duke.jar!/lib/foo.jar --> lib/foo.jar
+        // jar:file:/home/duke/duke.jar!/classes --> classes (which might denote a directory ZipEntry; see special handling below)
+        // jar:file:/home/duke/duke.jar!/classes/ --> classes/
         String nestedEntryName = path.substring(path.indexOf(JAR_URL_SEPARATOR) + JAR_URL_SEPARATOR.length(), path.length());
         if (nestedEntryName.contains(JAR_URL_SEPARATOR)) {
             throw new IllegalArgumentException("Recursive nested archives are not supported");
@@ -124,23 +128,70 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
 
         try (ZipFile zip = new ZipFile(file)) {
 
-            Enumeration<? extends ZipEntry> entries = zip.entries();
+            // https://issues.jboss.org/browse/WELD-2254
+            //
+            // The nestedEntryName may semantically point to a nested
+            // jar-like file, or to a directory.  In the latter case,
+            // often the trailing slash is missing at this point.
+            // Weirdly, the JDK's ZipFile-related classes permit you
+            // to do zip.getEntry("directory") and get a non-null
+            // result, even though strictly speaking only
+            // zip.getEntry("directory/") should work (such that the
+            // returned ZipEntry's isDirectory() method returns,
+            // correctly, true).  We work around this strange state of
+            // affairs by always looking for the
+            // trailing-slash-suffixed name first.  If that's found,
+            // then we *know* we've found a directory, not a nested
+            // jar-like file.  If that fails, then we fall back on
+            // treating the nested entry as a jar-like file.
 
-            while (entries.hasMoreElements()) {
+            ZipEntry nestedEntry = zip.getEntry(nestedEntryName + "/");
+            if (nestedEntry == null) {
+                nestedEntry = zip.getEntry(nestedEntryName);
+            }
+            assert nestedEntry != null;
 
-                ZipEntry zipEntry = entries.nextElement();
+            // For maximal correctness, adjust the nestedEntryName to
+            // be the canonical entry name.
+            nestedEntryName = nestedEntry.getName();
+            assert nestedEntryName != null;
 
-                if (zipEntry.getName().equals(nestedEntryName)) {
+            // Reconstruct the archive URL.  It might be like either of the following:
+            // "jar:file:/home/duke/duke.jar!/classes/"
+            // "jar:file:/home/duke/duke.jar!/lib/foo.jar"
+            ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + nestedEntryName);
 
-                    // Reconstruct the archive URL, e.g. "jar:file:/home/duke/duke.jar!/lib/foo.jar"
-                    ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName());
+            if (nestedEntry.isDirectory()) {
+                assert nestedEntryName.endsWith("/"); // per contract
+                assert !nestedEntryName.startsWith("/");
 
-                    // Add entries from the nested archive
-                    try (ZipInputStream nestedZip = new ZipInputStream(zip.getInputStream(zipEntry))) {
-                        ZipEntry nestedEntry;
-                        while ((nestedEntry = nestedZip.getNextEntry()) != null) {
-                            add(entry.setName(nestedEntry.getName()), builder);
+                // jar:file:/home/duke/duke.jar!/classes/ <-- dealing with "classes/"; note trailing slash
+
+                Enumeration<? extends ZipEntry> entries = zip.entries();
+                while (entries.hasMoreElements()) {
+
+                    ZipEntry zipEntry = entries.nextElement();
+                    assert zipEntry != null;
+
+                    if (!zipEntry.isDirectory()) {
+
+                        String zipEntryName = zipEntry.getName();
+                        if (zipEntryName.startsWith(nestedEntryName) && Files.isClass(zipEntryName)) {
+                            String classFileNameRelativeToNestedDirectory = zipEntryName.substring(nestedEntryName.length());
+                            add(entry.setName(classFileNameRelativeToNestedDirectory), builder);
                         }
+
+                    }
+
+                }
+
+            } else {
+
+                // Add entries from the nested archive
+                try (ZipInputStream nestedZip = new ZipInputStream(zip.getInputStream(nestedEntry))) {
+                    ZipEntry nestedZipEntry;
+                    while ((nestedZipEntry = nestedZip.getNextEntry()) != null) {
+                        add(entry.setName(nestedZipEntry.getName()), builder);
                     }
                 }
             }
