@@ -17,6 +17,7 @@
 package org.jboss.weld.test.util;
 
 import javassist.util.proxy.ProxyObject;
+
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
@@ -30,6 +31,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,6 +48,7 @@ import java.util.Set;
 
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
 
+import java.io.InputStream;
 
 public class Utils {
 
@@ -95,18 +98,23 @@ public class Utils {
     }
 
     public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes)) {
-            @Override
-            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-                try {
-                    return super.resolveClass(desc);
-                } catch (ClassNotFoundException e) {
-                    // if a weld-internal class is not available (JBoss AS 7) let's use the weld classloader to load them
-                    return BeanManagerImpl.class.getClassLoader().loadClass(desc.getName());
-                }
-            }
-        };
-        return Reflections.<T>cast(in.readObject());
+        TCCLObjectInputStream in = null;
+        try {
+            in = new TCCLObjectInputStream(new ByteArrayInputStream(bytes));
+            return Reflections.<T>cast(in.readObject());
+        } finally {
+            if (in != null) in.close();
+        }
+    }
+
+    public static <T> T deserialize(byte[] bytes, ClassLoader cl) throws IOException, ClassNotFoundException {
+        TCCLObjectInputStream in = null;
+        try {
+            in = new TCCLObjectInputStream(new ByteArrayInputStream(bytes), cl);
+            return Reflections.<T>cast(in.readObject());
+        } finally {
+            if (in != null) in.close();
+        }
     }
 
     public static boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException) {
@@ -167,7 +175,6 @@ public class Utils {
         return proxy instanceof ProxyObject;
     }
 
-
     public static <T extends Context> T getActiveContext(WeldManager beanManager, Class<T> type) {
         for (T context : beanManager.instance().select(type)) {
             if (context.isActive()) {
@@ -175,6 +182,46 @@ public class Utils {
             }
         }
         throw new ContextNotActiveException();
+    }
+
+    private static class TCCLObjectInputStream extends ObjectInputStream {
+
+        private final ClassLoader tccl;
+        private final ClassLoader optionalClassLoader;
+
+        public TCCLObjectInputStream(InputStream in) throws IOException {
+            this(in, null);
+        }
+
+        public TCCLObjectInputStream(InputStream in, ClassLoader cl) throws IOException {
+            super(in);
+            this.tccl = Thread.currentThread().getContextClassLoader();
+            this.optionalClassLoader = cl;
+        }
+
+        @Override
+        protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+            try {
+                String name = desc.getName();
+                return Class.forName(name, false, tccl);
+            } catch (ClassNotFoundException e) {
+                try {
+                    return super.resolveClass(desc);
+                } catch (ClassNotFoundException e1) {
+                    try {
+                        return BeanManagerImpl.class.getClassLoader().loadClass(desc.getName());
+                    } catch (ClassNotFoundException cnfe) {
+                        if (optionalClassLoader != null) {
+                            // should all else fail, try the optional CL, if supplied
+                            return optionalClassLoader.loadClass(desc.getName());
+                        } else {
+                            // rethrow the exception, we cannot handle this
+                            throw cnfe;
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
