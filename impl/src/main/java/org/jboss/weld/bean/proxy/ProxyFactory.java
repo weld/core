@@ -602,7 +602,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             }
             for (Class<?> c : additionalInterfaces) {
                 for (Method method : c.getMethods()) {
-                    if (isMethodAccepted(method)) {
+                    if (isMethodAccepted(method, getProxySuperclass())) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
@@ -625,7 +625,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private void addMethods(Class<?> cls, ClassFile proxyClassType, ClassMethod staticConstructor) {
         for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
-            if (isMethodAccepted(method)) {
+            if (isMethodAccepted(method, getProxySuperclass())) {
                 try {
                     MethodInformation methodInfo = new RuntimeMethodInformation(method);
                     ClassMethod classMethod = proxyClassType.addMethod(method);
@@ -640,9 +640,9 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         }
     }
 
-    protected boolean isMethodAccepted(Method method) {
+    protected boolean isMethodAccepted(Method method, Class<?> proxySuperclass) {
         for (ProxiedMethodFilter filter : METHOD_FILTERS) {
-            if (!filter.accept(method)) {
+            if (!filter.accept(method, proxySuperclass)) {
                 return false;
             }
         }
@@ -906,5 +906,9 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     protected void getMethodHandlerField(ClassFile file, CodeAttribute b) {
         b.getfield(file.getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(getMethodHandlerType()));
+    }
+
+    private Class<?> getProxySuperclass() {
+        return getBeanType().isInterface() ? Object.class : getBeanType();
     }
 }

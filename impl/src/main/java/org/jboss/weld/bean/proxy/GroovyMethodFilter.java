@@ -36,6 +36,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public class GroovyMethodFilter implements ProxiedMethodFilter {
 
     private static final String GROOVY_OBJECT = "groovy.lang.GroovyObject";
+
     private static final Set<MethodSignature> METHODS;
 
     static {
@@ -54,15 +55,29 @@ public class GroovyMethodFilter implements ProxiedMethodFilter {
     }
 
     @Override
-    public boolean accept(Method method) {
+    public boolean accept(Method method, Class<?> proxySuperclass) {
         if (GROOVY_OBJECT.equals(method.getDeclaringClass().getName())) {
             return false;
         }
-        for (MethodSignature groovyMethod : METHODS) {
-            if (groovyMethod.matches(method)) {
-                return false;
+        if (isGroovyObject(proxySuperclass)) {
+            for (MethodSignature groovyMethod : METHODS) {
+                if (groovyMethod.matches(method)) {
+                    return false;
+                }
             }
         }
         return true;
+    }
+
+    private boolean isGroovyObject(Class<?> clazz) {
+        while (clazz != null) {
+            for (Class<?> intf : clazz.getInterfaces()) {
+                if (GROOVY_OBJECT.equals(intf.getName())) {
+                    return true;
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return false;
     }
 }
