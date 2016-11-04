@@ -54,9 +54,10 @@ public class EEResourceProducerFieldPassivationCapableTest {
     }
 
     @Test
-    @Ignore("WFLY-835")
+    @Ignore("Will work once we start testing with WFLY 11+, as there will be fix for JBTM-2449")
     public void testResource(@Produced UserTransaction userTransaction) throws Throwable {
-        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
+        // invoke deserialization with special class loader as the underlying class will not be otherwise visible to Weld
+        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction), userTransaction.getClass().getClassLoader());
         Assert.assertTrue(checkUserTransaction(userTransaction1));
     }
 
