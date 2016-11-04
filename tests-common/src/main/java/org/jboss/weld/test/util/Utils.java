@@ -107,6 +107,12 @@ public class Utils {
         }
     }
 
+    public static <T> T deserialize(byte[] bytes, ClassLoader cl) throws IOException, ClassNotFoundException {
+        try (TCCLObjectInputStream in = new TCCLObjectInputStream(new ByteArrayInputStream(bytes), cl)) {
+            return Reflections.<T>cast(in.readObject());
+        }
+    }
+
     public static boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException) {
         while (exception != null) {
             if (exception.getClass().equals(expectedException)) {
@@ -176,23 +182,39 @@ public class Utils {
 
     private static class TCCLObjectInputStream extends ObjectInputStream {
 
-        private final ClassLoader classLoader;
+        private final ClassLoader tccl;
+        private final ClassLoader optionalClassLoader;
 
         public TCCLObjectInputStream(InputStream in) throws IOException {
+            this(in, null);
+        }
+
+        public TCCLObjectInputStream(InputStream in, ClassLoader cl) throws IOException {
             super(in);
-            this.classLoader = Thread.currentThread().getContextClassLoader();
+            this.tccl = Thread.currentThread().getContextClassLoader();
+            this.optionalClassLoader = cl;
         }
 
         @Override
         protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
             try {
                 String name = desc.getName();
-                return Class.forName(name, false, classLoader);
+                return Class.forName(name, false, tccl);
             } catch (ClassNotFoundException e) {
                 try {
                     return super.resolveClass(desc);
                 } catch (ClassNotFoundException e1) {
-                    return BeanManagerImpl.class.getClassLoader().loadClass(desc.getName());
+                    try {
+                        return BeanManagerImpl.class.getClassLoader().loadClass(desc.getName());
+                    } catch (ClassNotFoundException cnfe) {
+                        if (optionalClassLoader != null) {
+                            // should all else fail, try the optional CL, if supplied
+                            return optionalClassLoader.loadClass(desc.getName());
+                        } else {
+                            // rethrow the exception, we cannot handle this
+                            throw cnfe;
+                        }
+                    }
                 }
             }
         }
