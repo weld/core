@@ -52,9 +52,9 @@ public class EEResourceProducerFieldPassivationCapableTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @Test
+    @Test // this test will only work with EAP 6.4.12+ as it contains fix for JBTM-2449
     public void testResource(@Produced UserTransaction userTransaction) throws Throwable {
-        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
+        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction), userTransaction.getClass().getClassLoader());
         Assert.assertTrue(checkUserTransaction(userTransaction1));
     }
 
