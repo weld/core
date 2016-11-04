@@ -35,28 +35,28 @@ final class CommonProxiedMethodFilters {
 
     static final ProxiedMethodFilter NON_STATIC = new AbstractProxiedMethodFilter() {
         @Override
-        public boolean accept(Method method) {
+        public boolean accept(Method method, Class<?> proxySuperclass) {
             return !Modifier.isStatic(method.getModifiers());
         }
     };
 
     static final ProxiedMethodFilter NON_FINAL = new AbstractProxiedMethodFilter() {
         @Override
-        public boolean accept(Method method) {
+        public boolean accept(Method method, Class<?> proxySuperclass) {
             return !Modifier.isFinal(method.getModifiers());
         }
     };
 
     static final ProxiedMethodFilter OBJECT_TO_STRING = new AbstractProxiedMethodFilter() {
         @Override
-        public boolean accept(Method method) {
+        public boolean accept(Method method, Class<?> proxySuperclass) {
             return method.getDeclaringClass() != Object.class || method.getName().equals("toString");
         }
     };
 
     static final ProxiedMethodFilter NON_PRIVATE = new AbstractProxiedMethodFilter() {
         @Override
-        public boolean accept(Method method) {
+        public boolean accept(Method method, Class<?> proxySuperclass) {
             return !Modifier.isPrivate(method.getModifiers());
         }
     };
@@ -67,7 +67,7 @@ final class CommonProxiedMethodFilters {
      */
     static final ProxiedMethodFilter NON_JDK_PACKAGE_PRIVATE = new AbstractProxiedMethodFilter() {
         @Override
-        public boolean accept(Method method) {
+        public boolean accept(Method method, Class<?> proxySuperclass) {
             Class<?> declaringClass = method.getDeclaringClass();
             if (declaringClass != null) {
                 Package pack = declaringClass.getPackage();
