@@ -131,10 +131,8 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
                 ZipEntry zipEntry = entries.nextElement();
 
                 if (zipEntry.getName().equals(nestedEntryName)) {
-
-                    // Reconstruct the archive URL, e.g. "jar:file:/home/duke/duke.jar!/lib/foo.jar"
-                    ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName());
-
+                    // Nested jar entry
+                    ZipFileEntry entry = getZipFileEntry(file, zipEntry);
                     // Add entries from the nested archive
                     try (ZipInputStream nestedZip = new ZipInputStream(zip.getInputStream(zipEntry))) {
                         ZipEntry nestedEntry;
@@ -142,9 +140,19 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
                             add(entry.setName(nestedEntry.getName()), builder);
                         }
                     }
+                } else if (zipEntry.getName().startsWith(nestedEntryName)) {
+                    // Nested file entries
+                    add(getZipFileEntry(file, zipEntry).setName(zipEntry.getName().substring(nestedEntryName.length() + 1)), builder);
                 }
             }
         }
+    }
+
+    private ZipFileEntry getZipFileEntry(File file, ZipEntry zipEntry) throws MalformedURLException {
+        // Reconstruct the archive URL. It might be like either of the following:
+        // "jar:file:/home/duke/duke.jar!/classes"
+        // "jar:file:/home/duke/duke.jar!/lib/foo.jar"
+        return new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName());
     }
 
     protected void add(Entry entry, BeanArchiveBuilder builder) throws MalformedURLException {
