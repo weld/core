@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -155,10 +156,10 @@ import org.jboss.weld.util.collections.WeldCollections;
  *
  * <pre>
  * Weld builder = new Weld()
- *    .disableDiscovery()
- *    .packages(Main.class, Utils.class)
- *    .interceptors(TransactionalInterceptor.class)
- *    .property("org.jboss.weld.construction.relaxed", true);
+ *  .disableDiscovery()
+ *  .packages(Main.class, Utils.class)
+ *  .interceptors(TransactionalInterceptor.class)
+ *  .property("org.jboss.weld.construction.relaxed", true);
  * WeldContainer container = builder.initialize();
  * </pre>
  *
@@ -211,7 +212,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     public static final String JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT = "javax.enterprise.inject.scan.implicit";
 
-
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
     static {
@@ -253,7 +253,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     private ResourceLoader resourceLoader;
 
     public Weld() {
-        this(RegistrySingletonProvider.STATIC_INSTANCE);
+        this(null);
     }
 
     /**
@@ -441,7 +441,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public Weld addExtensions(Class<? extends Extension>... extensionClasses) {
         for (Class<? extends Extension> extensionClass : extensionClasses) {
             try {
-                Extension extension =  SecurityActions.newInstance(extensionClass);
+                Extension extension = SecurityActions.newInstance(extensionClass);
                 addExtension(extension);
             } catch (Exception ex) {
                 CommonLogger.LOG.unableToInstantiate(extensionClass, new Object[] {}, ex);
@@ -465,8 +465,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Enable interceptors for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param interceptorClasses
      * @return self
@@ -480,8 +480,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add an interceptor class to the list of enabled interceptors for the synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param interceptorClass
      * @return self
@@ -502,8 +502,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Enable decorators for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param decoratorClasses
      * @return self
@@ -517,8 +517,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add a decorator class to the list of enabled decorators for the synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param decoratorClass
      * @return self
@@ -539,8 +539,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Select alternatives for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param alternativeClasses
      * @return self
@@ -554,8 +554,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add an alternative class to the list of selected alternatives for a synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param alternativeClass
      * @return self
@@ -576,8 +576,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Select alternative stereotypes for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param alternativeStereotypeClasses
      * @return self
@@ -600,8 +600,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add an alternative stereotype class to the list of selected alternative stereotypes for a synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the
-     * absence of the <code>beans.xml</code> descriptor.
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * <code>beans.xml</code> descriptor.
      *
      * @param alternativeStereotypeClass
      * @return self
@@ -665,7 +665,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * The {@link InterceptorBuilder#build()} is invoked automatically and the resulting interceptor bean is registered after all observers are notified.
      *
-     * @return  a builder for a custom interceptor
+     * @return a builder for a custom interceptor
      */
     public InterceptorBuilder addInterceptor() {
         InterceptorBuilderImpl interceptorBuilder = new InterceptorBuilderImpl();
@@ -700,7 +700,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         reset();
         properties.clear();
         enableDiscovery();
-        containerId(RegistrySingletonProvider.STATIC_INSTANCE);
+        containerId(null);
         return this;
     }
 
@@ -734,7 +734,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Bootstraps a new Weld SE container with the current {@link #containerId}.
+     * Bootstraps a new Weld SE container with the current container id (generated value if not set through {@link #containerId(String)}).
      * <p/>
      * The container must be shut down properly when an application is stopped. Applications are encouraged to use the try-with-resources statement or invoke
      * {@link WeldContainer#shutdown()} explicitly.
@@ -771,51 +771,37 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
         deployment.getServices().add(ExternalConfiguration.class, configurationBuilder.build());
 
+        final String containerId = this.containerId != null ? this.containerId : UUID.randomUUID().toString();
         bootstrap.startContainer(containerId, Environments.SE, deployment);
-        bootstrap.startInitialization();
-        // Bean configurators - init with bean deployment finder
-        if (!beanConfigurators.isEmpty()) {
-            BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
-            for (BeanConfiguratorImpl<?> configurator : beanConfigurators) {
-                configurator.initBeanManager(beanDeploymentFinder);
-            }
-        }
-        if (!interceptorBuilders.isEmpty()) {
-            BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
-            for (InterceptorBuilderImpl interceptorBuilder : interceptorBuilders) {
-                interceptorBuilder.setBeanDeploymentFinder(beanDeploymentFinder);
-            }
-        }
-        bootstrap.deployBeans();
-        bootstrap.validateBeans();
-        bootstrap.endInitialization();
 
-        final WeldContainer weldContainer = WeldContainer.initialize(containerId, bootstrap.getManager(getDeterminingBeanDeploymentArchive(deployment)),
-                bootstrap, isEnabled(SHUTDOWN_HOOK_SYSTEM_PROPERTY, true));
+        final WeldContainer weldContainer = WeldContainer.startInitialization(containerId, deployment, bootstrap);
 
-        initializedContainers.put(containerId, weldContainer);
+        try {
+            bootstrap.startInitialization();
+            // Bean configurators - init with bean deployment finder
+            if (!beanConfigurators.isEmpty()) {
+                BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
+                for (BeanConfiguratorImpl<?> configurator : beanConfigurators) {
+                    configurator.initBeanManager(beanDeploymentFinder);
+                }
+            }
+            if (!interceptorBuilders.isEmpty()) {
+                BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
+                for (InterceptorBuilderImpl interceptorBuilder : interceptorBuilders) {
+                    interceptorBuilder.setBeanDeploymentFinder(beanDeploymentFinder);
+                }
+            }
+            bootstrap.deployBeans();
+            bootstrap.validateBeans();
+            bootstrap.endInitialization();
+            WeldContainer.endInitialization(weldContainer, isEnabled(SHUTDOWN_HOOK_SYSTEM_PROPERTY, true));
+            initializedContainers.put(containerId, weldContainer);
+        } catch (Throwable e) {
+            // Discard the container if a bootstrap problem occurs, e.g. validation error
+            WeldContainer.discard(weldContainer.getId());
+            throw e;
+        }
         return weldContainer;
-    }
-
-    private BeanDeploymentArchive getDeterminingBeanDeploymentArchive(Deployment deployment) {
-        Collection<BeanDeploymentArchive> beanDeploymentArchives = deployment.getBeanDeploymentArchives();
-        if (beanDeploymentArchives.size() == 1) {
-            // Only one bean archive or isolation is disabled
-            return beanDeploymentArchives.iterator().next();
-        }
-        for (BeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
-            if (WeldDeployment.SYNTHETIC_BDA_ID.equals(beanDeploymentArchive.getId())) {
-                // Synthetic bean archive takes precedence
-                return beanDeploymentArchive;
-            }
-        }
-        for (BeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
-            if (!WeldDeployment.ADDITIONAL_BDA_ID.equals(beanDeploymentArchive.getId())) {
-                // Get the first non-additional bean deployment archive
-                return beanDeploymentArchive;
-            }
-        }
-        return deployment.loadBeanDeploymentArchive(WeldContainer.class);
     }
 
     /**
@@ -1004,7 +990,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
         }
         if (!containerLifecycleObservers.isEmpty()) {
-            result.add(new MetadataImpl<Extension>(new ContainerLifecycleObserverExtension(containerLifecycleObservers), SYNTHETIC_LOCATION_PREFIX + ContainerLifecycleObserver.class.getName()));
+            result.add(new MetadataImpl<Extension>(new ContainerLifecycleObserverExtension(containerLifecycleObservers),
+                    SYNTHETIC_LOCATION_PREFIX + ContainerLifecycleObserver.class.getName()));
         }
         return result;
     }
@@ -1148,7 +1135,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         private final boolean scanRecursively;
 
         private final WeakReference<ClassLoader> classLoaderRef;
-
 
         PackInfo(Class<?> packClass, boolean recursiveScan) {
             this.packName = packClass.getPackage().getName();

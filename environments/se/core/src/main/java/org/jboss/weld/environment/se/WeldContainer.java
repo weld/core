@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -27,19 +28,21 @@ import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.AbstractCDI;
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.environment.ContainerInstance;
+import org.jboss.weld.environment.deployment.WeldDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.collections.ImmutableList;
-
 
 /**
  * Represents a Weld SE container.
@@ -126,21 +129,31 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     }
 
     /**
+     * Start the initialization.
      *
      * @param id
      * @param manager
      * @param bootstrap
      * @return the initialized Weld container
      */
-    static WeldContainer initialize(String id, WeldManager manager, Bootstrap bootstrap, boolean isShutdownHookEnabled) {
+    static WeldContainer startInitialization(String id, Deployment deployment, Bootstrap bootstrap) {
         if (SINGLETON.isSet(id)) {
             throw WeldSELogger.LOG.weldContainerAlreadyRunning(id);
         }
-        WeldContainer weldContainer = new WeldContainer(id, manager, bootstrap);
+        WeldContainer weldContainer = new WeldContainer(id, deployment, bootstrap);
         SINGLETON.set(id, weldContainer);
         RUNNING_CONTAINER_IDS.add(id);
-        WeldSELogger.LOG.weldContainerInitialized(id);
-        manager.fireEvent(new ContainerInitialized(id), InitializedLiteral.APPLICATION);
+        return weldContainer;
+    }
+
+    /**
+     * Finish the initialization.
+     *
+     * @param container
+     * @param isShutdownHookEnabled
+     */
+    static void endInitialization(WeldContainer container, boolean isShutdownHookEnabled) {
+        container.complete();
         // If needed, register one shutdown hook for all containers
         if (shutdownHook == null && isShutdownHookEnabled) {
             synchronized (LOCK) {
@@ -150,37 +163,51 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
                 }
             }
         }
-        return weldContainer;
+    }
+
+    /**
+     *
+     * @param containerId
+     */
+    static void discard(String containerId) {
+        SINGLETON.clear(containerId);
+        RUNNING_CONTAINER_IDS.remove(containerId);
     }
 
     // This replicates org.jboss.weld.Container.contextId
     private final String id;
 
-    private final WeldManager manager;
+    private final Deployment deployment;
 
     private final Bootstrap bootstrap;
 
-    private final Instance<Object> instance;
+    private volatile Instance<Object> instance;
 
-    private final Event<Object> event;
+    private volatile Event<Object> event;
 
-    private final CreationalContext<?> creationalContext;
+    private volatile CreationalContext<?> creationalContext;
+
+    private volatile BeanManagerImpl beanManager;
 
     /**
      *
      * @param id
-     * @param manager
+     * @param deployment
      * @param bootstrap
      */
-    private WeldContainer(String id, WeldManager manager, Bootstrap bootstrap) {
+    private WeldContainer(String id, Deployment deployment, Bootstrap bootstrap) {
         super();
         this.id = id;
-        this.manager = manager;
+        this.deployment = deployment;
         this.bootstrap = bootstrap;
-        this.creationalContext = manager.createCreationalContext(null);
-        BeanManagerImpl beanManagerImpl = ((BeanManagerImpl) manager.unwrap());
-        this.instance = beanManagerImpl.getInstance(creationalContext);
-        this.event = beanManagerImpl.event();
+    }
+
+    private void complete() {
+        this.creationalContext = beanManager().createCreationalContext(null);
+        this.instance = beanManager().getInstance(creationalContext);
+        this.event = beanManager().event();
+        beanManager().fireEvent(new ContainerInitialized(id), InitializedLiteral.APPLICATION);
+        WeldSELogger.LOG.weldContainerInitialized(id);
     }
 
     /**
@@ -190,7 +217,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      */
     public Instance<Object> instance() {
         checkState();
-        return instance;
+        return getInstance();
     }
 
     /**
@@ -220,8 +247,8 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      * Provides direct access to the BeanManager.
      */
     public BeanManager getBeanManager() {
-        checkState();
-        return manager;
+        checkIsRunning();
+        return new BeanManagerProxy(beanManager());
     }
 
     /**
@@ -230,31 +257,24 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      * @see Weld#initialize()
      */
     public synchronized void shutdown() {
-        if (isRunning()) {
-            try {
-                manager.fireEvent(new ContainerShutdown(id), DestroyedLiteral.APPLICATION);
-            } finally {
-                SINGLETON.clear(id);
-                RUNNING_CONTAINER_IDS.remove(id);
-                // Destroy all the dependent beans correctly
-                creationalContext.release();
-                bootstrap.shutdown();
-                WeldSELogger.LOG.weldContainerShutdown(id);
-            }
-        } else {
-            if (WeldSELogger.LOG.isTraceEnabled()) {
-                WeldSELogger.LOG.tracev("Spurious call to shutdown from: {0}", (Object[]) Thread.currentThread().getStackTrace());
-            }
-            throw WeldSELogger.LOG.weldContainerAlreadyShutDown(id);
+        checkIsRunning();
+        try {
+            beanManager().fireEvent(new ContainerShutdown(id), DestroyedLiteral.APPLICATION);
+        } finally {
+            discard(id);
+            // Destroy all the dependent beans correctly
+            creationalContext.release();
+            bootstrap.shutdown();
+            WeldSELogger.LOG.weldContainerShutdown(id);
         }
     }
 
     /**
      *
-     * @return <code>true</code> if the container was not shut down yet, <code>false</code> otherwise
+     * @return <code>true</code> if the container was initialized completely and is not shut down yet, <code>false</code> otherwise
      */
     public boolean isRunning() {
-        return SINGLETON.isSet(id);
+        return SINGLETON.isSet(id) && instance != null;
     }
 
     @Override
@@ -287,9 +307,55 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     @Override
     protected void checkState() {
-        if (!isRunning()) {
+        checkInitializedCompletely();
+        checkIsRunning();
+    }
+
+    private void checkInitializedCompletely() {
+        if (instance == null) {
+            throw WeldSELogger.LOG.weldContainerNotInitializedCompletely(id);
+        }
+    }
+
+    private void checkIsRunning() {
+        if (!SINGLETON.isSet(id)) {
+            if (WeldSELogger.LOG.isTraceEnabled()) {
+                WeldSELogger.LOG.tracev("Spurious call to shutdown from: {0}", (Object[]) Thread.currentThread().getStackTrace());
+            }
             throw WeldSELogger.LOG.weldContainerAlreadyShutDown(id);
         }
+    }
+
+    private BeanManagerImpl beanManager() {
+        if (beanManager == null) {
+            synchronized (this) {
+                if (beanManager == null) {
+                    beanManager = BeanManagerProxy.unwrap(bootstrap.getManager(getDeterminingBeanDeploymentArchive(deployment)));
+                }
+            }
+        }
+        return beanManager;
+    }
+
+    private BeanDeploymentArchive getDeterminingBeanDeploymentArchive(Deployment deployment) {
+        Collection<BeanDeploymentArchive> beanDeploymentArchives = deployment.getBeanDeploymentArchives();
+        if (beanDeploymentArchives.size() == 1) {
+            // Only one bean archive or isolation is disabled
+            return beanDeploymentArchives.iterator().next();
+        }
+        for (BeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
+            if (WeldDeployment.SYNTHETIC_BDA_ID.equals(beanDeploymentArchive.getId())) {
+                // Synthetic bean archive takes precedence
+                return beanDeploymentArchive;
+            }
+        }
+        for (BeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
+            if (!WeldDeployment.ADDITIONAL_BDA_ID.equals(beanDeploymentArchive.getId())) {
+                // Get the first non-additional bean deployment archive
+                return beanDeploymentArchive;
+            }
+        }
+        return deployment.loadBeanDeploymentArchive(WeldContainer.class);
     }
 
 }

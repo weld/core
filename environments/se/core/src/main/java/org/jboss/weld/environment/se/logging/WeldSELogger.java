@@ -73,4 +73,7 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
 
     // 2013 used in Weld 2.3
 
+    @Message(id = 2014, value = "Weld SE container {0} not initialized completely", format = Format.MESSAGE_FORMAT)
+    IllegalStateException weldContainerNotInitializedCompletely(Object id);
+
 }
