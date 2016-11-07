@@ -17,8 +17,11 @@
 package org.jboss.weld.environment.se.test.container.provider;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 
 import org.jboss.weld.environment.se.Weld;
@@ -58,6 +61,17 @@ public class WeldSEProviderTest {
             assertCdi(weldContainer2.select(Bar.class).get().getCurrent(), weldContainer2.getId());
         } finally {
             weld.shutdown();
+        }
+    }
+
+    @Test
+    public void testExtension() {
+        TestExtension.reset();
+        try (WeldContainer weldContainer = new Weld().disableDiscovery().beanClasses(Foo.class).addExtension(new TestExtension()).initialize()) {
+            BeanManager beanManager = TestExtension.beanManagerReference.get();
+            assertNotNull(beanManager);
+            Bean<?> fooBean = TestExtension.fooBeanReference.get();
+            assertNotNull(fooBean);
         }
     }
 
