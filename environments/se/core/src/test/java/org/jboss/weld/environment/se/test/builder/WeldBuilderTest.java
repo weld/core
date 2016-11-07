@@ -30,7 +30,6 @@ import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
@@ -62,13 +61,14 @@ public class WeldBuilderTest {
         assertNull(WeldContainer.instance("FOO"));
         // Test alternatives selected for the synthetic BDA
         try (WeldContainer container = weld.beanClasses(Foo.class, Bar.class, Cat.class).alternatives(Bar.class)
-            .alternativeStereotypes(AlternativeStereotype.class).initialize()) {
+                .alternativeStereotypes(AlternativeStereotype.class).initialize()) {
             assertEquals(10, container.select(Foo.class).get().getVal());
             assertEquals(1, container.select(Bar.class).get().getVal());
             assertEquals(5, container.select(Cat.class).get().getVal());
         }
         // Test interceptor enabled for the synthetic BDA
-        try (WeldContainer container = weld.reset().beanClasses(Qux.class, MonitoringInterceptor.class).interceptors(MonitoringInterceptor.class).initialize()) {
+        try (WeldContainer container = weld.reset().beanClasses(Qux.class, MonitoringInterceptor.class).interceptors(MonitoringInterceptor.class)
+                .initialize()) {
             assertEquals(Integer.valueOf(11), container.select(Qux.class).get().ping());
         }
         // Test decorator enabled for the synthetic BDA
@@ -111,23 +111,23 @@ public class WeldBuilderTest {
     @Test
     public void testConfigurationProperties() {
         try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class).property(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false)
-            .initialize()) {
+                .initialize()) {
             assertFalse(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
-                .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
+                    .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
         }
     }
 
     @Test
     public void testReset() {
         Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), true)
-            .beanClasses(Foo.class);
+                .beanClasses(Foo.class);
         weld.reset();
         assertFalse(weld.isDiscoveryEnabled());
         assertEquals("FOO", weld.getContainerId());
         try (WeldContainer container = weld.beanClasses(Bar.class).initialize()) {
             assertTrue(container.select(Foo.class).isUnsatisfied());
             assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
-                .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
+                    .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
         }
     }
 
@@ -136,12 +136,12 @@ public class WeldBuilderTest {
         Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.RELAXED_CONSTRUCTION.get(), false).beanClasses(Foo.class);
         weld.resetAll();
         assertTrue(weld.isDiscoveryEnabled());
-        assertEquals(RegistrySingletonProvider.STATIC_INSTANCE, weld.getContainerId());
+        assertNull(weld.getContainerId());
         weld.disableDiscovery();
         try (WeldContainer container = weld.beanClasses(Bar.class).initialize()) {
             assertTrue(container.select(Foo.class).isUnsatisfied());
             assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
-                .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
+                    .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
         }
     }
 
@@ -190,7 +190,7 @@ public class WeldBuilderTest {
         try (WeldContainer container = weld.reset().addPackage(true, Any.class).initialize()) {
             // There is no managed bean discovered, therefore we only check the the bean class was found
             boolean found = false;
-            for (BeanDeploymentArchive beanDeploymentArchive : Container.instance().beanDeploymentArchives().keySet()) {
+            for (BeanDeploymentArchive beanDeploymentArchive : Container.instance(container.getId()).beanDeploymentArchives().keySet()) {
                 if (beanDeploymentArchive.getBeanClasses().contains(DefinitionException.class.getName())) {
                     found = true;
                     break;

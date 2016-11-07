@@ -57,56 +57,49 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         }
         names.add(Unmanaged.class.getName());
         this.knownClassNames = names.build();
-        this.instanceCache = ComputingCacheBuilder.newBuilder().<BeanManagerImpl, Instance<T>> build(
-                (b) -> cast(b.getInstance(b.createCreationalContext(null))));
+        this.instanceCache = ComputingCacheBuilder.newBuilder()
+                .<BeanManagerImpl, Instance<T>> build((b) -> cast(b.getInstance(b.createCreationalContext(null))));
     }
 
     @Override
     public Iterator<T> iterator() {
-        checkState();
-        return getInstance().iterator();
+        return instanceInternal().iterator();
     }
 
     @Override
     public T get() {
-        checkState();
-        return getInstance().get();
+        return instanceInternal().get();
     }
 
     @Override
+
     public Instance<T> select(Annotation... qualifiers) {
-        checkState();
-        return getInstance().select(qualifiers);
+        return instanceInternal().select(qualifiers);
     }
 
     @Override
     public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
-        checkState();
-        return getInstance().select(subtype, qualifiers);
+        return instanceInternal().select(subtype, qualifiers);
     }
 
     @Override
     public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
-        checkState();
-        return getInstance().select(subtype, qualifiers);
+        return instanceInternal().select(subtype, qualifiers);
     }
 
     @Override
     public boolean isUnsatisfied() {
-        checkState();
-        return getInstance().isUnsatisfied();
+        return instanceInternal().isUnsatisfied();
     }
 
     @Override
     public boolean isAmbiguous() {
-        checkState();
-        return getInstance().isAmbiguous();
+        return instanceInternal().isAmbiguous();
     }
 
     @Override
     public void destroy(T instance) {
-        checkState();
-        getInstance().destroy(instance);
+        instanceInternal().destroy(instance);
     }
 
     /**
@@ -127,6 +120,11 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         throw BeanManagerLogger.LOG.unableToIdentifyBeanManager();
     }
 
+    private Instance<T> instanceInternal() {
+        checkState();
+        return getInstance();
+    }
+
     /**
      * Subclasses are allowed to override the default behavior, i.e. to cache an instance per BeanManager.
      *
@@ -137,10 +135,12 @@ public abstract class AbstractCDI<T> extends CDI<T> {
     }
 
     /**
-     * Check whether container is running
+     * Check whether the container is in a "valid" state, no-op by default.
+     * <p>
+     * Subclasses are allowed to override the default behavior, i.e. to check whether a container is running.
      */
-    protected void checkState(){
-      //no-op
+    protected void checkState() {
+        // no-op
     }
 
 }
