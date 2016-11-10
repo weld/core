@@ -115,6 +115,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
+import org.jboss.weld.injection.InterceptionFactoryImpl;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
@@ -1437,8 +1438,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> InterceptionFactory<T> createInterceptionFactory(CreationalContext<T> ctx, Class<T> clazz) {
-        // TODO WELD-2257 Implement InterceptionFactory
-        return null;
+        return InterceptionFactoryImpl.of(this, ctx, createAnnotatedType(clazz));
     }
 
     @Override

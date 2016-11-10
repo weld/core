@@ -34,6 +34,7 @@ import java.util.function.Function;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InterceptionFactory;
 import javax.inject.Provider;
 
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -205,7 +206,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     @Override
     protected Iterable<? extends T> getAllBeans(Resolvable resolvable) {
-        if (resolvable.getTypes().contains(Object.class) || Instance.class.equals(resolvable.getJavaClass()) || Event.class.equals(resolvable.getJavaClass()) || Provider.class.equals(resolvable.getJavaClass()) || resolvable.getTypes().contains(Serializable.class)) {
+        if (resolvable.getTypes().contains(Object.class) || Instance.class.equals(resolvable.getJavaClass()) || Event.class.equals(resolvable.getJavaClass()) || Provider.class.equals(resolvable.getJavaClass()) || InterceptionFactory.class.equals(resolvable.getJavaClass()) || resolvable.getTypes().contains(Serializable.class)) {
             return super.getAllBeans(resolvable);
         }
         Set<T> beans = new HashSet<T>();

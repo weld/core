@@ -41,9 +41,11 @@ import org.jboss.weld.bean.builtin.EventMetadataBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.InstanceBean;
 import org.jboss.weld.bean.builtin.InterceptedBeanMetadataBean;
+import org.jboss.weld.bean.builtin.InterceptionFactoryBean;
 import org.jboss.weld.bean.builtin.InterceptorMetadataBean;
 import org.jboss.weld.bean.builtin.RequestContextControllerBean;
 import org.jboss.weld.bean.builtin.ee.PrincipalBean;
+import org.jboss.weld.bean.proxy.InterceptionFactoryDataCache;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -110,6 +112,7 @@ public class BeanDeployment {
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, BeanDeployments.getFinalId(beanDeploymentArchive.getId(),
                 services.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER)), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
+        services.add(InterceptionFactoryDataCache.class, new InterceptionFactoryDataCache(beanManager));
 
         services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager, beanDeploymentArchive);
         services.addIfAbsent(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
@@ -236,6 +239,8 @@ public class BeanDeployment {
         beanDeployer.addBuiltInBean(new DecoratedBeanMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new InterceptorMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new DecoratorMetadataBean(beanManager));
+        beanDeployer.addBuiltInBean(new InterceptionFactoryBean(beanManager));
+
         if (beanManager.getServices().getRequired(SecurityServices.class) != NoopSecurityServices.INSTANCE) {
             beanDeployer.addBuiltInBean(new PrincipalBean(beanManager));
         }

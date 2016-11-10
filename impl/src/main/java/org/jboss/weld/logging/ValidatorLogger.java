@@ -273,4 +273,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1481, value = "Final method will be ignored during proxy generation and should never be invoked upon the proxy instance! {0} - {1}.", format = Format.MESSAGE_FORMAT)
     void notProxyableFinalMethodIgnored(Method invalidMethod, Object declaringBean);
 
+    @Message(id = 1482, value = "InterceptionFactory can only be injected in a parameter of a producer method: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidInterceptionFactoryInjectionPoint(Object injectionPoint, Object stackElement);
+
 }
