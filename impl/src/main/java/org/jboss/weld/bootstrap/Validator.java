@@ -56,6 +56,7 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InterceptionFactory;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Producer;
@@ -324,6 +325,10 @@ public class Validator implements Service {
         checkFacadeInjectionPoint(ij, Instance.class);
         checkFacadeInjectionPoint(ij, Event.class);
 
+        if (InterceptionFactory.class.equals(Reflections.getRawType(ij.getType())) && !(bean instanceof ProducerMethod<?, ?>)) {
+            throw ValidatorLogger.LOG.invalidInterceptionFactoryInjectionPoint(ij, Formats.formatAsStackTraceElement(ij));
+        }
+
         for (PlugableValidator validator : plugableValidators) {
             validator.validateInjectionPointForDefinitionErrors(ij, bean, beanManager);
         }
@@ -386,7 +391,7 @@ public class Validator implements Service {
         if (!resolvedBeans.isEmpty()) {
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
             if (beanManager.isNormalScope(resolvedBean.getScope())) {
-                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean, beanManager.getServices());
+                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean, beanManager.getServices(), false);
                 if (ue != null) {
                     throw ValidatorLogger.LOG.injectionPointHasNonProxyableDependencies(ij, Formats.formatAsStackTraceElement(ij), ue);
                 }

@@ -141,7 +141,7 @@ public class Proxies {
     }
 
     public static UnproxyableResolutionException getUnproxyableTypeException(Type type, ServiceRegistry services) {
-        return getUnproxyableTypeException(type, null, services);
+        return getUnproxyableTypeException(type, null, services, false);
     }
 
     /**
@@ -176,10 +176,9 @@ public class Proxies {
         return getUnproxyableTypesExceptionInt(types, null, services);
     }
 
-
-    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean, ServiceRegistry services) {
+    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean, ServiceRegistry services, boolean ignoreFinalMethods) {
         if (type instanceof Class<?> || type instanceof ParameterizedType || type instanceof GenericArrayType) {
-            return getUnproxyableClassException(Reflections.getRawType(type), declaringBean, services);
+            return getUnproxyableClassException(Reflections.getRawType(type), declaringBean, services, ignoreFinalMethods);
         }
         return ValidatorLogger.LOG.notProxyableUnknown(type, getDeclaringBeanInfo(declaringBean));
     }
@@ -191,7 +190,7 @@ public class Proxies {
             if (Object.class.equals(apiType)) {
                 continue;
             }
-            UnproxyableResolutionException e = getUnproxyableTypeException(apiType, declaringBean, services);
+            UnproxyableResolutionException e = getUnproxyableTypeException(apiType, declaringBean, services, false);
             if (e != null) {
                 return e;
             }
@@ -199,7 +198,7 @@ public class Proxies {
         return null;
     }
 
-    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean, ServiceRegistry services) {
+    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean, ServiceRegistry services, boolean ignoreFinalMethods) {
         if (clazz.isInterface()) {
             return null;
         }
@@ -219,7 +218,7 @@ public class Proxies {
         } else {
             Method finalMethod = Reflections.getNonPrivateNonStaticFinalMethod(clazz);
             if (finalMethod != null) {
-                if (Beans.shouldIgnoreFinalMethods(declaringBean) || services.get(WeldConfiguration.class).isFinalMethodIgnored(clazz.getName())) {
+                if (ignoreFinalMethods || Beans.shouldIgnoreFinalMethods(declaringBean) || services.get(WeldConfiguration.class).isFinalMethodIgnored(clazz.getName())) {
                     ValidatorLogger.LOG.notProxyableFinalMethodIgnored(finalMethod, getDeclaringBeanInfo(declaringBean));
                 } else {
                     return ValidatorLogger.LOG.notProxyableFinalMethod(clazz, finalMethod, getDeclaringBeanInfo(declaringBean));

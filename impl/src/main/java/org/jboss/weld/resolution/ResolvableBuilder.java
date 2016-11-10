@@ -34,6 +34,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InterceptionFactory;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -48,7 +49,7 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class ResolvableBuilder {
 
-    private static final Class<?>[] FACADE_TYPES = new Class<?>[] { Event.class, Instance.class, Provider.class };
+    private static final Class<?>[] FACADE_TYPES = new Class<?>[] { Event.class, Instance.class, Provider.class, InterceptionFactory.class };
     private static final Class<?>[] METADATA_TYPES = new Class<?>[] { Interceptor.class, Decorator.class, Bean.class };
     private static final Set<QualifierInstance> ANY_SINGLETON = Collections.singleton(QualifierInstance.ANY);
 

@@ -26,6 +26,7 @@ import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.IllegalStateException;
 
 /**
  * Log messages for interceptors.
@@ -57,4 +58,7 @@ public interface InterceptorLogger extends WeldLogger {
 
     @Message(id = 1705, value = "Target instance not created - one of the interceptor methods in the AroundConstruct chain did not invoke InvocationContext.proceed() for: {0}", format= Format.MESSAGE_FORMAT)
     CreationException targetInstanceNotCreated(Object constructor);
+
+    @Message(id = 1706, value = "InterceptionFactory.createInterceptedInstance() may only be called once", format= Format.MESSAGE_FORMAT)
+    IllegalStateException interceptionFactoryNotReusable();
 }

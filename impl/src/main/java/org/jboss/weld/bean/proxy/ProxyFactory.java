@@ -908,7 +908,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         b.getfield(file.getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(getMethodHandlerType()));
     }
 
-    private Class<?> getProxySuperclass() {
+    protected Class<?> getProxySuperclass() {
         return getBeanType().isInterface() ? Object.class : getBeanType();
     }
 }
