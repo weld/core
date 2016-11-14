@@ -47,8 +47,6 @@ import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.el.WeldELContextListener;
-import org.jboss.weld.environment.Container;
-import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 
-import org.jboss.weld.environment.Container;
+import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.Listener;
 import org.jboss.weld.environment.undertow.UndertowContainer;
 import org.junit.Test;
