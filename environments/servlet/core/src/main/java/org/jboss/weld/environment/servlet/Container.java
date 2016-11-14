@@ -28,7 +28,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public interface Container {
 
-    String CONTEXT_PARAM_CONTAINER_CLASS = Container.class.getPackage().getName() + ".container.class";
+    String CONTEXT_PARAM_CONTAINER_CLASS = "org.jboss.weld.environment.container.class";
 
     /**
      * Touch if this container can be used.
