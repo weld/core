@@ -320,7 +320,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 setActive(true);
                 for (ManagedConversation conversation : conversations.values()) {
                     String id = conversation.getId();
-                    conversation.end();
+                    if (!conversation.isTransient()) {
+                        // the currently associated conversation will be destroyed at the end of the current request
+                        conversation.end();
+                    }
                     destroyConversation(session, id);
                 }
                 setActive(false);
