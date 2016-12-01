@@ -35,7 +35,7 @@ public class WeldELResolver extends AbstractWeldELResolver {
         this.rootNamespace = new LazyValueHolder<Namespace>() {
             @Override
             protected Namespace computeValue() {
-                return new Namespace(manager.getAccessibleNamespaces());
+                return new Namespace(manager.getDynamicAccessibleNamespaces());
             }
         };
     }

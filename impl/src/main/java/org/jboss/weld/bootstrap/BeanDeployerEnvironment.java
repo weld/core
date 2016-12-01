@@ -145,7 +145,7 @@ public class BeanDeployerEnvironment {
     }
 
     public void addSyntheticAnnotatedType(SlimAnnotatedType<?> annotatedType, Extension extension) {
-        addAnnotatedType(SlimAnnotatedTypeContext.of(annotatedType, classTransformer, extension));
+        addAnnotatedType(SlimAnnotatedTypeContext.of(annotatedType, extension));
     }
 
     public Set<SlimAnnotatedTypeContext<?>> getAnnotatedTypes() {

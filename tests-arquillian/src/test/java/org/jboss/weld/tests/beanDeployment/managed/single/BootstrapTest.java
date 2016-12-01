@@ -47,7 +47,7 @@ public class BootstrapTest {
 
     @Test
     public void testSingleSimpleBean() {
-        Iterable<Bean<?>> beans = beanManager.getAccessibleBeans();
+        Iterable<Bean<?>> beans = beanManager.getDynamicAccessibleBeans();
         Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
         for (Bean<?> bean : beans) {
             if (bean instanceof RIBean) {

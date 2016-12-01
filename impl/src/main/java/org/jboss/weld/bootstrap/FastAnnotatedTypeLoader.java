@@ -109,7 +109,7 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
             Set<ExtensionObserverMethodImpl<?, ?>> observerMethods, String bdaId) {
         final SlimAnnotatedType<T> type = loadAnnotatedType(this.<T>loadClass(className), bdaId);
         if (type != null) {
-            return SlimAnnotatedTypeContext.of(type, classFileInfo, observerMethods, classTransformer);
+            return SlimAnnotatedTypeContext.of(type, classFileInfo, observerMethods);
         }
         return null;
     }

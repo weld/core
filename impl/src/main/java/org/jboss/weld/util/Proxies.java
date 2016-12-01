@@ -21,8 +21,6 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,7 +35,6 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.logging.ValidatorLogger;
-import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -206,8 +203,8 @@ public class Proxies {
 
         Constructor<?> constructor = null;
         try {
-            constructor = AccessController.doPrivileged(GetDeclaredConstructorAction.of(clazz));
-        } catch (PrivilegedActionException e) {
+            constructor = SecurityActions.getDeclaredConstructor(clazz);
+        } catch (NoSuchMethodException ignored) {
         }
 
         if (clazz.isPrimitive()) {
