@@ -163,7 +163,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     boolean dirty = event.isDirty();
                     if (dirty) {
                         classesToBeRemoved.add(annotatedTypeContext); // remove the original class
-                        classesToBeAdded.add(SlimAnnotatedTypeContext.of(event.getResultingAnnotatedType(), classTransformer, annotatedTypeContext.getExtension()));
+                        classesToBeAdded.add(SlimAnnotatedTypeContext.of(event.getResultingAnnotatedType(), annotatedTypeContext.getExtension()));
                     }
                     processPriority(event.getResultingAnnotatedType());
                 }
