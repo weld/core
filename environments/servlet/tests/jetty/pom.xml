@@ -314,9 +314,10 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <excludes>
-                                <exclude>%regex[.*servlet/test/(?!se).*]</exclude>
-                            </excludes>
+                            <includes>
+                                <include>org.jboss.weld.environment.servlet.test.se.coop.BootstrapNotNeededTest</include>
+                                <include>org.jboss.weld.environment.servlet.test.se.coop.builder.WeldSeBuilderTest</include>
+                            </includes>
                         </configuration>
                     </plugin>
                 </plugins>
