@@ -24,14 +24,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.experimental.ExperimentalInvocationContext;
+import org.jboss.weld.interceptor.WeldInvocationContext;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
-abstract class AbstractInvocationContext implements ExperimentalInvocationContext {
+abstract class AbstractInvocationContext implements WeldInvocationContext {
 
     protected Map<String, Object> contextData;
     protected final Method method;

@@ -26,9 +26,9 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
@@ -59,6 +59,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     private static final String SUBTYPE_ARGUMENT_NAME = "subtype";
     private static final long serialVersionUID = 656782657242515455L;
     private static final int DEFAULT_CACHE_CAPACITY = 4;
+    private static final NotificationOptions EMPTY_NOTIFICATION_OPTIONS = NotificationOptions.builder().build();
 
     public static <E> EventImpl<E> of(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         return new EventImpl<E>(injectionPoint, beanManager);
@@ -95,20 +96,20 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     @Override
     public <U extends T> CompletionStage<U> fireAsync(U event) {
         Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
-        return fireAsyncInternal(event, null);
+        return fireAsyncInternal(event, EMPTY_NOTIFICATION_OPTIONS);
     }
 
     @Override
-    public <U extends T> CompletionStage<U> fireAsync(U event, Executor executor) {
+    public <U extends T> CompletionStage<U> fireAsync(U event, NotificationOptions options) {
         Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
-        Preconditions.checkArgumentNotNull(executor, "executor");
-        return fireAsyncInternal(event, executor);
+        Preconditions.checkArgumentNotNull(options, "options");
+        return fireAsyncInternal(event, options);
     }
 
-    private <U extends T> CompletionStage<U> fireAsyncInternal(U event, Executor executor) {
+    private <U extends T> CompletionStage<U> fireAsyncInternal(U event, NotificationOptions options) {
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
-        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.metadata, executor);
+        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.metadata, options);
     }
 
     private CachedObservers getObservers(T event) {

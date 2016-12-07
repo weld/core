@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.builder.BeanAttributesConfigurator;
+import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
 
 import org.jboss.weld.bootstrap.events.builder.BeanAttributesBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanAttributesConfiguratorImpl;
@@ -105,6 +105,11 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
         checkWithinObserverNotification();
         veto = true;
         BootstrapLogger.LOG.beanAttributesVetoed(getReceiver(), attributes);
+    }
+
+    @Override
+    public void ignoreFinalMethods() {
+        // TODO WELD-2263
     }
 
     public boolean isVeto() {

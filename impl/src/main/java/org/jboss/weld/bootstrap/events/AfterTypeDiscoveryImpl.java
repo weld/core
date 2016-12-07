@@ -23,7 +23,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.builder.AnnotatedTypeConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
@@ -86,7 +86,7 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     }
 
     @Override
-    public <T> AnnotatedTypeConfigurator<T> addAnnotatedType(String id, Class<T> type) {
+    public <T> AnnotatedTypeConfigurator<T> addAnnotatedType(Class<T> type, String id) {
         checkWithinObserverNotification();
         AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(type));
         additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));

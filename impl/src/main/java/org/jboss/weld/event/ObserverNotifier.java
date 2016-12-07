@@ -30,6 +30,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
+import javax.enterprise.event.NotificationOptions;
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -295,14 +296,14 @@ public class ObserverNotifier {
      * @param observers the given observer methods
      * @param event the given event object
      * @param metadata event metadata
-     * @param executor the executor to be used for asynchronous delivery - may be null
+     * @param options
      */
-    public <T, U extends T> CompletionStage<U> notifyAsync(ResolvedObservers<T> observers, U event, EventMetadata metadata, Executor executor) {
+    public <T, U extends T> CompletionStage<U> notifyAsync(ResolvedObservers<T> observers, U event, EventMetadata metadata, NotificationOptions options) {
         if (!observers.isMetadataRequired()) {
             metadata = null;
         }
         final ObserverExceptionHandler handler = new CollectingExceptionHandler();
-        return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, executor, handler);
+        return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, options.getExecutor(), handler);
     }
 
     protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata,

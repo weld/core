@@ -24,7 +24,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.builder.InjectionPointConfigurator;
+import javax.enterprise.inject.spi.configurator.InjectionPointConfigurator;
 
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -33,7 +33,6 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @author Martin Kouba
  */
 public class InjectionPointBuilderImpl {
-    // implements InjectionPointBuilder {
 
     private final InjectionPointConfiguratorImpl configurator;
 

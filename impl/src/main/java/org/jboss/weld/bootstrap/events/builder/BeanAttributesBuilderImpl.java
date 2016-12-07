@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.builder.BeanAttributesConfigurator;
+import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
 import javax.inject.Named;
 
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;

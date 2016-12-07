@@ -23,7 +23,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.builder.BeanConfigurator;
+import javax.enterprise.inject.spi.configurator.BeanConfigurator;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl.CreateCallback;
@@ -40,7 +40,6 @@ import org.jboss.weld.util.reflection.Formats;
  * @param <T>
  */
 public class BeanBuilderImpl<T> {
-    // implements BeanBuilder<T> {
 
     private final BeanConfiguratorImpl<T> configurator;
 
@@ -52,12 +51,10 @@ public class BeanBuilderImpl<T> {
         this.configurator = configurator;
     }
 
-    // @Override
     public BeanConfigurator<T> configure() {
         return configurator;
     }
 
-    // @Override
     public Bean<T> build() {
         // TODO validate?
         return new ImmutableBean<>(configurator);
@@ -115,7 +112,7 @@ public class BeanBuilderImpl<T> {
         @Override
         public void destroy(T instance, CreationalContext<T> creationalContext) {
             if (destroyCallback != null) {
-                destroyCallback.destroy(instance, creationalContext);
+                destroyCallback.destroy(instance, creationalContext, beanManager);
             }
         }
 

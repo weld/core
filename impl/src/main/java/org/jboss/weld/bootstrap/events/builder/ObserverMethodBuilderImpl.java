@@ -19,14 +19,14 @@ package org.jboss.weld.bootstrap.events.builder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
+import javax.enterprise.event.ObserverException;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
-import javax.enterprise.inject.spi.EventMetadata;
+import javax.enterprise.inject.spi.EventContext;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.builder.ObserverMethodConfigurator;
+import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
+import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator.EventConsumer;
 
 import org.jboss.weld.event.SyntheticObserverMethod;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -36,7 +36,6 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @author Martin Kouba
  */
 public class ObserverMethodBuilderImpl<T> {
-    // implements ObserverMethodBuilder<T> {
 
     private final ObserverMethodConfiguratorImpl<T> configurator;
 
@@ -48,12 +47,10 @@ public class ObserverMethodBuilderImpl<T> {
         this.configurator = configurator;
     }
 
-    // @Override
     public ObserverMethodConfigurator<T> configure() {
         return configurator;
     }
 
-    // @Override
     public ObserverMethod<T> build() {
         return new ImmutableObserverMethod<>(configurator);
     }
@@ -80,7 +77,7 @@ public class ObserverMethodBuilderImpl<T> {
 
         private final boolean isAsync;
 
-        private final NotificationCallback<T> notificationCallback;
+        private final EventConsumer<T> notifyCallback;
 
         /**
          *
@@ -94,7 +91,7 @@ public class ObserverMethodBuilderImpl<T> {
             this.txPhase = configurator.getTxPhase();
             this.priority = configurator.getPriority();
             this.isAsync = configurator.isAsync();
-            this.notificationCallback = NotificationCallback.from(configurator);
+            this.notifyCallback = configurator.getNotifyCallback();
         }
 
         @Override
@@ -128,8 +125,12 @@ public class ObserverMethodBuilderImpl<T> {
         }
 
         @Override
-        public void notify(T event) {
-            notificationCallback.notify(event, null);
+        public void notify(EventContext<T> eventContext) {
+            try {
+                notifyCallback.accept(eventContext);
+            } catch (Exception e) {
+                throw new ObserverException(e);
+            }
         }
 
         @Override
@@ -138,43 +139,8 @@ public class ObserverMethodBuilderImpl<T> {
         }
 
         @Override
-        public void notify(T event, EventMetadata eventMetadata) {
-            notificationCallback.notify(event, eventMetadata);
-        }
-
-        @Override
         public boolean isEventMetadataRequired() {
-            return notificationCallback.isMetadataRequired();
-        }
-
-    }
-
-    public static final class NotificationCallback<T> {
-
-        private final Consumer<T> notifySimple;
-
-        private final BiConsumer<T, EventMetadata> notifyMetadata;
-
-        static <T> NotificationCallback<T> from(ObserverMethodConfiguratorImpl<T> configurator) {
-            return configurator.getNotifySimple() != null ? new NotificationCallback<>(configurator.getNotifySimple(), null)
-                    : new NotificationCallback<>(null, configurator.getNotifyMetadata());
-        }
-
-        private NotificationCallback(Consumer<T> notifySimple, BiConsumer<T, EventMetadata> notifyMetadata) {
-            this.notifySimple = notifySimple;
-            this.notifyMetadata = notifyMetadata;
-        }
-
-        void notify(T event, EventMetadata metadata) {
-            if (notifySimple != null) {
-                notifySimple.accept(event);
-            } else {
-                notifyMetadata.accept(event, metadata);
-            }
-        }
-
-        boolean isMetadataRequired() {
-            return notifyMetadata != null;
+            return true;
         }
 
     }

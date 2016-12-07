@@ -26,7 +26,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.builder.BeanAttributesConfigurator;
+import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Named;
 

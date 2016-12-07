@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
+import javax.enterprise.inject.spi.EventContext;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
@@ -45,7 +46,6 @@ import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.event.SyntheticObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -129,14 +129,32 @@ public class Observers {
      *
      * @param observerMethod
      * @param event
-     * @param eventMetadata May be null
+     * @param metadata May be null
      */
-    public static <T> void notify(ObserverMethod<? super T> observerMethod, T event, EventMetadata eventMetadata) {
-        if (observerMethod instanceof SyntheticObserverMethod) {
-            SyntheticObserverMethod<? super T> syntheticObserverMethod = (SyntheticObserverMethod<? super T>) observerMethod;
-            syntheticObserverMethod.notify(event, eventMetadata);
-        } else {
-            observerMethod.notify(event);
+    public static <T> void notify(ObserverMethod<? super T> observerMethod, T event, EventMetadata metadata) {
+        observerMethod.notify(new EventContextImpl<>(event, metadata));
+    }
+
+    static class EventContextImpl<T> implements EventContext<T> {
+
+        private final T event;
+
+        private final EventMetadata metadata;
+
+        EventContextImpl(T event, EventMetadata metadata) {
+            this.event = event;
+            this.metadata = metadata;
         }
+
+        @Override
+        public T getEvent() {
+            return event;
+        }
+
+        @Override
+        public EventMetadata getMetadata() {
+            return metadata;
+        }
+
     }
 }

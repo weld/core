@@ -64,6 +64,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InjectionTargetFactory;
+import javax.enterprise.inject.spi.InterceptionFactory;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -1432,6 +1433,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
         // We intentionally do not return a contextual instance, since it is not available at bootstrap.
         return extensionClass.cast(bean.create(null));
+    }
+
+    @Override
+    public <T> InterceptionFactory<T> createInterceptionFactory(CreationalContext<T> ctx, Class<T> clazz) {
+        // TODO WELD-2257 Implement InterceptionFactory
+        return null;
+    }
+
+    @Override
+    public Event<Object> getEvent() {
+        return event();
     }
 
     private boolean isRegisterableInjectionPoint(InjectionPoint ip) {

@@ -24,7 +24,7 @@ import javax.annotation.Priority;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.experimental.ExperimentalInvocationContext;
+import org.jboss.weld.interceptor.WeldInvocationContext;
 
 @Priority(value = Interceptor.Priority.APPLICATION)
 @Interceptor
@@ -39,8 +39,8 @@ public class PreDestroyInterceptor {
     @PostConstruct
     void intercept(InvocationContext ctx) throws Exception {
         contextDataBindings = (Set<Annotation>) ctx.getContextData().get(InvocationContextInterceptorBindingsTest.KEY);
-        if(ctx instanceof ExperimentalInvocationContext) {
-            contextBindings =  ((ExperimentalInvocationContext)ctx).getInterceptorBindings();
+        if(ctx instanceof WeldInvocationContext) {
+            contextBindings =  ((WeldInvocationContext)ctx).getInterceptorBindings();
         }
         ctx.proceed();
     }

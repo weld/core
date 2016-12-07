@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.jboss.weld.annotated.slim.BaseAnnotated;
 
-public class UnbackedAnnotated extends BaseAnnotated {
+public abstract class UnbackedAnnotated extends BaseAnnotated {
 
     private final Set<Annotation> annotations;
     private final Set<Type> typeClosure;

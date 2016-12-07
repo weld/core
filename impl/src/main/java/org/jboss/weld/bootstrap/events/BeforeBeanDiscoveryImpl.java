@@ -22,7 +22,7 @@ import java.util.Collection;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.builder.AnnotatedTypeConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
@@ -119,7 +119,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
     }
 
     @Override
-    public <T> AnnotatedTypeConfigurator<T> addAnnotatedType(String id, Class<T> type) {
+    public <T> AnnotatedTypeConfigurator<T> addAnnotatedType(Class<T> type, String id) {
         checkWithinObserverNotification();
         AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(type));
         additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));
@@ -138,6 +138,19 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         checkWithinObserverNotification();
         addSyntheticAnnotation(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
         BootstrapLogger.LOG.addInterceptorBindingCalled(getReceiver(), bindingType);
+    }
+
+
+    @Override
+    public <T extends Annotation> AnnotatedTypeConfigurator<T> configureQualifier(Class<T> qualifier) {
+        // TODO WELD-2264
+        return null;
+    }
+
+    @Override
+    public <T extends Annotation> AnnotatedTypeConfigurator<T> configureInterceptorBinding(Class<T> bindingType) {
+        // TODO WELD-2264
+        return null;
     }
 
     private <A extends Annotation> void addSyntheticAnnotation(AnnotatedType<A> annotation, Annotation requiredMetaAnnotation) {

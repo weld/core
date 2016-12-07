@@ -21,10 +21,10 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.builder.AnnotatedConstructorConfigurator;
-import javax.enterprise.inject.spi.builder.AnnotatedFieldConfigurator;
-import javax.enterprise.inject.spi.builder.AnnotatedMethodConfigurator;
-import javax.enterprise.inject.spi.builder.AnnotatedTypeConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedConstructorConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.util.collections.ImmutableSet;
 

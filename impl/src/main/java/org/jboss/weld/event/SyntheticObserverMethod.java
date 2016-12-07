@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import javax.enterprise.inject.spi.EventMetadata;
-
 /**
  * Marker interface for synthetic observer methods. A synthetic observer method is not defined on a bean class.
  *
@@ -26,12 +24,5 @@ import javax.enterprise.inject.spi.EventMetadata;
  * @param <T>
  */
 public interface SyntheticObserverMethod<T> extends EventMetadataAwareObserverMethod<T> {
-
-    /**
-     *
-     * @param event
-     * @param eventMetadata
-     */
-    void notify(T event, EventMetadata eventMetadata);
 
 }

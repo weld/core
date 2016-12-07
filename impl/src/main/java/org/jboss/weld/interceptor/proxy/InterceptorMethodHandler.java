@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.bean.proxy.StackAwareMethodHandler;
-import org.jboss.weld.experimental.ExperimentalInvocationContext;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.util.reflection.Reflections;
@@ -77,11 +76,11 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
         }
     }
     protected Object executeLifecycleInterception(Object instance, Method method, Method proceed, Object[] args, CachedInterceptionChain chain, Stack stack) throws Throwable {
-        return new WeldInvocationContext(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack).proceed();
+        return new WeldInvocationContextImpl(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack).proceed();
     }
 
     protected Object executeAroundInvoke(Object instance, Method method, Method proceed, Object[] args, CachedInterceptionChain chain, Stack stack) throws Throwable {
-        ExperimentalInvocationContext ctx = create(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack);
+        org.jboss.weld.interceptor.WeldInvocationContext ctx = create(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack);
         try {
             return chain.interceptorMethods.get(0).invoke(ctx);
         } catch (InvocationTargetException e) {

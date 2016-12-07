@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -34,7 +33,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.builder.BeanConfigurator;
+import javax.enterprise.inject.spi.configurator.BeanConfigurator;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
@@ -123,31 +122,20 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T> {
     }
 
     @Override
-    public <U extends T> BeanConfigurator<U> produceWith(Supplier<U> callback) {
-        this.createCallback = cast(CreateCallback.fromProduceWith(callback));
-        return cast(this);
-    }
-
-    @Override
     public <U extends T> BeanConfigurator<U> produceWith(Function<Instance<Object>, U> callback) {
         this.createCallback = cast(CreateCallback.fromProduceWith(callback));
         return cast(this);
     }
 
     @Override
-    public <U extends T> BeanConfigurator<U> producing(U instance) {
-        return produceWith(() -> instance);
-    }
-
-    @Override
     public BeanConfigurator<T> destroyWith(BiConsumer<T, CreationalContext<T>> callback) {
-        this.destroyCallback = new DestroyCallback<>(callback);
+        this.destroyCallback = DestroyCallback.fromDestroy(callback);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> disposeWith(Consumer<T> callback) {
-        this.destroyCallback = new DestroyCallback<>(callback);
+    public BeanConfigurator<T> disposeWith(BiConsumer<T, Instance<Object>> callback) {
+        this.destroyCallback = DestroyCallback.fromDispose(callback);
         return this;
     }
 
@@ -365,21 +353,24 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T> {
 
         private final BiConsumer<T, CreationalContext<T>> destroy;
 
-        private final Consumer<T> simple;
+        private final BiConsumer<T, Instance<Object>> dispose;
 
-        public DestroyCallback(Consumer<T> callback) {
-            this.destroy = null;
-            this.simple = callback;
+        static <T> DestroyCallback<T> fromDispose(BiConsumer<T, Instance<Object>> callback) {
+            return new DestroyCallback<>(callback, null);
         }
 
-        public DestroyCallback(BiConsumer<T, CreationalContext<T>> callback) {
-            this.destroy = callback;
-            this.simple = null;
+        static <T> DestroyCallback<T> fromDestroy(BiConsumer<T, CreationalContext<T>> callback) {
+            return new DestroyCallback<>(null, callback);
         }
 
-        void destroy(T instance, CreationalContext<T> ctx) {
-            if (simple != null) {
-                simple.accept(instance);
+        public DestroyCallback(BiConsumer<T, Instance<Object>> dispose, BiConsumer<T, CreationalContext<T>> destroy) {
+            this.destroy = destroy;
+            this.dispose = dispose;
+        }
+
+        void destroy(T instance, CreationalContext<T> ctx, BeanManagerImpl beanManager) {
+            if (dispose != null) {
+                dispose.accept(instance, beanManager.getInstance(ctx));
             } else {
                 destroy.accept(instance, ctx);
             }
