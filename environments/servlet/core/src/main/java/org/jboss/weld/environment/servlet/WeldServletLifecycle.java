@@ -70,7 +70,6 @@ import org.jboss.weld.environment.undertow.UndertowContainer;
 import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.resources.ManagerObjectFactory;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
@@ -142,7 +141,6 @@ public class WeldServletLifecycle {
                 // start the container
                 final ContainerInstance containerInstance = factory.initialize();
                 container = containerInstance;
-                context.setInitParameter(org.jboss.weld.Container.CONTEXT_ID_KEY, containerInstance.getId());
                 // we are in charge of shutdown also
                 this.shutdownAction = new Runnable() {
                     @Override
@@ -153,9 +151,9 @@ public class WeldServletLifecycle {
             }
             if (container instanceof ContainerInstance) {
                 // the container instance was either passed to us directly or was created in the block above
-                BeanManagerImpl beanManagerImpl = BeanManagerProxy.unwrap(ContainerInstance.class.cast(container).getBeanManager());
-                manager = beanManagerImpl;
-                context.setInitParameter(org.jboss.weld.Container.CONTEXT_ID_KEY, beanManagerImpl.getContextId());
+                ContainerInstance containerInstance = (ContainerInstance) container;
+                manager = BeanManagerProxy.unwrap(containerInstance.getBeanManager());
+                context.setInitParameter(org.jboss.weld.Container.CONTEXT_ID_KEY, containerInstance.getId());
                 isBootstrapNeeded = false;
             }
         }
@@ -304,8 +302,7 @@ public class WeldServletLifecycle {
                 Class<? extends BeanArchiveHandler> handlerClass = Reflections.loadClass(resourceLoader, JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER);
                 strategy.registerHandler((SecurityActions.newConstructorInstance(handlerClass, new Class<?>[] { ServletContext.class }, context)));
             } catch (Exception e) {
-                throw CommonLogger.LOG.unableToInstantiate(JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER,
-                        Arrays.toString(new Object[] { context }), e);
+                throw CommonLogger.LOG.unableToInstantiate(JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER, Arrays.toString(new Object[] { context }), e);
             }
         } else {
             strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
@@ -370,7 +367,8 @@ public class WeldServletLifecycle {
             container = checkContainers(ctx, dump, extContainers);
             if (container == null) {
                 // 3. Built-in containers in predefined order
-                container = checkContainers(ctx, dump, Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, UndertowContainer.INSTANCE, GwtDevHostedModeContainer.INSTANCE));
+                container = checkContainers(ctx, dump,
+                        Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, UndertowContainer.INSTANCE, GwtDevHostedModeContainer.INSTANCE));
             }
         }
         return container;
