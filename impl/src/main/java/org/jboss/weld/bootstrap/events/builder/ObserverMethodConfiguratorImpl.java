@@ -23,22 +23,19 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import javax.annotation.Priority;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.builder.ObserverMethodConfigurator;
+import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
 import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -46,10 +43,6 @@ import org.jboss.weld.util.reflection.Formats;
  * @author Martin Kouba
  */
 public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigurator<T> {
-
-    // TODO replace with default value from ObserverMethod
-    @SuppressWarnings("checkstyle:magicnumber")
-    private static final int DEFAULT_PRIORITY = javax.interceptor.Interceptor.Priority.APPLICATION + 500;
 
     private Class<?> beanClass;
 
@@ -65,15 +58,13 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     private boolean isAsync;
 
-    private Consumer<T> notifySimple;
-
-    private BiConsumer<T, EventMetadata> notifyMetadata;
+    private EventConsumer<T> notifyCallback;
 
     public ObserverMethodConfiguratorImpl() {
         this.reception = Reception.ALWAYS;
         this.txPhase = TransactionPhase.IN_PROGRESS;
         this.observedQualifiers = new HashSet<>();
-        this.priority = DEFAULT_PRIORITY;
+        this.priority = ObserverMethod.DEFAULT_PRIORITY;
     }
 
     public ObserverMethodConfiguratorImpl(ObserverMethod<T> observerMethod) {
@@ -93,7 +84,6 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         } else {
             reception(eventParameter.getAnnotation(ObservesAsync.class).notifyObserver());
         }
-        // TODO replace with CDI API version
         Priority priority = method.getAnnotation(Priority.class);
         if (priority != null) {
             priority(priority.value());
@@ -117,7 +107,6 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         } else {
             reception(eventParameter.getAnnotation(ObservesAsync.class).notifyObserver());
         }
-        // TODO replace with CDI API version
         Priority priority = method.getAnnotation(Priority.class);
         if (priority != null) {
             priority(priority.value());
@@ -204,16 +193,8 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
     }
 
     @Override
-    public ObserverMethodConfigurator<T> notifyWith(Consumer<T> callback) {
-        this.notifySimple = callback;
-        this.notifyMetadata = null;
-        return this;
-    }
-
-    @Override
-    public ObserverMethodConfigurator<T> notifyWith(BiConsumer<T, EventMetadata> callback) {
-        this.notifySimple = null;
-        this.notifyMetadata = callback;
+    public ObserverMethodConfigurator<T> notifyWith(EventConsumer<T> callback) {
+        this.notifyCallback = callback;
         return this;
     }
 
@@ -223,67 +204,36 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         return this;
     }
 
-    /**
-     * @return the beanClass
-     */
     Class<?> getBeanClass() {
         return beanClass;
     }
 
-    /**
-     * @return the observedType
-     */
     Type getObservedType() {
         return observedType;
     }
 
-    /**
-     * @return the observedQualifiers
-     */
     Set<Annotation> getObservedQualifiers() {
         return observedQualifiers;
     }
 
-    /**
-     * @return the reception
-     */
     Reception getReception() {
         return reception;
     }
 
-    /**
-     * @return the txPhase
-     */
     TransactionPhase getTxPhase() {
         return txPhase;
     }
 
-    /**
-     * @return the priority
-     */
     int getPriority() {
         return priority;
     }
 
-    /**
-     * @return the isAsync
-     */
     boolean isAsync() {
         return isAsync;
     }
 
-    /**
-     * @return the notifySimple
-     */
-    Consumer<T> getNotifySimple() {
-        return notifySimple;
-    }
-
-    /**
-     * @return the notifyMetadata
-     */
-    BiConsumer<T, EventMetadata> getNotifyMetadata() {
-        return notifyMetadata;
+    EventConsumer<T> getNotifyCallback() {
+        return notifyCallback;
     }
 
     private <P> void checkEventParams(Set<P> eventParams, Method method) {

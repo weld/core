@@ -24,7 +24,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.experimental.ExperimentalInvocationContext;
+import org.jboss.weld.interceptor.WeldInvocationContext;
 
 @Priority(value = Interceptor.Priority.APPLICATION)
 @Interceptor
@@ -42,8 +42,8 @@ public class AroundInvokeInterceptor {
     @AroundInvoke
     Object intercept(InvocationContext ctx) throws Exception {
         contextDataBindings = (Set<Annotation>) ctx.getContextData().get(KEY);
-        if(ctx instanceof ExperimentalInvocationContext) {
-            contextBindings =  ((ExperimentalInvocationContext)ctx).getInterceptorBindings();
+        if(ctx instanceof WeldInvocationContext) {
+            contextBindings =  ((WeldInvocationContext)ctx).getInterceptorBindings();
         }
         return ctx.proceed();
     }

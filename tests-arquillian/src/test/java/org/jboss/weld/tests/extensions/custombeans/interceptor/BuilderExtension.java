@@ -25,8 +25,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InterceptionType;
 
-import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
-import org.jboss.weld.experimental.InterceptorBuilder;
+import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
 
 public class BuilderExtension implements Extension {
 
@@ -36,7 +35,7 @@ public class BuilderExtension implements Extension {
     private AtomicInteger counter = new AtomicInteger(0);
 
     @SuppressWarnings("serial")
-    public void afterBeanDiscovery(@Observes ExperimentalAfterBeanDiscovery event) {
+    public void afterBeanDiscovery(@Observes WeldAfterBeanDiscovery event) {
 
         // type level interceptor
         event.addInterceptor().interceptWithMetadata(InterceptionType.AROUND_INVOKE, (invocationContext, fooBean) -> {
@@ -51,7 +50,7 @@ public class BuilderExtension implements Extension {
         }).priority(2500).addBinding(TypeBinding.TypeBindingLiteral.INSTANCE);
 
         // method level interceptor
-        InterceptorBuilder interceptorBuilder = event.interceptorBuilder().intercept(InterceptionType.AROUND_INVOKE, (invocationContext) -> {
+        event.addInterceptor().intercept(InterceptionType.AROUND_INVOKE, (invocationContext) -> {
             try {
                 intercepted.set(true);
                 return invocationContext.proceed();
@@ -60,7 +59,6 @@ public class BuilderExtension implements Extension {
             }
             return null;
         }).priority(2600).addBinding(MethodBinding.MethodBindingLiteral.INSTANCE);
-        event.addBean(interceptorBuilder.build());
 
         // passivation test
         event.addInterceptor().interceptWithMetadata(InterceptionType.AROUND_INVOKE, (invocationContext, barBean) -> {

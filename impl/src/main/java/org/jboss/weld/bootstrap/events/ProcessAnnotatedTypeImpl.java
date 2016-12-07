@@ -19,7 +19,7 @@ package org.jboss.weld.bootstrap.events;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.builder.AnnotatedTypeConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;

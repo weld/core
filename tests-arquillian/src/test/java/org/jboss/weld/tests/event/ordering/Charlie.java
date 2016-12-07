@@ -1,8 +1,7 @@
 package org.jboss.weld.tests.event.ordering;
 
+import javax.annotation.Priority;
 import javax.enterprise.event.Observes;
-
-import org.jboss.weld.experimental.Priority;
 
 public class Charlie {
 

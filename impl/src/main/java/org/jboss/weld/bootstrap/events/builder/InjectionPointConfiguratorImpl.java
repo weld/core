@@ -17,26 +17,17 @@
 package org.jboss.weld.bootstrap.events.builder;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.decorator.Delegate;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.builder.InjectionPointConfigurator;
-
-import org.jboss.weld.util.reflection.Reflections;
+import javax.enterprise.inject.spi.configurator.InjectionPointConfigurator;
 
 /**
  *
@@ -67,54 +58,8 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
         read(injectionPoint);
     }
 
-    @Override
-    public InjectionPointConfigurator read(Field field) {
-        member(field);
-        transientField(Reflections.isTransient(field));
-        delegate(field.isAnnotationPresent(Delegate.class));
-        qualifiers(Configurators.getQualifiers(field));
-        type(field.getType());
-        return this;
-    }
-
-    @Override
-    public InjectionPointConfigurator read(Parameter param) {
-        Executable executable = param.getDeclaringExecutable();
-        member(executable);
-        transientField(Reflections.isTransient(executable));
-        delegate(executable.isAnnotationPresent(Delegate.class));
-        qualifiers(Configurators.getQualifiers(executable));
-        type(executable instanceof Method ? ((Method)executable).getReturnType() : param.getType());
-        return this;
-    }
-
-    @Override
-    public InjectionPointConfigurator read(AnnotatedField<?> field) {
-        annotated(field);
-        member(field.getJavaMember());
-        transientField(Reflections.isTransient(field.getJavaMember()));
-        delegate(field.isAnnotationPresent(Delegate.class));
-        // TODO Special handling for AbstractEnhancedAnnotated
-        qualifiers(Configurators.getQualifiers(field));
-        type(field.getBaseType());
-        return this;
-    }
-
-    @Override
-    public InjectionPointConfigurator read(AnnotatedParameter<?> param) {
-        annotated(param);
-        member(param.getDeclaringCallable().getJavaMember());
-        transientField(false);
-        delegate(param.isAnnotationPresent(Delegate.class));
-        // TODO Special handling for AbstractEnhancedAnnotated
-        qualifiers(Configurators.getQualifiers(param));
-        type(param.getBaseType());
-        return this;
-    }
-
-    @Override
     public InjectionPointConfigurator read(InjectionPoint injectionPoint) {
-        bean(injectionPoint.getBean());
+        bean = injectionPoint.getBean();
         type(injectionPoint.getType());
         qualifiers(injectionPoint.getQualifiers());
         delegate(injectionPoint.isDelegate());
@@ -164,12 +109,6 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
     }
 
     @Override
-    public InjectionPointConfigurator bean(Bean<?> bean) {
-        this.bean = bean;
-        return this;
-    }
-
-    @Override
     public InjectionPointConfigurator delegate(boolean delegate) {
         this.isDelegate = delegate;
         return this;
@@ -191,51 +130,30 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
         return this;
     }
 
-    /**
-     * @return the requiredType
-     */
     Type getRequiredType() {
         return requiredType;
     }
 
-    /**
-     * @return the qualifiers
-     */
     Set<Annotation> getQualifiers() {
         return qualifiers;
     }
 
-    /**
-     * @return the bean
-     */
     Bean<?> getBean() {
         return bean;
     }
 
-    /**
-     * @return the isDelegate
-     */
     boolean isDelegate() {
         return isDelegate;
     }
 
-    /**
-     * @return the isTransient
-     */
     boolean isTransient() {
         return isTransient;
     }
 
-    /**
-     * @return the member
-     */
     Member getMember() {
         return member;
     }
 
-    /**
-     * @return the annotated
-     */
     Annotated getAnnotated() {
         return annotated;
     }

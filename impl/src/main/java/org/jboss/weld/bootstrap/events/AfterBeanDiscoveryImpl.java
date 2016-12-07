@@ -37,8 +37,8 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Prioritized;
-import javax.enterprise.inject.spi.builder.BeanConfigurator;
-import javax.enterprise.inject.spi.builder.ObserverMethodConfigurator;
+import javax.enterprise.inject.spi.configurator.BeanConfigurator;
+import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
@@ -47,13 +47,13 @@ import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
+import org.jboss.weld.bootstrap.event.InterceptorConfigurator;
+import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
 import org.jboss.weld.bootstrap.events.builder.BeanBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
-import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.ContextLogger;
@@ -64,7 +64,7 @@ import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
 
-public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements ExperimentalAfterBeanDiscovery {
+public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements WeldAfterBeanDiscovery {
 
     private static final String TYPE_ARGUMENT_NAME = "type";
 
@@ -77,7 +77,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     private AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
             Collection<ContextHolder<? extends Context>> contexts) {
-        super(beanManager, ExperimentalAfterBeanDiscovery.class, bdaMapping, deployment, contexts);
+        super(beanManager, WeldAfterBeanDiscovery.class, bdaMapping, deployment, contexts);
         this.slimAnnotatedTypeStore = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
         this.containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
         this.additionalBeans = new LinkedList<BeanRegistration>();
@@ -159,15 +159,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     @Override
-    public InterceptorBuilder interceptorBuilder() {
-        return new InterceptorBuilderImpl(getBeanManager());
-    }
-
-    public InterceptorBuilder addInterceptor() {
-        InterceptorBuilderImpl builder = new InterceptorBuilderImpl(getBeanManager());
-        additionalBeans.add(BeanRegistration.of(builder));
-        return builder;
-
+    public InterceptorConfigurator addInterceptor() {
+        InterceptorConfiguratorImpl configurator = new InterceptorConfiguratorImpl(getBeanManager());
+        additionalBeans.add(BeanRegistration.of(configurator));
+        return configurator;
     }
 
     protected <T> void processBeanRegistration(BeanRegistration registration, GlobalEnablementBuilder globalEnablementBuilder) {
@@ -290,7 +285,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
         private final BeanBuilderImpl<?> beanBuilder;
 
-        private final InterceptorBuilderImpl interceptorBuilder;
+        private final InterceptorConfiguratorImpl interceptorBuilder;
 
         static BeanRegistration of(Bean<?> bean) {
             return new BeanRegistration(bean, null, null);
@@ -300,11 +295,11 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             return new BeanRegistration(null, cast(new BeanBuilderImpl<>(configurator)),null);
         }
 
-        static BeanRegistration of(InterceptorBuilderImpl interceptorBuilder) {
+        static BeanRegistration of(InterceptorConfiguratorImpl interceptorBuilder) {
             return new BeanRegistration(null, null, interceptorBuilder);
         }
 
-        BeanRegistration(Bean<?> bean, BeanBuilderImpl<?> beanBuilder, InterceptorBuilderImpl interceptorBuilder) {
+        BeanRegistration(Bean<?> bean, BeanBuilderImpl<?> beanBuilder, InterceptorConfiguratorImpl interceptorBuilder) {
             this.bean = bean;
             this.beanBuilder = beanBuilder;
             this.interceptorBuilder = interceptorBuilder;

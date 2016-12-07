@@ -37,18 +37,19 @@
 
 package org.jboss.weld.tests.extensions.supertypes.beans;
 
-import javax.enterprise.inject.spi.Annotated;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Annotated;
 
 /**
  * Implements the CDI Annotated interface.
  *
  * @author robc
  */
-public class AnnotatedImpl implements Annotated {
+public abstract class AnnotatedImpl implements Annotated {
 
     private Type baseType;
     private Set<Type> typeClosure;

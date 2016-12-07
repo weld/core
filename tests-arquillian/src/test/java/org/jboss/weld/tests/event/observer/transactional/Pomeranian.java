@@ -25,12 +25,11 @@ import static javax.enterprise.event.TransactionPhase.IN_PROGRESS;
 
 import java.io.Serializable;
 
+import javax.annotation.Priority;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-
-import org.jboss.weld.experimental.Priority;
 
 @Stateful
 @TransactionManagement(BEAN)

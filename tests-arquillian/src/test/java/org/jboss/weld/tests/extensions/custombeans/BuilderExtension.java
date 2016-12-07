@@ -50,7 +50,7 @@ public class BuilderExtension implements Extension {
         // Read from bean attributes, change the name and remove @Model stereotype
         // Note that we have to set the scope manually as it's initialized to @RequestScoped through the bean attributes
         event.addBean().beanClass(Foo.class).read(beanManager.createBeanAttributes(annotatedType)).name("bar")
-                .stereotypes(Collections.emptySet()).scope(Dependent.class).produceWith(() -> {
+                .stereotypes(Collections.emptySet()).scope(Dependent.class).produceWith((i) -> {
                     Foo foo = new Foo();
                     foo.postConstruct();
                     return foo;
@@ -64,7 +64,7 @@ public class BuilderExtension implements Extension {
 
         // Test simple produceWith callback
         event.addBean().addType(Integer.class).addQualifier(Random.Literal.INSTANCE)
-                .produceWith(() -> new java.util.Random().nextInt(1000)).disposeWith((i) -> DISPOSED.set(true));
+                .produceWith((i) -> new java.util.Random().nextInt(1000)).disposeWith((beanInstance, instance) -> DISPOSED.set(true));
 
         // Test produceWith callback with Instance<Object> param
         event.addBean().addType(Long.class).addQualifier(AnotherRandom.Literal.INSTANCE)
@@ -74,13 +74,13 @@ public class BuilderExtension implements Extension {
         List<String> list = new ArrayList<String>();
         list.add("FOO");
         event.addBean().addType(new TypeLiteral<List<String>>() {
-        }).addQualifier(Juicy.Literal.INSTANCE).producing(list);
+        }).addQualifier(Juicy.Literal.INSTANCE).produceWith((i) -> list);
 
         // Test transitive type closure
         event.addBean().addTransitiveTypeClosure(Foo.class).addQualifier(Random.Literal.INSTANCE)
-                .produceWith(() -> new Foo(-1l));
+                .produceWith((i) -> new Foo(-1l));
 
         // Test default qualifiers
-        event.addBean().addType(Configuration.class).producing(new Configuration(1));
+        event.addBean().addType(Configuration.class).produceWith((i) -> new Configuration(1));
     }
 }

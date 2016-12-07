@@ -27,6 +27,7 @@ import javax.el.ExpressionFactory;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -40,6 +41,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InjectionTargetFactory;
+import javax.enterprise.inject.spi.InterceptionFactory;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -234,6 +236,16 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     @Override
     public <T extends Extension> T getExtension(Class<T> extensionClass) {
         return delegate().getExtension(extensionClass);
+    }
+
+    @Override
+    public <T> InterceptionFactory<T> createInterceptionFactory(CreationalContext<T> ctx, Class<T> clazz) {
+        return delegate().createInterceptionFactory(ctx, clazz);
+    }
+
+    @Override
+    public Event<Object> getEvent() {
+        return delegate().getEvent();
     }
 
     @Override

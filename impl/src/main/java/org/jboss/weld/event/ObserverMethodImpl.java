@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -45,7 +46,6 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.CreationalContextImpl;
-import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
@@ -82,9 +82,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
     @SuppressWarnings("serial")
     private static final Type EVENT_METADATA_INSTANCE_TYPE = new TypeLiteral<Instance<EventMetadata>>() {
     }.getType();
-
-    @SuppressWarnings("checkstyle:magicnumber")
-    private static final int DEFAULT_PRIORITY = javax.interceptor.Interceptor.Priority.APPLICATION + 500;
 
     private final Set<Annotation> bindings;
     private final Type eventType;

@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.enterprise.inject.spi.Annotated;
 
@@ -56,14 +57,9 @@ abstract class AnnotatedConfigurator<T, A extends Annotated, C extends Annotated
         return self();
     }
 
-    public C remove(Annotation annotation) {
-        annotations.remove(annotation);
-        return self();
-    }
-
-    public C remove(Class<? extends Annotation> annotationType) {
+    public C remove(Predicate<Annotation> predicate) {
         for (Iterator<Annotation> iterator = annotations.iterator(); iterator.hasNext();) {
-            if(iterator.next().annotationType().equals(annotationType)) {
+            if (predicate.test(iterator.next())) {
                 iterator.remove();
             }
         }

@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
-import org.jboss.weld.experimental.ExperimentalInvocationContext;
+import org.jboss.weld.interceptor.WeldInvocationContext;
 
 /**
  * The non-terminal {@link InvocationContext} in the interception chain. This implementation is used for the first n-1 interceptors of a interception chain of
@@ -62,11 +62,11 @@ class NonTerminalAroundInvokeInvocationContext extends AroundInvokeInvocationCon
 
     @Override
     public Object proceedInternal() throws Exception {
-        ExperimentalInvocationContext ctx = createNextContext();
+        WeldInvocationContext ctx = createNextContext();
         return chain.get(position + 1).invoke(ctx);
     }
 
-    private ExperimentalInvocationContext createNextContext() {
+    private WeldInvocationContext createNextContext() {
         if (position + 2 == chain.size()) {
             return new TerminalAroundInvokeInvocationContext(this);
         } else {

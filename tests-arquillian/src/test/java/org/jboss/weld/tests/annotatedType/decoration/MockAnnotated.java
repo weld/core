@@ -16,19 +16,20 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class MockAnnotated implements Annotated {
+public abstract class MockAnnotated implements Annotated {
 
     private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject {
 

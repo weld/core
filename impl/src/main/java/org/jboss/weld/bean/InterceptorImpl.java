@@ -34,9 +34,8 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.experimental.ExperimentalInvocationContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
-import org.jboss.weld.interceptor.proxy.WeldInvocationContext;
+import org.jboss.weld.interceptor.proxy.WeldInvocationContextImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
@@ -92,8 +91,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
                 .getInterceptorMethodInvocations();
 
         Set<Annotation> interceptorBindings = null;
-        if (ctx instanceof ExperimentalInvocationContext) {
-            interceptorBindings = Reflections.<ExperimentalInvocationContext> cast(ctx).getInterceptorBindings();
+        if (ctx instanceof org.jboss.weld.interceptor.WeldInvocationContext) {
+            interceptorBindings = Reflections.<org.jboss.weld.interceptor.WeldInvocationContext> cast(ctx).getInterceptorBindings();
         }
 
         try {
@@ -103,7 +102,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
              *
              * We use a wrapper InvocationContext for the purpose of executing the chain of interceptor methods of this interceptor.
              */
-            return new WeldInvocationContext(ctx, methodInvocations, interceptorBindings, null).proceed();
+            return new WeldInvocationContextImpl(ctx, methodInvocations, interceptorBindings, null).proceed();
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {

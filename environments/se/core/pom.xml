@@ -66,12 +66,6 @@
             <artifactId>cdi-api</artifactId>
         </dependency>
 
-        <!-- WELD-203 -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jandex</artifactId>
@@ -151,7 +145,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <!--Groovy compilation is disabled for JDK 1.9+-->

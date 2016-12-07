@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.inject.spi.builder.InjectionPointConfigurator;
+import javax.enterprise.inject.spi.configurator.InjectionPointConfigurator;
 
 import org.jboss.weld.bootstrap.events.builder.InjectionPointBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.InjectionPointConfiguratorImpl;

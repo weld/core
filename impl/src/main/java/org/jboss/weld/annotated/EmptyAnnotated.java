@@ -46,6 +46,11 @@ public class EmptyAnnotated implements Annotated {
     }
 
     @Override
+    public <T extends Annotation> Set<T> getAnnotations(Class<T> annotationType) {
+        return Collections.emptySet();
+    }
+
+    @Override
     public Set<Annotation> getAnnotations() {
         return Collections.emptySet();
     }

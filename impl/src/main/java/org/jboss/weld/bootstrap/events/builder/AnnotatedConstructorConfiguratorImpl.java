@@ -21,8 +21,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.builder.AnnotatedConstructorConfigurator;
-import javax.enterprise.inject.spi.builder.AnnotatedParameterConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedConstructorConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator;
 
 /**
  * Configurator for {@link AnnotatedConstructor}.

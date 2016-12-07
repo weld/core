@@ -17,7 +17,7 @@
 package org.jboss.weld.bootstrap.events.builder;
 
 import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.builder.AnnotatedFieldConfigurator;
+import javax.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator;
 
 /**
  * Configurator for {@link AnnotatedField}.

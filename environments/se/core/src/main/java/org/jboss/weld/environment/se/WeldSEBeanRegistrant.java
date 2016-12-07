@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Vetoed;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
@@ -27,15 +28,13 @@ import javax.inject.Singleton;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.bootstrap.events.InterceptorBuilderImpl;
+import org.jboss.weld.bootstrap.events.InterceptorConfiguratorImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScopeInterceptor;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
-import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
-import org.jboss.weld.experimental.InterceptorBuilder;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 
@@ -51,7 +50,7 @@ public class WeldSEBeanRegistrant implements Extension {
 
     private List<BeanConfiguratorImpl<?>> beanConfigurators;
 
-    private List<InterceptorBuilderImpl> interceptorBuilders;
+    private List<InterceptorConfiguratorImpl> interceptorConfigurators;
 
     public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
@@ -63,7 +62,7 @@ public class WeldSEBeanRegistrant implements Extension {
                 ActivateThreadScopeInterceptor.class.getName());
     }
 
-    public void registerWeldSEContexts(@Observes ExperimentalAfterBeanDiscovery event, BeanManager manager) {
+    public void registerWeldSEContexts(@Observes AfterBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
             return;
         }
@@ -75,7 +74,7 @@ public class WeldSEBeanRegistrant implements Extension {
 
         // Register WeldContainer as a singleton
         event.addBean().addType(WeldContainer.class).addQualifier(DefaultLiteral.INSTANCE).scope(Singleton.class)
-                .produceWith(() -> WeldContainer.instance(contextId));
+                .produceWith((i) -> WeldContainer.instance(contextId));
 
         // Process queued bean builders
         if (beanConfigurators != null) {
@@ -83,9 +82,9 @@ public class WeldSEBeanRegistrant implements Extension {
                 event.addBean(new BeanBuilderImpl<>(configurator).build());
             }
         }
-        if (interceptorBuilders != null) {
-            for (InterceptorBuilder interceptorBuilder : interceptorBuilders) {
-                event.addBean(interceptorBuilder.build());
+        if (interceptorConfigurators != null) {
+            for (InterceptorConfiguratorImpl configurator : interceptorConfigurators) {
+                event.addBean(configurator.build());
             }
         }
     }
@@ -105,8 +104,8 @@ public class WeldSEBeanRegistrant implements Extension {
         this.beanConfigurators = beanConfigurators;
     }
 
-    void setInterceptorBuilders(List<InterceptorBuilderImpl> interceptorBuilders) {
-        this.interceptorBuilders = interceptorBuilders;
+    void setInterceptorConfigurators(List<InterceptorConfiguratorImpl> interceptorBuilders) {
+        this.interceptorConfigurators = interceptorBuilders;
     }
 
 }
