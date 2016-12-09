@@ -33,6 +33,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.DefinitionException;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -97,7 +98,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         Preconditions.checkArgumentNotNull(bean, "bean");
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, getBeanManager());
         validateBean(bean);
-        additionalBeans.add(BeanRegistration.of(bean));
+        additionalBeans.add(BeanRegistration.of(bean, getReceiver()));
         BootstrapLogger.LOG.addBeanCalled(getReceiver(), bean);
     }
 
@@ -105,7 +106,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     public <T> BeanConfigurator<T> addBean() {
         checkWithinObserverNotification();
         BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(getReceiver().getClass(), getBeanDeploymentFinder());
-        additionalBeans.add(BeanRegistration.of(configurator));
+        additionalBeans.add(BeanRegistration.of(configurator, getReceiver()));
         return configurator;
     }
 
@@ -196,7 +197,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
                 globalEnablementBuilder.addAlternative(bean.getBeanClass(), priority);
             }
         }
-        containerLifecycleEvents.fireProcessBean(beanManager, bean);
+        containerLifecycleEvents.fireProcessBean(beanManager, bean, registration.getExtension());
     }
 
     private void validateBean(Bean<?> bean) {
@@ -287,40 +288,47 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
         private final InterceptorConfiguratorImpl interceptorBuilder;
 
-        static BeanRegistration of(Bean<?> bean) {
-            return new BeanRegistration(bean, null, null);
+        private final Extension extension;
+
+        static BeanRegistration of(Bean<?> bean, Extension extension) {
+            return new BeanRegistration(bean, null, null, extension);
         }
 
-        static BeanRegistration of(BeanConfiguratorImpl<?> configurator) {
-            return new BeanRegistration(null, cast(new BeanBuilderImpl<>(configurator)),null);
+        static BeanRegistration of(BeanConfiguratorImpl<?> configurator, Extension extension) {
+            return new BeanRegistration(null, cast(new BeanBuilderImpl<>(configurator)), null, extension);
         }
 
         static BeanRegistration of(InterceptorConfiguratorImpl interceptorBuilder) {
-            return new BeanRegistration(null, null, interceptorBuilder);
+            return new BeanRegistration(null, null, interceptorBuilder, null);
         }
 
-        BeanRegistration(Bean<?> bean, BeanBuilderImpl<?> beanBuilder, InterceptorConfiguratorImpl interceptorBuilder) {
+        BeanRegistration(Bean<?> bean, BeanBuilderImpl<?> beanBuilder, InterceptorConfiguratorImpl interceptorBuilder, Extension extension) {
             this.bean = bean;
             this.beanBuilder = beanBuilder;
             this.interceptorBuilder = interceptorBuilder;
+            this.extension = extension;
         }
 
         public Bean<?> getBean() {
-            if(bean != null) {
+            if (bean != null) {
                 return bean;
-            } else if(beanBuilder != null) {
+            } else if (beanBuilder != null) {
                 return beanBuilder.build();
             }
             return interceptorBuilder.build();
         }
 
         protected BeanManagerImpl getBeanManager() {
-            if(bean != null) {
+            if (bean != null) {
                 return null;
-            } else if(beanBuilder != null) {
+            } else if (beanBuilder != null) {
                 return beanBuilder.getBeanManager();
             }
             return interceptorBuilder.getBeanManager();
+        }
+
+        public Extension getExtension() {
+            return extension;
         }
 
     }

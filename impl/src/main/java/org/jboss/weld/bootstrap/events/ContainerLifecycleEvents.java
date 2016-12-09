@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
@@ -192,7 +193,8 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
      * extension observers resolved by FastProcessAnnotatedTypeResolver.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ContainerLifecycleEventObserverMethod<?>> observers, BeanManagerImpl beanManager) {
+    private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ContainerLifecycleEventObserverMethod<?>> observers,
+            BeanManagerImpl beanManager) {
         List<Throwable> errors = new LinkedList<Throwable>();
         for (ContainerLifecycleEventObserverMethod observer : observers) {
             // FastProcessAnnotatedTypeResolver does not consider special scope inheritance rules (see CDI - section 4.1)
@@ -231,22 +233,30 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     }
 
     public void fireProcessBean(BeanManagerImpl beanManager, Bean<?> bean) {
+        fireProcessBean(beanManager, bean, null);
+    }
+
+    public void fireProcessBean(BeanManagerImpl beanManager, Bean<?> bean, Extension extension) {
         if (isProcessBeanObserved()) {
             if (bean instanceof ManagedBean<?>) {
                 ProcessManagedBeanImpl.fire(beanManager, (ManagedBean<?>) bean);
             } else if (bean instanceof SessionBean<?>) {
-                ProcessSessionBeanImpl.fire(beanManager, Reflections.<SessionBean<Object>> cast(bean));
+                ProcessSessionBeanImpl.fire(beanManager, Reflections.<SessionBean<Object>>cast(bean));
             } else if (bean instanceof ProducerField<?, ?>) {
                 ProcessProducerFieldImpl.fire(beanManager, (ProducerField<?, ?>) bean);
             } else if (bean instanceof ProducerMethod<?, ?>) {
                 ProcessProducerMethodImpl.fire(beanManager, (ProducerMethod<?, ?>) bean);
             } else {
+                if (extension != null) {
+                    ProcessSynthethicBeanImpl.fire(beanManager, bean, extension);
+                }
                 ProcessBeanImpl.fire(beanManager, bean);
             }
         }
     }
 
-    public <T> ProcessBeanAttributesImpl<T> fireProcessBeanAttributes(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated, Type type) {
+    public <T> ProcessBeanAttributesImpl<T> fireProcessBeanAttributes(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated,
+            Type type) {
         if (isProcessBeanAttributesObserved()) {
             return ProcessBeanAttributesImpl.fire(beanManager, attributes, annotated, type);
         }
@@ -266,7 +276,8 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         return injectionTarget;
     }
 
-    public <T, X> FieldInjectionPointAttributes<T, X> fireProcessInjectionPoint(FieldInjectionPointAttributes<T, X> attributes, Class<?> declaringComponentClass,
+    public <T, X> FieldInjectionPointAttributes<T, X> fireProcessInjectionPoint(FieldInjectionPointAttributes<T, X> attributes,
+            Class<?> declaringComponentClass,
             BeanManagerImpl manager) {
         if (isProcessInjectionPointObserved()) {
             return ProcessInjectionPointImpl.fire(attributes, declaringComponentClass, manager);
