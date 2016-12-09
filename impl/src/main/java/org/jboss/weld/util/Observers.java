@@ -17,6 +17,8 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -46,8 +48,10 @@ import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.event.SyntheticObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -69,6 +73,8 @@ public class Observers {
             .addAll(ProcessSyntheticAnnotatedType.class, ProcessSessionBean.class, ProcessManagedBean.class, ProcessProducerMethod.class,
                     ProcessProducerField.class, ProcessObserverMethod.class)
             .build();
+
+    private static final String NOTIFY_METHOD_NAME = "notify";
 
     private Observers() {
     }
@@ -111,6 +117,9 @@ public class Observers {
         if (originalObserverMethod != null && (!observerMethod.getBeanClass().equals(originalObserverMethod.getBeanClass()))) {
             throw EventLogger.LOG.beanClassMismatch(originalObserverMethod, observerMethod);
         }
+        if (!(observerMethod instanceof SyntheticObserverMethod) && !hasNotifyOverriden(observerMethod.getClass(), observerMethod)) {
+            throw EventLogger.LOG.notifyMethodNotImplemented(observerMethod);
+        }
     }
 
     /**
@@ -133,6 +142,18 @@ public class Observers {
      */
     public static <T> void notify(ObserverMethod<? super T> observerMethod, T event, EventMetadata metadata) {
         observerMethod.notify(new EventContextImpl<>(event, metadata));
+    }
+
+    private static boolean hasNotifyOverriden(Class<?> clazz, ObserverMethod<?> observerMethod) {
+        if (clazz.isInterface()) {
+            return false;
+        }
+        for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
+            if (NOTIFY_METHOD_NAME.equals(method.getName()) && method.getParameterTypes().length == 1) {
+                return true;
+            }
+        }
+        return clazz.getSuperclass() != null ? hasNotifyOverriden(clazz.getSuperclass(), observerMethod) : false;
     }
 
     static class EventContextImpl<T> implements EventContext<T> {

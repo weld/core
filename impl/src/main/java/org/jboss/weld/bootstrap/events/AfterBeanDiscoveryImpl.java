@@ -258,7 +258,6 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             }
             for (ObserverMethodConfigurator<?> configurator : additionalObserverConfigurators) {
                 ObserverMethod<?> observer = new ObserverMethodBuilderImpl<>(cast(configurator)).build();
-                validateObserverMethod(observer, getBeanManager(), null);
                 processAdditionalObserver(observer);
             }
         } catch (Exception e) {
@@ -267,6 +266,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     private void processAdditionalObserver(ObserverMethod<?> observer) {
+        validateObserverMethod(observer, getBeanManager(), null);
         BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
         if (Observers.isObserverMethodEnabled(observer, manager)) {
             ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observer);
