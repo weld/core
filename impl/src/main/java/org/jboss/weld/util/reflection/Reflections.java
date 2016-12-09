@@ -461,7 +461,7 @@ public class Reflections {
      * @return method method with the given name declared by the given class or null if no such method exists
      */
     public static Method findDeclaredMethodByName(Class<?> clazz, String methodName) {
-        for (Method method : clazz.getDeclaredMethods()) {
+        for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
             if (methodName.equals(method.getName())) {
                 return method;
             }
