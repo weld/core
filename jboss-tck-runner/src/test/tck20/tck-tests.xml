@@ -106,18 +106,6 @@
                 </methods>
             </class>
 
-            <!-- WELD-2265 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.afterBeanDiscovery.AfterBeanDiscoveryTest">
-                <methods>
-                    <exclude name="testProcessBeanIsFired"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.configurators.bean.BeanConfiguratorTest">
-                <methods>
-                    <exclude name="processSynthethicBeanEventFired"/>
-                </methods>
-            </class>
-
             <!-- WELD-2257 -->
             <class name="org.jboss.cdi.tck.tests.extensions.interceptionFactory.InterceptionFactoryTest">
                 <methods>
