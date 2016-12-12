@@ -42,6 +42,7 @@ import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.InstanceBean;
 import org.jboss.weld.bean.builtin.InterceptedBeanMetadataBean;
 import org.jboss.weld.bean.builtin.InterceptorMetadataBean;
+import org.jboss.weld.bean.builtin.RequestContextControllerBean;
 import org.jboss.weld.bean.builtin.ee.PrincipalBean;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -242,6 +243,7 @@ public class BeanDeployment {
         for (ContextHolder<? extends Context> context : contexts) {
             beanDeployer.addBuiltInBean(ContextBean.of(context, beanManager));
         }
+        beanDeployer.addBuiltInBean(new RequestContextControllerBean(beanManager));
 
         // TODO Register the context beans
         beanDeployer.createClassBeans();
