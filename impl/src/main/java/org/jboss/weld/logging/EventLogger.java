@@ -73,7 +73,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 410, value = "Observer method cannot define @WithAnnotations: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException invalidWithAnnotations(Object param1, Object stackElement);
 
-    @LogMessage(level=Level.INFO)
+    @LogMessage(level = Level.INFO)
     @Message(id = 411, value = "Observer method {0} receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.", format = Format.MESSAGE_FORMAT)
     void unrestrictedProcessAnnotatedTypes(Object param1);
 
@@ -91,5 +91,9 @@ public interface EventLogger extends WeldLogger {
 
     @Message(id = 416, value = "None or multiple event parameters declared on: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException noneOrMultipleEventParametersDeclared(Object method, Object stackElement);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 417, value = "The original observed type {0} is not assignable from {1} set by extension {2} - the observer method invocation may result in runtime exception!", format = Format.MESSAGE_FORMAT)
+    void originalObservedTypeIsNotAssignableFrom(Object originalObservedType, Object observedType, Object extension);
 
 }
