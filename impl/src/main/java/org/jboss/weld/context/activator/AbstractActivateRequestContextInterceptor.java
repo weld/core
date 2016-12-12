@@ -17,14 +17,14 @@
 package org.jboss.weld.context.activator;
 
 import javax.enterprise.context.BeforeDestroyed;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.context.RequestScoped;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.event.FastEvent;
-import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -44,9 +44,9 @@ public abstract class AbstractActivateRequestContextInterceptor {
     public AbstractActivateRequestContextInterceptor(RequestContext requestContext, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.requestContext = requestContext;
-        fastEventInit = FastEvent.of(Object.class, beanManager, InitializedLiteral.REQUEST);
+        fastEventInit = FastEvent.of(Object.class, beanManager, Initialized.Literal.REQUEST);
         fastEventBeforeDestroyed = FastEvent.of(Object.class, beanManager, BeforeDestroyed.Literal.REQUEST);
-        fastEventDestroyed = FastEvent.of(Object.class, beanManager, DestroyedLiteral.REQUEST);
+        fastEventDestroyed = FastEvent.of(Object.class, beanManager, Destroyed.Literal.REQUEST);
     }
 
     @AroundInvoke
