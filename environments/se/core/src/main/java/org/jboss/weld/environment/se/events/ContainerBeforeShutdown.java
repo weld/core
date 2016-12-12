@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015, Red Hat, Inc., and individual contributors
+ * Copyright 2016, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,13 +17,13 @@
 package org.jboss.weld.environment.se.events;
 
 /**
- * An event that is fired after Weld SE container shutdown.
+ * An event that is fired when the Weld SE container is about to be shut down.
  *
- * @author Martin Kouba
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-public class ContainerShutdown extends WeldContainerEvent {
+public class ContainerBeforeShutdown extends WeldContainerEvent {
 
-    public ContainerShutdown(String containerId) {
+    public ContainerBeforeShutdown(String containerId) {
         super(containerId);
     }
 

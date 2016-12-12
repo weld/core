@@ -26,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.se.events.ContainerBeforeShutdown;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.test.util.ActionSequence;
@@ -45,16 +46,19 @@ public class ContainerEventsTest {
             assertFalse(container.select(ContainerObserver.class).isUnsatisfied());
         }
         List<String> sequenceData = ActionSequence.getSequenceData();
-        assertEquals(4, sequenceData.size());
+        assertEquals(6, sequenceData.size());
         assertTrue(sequenceData.contains(ContainerInitialized.class.getName() + id));
         assertTrue(sequenceData.contains(ContainerInitialized.class.getName() + ApplicationScoped.class.getName() + id));
+        assertTrue(sequenceData.contains(ContainerBeforeShutdown.class.getName() + id));
+        assertTrue(sequenceData.contains(ContainerBeforeShutdown.class.getName() + ApplicationScoped.class.getName() + id));
         assertTrue(sequenceData.contains(ContainerShutdown.class.getName() + id));
         assertTrue(sequenceData.contains(ContainerShutdown.class.getName() + ApplicationScoped.class.getName() + id));
 
         sequenceData = ActionSequence.getSequenceData(ApplicationScoped.class.getName());
-        assertEquals(2, sequenceData.size());
+        assertEquals(3, sequenceData.size());
         assertTrue(sequenceData.get(0).equals(ContainerInitialized.class.getName() + ApplicationScoped.class.getName()));
-        assertTrue(sequenceData.get(1).equals(ContainerShutdown.class.getName() + ApplicationScoped.class.getName()));
+        assertTrue(sequenceData.get(1).equals(ContainerBeforeShutdown.class.getName() + ApplicationScoped.class.getName()));
+        assertTrue(sequenceData.get(2).equals(ContainerShutdown.class.getName() + ApplicationScoped.class.getName()));
     }
 
 }

@@ -17,10 +17,12 @@
 package org.jboss.weld.environment.se.test.container.events;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.BeforeDestroyed;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 
+import org.jboss.weld.environment.se.events.ContainerBeforeShutdown;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.test.util.ActionSequence;
@@ -33,6 +35,10 @@ public class ContainerObserver {
     }
 
     public void onAppScopeDestroy(@Observes @Destroyed(ApplicationScoped.class) Object event) {
+        ActionSequence.addAction(ApplicationScoped.class.getName(), event.getClass().getName() + ApplicationScoped.class.getName());
+    }
+
+    public void onAppScopeBeforeDestroy(@Observes @BeforeDestroyed(ApplicationScoped.class) Object event) {
         ActionSequence.addAction(ApplicationScoped.class.getName(), event.getClass().getName() + ApplicationScoped.class.getName());
     }
 
@@ -50,6 +56,14 @@ public class ContainerObserver {
 
     public void onContainerShutdown(@Observes ContainerShutdown event) {
         ActionSequence.addAction(event.getClass().getName() + event.getContainerId());
+    }
+
+    public void onContainerBeforeShutdown(@Observes ContainerBeforeShutdown event) {
+        ActionSequence.addAction(event.getClass().getName() + event.getContainerId());
+    }
+
+    public void onContainerBeforeShutdownWithQualifier(@Observes @BeforeDestroyed(ApplicationScoped.class) ContainerBeforeShutdown event) {
+        ActionSequence.addAction(event.getClass().getName() + ApplicationScoped.class.getName() + event.getContainerId());
     }
 
 }

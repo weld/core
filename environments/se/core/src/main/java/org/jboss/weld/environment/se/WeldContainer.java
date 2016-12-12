@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.enterprise.context.BeforeDestroyed;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -36,12 +39,11 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.deployment.WeldDeployment;
+import org.jboss.weld.environment.se.events.ContainerBeforeShutdown;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.inject.WeldInstance;
-import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableList;
 
@@ -207,7 +209,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
         this.creationalContext = beanManager().createCreationalContext(null);
         this.instance = beanManager().getInstance(creationalContext);
         this.event = beanManager().event();
-        beanManager().fireEvent(new ContainerInitialized(id), InitializedLiteral.APPLICATION);
+        beanManager().fireEvent(new ContainerInitialized(id), Initialized.Literal.APPLICATION);
         WeldSELogger.LOG.weldContainerInitialized(id);
     }
 
@@ -260,11 +262,12 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     public synchronized void shutdown() {
         checkIsRunning();
         try {
-            beanManager().fireEvent(new ContainerShutdown(id), DestroyedLiteral.APPLICATION);
+            beanManager().fireEvent(new ContainerBeforeShutdown(id), BeforeDestroyed.Literal.APPLICATION);
         } finally {
             discard(id);
             // Destroy all the dependent beans correctly
             creationalContext.release();
+            beanManager().fireEvent(new ContainerShutdown(id), Destroyed.Literal.APPLICATION);
             bootstrap.shutdown();
             WeldSELogger.LOG.weldContainerShutdown(id);
         }
