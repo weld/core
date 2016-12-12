@@ -137,13 +137,6 @@
                 </methods>
             </class>
 
-            <!-- WELD-2267 -->
-            <class name="org.jboss.cdi.tck.tests.context.activation.ActivateRequestContextinEETest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- WELD-2269 -->
             <class name="org.jboss.cdi.tck.tests.context.request.event.RequestScopeEventTest">
                 <methods>
@@ -152,13 +145,6 @@
             </class>
 
             <!-- CDI SE -->
-
-            <!-- WELD-2266 -->
-            <class name="org.jboss.cdi.tck.tests.se.context.activation.programmatic.ActivateRequestContextProgrammaticallyTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- WELD-2269 -->
             <class name="org.jboss.cdi.tck.tests.se.context.ContextSETest">
