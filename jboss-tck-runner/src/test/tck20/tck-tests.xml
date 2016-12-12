@@ -160,13 +160,6 @@
 
             <!-- CDI SE -->
 
-            <!-- WELD-2267 -->
-            <class name="org.jboss.cdi.tck.tests.se.context.activation.interceptor.ActivateRequestContextByInterceptorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- WELD-2266 -->
             <class name="org.jboss.cdi.tck.tests.se.context.activation.programmatic.ActivateRequestContextProgrammaticallyTest">
                 <methods>
