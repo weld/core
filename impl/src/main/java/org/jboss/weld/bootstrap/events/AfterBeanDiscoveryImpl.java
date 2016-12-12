@@ -139,7 +139,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     @Override
     public <T> ObserverMethodConfigurator<T> addObserverMethod() {
         checkWithinObserverNotification();
-        ObserverMethodConfiguratorImpl<T> configurator = new ObserverMethodConfiguratorImpl<>();
+        ObserverMethodConfiguratorImpl<T> configurator = new ObserverMethodConfiguratorImpl<>(getReceiver());
         additionalObserverConfigurators.add(configurator);
         return configurator;
     }

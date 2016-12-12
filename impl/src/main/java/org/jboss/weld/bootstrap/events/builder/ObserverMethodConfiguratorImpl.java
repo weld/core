@@ -32,10 +32,12 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
 import org.jboss.weld.logging.EventLogger;
+import org.jboss.weld.resolution.CovariantTypes;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -60,15 +62,18 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     private EventConsumer<T> notifyCallback;
 
-    public ObserverMethodConfiguratorImpl() {
+    private final Extension extension;
+
+    public ObserverMethodConfiguratorImpl(Extension extension) {
         this.reception = Reception.ALWAYS;
         this.txPhase = TransactionPhase.IN_PROGRESS;
         this.observedQualifiers = new HashSet<>();
         this.priority = ObserverMethod.DEFAULT_PRIORITY;
+        this.extension = extension;
     }
 
-    public ObserverMethodConfiguratorImpl(ObserverMethod<T> observerMethod) {
-        this();
+    public ObserverMethodConfiguratorImpl(ObserverMethod<T> observerMethod, Extension extension) {
+        this(extension);
         read(observerMethod);
         notifyWith(e -> observerMethod.notify(e));
     }
@@ -138,7 +143,10 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> observedType(Type type) {
-        this.observedType = type;
+        if (observedType != null && !CovariantTypes.isAssignableFrom(observedType, type)) {
+            EventLogger.LOG.originalObservedTypeIsNotAssignableFrom(observedType, type, extension);
+        }
+        observedType = type;
         return this;
     }
 
