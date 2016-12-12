@@ -97,7 +97,7 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                assertEquals(2, enabled.getInterceptors().size());
+                assertEquals(3, enabled.getInterceptors().size());
                 assertTrue(enabled.getInterceptors().contains(Int.class));
             }
         });
@@ -111,7 +111,7 @@ public class BeansXmlTest {
                 ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 Assert.assertEquals(enabled.getAlternativeClasses().size(), 1);
                 Assert.assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next());
-                Assert.assertEquals(enabled.getInterceptors().size(), 2);
+                Assert.assertEquals(enabled.getInterceptors().size(), 3);
                 Assert.assertTrue(enabled.getInterceptors().contains(Int.class));
                 Assert.assertEquals(enabled.getDecorators().size(), 1);
                 Assert.assertEquals(Dec.class, enabled.getDecorators().iterator().next());

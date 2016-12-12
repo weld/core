@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2016, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.jboss.weld.context.activator;
 
 import javax.annotation.Priority;
+import javax.enterprise.context.control.ActivateRequestContext;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.interceptor.Interceptor;
@@ -25,22 +26,19 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.Unbound;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-/**
- * Uses Weld API binding - @org.jboss.weld.context.activator.ActivateRequestContext.
+/** Uses CDI API binding - @javax.enterprise.context.control.ActivateRequestContext.
  *
- * @author Tomas Remes
- * @author Martin Kouba
- * @author Matej Novotny
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @Vetoed
 @Interceptor
 @ActivateRequestContext
 @SuppressWarnings("checkstyle:magicnumber")
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 100)
-public class ActivateRequestContextInterceptor extends AbstractActivateRequestContextInterceptor {
+public class CdiRequestContextActivatorInterceptor extends AbstractActivateRequestContextInterceptor {
 
     @Inject
-    public ActivateRequestContextInterceptor(@Unbound RequestContext requestContext, BeanManagerImpl beanManager) {
+    public CdiRequestContextActivatorInterceptor(@Unbound RequestContext requestContext, BeanManagerImpl beanManager) {
         super(requestContext, beanManager);
     }
 }
