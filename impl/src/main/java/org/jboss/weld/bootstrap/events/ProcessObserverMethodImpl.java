@@ -96,7 +96,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
         }
         checkWithinObserverNotification();
         if (configurator == null) {
-            configurator = new ObserverMethodConfiguratorImpl<>(observerMethod);
+            configurator = new ObserverMethodConfiguratorImpl<>(observerMethod, getReceiver());
         }
         return configurator;
     }

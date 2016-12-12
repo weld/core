@@ -29,6 +29,7 @@ import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator.EventConsumer;
 
 import org.jboss.weld.event.SyntheticObserverMethod;
+import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
@@ -84,6 +85,9 @@ public class ObserverMethodBuilderImpl<T> {
          * @param configurator
          */
         ImmutableObserverMethod(ObserverMethodConfiguratorImpl<T> configurator) {
+            if (configurator.getNotifyCallback() == null) {
+                throw EventLogger.LOG.notifyMethodNotImplemented(configurator);
+            }
             this.beanClass = configurator.getBeanClass();
             this.observedType = configurator.getObservedType();
             this.observedQualifiers = ImmutableSet.copyOf(configurator.getObservedQualifiers());

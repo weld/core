@@ -32,10 +32,12 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.logging.EventLogger;
+import org.jboss.weld.resolution.CovariantTypes;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -60,16 +62,20 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     private EventConsumer<T> notifyCallback;
 
-    public ObserverMethodConfiguratorImpl() {
+    private final Extension extension;
+
+    public ObserverMethodConfiguratorImpl(Extension extension) {
         this.reception = Reception.ALWAYS;
         this.txPhase = TransactionPhase.IN_PROGRESS;
         this.observedQualifiers = new HashSet<>();
         this.priority = ObserverMethod.DEFAULT_PRIORITY;
+        this.extension = extension;
     }
 
-    public ObserverMethodConfiguratorImpl(ObserverMethod<T> observerMethod) {
-        this();
+    public ObserverMethodConfiguratorImpl(ObserverMethod<T> observerMethod, Extension extension) {
+        this(extension);
         read(observerMethod);
+        notifyWith(e -> observerMethod.notify(e));
     }
 
     @Override
@@ -126,7 +132,6 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         transactionPhase(observerMethod.getTransactionPhase());
         priority(observerMethod.getPriority());
         async(observerMethod.isAsync());
-        notifyWith(e -> observerMethod.notify(e));
         return this;
     }
 
@@ -138,7 +143,10 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> observedType(Type type) {
-        this.observedType = type;
+        if (observedType != null && !CovariantTypes.isAssignableFrom(observedType, type)) {
+            EventLogger.LOG.originalObservedTypeIsNotAssignableFrom(observedType, type, extension);
+        }
+        observedType = type;
         return this;
     }
 
@@ -238,9 +246,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     private <P> void checkEventParams(Set<P> eventParams, Method method) {
         if (eventParams.size() != 1) {
-            // TODO Move to EventLogger in case of the read methods remain in the spec
-            throw new IllegalArgumentException(
-                    "None or multiple event parameters declared on: " + method + "\n\tat " + Formats.formatAsStackTraceElement(method) + "\n StackTrace:");
+            EventLogger.LOG.noneOrMultipleEventParametersDeclared(method, Formats.formatAsStackTraceElement(method));
         }
     }
 

@@ -32,7 +32,6 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -54,6 +53,7 @@ import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.ContextLogger;
@@ -139,7 +139,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     @Override
     public <T> ObserverMethodConfigurator<T> addObserverMethod() {
         checkWithinObserverNotification();
-        ObserverMethodConfiguratorImpl<T> configurator = new ObserverMethodConfiguratorImpl<>();
+        ObserverMethodConfiguratorImpl<T> configurator = new ObserverMethodConfiguratorImpl<>(getReceiver());
         additionalObserverConfigurators.add(configurator);
         return configurator;
     }
@@ -257,7 +257,6 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             }
             for (ObserverMethodConfigurator<?> configurator : additionalObserverConfigurators) {
                 ObserverMethod<?> observer = new ObserverMethodBuilderImpl<>(cast(configurator)).build();
-                validateObserverMethod(observer, getBeanManager(), null);
                 processAdditionalObserver(observer);
             }
         } catch (Exception e) {
@@ -266,6 +265,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     private void processAdditionalObserver(ObserverMethod<?> observer) {
+        validateObserverMethod(observer, getBeanManager(), null);
         BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
         if (Observers.isObserverMethodEnabled(observer, manager)) {
             ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observer);
