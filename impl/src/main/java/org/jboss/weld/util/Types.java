@@ -194,11 +194,11 @@ public class Types {
      */
     @SuppressWarnings("all")
     public static <C extends Class<?>> Map<String, C> buildClassNameMap(Iterable<C> set) {
-        Map<String, C> loadedStereotypes = new HashMap<String, C>();
+        Map<String, C> classNameMap = new HashMap<String, C>();
         for (C javaClass : set) {
-            loadedStereotypes.put(javaClass.getName(), javaClass);
+            classNameMap.put(javaClass.getName(), javaClass);
         }
-        return loadedStereotypes;
+        return classNameMap;
     }
 
     /**
