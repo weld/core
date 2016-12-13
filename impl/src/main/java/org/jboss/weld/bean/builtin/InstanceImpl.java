@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Set;
@@ -40,6 +41,7 @@ import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.BeanLogger;
@@ -61,7 +63,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Gavin King
  */
 @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD" }, justification = "Uses SerializationProxy")
-public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements Instance<T>, Serializable {
+public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements WeldInstance<T>, Serializable {
 
     private static final long serialVersionUID = -376721889693284887L;
 
@@ -73,7 +75,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     private final transient EjbSupport ejbSupport;
 
     public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext,
-            BeanManagerImpl beanManager) {
+        BeanManagerImpl beanManager) {
         return new InstanceImpl<I>(injectionPoint, creationalContext, beanManager);
     }
 
@@ -82,7 +84,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
         // Perform typesafe resolution, and possibly attempt to resolve the ambiguity
         Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
-                .setDeclaringBean(getInjectionPoint().getBean()).create();
+            .setDeclaringBean(getInjectionPoint().getBean()).create();
         TypeSafeBeanResolver beanResolver = getBeanManager().getBeanResolver();
         this.allBeans = beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
         // optimization for the most common path - non-null bean means we are not unsatisfied not ambiguous
@@ -103,14 +105,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
             return getBeanInstance(bean);
         } else if (isUnsatisfied()) {
             throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(
-                    Formats.formatAnnotations(ip.getQualifiers()),
-                    Formats.formatInjectionPointType(ip.getType()),
-                    InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
+                Formats.formatAnnotations(ip.getQualifiers()),
+                Formats.formatInjectionPointType(ip.getType()),
+                InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
         } else {
             throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(
-                    Formats.formatAnnotations(ip.getQualifiers()),
-                    Formats.formatInjectionPointType(ip.getType()),
-                    WeldCollections.toMultiRowString(allBeans));
+                Formats.formatAnnotations(ip.getQualifiers()),
+                Formats.formatInjectionPointType(ip.getType()),
+                WeldCollections.toMultiRowString(allBeans));
         }
     }
 
@@ -136,21 +138,21 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         return allBeans.isEmpty();
     }
 
-    public Instance<T> select(Annotation... qualifiers) {
+    public WeldInstance<T> select(Annotation... qualifiers) {
         return selectInstance(this.getType(), qualifiers);
     }
 
-    public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldInstance<U> select(Class<U> subtype, Annotation... qualifiers) {
         return selectInstance(subtype, qualifiers);
     }
 
-    public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldInstance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         return selectInstance(subtype.getType(), qualifiers);
     }
 
-    private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
+    private <U extends T> WeldInstance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
         InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class, subtype, getQualifiers(),
-                newQualifiers);
+            newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
 
@@ -184,6 +186,26 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         destroyDependentInstance(instance);
     }
 
+    @Override
+    public Handler<T> getHandler() {
+        return new HandlerImpl<T>(get(), this, bean);
+    }
+
+    @Override
+    public boolean isResolvable() {
+        return !isUnsatisfied() && !isAmbiguous();
+    }
+
+    @Override
+    public Iterable<Handler<T>> handlers() {
+        return new Iterable<WeldInstance.Handler<T>>() {
+            @Override
+            public Iterator<org.jboss.weld.inject.WeldInstance.Handler<T>> iterator() {
+                return new HandlerIterator(allBeans);
+            }
+        };
+    }
+
     private boolean isSessionBeanProxy(T instance) {
         return ejbSupport != null ? ejbSupport.isSessionBeanProxy(instance) : false;
     }
@@ -199,14 +221,13 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     private T getBeanInstance(Bean<?> bean) {
         final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(ip);
         try {
-            return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
+            return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
         } finally {
             stack.pop();
         }
     }
 
     // Serialization
-
     private Object writeReplace() throws ObjectStreamException {
         return new SerializationProxy<T>(this);
     }
@@ -229,12 +250,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     }
 
-    final class InstanceImplIterator implements Iterator<T> {
+    abstract class BeanIterator<T> implements Iterator<T> {
 
-        private final Iterator<Bean<?>> delegate;
+        protected final Iterator<Bean<?>> delegate;
 
-        private InstanceImplIterator(Set<Bean<?>> beans) {
-            super();
+        private BeanIterator(Set<Bean<?>> beans) {
             this.delegate = beans.iterator();
         }
 
@@ -244,13 +264,78 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         }
 
         @Override
-        public T next() {
-            return getBeanInstance(delegate.next());
+        public void remove() {
+            throw BeanLogger.LOG.instanceIteratorRemoveUnsupported();
+        }
+
+    }
+
+    class InstanceImplIterator extends BeanIterator<T> {
+
+        private InstanceImplIterator(Set<Bean<?>> beans) {
+            super(beans);
         }
 
         @Override
-        public void remove() {
-            throw BeanLogger.LOG.instanceIteratorRemoveUnsupported();
+        public T next() {
+            return getBeanInstance(delegate.next());
+        }
+    }
+
+    class HandlerIterator extends BeanIterator<Handler<T>> {
+
+        private HandlerIterator(Set<Bean<?>> beans) {
+            super(beans);
+        }
+
+        @Override
+        public Handler<T> next() {
+            Bean<?> bean = delegate.next();
+            return new HandlerImpl<>(getBeanInstance(bean), InstanceImpl.this, bean);
+        }
+
+    }
+
+    private static class HandlerImpl<T> implements Handler<T> {
+
+        private final T value;
+
+        private final Bean<?> bean;
+
+        private final WeakReference<WeldInstance<T>> weldInstance;
+
+        private boolean destroyed;
+
+        HandlerImpl(T value, WeldInstance<T> instance, Bean<?> bean) {
+            this.value = value;
+            this.bean = bean;
+            this.weldInstance = new WeakReference<>(instance);
+            this.destroyed = false;
+        }
+
+        @Override
+        public T get() {
+            return value;
+        }
+
+        @Override
+        public Bean<?> getBean() {
+            return bean;
+        }
+
+        @Override
+        public void destroy() {
+            WeldInstance<T> instance = weldInstance.get();
+            if (instance == null || destroyed) {
+                return;
+            }
+            instance.destroy(value);
+            destroyed = true;
+        }
+
+        @Override
+        public void close() {
+            destroy();
         }
 
     }
