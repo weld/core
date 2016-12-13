@@ -58,7 +58,7 @@ public class SessionHolder {
     public static HttpSession getSession(HttpServletRequest request, boolean create) {
         HttpSession session = CURRENT_SESSION.get();
         if (create && session == null) {
-            request.getSession(true);
+            CURRENT_SESSION.set(request.getSession(true));
             session = CURRENT_SESSION.get();
         }
         return session;
