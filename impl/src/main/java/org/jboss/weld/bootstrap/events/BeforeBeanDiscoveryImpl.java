@@ -18,14 +18,18 @@ package org.jboss.weld.bootstrap.events;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
 import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
@@ -43,6 +47,9 @@ import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
 public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements BeforeBeanDiscovery {
 
+    protected final List<AnnotatedTypeConfiguratorImpl<?>> additionalQualifiers;
+    protected final List<AnnotatedTypeConfiguratorImpl<?>> additionalInterceptorBindings;
+
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
         BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts);
         event.fire();
@@ -51,6 +58,8 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
 
     protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, BeforeBeanDiscovery.class, bdaMapping, deployment, contexts);
+        additionalQualifiers = new LinkedList<>();
+        additionalInterceptorBindings = new LinkedList<>();
     }
 
     @Override
@@ -143,14 +152,33 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
 
     @Override
     public <T extends Annotation> AnnotatedTypeConfigurator<T> configureQualifier(Class<T> qualifier) {
-        // TODO WELD-2264
-        return null;
+        checkWithinObserverNotification();
+        AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(qualifier));
+        additionalQualifiers.add(configurator);
+        return configurator;
     }
 
     @Override
     public <T extends Annotation> AnnotatedTypeConfigurator<T> configureInterceptorBinding(Class<T> bindingType) {
-        // TODO WELD-2264
-        return null;
+        checkWithinObserverNotification();
+        AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(bindingType));
+        additionalInterceptorBindings.add(configurator);
+        return configurator;
+    }
+
+    @Override
+    protected void finish() {
+        super.finish();
+        try {
+            for (AnnotatedTypeConfiguratorImpl<?> qualifierAsAnnotatedType : additionalQualifiers) {
+                addSyntheticAnnotation(new AnnotatedTypeBuilderImpl(qualifierAsAnnotatedType).build(), QualifierLiteral.INSTANCE);
+            }
+            for (AnnotatedTypeConfiguratorImpl<?> interceptorBindingAsAnnotatedType : additionalInterceptorBindings) {
+                addSyntheticAnnotation(new AnnotatedTypeBuilderImpl(interceptorBindingAsAnnotatedType).build(), InterceptorBindingTypeLiteral.INSTANCE);
+            }
+        } catch (Exception e) {
+            throw new DefinitionException(e);
+        }
     }
 
     private <A extends Annotation> void addSyntheticAnnotation(AnnotatedType<A> annotation, Annotation requiredMetaAnnotation) {
