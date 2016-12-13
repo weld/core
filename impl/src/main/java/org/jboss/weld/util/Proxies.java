@@ -42,7 +42,7 @@ import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * Utilities for working with Javassist proxies
+ * Utilities for working with proxies.
  *
  * @author Nicklas Karlsson
  * @author Pete Muir
@@ -219,7 +219,7 @@ public class Proxies {
         } else {
             Method finalMethod = Reflections.getNonPrivateNonStaticFinalMethod(clazz);
             if (finalMethod != null) {
-                if (services.get(WeldConfiguration.class).isFinalMethodIgnored(clazz.getName())) {
+                if (Beans.shouldIgnoreFinalMethods(declaringBean) || services.get(WeldConfiguration.class).isFinalMethodIgnored(clazz.getName())) {
                     ValidatorLogger.LOG.notProxyableFinalMethodIgnored(finalMethod, getDeclaringBeanInfo(declaringBean));
                 } else {
                     return ValidatorLogger.LOG.notProxyableFinalMethod(clazz, finalMethod, getDeclaringBeanInfo(declaringBean));

@@ -59,6 +59,8 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     private Producer<T> producer;
 
+    private boolean ignoreFinalMethods;
+
     /**
      * Constructor
      *
@@ -237,4 +239,13 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     public void setProducer(Producer<T> producer) {
         this.producer = producer;
     }
+
+    public boolean isIgnoreFinalMethods() {
+        return ignoreFinalMethods;
+    }
+
+    public void setIgnoreFinalMethods() {
+        this.ignoreFinalMethods = true;
+    }
+
 }
