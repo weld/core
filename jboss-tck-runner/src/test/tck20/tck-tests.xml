@@ -130,13 +130,6 @@
                 </methods>
             </class>
 
-            <!-- WELD-2263 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.lifecycle.processBeanAttributes.ignoreFinalMethods.IgnoreFinalMethodsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- WELD-2264 -->
             <class name="org.jboss.cdi.tck.tests.extensions.configurators.annotatedTypeConfigurator.beforeBeanDiscovery.AnnotatedTypeConfiguratorInBBDTest">
                 <methods>
