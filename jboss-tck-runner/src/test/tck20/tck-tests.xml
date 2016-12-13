@@ -45,6 +45,13 @@
 
             <!-- Issues in the TCK -->
 
+            <!-- CDITCK-553 -->
+            <class name="org.jboss.cdi.tck.tests.alternative.veto.VetoedAlternativeTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
             <!-- changes in Weld 3 which were not reflected in TCK yet -->
             <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
                 <methods>
@@ -91,13 +98,6 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
-
-            <!-- WELD-2270 -->
-            <class name="org.jboss.cdi.tck.tests.alternative.veto.VetoedAlternativeTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- WELD-2268 -->
             <class name="org.jboss.cdi.tck.tests.deployment.trimmed.TrimmedBeanArchiveTest">
