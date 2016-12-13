@@ -316,6 +316,9 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             bean.setAttributes(ExternalBeanAttributesFactory.<T>of(event.getBeanAttributesInternal(), manager));
             bean.checkSpecialization();
         }
+        if (event.isIgnoreFinalMethods()) {
+            bean.setIgnoreFinalMethods();
+        }
         return false;
     }
 }

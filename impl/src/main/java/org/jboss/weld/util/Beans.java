@@ -63,6 +63,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
@@ -647,6 +648,19 @@ public class Beans {
      */
     public static BeanIdentifier getIdentifier(Contextual<?> contextual, ServiceRegistry serviceRegistry) {
         return getIdentifier(contextual, null, serviceRegistry);
+    }
+
+    /**
+     *
+     * @param bean
+     * @return <code>true</code> if final methods should be ignored when checking proxyability
+     */
+    public static boolean shouldIgnoreFinalMethods(Bean<?> bean) {
+        if (bean instanceof AbstractBean<?, ?>) {
+            AbstractBean<?, ?> abstractBean = (AbstractBean<?, ?>) bean;
+            return abstractBean.isIgnoreFinalMethods();
+        }
+        return false;
     }
 
     /**

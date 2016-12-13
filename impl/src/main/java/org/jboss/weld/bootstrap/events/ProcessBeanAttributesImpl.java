@@ -56,6 +56,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     private BeanAttributesConfiguratorImpl<T> configurator;
     private boolean veto;
     private boolean dirty;
+    private boolean ignoreFinalMethods;
 
     // we need this to ensure that configurator and set method are not invoked within one observer
     private boolean beanAttributesSet;
@@ -109,7 +110,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     @Override
     public void ignoreFinalMethods() {
-        // TODO WELD-2263
+        ignoreFinalMethods = true;
     }
 
     public boolean isVeto() {
@@ -118,6 +119,10 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     public boolean isDirty() {
         return dirty;
+    }
+
+    public boolean isIgnoreFinalMethods() {
+        return ignoreFinalMethods;
     }
 
     @Override
