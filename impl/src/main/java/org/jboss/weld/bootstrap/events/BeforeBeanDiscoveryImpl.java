@@ -132,6 +132,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         checkWithinObserverNotification();
         AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(type));
         additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));
+        BootstrapLogger.LOG.addAnnotatedTypeCalledInBBD(getReceiver(), type);
         return configurator;
     }
 
@@ -155,6 +156,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         checkWithinObserverNotification();
         AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(qualifier));
         additionalQualifiers.add(configurator);
+        BootstrapLogger.LOG.configureQualifierCalled(getReceiver(), qualifier);
         return configurator;
     }
 
@@ -163,6 +165,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         checkWithinObserverNotification();
         AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(bindingType));
         additionalInterceptorBindings.add(configurator);
+        BootstrapLogger.LOG.configureInterceptorBindingCalled(getReceiver(), bindingType);
         return configurator;
     }
 

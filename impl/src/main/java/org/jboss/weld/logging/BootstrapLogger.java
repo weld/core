@@ -293,4 +293,12 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 170, value = "{0} observer cannot call both the configurator and set methods. Extension {1} \nStackTrace:", format = Format.MESSAGE_FORMAT)
     IllegalStateException configuratorAndSetMethodBothCalled(Object observerName, Object extension);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 171, value = "BeforeBeanDiscovery.configureQualifier() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void configureQualifierCalled(Object extensionName, Object type);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 172, value = "BeforeBeanDiscovery.configureInterceptorBinding() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void configureInterceptorBindingCalled(Object extensionName, Object type);
+
 }
