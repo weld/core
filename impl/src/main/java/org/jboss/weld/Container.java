@@ -54,9 +54,7 @@ public class Container {
     }
 
     public static boolean available() {
-        String id = RegistrySingletonProvider.STATIC_INSTANCE;
-        return instance.isSet(id) && instance.get(id) != null
-                && instance.get(id).getState().isAvailable();
+        return available(RegistrySingletonProvider.STATIC_INSTANCE);
     }
 
     public static Container instance(String contextId) {
@@ -72,9 +70,11 @@ public class Container {
     }
 
     public static boolean available(String contextId) {
-        boolean b = instance.isSet(contextId) && instance(contextId) != null
-                && instance(contextId).getState().isAvailable();
-        return b;
+        return isSet(contextId) && instance(contextId).getState().isAvailable();
+    }
+
+    public static boolean isSet(String contextId) {
+        return instance.isSet(contextId);
     }
 
     /**

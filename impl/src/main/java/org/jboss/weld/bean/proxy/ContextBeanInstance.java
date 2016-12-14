@@ -33,6 +33,7 @@ import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -80,11 +81,13 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     }
 
     public T getInstance() {
+        if (!Container.isSet(contextId)) {
+            throw ContextLogger.LOG.contextualReferenceNotValidAfterShutdown(bean, contextId);
+        }
         T existingInstance = ContextualInstance.getIfExists(bean, manager);
         if (existingInstance != null) {
             return existingInstance;
         }
-
         WeldCreationalContext<T> creationalContext;
         WeldCreationalContext<?> previousCreationalContext = currentCreationalContext.get();
         if (previousCreationalContext == null) {

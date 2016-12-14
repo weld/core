@@ -126,4 +126,7 @@ public interface ContextLogger extends WeldLogger {
     @Message(id = 228, value = "Bean store leak detected during {0} association - instances of beans with the following identifiers might not be destroyed correctly: {1}", format = Format.MESSAGE_FORMAT)
     void beanStoreLeakAffectedBeanIdentifiers(Object context, Object identifiers);
 
+    @Message(id = 229, value = "Contextual reference of {0} is not valid after container {1} shutdown", format = Format.MESSAGE_FORMAT)
+    IllegalStateException contextualReferenceNotValidAfterShutdown(Object bean, Object contextId);
+
 }

@@ -150,13 +150,6 @@
                 </methods>
             </class>
 
-            <!-- WELD-2190 -->
-            <class name="org.jboss.cdi.tck.tests.se.container.contextualReference.InvalidContextualReferenceTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- Issues in WildFly -->
 
         </classes>
