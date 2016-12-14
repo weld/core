@@ -85,7 +85,8 @@ public class BeanDeployment {
     private final BeanDeployer beanDeployer;
     private final Collection<ContextHolder<? extends Context>> contexts;
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts) {
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices,
+            Collection<ContextHolder<? extends Context>> contexts) {
         this(beanDeploymentArchive, deploymentManager, deploymentServices, contexts, false);
     }
 
@@ -250,6 +251,9 @@ public class BeanDeployment {
         }
         beanDeployer.addBuiltInBean(new RequestContextControllerBean(beanManager));
 
+        if (beanDeploymentArchive.getBeansXml() != null && beanDeploymentArchive.getBeansXml().isTrimmed()) {
+            beanDeployer.getEnvironment().trim();
+        }
         // TODO Register the context beans
         beanDeployer.createClassBeans();
 

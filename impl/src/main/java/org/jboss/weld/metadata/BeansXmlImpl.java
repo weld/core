@@ -18,8 +18,11 @@ public class BeansXmlImpl implements BeansXml {
     private final URL url;
     private final BeanDiscoveryMode discoveryMode;
     private final String version;
+    private final boolean isTrimmed;
 
-    public BeansXmlImpl(List<Metadata<String>> enabledAlternatives, List<Metadata<String>> enabledAlternativeStereotypes, List<Metadata<String>> enabledDecorators, List<Metadata<String>> enabledInterceptors, Scanning scanning, URL url, BeanDiscoveryMode discoveryMode, String version) {
+    public BeansXmlImpl(List<Metadata<String>> enabledAlternatives, List<Metadata<String>> enabledAlternativeStereotypes,
+            List<Metadata<String>> enabledDecorators, List<Metadata<String>> enabledInterceptors, Scanning scanning, URL url, BeanDiscoveryMode discoveryMode,
+            String version, boolean isTrimmed) {
         this.enabledAlternatives = enabledAlternatives;
         this.enabledAlternativeStereotypes = enabledAlternativeStereotypes;
         this.enabledDecorators = enabledDecorators;
@@ -28,6 +31,7 @@ public class BeansXmlImpl implements BeansXml {
         this.url = url;
         this.discoveryMode = discoveryMode;
         this.version = version;
+        this.isTrimmed = isTrimmed;
     }
 
     @Override
@@ -72,7 +76,6 @@ public class BeansXmlImpl implements BeansXml {
 
     @Override
     public boolean isTrimmed() {
-        // TODO WELD-2268
-        return false;
+        return isTrimmed;
     }
 }

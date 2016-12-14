@@ -20,7 +20,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 public enum XmlSchema {
 
-    CDI10("beans_1_0.xsd", BeanManager.class.getClassLoader()), CDI11("beans_1_1.xsd", BeanManager.class.getClassLoader()), WELD11("weld_1_1.xsd", BeansXmlParser.class.getClassLoader());
+    CDI20("beans_2_0.xsd", BeanManager.class.getClassLoader()), WELD11("weld_1_1.xsd", BeansXmlParser.class.getClassLoader());
 
     private final String fileName;
     private final transient ClassLoader classLoader;
