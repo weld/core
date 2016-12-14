@@ -73,6 +73,13 @@
                 </methods>
             </class>
 
+            <!-- Temporarily excluded, there was bug in 2.0.0.Alpha9, next release will fix it -->
+            <class name="org.jboss.cdi.tck.tests.context.request.event.RequestScopeEventTest">
+-                <methods>
+-                    <exclude name=".*"/>
+-                </methods>
+-            </class>
+
             <!-- changes in Weld 3 which were not reflected in TCK yet -->
             <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
                 <methods>
@@ -134,21 +141,7 @@
                 </methods>
             </class>
 
-            <!-- WELD-2269 -->
-            <class name="org.jboss.cdi.tck.tests.context.request.event.RequestScopeEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- CDI SE -->
-
-            <!-- WELD-2269 -->
-            <class name="org.jboss.cdi.tck.tests.se.context.ContextSETest">
-                <methods>
-                    <exclude name="testEventIsFiredWhenAplicationContextDestroyed"/>
-                </methods>
-            </class>
 
             <!-- WELD-2190 -->
             <class name="org.jboss.cdi.tck.tests.se.container.contextualReference.InvalidContextualReferenceTest">

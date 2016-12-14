@@ -19,6 +19,9 @@ package org.jboss.weld.servlet;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 
+import javax.enterprise.context.BeforeDestroyed;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequestListener;
@@ -38,8 +41,6 @@ import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.context.http.HttpSessionDestructionContext;
 import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
-import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
@@ -78,8 +79,10 @@ public class HttpContextLifecycle implements Service {
     private final HttpContextActivationFilter contextActivationFilter;
 
     private final FastEvent<HttpServletRequest> requestInitializedEvent;
+    private final FastEvent<HttpServletRequest> requestBeforeDestroyedEvent;
     private final FastEvent<HttpServletRequest> requestDestroyedEvent;
     private final FastEvent<HttpSession> sessionInitializedEvent;
+    private final FastEvent<HttpSession> sessionBeforeDestroyedEvent;
     private final FastEvent<HttpSession> sessionDestroyedEvent;
 
     private final ServletApiAbstraction servletApi;
@@ -104,10 +107,12 @@ public class HttpContextLifecycle implements Service {
         this.ignoreForwards = ignoreForwards;
         this.ignoreIncludes = ignoreIncludes;
         this.contextActivationFilter = contextActivationFilter;
-        this.requestInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.REQUEST);
-        this.requestDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.REQUEST);
-        this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, InitializedLiteral.SESSION);
-        this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, DestroyedLiteral.SESSION);
+        this.requestInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, Initialized.Literal.REQUEST);
+        this.requestBeforeDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, BeforeDestroyed.Literal.REQUEST);
+        this.requestDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, Destroyed.Literal.REQUEST);
+        this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, Initialized.Literal.SESSION);
+        this.sessionBeforeDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, BeforeDestroyed.Literal.SESSION);
+        this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, Destroyed.Literal.SESSION);
         this.servletApi = beanManager.getServices().get(ServletApiAbstraction.class);
         this.servletContextService = beanManager.getServices().get(ServletContextService.class);
         this.nestedInvocationGuardEnabled = nestedInvocationGuardEnabled;
@@ -140,13 +145,15 @@ public class HttpContextLifecycle implements Service {
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
         synchronized (container) {
-            fireEventForApplicationScope(ctx, InitializedLiteral.APPLICATION);
+            fireEventForApplicationScope(ctx, Initialized.Literal.APPLICATION);
         }
     }
 
     public void contextDestroyed(ServletContext ctx) {
         synchronized (container) {
-            fireEventForApplicationScope(ctx, DestroyedLiteral.APPLICATION);
+            // TODO firing these two right after each other does not really make sense
+            fireEventForApplicationScope(ctx, BeforeDestroyed.Literal.APPLICATION);
+            fireEventForApplicationScope(ctx, Destroyed.Literal.APPLICATION);
         }
     }
 
@@ -304,13 +311,19 @@ public class HttpContextLifecycle implements Service {
                 getRequestContext().invalidate();
             }
 
+            // fire @BeforeDestroyed(RequestScoped.class)
+            requestBeforeDestroyedEvent.fire(request);
             safelyDeactivate(getRequestContext(), request);
             // fire @Destroyed(RequestScoped.class)
             requestDestroyedEvent.fire(request);
 
+            Object destroyedHttpSession = request.getAttribute(HTTP_SESSION);
+            // fire @BeforeDestroyed(SessionScoped.class)
+            if (destroyedHttpSession != null) {
+                sessionBeforeDestroyedEvent.fire((HttpSession) destroyedHttpSession);
+            }
             safelyDeactivate(getSessionContext(), request);
             // fire @Destroyed(SessionScoped.class)
-            Object destroyedHttpSession = request.getAttribute(HTTP_SESSION);
             if (destroyedHttpSession != null) {
                 sessionDestroyedEvent.fire((HttpSession) destroyedHttpSession);
             }

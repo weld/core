@@ -16,7 +16,12 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.enterprise.context.BeforeDestroyed;
+import javax.enterprise.context.Destroyed;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
@@ -25,7 +30,6 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.SingletonContext;
 import org.jboss.weld.event.ContextEvent;
-import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -51,24 +55,15 @@ public class WeldRuntime {
 
     public void shutdown() {
         try {
-            // First, the container must destroy all contexts.
+            // The container must destroy all contexts.
+            // For non-web modules, fire @BeforeDestroyed event
+            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_BEFORE_DESTROYED, BeforeDestroyed.Literal.APPLICATION);
             deploymentManager.instance().select(ApplicationContext.class).get().invalidate();
             deploymentManager.instance().select(SingletonContext.class).get().invalidate();
 
         } finally {
-            try {
-                BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
-                if (modules != null) {
-                    // fire @Destroyed(ApplicationScoped.class) for non-web modules
-                    // web modules are handled by HttpContextLifecycle
-                    for (BeanDeploymentModule module : modules) {
-                        if (!module.isWebModule()) {
-                            module.fireEvent(Object.class, ContextEvent.APPLICATION_DESTROYED, DestroyedLiteral.APPLICATION);
-                        }
-                    }
-                }
-            } catch (Exception ignored) {
-            }
+            // fire @Destroyed(ApplicationScope.class) for non-web modules
+            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_DESTROYED, Destroyed.Literal.APPLICATION);
             try {
                 // Finally, the container must fire an event of type BeforeShutdown.
                 BeforeShutdownImpl.fire(deploymentManager);
@@ -78,5 +73,24 @@ public class WeldRuntime {
                 container.cleanup();
             }
         }
+    }
+
+    /**
+     * Fires given event for non-web modules. Used for @BeforeDestroyed and @Destroyed events.
+     */
+    private void fireEventForNonWebModules(Type eventType, Object event, Annotation... qualifiers) {
+        try {
+                BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
+                if (modules != null) {
+                    // fire event for non-web modules
+                    // web modules are handled by HttpContextLifecycle
+                    for (BeanDeploymentModule module : modules) {
+                        if (!module.isWebModule()) {
+                            module.fireEvent(eventType, event, qualifiers);
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
     }
 }
