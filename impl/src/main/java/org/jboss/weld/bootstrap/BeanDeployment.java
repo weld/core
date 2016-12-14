@@ -53,6 +53,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.bootstrap.spi.TrimmableBeansXml;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
@@ -91,7 +92,8 @@ public class BeanDeployment {
     private final BeanDeployer beanDeployer;
     private final Collection<ContextHolder<? extends Context>> contexts;
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts) {
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices,
+            Collection<ContextHolder<? extends Context>> contexts) {
         this(beanDeploymentArchive, deploymentManager, deploymentServices, contexts, false);
     }
 
@@ -271,6 +273,12 @@ public class BeanDeployment {
             beanDeployer.addBuiltInBean(ContextBean.of(context, beanManager));
         }
 
+        if (beanDeploymentArchive.getBeansXml() instanceof TrimmableBeansXml) {
+            TrimmableBeansXml beansXml = (TrimmableBeansXml) beanDeploymentArchive.getBeansXml();
+            if (beansXml.isTrimmed()) {
+                beanDeployer.getEnvironment().trim();
+            }
+        }
         // TODO Register the context beans
         beanDeployer.createClassBeans();
 
