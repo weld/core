@@ -865,7 +865,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                throw BeanManagerLogger.LOG.notInterceptorBindingType(annotation);
             }
         }
-        Set<Annotation> flattenedInterceptorBindings = Interceptors.flattenInterceptorBindings(this, Arrays.asList(interceptorBindings), true, true);
+        Set<Annotation> flattenedInterceptorBindings = Interceptors.flattenInterceptorBindings(null, this, Arrays.asList(interceptorBindings), true, true);
         return resolveInterceptors(type, flattenedInterceptorBindings);
     }
 
