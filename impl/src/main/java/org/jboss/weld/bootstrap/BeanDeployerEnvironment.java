@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -53,6 +54,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.SetMultimap;
@@ -405,5 +407,13 @@ public class BeanDeployerEnvironment {
 
     public Set<Type> getNewBeanTypes() {
         return Collections.unmodifiableSet(newBeanTypes);
+    }
+
+    public void trim() {
+        for (Iterator<SlimAnnotatedTypeContext<?>> iterator = annotatedTypes.iterator(); iterator.hasNext(); ) {
+            if (!AnnotatedTypes.hasBeanDefiningAnnotation(iterator.next().getAnnotatedType(), AnnotatedTypes.TRIM_META_ANNOTATIONS)) {
+                iterator.remove();
+            }
+        }
     }
 }
