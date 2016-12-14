@@ -137,7 +137,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     protected AnnotatedTypeLoader createAnnotatedTypeLoader() {
         if (classFileServices != null) {
             // Since FastProcessAnnotatedTypeResolver is installed after BeanDeployers are created, we need to query deploymentManager's services instead of the manager of this deployer
-            final FastProcessAnnotatedTypeResolver resolver = Container.instance(getManager()).deploymentManager().getServices().get(FastProcessAnnotatedTypeResolver.class);
+            final FastProcessAnnotatedTypeResolver resolver = Container.instance(getManager()).deploymentManager().getServices()
+                    .get(FastProcessAnnotatedTypeResolver.class);
             if (resolver != null) {
                 return new FastAnnotatedTypeLoader(getManager(), classTransformer, classFileServices, containerLifecycleEvents, resolver);
             }
@@ -225,7 +226,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 createManagedBean(weldClass);
             }
         } else {
-            if(Beans.isDecoratorDeclaringInAppropriateConstructor(annotatedType)){
+            if (Beans.isDecoratorDeclaringInAppropriateConstructor(annotatedType)) {
                 BootstrapLogger.LOG.decoratorWithNonCdiConstructor(annotatedType.getJavaClass().getName());
             }
             Class<? extends Annotation> scopeClass = Beans.getBeanDefiningAnnotationScope(annotatedType);
