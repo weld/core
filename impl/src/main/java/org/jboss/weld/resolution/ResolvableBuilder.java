@@ -17,6 +17,7 @@
 package org.jboss.weld.resolution;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Repeatable;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Member;
 import java.lang.reflect.Parameter;
@@ -217,8 +218,12 @@ public class ResolvableBuilder {
         if (!store.getBindingTypeModel(annotationType).isValid()) {
             throw BeanManagerLogger.LOG.invalidQualifier(qualifierInstance);
         }
-        if (qualifierInstances.contains(qualifierInstance)) {
-            throw BeanManagerLogger.LOG.duplicateQualifiers(qualifierInstances);
+        if (!annotationType.isAnnotationPresent(Repeatable.class)) {
+            for (QualifierInstance checkedQualifier : qualifierInstances) {
+                if (annotationType.equals(checkedQualifier.getAnnotationClass())) {
+                    throw BeanManagerLogger.LOG.duplicateQualifiers(qualifierInstances);
+                }
+            }
         }
     }
 

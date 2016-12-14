@@ -222,7 +222,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private Set<Annotation> getMemberBindingAnnotations(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
-        Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
+        Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(null, manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
         return mergeMemberInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).uniqueValues();
     }
 

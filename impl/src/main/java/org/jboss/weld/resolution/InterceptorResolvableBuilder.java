@@ -45,7 +45,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
             throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
         if (qualifierInstances.contains(qualifierInstance)) {
-            throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifierInstances);
+            throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifierInstance);
         }
     }
 

@@ -24,17 +24,6 @@
         <classes>
 
             <!-- Issues in the spec -->
-            <!-- CDI-471 - interceptor binding conflicts need to be clarified if support for repeating annotations is to be added -->
-            <class name="org.jboss.cdi.tck.interceptors.tests.bindings.broken.InvalidTransitiveInterceptorBindingAnnotationsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.interceptors.tests.bindings.broken.InvalidStereotypeInterceptorBindingAnnotationsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- CDI-437 -->
             <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.broken.AmbiguousELNamesTest">
@@ -77,44 +66,6 @@
             <class name="org.jboss.cdi.tck.tests.context.request.event.RequestScopeEventTest">
                 <methods>
                     <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- changes in Weld 3 which were not reflected in TCK yet -->
-            <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
-                <methods>
-                    <exclude name="testDuplicateBindingsToFireEventFails"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.event.select.SelectEventTest">
-                <methods>
-                    <exclude name="testEventSelectThrowsExceptionForDuplicateBindingType"/>
-                    <exclude name="testEventSelectWithSubtypeThrowsExceptionForDuplicateBindingType"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.lookup.dynamic.DynamicLookupTest">
-                <methods>
-                    <exclude name="testDuplicateBindingsThrowsException"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.extensions.bean.bytype.BeanByTypeTest">
-                <methods>
-                    <exclude name="testSameBindingTwice"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.interceptors.definition.InterceptorDefinitionTest">
-                <methods>
-                    <exclude name="testSameBindingTypesToResolveInterceptorsFails"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.event.resolve.binding.DuplicateBindingTypesWhenResolvingTest">
-                <methods>
-                    <exclude name="testDuplicateBindingTypesWhenResolvingFails"/>
                 </methods>
             </class>
 

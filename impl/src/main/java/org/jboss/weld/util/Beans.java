@@ -18,6 +18,7 @@ package org.jboss.weld.util;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Repeatable;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -383,8 +384,13 @@ public class Beans {
                 if (!store.getBindingTypeModel(qualifier.annotationType()).isValid()) {
                     throw UtilLogger.LOG.annotationNotQualifier(qualifier);
                 }
-                if (checkedNewQualifiers.contains(qualifier)) {
-                    throw UtilLogger.LOG.redundantQualifier(qualifier, Arrays.asList(newQualifiers));
+                Class<? extends Annotation> annotationType = qualifier.annotationType();
+                if (!annotationType.isAnnotationPresent(Repeatable.class)) {
+                    for (Annotation annotation : checkedNewQualifiers) {
+                        if(annotationType.equals(annotation.annotationType())) {
+                            throw UtilLogger.LOG.redundantQualifier(qualifier, Arrays.toString(newQualifiers));
+                        }
+                    }
                 }
                 checkedNewQualifiers.add(qualifier);
             }

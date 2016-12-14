@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.repeatable;
 
-import javax.inject.Inject;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -42,8 +42,8 @@ public class InterceptorWithRepeatableBindingsTest {
 
     @Test
     public void testMultipleInterceptorBindings() {
-        Assert.assertEquals(0, bean.foo());
-        Assert.assertEquals(0, bean.foobar());
-        Assert.assertEquals(1, bean.foobarbaz());
+        assertEquals(0, bean.foo());
+        assertEquals(0, bean.foobar());
+        assertEquals(1, bean.foobarbaz());
     }
 }
