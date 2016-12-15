@@ -69,13 +69,6 @@
                 </methods>
             </class>
 
-            <!-- CDITCK-534 -->
-            <class name="org.jboss.cdi.tck.tests.se.container.BootstrapSEContainerTest">
-                <methods>
-                    <exclude name="testInvocationOfInitializedMethodReturnsNewSeContainerInstance"></exclude>
-                </methods>
-            </class>
-
             <!-- Issues in Weld (the RI) -->
 
             <!-- WELD-2268 -->
