@@ -163,7 +163,7 @@ public class Utils {
 
     @SuppressWarnings("unchecked")
     public static <T> T evaluateValueExpression(BeanManagerImpl beanManager, String expression, Class<T> expectedType) {
-        ELContext elContext = EL.createELContext(beanManager.getCurrent());
+        ELContext elContext = EL.createELContext(beanManager);
         return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
     }
 

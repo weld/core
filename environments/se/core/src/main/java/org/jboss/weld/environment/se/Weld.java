@@ -425,6 +425,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Weld addExtensions(Class<? extends Extension>... extensionClasses) {
         for (Class<? extends Extension> extensionClass : extensionClasses) {
@@ -461,7 +462,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     public Weld interceptors(Class<?>... interceptorClasses) {
         enabledInterceptors.clear();
-        addInterceptors(interceptorClasses);
+        enableInterceptors(interceptorClasses);
         return this;
     }
 
@@ -480,7 +481,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     @Override
-    public Weld addInterceptors(Class<?>... interceptorClasses) {
+    public Weld enableInterceptors(Class<?>... interceptorClasses) {
         for (Class<?> interceptorClass : interceptorClasses) {
             addInterceptor(interceptorClass);
         }
@@ -498,7 +499,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     public Weld decorators(Class<?>... decoratorClasses) {
         enabledDecorators.clear();
-        addDecorators(decoratorClasses);
+        enableDecorators(decoratorClasses);
         return this;
     }
 
@@ -517,7 +518,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     @Override
-    public Weld addDecorators(Class<?>... decoratorClasses) {
+    public Weld enableDecorators(Class<?>... decoratorClasses) {
         for (Class<?> decoratorClass : decoratorClasses) {
             addDecorator(decoratorClass);
         }
@@ -535,7 +536,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     public Weld alternatives(Class<?>... alternativeClasses) {
         selectedAlternatives.clear();
-        addAlternatives(alternativeClasses);
+        selectAlternatives(alternativeClasses);
         return this;
     }
 
@@ -554,7 +555,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     @Override
-    public Weld addAlternatives(Class<?>... alternativeClasses) {
+    public Weld selectAlternatives(Class<?>... alternativeClasses) {
         for (Class<?> alternativeClass : alternativeClasses) {
             addAlternative(alternativeClass);
         }
@@ -573,12 +574,13 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     @SafeVarargs
     public final Weld alternativeStereotypes(Class<? extends Annotation>... alternativeStereotypeClasses) {
         selectedAlternativeStereotypes.clear();
-        addAlternativeStereotypes(alternativeStereotypeClasses);
+        selectAlternativeStereotypes(alternativeStereotypeClasses);
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Weld addAlternativeStereotypes(Class<? extends Annotation>... alternativeStereotypeClasses) {
+    public Weld selectAlternativeStereotypes(Class<? extends Annotation>... alternativeStereotypeClasses) {
         for (Class<? extends Annotation> alternativeStereotypeClass : alternativeStereotypeClasses) {
             addAlternativeStereotype(alternativeStereotypeClass);
         }

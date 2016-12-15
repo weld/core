@@ -69,4 +69,10 @@ public class BeansXmlImpl implements BeansXml {
     public String getVersion() {
         return version;
     }
+
+    @Override
+    public boolean isTrimmed() {
+        // TODO WELD-2268
+        return false;
+    }
 }

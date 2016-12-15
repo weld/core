@@ -28,6 +28,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -281,4 +282,10 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     public <X> ProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
         return delegate().getProducerFactory(method, declaringBean);
     }
+
+    @Override
+    public Instance<Object> createInstance() {
+        return delegate().createInstance();
+    }
+
 }
