@@ -45,6 +45,7 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.construction.api.WeldCreationalContext;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
@@ -140,16 +141,6 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     }
 
     @Override
-    public WeldManager createActivity() {
-        return delegate().createActivity();
-    }
-
-    @Override
-    public WeldManager setCurrent(Class<? extends Annotation> scopeType) {
-        return delegate().setCurrent(scopeType);
-    }
-
-    @Override
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         return delegate().createInjectionTarget(descriptor);
     }
@@ -170,11 +161,6 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     }
 
     @Override
-    public WeldManager getCurrent() {
-        return delegate().getCurrent();
-    }
-
-    @Override
     public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> type) {
         return delegate().fireProcessInjectionTarget(type);
     }
@@ -192,6 +178,11 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     @Override
     public Instance<Object> instance() {
         return delegate().instance();
+    }
+
+    @Override
+    public WeldInstance<Object> createInstance() {
+        return delegate().createInstance();
     }
 
     @Override

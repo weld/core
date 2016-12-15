@@ -974,21 +974,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public BeanManagerImpl createActivity() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public BeanManagerImpl getCurrent() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public ServiceRegistry getServices() {
         return services;
     }
@@ -1298,7 +1283,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public Instance<Object> instance() {
-        return InstanceImpl.of(InstanceInjectionPoint.INSTANCE, createCreationalContext(null), this);
+        return getInstance(createCreationalContext(null));
     }
 
     private static class EventInjectionPoint implements InjectionPoint, Serializable {
@@ -1511,6 +1496,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return new WeldInjectionTargetBuilderImpl<T>(type, this);
     }
 
+    @Override
+    public WeldInstance<Object> createInstance() {
+        return getInstance(createCreationalContext(null));
+    }
 
     private Bean<?> findNormalScopedDependant(CreationalContextImpl<?> weldCreationalContext) {
         CreationalContextImpl<?> parent = weldCreationalContext.getParentCreationalContext();
@@ -1531,4 +1520,5 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public BeanManagerImpl unwrap() {
         return this;
     }
+
 }

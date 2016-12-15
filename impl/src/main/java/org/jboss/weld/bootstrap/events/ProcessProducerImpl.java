@@ -16,16 +16,18 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.AbstractProducerBean;
-import org.jboss.weld.logging.BootstrapLogger;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.Reflections;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
+import javax.enterprise.inject.spi.configurator.ProducerConfigurator;
+
+import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessProducer<T, X> {
 
@@ -59,6 +61,12 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
         checkWithinObserverNotification();
         BootstrapLogger.LOG.setProducerCalled(getReceiver(), getProducer(), producer);
         this.bean.setProducer(producer);
+    }
+
+    @Override
+    public ProducerConfigurator<X> configureProducer() {
+        // TODO WELD-2284
+        return null;
     }
 
 }

@@ -68,7 +68,6 @@ import org.jboss.weld.bootstrap.events.BeforeBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.RequiredAnnotationDiscovery;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -607,11 +606,6 @@ public class WeldStartup {
                 // meta-annotations
                 NormalScope.class, Stereotype.class);
         return new TypeDiscoveryConfigurationImpl(beanDefiningAnnotations);
-    }
-
-    public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
-        BeanDeployment beanDeployment = bdaMapping.getBeanDeployment(beanDeploymentArchive);
-        return beanDeployment == null ? null : beanDeployment.getBeanManager().getCurrent();
     }
 
     /**
