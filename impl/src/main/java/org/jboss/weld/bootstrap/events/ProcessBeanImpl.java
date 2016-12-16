@@ -46,7 +46,7 @@ public abstract class ProcessBeanImpl<X> extends AbstractDefinitionContainerEven
     private final Bean<X> bean;
     private final Annotated annotated;
 
-    public ProcessBeanImpl(BeanManagerImpl beanManager, Bean<X> bean, Annotated annotated) {
+    ProcessBeanImpl(BeanManagerImpl beanManager, Bean<X> bean, Annotated annotated) {
         super(beanManager, ProcessBean.class, new Type[]{bean.getBeanClass()});
         this.bean = bean;
         this.annotated = annotated;
