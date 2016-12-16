@@ -45,7 +45,6 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @param <T>
  */
 public class AnnotatedTypeBuilderImpl<T> {
-    // implements AnnotatedTypeBuilder<T> {
 
     private final AnnotatedTypeConfiguratorImpl<T> configurator;
 
@@ -57,12 +56,10 @@ public class AnnotatedTypeBuilderImpl<T> {
         this.configurator = configurator;
     }
 
-    // @Override
     public AnnotatedTypeConfigurator<T> configure() {
         return configurator;
     }
 
-    // @Override
     public AnnotatedType<T> build() {
         return new AnnotatedTypeImpl<T>(configurator);
     }
