@@ -124,6 +124,8 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1335, value = "Ambiguous dependencies for type {1} with qualifiers {0}\n Possible dependencies: {2}", format = Format.MESSAGE_FORMAT)
     AmbiguousResolutionException injectionPointHasAmbiguousDependencies(Object param1, Object param2, Object param3);
 
-    // Last message id used was 1335
+    @Message(id = 1336, value = "InjectionTargetFactory.configure() may not be called after createInjectionTarget() invocation. AnnotatedType used: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToConfigureInjectionTargetFactory(Object param1);
+
 
 }

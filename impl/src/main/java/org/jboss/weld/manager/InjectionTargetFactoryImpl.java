@@ -21,9 +21,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
+import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
@@ -32,6 +35,7 @@ import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.injection.producer.NonProducibleInjectionTarget;
 import org.jboss.weld.injection.spi.InjectionServices;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.api.WeldInjectionTarget;
 import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.module.EjbSupport;
@@ -39,8 +43,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.InjectionTargets;
 
 /**
- * Factory capable of producing {@link InjectionTarget} implementations for a given combination of {@link AnnotatedType} and
- * {@link Bean} objects.
+ * Factory capable of producing {@link InjectionTarget} implementations for a given combination of {@link AnnotatedType} and {@link Bean} objects.
  *
  * @author Jozef Hartinger
  *
@@ -49,13 +52,16 @@ import org.jboss.weld.util.InjectionTargets;
 public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory<T> {
 
     private final BeanManagerImpl manager;
-    private final EnhancedAnnotatedType<T> type;
+    private final EnhancedAnnotatedType<T> originalAnnotatedType;
     private final InjectionTargetService injectionTargetService;
     private final InjectionServices injectionServices;
 
+    private volatile EnhancedAnnotatedType<T> annotatedType;
+    private volatile AnnotatedTypeConfiguratorImpl<T> configurator;
+
     protected InjectionTargetFactoryImpl(AnnotatedType<T> type, BeanManagerImpl manager) {
         this.manager = manager;
-        this.type = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, manager.getId());
+        this.originalAnnotatedType = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, manager.getId());
         this.injectionTargetService = manager.getServices().get(InjectionTargetService.class);
         this.injectionServices = manager.getServices().get(InjectionServices.class);
     }
@@ -72,7 +78,8 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
 
     private WeldInjectionTarget<T> createInjectionTarget(Bean<T> bean, boolean interceptor) {
         try {
-            return validate(createInjectionTarget(type, bean, interceptor));
+            initAnnotatedType();
+            return validate(createInjectionTarget(annotatedType, bean, interceptor));
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
         }
@@ -81,12 +88,36 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
     public BasicInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, boolean interceptor) {
         BasicInjectionTarget<T> injectionTarget = chooseInjectionTarget(type, bean, interceptor);
         /*
-         * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension has
-         * to be initialized after beans (interceptors) are deployed.
+         * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension has to be initialized after beans
+         * (interceptors) are deployed.
          */
         initialize(injectionTarget);
         postProcess(injectionTarget);
         return injectionTarget;
+    }
+
+    @Override
+    public synchronized AnnotatedTypeConfigurator<T> configure() {
+        if (annotatedType != null) {
+            BeanManagerLogger.LOG.unableToConfigureInjectionTargetFactory(annotatedType);
+            throw new IllegalStateException();
+        }
+        if (configurator == null) {
+            configurator = new AnnotatedTypeConfiguratorImpl<>(originalAnnotatedType);
+        }
+        return configurator;
+    }
+
+    private synchronized void initAnnotatedType() {
+        if (annotatedType != null) {
+            return;
+        }
+        if (configurator != null) {
+            AnnotatedType<T> configuredType = new AnnotatedTypeBuilderImpl<T>(configurator).build();
+            annotatedType = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(configuredType, manager.getId());
+        } else {
+            annotatedType = originalAnnotatedType;
+        }
     }
 
     private BasicInjectionTarget<T> chooseInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, boolean interceptor) {
@@ -94,7 +125,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
             return new DecoratorInjectionTarget<T>(type, bean, manager);
         }
         NonProducibleInjectionTarget<T> nonProducible = InjectionTargets.createNonProducibleInjectionTarget(type, bean, manager);
-        if(nonProducible != null) {
+        if (nonProducible != null) {
             return nonProducible;
         }
         if (bean instanceof SessionBean<?>) {
@@ -110,11 +141,12 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
     }
 
     protected InjectionTarget<T> createMessageDrivenInjectionTarget(EjbDescriptor<T> descriptor) {
-        return prepareInjectionTarget(manager.getServices().get(EjbSupport.class).createMessageDrivenInjectionTarget(type, descriptor, manager));
+        return prepareInjectionTarget(
+                manager.getServices().get(EjbSupport.class).createMessageDrivenInjectionTarget(originalAnnotatedType, descriptor, manager));
     }
 
     private BasicInjectionTarget<T> initialize(BasicInjectionTarget<T> injectionTarget) {
-        injectionTargetService.addInjectionTargetToBeInitialized(type, injectionTarget);
+        injectionTargetService.addInjectionTargetToBeInitialized(originalAnnotatedType, injectionTarget);
         return injectionTarget;
     }
 
@@ -125,7 +157,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
 
     private void postProcess(InjectionTarget<T> injectionTarget) {
         if (injectionServices != null) {
-            injectionServices.registerInjectionTarget(injectionTarget, type.slim());
+            injectionServices.registerInjectionTarget(injectionTarget, originalAnnotatedType.slim());
         }
     }
 
@@ -143,6 +175,6 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
 
     @Override
     public WeldInjectionTarget<T> createNonProducibleInjectionTarget() {
-        return prepareInjectionTarget(NonProducibleInjectionTarget.create(type, null, manager));
+        return prepareInjectionTarget(NonProducibleInjectionTarget.create(originalAnnotatedType, null, manager));
     }
 }
