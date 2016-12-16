@@ -16,15 +16,20 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
+
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.inject.spi.configurator.ProducerConfigurator;
 
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.bootstrap.events.builder.ProducerBuilder;
+import org.jboss.weld.bootstrap.events.builder.ProducerConfiguratorImpl;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
@@ -33,13 +38,17 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
 
     protected static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean) {
         if (beanManager.isBeanEnabled(bean)) {
-            new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>>cast(bean.getAnnotated()), bean) {
+            new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>> cast(bean.getAnnotated()), bean) {
             }.fire();
         }
     }
 
     private final AnnotatedMember<T> annotatedMember;
     private AbstractProducerBean<T, X, ?> bean;
+    private ProducerConfiguratorImpl<X> configurator;
+
+    // we need this to ensure that configurator and set method are not invoked within one observer
+    private boolean producerSet;
 
     private ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean) {
         super(beanManager, ProcessProducer.class, new Type[] { bean.getAnnotated().getDeclaringType().getBaseType(), bean.getAnnotated().getBaseType() });
@@ -58,15 +67,37 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
     }
 
     public void setProducer(Producer<X> producer) {
+        if (configurator != null) {
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessProducer.class.getSimpleName(), getReceiver());
+        }
+        checkArgumentNotNull(producer, "producer");
         checkWithinObserverNotification();
         BootstrapLogger.LOG.setProducerCalled(getReceiver(), getProducer(), producer);
         this.bean.setProducer(producer);
+        producerSet = true;
     }
 
     @Override
     public ProducerConfigurator<X> configureProducer() {
-        // TODO WELD-2284
-        return null;
+        if (producerSet) {
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessProducer.class.getSimpleName(), getReceiver());
+        }
+        checkWithinObserverNotification();
+        if (configurator == null) {
+            configurator = new ProducerConfiguratorImpl<X>(bean.getProducer());
+        }
+        BootstrapLogger.LOG.configureProducerCalled(getReceiver(), bean);
+        return configurator;
+    }
+
+    @Override
+    public void postNotify(Extension extension) {
+        super.postNotify(extension);
+        if (configurator != null) {
+            bean.setProducer(new ProducerBuilder<>(configurator).build());
+            configurator = null;
+        }
+        producerSet = false;
     }
 
 }
