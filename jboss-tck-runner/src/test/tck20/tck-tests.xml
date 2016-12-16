@@ -34,63 +34,7 @@
 
             <!-- Issues in the TCK -->
 
-            <!-- CDITCK-553 -->
-            <class name="org.jboss.cdi.tck.tests.alternative.veto.VetoedAlternativeTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- CDITCK-546 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.interceptionFactory.InterceptionFactoryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- CDITCK-547 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.interceptionFactory.broken.UnproxyableInterceptedInstanceTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- CDITCK-548 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.observer.priority.ExtensionObserverOrderingTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- Temporarily excluded, there was bug in 2.0.0.Alpha9, next release will fix it -->
-            <class name="org.jboss.cdi.tck.tests.context.request.event.RequestScopeEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- Needs update due to CDI API change -->
-            <class name="org.jboss.cdi.tck.tests.se.container.BootstrapSEContainerTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- Issues in Weld (the RI) -->
-
-            <!-- WELD-2268 -->
-            <class name="org.jboss.cdi.tck.tests.deployment.trimmed.TrimmedBeanArchiveTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- WELD-2264 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.configurators.annotatedTypeConfigurator.beforeBeanDiscovery.AnnotatedTypeConfiguratorInBBDTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- Issues in WildFly -->
 
