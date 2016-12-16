@@ -65,7 +65,7 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.event.InterceptorConfigurator;
 import org.jboss.weld.bootstrap.events.InterceptorConfiguratorImpl;
-import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.BeanConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events.builder;
+package org.jboss.weld.bootstrap.events.configurator;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -34,7 +34,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @author Martin Kouba
  */
 public class AnnotatedTypeConfiguratorImpl<T> extends AnnotatedConfigurator<T, AnnotatedType<T>, AnnotatedTypeConfiguratorImpl<T>>
-        implements AnnotatedTypeConfigurator<T> {
+        implements AnnotatedTypeConfigurator<T>, Configurator<AnnotatedType<T>> {
 
     private final Set<AnnotatedMethodConfiguratorImpl<? super T>> methods;
 
@@ -67,6 +67,11 @@ public class AnnotatedTypeConfiguratorImpl<T> extends AnnotatedConfigurator<T, A
     @Override
     protected AnnotatedTypeConfiguratorImpl<T> self() {
         return this;
+    }
+
+    @Override
+    public AnnotatedType<T> complete() {
+        return new AnnotatedTypeBuilderImpl<>(this).build();
     }
 
     Set<AnnotatedMethodConfiguratorImpl<? super T>> getMethods() {

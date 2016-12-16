@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events.builder;
+package org.jboss.weld.bootstrap.events.configurator;
 
 import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -30,13 +30,15 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.inject.spi.configurator.ProducerConfigurator;
 
+import org.jboss.weld.util.collections.ImmutableSet;
+
 /**
  *
  * @author Martin Kouba
  *
  * @param <T>
  */
-public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T> {
+public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T>, Configurator<Producer<T>> {
 
     private Function<CreationalContext<T>, T> produceCallback;
 
@@ -94,16 +96,44 @@ public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T> {
         return addInjectionPoints(injectionPoints);
     }
 
-    Function<CreationalContext<T>, T> getProduceCallback() {
-        return produceCallback;
+    public Producer<T> complete() {
+        return new ProducerImpl<>(this);
     }
 
-    Consumer<T> getDisposeCallback() {
-        return disposeCallback;
-    }
+    /**
+    *
+    *
+    * @param <T>
+    */
+   static class ProducerImpl<T> implements Producer<T> {
 
-    Set<InjectionPoint> getInjectionPoints() {
-        return injectionPoints;
-    }
+       private final Function<CreationalContext<T>, T> produceCallback;
+
+       private final Consumer<T> disposeCallback;
+
+       private final Set<InjectionPoint> injectionPoints;
+
+       ProducerImpl(ProducerConfiguratorImpl<T> configurator) {
+           this.injectionPoints = configurator.injectionPoints.stream().filter((e) -> e != null).collect(ImmutableSet.collector());
+           this.produceCallback = configurator.produceCallback;
+           this.disposeCallback = configurator.disposeCallback;
+       }
+
+       @Override
+       public T produce(CreationalContext<T> ctx) {
+           return produceCallback.apply(ctx);
+       }
+
+       @Override
+       public void dispose(T instance) {
+           disposeCallback.accept(instance);
+       }
+
+       @Override
+       public Set<InjectionPoint> getInjectionPoints() {
+           return injectionPoints;
+       }
+
+   }
 
 }

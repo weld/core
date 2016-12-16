@@ -28,8 +28,7 @@ import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.inject.spi.configurator.ProducerConfigurator;
 
 import org.jboss.weld.bean.AbstractProducerBean;
-import org.jboss.weld.bootstrap.events.builder.ProducerBuilder;
-import org.jboss.weld.bootstrap.events.builder.ProducerConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.ProducerConfiguratorImpl;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
@@ -94,7 +93,7 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
     public void postNotify(Extension extension) {
         super.postNotify(extension);
         if (configurator != null) {
-            bean.setProducer(new ProducerBuilder<>(configurator).build());
+            bean.setProducer(configurator.complete());
             configurator = null;
         }
         producerSet = false;

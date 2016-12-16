@@ -24,8 +24,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
 
-import org.jboss.weld.bootstrap.events.builder.BeanAttributesBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.BeanAttributesConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.BeanAttributesConfiguratorImpl;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -129,7 +128,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     public void postNotify(Extension extension) {
         super.postNotify(extension);
         if (configurator != null) {
-            attributes = new BeanAttributesBuilderImpl<>(configurator).build();
+            attributes = configurator.complete();
             configurator = null;
             dirty = true;
         }

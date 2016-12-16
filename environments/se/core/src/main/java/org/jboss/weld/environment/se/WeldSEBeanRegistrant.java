@@ -29,8 +29,7 @@ import javax.inject.Singleton;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.bootstrap.events.InterceptorConfiguratorImpl;
-import org.jboss.weld.bootstrap.events.builder.BeanBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.BeanConfiguratorImpl;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScopeInterceptor;
@@ -79,7 +78,7 @@ public class WeldSEBeanRegistrant implements Extension {
         // Process queued bean builders
         if (beanConfigurators != null) {
             for (BeanConfiguratorImpl<?> configurator : beanConfigurators) {
-                event.addBean(new BeanBuilderImpl<>(configurator).build());
+                event.addBean(configurator.complete());
             }
         }
         if (interceptorConfigurators != null) {

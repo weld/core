@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events.builder;
+package org.jboss.weld.bootstrap.events.configurator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -30,8 +32,10 @@ import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Named;
 
+import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
@@ -40,7 +44,9 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  *
  * @param <T>
  */
-public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigurator<T> {
+public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigurator<T>, Configurator<BeanAttributes<T>> {
+
+    static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
 
     private String name;
 
@@ -54,9 +60,6 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     private boolean isAlternative;
 
-    /**
-    *
-    */
     public BeanAttributesConfiguratorImpl() {
         this.qualifiers = new HashSet<Annotation>();
         this.types = new HashSet<Type>();
@@ -211,34 +214,43 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         return this;
     }
 
-    String getName() {
-        return name;
-    }
-
-    Set<Annotation> getQualifiers() {
-        return qualifiers;
-    }
-
-    Class<? extends Annotation> getScope() {
-        return scope;
-    }
-
-    Set<Class<? extends Annotation>> getStereotypes() {
-        return stereotypes;
-    }
-
-    Set<Type> getTypes() {
-        return types;
-    }
-
-    boolean isAlternative() {
-        return isAlternative;
+    @Override
+    public BeanAttributes<T> complete() {
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, name, initQualifiers(qualifiers), ImmutableSet.copyOf(types),
+                initScope());
     }
 
     private void removeDefaultQualifierIfNeeded(Annotation qualifier) {
         if (!qualifier.annotationType().equals(Named.class)) {
             qualifiers.remove(Default.Literal.INSTANCE);
         }
+    }
+
+    private Class<? extends Annotation> initScope() {
+        return scope != null ? scope : Dependent.class;
+    }
+
+    private Set<Annotation> initQualifiers(Set<Annotation> qualifiers) {
+        if (qualifiers.isEmpty()) {
+            return DEFAULT_QUALIFIERS;
+        }
+        Set<Annotation> normalized = new HashSet<Annotation>(qualifiers);
+        normalized.remove(Any.Literal.INSTANCE);
+        normalized.remove(Default.Literal.INSTANCE);
+        if (normalized.isEmpty()) {
+            normalized = DEFAULT_QUALIFIERS;
+        } else {
+            ImmutableSet.Builder<Annotation> builder = ImmutableSet.builder();
+            if (normalized.size() == 1) {
+                if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
+                    builder.add(Default.Literal.INSTANCE);
+                }
+            }
+            builder.add(Any.Literal.INSTANCE);
+            builder.addAll(qualifiers);
+            normalized = builder.build();
+        }
+        return normalized;
     }
 
 }

@@ -27,8 +27,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
-import org.jboss.weld.bootstrap.events.builder.ObserverMethodBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
@@ -123,7 +122,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     public void postNotify(Extension extension) {
         super.postNotify(extension);
         if (configurator != null) {
-            replaceObserverMethod(new ObserverMethodBuilderImpl<>(configurator).build());
+            replaceObserverMethod(configurator.complete());
             configurator = null;
         }
         observerMethodSet = false;
