@@ -43,8 +43,10 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
         implements ProcessObserverMethod<T, X> {
 
     public static <T, X> ObserverMethod<T> fire(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
-        ProcessObserverMethodImpl<T, X> event = new ProcessObserverMethodImpl<T, X>(beanManager, beanMethod, observerMethod) {
-        };
+        return fire(new ProcessObserverMethodImpl<>(beanManager, beanMethod, observerMethod));
+    }
+
+    protected static <T, X> ObserverMethod<T> fire(ProcessObserverMethodImpl<T, X> event) {
         event.fire();
         if (event.vetoed) {
             return null;
@@ -54,15 +56,21 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
 
     private final AnnotatedMethod<X> beanMethod;
     private final ObserverMethod<T> initialObserverMethod;
-    private ObserverMethod<T> observerMethod;
     private ObserverMethodConfiguratorImpl<T> configurator;
-    private boolean vetoed;
+
+    protected ObserverMethod<T> observerMethod;
+    protected boolean vetoed;
 
     // we need this to ensure that configurator and set method are not invoked within one observer
     private boolean observerMethodSet;
 
-    private ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
-        super(beanManager, ProcessObserverMethod.class, new Type[] { observerMethod.getObservedType(), observerMethod.getBeanClass() });
+    ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
+        this(beanManager, beanMethod, observerMethod, ProcessObserverMethod.class);
+    }
+
+    @SuppressWarnings("rawtypes")
+    ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod, Class<? extends ProcessObserverMethod> rawType) {
+        super(beanManager, rawType, new Type[] { observerMethod.getObservedType(), observerMethod.getBeanClass() });
         this.beanMethod = beanMethod;
         this.initialObserverMethod = observerMethod;
         this.observerMethod = observerMethod;

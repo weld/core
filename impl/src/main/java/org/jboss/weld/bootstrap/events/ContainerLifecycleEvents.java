@@ -294,15 +294,19 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     }
 
     public <T, X> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethodImpl<T, X> observer) {
-        return fireProcessObserverMethod(beanManager, observer.getMethod().getAnnotated(), observer);
+        return fireProcessObserverMethod(beanManager, observer.getMethod().getAnnotated(), observer, null);
     }
 
-    public <T> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethod<T> observer) {
-        return fireProcessObserverMethod(beanManager, null, observer);
+    public <T> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethod<T> observer, Extension extension) {
+        return fireProcessObserverMethod(beanManager, null, observer, extension);
     }
 
-    private <T, X> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
+    private <T, X> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod,
+            Extension extension) {
         if (isProcessObserverMethodObserved()) {
+            if (extension != null) {
+                return ProcessSyntheticObserverMethodImpl.fire(beanManager, beanMethod, observerMethod, extension);
+            }
             return ProcessObserverMethodImpl.fire(beanManager, beanMethod, observerMethod);
         }
         return observerMethod;

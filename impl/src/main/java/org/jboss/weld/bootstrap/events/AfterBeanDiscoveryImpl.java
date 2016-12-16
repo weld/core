@@ -81,16 +81,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         super(beanManager, WeldAfterBeanDiscovery.class, bdaMapping, deployment, contexts);
         this.slimAnnotatedTypeStore = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
         this.containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
-        this.additionalBeans = new LinkedList<BeanRegistration>();
-        this.additionalObservers = new LinkedList<ObserverMethod<?>>();
-        this.additionalObserverConfigurators = new LinkedList<ObserverMethodConfigurator<?>>();
+        this.additionalBeans = new LinkedList<>();
+        this.additionalObservers = new LinkedList<>();
     }
 
     private final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
     private final ContainerLifecycleEvents containerLifecycleEvents;
     private final List<BeanRegistration> additionalBeans;
-    private final List<ObserverMethod<?>> additionalObservers;
-    private final List<ObserverMethodConfigurator<?>> additionalObserverConfigurators;
+    private final List<ObserverRegistration> additionalObservers;
 
     @Override
     public void addBean(Bean<?> bean) {
@@ -133,7 +131,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         validateObserverMethod(observerMethod, getBeanManager(), null);
-        additionalObservers.add(observerMethod);
+        additionalObservers.add(ObserverRegistration.of(observerMethod, getReceiver()));
         BootstrapLogger.LOG.addObserverMethodCalled(getReceiver(), observerMethod);
     }
 
@@ -141,7 +139,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     public <T> ObserverMethodConfigurator<T> addObserverMethod() {
         checkWithinObserverNotification();
         ObserverMethodConfiguratorImpl<T> configurator = new ObserverMethodConfiguratorImpl<>(getReceiver());
-        additionalObserverConfigurators.add(configurator);
+        additionalObservers.add(ObserverRegistration.of(configurator, getReceiver()));
         return configurator;
     }
 
@@ -166,9 +164,27 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         return configurator;
     }
 
-    protected <T> void processBeanRegistration(BeanRegistration registration, GlobalEnablementBuilder globalEnablementBuilder) {
-        Bean<?> bean = registration.getBean();
-        BeanManagerImpl beanManager = registration.getBeanManager();
+    /**
+     * Bean and observer registration is delayed until after all {@link AfterBeanDiscovery} observers are notified.
+     */
+    private void finish() {
+        try {
+            GlobalEnablementBuilder globalEnablementBuilder = getBeanManager().getServices().get(GlobalEnablementBuilder.class);
+            for (BeanRegistration registration : additionalBeans) {
+                processBeanRegistration(registration, globalEnablementBuilder);
+            }
+            for (ObserverRegistration registration : additionalObservers) {
+                processObserverRegistration(registration);
+            }
+        } catch (Exception e) {
+            throw new DefinitionException(e);
+        }
+    }
+
+
+    private <T> void processBeanRegistration(BeanRegistration registration, GlobalEnablementBuilder globalEnablementBuilder) {
+        Bean<?> bean = registration.initBean();
+        BeanManagerImpl beanManager = registration.initBeanManager();
         if (beanManager == null) {
             // Get the bean manager for beans added via ABD#addBean()
             beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
@@ -197,7 +213,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
                 globalEnablementBuilder.addAlternative(bean.getBeanClass(), priority);
             }
         }
-        containerLifecycleEvents.fireProcessBean(beanManager, bean, registration.getExtension());
+        containerLifecycleEvents.fireProcessBean(beanManager, bean, registration.extension);
     }
 
     private void validateBean(Bean<?> bean) {
@@ -244,32 +260,12 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     }
 
-    /**
-     * Bean and observer registration is delayed until after all {@link AfterBeanDiscovery} observers are notified.
-     */
-    private void finish() {
-        try {
-            GlobalEnablementBuilder globalEnablementBuilder = getBeanManager().getServices().get(GlobalEnablementBuilder.class);
-            for (BeanRegistration registration : additionalBeans) {
-                processBeanRegistration(registration, globalEnablementBuilder);
-            }
-            for (ObserverMethod<?> observer : additionalObservers) {
-                processAdditionalObserver(observer);
-            }
-            for (ObserverMethodConfigurator<?> configurator : additionalObserverConfigurators) {
-                ObserverMethod<?> observer = new ObserverMethodBuilderImpl<>(cast(configurator)).build();
-                processAdditionalObserver(observer);
-            }
-        } catch (Exception e) {
-            throw new DefinitionException(e);
-        }
-    }
-
-    private void processAdditionalObserver(ObserverMethod<?> observer) {
-        validateObserverMethod(observer, getBeanManager(), null);
-        BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
-        if (Observers.isObserverMethodEnabled(observer, manager)) {
-            ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observer);
+    private void processObserverRegistration(ObserverRegistration registration) {
+        ObserverMethod<?> observerMethod = registration.initObserverMethod();
+        validateObserverMethod(observerMethod, getBeanManager(), null);
+        BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
+        if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
+            ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observerMethod, registration.extension);
             if (processedObserver != null) {
                 manager.addObserver(processedObserver);
             }
@@ -309,7 +305,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             this.extension = extension;
         }
 
-        public Bean<?> getBean() {
+        public Bean<?> initBean() {
             if (bean != null) {
                 return bean;
             } else if (beanBuilder != null) {
@@ -318,7 +314,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             return interceptorBuilder.build();
         }
 
-        protected BeanManagerImpl getBeanManager() {
+        protected BeanManagerImpl initBeanManager() {
             if (bean != null) {
                 return null;
             } else if (beanBuilder != null) {
@@ -327,8 +323,35 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             return interceptorBuilder.getBeanManager();
         }
 
-        public Extension getExtension() {
-            return extension;
+    }
+
+    private static class ObserverRegistration {
+
+        private final ObserverMethod<?> observerMethod;
+
+        private final Extension extension;
+
+        private final ObserverMethodBuilderImpl<?> observerMethodBuilder;
+
+        static ObserverRegistration of(ObserverMethod<?> observerMethod, Extension extension) {
+            return new ObserverRegistration(observerMethod, null, extension);
+        }
+
+        static <T> ObserverRegistration of(ObserverMethodConfiguratorImpl<T> configurator, Extension extension) {
+            return new ObserverRegistration(null, new ObserverMethodBuilderImpl<T>(configurator), extension);
+        }
+
+        private ObserverRegistration(ObserverMethod<?> observerMethod, ObserverMethodBuilderImpl<?> observerMethodBuilder, Extension extension) {
+            this.observerMethod = observerMethod;
+            this.observerMethodBuilder = observerMethodBuilder;
+            this.extension = extension;
+        }
+
+        ObserverMethod<?> initObserverMethod() {
+            if (observerMethod != null) {
+                return observerMethod;
+            }
+            return observerMethodBuilder.build();
         }
 
     }
