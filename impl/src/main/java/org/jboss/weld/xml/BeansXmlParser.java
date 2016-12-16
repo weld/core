@@ -136,6 +136,7 @@ public class BeansXmlParser {
         List<Metadata<String>> interceptors = new ArrayList<Metadata<String>>();
         List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
         List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
+        boolean isTrimmed = false;
         URL beansXmlUrl = null;
         for (T item : items) {
             BeansXml beansXml = function.apply(item);
@@ -145,13 +146,14 @@ public class BeansXmlParser {
             addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
             includes.addAll(beansXml.getScanning().getIncludes());
             excludes.addAll(beansXml.getScanning().getExcludes());
+            isTrimmed = beansXml.isTrimmed();
             /*
              * provided we are merging the content of multiple XML files, getBeansXml() returns an
              * InputStream representing the last one
              */
             beansXmlUrl = beansXml.getUrl();
         }
-        return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl, BeanDiscoveryMode.ALL, null);
+        return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl, BeanDiscoveryMode.ALL, null, isTrimmed);
     }
 
     private void addTo(List<Metadata<String>> list, List<Metadata<String>> listToAdd, boolean removeDuplicates) {

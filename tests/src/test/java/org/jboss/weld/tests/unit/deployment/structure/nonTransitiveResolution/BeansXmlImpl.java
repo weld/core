@@ -92,7 +92,6 @@ public class BeansXmlImpl implements BeansXml {
 
     @Override
     public boolean isTrimmed() {
-        // TODO WELD-2268
         return false;
     }
 

@@ -34,6 +34,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Model;
+import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -42,11 +50,12 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
-
-import org.jboss.weld.security.GetDeclaredMethodsAction;
-import org.jboss.weld.util.reflection.Reflections;
+import javax.inject.Scope;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
+import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Class that can take an AnnotatedType and return a unique string
@@ -55,6 +64,15 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
  */
 public class AnnotatedTypes {
+
+    private static Set<Class<? extends Annotation>> BEAN_DEFINING_ANNOTATIONS = ImmutableSet.of(
+            Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class,
+            javax.interceptor.Interceptor.class, javax.decorator.Decorator.class,
+            Model.class);
+
+    private static Set<Class<? extends Annotation>> META_ANNOTATIONS = ImmutableSet.of(Stereotype.class, NormalScope.class);
+
+    public static final Set<Class<? extends Annotation>> TRIM_META_ANNOTATIONS = ImmutableSet.of(Stereotype.class, NormalScope.class, Scope.class);
 
     /**
      * Does the first stage of comparing AnnotatedCallables, however it cannot
@@ -520,6 +538,34 @@ public class AnnotatedTypes {
     }
 
     private AnnotatedTypes() {
+    }
+
+    public static boolean hasBeanDefiningAnnotation(AnnotatedType<?> annotatedType) {
+        return hasBeanDefiningAnnotation(annotatedType, META_ANNOTATIONS);
+    }
+
+    public static boolean hasBeanDefiningAnnotation(AnnotatedType<?> annotatedType, Set<Class<? extends Annotation>> metaAnnotations) {
+        for (Class<? extends Annotation> beanDefiningAnnotation : BEAN_DEFINING_ANNOTATIONS) {
+            if (annotatedType.isAnnotationPresent(beanDefiningAnnotation)) {
+                return true;
+            }
+        }
+        for (Class<? extends Annotation> metaAnnotation : metaAnnotations) {
+            // The check is not perfomed recursively as bean defining annotations must be declared directly on a bean class
+            if (hasBeanDefiningMetaAnnotationSpecified(annotatedType.getAnnotations(), metaAnnotation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean hasBeanDefiningMetaAnnotationSpecified(Set<Annotation> annotations, Class<? extends Annotation> metaAnnotationType) {
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().isAnnotationPresent(metaAnnotationType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

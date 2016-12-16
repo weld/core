@@ -109,7 +109,6 @@ public class BeansXmlHandler extends DefaultHandler {
         }
     }
 
-
     public static final String JAVAEE_LEGACY_URI = "http://java.sun.com/xml/ns/javaee";
     public static final String JAVAEE_URI = "http://xmlns.jcp.org/xml/ns/javaee";
     public static final Set<String> JAVAEE_URIS = ImmutableSet.of(JAVAEE_LEGACY_URI, JAVAEE_URI);
@@ -129,7 +128,7 @@ public class BeansXmlHandler extends DefaultHandler {
     private static final String STEREOTYPE = "stereotype";
     private static final String INCLUDE = "include";
     private static final String EXCLUDE = "exclude";
-
+    private static final String TRIM = "trim";
     // See also http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#cvc-elt
     private static final String VALIDATION_ERROR_CODE_CVC_ELT_1 = "cvc-elt.1";
 
@@ -150,6 +149,7 @@ public class BeansXmlHandler extends DefaultHandler {
     protected final URL file;
     private BeanDiscoveryMode discoveryMode;
     private String version;
+    private boolean isTrimmed;
 
     /*
     * Parser State
@@ -170,6 +170,7 @@ public class BeansXmlHandler extends DefaultHandler {
         this.seenContainers = new ArrayList<Container>();
         this.containers = new ArrayList<Container>();
         this.discoveryMode = BeanDiscoveryMode.ALL; // this is the default value for a beans.xml file
+        this.isTrimmed = false;
         containers.add(new SpecContainer("interceptors", CLASS) {
 
             @Override
@@ -231,12 +232,14 @@ public class BeansXmlHandler extends DefaultHandler {
                 } else if (isInNamespace(uri)) {
                     if (IF_CLASS_AVAILABLE.equals(localName) || IF_CLASS_NOT_AVAILABLE.equals(localName)) {
                         String className = interpolateAttributeValue(attributes, NAME_ATTRIBUTE_QUALIFIED_NAME);
-                        Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(qName, new ClassAvailableActivationImpl(className, IF_CLASS_NOT_AVAILABLE.equals(localName)), file, locator.getLineNumber());
+                        Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(qName,
+                                new ClassAvailableActivationImpl(className, IF_CLASS_NOT_AVAILABLE.equals(localName)), file, locator.getLineNumber());
                         classAvailableActivations.add(classAvailableActivation);
                     } else if (IF_SYSTEM_PROPERTY.equals(localName)) {
                         String systemPropertyName = interpolateAttributeValue(attributes, NAME_ATTRIBUTE_QUALIFIED_NAME);
                         String systemPropertyValue = interpolateAttributeValue(attributes, VALUE_ATTRIBUTE_QUALIFIED_NAME);
-                        Metadata<SystemPropertyActivation> systemPropertyActivation = new XmlMetadata<SystemPropertyActivation>(qName, new SystemPropertyActivationImpl(systemPropertyName, systemPropertyValue), file, locator.getLineNumber());
+                        Metadata<SystemPropertyActivation> systemPropertyActivation = new XmlMetadata<SystemPropertyActivation>(qName,
+                                new SystemPropertyActivationImpl(systemPropertyName, systemPropertyValue), file, locator.getLineNumber());
                         systemPropertyActivations.add(systemPropertyActivation);
                     }
                 }
@@ -279,6 +282,14 @@ public class BeansXmlHandler extends DefaultHandler {
                 throw XmlLogger.LOG.multipleScanning(file + "@" + locator.getLineNumber());
             }
 
+        });
+        containers.add(new SpecContainer(TRIM) {
+            @Override
+            public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
+                if (localName.equals(TRIM)) {
+                    isTrimmed = true;
+                }
+            }
         });
     }
 
@@ -356,7 +367,8 @@ public class BeansXmlHandler extends DefaultHandler {
     }
 
     public BeansXml createBeansXml() {
-        return new BeansXmlImpl(alternativesClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), file, discoveryMode, version);
+        return new BeansXmlImpl(alternativesClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), file,
+                discoveryMode, version, isTrimmed);
     }
 
     @Override
