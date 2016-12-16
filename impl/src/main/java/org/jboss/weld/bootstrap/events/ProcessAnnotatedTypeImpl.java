@@ -23,8 +23,7 @@ import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -126,7 +125,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     public void postNotify(Extension extension) {
         super.postNotify(extension);
         if (configurator != null) {
-            replaceAnnotatedType(new AnnotatedTypeBuilderImpl<>(configurator).build());
+            replaceAnnotatedType(configurator.complete());
             configurator = null;
         }
         annotatedTypeSet = false;

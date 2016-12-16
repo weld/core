@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.jboss.weld.bootstrap.events.builder;
+package org.jboss.weld.bootstrap.events.configurator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -33,7 +33,7 @@ import javax.enterprise.inject.spi.configurator.InjectionPointConfigurator;
  *
  * @author Martin Kouba
  */
-public class InjectionPointConfiguratorImpl implements InjectionPointConfigurator {
+public class InjectionPointConfiguratorImpl implements InjectionPointConfigurator, Configurator<InjectionPoint> {
 
     private Type requiredType;
 
@@ -130,32 +130,80 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
         return this;
     }
 
-    Type getRequiredType() {
-        return requiredType;
+    @Override
+    public InjectionPoint complete() {
+        return new ImmutableInjectionPoint(this);
     }
 
-    Set<Annotation> getQualifiers() {
-        return qualifiers;
-    }
+    /**
+    *
+    * @author Martin Kouba
+    */
+   static class ImmutableInjectionPoint implements InjectionPoint {
 
-    Bean<?> getBean() {
-        return bean;
-    }
+       private final Type requiredType;
 
-    boolean isDelegate() {
-        return isDelegate;
-    }
+       private final Set<Annotation> qualifiers;
 
-    boolean isTransient() {
-        return isTransient;
-    }
+       private final Bean<?> bean;
 
-    Member getMember() {
-        return member;
-    }
+       private final boolean isDelegate;
 
-    Annotated getAnnotated() {
-        return annotated;
-    }
+       private final boolean isTransient;
+
+       private final Member member;
+
+       private final Annotated annotated;
+
+       /**
+        *
+        * @param configurator
+        */
+       private ImmutableInjectionPoint(InjectionPointConfiguratorImpl configurator) {
+           this.requiredType = configurator.requiredType;
+           this.qualifiers = configurator.qualifiers;
+           this.bean = configurator.bean;
+           this.isDelegate = configurator.isDelegate;
+           this.isTransient = configurator.isTransient;
+           this.member = configurator.member;
+           this.annotated = configurator.annotated;
+       }
+
+       @Override
+       public Type getType() {
+           return requiredType;
+       }
+
+       @Override
+       public Set<Annotation> getQualifiers() {
+           return qualifiers;
+       }
+
+       @Override
+       public Bean<?> getBean() {
+           return bean;
+       }
+
+       @Override
+       public Member getMember() {
+           return member;
+       }
+
+       @Override
+       public Annotated getAnnotated() {
+           return annotated;
+       }
+
+       @Override
+       public boolean isDelegate() {
+           return isDelegate;
+       }
+
+       @Override
+       public boolean isTransient() {
+           return isTransient;
+       }
+
+   }
 
 }

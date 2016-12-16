@@ -23,8 +23,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.enterprise.inject.spi.configurator.InjectionPointConfigurator;
 
-import org.jboss.weld.bootstrap.events.builder.InjectionPointBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.InjectionPointConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.InjectionPointConfiguratorImpl;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
@@ -120,7 +119,7 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
     public void postNotify(Extension extension) {
         super.postNotify(extension);
         if (configurator != null) {
-            ip = new InjectionPointBuilderImpl(configurator).build();
+            ip = configurator.complete();
             configurator = null;
             dirty = true;
         }

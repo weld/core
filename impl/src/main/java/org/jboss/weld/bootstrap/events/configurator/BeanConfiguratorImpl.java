@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events.builder;
+package org.jboss.weld.bootstrap.events.configurator;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -30,14 +30,20 @@ import java.util.function.Supplier;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.configurator.BeanConfigurator;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.bean.ForwardingBeanAttributes;
+import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  *
@@ -45,7 +51,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @param <T>
  */
-public class BeanConfiguratorImpl<T> implements BeanConfigurator<T> {
+public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurator<Bean<T>> {
 
     private BeanManagerImpl beanManager;
 
@@ -283,31 +289,11 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T> {
         }
     }
 
-    Class<?> getBeanClass() {
-        return beanClass;
+    public Bean<T> complete() {
+        return new ImmutableBean<>(this);
     }
 
-    Set<InjectionPoint> getInjectionPoints() {
-        return injectionPoints;
-    }
-
-    BeanAttributesConfiguratorImpl<T> getAttributes() {
-        return attributes;
-    }
-
-    String getId() {
-        return id;
-    }
-
-    CreateCallback<T> getCreateCallback() {
-        return createCallback;
-    }
-
-    DestroyCallback<T> getDestroyCallback() {
-        return destroyCallback;
-    }
-
-    BeanManagerImpl getBeanManager() {
+    public BeanManagerImpl getBeanManager() {
         return beanManager;
     }
 
@@ -374,6 +360,91 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T> {
             } else {
                 destroy.accept(instance, ctx);
             }
+        }
+
+    }
+
+    /**
+     *
+     * @author Martin Kouba
+     *
+     * @param <T> the class of the bean instance
+     */
+    static class ImmutableBean<T> extends ForwardingBeanAttributes<T> implements Bean<T>, PassivationCapable {
+
+        private final String id;
+
+        private final BeanManagerImpl beanManager;
+
+        private final Class<?> beanClass;
+
+        private final BeanAttributes<T> attributes;
+
+        private final Set<InjectionPoint> injectionPoints;
+
+        private final CreateCallback<T> createCallback;
+
+        private final DestroyCallback<T> destroyCallback;
+
+        /**
+         *
+         * @param configurator
+         */
+        ImmutableBean(BeanConfiguratorImpl<T> configurator) {
+            this.beanManager = configurator.getBeanManager();
+            this.beanClass = configurator.beanClass;
+            this.attributes = new BeanAttributesConfiguratorImpl<T>(configurator.attributes.complete()).complete();
+            this.injectionPoints = ImmutableSet.copyOf(configurator.injectionPoints);
+            this.createCallback = configurator.createCallback;
+            this.destroyCallback = configurator.destroyCallback;
+            if (configurator.id != null) {
+                this.id = configurator.id;
+            } else {
+                this.id = BeanIdentifiers.forBuilderBean(attributes, beanClass);
+            }
+        }
+
+        @Override
+        public T create(CreationalContext<T> creationalContext) {
+            return createCallback.create(creationalContext, beanManager);
+        }
+
+        @Override
+        public void destroy(T instance, CreationalContext<T> creationalContext) {
+            if (destroyCallback != null) {
+                destroyCallback.destroy(instance, creationalContext, beanManager);
+            }
+        }
+
+        @Override
+        public Class<?> getBeanClass() {
+            return beanClass;
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return injectionPoints;
+        }
+
+        @Override
+        public boolean isNullable() {
+            return false;
+        }
+
+        @Override
+        protected BeanAttributes<T> attributes() {
+            return attributes;
+        }
+
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "Immutable Builder Bean [" + getBeanClass().toString() + ", types: " + Formats.formatTypes(getTypes()) + ", qualifiers: "
+                    + Formats.formatAnnotations(getQualifiers()) + "]";
         }
 
     }

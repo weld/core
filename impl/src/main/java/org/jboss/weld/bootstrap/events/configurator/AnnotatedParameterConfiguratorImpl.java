@@ -14,40 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events.builder;
+package org.jboss.weld.bootstrap.events.configurator;
 
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator;
 
 /**
- * Configurator for {@link AnnotatedField}.
+ * Configurator for {@link AnnotatedParameter}.
  *
  * @author Martin Kouba
  *
  * @param <T>
  */
-public class AnnotatedFieldConfiguratorImpl<T> extends AnnotatedConfigurator<T, AnnotatedField<T>, AnnotatedFieldConfiguratorImpl<T>>
-        implements AnnotatedFieldConfigurator<T> {
+public class AnnotatedParameterConfiguratorImpl<T> extends AnnotatedConfigurator<T, AnnotatedParameter<T>, AnnotatedParameterConfiguratorImpl<T>>
+        implements AnnotatedParameterConfigurator<T> {
 
     /**
      *
      * @param annotatedParam
      * @return
      */
-    static <X> AnnotatedFieldConfiguratorImpl<X> from(AnnotatedField<X> annotatedField) {
-        return new AnnotatedFieldConfiguratorImpl<>(annotatedField);
+    static <X> AnnotatedParameterConfiguratorImpl<X> from(AnnotatedParameter<X> annotatedParam) {
+        return new AnnotatedParameterConfiguratorImpl<>(annotatedParam);
     }
 
     /**
      *
      * @param annotatedParam
      */
-    private AnnotatedFieldConfiguratorImpl(AnnotatedField<T> annotatedField) {
-        super(annotatedField);
+    private AnnotatedParameterConfiguratorImpl(AnnotatedParameter<T> annotatedParam) {
+        super(annotatedParam);
     }
 
     @Override
-    protected AnnotatedFieldConfiguratorImpl<T> self() {
+    protected AnnotatedParameterConfiguratorImpl<T> self() {
         return this;
     }
 

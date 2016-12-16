@@ -32,7 +32,7 @@ import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;

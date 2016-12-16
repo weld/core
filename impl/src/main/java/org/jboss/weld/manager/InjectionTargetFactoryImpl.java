@@ -25,8 +25,7 @@ import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
@@ -113,7 +112,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
             return;
         }
         if (configurator != null) {
-            AnnotatedType<T> configuredType = new AnnotatedTypeBuilderImpl<T>(configurator).build();
+            AnnotatedType<T> configuredType = configurator.complete();
             annotatedType = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(configuredType, manager.getId());
         } else {
             annotatedType = originalAnnotatedType;

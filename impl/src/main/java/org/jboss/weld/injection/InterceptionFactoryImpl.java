@@ -28,8 +28,7 @@ import org.jboss.weld.bean.proxy.InterceptedProxyMethodHandler;
 import org.jboss.weld.bean.proxy.InterceptionFactoryDataCache;
 import org.jboss.weld.bean.proxy.InterceptionFactoryDataCache.InterceptionFactoryData;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
@@ -106,7 +105,7 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
         }
 
         Optional<InterceptionFactoryData<T>> cached = beanManager.getServices().get(InterceptionFactoryDataCache.class)
-                .getInterceptionFactoryData(configurator != null ? new AnnotatedTypeBuilderImpl<>(configurator).build() : annotatedType);
+                .getInterceptionFactoryData(configurator != null ? configurator.complete() : annotatedType);
 
         if (!cached.isPresent()) {
             return instance;

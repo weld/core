@@ -29,8 +29,7 @@ import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
@@ -47,8 +46,8 @@ import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
 public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements BeforeBeanDiscovery {
 
-    protected final List<AnnotatedTypeConfiguratorImpl<?>> additionalQualifiers;
-    protected final List<AnnotatedTypeConfiguratorImpl<?>> additionalInterceptorBindings;
+    protected final List<AnnotatedTypeConfiguratorImpl<? extends Annotation>> additionalQualifiers;
+    protected final List<AnnotatedTypeConfiguratorImpl<? extends Annotation>> additionalInterceptorBindings;
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
         BeforeBeanDiscoveryImpl event = new BeforeBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts);
@@ -173,11 +172,11 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
     protected void finish() {
         super.finish();
         try {
-            for (AnnotatedTypeConfiguratorImpl<?> qualifierAsAnnotatedType : additionalQualifiers) {
-                addSyntheticAnnotation(new AnnotatedTypeBuilderImpl(qualifierAsAnnotatedType).build(), QualifierLiteral.INSTANCE);
+            for (AnnotatedTypeConfiguratorImpl<? extends Annotation> qualifierAsAnnotatedType : additionalQualifiers) {
+                addSyntheticAnnotation(qualifierAsAnnotatedType.complete(), QualifierLiteral.INSTANCE);
             }
-            for (AnnotatedTypeConfiguratorImpl<?> interceptorBindingAsAnnotatedType : additionalInterceptorBindings) {
-                addSyntheticAnnotation(new AnnotatedTypeBuilderImpl(interceptorBindingAsAnnotatedType).build(), InterceptorBindingTypeLiteral.INSTANCE);
+            for (AnnotatedTypeConfiguratorImpl<? extends Annotation> interceptorBindingAsAnnotatedType : additionalInterceptorBindings) {
+                addSyntheticAnnotation(interceptorBindingAsAnnotatedType.complete(), InterceptorBindingTypeLiteral.INSTANCE);
             }
         } catch (Exception e) {
             throw new DefinitionException(e);

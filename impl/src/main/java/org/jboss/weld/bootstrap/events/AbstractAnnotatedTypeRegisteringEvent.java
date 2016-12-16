@@ -29,8 +29,7 @@ import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.AnnotatedTypeConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
@@ -59,7 +58,7 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
     protected void finish() {
         try {
             for (AnnotatedTypeRegistration<?> annotatedTypeRegistration : additionalAnnotatedTypes) {
-                addSyntheticAnnotatedType(new AnnotatedTypeBuilderImpl<>(annotatedTypeRegistration.configurator).build(), annotatedTypeRegistration.id);
+                addSyntheticAnnotatedType(annotatedTypeRegistration.configurator.complete(), annotatedTypeRegistration.id);
             }
         } catch (Exception e) {
             throw new DefinitionException(e);

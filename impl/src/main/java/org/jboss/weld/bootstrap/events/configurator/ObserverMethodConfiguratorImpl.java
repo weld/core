@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bootstrap.events.builder;
+package org.jboss.weld.bootstrap.events.configurator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -26,25 +26,29 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Priority;
+import javax.enterprise.event.ObserverException;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.EventContext;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
+import org.jboss.weld.event.SyntheticObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.resolution.CovariantTypes;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
  *
  * @author Martin Kouba
  */
-public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigurator<T> {
+public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigurator<T>, Configurator<ObserverMethod<T>> {
 
     private Class<?> beanClass;
 
@@ -212,36 +216,9 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         return this;
     }
 
-    Class<?> getBeanClass() {
-        return beanClass;
-    }
-
-    Type getObservedType() {
-        return observedType;
-    }
-
-    Set<Annotation> getObservedQualifiers() {
-        return observedQualifiers;
-    }
-
-    Reception getReception() {
-        return reception;
-    }
-
-    TransactionPhase getTxPhase() {
-        return txPhase;
-    }
-
-    int getPriority() {
-        return priority;
-    }
-
-    boolean isAsync() {
-        return isAsync;
-    }
-
-    EventConsumer<T> getNotifyCallback() {
-        return notifyCallback;
+    @Override
+    public ObserverMethod<T> complete() {
+        return new ImmutableObserverMethod<>(this);
     }
 
     private <P> void checkEventParams(Set<P> eventParams, Method method) {
@@ -249,5 +226,97 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
             EventLogger.LOG.noneOrMultipleEventParametersDeclared(method, Formats.formatAsStackTraceElement(method));
         }
     }
+
+    /**
+    *
+    *
+    * @param <T>
+    */
+   static class ImmutableObserverMethod<T> implements SyntheticObserverMethod<T> {
+
+       private final Class<?> beanClass;
+
+       private final Type observedType;
+
+       private final Set<Annotation> observedQualifiers;
+
+       private final Reception reception;
+
+       private final TransactionPhase txPhase;
+
+       private final int priority;
+
+       private final boolean isAsync;
+
+       private final EventConsumer<T> notifyCallback;
+
+       /**
+        *
+        * @param configurator
+        */
+       ImmutableObserverMethod(ObserverMethodConfiguratorImpl<T> configurator) {
+           if (configurator.notifyCallback == null) {
+               throw EventLogger.LOG.notifyMethodNotImplemented(configurator);
+           }
+           this.beanClass = configurator.beanClass;
+           this.observedType = configurator.observedType;
+           this.observedQualifiers = ImmutableSet.copyOf(configurator.observedQualifiers);
+           this.reception = configurator.reception;
+           this.txPhase = configurator.txPhase;
+           this.priority = configurator.priority;
+           this.isAsync = configurator.isAsync;
+           this.notifyCallback = configurator.notifyCallback;
+       }
+
+       @Override
+       public int getPriority() {
+           return priority;
+       }
+
+       @Override
+       public Class<?> getBeanClass() {
+           return beanClass;
+       }
+
+       @Override
+       public Type getObservedType() {
+           return observedType;
+       }
+
+       @Override
+       public Set<Annotation> getObservedQualifiers() {
+           return observedQualifiers;
+       }
+
+       @Override
+       public Reception getReception() {
+           return reception;
+       }
+
+       @Override
+       public TransactionPhase getTransactionPhase() {
+           return txPhase;
+       }
+
+       @Override
+       public void notify(EventContext<T> eventContext) {
+           try {
+               notifyCallback.accept(eventContext);
+           } catch (Exception e) {
+               throw new ObserverException(e);
+           }
+       }
+
+       @Override
+       public boolean isAsync() {
+           return isAsync;
+       }
+
+       @Override
+       public boolean isEventMetadataRequired() {
+           return true;
+       }
+
+   }
 
 }

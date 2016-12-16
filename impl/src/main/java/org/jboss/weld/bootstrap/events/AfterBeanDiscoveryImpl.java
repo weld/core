@@ -50,10 +50,8 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.event.InterceptorConfigurator;
 import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
-import org.jboss.weld.bootstrap.events.builder.BeanBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.BeanConfiguratorImpl;
-import org.jboss.weld.bootstrap.events.builder.ObserverMethodBuilderImpl;
-import org.jboss.weld.bootstrap.events.builder.ObserverMethodConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.BeanConfiguratorImpl;
+import org.jboss.weld.bootstrap.events.configurator.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BootstrapLogger;
@@ -280,7 +278,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
         private final Bean<?> bean;
 
-        private final BeanBuilderImpl<?> beanBuilder;
+        private final BeanConfiguratorImpl<?> beanConfigurator;
 
         private final InterceptorConfiguratorImpl interceptorBuilder;
 
@@ -291,16 +289,16 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         }
 
         static BeanRegistration of(BeanConfiguratorImpl<?> configurator, Extension extension) {
-            return new BeanRegistration(null, cast(new BeanBuilderImpl<>(configurator)), null, extension);
+            return new BeanRegistration(null, configurator, null, extension);
         }
 
         static BeanRegistration of(InterceptorConfiguratorImpl interceptorBuilder) {
             return new BeanRegistration(null, null, interceptorBuilder, null);
         }
 
-        BeanRegistration(Bean<?> bean, BeanBuilderImpl<?> beanBuilder, InterceptorConfiguratorImpl interceptorBuilder, Extension extension) {
+        BeanRegistration(Bean<?> bean, BeanConfiguratorImpl<?> beanConfigurator, InterceptorConfiguratorImpl interceptorBuilder, Extension extension) {
             this.bean = bean;
-            this.beanBuilder = beanBuilder;
+            this.beanConfigurator = beanConfigurator;
             this.interceptorBuilder = interceptorBuilder;
             this.extension = extension;
         }
@@ -308,8 +306,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         public Bean<?> initBean() {
             if (bean != null) {
                 return bean;
-            } else if (beanBuilder != null) {
-                return beanBuilder.build();
+            } else if (beanConfigurator != null) {
+                return beanConfigurator.complete();
             }
             return interceptorBuilder.build();
         }
@@ -317,8 +315,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         protected BeanManagerImpl initBeanManager() {
             if (bean != null) {
                 return null;
-            } else if (beanBuilder != null) {
-                return beanBuilder.getBeanManager();
+            } else if (beanConfigurator != null) {
+                return beanConfigurator.getBeanManager();
             }
             return interceptorBuilder.getBeanManager();
         }
@@ -331,19 +329,19 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
         private final Extension extension;
 
-        private final ObserverMethodBuilderImpl<?> observerMethodBuilder;
+        private final ObserverMethodConfiguratorImpl<?> observerMethodConfigurator;
 
         static ObserverRegistration of(ObserverMethod<?> observerMethod, Extension extension) {
             return new ObserverRegistration(observerMethod, null, extension);
         }
 
         static <T> ObserverRegistration of(ObserverMethodConfiguratorImpl<T> configurator, Extension extension) {
-            return new ObserverRegistration(null, new ObserverMethodBuilderImpl<T>(configurator), extension);
+            return new ObserverRegistration(null, configurator, extension);
         }
 
-        private ObserverRegistration(ObserverMethod<?> observerMethod, ObserverMethodBuilderImpl<?> observerMethodBuilder, Extension extension) {
+        private ObserverRegistration(ObserverMethod<?> observerMethod, ObserverMethodConfiguratorImpl<?> observerMethodBuilder, Extension extension) {
             this.observerMethod = observerMethod;
-            this.observerMethodBuilder = observerMethodBuilder;
+            this.observerMethodConfigurator = observerMethodBuilder;
             this.extension = extension;
         }
 
@@ -351,7 +349,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             if (observerMethod != null) {
                 return observerMethod;
             }
-            return observerMethodBuilder.build();
+            return observerMethodConfigurator.complete();
         }
 
     }
