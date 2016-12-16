@@ -42,6 +42,17 @@ public class Preconditions {
     }
 
     /**
+     * Throws {@link IllegalArgumentException} if the reference is null. This method should only be used for methods with single argument.
+     *
+     * @param reference the reference to be checked
+     */
+    public static void checkArgumentNotNull(Object reference) {
+        if (reference == null) {
+            throw ValidatorLogger.LOG.argumentNull();
+        }
+    }
+
+    /**
      *
      * @param reference The reference to be checked
      * @throws NullPointerException if the reference is null

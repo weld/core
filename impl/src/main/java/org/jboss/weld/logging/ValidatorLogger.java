@@ -276,4 +276,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1482, value = "InterceptionFactory can only be injected in a parameter of a producer method: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException invalidInterceptionFactoryInjectionPoint(Object injectionPoint, Object stackElement);
 
+    @Message(id = 1483, value = "Argument must not be null", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException argumentNull();
+
 }

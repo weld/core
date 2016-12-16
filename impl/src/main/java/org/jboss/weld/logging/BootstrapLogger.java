@@ -301,4 +301,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 172, value = "BeforeBeanDiscovery.configureInterceptorBinding() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
     void configureInterceptorBindingCalled(Object extensionName, Object type);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 173, value = "ProcessProducer.configureProducer() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void configureProducerCalled(Object extensionName, Object bean);
+
 }
