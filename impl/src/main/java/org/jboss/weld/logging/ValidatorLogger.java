@@ -117,6 +117,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1421, value = "Cannot enable the same alternative stereotype {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeStereotypeSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
+    @SuppressWarnings("weldlog:msg-value")
     @Message(id = 1422, value = "Enabled alternative class {0} ({1}) does not match any bean, or is not annotated with @Alternative or an @Alternative stereotype, or does not declare a producer annotated with @Alternative or an @Alternative stereotype", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotAnnotated(Object value, Object location);
 
