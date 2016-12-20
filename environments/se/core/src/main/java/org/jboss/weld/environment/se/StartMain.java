@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.se;
 
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+
 import javax.enterprise.inject.Vetoed;
 
 /**
@@ -37,7 +39,7 @@ public class StartMain {
 
     public StartMain(String[] commandLineArgs) {
         PARAMETERS = commandLineArgs;
-        weld = new Weld();
+        weld = new Weld().containerId(RegistrySingletonProvider.STATIC_INSTANCE);
     }
 
     public WeldContainer go() {
