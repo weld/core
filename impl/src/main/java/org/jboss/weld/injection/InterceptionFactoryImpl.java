@@ -103,6 +103,7 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
         if (exception != null) {
             throw exception;
         }
+        used = true;
 
         Optional<InterceptionFactoryData<T>> cached = beanManager.getServices().get(InterceptionFactoryDataCache.class)
                 .getInterceptionFactoryData(configurator != null ? configurator.complete() : annotatedType);
@@ -121,7 +122,6 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
                 : AccessController.doPrivileged(data.getInterceptedProxyFactory());
         ((ProxyObject) proxy).setHandler(methodHandler);
 
-        used = true;
         return proxy;
     }
 
