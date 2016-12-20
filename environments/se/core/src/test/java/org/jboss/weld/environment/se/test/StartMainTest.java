@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.environment.se.StartMain;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.beans.MainTestBean;
@@ -49,6 +50,8 @@ public class StartMainTest {
     @Test
     public void testMain() {
         WeldContainer container = startMain.go();
+
+        assertEquals(container.getId(), RegistrySingletonProvider.STATIC_INSTANCE);
 
         MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
         assertNotNull(mainTestBean);
