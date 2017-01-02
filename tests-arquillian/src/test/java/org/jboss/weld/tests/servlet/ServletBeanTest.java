@@ -9,7 +9,7 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class ServletBeanTest {

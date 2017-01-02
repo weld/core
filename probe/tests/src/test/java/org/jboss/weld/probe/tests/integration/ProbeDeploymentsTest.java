@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.DEPLOYMENT_PATH;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getDeploymentByName;

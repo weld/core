@@ -2,7 +2,7 @@ package org.jboss.weld.tests.unit.reflection.util;
 
 import javax.enterprise.util.TypeLiteral;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.junit.Ignore;

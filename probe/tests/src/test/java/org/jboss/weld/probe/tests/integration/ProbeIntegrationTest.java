@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URL;

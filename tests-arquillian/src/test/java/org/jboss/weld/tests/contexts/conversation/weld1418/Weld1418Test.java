@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.contexts.conversation.weld1418;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;

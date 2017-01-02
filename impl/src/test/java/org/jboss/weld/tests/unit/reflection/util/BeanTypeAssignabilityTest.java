@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.enterprise.util.TypeLiteral;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.jboss.weld.resolution.AssignabilityRules;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;

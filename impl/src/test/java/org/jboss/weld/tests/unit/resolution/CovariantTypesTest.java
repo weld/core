@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.unit.resolution;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
