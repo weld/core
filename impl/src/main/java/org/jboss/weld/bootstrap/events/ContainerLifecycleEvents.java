@@ -249,8 +249,9 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
             } else {
                 if (extension != null) {
                     ProcessSynthethicBeanImpl.fire(beanManager, bean, extension);
+                } else {
+                    ProcessBeanImpl.fire(beanManager, bean);
                 }
-                ProcessBeanImpl.fire(beanManager, bean);
             }
         }
     }
