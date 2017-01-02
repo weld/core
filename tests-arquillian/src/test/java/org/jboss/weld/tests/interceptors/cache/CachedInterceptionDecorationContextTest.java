@@ -29,7 +29,7 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Tests that {@link InterceptionDecorationContext} survives {@link RequestScopedCache} being flushed.

@@ -23,7 +23,7 @@ import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RequestScoped
 public class AsyncObserver {
