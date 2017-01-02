@@ -43,8 +43,11 @@ import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import javax.enterprise.inject.spi.ProcessSyntheticBean;
+import javax.enterprise.inject.spi.ProcessSyntheticObserverMethod;
 
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
+import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
@@ -61,17 +64,17 @@ import org.jboss.weld.util.reflection.Reflections;
 public class Observers {
 
     /*
-     * Contains all container lifecycle event types
+     * Contains only top superinterfaces of each chain of container lifecycle event types.
      */
     public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = ImmutableSet.of(BeforeBeanDiscovery.class, AfterTypeDiscovery.class,
             AfterBeanDiscovery.class, AfterDeploymentValidation.class, BeforeShutdown.class, ProcessAnnotatedType.class, ProcessInjectionPoint.class,
             ProcessInjectionTarget.class, ProcessProducer.class, ProcessBeanAttributes.class, ProcessBean.class, ProcessObserverMethod.class);
     /*
-     * Contains only top superinterfaces of each chain of container lifecycle event types.
+     * Contains all container lifecycle event types
      */
     public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>> builder().addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
             .addAll(ProcessSyntheticAnnotatedType.class, ProcessSessionBean.class, ProcessManagedBean.class, ProcessProducerMethod.class,
-                    ProcessProducerField.class, ProcessObserverMethod.class)
+                    ProcessProducerField.class, ProcessSyntheticBean.class, ProcessSyntheticObserverMethod.class, WeldAfterBeanDiscovery.class)
             .build();
 
     private static final String NOTIFY_METHOD_NAME = "notify";

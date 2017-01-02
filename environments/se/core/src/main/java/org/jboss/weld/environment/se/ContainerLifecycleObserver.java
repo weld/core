@@ -52,6 +52,7 @@ import javax.enterprise.inject.spi.WithAnnotations;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bootstrap.SyntheticExtension;
+import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
 import org.jboss.weld.bootstrap.events.NotificationListener;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
@@ -195,8 +196,8 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
      * @return a new builder instance
      * @see AfterBeanDiscovery
      */
-    public static Builder<AfterBeanDiscovery> afterBeanDiscovery() {
-        return ContainerLifecycleObserver.<AfterBeanDiscovery> of(AfterBeanDiscovery.class);
+    public static Builder<WeldAfterBeanDiscovery> afterBeanDiscovery() {
+        return ContainerLifecycleObserver.<WeldAfterBeanDiscovery> of(WeldAfterBeanDiscovery.class);
     }
 
     /**
@@ -205,7 +206,7 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
      * @return a new container lifecycle observer
      * @see AfterBeanDiscovery
      */
-    public static ContainerLifecycleObserver<AfterBeanDiscovery> afterBeanDiscovery(Consumer<AfterBeanDiscovery> callback) {
+    public static ContainerLifecycleObserver<WeldAfterBeanDiscovery> afterBeanDiscovery(Consumer<WeldAfterBeanDiscovery> callback) {
         return afterBeanDiscovery().notify(callback);
     }
 

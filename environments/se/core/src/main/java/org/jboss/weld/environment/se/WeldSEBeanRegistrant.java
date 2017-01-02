@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.se;
 
-import java.util.List;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -28,8 +26,6 @@ import javax.inject.Singleton;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.bootstrap.events.InterceptorConfiguratorImpl;
-import org.jboss.weld.bootstrap.events.configurator.BeanConfiguratorImpl;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScopeInterceptor;
@@ -46,10 +42,6 @@ import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 public class WeldSEBeanRegistrant implements Extension {
 
     private ThreadContext threadContext;
-
-    private List<BeanConfiguratorImpl<?>> beanConfigurators;
-
-    private List<InterceptorConfiguratorImpl> interceptorConfigurators;
 
     public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
@@ -74,18 +66,6 @@ public class WeldSEBeanRegistrant implements Extension {
         // Register WeldContainer as a singleton
         event.addBean().addType(WeldContainer.class).addQualifier(DefaultLiteral.INSTANCE).scope(Singleton.class)
                 .produceWith((i) -> WeldContainer.instance(contextId));
-
-        // Process queued bean builders
-        if (beanConfigurators != null) {
-            for (BeanConfiguratorImpl<?> configurator : beanConfigurators) {
-                event.addBean(configurator.complete());
-            }
-        }
-        if (interceptorConfigurators != null) {
-            for (InterceptorConfiguratorImpl configurator : interceptorConfigurators) {
-                event.addBean(configurator.build());
-            }
-        }
     }
 
     /**
@@ -97,14 +77,6 @@ public class WeldSEBeanRegistrant implements Extension {
 
     public ThreadContext getThreadContext() {
         return threadContext;
-    }
-
-    void setBeanConfigurators(List<BeanConfiguratorImpl<?>> beanConfigurators) {
-        this.beanConfigurators = beanConfigurators;
-    }
-
-    void setInterceptorConfigurators(List<InterceptorConfiguratorImpl> interceptorBuilders) {
-        this.interceptorConfigurators = interceptorBuilders;
     }
 
 }
