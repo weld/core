@@ -135,16 +135,6 @@ public class WeldBootstrap implements CDI11Bootstrap {
         return ServiceLoader.load(Extension.class, classLoader);
     }
 
-    /**
-     * This method can only be invoked during initialization.
-     *
-     * @return the bean deployment finder
-     */
-    public synchronized BeanDeploymentFinder getBeanDeploymentFinder() {
-        checkInitializationNotAlreadyEnded();
-        return new BeanDeploymentFinder(weldStartup.getBdaMapping(), weldStartup.getDeployment(), weldStartup.getContexts(), weldStartup.getDeploymentManager());
-    }
-
     private void checkInitializationNotAlreadyEnded() {
         if (weldStartup == null) {
             throw BootstrapLogger.LOG.callingBootstrapMethodAfterContainerHasBeenInitialized();

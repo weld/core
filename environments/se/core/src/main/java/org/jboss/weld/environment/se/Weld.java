@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,9 +54,7 @@ import javax.enterprise.inject.se.SeContainerInitializer;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.configurator.BeanConfigurator;
 
-import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
@@ -63,9 +62,6 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
-import org.jboss.weld.bootstrap.event.InterceptorConfigurator;
-import org.jboss.weld.bootstrap.events.InterceptorConfiguratorImpl;
-import org.jboss.weld.bootstrap.events.configurator.BeanConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -242,10 +238,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     private final Set<PackInfo> packages;
 
-    private final List<BeanConfiguratorImpl<?>> beanConfigurators;
-
-    private final List<InterceptorConfiguratorImpl> interceptorBuilders;
-
     private final List<ContainerLifecycleObserver<?>> containerLifecycleObservers;
 
     private ResourceLoader resourceLoader;
@@ -270,9 +262,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         this.extensions = new HashSet<Metadata<Extension>>();
         this.properties = new HashMap<String, Object>();
         this.packages = new HashSet<PackInfo>();
-        this.beanConfigurators = new ArrayList<BeanConfiguratorImpl<?>>();
-        this.interceptorBuilders = new ArrayList<>();
-        this.containerLifecycleObservers = new ArrayList<>();
+        this.containerLifecycleObservers = new LinkedList<>();
         this.resourceLoader = new WeldResourceLoader();
     }
 
@@ -642,28 +632,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * The resulting bean is registered automatically during container initialization.
-     *
-     * @return a {@link BeanConfigurator} for a custom bean
-     */
-    public <T> BeanConfigurator<T> addBean() {
-        BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(WeldSEBeanRegistrant.class, null);
-        beanConfigurators.add(configurator);
-        return configurator;
-    }
-
-    /**
-     * The {@link InterceptorBuilder#build()} is invoked automatically and the resulting interceptor bean is registered after all observers are notified.
-     *
-     * @return a builder for a custom interceptor
-     */
-    public InterceptorConfigurator addInterceptor() {
-        InterceptorConfiguratorImpl interceptorBuilder = new InterceptorConfiguratorImpl();
-        interceptorBuilders.add(interceptorBuilder);
-        return interceptorBuilder;
-    }
-
-    /**
      * Reset the synthetic bean archive (bean classes and enablement), explicitly added extensions and custom beans added via {@link #addBean()}.
      *
      * @return self
@@ -676,7 +644,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         enabledInterceptors.clear();
         enabledDecorators.clear();
         extensions.clear();
-        beanConfigurators.clear();
         return this;
     }
 
@@ -768,19 +735,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
         try {
             bootstrap.startInitialization();
-            // Bean configurators - init with bean deployment finder
-            if (!beanConfigurators.isEmpty()) {
-                BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
-                for (BeanConfiguratorImpl<?> configurator : beanConfigurators) {
-                    configurator.initBeanManager(beanDeploymentFinder);
-                }
-            }
-            if (!interceptorBuilders.isEmpty()) {
-                BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
-                for (InterceptorConfiguratorImpl interceptorBuilder : interceptorBuilders) {
-                    interceptorBuilder.setBeanDeploymentFinder(beanDeploymentFinder);
-                }
-            }
             bootstrap.deployBeans();
             bootstrap.validateBeans();
             bootstrap.endInitialization();
@@ -887,7 +841,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             beanDeploymentArchives.add(syntheticBeanArchive);
         }
 
-        if (beanDeploymentArchives.isEmpty() && beanConfigurators.isEmpty()) {
+        if (beanDeploymentArchives.isEmpty() && this.containerLifecycleObservers.isEmpty()) {
             throw WeldSELogger.LOG.weldContainerCannotBeInitializedNoBeanArchivesFound();
         }
 
@@ -968,12 +922,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
-        if (!beanConfigurators.isEmpty()) {
-            weldSEBeanRegistrant.setBeanConfigurators(beanConfigurators);
-        }
-        if (!interceptorBuilders.isEmpty()) {
-            weldSEBeanRegistrant.setInterceptorConfigurators(interceptorBuilders);
         }
         if (isEnabled(DEV_MODE_SYSTEM_PROPERTY, false)) {
             // The development mode is enabled - register the Probe extension

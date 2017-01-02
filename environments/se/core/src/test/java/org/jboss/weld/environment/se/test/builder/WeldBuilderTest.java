@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.builder;
 
+import static org.jboss.weld.environment.se.ContainerLifecycleObserver.afterBeanDiscovery;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -33,6 +34,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.environment.se.ContainerLifecycleObserver;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.builder.alphas.Alpha1;
@@ -222,28 +224,29 @@ public class WeldBuilderTest {
 
     @Test
     public void testBeanBuilder() {
-        Weld builder = new Weld().disableDiscovery();
-        Integer val = 42;
-        builder.addBean().addType(Integer.class).produceWith((i) -> val).addQualifier(Juicy.Literal.INSTANCE);
-        try (WeldContainer container = builder.initialize()) {
+        try (WeldContainer container = new Weld().disableDiscovery()
+                .addContainerLifecycleObserver(
+                        afterBeanDiscovery((e) -> e.addBean().addType(Integer.class).produceWith((i) -> 42).addQualifier(Juicy.Literal.INSTANCE)))
+                .initialize()) {
             assertEquals(Integer.valueOf(42), container.select(Integer.class, Juicy.Literal.INSTANCE).get());
         }
     }
 
     @Test
     public void testInterceptorBuilder() {
-        Weld weldBuilder = new Weld().disableDiscovery().beanClasses(Coorge.class, BuilderInterceptorBinding.class);
-        weldBuilder.addInterceptor().intercept(InterceptionType.AROUND_INVOKE, invocationContext -> {
-
-            try {
-                Integer result = ((Integer) invocationContext.proceed());
-                return result + 10;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }).addBinding(new BuilderInterceptorBinding.BuilderInterceptorBindingLiteral()).priority(2500);
-        try (WeldContainer container = weldBuilder.initialize()) {
+        try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Coorge.class, BuilderInterceptorBinding.class)
+                .addContainerLifecycleObserver(ContainerLifecycleObserver
+                        .afterBeanDiscovery((e) -> e.addInterceptor().addBinding(new BuilderInterceptorBinding.BuilderInterceptorBindingLiteral())
+                                .priority(2500).intercept(InterceptionType.AROUND_INVOKE, invocationContext -> {
+                                    try {
+                                        Integer result = ((Integer) invocationContext.proceed());
+                                        return result + 10;
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                    return null;
+                                })))
+                .initialize()) {
             Coorge coorge = container.select(Coorge.class).get();
             assertEquals(coorge.ping(), 11);
         }
