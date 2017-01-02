@@ -34,6 +34,13 @@
 
             <!-- Issues in the TCK -->
 
+            <!-- remove with next TCK version newer than 2.0.0.Beta1 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.interceptionFactory.broken.UnproxyableInterceptedInstanceTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
