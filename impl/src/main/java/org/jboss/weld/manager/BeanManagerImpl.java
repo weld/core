@@ -477,11 +477,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return ImmutableSet.copyOf(globalStrictObserverNotifier.resolveObserverMethods(event.getClass(), bindings).getAllObservers());
     }
 
-    // TODO: this should make it to the API
-    public <T> List<ObserverMethod<? super T>> resolveObserverMethodsInOrder(T event, Annotation... bindings) {
-        return globalStrictObserverNotifier.<T> resolveObserverMethods(event.getClass(), bindings).getAllObservers();
-    }
-
     public void addInterceptor(Interceptor<?> bean) {
         interceptors.add(bean);
         getServices().get(ContextualStore.class).putIfAbsent(bean);
