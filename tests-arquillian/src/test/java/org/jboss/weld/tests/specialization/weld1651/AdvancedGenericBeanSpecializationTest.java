@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 

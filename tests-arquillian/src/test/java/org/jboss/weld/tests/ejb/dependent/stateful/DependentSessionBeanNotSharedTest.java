@@ -18,7 +18,7 @@ package org.jboss.weld.tests.ejb.dependent.stateful;
 
 import javax.inject.Inject;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;

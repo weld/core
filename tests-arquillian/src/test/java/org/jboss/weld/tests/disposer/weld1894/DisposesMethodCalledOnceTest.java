@@ -19,7 +19,7 @@ package org.jboss.weld.tests.disposer.weld1894;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;

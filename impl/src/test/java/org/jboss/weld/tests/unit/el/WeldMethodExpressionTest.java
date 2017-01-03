@@ -24,8 +24,8 @@ import javax.el.MethodInfo;
 import org.jboss.weld.el.WeldMethodExpression;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

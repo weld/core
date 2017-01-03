@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @SessionScoped
 @SuppressWarnings("serial")

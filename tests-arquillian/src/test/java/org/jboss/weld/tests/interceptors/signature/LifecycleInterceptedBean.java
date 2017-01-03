@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
