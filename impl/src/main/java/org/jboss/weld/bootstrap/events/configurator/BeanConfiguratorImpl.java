@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events.configurator;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -81,24 +82,28 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
 
     @Override
     public BeanConfigurator<T> beanClass(Class<?> beanClass) {
+        checkArgumentNotNull(beanClass);
         this.beanClass = beanClass;
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addInjectionPoint(InjectionPoint injectionPoint) {
+        checkArgumentNotNull(injectionPoint);
         this.injectionPoints.add(injectionPoint);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addInjectionPoints(InjectionPoint... injectionPoints) {
+        checkArgumentNotNull(injectionPoints);
         Collections.addAll(this.injectionPoints, injectionPoints);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addInjectionPoints(Set<InjectionPoint> injectionPoints) {
+        checkArgumentNotNull(injectionPoints);
         this.injectionPoints.addAll(injectionPoints);
         return this;
     }
@@ -117,36 +122,42 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
 
     @Override
     public BeanConfigurator<T> id(String id) {
+        checkArgumentNotNull(id);
         this.id = id;
         return this;
     }
 
     @Override
     public <U extends T> BeanConfigurator<U> createWith(Function<CreationalContext<U>, U> callback) {
+        checkArgumentNotNull(callback);
         this.createCallback = cast(CreateCallback.fromCreateWith(callback));
         return cast(this);
     }
 
     @Override
     public <U extends T> BeanConfigurator<U> produceWith(Function<Instance<Object>, U> callback) {
+        checkArgumentNotNull(callback);
         this.createCallback = cast(CreateCallback.fromProduceWith(callback));
         return cast(this);
     }
 
     @Override
     public BeanConfigurator<T> destroyWith(BiConsumer<T, CreationalContext<T>> callback) {
+        checkArgumentNotNull(callback);
         this.destroyCallback = DestroyCallback.fromDestroy(callback);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> disposeWith(BiConsumer<T, Instance<Object>> callback) {
+        checkArgumentNotNull(callback);
         this.destroyCallback = DestroyCallback.fromDispose(callback);
         return this;
     }
 
     @Override
     public <U extends T> BeanConfigurator<U> read(AnnotatedType<U> type) {
+        checkArgumentNotNull(type);
         if (beanManager == null) {
             // TODO message
             throw new IllegalStateException();
@@ -171,102 +182,119 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
 
     @Override
     public BeanConfigurator<T> read(BeanAttributes<?> beanAttributes) {
+        checkArgumentNotNull(beanAttributes);
         this.attributes.read(beanAttributes);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addType(Type type) {
+        checkArgumentNotNull(type);
         this.attributes.addType(type);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addType(TypeLiteral<?> typeLiteral) {
+        checkArgumentNotNull(typeLiteral);
         this.attributes.addType(typeLiteral.getType());
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addTypes(Type... types) {
+        checkArgumentNotNull(types);
         this.attributes.addTypes(types);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addTypes(Set<Type> types) {
+        checkArgumentNotNull(types);
         this.attributes.addTypes(types);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addTransitiveTypeClosure(Type type) {
+        checkArgumentNotNull(type);
         this.attributes.addTransitiveTypeClosure(type);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> types(Type... types) {
+        checkArgumentNotNull(types);
         this.attributes.types(types);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> types(Set<Type> types) {
+        checkArgumentNotNull(types);
         this.attributes.types(types);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> scope(Class<? extends Annotation> scope) {
+        checkArgumentNotNull(scope);
         this.attributes.scope(scope);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addQualifier(Annotation qualifier) {
+        checkArgumentNotNull(qualifier);
         this.attributes.addQualifier(qualifier);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addQualifiers(Annotation... qualifiers) {
+        checkArgumentNotNull(qualifiers);
         this.attributes.addQualifiers(qualifiers);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addQualifiers(Set<Annotation> qualifiers) {
+        checkArgumentNotNull(qualifiers);
         this.attributes.addQualifiers(qualifiers);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> qualifiers(Annotation... qualifiers) {
+        checkArgumentNotNull(qualifiers);
         this.attributes.qualifiers(qualifiers);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> qualifiers(Set<Annotation> qualifiers) {
+        checkArgumentNotNull(qualifiers);
         this.attributes.qualifiers(qualifiers);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addStereotype(Class<? extends Annotation> stereotype) {
+        checkArgumentNotNull(stereotype);
         this.attributes.addStereotype(stereotype);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> addStereotypes(Set<Class<? extends Annotation>> stereotypes) {
+        checkArgumentNotNull(stereotypes);
         this.attributes.addStereotypes(stereotypes);
         return this;
     }
 
     @Override
     public BeanConfigurator<T> stereotypes(Set<Class<? extends Annotation>> stereotypes) {
+        checkArgumentNotNull(stereotypes);
         this.attributes.stereotypes(stereotypes);
         return this;
     }

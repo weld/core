@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events.configurator;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -90,6 +92,7 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributesConfigurator<T> read(BeanAttributes<?> beanAttributes) {
+        checkArgumentNotNull(beanAttributes);
         name(beanAttributes.getName());
         qualifiers(beanAttributes.getQualifiers());
         scope(beanAttributes.getScope());
@@ -101,30 +104,35 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributesConfigurator<T> addType(Type type) {
+        checkArgumentNotNull(type);
         this.types.add(type);
         return this;
     }
 
     @Override
     public BeanAttributesConfigurator<T> addType(TypeLiteral<?> typeLiteral) {
+        checkArgumentNotNull(typeLiteral);
         this.types.add(typeLiteral.getType());
         return null;
     }
 
     @Override
     public BeanAttributesConfigurator<T> addTypes(Type... types) {
+        checkArgumentNotNull(types);
         Collections.addAll(this.types, types);
         return this;
     }
 
     @Override
     public BeanAttributesConfigurator<T> addTypes(Set<Type> types) {
+        checkArgumentNotNull(types);
         this.types.addAll(types);
         return this;
     }
 
     @Override
     public BeanAttributesConfigurator<T> addTransitiveTypeClosure(Type type) {
+        checkArgumentNotNull(type);
         this.types.addAll(Beans.getLegalBeanTypes(new HierarchyDiscovery(type).getTypeClosure(), type));
         return this;
     }
@@ -143,12 +151,14 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributesConfigurator<T> scope(Class<? extends Annotation> scope) {
+        checkArgumentNotNull(scope);
         this.scope = scope;
         return this;
     }
 
     @Override
     public BeanAttributesConfigurator<T> addQualifier(Annotation qualifier) {
+        checkArgumentNotNull(qualifier);
         removeDefaultQualifierIfNeeded(qualifier);
         qualifiers.add(qualifier);
         return this;
@@ -156,6 +166,7 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributesConfigurator<T> addQualifiers(Annotation... qualifiers) {
+        checkArgumentNotNull(qualifiers);
         for (Annotation annotation : qualifiers) {
             removeDefaultQualifierIfNeeded(annotation);
         }
@@ -165,6 +176,7 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributesConfigurator<T> addQualifiers(Set<Annotation> qualifiers) {
+        checkArgumentNotNull(qualifiers);
         for (Annotation annotation : qualifiers) {
             removeDefaultQualifierIfNeeded(annotation);
         }
@@ -186,12 +198,14 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributesConfigurator<T> addStereotype(Class<? extends Annotation> stereotype) {
+        checkArgumentNotNull(stereotype);
         this.stereotypes.add(stereotype);
         return this;
     }
 
     @Override
     public BeanAttributesConfigurator<T> addStereotypes(Set<Class<? extends Annotation>> stereotypes) {
+        checkArgumentNotNull(stereotypes);
         this.stereotypes.addAll(stereotypes);
         return this;
     }

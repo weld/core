@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events.configurator;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -84,6 +86,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> read(Method method) {
+        checkArgumentNotNull(method);
         Set<Parameter> eventParameters = Configurators.getAnnotatedParameters(method, Observes.class, ObservesAsync.class);
         checkEventParams(eventParameters, method);
         Parameter eventParameter = eventParameters.iterator().next();
@@ -106,6 +109,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> read(AnnotatedMethod<?> method) {
+        checkArgumentNotNull(method);
         Set<AnnotatedParameter<?>> eventParameters = method.getParameters().stream()
                 .filter((p) -> p.isAnnotationPresent(Observes.class) || p.isAnnotationPresent(ObservesAsync.class)).collect(Collectors.toSet());
         checkEventParams(eventParameters, method.getJavaMember());
@@ -129,6 +133,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> read(final ObserverMethod<T> observerMethod) {
+        checkArgumentNotNull(observerMethod);
         beanClass(observerMethod.getBeanClass());
         observedType(observerMethod.getObservedType());
         qualifiers(observerMethod.getObservedQualifiers());
@@ -147,6 +152,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> observedType(Type type) {
+        checkArgumentNotNull(type);
         if (observedType != null && !CovariantTypes.isAssignableFrom(observedType, type)) {
             EventLogger.LOG.originalObservedTypeIsNotAssignableFrom(observedType, type, extension);
         }
@@ -156,18 +162,21 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> addQualifier(Annotation qualifier) {
+        checkArgumentNotNull(qualifier);
         this.observedQualifiers.add(qualifier);
         return this;
     }
 
     @Override
     public ObserverMethodConfigurator<T> addQualifiers(Annotation... qualifiers) {
+        checkArgumentNotNull(qualifiers);
         Collections.addAll(this.observedQualifiers, qualifiers);
         return this;
     }
 
     @Override
     public ObserverMethodConfigurator<T> addQualifiers(Set<Annotation> qualifiers) {
+        checkArgumentNotNull(qualifiers);
         this.observedQualifiers.addAll(qualifiers);
         return this;
     }
@@ -188,12 +197,14 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> reception(Reception reception) {
+        checkArgumentNotNull(reception);
         this.reception = reception;
         return this;
     }
 
     @Override
     public ObserverMethodConfigurator<T> transactionPhase(TransactionPhase transactionPhase) {
+        checkArgumentNotNull(transactionPhase);
         this.txPhase = transactionPhase;
         return this;
     }
@@ -206,6 +217,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
 
     @Override
     public ObserverMethodConfigurator<T> notifyWith(EventConsumer<T> callback) {
+        checkArgumentNotNull(callback);
         this.notifyCallback = callback;
         return this;
     }

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events.configurator;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
+
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,11 +55,13 @@ abstract class AnnotatedConfigurator<T, A extends Annotated, C extends Annotated
     }
 
     public C add(Annotation annotation) {
+        checkArgumentNotNull(annotation);
         annotations.add(annotation);
         return self();
     }
 
     public C remove(Predicate<Annotation> predicate) {
+        checkArgumentNotNull(predicate);
         for (Iterator<Annotation> iterator = annotations.iterator(); iterator.hasNext();) {
             if (predicate.test(iterator.next())) {
                 iterator.remove();

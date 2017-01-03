@@ -79,6 +79,7 @@ public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T>, Con
 
     @Override
     public ProducerConfigurator<T> addInjectionPoints(InjectionPoint... injectionPoints) {
+        checkArgumentNotNull(injectionPoints);
         Collections.addAll(this.injectionPoints, injectionPoints);
         return this;
     }
