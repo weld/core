@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se;
 import java.util.List;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
@@ -34,7 +35,6 @@ import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScopeInterceptor;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 
 /**
@@ -72,7 +72,7 @@ public class WeldSEBeanRegistrant implements Extension {
         event.addContext(threadContext);
 
         // Register WeldContainer as a singleton
-        event.addBean().addType(WeldContainer.class).addQualifier(DefaultLiteral.INSTANCE).scope(Singleton.class)
+        event.addBean().addType(WeldContainer.class).addQualifier(Default.Literal.INSTANCE).scope(Singleton.class)
                 .produceWith((i) -> WeldContainer.instance(contextId));
 
         // Process queued bean builders

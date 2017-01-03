@@ -24,12 +24,11 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Prioritized;
-
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 
 public class CustomPrioritizedAlternativeFoo implements Bean<Foo>, Prioritized {
 
@@ -59,8 +58,8 @@ public class CustomPrioritizedAlternativeFoo implements Bean<Foo>, Prioritized {
     @Override
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = new HashSet<>();
-        qualifiers.add(AnyLiteral.INSTANCE);
-        qualifiers.add(DefaultLiteral.INSTANCE);
+        qualifiers.add(Any.Literal.INSTANCE);
+        qualifiers.add(Default.Literal.INSTANCE);
         return qualifiers;
     }
 

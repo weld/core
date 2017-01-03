@@ -23,12 +23,12 @@ import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.collections.Arrays2;
 
 public class MyMapBean implements Bean<MyMap>, PassivationCapable {
@@ -44,7 +44,7 @@ public class MyMapBean implements Bean<MyMap>, PassivationCapable {
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
+        return Arrays2.asSet(Default.Literal.INSTANCE, Any.Literal.INSTANCE);
     }
 
     @Override

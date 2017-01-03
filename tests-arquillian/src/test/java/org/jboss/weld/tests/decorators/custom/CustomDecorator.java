@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
@@ -36,7 +37,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
@@ -128,7 +128,7 @@ public class CustomDecorator implements Decorator<Object> {
         }
 
         public Set<Annotation> getQualifiers() {
-            return Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
+            return Collections.<Annotation> singleton(Default.Literal.INSTANCE);
         }
 
         public Bean<?> getBean() {

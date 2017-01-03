@@ -37,7 +37,6 @@ import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
-import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.util.reflection.Reflections;
@@ -56,7 +55,7 @@ public class NewEnterpriseBeanTest {
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    private static final New NEW_LITERAL = new NewLiteral(WrappedEnterpriseBean.class);
+    private static final New NEW_LITERAL = New.Literal.of(WrappedEnterpriseBean.class);
 
     @Inject
     private BeanManager beanManager;

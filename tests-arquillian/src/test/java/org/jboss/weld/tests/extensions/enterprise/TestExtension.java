@@ -25,6 +25,8 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -32,8 +34,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -68,8 +68,8 @@ public class TestExtension implements Extension {
             @Override
             public Set<Annotation> getQualifiers() {
                 Set<Annotation> qualifiers = new HashSet<>();
-                qualifiers.add(AnyLiteral.INSTANCE);
-                qualifiers.add(DefaultLiteral.INSTANCE);
+                qualifiers.add(Any.Literal.INSTANCE);
+                qualifiers.add(Default.Literal.INSTANCE);
                 return qualifiers;
             }
 

@@ -24,12 +24,11 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
-
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 
 public class Foo implements Bean<String>, PassivationCapable {
 
@@ -41,8 +40,8 @@ public class Foo implements Bean<String>, PassivationCapable {
     static {
         TYPES.add(String.class);
         TYPES.add(Object.class);
-        BINDING_TYPES.add(DefaultLiteral.INSTANCE);
-        BINDING_TYPES.add(AnyLiteral.INSTANCE);
+        BINDING_TYPES.add(Default.Literal.INSTANCE);
+        BINDING_TYPES.add(Any.Literal.INSTANCE);
     }
 
     @Override

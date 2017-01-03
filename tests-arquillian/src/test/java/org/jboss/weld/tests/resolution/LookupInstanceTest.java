@@ -18,6 +18,7 @@ package org.jboss.weld.tests.resolution;
 
 import static org.junit.Assert.assertEquals;
 
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
@@ -27,7 +28,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class LookupInstanceTest {
     @Test
     public void testLookupInstance() throws Exception {
         Instance<Object> instance = Utils.getReference(beanManager, new TypeLiteral<Instance<Object>>() {
-        }.getRawType(), DefaultLiteral.INSTANCE);
+        }.getRawType(), Default.Literal.INSTANCE);
         Foo foo = instance.select(Foo.class).get();
         assertEquals("foo", foo.getName());
     }

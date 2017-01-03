@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -34,7 +35,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,7 +78,7 @@ public class SyntheticBeanTest {
 
     @Test
     public void testSerializableBean() {
-        Bean<Office> bean = cast(manager.resolve(manager.getBeans(SerializableOffice.class, AnyLiteral.INSTANCE)));
+        Bean<Office> bean = cast(manager.resolve(manager.getBeans(SerializableOffice.class, Any.Literal.INSTANCE)));
         assertTrue(bean instanceof PassivationCapable);
         testOffice(bean);
     }

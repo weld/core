@@ -19,6 +19,7 @@ package org.jboss.weld.tests.veto;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
@@ -28,7 +29,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.veto.package1.Hippo;
 import org.junit.Test;
@@ -52,12 +52,12 @@ public class VetoTest {
     @Test
     public void testClassLevelVeto() {
         assertFalse(extension.getClasses().contains(Elephant.class));
-        assertEquals(0, manager.getBeans(Elephant.class, AnyLiteral.INSTANCE).size());
+        assertEquals(0, manager.getBeans(Elephant.class, Any.Literal.INSTANCE).size());
     }
 
     @Test
     public void testPackageLevelVeto() {
         assertFalse(extension.getClasses().contains(Hippo.class));
-        assertEquals(0, manager.getBeans(Hippo.class, AnyLiteral.INSTANCE).size());
+        assertEquals(0, manager.getBeans(Hippo.class, Any.Literal.INSTANCE).size());
     }
 }

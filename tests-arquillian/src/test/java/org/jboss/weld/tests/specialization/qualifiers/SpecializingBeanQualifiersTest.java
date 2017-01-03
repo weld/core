@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -31,7 +32,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +70,7 @@ public class SpecializingBeanQualifiersTest {
         assertTrue(bean.getTypes().contains(specializingClass));
         Set<Annotation> qualifiers = bean.getQualifiers();
         assertEquals(2, qualifiers.size());
-        assertTrue(qualifiers.contains(AnyLiteral.INSTANCE));
+        assertTrue(qualifiers.contains(Any.Literal.INSTANCE));
         assertTrue(qualifiers.contains(new Admin.AdminLiteral()));
     }
 

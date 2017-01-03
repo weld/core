@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -40,7 +41,6 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.Instantiator;
-import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Assert;
@@ -67,9 +67,9 @@ public class NewSimpleBeanTest {
         Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class).iterator().next() instanceof ManagedBean);
         wrappedSimpleBean = (ManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class).iterator().next();
 
-        Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class, NewLiteral.DEFAULT_INSTANCE).size());
-        Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class, NewLiteral.DEFAULT_INSTANCE).iterator().next() instanceof NewManagedBean);
-        newSimpleBean = (NewManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class, NewLiteral.DEFAULT_INSTANCE).iterator().next();
+        Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class, New.Literal.INSTANCE).size());
+        Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class, New.Literal.INSTANCE).iterator().next() instanceof NewManagedBean);
+        newSimpleBean = (NewManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class, New.Literal.INSTANCE).iterator().next();
     }
 
     // groups = { "new" }

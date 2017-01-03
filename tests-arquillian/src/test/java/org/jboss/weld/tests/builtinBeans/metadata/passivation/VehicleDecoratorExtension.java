@@ -22,14 +22,13 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionTargetFactory;
-
-import org.jboss.weld.literal.AnyLiteral;
 
 /**
  * Register {@link VehicleDecorator} as a decorator using {@link PassivationCapableDecoratorImpl}.
@@ -42,7 +41,7 @@ public class VehicleDecoratorExtension implements Extension {
     void registerVehicleDecorator(@Observes AfterBeanDiscovery event, BeanManager manager) {
         AnnotatedType<VehicleDecorator> annotatedType = manager.createAnnotatedType(VehicleDecorator.class);
         BeanAttributes<VehicleDecorator> attributes = manager.createBeanAttributes(annotatedType);
-        Set<Annotation> delegateQualifiers = Collections.<Annotation> singleton(AnyLiteral.INSTANCE);
+        Set<Annotation> delegateQualifiers = Collections.<Annotation> singleton(Any.Literal.INSTANCE);
         Set<Type> decoratedTypes = Collections.<Type> singleton(Vehicle.class);
         InjectionTargetFactory<VehicleDecorator> factory = manager.getInjectionTargetFactory(annotatedType);
         event.addBean(new PassivationCapableDecoratorImpl<VehicleDecorator>(VehicleDecorator.class, attributes, Vehicle.class, delegateQualifiers, decoratedTypes, factory));

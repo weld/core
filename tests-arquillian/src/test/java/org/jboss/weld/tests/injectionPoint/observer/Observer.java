@@ -25,11 +25,10 @@ import java.lang.reflect.Field;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.EventMetadata;
-
-import org.jboss.weld.literal.AnyLiteral;
 
 public class Observer {
 
@@ -39,7 +38,7 @@ public class Observer {
         assertNotNull(metadata.getInjectionPoint());
         assertEquals(Foo.class, metadata.getType());
         // qualifiers
-        assertTrue(metadata.getQualifiers().contains(AnyLiteral.INSTANCE));
+        assertTrue(metadata.getQualifiers().contains(Any.Literal.INSTANCE));
 
         checkBean(metadata.getInjectionPoint().getBean());
 
@@ -63,7 +62,7 @@ public class Observer {
         assertTrue(metadata.getQualifiers().contains(Alpha.Literal.INSTANCE));
         assertTrue(metadata.getQualifiers().contains(Bravo.Literal.INSTANCE));
         assertTrue(metadata.getQualifiers().contains(Charlie.Literal.INSTANCE));
-        assertTrue(metadata.getQualifiers().contains(AnyLiteral.INSTANCE));
+        assertTrue(metadata.getQualifiers().contains(Any.Literal.INSTANCE));
 
         checkBean(metadata.getInjectionPoint().getBean());
         assertTrue(metadata.getInjectionPoint().getMember() instanceof Field);

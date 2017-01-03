@@ -19,6 +19,7 @@ package org.jboss.weld.tests.metadata.beanattributes.qualifiers;
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Named;
@@ -28,8 +29,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
@@ -51,23 +50,23 @@ public class DefaultQualifierTest {
 
     @Test
     public void testFooHasDefaultQualifier(BeanManager beanManager) {
-        assertHasDefaultQualifier(beanManager, Foo.class, AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
+        assertHasDefaultQualifier(beanManager, Foo.class, Any.Literal.INSTANCE, Default.Literal.INSTANCE);
     }
 
     @Test
     public void testBarHasDefaultQualifier(BeanManager beanManager) {
-        assertHasDefaultQualifier(beanManager, Bar.class, AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE, new NamedLiteral("bar"));
+        assertHasDefaultQualifier(beanManager, Bar.class, Any.Literal.INSTANCE, Default.Literal.INSTANCE, new NamedLiteral("bar"));
     }
 
     @Test
     public void testBazHasDefaultQualifier(BeanManager beanManager) {
-        assertHasDefaultQualifier(beanManager, Baz.class, AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
+        assertHasDefaultQualifier(beanManager, Baz.class, Any.Literal.INSTANCE, Default.Literal.INSTANCE);
     }
 
     @Test
     public void testQuxDoesNotHaveDefaultQualifier(BeanManager beanManager) {
         Bean<Qux> bean = Utils.getBean(beanManager, Qux.class, Juicy.Literal.INSTANCE);
-        BeanUtilities.verifyQualifiers(bean, AnyLiteral.INSTANCE, Juicy.Literal.INSTANCE);
+        BeanUtilities.verifyQualifiers(bean, Any.Literal.INSTANCE, Juicy.Literal.INSTANCE);
     }
 
     private <T> void assertHasDefaultQualifier(BeanManager beanManager, Class<T> beanType, Annotation... expectedAnnotations) {

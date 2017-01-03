@@ -24,11 +24,10 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
-
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 
 public class OrangeBean implements Bean<Orange> {
 
@@ -55,7 +54,7 @@ public class OrangeBean implements Bean<Orange> {
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return immutableSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
+        return immutableSet(Default.Literal.INSTANCE, Any.Literal.INSTANCE);
     }
 
     @Override
