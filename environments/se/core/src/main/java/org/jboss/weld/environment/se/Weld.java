@@ -841,7 +841,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             beanDeploymentArchives.add(syntheticBeanArchive);
         }
 
-        if (beanDeploymentArchives.isEmpty() && this.containerLifecycleObservers.isEmpty()) {
+        if (beanDeploymentArchives.isEmpty() && this.containerLifecycleObservers.isEmpty() && this.extensions.isEmpty()) {
             throw WeldSELogger.LOG.weldContainerCannotBeInitializedNoBeanArchivesFound();
         }
 

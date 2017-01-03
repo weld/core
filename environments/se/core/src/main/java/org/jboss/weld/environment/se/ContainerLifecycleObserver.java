@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -35,6 +36,7 @@ import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
@@ -48,6 +50,8 @@ import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import javax.enterprise.inject.spi.ProcessSyntheticBean;
+import javax.enterprise.inject.spi.ProcessSyntheticObserverMethod;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.enterprise.util.TypeLiteral;
 
@@ -61,116 +65,21 @@ import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * A synthetic container lifecycle event observer.
+ * Represents a synthetic container lifecycle event observer.
+ * <p>
+ * For parameterized container lifecycele events (such as {@link ProcessAnnotatedType} and {@link ProcessProducerMethod}) it is possible to specify the observed
+ * container lifecycle event type, e.g. by means of {@link TypeLiteral}. To receive notifications for all observer methods with observed event type of
+ * {@link String}:
+ *
+ * <pre>
+ * ContainerLifecycleObserver.processObserverMethod(new TypeLiteral&lt;ProcessObserverMethod&lt;String, ?&gt;&gt;() {
+ * }.getType()).notify((e) -&gt; System.out.println("String observer"));
+ * </pre>
  *
  * @author Martin Kouba
- * @see SyntheticExtension
- * @see Weld#addExtension(javax.enterprise.inject.spi.Extension)
  * @see Weld#addContainerLifecycleObserver(ContainerLifecycleObserver)
  */
 public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEventObserverMethod<T> {
-
-    private final int priority;
-
-    private final Type observedType;
-
-    private final BiConsumer<T, BeanManager> callbackWithBeanManager;
-
-    private final Consumer<T> callback;
-
-    private final Collection<Class<? extends Annotation>> requiredAnnotations;
-
-    private volatile BeanManager beanManager;
-
-    private volatile SyntheticExtension extension;
-
-    /**
-     *
-     * @param priority
-     * @param observedType
-     * @param callbackWithBeanManager
-     * @param callback
-     * @param requiredAnnotations
-     */
-    private ContainerLifecycleObserver(int priority, Type observedType, BiConsumer<T, BeanManager> callbackWithBeanManager, Consumer<T> callback,
-            Collection<Class<? extends Annotation>> requiredAnnotations) {
-        this.priority = priority;
-        this.observedType = observedType;
-        this.callbackWithBeanManager = callbackWithBeanManager;
-        this.callback = callback;
-        this.requiredAnnotations = requiredAnnotations;
-    }
-
-    @Override
-    public int getPriority() {
-        return priority;
-    }
-
-    @Override
-    public Class<?> getBeanClass() {
-        return ContainerLifecycleObserver.class;
-    }
-
-    @Override
-    public Type getObservedType() {
-        return observedType;
-    }
-
-    @Override
-    public Set<Annotation> getObservedQualifiers() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public Reception getReception() {
-        return Reception.ALWAYS;
-    }
-
-    @Override
-    public TransactionPhase getTransactionPhase() {
-        return TransactionPhase.IN_PROGRESS;
-    }
-
-    @Override
-    public void notify(T event) {
-        if (beanManager == null || extension == null) {
-            throw WeldSELogger.LOG.containerLifecycleObserverNotInitialized(toString());
-        }
-        if (event instanceof NotificationListener) {
-            NotificationListener.class.cast(event).preNotify(extension);
-        }
-        try {
-            if (callbackWithBeanManager != null) {
-                callbackWithBeanManager.accept(event, beanManager);
-            } else {
-                callback.accept(event);
-            }
-        } finally {
-            if (event instanceof NotificationListener) {
-                NotificationListener.class.cast(event).postNotify(null);
-            }
-        }
-    }
-
-    @Override
-    public Collection<Class<? extends Annotation>> getRequiredAnnotations() {
-        return requiredAnnotations;
-    }
-
-    private void setBeanManager(BeanManager beanManager) {
-        this.beanManager = beanManager;
-    }
-
-    private void setExtension(SyntheticExtension extension) {
-        this.extension = extension;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("ContainerLifecyleObserver [priority=%s, observedType=%s]", priority, observedType);
-    }
-
-    // Static methods used to init a new builder or a new observer instance
 
     /**
      *
@@ -482,6 +391,28 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
     /**
      *
      * @return a new builder instance
+     * @see ProcessSyntheticBean
+     */
+    @SuppressWarnings("serial")
+    public static Builder<ProcessSyntheticBean<?>> processSyntheticBean() {
+        return processSyntheticBean(new TypeLiteral<ProcessSyntheticBean<?>>() {
+        }.getType());
+    }
+
+    /**
+     *
+     * @param observedType
+     * @return a new builder instance
+     * @see ProcessManagedBean
+     */
+    public static Builder<ProcessSyntheticBean<?>> processSyntheticBean(Type observedType) {
+        checkRawType(observedType, ProcessSyntheticBean.class);
+        return ContainerLifecycleObserver.<ProcessSyntheticBean<?>> of(observedType);
+    }
+
+    /**
+     *
+     * @return a new builder instance
      * @see ProcessProducer
      */
     @SuppressWarnings("serial")
@@ -524,12 +455,129 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
     }
 
     /**
+     *
+     * @return a new builder instance
+     * @see ProcessSyntheticObserverMethod
+     */
+    @SuppressWarnings("serial")
+    public static Builder<ProcessSyntheticObserverMethod<?, ?>> processSyntheticObserverMethod() {
+        return processSyntheticObserverMethod(new TypeLiteral<ProcessSyntheticObserverMethod<?, ?>>() {
+        }.getType());
+    }
+
+    /**
+     *
+     * @param observedType
+     * @return a new builder instance
+     * @see ProcessSyntheticObserverMethod
+     */
+    public static Builder<ProcessSyntheticObserverMethod<?, ?>> processSyntheticObserverMethod(Type observedType) {
+        checkRawType(observedType, ProcessSyntheticObserverMethod.class);
+        return ContainerLifecycleObserver.<ProcessSyntheticObserverMethod<?, ?>> of(observedType);
+    }
+
+    // Instance members
+
+    private final int priority;
+
+    private final Type observedType;
+
+    private final BiConsumer<T, BeanManager> callbackWithBeanManager;
+
+    private final Consumer<T> callback;
+
+    private final Collection<Class<? extends Annotation>> requiredAnnotations;
+
+    private volatile BeanManager beanManager;
+
+    private volatile SyntheticExtension extension;
+
+    private ContainerLifecycleObserver(int priority, Type observedType, BiConsumer<T, BeanManager> callbackWithBeanManager, Consumer<T> callback,
+            Collection<Class<? extends Annotation>> requiredAnnotations) {
+        this.priority = priority;
+        this.observedType = observedType;
+        this.callbackWithBeanManager = callbackWithBeanManager;
+        this.callback = callback;
+        this.requiredAnnotations = requiredAnnotations;
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public Class<?> getBeanClass() {
+        return ContainerLifecycleObserver.class;
+    }
+
+    @Override
+    public Type getObservedType() {
+        return observedType;
+    }
+
+    @Override
+    public Set<Annotation> getObservedQualifiers() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Reception getReception() {
+        return Reception.ALWAYS;
+    }
+
+    @Override
+    public TransactionPhase getTransactionPhase() {
+        return TransactionPhase.IN_PROGRESS;
+    }
+
+    @Override
+    public void notify(T event) {
+        if (beanManager == null || extension == null) {
+            throw WeldSELogger.LOG.containerLifecycleObserverNotInitialized(toString());
+        }
+        if (event instanceof NotificationListener) {
+            NotificationListener.class.cast(event).preNotify(extension);
+        }
+        try {
+            if (callbackWithBeanManager != null) {
+                callbackWithBeanManager.accept(event, beanManager);
+            } else {
+                callback.accept(event);
+            }
+        } finally {
+            if (event instanceof NotificationListener) {
+                NotificationListener.class.cast(event).postNotify(null);
+            }
+        }
+    }
+
+    @Override
+    public Collection<Class<? extends Annotation>> getRequiredAnnotations() {
+        return requiredAnnotations;
+    }
+
+    private void setBeanManager(BeanManager beanManager) {
+        this.beanManager = beanManager;
+    }
+
+    private void setExtension(SyntheticExtension extension) {
+        this.extension = extension;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ContainerLifecyleObserver [priority=%s, observedType=%s]", priority, observedType);
+    }
+
+    /**
      * A synthetic extension is basically a container for synthetic container lifecycle event observers.
      *
      * @return a builder for a synthetic extension
+     * @see Weld#addExtension(javax.enterprise.inject.spi.Extension)
      */
-    public static ContainerLifecycleObserverExtension.Builder extensionBuilder() {
-        return new ContainerLifecycleObserverExtension.Builder();
+    public static ExtensionBuilder extensionBuilder() {
+        return new ExtensionBuilder();
     }
 
     private static <T> Builder<T> of(Type observedType) {
@@ -545,6 +593,13 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
         }
     }
 
+    /**
+     * This builder is used to create a synthetic container lifecycle event observer.
+     *
+     * @author Martin Kouba
+     *
+     * @param <T>
+     */
     public static class Builder<T> {
 
         private static final String OBSERVED_TYPE = "observedType";
@@ -620,12 +675,7 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
 
     }
 
-    /**
-     * A synthetic extension, i.e. a collection of synthetic container lifecycle observers.
-     *
-     * @author Martin Kouba
-     */
-    public static class ContainerLifecycleObserverExtension implements SyntheticExtension {
+    static class ContainerLifecycleObserverExtension implements SyntheticExtension {
 
         private final List<ContainerLifecycleObserver<?>> observers;
 
@@ -645,28 +695,33 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
             return Reflections.cast(observers);
         }
 
-        public static class Builder {
+    }
 
-            private final List<ContainerLifecycleObserver<?>> observers;
+    /**
+     * This builder is used to create a synthetic extension, i.e. a collection of synthetic container lifecycle observers.
+     *
+     * @author Martin Kouba
+     */
+    public static class ExtensionBuilder {
 
-            private Builder() {
-                this.observers = new ArrayList<>();
-            }
+        private final List<ContainerLifecycleObserver<?>> observers;
 
-            /**
-             *
-             * @param observer
-             * @return self
-             */
-            public ContainerLifecycleObserverExtension.Builder add(ContainerLifecycleObserver<?> observer) {
-                observers.add(observer);
-                return this;
-            }
+        private ExtensionBuilder() {
+            this.observers = new LinkedList<>();
+        }
 
-            public ContainerLifecycleObserverExtension build() {
-                return new ContainerLifecycleObserverExtension(observers);
-            }
+        /**
+         *
+         * @param observer
+         * @return self
+         */
+        public ExtensionBuilder add(ContainerLifecycleObserver<?> observer) {
+            observers.add(observer);
+            return this;
+        }
 
+        public Extension build() {
+            return new ContainerLifecycleObserverExtension(observers);
         }
 
     }
