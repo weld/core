@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -33,7 +34,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,17 +76,17 @@ public class ProcessSyntheticAnnotatedTypeTest {
 
     @Test
     public void testChangesApplied(BeanManager manager) {
-        Set<Bean<?>> oranges = manager.getBeans(Orange.class, AnyLiteral.INSTANCE);
+        Set<Bean<?>> oranges = manager.getBeans(Orange.class, Any.Literal.INSTANCE);
         assertEquals(1, oranges.size());
         assertFalse(oranges.iterator().next().getQualifiers().contains(Juicy.Literal.INSTANCE));
 
-        Set<Bean<?>> apples = manager.getBeans(Apple.class, AnyLiteral.INSTANCE);
+        Set<Bean<?>> apples = manager.getBeans(Apple.class, Any.Literal.INSTANCE);
         assertEquals(2, apples.size());
         Set<Bean<?>> juicyApples = manager.getBeans(Apple.class, Juicy.Literal.INSTANCE);
         assertEquals(1, juicyApples.size());
         assertTrue(juicyApples.iterator().next().getQualifiers().contains(Fresh.Literal.INSTANCE));
 
-        assertEquals(2, manager.getBeans(Pear.class, AnyLiteral.INSTANCE).size());
+        assertEquals(2, manager.getBeans(Pear.class, Any.Literal.INSTANCE).size());
         Set<Bean<?>> juicyPears = manager.getBeans(Pear.class, Juicy.Literal.INSTANCE);
         assertEquals(1, juicyPears.size());
     }

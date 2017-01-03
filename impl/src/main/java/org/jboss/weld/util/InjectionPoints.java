@@ -22,20 +22,20 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bootstrap.MissingDependenciesRegistry;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPointImpl;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -109,7 +109,7 @@ public class InjectionPoints {
     }
 
     public static String getUnsatisfiedDependenciesAdditionalInfo(InjectionPoint ij, BeanManagerImpl beanManager) {
-        Set<Bean<?>> beansMatchedByType = beanManager.getBeans(ij.getType(), AnyLiteral.INSTANCE);
+        Set<Bean<?>> beansMatchedByType = beanManager.getBeans(ij.getType(), Any.Literal.INSTANCE);
         if (beansMatchedByType.isEmpty()) {
             Class<?> rawType = Reflections.getRawType(ij.getType());
             if (rawType != null) {

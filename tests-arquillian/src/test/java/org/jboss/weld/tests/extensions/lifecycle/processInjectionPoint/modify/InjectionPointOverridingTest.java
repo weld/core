@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
@@ -29,7 +30,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +58,7 @@ public class InjectionPointOverridingTest {
 
     @Test
     public void testNewInjectionPointDiscovered(InjectingBean bean, BeanManager manager) {
-        assertEquals(1, manager.getBeans(Cat.class, NewLiteral.DEFAULT_INSTANCE).size());
+        assertEquals(1, manager.getBeans(Cat.class, New.Literal.INSTANCE).size());
         assertNotNull(bean.getCat());
         assertNotNull(bean.getCat().getBean());
         assertEquals(Dependent.class, bean.getCat().getBean().getScope());

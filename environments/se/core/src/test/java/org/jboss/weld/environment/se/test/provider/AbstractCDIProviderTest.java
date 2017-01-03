@@ -20,9 +20,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.literal.AnyLiteral;
 import org.junit.Test;
 
 public abstract class AbstractCDIProviderTest {
@@ -32,7 +32,7 @@ public abstract class AbstractCDIProviderTest {
         BeanManager manager = KarateClubLocator.getBeanManager();
         assertNotNull(manager);
         // Boy, Girl, Chick
-        assertEquals(3, manager.getBeans(Child.class, AnyLiteral.INSTANCE).size());
+        assertEquals(3, manager.getBeans(Child.class, Any.Literal.INSTANCE).size());
         // Chick
         assertEquals(1, manager.getBeans(Girl.class, PrettyLiteral.INSTANCE).size());
 

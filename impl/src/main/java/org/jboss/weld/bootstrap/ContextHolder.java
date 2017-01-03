@@ -1,13 +1,13 @@
 package org.jboss.weld.bootstrap;
 
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
+import static org.jboss.weld.util.collections.Arrays2.asSet;
 
-import javax.enterprise.context.spi.Context;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import static org.jboss.weld.util.collections.Arrays2.asSet;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 
 public class ContextHolder<T extends Context> {
 
@@ -19,7 +19,7 @@ public class ContextHolder<T extends Context> {
         super();
         this.context = context;
         this.type = type;
-        this.qualifiers = asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE, qualifier);
+        this.qualifiers = asSet(Default.Literal.INSTANCE, Any.Literal.INSTANCE, qualifier);
     }
 
     public T getContext() {

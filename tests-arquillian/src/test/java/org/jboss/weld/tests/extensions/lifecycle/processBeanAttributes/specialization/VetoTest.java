@@ -33,7 +33,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
@@ -52,11 +51,11 @@ public class VetoTest {
 
     @Test
     public void testSpecializedBeanAvailableAfterSpecializingBeanVetoed(BeanManager manager, @Any Alpha alpha, VerifyingExtension extension) {
-        Bean<?> bean = manager.resolve(manager.getBeans(Alpha.class, AnyLiteral.INSTANCE));
+        Bean<?> bean = manager.resolve(manager.getBeans(Alpha.class, Any.Literal.INSTANCE));
         assertNotNull(bean);
         assertEquals(Bravo.class, bean.getBeanClass());
         assertEquals("alpha", bean.getName());
-        verifyQualifiers(bean, Foo.Literal.INSTANCE, Bar.Literal.INSTANCE, new NamedLiteral("alpha"), AnyLiteral.INSTANCE);
+        verifyQualifiers(bean, Foo.Literal.INSTANCE, Bar.Literal.INSTANCE, new NamedLiteral("alpha"), Any.Literal.INSTANCE);
 
         assertNotNull(alpha);
         assertTrue(alpha instanceof Bravo);

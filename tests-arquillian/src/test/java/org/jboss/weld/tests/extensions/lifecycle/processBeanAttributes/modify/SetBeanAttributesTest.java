@@ -22,6 +22,8 @@ import static org.jboss.weld.tests.util.BeanUtilities.verifyTypes;
 import static org.junit.Assert.assertEquals;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -32,8 +34,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
 import org.jboss.weld.util.reflection.Reflections;
@@ -54,8 +54,8 @@ public class SetBeanAttributesTest {
 
     @Test
     public void testBeanModified() {
-        assertEquals(0, manager.getBeans(Cat.class, DefaultLiteral.INSTANCE).size());
-        assertEquals(0, manager.getBeans(Animal.class, AnyLiteral.INSTANCE).size());
+        assertEquals(0, manager.getBeans(Cat.class, Default.Literal.INSTANCE).size());
+        assertEquals(0, manager.getBeans(Animal.class, Any.Literal.INSTANCE).size());
         assertEquals(0, manager.getBeans(Animal.class, new Wild.Literal(false)).size());
 
         assertEquals(1, manager.getBeans(Cat.class, new Wild.Literal(true)).size());
@@ -65,7 +65,7 @@ public class SetBeanAttributesTest {
         Bean<Cat> bean = Reflections.cast(manager.resolve(manager.getBeans(Cat.class, new Cute.Literal())));
 
         // qualifiers
-        verifyQualifiers(bean, new Wild.Literal(true), new Cute.Literal(), AnyLiteral.INSTANCE);
+        verifyQualifiers(bean, new Wild.Literal(true), new Cute.Literal(), Any.Literal.INSTANCE);
         // types
         verifyTypes(bean, Object.class, Cat.class);
         // stereotypes

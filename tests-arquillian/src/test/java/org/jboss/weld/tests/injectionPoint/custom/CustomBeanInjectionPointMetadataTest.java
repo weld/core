@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
@@ -28,7 +29,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +53,6 @@ public class CustomBeanInjectionPointMetadataTest {
         // Verify metadata
         assertEquals(Bar.class, bar.getInjetionPointMetadata().getType());
         assertEquals(1, bar.getInjetionPointMetadata().getQualifiers().size());
-        assertEquals(DefaultLiteral.INSTANCE, bar.getInjetionPointMetadata().getQualifiers().iterator().next());
+        assertEquals(Default.Literal.INSTANCE, bar.getInjetionPointMetadata().getQualifiers().iterator().next());
     }
 }

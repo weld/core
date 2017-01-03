@@ -20,6 +20,7 @@ import static org.jboss.weld.tests.util.BeanUtilities.verifyQualifiers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -30,7 +31,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
@@ -54,11 +54,11 @@ public class SpecializationTest {
         assertNull(extension.getAlpha());
         assertNull(extension.getBravo());
         validateCharlie(extension.getCharlie());
-        validateCharlie(manager.resolve(manager.getBeans(Alpha.class, AnyLiteral.INSTANCE)));
+        validateCharlie(manager.resolve(manager.getBeans(Alpha.class, Any.Literal.INSTANCE)));
     }
 
     private void validateCharlie(BeanAttributes<?> attributes) {
-        verifyQualifiers(attributes, Foo.Literal.INSTANCE, Bar.Literal.INSTANCE, Baz.Literal.INSTANCE, AnyLiteral.INSTANCE, new NamedLiteral("alpha"));
+        verifyQualifiers(attributes, Foo.Literal.INSTANCE, Bar.Literal.INSTANCE, Baz.Literal.INSTANCE, Any.Literal.INSTANCE, new NamedLiteral("alpha"));
         assertEquals("alpha", attributes.getName());
     }
 }

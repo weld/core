@@ -22,12 +22,11 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
-
-import org.jboss.weld.literal.DefaultLiteral;
 
 /**
  * @author Kirill Gaevskii
@@ -42,7 +41,7 @@ public class CustomInjectionPoint implements InjectionPoint {
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
+        return Collections.<Annotation> singleton(Default.Literal.INSTANCE);
     }
 
     @Override

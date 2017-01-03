@@ -21,13 +21,13 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.Arrays2;
@@ -99,7 +99,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
     protected static class BuiltInBeanAttributes<T> extends ImmutableBeanAttributes<T> {
 
-        private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
+        private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(Default.Literal.INSTANCE, Any.Literal.INSTANCE);
 
         public BuiltInBeanAttributes(Class<T> type) {
             super(Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, ImmutableSet.of(Object.class, type), Dependent.class);
