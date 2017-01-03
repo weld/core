@@ -21,7 +21,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

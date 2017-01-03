@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1823;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;

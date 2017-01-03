@@ -26,7 +26,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.interceptor.InvocationContext;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

@@ -35,7 +35,7 @@ import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.Test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Simulates a scenario where we have a framework that creates its own {@link ResourceLoader}.

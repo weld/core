@@ -20,7 +20,7 @@ import javax.interceptor.AroundConstruct;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @Interceptor
 @CharlieBinding

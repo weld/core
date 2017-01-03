@@ -18,7 +18,7 @@ package org.jboss.weld.tests.unit.util.collections;
 
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
