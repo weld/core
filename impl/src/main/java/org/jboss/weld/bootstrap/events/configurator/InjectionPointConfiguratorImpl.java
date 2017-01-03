@@ -16,6 +16,8 @@
 */
 package org.jboss.weld.bootstrap.events.configurator;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
@@ -71,12 +73,14 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
 
     @Override
     public InjectionPointConfigurator type(Type type) {
+        checkArgumentNotNull(type);
         this.requiredType = type;
         return this;
     }
 
     @Override
     public InjectionPointConfigurator addQualifier(Annotation qualifier) {
+        checkArgumentNotNull(qualifier);
         qualifiers.remove(Default.Literal.INSTANCE);
         qualifiers.add(qualifier);
         return this;
@@ -84,6 +88,7 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
 
     @Override
     public InjectionPointConfigurator addQualifiers(Annotation... qualifiers) {
+        checkArgumentNotNull(qualifiers);
         this.qualifiers.remove(Default.Literal.INSTANCE);
         Collections.addAll(this.qualifiers, qualifiers);
         return this;
@@ -91,6 +96,7 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
 
     @Override
     public InjectionPointConfigurator addQualifiers(Set<Annotation> qualifiers) {
+        checkArgumentNotNull(qualifiers);
         this.qualifiers.remove(Default.Literal.INSTANCE);
         this.qualifiers.addAll(qualifiers);
         return this;
