@@ -307,7 +307,9 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             if (bean != null) {
                 return bean;
             } else if (beanConfigurator != null) {
-                return beanConfigurator.complete();
+                Bean<?> bean = beanConfigurator.complete();
+                BootstrapLogger.LOG.addBeanCalled(extension, bean);
+                return bean;
             }
             return interceptorBuilder.build();
         }
