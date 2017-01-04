@@ -78,6 +78,7 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
 
     @Override
     public InterceptionFactory<T> ignoreFinalMethods() {
+        InterceptorLogger.LOG.interceptionFactoryIgnoreFinalMethodsInvoked(annotatedType.getJavaClass().getSimpleName());
         // Note that final methods are always ignored during proxy generation
         ignoreFinalMethods = true;
         return this;
@@ -85,6 +86,7 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
 
     @Override
     public AnnotatedTypeConfigurator<T> configure() {
+        InterceptorLogger.LOG.interceptionFactoryConfigureInvoked(annotatedType.getJavaClass().getSimpleName());
         if (configurator == null) {
             configurator = new AnnotatedTypeConfiguratorImpl<>(annotatedType);
         }
@@ -109,6 +111,7 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
                 .getInterceptionFactoryData(configurator != null ? configurator.complete() : annotatedType);
 
         if (!cached.isPresent()) {
+            InterceptorLogger.LOG.interceptionFactoryNotRequired(annotatedType.getJavaClass().getSimpleName());
             return instance;
         }
 
