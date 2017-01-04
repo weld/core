@@ -108,6 +108,7 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
         if (configurator == null) {
             configurator = new InjectionPointConfiguratorImpl(ip);
         }
+        BootstrapLogger.LOG.configureInjectionPointCalled(getReceiver(), ip);
         return configurator;
     }
 

@@ -97,6 +97,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
         if (configurator == null) {
             configurator = new BeanAttributesConfiguratorImpl<>(attributes);
         }
+        BootstrapLogger.LOG.configureBeanAttributesCalled(getReceiver(), attributes);
         return configurator;
     }
 
@@ -121,6 +122,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     }
 
     public boolean isIgnoreFinalMethods() {
+        BootstrapLogger.LOG.ignoreFinalMethodsCalled(getReceiver(), attributes);
         return ignoreFinalMethods;
     }
 

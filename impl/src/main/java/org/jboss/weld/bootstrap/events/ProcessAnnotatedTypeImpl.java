@@ -103,6 +103,7 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
         if (configurator == null) {
             configurator = new AnnotatedTypeConfiguratorImpl<>(annotatedType);
         }
+        BootstrapLogger.LOG.configureAnnotatedTypeCalled(getReceiver(), annotatedType);
         return configurator;
     }
 

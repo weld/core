@@ -305,4 +305,24 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 173, value = "ProcessProducer.configureProducer() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
     void configureProducerCalled(Object extensionName, Object bean);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 174, value = "ProcessBeanAttributes.configureBeanAttributes() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void configureBeanAttributesCalled(Object extensionName, Object bean);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 175, value = "ProcessBeanAttributes.isIgnoreFinalMethods() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void ignoreFinalMethodsCalled(Object extensionName, Object bean);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 176, value = "ProcessAnnotatedType.configureAnnotatedType() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void configureAnnotatedTypeCalled(Object extensionName, Object bean);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 177, value = "ProcessObserverMethod.configureObserverMethod() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void configureObserverMethodCalled(Object extensionName, Object bean);
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 178, value = "ProcessInjectionPoint.configureInjectionPoint() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void configureInjectionPointCalled(Object extensionName, Object bean);
+
 }

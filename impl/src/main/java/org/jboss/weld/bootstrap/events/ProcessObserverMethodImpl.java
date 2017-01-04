@@ -105,6 +105,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
         if (configurator == null) {
             configurator = new ObserverMethodConfiguratorImpl<>(observerMethod, getReceiver());
         }
+        BootstrapLogger.LOG.configureObserverMethodCalled(getReceiver(), observerMethod);
         return configurator;
     }
 
