@@ -61,4 +61,16 @@ public interface InterceptorLogger extends WeldLogger {
 
     @Message(id = 1706, value = "InterceptionFactory.createInterceptedInstance() may only be called once", format= Format.MESSAGE_FORMAT)
     IllegalStateException interceptionFactoryNotReusable();
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1707, value = "InterceptionFactory.configure() was invoked for AnnotatedType: {0}", format = Format.MESSAGE_FORMAT)
+    void interceptionFactoryConfigureInvoked(Object param1);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1708, value = "InterceptionFactory.ignoreFinalMethods() was invoked for AnnotatedType: {0}. Final methods will be ignored during proxy generation!", format = Format.MESSAGE_FORMAT)
+    void interceptionFactoryIgnoreFinalMethodsInvoked(Object param1);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1709, value = "InterceptionFactory skipped proxy creation for AnnotatedType {0} because no @AroundInvoke interceptor was bound to it.", format = Format.MESSAGE_FORMAT)
+    void interceptionFactoryNotRequired(Object param1);
 }
