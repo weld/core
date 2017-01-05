@@ -719,6 +719,33 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <!-- auto-activated profile for any JDK 9 (assuming Jigsaw version) -->
+            <id>jdk9</id>
+            <activation>
+                <jdk>9</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <!-- Assembly plugin needs JDK 9 compatible plexus-archiver version -->
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-assembly-plugin</artifactId>
+                            <version>3.0.0</version>
+                        </plugin>
+             
+                        <!-- To have truly JDK 9 compatible compiler, we want 3.6.0+ -->
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <version>3.6.0</version>
+                        </plugin>
+
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
     </profiles>
 
 </project>
