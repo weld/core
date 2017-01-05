@@ -60,6 +60,12 @@ public class Producer {
         return interceptionFactory.createInterceptedInstance(new Foo());
     }
 
+    @Produced("empty")
+    @Produces
+    public Foo produceFooWithNoBinding(InterceptionFactory<Foo> interceptionFactory) {
+        return interceptionFactory.createInterceptedInstance(new Foo());
+    }
+    
     @Produced
     @Dependent
     @Produces

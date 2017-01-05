@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 
 /**
  *
+ * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
 public class InterceptionFactoryTest {
@@ -64,6 +65,13 @@ public class InterceptionFactoryTest {
     @Test
     public void testFooEjbInterceptors(@Produced("ejbInterceptors") Foo foo) {
         assertEquals("Hello pong", foo.ping());
+    }
+    
+    @Test
+    public void testFooNoInterceptors(@Produced("empty") Foo foo) {
+        // Note that the produced Foo is @Dependent
+        assertEquals(Foo.class, foo.getClass());
+        assertEquals("pong", foo.ping());
     }
 
     @Test
