@@ -158,7 +158,7 @@
             <id>jdk9</id>
             <activation>
                 <!--auto-activate on JDK 1.9+-->
-                <jdk>[1.9,)</jdk>
+                <jdk>9</jdk>
             </activation>
             <build>
                 <plugins>
@@ -168,7 +168,7 @@
                         <!-- Temporary workaround to ensure BCEL internal classes are available in JDK 9. Force-exports these packages into unnamed module.-->
                         <!-- Later on we should seek another approach! -->
                         <configuration>
-                            <argLine>-XaddExports:java.xml/com.sun.org.apache.bcel.internal=ALL-UNNAMED -XaddExports:java.xml/com.sun.org.apache.bcel.internal.classfile=ALL-UNNAMED</argLine>
+                            <argLine>--add-exports java.xml/com.sun.org.apache.bcel.internal=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.bcel.internal.classfile=ALL-UNNAMED</argLine>
                         </configuration>
                     </plugin>
                 </plugins>
