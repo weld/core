@@ -69,7 +69,6 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -206,11 +205,9 @@ public class Beans {
      *
      * @param beans The beans to filter
      * @param beanManager The bean manager
-     * @param registry
      * @return a mutable set of enabled beans
      */
-    public static <T extends Bean<?>> Set<T> removeDisabledBeans(Set<T> beans, final BeanManagerImpl beanManager,
-            final SpecializationAndEnablementRegistry registry) {
+    public static <T extends Bean<?>> Set<T> removeDisabledBeans(Set<T> beans, final BeanManagerImpl beanManager) {
         if (beans.size() == 0) {
             return beans;
         } else {

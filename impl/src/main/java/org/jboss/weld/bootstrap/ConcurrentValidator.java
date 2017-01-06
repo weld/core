@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -112,22 +111,15 @@ public class ConcurrentValidator extends Validator {
     @Override
     public void validateBeanNames(final BeanManagerImpl beanManager) {
         final SetMultimap<String, Bean<?>> namedAccessibleBeans = SetMultimap.newSetMultimap();
-
-        for (Bean<?> bean : beanManager.getAccessibleBeans()) {
+        for (Bean<?> bean : beanManager.getDynamicAccessibleBeans()) {
             if (bean.getName() != null) {
                 namedAccessibleBeans.put(bean.getName(), bean);
             }
         }
-
-        final List<String> accessibleNamespaces = new ArrayList<String>();
-        for (String namespace : beanManager.getAccessibleNamespaces()) {
-            accessibleNamespaces.add(namespace);
-        }
-
-        final SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
+        final List<String> accessibleNamespaces = beanManager.getAccessibleNamespaces();
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<String>(namedAccessibleBeans.keySet()) {
             protected void doWork(String name) {
-                Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
+                Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager));
                 if (resolvedBeans.size() > 1) {
                     throw ValidatorLogger.LOG.ambiguousElName(name, WeldCollections.toMultiRowString(resolvedBeans));
                 }

@@ -570,15 +570,29 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return WeldCollections.immutableListView(interceptors);
     }
 
-    public Iterable<Bean<?>> getAccessibleBeans() {
+    public Iterable<Bean<?>> getDynamicAccessibleBeans() {
         return createDynamicAccessibleIterable(new BeanTransform(this));
     }
 
-    public Iterable<Interceptor<?>> getAccessibleInterceptors() {
+    /**
+     * Unlike {@link #getDynamicAccessibleBeans()} this method returns a mutable set which is not updated automatically.
+     *
+     * @return all accessible beans
+     */
+    public Set<Bean<?>> getAccessibleBeans() {
+        Set<Bean<?>> beans = new HashSet<>();
+        beans.addAll(getBeans());
+        for (BeanManagerImpl beanManager : getAccessibleManagers()) {
+            beans.addAll(beanManager.getSharedBeans());
+        }
+        return beans;
+    }
+
+    public Iterable<Interceptor<?>> getDynamicAccessibleInterceptors() {
         return createDynamicAccessibleIterable(BeanManagerImpl::getInterceptors);
     }
 
-    public Iterable<Decorator<?>> getAccessibleDecorators() {
+    public Iterable<Decorator<?>> getDynamicAccessibleDecorators() {
         return createDynamicAccessibleIterable(BeanManagerImpl::getDecorators);
     }
 
@@ -994,9 +1008,23 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return namespaces;
     }
 
-    public Iterable<String> getAccessibleNamespaces() {
+    public Iterable<String> getDynamicAccessibleNamespaces() {
         // TODO Cache this
         return createDynamicAccessibleIterable(BeanManagerImpl::getNamespaces);
+    }
+
+    /**
+     * Unlike {@link #getDynamicAccessibleNamespaces()} this method returns a mutable set which is not updated automatically.
+     *
+     * @return the accessible namespaces
+     */
+    public List<String> getAccessibleNamespaces() {
+        List<String> namespaces = new ArrayList<>();
+        namespaces.addAll(getNamespaces());
+        for (BeanManagerImpl beanManagerImpl : getAccessibleManagers()) {
+            namespaces.addAll(beanManagerImpl.getNamespaces());
+        }
+        return namespaces;
     }
 
     @Override

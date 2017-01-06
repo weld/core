@@ -38,7 +38,6 @@ import javax.enterprise.inject.spi.InterceptionFactory;
 import javax.inject.Provider;
 
 import org.jboss.weld.bean.AbstractProducerBean;
-import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -60,7 +59,6 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     private final BeanManagerImpl beanManager;
     private final ComputingCache<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
-    private final SpecializationAndEnablementRegistry registry;
     private final MetaAnnotationStore store;
 
     private final LazyValueHolder<Map<Type, ArrayList<T>>> beansByType;
@@ -133,7 +131,6 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
     public AbstractTypeSafeBeanResolver(BeanManagerImpl beanManager, final Iterable<T> beans) {
         super(beans, beanManager.getServices().get(WeldConfiguration.class));
         this.beanManager = beanManager;
-        this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         this.disambiguatedBeans = ComputingCacheBuilder.newBuilder().build(new BeanDisambiguation());
         this.store = beanManager.getServices().get(MetaAnnotationStore.class);
         // beansByType stores a map of a type to all beans that are assignable to
@@ -252,7 +249,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     @Override
     protected Set<T> filterResult(Set<T> matched) {
-        return Beans.removeDisabledBeans(matched, beanManager, registry);
+        return Beans.removeDisabledBeans(matched, beanManager);
     }
 
     public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans) {

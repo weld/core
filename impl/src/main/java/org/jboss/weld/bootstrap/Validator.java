@@ -627,20 +627,14 @@ public class Validator implements Service {
 
     public void validateBeanNames(BeanManagerImpl beanManager) {
         SetMultimap<String, Bean<?>> namedAccessibleBeans = SetMultimap.newSetMultimap();
-        for (Bean<?> bean : beanManager.getAccessibleBeans()) {
+        for (Bean<?> bean : beanManager.getDynamicAccessibleBeans()) {
             if (bean.getName() != null) {
                 namedAccessibleBeans.put(bean.getName(), bean);
             }
         }
-
-        List<String> accessibleNamespaces = new ArrayList<String>();
-        for (String namespace : beanManager.getAccessibleNamespaces()) {
-            accessibleNamespaces.add(namespace);
-        }
-
-        SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
+        List<String> accessibleNamespaces = beanManager.getAccessibleNamespaces();
         for (String name : namedAccessibleBeans.keySet()) {
-            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(new HashSet<>(namedAccessibleBeans.get(name)), beanManager, registry));
+            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(new HashSet<>(namedAccessibleBeans.get(name)), beanManager));
             if (resolvedBeans.size() > 1) {
                 throw ValidatorLogger.LOG.ambiguousElName(name, resolvedBeans);
             }
@@ -654,7 +648,7 @@ public class Validator implements Service {
         BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
         if (beansXml != null && !beansXml.getEnabledInterceptors().isEmpty()) {
             Set<String> interceptorBeanClasses = new HashSet<String>();
-            for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors()) {
+            for (Interceptor<?> interceptor : beanManager.getDynamicAccessibleInterceptors()) {
                 interceptorBeanClasses.add(interceptor.getBeanClass().getName());
             }
             for (Metadata<String> interceptorClassName : beansXml.getEnabledInterceptors()) {
@@ -669,7 +663,7 @@ public class Validator implements Service {
         BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
         if (beansXml != null && !beansXml.getEnabledDecorators().isEmpty()) {
             Set<String> decoratorBeanClasses = new HashSet<String>();
-            for (Decorator<?> bean : beanManager.getAccessibleDecorators()) {
+            for (Decorator<?> bean : beanManager.getDynamicAccessibleDecorators()) {
                 decoratorBeanClasses.add(bean.getBeanClass().getName());
             }
             for (Metadata<String> decoratorClassName : beansXml.getEnabledDecorators()) {
@@ -708,7 +702,7 @@ public class Validator implements Service {
 
             // lookup structure for validation of alternatives
             Multimap<Class<?>, Bean<?>> beansByClass = SetMultimap.newSetMultimap();
-            for (Bean<?> bean : beanManager.getAccessibleBeans()) {
+            for (Bean<?> bean : beanManager.getDynamicAccessibleBeans()) {
                 if (!(bean instanceof NewBean)) {
                     beansByClass.put(bean.getBeanClass(), bean);
                 }
@@ -911,10 +905,13 @@ public class Validator implements Service {
     }
 
     /**
-     * Checks to make sure that pseudo scoped beans (i.e. @Dependent scoped
-     * beans) have no circular dependencies.
+     * Checks to make sure that pseudo scoped beans (i.e. @Dependent scoped beans) have no circular dependencies.
      */
     private static void validatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager) {
+        if (bean.getInjectionPoints().isEmpty()) {
+            // Skip validation if there are no injection points (e.g. for classes which are not intended to be used as beans)
+            return;
+        }
         reallyValidatePseudoScopedBean(bean, beanManager, new LinkedHashSet<Object>(), new HashSet<Bean<?>>());
     }
 
