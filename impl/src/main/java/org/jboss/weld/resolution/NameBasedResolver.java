@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.cache.ComputingCache;
@@ -39,12 +38,10 @@ public class NameBasedResolver {
 
         private final BeanManagerImpl beanManager;
         private final Iterable<? extends Bean<?>> allBeans;
-        private final SpecializationAndEnablementRegistry registry;
 
         private NameToBeanSet(BeanManagerImpl beanManager, Iterable<? extends Bean<?>> allBeans) {
             this.beanManager = beanManager;
             this.allBeans = allBeans;
-            this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         }
 
         public Set<Bean<?>> apply(String from) {
@@ -54,7 +51,7 @@ public class NameBasedResolver {
                     matchedBeans.add(bean);
                 }
             }
-            return Beans.removeDisabledBeans(matchedBeans, beanManager, registry);
+            return Beans.removeDisabledBeans(matchedBeans, beanManager);
         }
 
     }

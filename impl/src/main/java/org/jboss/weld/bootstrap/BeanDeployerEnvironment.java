@@ -53,7 +53,6 @@ import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Preconditions;
@@ -74,7 +73,6 @@ public class BeanDeployerEnvironment {
     private final Set<DecoratorImpl<?>> decorators;
     private final Set<InterceptorImpl<?>> interceptors;
     private final TypeSafeDisposerResolver disposalMethodResolver;
-    private final ClassTransformer classTransformer;
     private final Set<Type> newBeanTypes;
     private final BeanManagerImpl manager;
 
@@ -121,7 +119,6 @@ public class BeanDeployerEnvironment {
         this.decorators = decorators;
         this.interceptors = interceptors;
         this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans, manager.getServices().get(WeldConfiguration.class));
-        this.classTransformer = manager.getServices().get(ClassTransformer.class);
         this.newBeanTypes = newBeanTypes;
         this.manager = manager;
     }
@@ -185,7 +182,7 @@ public class BeanDeployerEnvironment {
         addAbstractBean(bean);
     }
 
-    public void addExtension(ExtensionBean bean) {
+    public void addExtension(ExtensionBean<?> bean) {
         beans.add(bean);
     }
 

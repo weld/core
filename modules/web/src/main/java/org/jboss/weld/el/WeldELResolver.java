@@ -32,7 +32,7 @@ public class WeldELResolver extends AbstractWeldELResolver {
 
     public WeldELResolver(BeanManagerImpl manager) {
         this.beanManager = manager;
-        this.rootNamespace = LazyValueHolder.forSupplier(() -> new Namespace(manager.getAccessibleNamespaces()));
+        this.rootNamespace = LazyValueHolder.forSupplier(() -> new Namespace(manager.getDynamicAccessibleNamespaces()));
     }
 
     @Override
