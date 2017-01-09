@@ -80,13 +80,13 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public <U extends T> BeanAttributesConfigurator<U> read(AnnotatedType<U> type) {
-        // TODO
+        // TODO method will be removed in CDI 2.0.CR1
         throw new UnsupportedOperationException();
     }
 
     @Override
     public <U extends T> BeanAttributesConfigurator<U> read(AnnotatedMember<U> member) {
-        // TODO
+        // TODO method will be removed in CDI 2.0.CR1
         throw new UnsupportedOperationException();
     }
 

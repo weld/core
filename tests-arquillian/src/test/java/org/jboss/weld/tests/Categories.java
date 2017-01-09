@@ -1,5 +1,11 @@
 package org.jboss.weld.tests;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.experimental.categories.Category;
 import org.junit.runner.Description;
 import org.junit.runner.manipulation.Filter;
@@ -7,12 +13,6 @@ import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * From a given set of test classes, runs only the classes and methods that are
@@ -137,7 +137,6 @@ public class Categories extends Suite {
         }
 
         private Description parentDescription(Description description) {
-            // TODO: how heavy are we cringing?
             return Description.createSuiteDescription(description.getTestClass());
         }
 

@@ -130,7 +130,6 @@ final class Components {
      */
     static String getId(String identifier) {
         try {
-            // TODO find a better algorithm, UUID is using MD5
             return UUID.nameUUIDFromBytes(identifier.getBytes("UTF-8")).toString();
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);

@@ -20,8 +20,6 @@ import javax.faces.context.FacesContext;
 
 /**
  * Helper class for preparing JSF URLs which include the conversation id.
- * <p/>
- * TODO This class has the potential to be better designed to make it fit more use cases.
  *
  * @author Nicklas Karlsson
  * @author Dan Allen
@@ -111,7 +109,6 @@ public class FacesUrlTransformer {
     }
 
     private boolean isUrlAbsolute() {
-        // TODO: any API call to do this?
         return url.startsWith(HTTP_PROTOCOL_URL_PREFIX) || url.startsWith(HTTPS_PROTOCOL_URL_PREFIX);
     }
 }

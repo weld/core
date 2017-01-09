@@ -186,14 +186,12 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
                 }
             }
         } catch (IOException e) {
-            // FIXME: correct exception
-            throw new RuntimeException("Could not read services file " + serviceFile);
+            throw new RuntimeException("Could not read services file " + serviceFile, e);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    // FIXME: correct exception
                     throw new RuntimeException("Could not close services file " + serviceFile, e);
                 }
             }

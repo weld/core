@@ -17,7 +17,6 @@
 package org.jboss.weld.annotated.enhanced;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Collection;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -137,16 +136,6 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethods(Class<? extends Annotation> annotationType);
 
     /**
-     * Find the annotated method for a given methodDescriptor
-     *
-     * @param methodDescriptor
-     * @return
-     */
-    // TODO replace with MethodSignature variant
-    @Deprecated
-    EnhancedAnnotatedMethod<?, ?> getEnhancedMethod(Method method);
-
-    /**
      * Get a method by name
      *
      * @param <M>       the expected return type
@@ -163,10 +152,6 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
      * @return the method, or null if it doesn't exist
      */
     <M> EnhancedAnnotatedMethod<M, ?> getEnhancedMethod(MethodSignature signature);
-
-    // TODO Replace with MethodSignature variant
-    @Deprecated
-    EnhancedAnnotatedMethod<?, ?> getDeclaredEnhancedMethod(Method method);
 
     /**
      * Gets declared with parameters annotated with annotationType

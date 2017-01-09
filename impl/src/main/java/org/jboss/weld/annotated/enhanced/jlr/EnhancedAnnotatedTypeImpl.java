@@ -19,10 +19,8 @@ package org.jboss.weld.annotated.enhanced.jlr;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSetView;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -525,30 +523,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public EnhancedAnnotatedMethod<?, ?> getEnhancedMethod(Method methodDescriptor) {
-        // TODO Should be cached
-        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getEnhancedMethods()) {
-            if (annotatedMethod.getName().equals(methodDescriptor.getName()) && Arrays.equals(annotatedMethod.getParameterTypesAsArray(), methodDescriptor.getParameterTypes())) {
-                return annotatedMethod;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethods() {
         return methods;
-    }
-
-    @Override
-    public EnhancedAnnotatedMethod<?, ?> getDeclaredEnhancedMethod(Method method) {
-        // TODO Should be cached
-        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : declaredMethods) {
-            if (annotatedMethod.getName().equals(method.getName()) && Arrays.equals(annotatedMethod.getParameterTypesAsArray(), method.getParameterTypes())) {
-                return annotatedMethod;
-            }
-        }
-        return null;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
     public InvokableAnnotatedMethod(AnnotatedMethod<T> annotatedMethod) {
         this.annotatedMethod = annotatedMethod;
         this.methods = Collections.<Class<?>, Method>singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(), annotatedMethod.getJavaMember());
-        SecurityActions.ensureAccessible(annotatedMethod.getJavaMember()); // TODO: make sure this instance does not leak
+        SecurityActions.ensureAccessible(annotatedMethod.getJavaMember());
     }
 
     /**

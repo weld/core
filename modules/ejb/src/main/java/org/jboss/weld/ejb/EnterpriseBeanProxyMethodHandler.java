@@ -131,7 +131,6 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
     }
 
     private boolean isRemoveMethod(Method method) {
-        // TODO we can certainly optimize this search algorithm!
         MethodSignature methodSignature = new MethodSignatureImpl(method);
         return bean.getEjbDescriptor().getRemoveMethodSignatures().contains(methodSignature);
     }

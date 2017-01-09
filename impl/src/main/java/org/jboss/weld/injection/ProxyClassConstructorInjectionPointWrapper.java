@@ -41,8 +41,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  * @author Jozef Hartinger
  */
-// TODO Needs equals/hashcode
-// TODO Would be clearer to make this either a wrapper or not
 public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorInjectionPoint<T> {
     private final ConstructorInjectionPoint<T> originalConstructorInjectionPoint;
     private final boolean decorator;

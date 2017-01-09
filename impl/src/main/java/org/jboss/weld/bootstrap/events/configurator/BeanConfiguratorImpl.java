@@ -54,7 +54,7 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurator<Bean<T>> {
 
-    private BeanManagerImpl beanManager;
+    private final BeanManagerImpl beanManager;
 
     private Class<?> beanClass;
 
@@ -77,7 +77,7 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
         this.beanClass = defaultBeanClass;
         this.injectionPoints = new HashSet<>();
         this.attributes = new BeanAttributesConfiguratorImpl<>();
-        initBeanManager(beanDeploymentFinder);
+        this.beanManager = beanDeploymentFinder.getOrCreateBeanDeployment(beanClass).getBeanManager();
     }
 
     @Override
@@ -158,11 +158,6 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
     @Override
     public <U extends T> BeanConfigurator<U> read(AnnotatedType<U> type) {
         checkArgumentNotNull(type);
-        if (beanManager == null) {
-            // TODO message
-            throw new IllegalStateException();
-        }
-        // TODO what happens if a new bean class is set after this method?
         final InjectionTarget<T> injectionTarget = cast(beanManager.getInjectionTargetFactory(type).createInjectionTarget(null));
         addInjectionPoints(injectionTarget.getInjectionPoints());
         createWith(c -> {
@@ -309,12 +304,6 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
     public BeanConfigurator<T> alternative(boolean alternative) {
         this.attributes.alternative(alternative);
         return this;
-    }
-
-    public void initBeanManager(BeanDeploymentFinder beanDeploymentFinder) {
-        if (this.beanManager == null && beanDeploymentFinder != null) {
-            this.beanManager = beanDeploymentFinder.getOrCreateBeanDeployment(beanClass).getBeanManager();
-        }
     }
 
     public Bean<T> complete() {

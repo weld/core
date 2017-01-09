@@ -19,8 +19,6 @@ package org.jboss.weld.util.reflection;
 import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
@@ -39,8 +37,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.inject.Qualifier;
 
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.ReflectionLogger;
@@ -286,24 +282,6 @@ public class Reflections {
             }
         }
         return false;
-    }
-
-    /**
-     * Checks the bindingType to make sure the annotation was declared properly
-     * as a binding type (annotated with @BindingType) and that it has a runtime
-     * retention policy.
-     *
-     * @param binding The binding type to check
-     * @return true only if the annotation is really a binding type
-     */
-    @Deprecated
-    // TODO Replace usage of this with metadatacache
-    public static boolean isBindings(Annotation binding) {
-        boolean isBindingAnnotation = false;
-        if (binding.annotationType().isAnnotationPresent(Qualifier.class) && binding.annotationType().isAnnotationPresent(Retention.class) && binding.annotationType().getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME)) {
-            isBindingAnnotation = true;
-        }
-        return isBindingAnnotation;
     }
 
     public static boolean isSerializable(Class<?> clazz) {

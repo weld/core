@@ -462,8 +462,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         for (Class<?> specialInterface : specialInterfaces) {
             proxyClassType.addInterface(specialInterface.getName());
         }
-        // TODO: change the ProxyServices SPI to allow the container to figure out
-        // which PD to use
 
         // Dump proxy type bytecode if necessary
         dumpToFile(proxyClassName, proxyClassType.toBytecode());
