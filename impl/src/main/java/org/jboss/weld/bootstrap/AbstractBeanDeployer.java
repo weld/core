@@ -155,7 +155,6 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     public AbstractBeanDeployer<E> deployObserverMethods() {
-        // TODO -- why do observers have to be the last?
         for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
             if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
                 BootstrapLogger.LOG.foundObserverMethod(observerInitializer.getObserver());

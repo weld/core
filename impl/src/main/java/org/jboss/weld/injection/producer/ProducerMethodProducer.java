@@ -78,7 +78,6 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
                     Formats.formatAsStackTraceElement(method.getJavaMember()));
         } else if (getDeclaringBean() instanceof SessionBean<?> && !Modifier.isStatic(method.slim().getJavaMember().getModifiers())) {
             boolean methodDeclaredOnTypes = false;
-            // TODO use annotated item?
             for (Type type : getDeclaringBean().getTypes()) {
                 Class<?> clazz = Reflections.getRawType(type);
                 try {

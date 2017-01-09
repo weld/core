@@ -64,11 +64,9 @@ public class ClassTransformer implements BootstrapService {
             SlimAnnotatedType<? extends Annotation> slimAnnotatedType = syntheticAnnotationsAnnotatedTypes.get(from);
 
             if (slimAnnotatedType == null) {
-                /*
-                 * TODO: we do not recognize the BDA that defined the annotation This could in theory cause problem is two
-                 * annotations with the same name but different definition are defined within the same application (different
-                 * BDAs)
-                 */
+                // We do not recognize the BDA that defined the annotation This could in theory cause problem is two
+                // annotations with the same name but different definition are defined within the same application (different
+                // BDAs)
                 slimAnnotatedType = getBackedAnnotatedType(from, AnnotatedTypeIdentifier.NULL_BDA_ID);
             }
             return EnhancedAnnotationImpl.create(slimAnnotatedType, ClassTransformer.this);

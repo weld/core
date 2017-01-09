@@ -53,7 +53,7 @@ public class DefaultInstantiator<T> extends AbstractInstantiator<T> {
 
     @Override
     public Constructor<T> getConstructor() {
-        if (constructor == null) { // TODO: isolate this into a special non-producible instantiator
+        if (constructor == null) {
             return null;
         }
         return constructor.getAnnotated().getJavaMember();

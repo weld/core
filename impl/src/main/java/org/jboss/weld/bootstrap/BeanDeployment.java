@@ -225,7 +225,6 @@ public class BeanDeployment {
 
         /*
          * If EjbSupport is installed then SessionBeanAwareInjectionPointBean is used instead
-         * TODO: remove this tight coupling
          */
         if (getBeanManager().getServices().get(EjbSupport.class) == EjbSupport.NOOP_IMPLEMENTATION) {
             beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
@@ -254,17 +253,13 @@ public class BeanDeployment {
         if (beanDeploymentArchive.getBeansXml() != null && beanDeploymentArchive.getBeansXml().isTrimmed()) {
             beanDeployer.getEnvironment().trim();
         }
-        // TODO Register the context beans
         beanDeployer.createClassBeans();
-
     }
 
     public void deploySpecialized(Environment environment) {
         beanDeployer.deploySpecialized();
     }
 
-    // TODO Move class stuff into startContainer phase
-    // TODO read EJB descriptors after reading classes
     public void deployBeans(Environment environment) {
         beanDeployer.deploy();
     }

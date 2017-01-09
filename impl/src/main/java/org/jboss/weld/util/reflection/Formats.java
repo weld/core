@@ -222,7 +222,6 @@ public class Formats {
     }
 
     private static String getFileName(Class<?> clazz) {
-        // TODO find the actual file name the class is declared in
         return clazz.getSimpleName() + ".java";
     }
 

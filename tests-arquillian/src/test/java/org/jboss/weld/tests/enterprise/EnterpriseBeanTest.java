@@ -52,14 +52,6 @@ public class EnterpriseBeanTest {
     private BeanManagerImpl beanManager;
 
     /*
-    * description="WBRI-179"
-    */
-    @Test
-    public void testSFSBWithOnlyRemoteInterfacesDeploys() {
-        // TODO: Need implementation ?
-    }
-
-    /*
     * description="WELD-326"
     */
     @Test

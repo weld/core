@@ -46,7 +46,6 @@ import org.jboss.weld.util.collections.Arrays2;
  */
 class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
 
-    // TODO transient reference mask instead of looking up annotations
     private final int specialInjectionPointIndex;
     private final AnnotatedMethod<X> annotatedMethod;
     final Method accessibleMethod;

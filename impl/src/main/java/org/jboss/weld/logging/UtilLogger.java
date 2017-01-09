@@ -34,8 +34,6 @@ import org.jboss.weld.exceptions.WeldException;
 /**
  * Error messages relating to utility classes
  *
- * TODO maybe remove this, I'm not sure users care what we count a utility PLM
- *
  * Message ids: 000800 - 000899
  */
 @MessageLogger(projectCode = WELD_PROJECT_CODE)

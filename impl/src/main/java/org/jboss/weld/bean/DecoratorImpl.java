@@ -79,7 +79,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     }
 
     protected void initDelegateInjectionPoint() {
-        // TODO: findDelegateInjectionPoint() is called also from DecoratorInjectionTarget. Try to avoid calling the method multiple times
         this.delegateInjectionPoint = Decorators.findDelegateInjectionPoint(getEnhancedAnnotated(), getInjectionPoints());
     }
 

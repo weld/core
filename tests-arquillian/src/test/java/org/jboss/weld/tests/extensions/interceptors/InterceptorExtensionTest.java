@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.tests.extensions.interceptors;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,16 +35,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-
 /**
  * Tests that interceptors registered via the SPI work correctly
- *
- * TODO -- fix this test NOT to include actual annotitions.
  *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
  */
@@ -66,8 +64,8 @@ public class InterceptorExtensionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testLifecycleInterceptor() {
-        Bean bean = beanManager.getBeans(Marathon.class).iterator().next();
-        CreationalContext creationalContext = beanManager.createCreationalContext(bean);
+        Bean<Marathon> bean = (Bean<Marathon>) beanManager.getBeans(Marathon.class).iterator().next();
+        CreationalContext<Marathon> creationalContext = beanManager.createCreationalContext(bean);
         Marathon m = (Marathon) bean.create(creationalContext);
 
         Assert.assertTrue(LifecycleInterceptor.isPostConstructCalled());

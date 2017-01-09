@@ -113,7 +113,6 @@ class EjbSupportImpl implements EjbSupport {
     }
 
     private <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<?> descriptor, SlimAnnotatedType<T> slimType, BeanDeployerEnvironment environment, BeanManagerImpl manager, ClassTransformer transformer) {
-        // TODO Don't create enterprise bean if it has no local interfaces!
         final EnhancedAnnotatedType<T> type = transformer.getEnhancedAnnotatedType(slimType);
         final BeanAttributes<T> attributes = createSessionBeanAttributes(type, descriptor, manager);
         final SessionBean<T> bean = SessionBeanImpl.of(attributes, Reflections.<InternalEjbDescriptor<T>>cast(descriptor), manager, type);

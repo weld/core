@@ -151,7 +151,7 @@ public class HttpContextLifecycle implements Service {
 
     public void contextDestroyed(ServletContext ctx) {
         synchronized (container) {
-            // TODO firing these two right after each other does not really make sense
+            // TODO WELD-2282 Firing these two right after each other does not really make sense
             fireEventForApplicationScope(ctx, BeforeDestroyed.Literal.APPLICATION);
             fireEventForApplicationScope(ctx, Destroyed.Literal.APPLICATION);
         }

@@ -122,7 +122,7 @@ public class ResolvedObservers<T> {
 
     /**
      * Returns all observer methods. First part of the list consists of the ordered sequence of {@link TransactionPhase#IN_PROGRESS} observers followed by the
-     * ordered sequence of async obervers followed by an ordered sequence of transactional observers. TODO: we may need to preserve ordering of the entire list
+     * ordered sequence of async obervers followed by an ordered sequence of transactional observers.
      */
     public List<ObserverMethod<? super T>> getAllObservers() {
         return ImmutableList.<ObserverMethod<? super T>> builder().addAll(immediateSyncObservers).addAll(asyncObservers).addAll(transactionObservers).build();

@@ -412,12 +412,9 @@ public class WeldStartup {
             deployment.getBeanDeployer().processProducerAttributes();
             deployment.getBeanDeployer().createNewBeans();
         }
-
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.deploySpecialized(environment);
         }
-
-        // TODO keep a list of new bdas, add them all in, and deploy beans for them, then merge into existing
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.deployBeans(environment);
         }
@@ -472,7 +469,6 @@ public class WeldStartup {
             index.build(getBeansForBeanIdentifierIndex());
         }
 
-        // TODO rebuild the manager accessibility graph if the bdas have changed
         // Register the managers so external requests can handle them
         // clear the TypeSafeResolvers, so data that is only used at startup
         // is not kept around using up memory
@@ -596,7 +592,7 @@ public class WeldStartup {
 
     public TypeDiscoveryConfiguration startExtensions(Iterable<Metadata<Extension>> extensions) {
         setExtensions(extensions);
-        // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
+        // TODO WELD-1624 Weld should fire BeforeBeanDiscovery to allow extensions to register additional scopes
         final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.of(
                 // built-in scopes
                 Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class,

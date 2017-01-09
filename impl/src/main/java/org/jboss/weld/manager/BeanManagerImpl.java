@@ -200,7 +200,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     // Client proxies can be used application wide
     private final transient ClientProxyProvider clientProxyProvider;
 
-    // TODO review this structure
     private final transient Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
 
     /*
@@ -374,7 +373,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         // Set up the structure to store accessible managers in
         this.accessibleManagers = new HashSet<BeanManagerImpl>();
 
-        // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
         BeanTransform beanTransform = new BeanTransform(this);
         this.beanResolver = new TypeSafeBeanResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(BeanManagerImpl::getDecorators));
@@ -1009,7 +1007,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Iterable<String> getDynamicAccessibleNamespaces() {
-        // TODO Cache this
         return createDynamicAccessibleIterable(BeanManagerImpl::getNamespaces);
     }
 
@@ -1261,6 +1258,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         private transient Type type;
 
+        @java.lang.SuppressWarnings("serial")
         @Override
         public Type getType() {
             if (type == null) {
@@ -1317,6 +1315,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         private transient Type type;
 
+        @java.lang.SuppressWarnings("serial")
         @Override
         public Type getType() {
             if (type == null) {

@@ -17,7 +17,6 @@
 package org.jboss.weld.test.util.annotated;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Set;
 
@@ -102,11 +101,6 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
         return delegate().getEnhancedFields();
     }
 
-    @Deprecated
-    public EnhancedAnnotatedMethod<?, ?> getEnhancedMethod(Method method) {
-        return delegate().getEnhancedMethod(method);
-    }
-
     public <M> EnhancedAnnotatedMethod<M, ?> getEnhancedMethod(MethodSignature signature) {
         return delegate().getEnhancedMethod(signature);
     }
@@ -142,11 +136,6 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
 
     public boolean isSerializable() {
         return delegate().isSerializable();
-    }
-
-    @Deprecated
-    public EnhancedAnnotatedMethod<?, ?> getDeclaredEnhancedMethod(Method method) {
-        return delegate().getDeclaredEnhancedMethod(method);
     }
 
     public <F> EnhancedAnnotatedField<F, ?> getDeclaredEnhancedField(String fieldName) {

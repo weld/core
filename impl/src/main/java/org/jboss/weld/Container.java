@@ -131,7 +131,6 @@ public class Container {
      * managers, and all deployment services
      */
     public void cleanup() {
-        // TODO We should probably cleanup the bean managers for activities?
         managers.clear();
         for (BeanManagerImpl beanManager : beanDeploymentArchives.values()) {
             beanManager.cleanup();

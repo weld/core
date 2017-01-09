@@ -25,7 +25,6 @@ import org.jboss.as.arquillian.container.ExceptionTransformer;
  */
 public class WildFly8Extension implements LoadableExtension {
 
-    // TODO the managed container class did not change so far, but will likely change soon
     private static final String MANAGED_CONTAINER_CLASS = "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer";
     private static final String REMOTE_CONTAINER_CLASS = "org.jboss.as.arquillian.container.remote.RemoteDeployableContainer";
 

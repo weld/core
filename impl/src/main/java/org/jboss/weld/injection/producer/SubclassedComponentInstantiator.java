@@ -106,7 +106,6 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
 
         Set<Type> types = null;
         if (bean == null) {
-            // TODO we may need to really discover types here
             types = Collections.<Type>singleton(type.getJavaClass());
         } else {
             types = bean.getTypes();
@@ -116,7 +115,6 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
 
     private Set<InterceptionModel> getInterceptionModelsForType(EnhancedAnnotatedType<T> type, BeanManagerImpl manager, Bean<?> bean) {
         // if the bean has decorators consider all methods as intercepted
-        // TODO - reduce this to decorated types only
         if (bean != null && !manager.resolveDecorators(bean.getTypes(), bean.getQualifiers()).isEmpty()) {
             return null;
         }

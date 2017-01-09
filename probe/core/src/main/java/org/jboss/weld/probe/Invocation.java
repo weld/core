@@ -29,8 +29,8 @@ import javax.interceptor.InvocationContext;
 
 /**
  * Information about a single business method invocation.
- *
- * TODO we can't always detect the type reliably
+ * <p>
+ * Note we can't always detect the type reliably.
  *
  * @author Martin Kouba
  */
