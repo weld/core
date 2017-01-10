@@ -14,6 +14,7 @@
             <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true ${additional.vm.args} ${jacoco.agent}</property>
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
+            <property name="startupTimeoutInSeconds">${server.startup.timeout:60}</property>
         </configuration>
         <protocol type="Servlet 3.0">
             <property name="host">127.0.0.1</property>
