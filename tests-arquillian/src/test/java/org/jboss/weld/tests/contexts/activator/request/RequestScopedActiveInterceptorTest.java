@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.contexts.activator.request;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -43,7 +44,7 @@ public class RequestScopedActiveInterceptorTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(RequestScopedActiveInterceptorTest.class, Foo.class, Bar.class, Baz.class);
+        return ShrinkWrap.create(BeanArchive.class).addClasses(RequestScopedActiveInterceptorTest.class, Foo.class, Bar.class, Baz.class, InitializedDestroyedObserver.class);
     }
 
     private ExecutorService executorService;
@@ -59,7 +60,8 @@ public class RequestScopedActiveInterceptorTest {
     }
 
     @Test
-    public void requestScopedActive(final Foo foo) throws InterruptedException, ExecutionException, TimeoutException {
+    public void requestScopedActive(final Foo foo, final InitializedDestroyedObserver observer) throws InterruptedException, ExecutionException, TimeoutException {
+        observer.reset();
         Future<Integer> future = executorService.submit(new Callable<Integer>() {
 
             @Override
@@ -68,6 +70,8 @@ public class RequestScopedActiveInterceptorTest {
             }
         });
         assertEquals(Integer.valueOf(1), future.get(2, TimeUnit.SECONDS));
+        assertNotNull(observer.getInit());
+        assertNotNull(observer.getDestroy());
     }
 
     @Test
