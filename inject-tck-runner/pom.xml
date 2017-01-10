@@ -81,6 +81,7 @@
                     <includes>
                         <include>**/AtInjectTCK.java</include>
                     </includes>
+                    <argLine>${surefire.plugin.jdk9.args}</argLine>
                 </configuration>
             </plugin>
             <plugin>
