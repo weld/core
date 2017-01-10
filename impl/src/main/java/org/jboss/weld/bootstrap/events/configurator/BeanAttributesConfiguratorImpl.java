@@ -36,8 +36,14 @@ import javax.inject.Named;
 
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.BeanManagerLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
@@ -48,7 +54,9 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  */
 public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigurator<T>, Configurator<BeanAttributes<T>> {
 
-    static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
+
+    private final BeanManagerImpl beanManager;
 
     private String name;
 
@@ -62,7 +70,8 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     private boolean isAlternative;
 
-    public BeanAttributesConfiguratorImpl() {
+    public BeanAttributesConfiguratorImpl(BeanManagerImpl beanManager) {
+        this.beanManager = beanManager;
         this.qualifiers = new HashSet<Annotation>();
         this.types = new HashSet<Type>();
         this.types.add(Object.class);
@@ -73,8 +82,8 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
      *
      * @param beanAttributes
      */
-    public BeanAttributesConfiguratorImpl(BeanAttributes<T> beanAttributes) {
-        this();
+    public BeanAttributesConfiguratorImpl(BeanAttributes<T> beanAttributes, BeanManagerImpl beanManager) {
+        this(beanManager);
         read(beanAttributes);
     }
 
@@ -241,7 +250,28 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
     }
 
     private Class<? extends Annotation> initScope() {
-        return scope != null ? scope : Dependent.class;
+        if (scope != null) {
+            return scope;
+        }
+        if (!stereotypes.isEmpty()) {
+            MetaAnnotationStore metaAnnotationStore = beanManager.getServices().get(MetaAnnotationStore.class);
+            Set<Annotation> possibleScopeTypes = new HashSet<>();
+            for (Class<? extends Annotation> stereotype : stereotypes) {
+                StereotypeModel<? extends Annotation> model = metaAnnotationStore.getStereotype(stereotype);
+                if (model.isValid()) {
+                    possibleScopeTypes.add(model.getDefaultScopeType());
+                } else {
+                    throw BeanManagerLogger.LOG.notStereotype(stereotype);
+                }
+            }
+            if (possibleScopeTypes.size() == 1) {
+                return possibleScopeTypes.iterator().next().annotationType();
+            } else {
+                throw BeanLogger.LOG.multipleScopesFoundFromStereotypes(BeanAttributesConfigurator.class.getSimpleName(),
+                        Formats.formatTypes(stereotypes, false), possibleScopeTypes, "");
+            }
+        }
+        return Dependent.class;
     }
 
     private Set<Annotation> initQualifiers(Set<Annotation> qualifiers) {

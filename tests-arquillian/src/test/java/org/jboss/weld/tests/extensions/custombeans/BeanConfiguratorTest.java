@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -45,18 +46,19 @@ import org.junit.runner.RunWith;
  * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
-public class BeanBuilderTest {
+public class BeanConfiguratorTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanBuilderTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(BeanBuilderTest.class.getPackage())
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanConfiguratorTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(BeanConfiguratorTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, BuilderExtension.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @SuppressWarnings({ "unchecked", "serial" })
     @Test
-    public void testCustomBean(BeanManager beanManager) throws Exception {
+    public void testConfigurator(BeanManager beanManager) throws Exception {
         Set<Bean<?>> beans = beanManager.getBeans("bar");
         assertEquals(1, beans.size());
         Bean<Foo> fooBean = (Bean<Foo>) beans.iterator().next();
@@ -118,6 +120,19 @@ public class BeanBuilderTest {
         assertEquals(Dependent.class, configBean.getScope());
         Configuration configuration = (Configuration) beanManager.getReference(configBean, Configuration.class, beanManager.createCreationalContext(configBean));
         assertEquals(1, configuration.getId());
+
+        beans = beanManager.getBeans(Integer.class, Bla.Literal.of("dependent"));
+        assertEquals(1, beans.size());
+        Bean<Configuration> blaBean = (Bean<Configuration>) beans.iterator().next();
+        assertEquals(Dependent.class, blaBean.getScope());
+        beans = beanManager.getBeans(Integer.class, Bla.Literal.of("model"));
+        assertEquals(1, beans.size());
+        blaBean = (Bean<Configuration>) beans.iterator().next();
+        assertEquals(RequestScoped.class, blaBean.getScope());
+        beans = beanManager.getBeans(Integer.class, Bla.Literal.of("more"));
+        assertEquals(1, beans.size());
+        blaBean = (Bean<Configuration>) beans.iterator().next();
+        assertEquals(RequestScoped.class, blaBean.getScope());
     }
 
 }

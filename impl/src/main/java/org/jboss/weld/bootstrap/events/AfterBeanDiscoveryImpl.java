@@ -307,7 +307,12 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             if (bean != null) {
                 return bean;
             } else if (beanConfigurator != null) {
-                Bean<?> bean = beanConfigurator.complete();
+                Bean<?> bean;
+                try {
+                    bean = beanConfigurator.complete();
+                } catch (Exception e) {
+                    throw BootstrapLogger.LOG.unableToProcessConfigurator(BeanConfigurator.class.getSimpleName(), extension, e);
+                }
                 BootstrapLogger.LOG.addBeanCalled(extension, bean);
                 return bean;
             }
@@ -351,7 +356,11 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             if (observerMethod != null) {
                 return observerMethod;
             }
-            return observerMethodConfigurator.complete();
+            try {
+                return observerMethodConfigurator.complete();
+            } catch (Exception e) {
+                throw BootstrapLogger.LOG.unableToProcessConfigurator(ObserverMethodConfigurator.class.getSimpleName(), extension, e);
+            }
         }
 
     }

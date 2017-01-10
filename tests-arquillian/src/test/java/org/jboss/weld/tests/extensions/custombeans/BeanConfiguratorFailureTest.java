@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.observers.custom;
+package org.jboss.weld.tests.extensions.custombeans;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.DeploymentException;
@@ -23,9 +23,9 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,20 +33,20 @@ import org.junit.runner.RunWith;
 /**
  *
  * @author Martin Kouba
- *
  */
 @RunWith(Arquillian.class)
-public class ObserverConfiguratorWithoutNotifyTest {
+public class BeanConfiguratorFailureTest {
 
     @ShouldThrowException(DeploymentException.class)
     @Deployment
-    public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ObserverConfiguratorWithoutNotifyTest.class))
-                .addPackage(ObserverConfiguratorWithoutNotifyTest.class.getPackage())
-                .addAsServiceProvider(Extension.class, ObserverConfiguratorExtension.class);
+    public static WebArchive createTestArchive() {
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanConfiguratorFailureTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(BeanConfiguratorFailureTest.class.getPackage()).addAsServiceProvider(Extension.class, BrokenExtension.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test
-    public void testCustomObserver(BeanManager beanManager) {
+    public void testFailure(BeanManager beanManager) throws Exception {
     }
+
 }

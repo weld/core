@@ -76,8 +76,8 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
     public BeanConfiguratorImpl(Class<?> defaultBeanClass, BeanDeploymentFinder beanDeploymentFinder) {
         this.beanClass = defaultBeanClass;
         this.injectionPoints = new HashSet<>();
-        this.attributes = new BeanAttributesConfiguratorImpl<>();
         this.beanManager = beanDeploymentFinder.getOrCreateBeanDeployment(beanClass).getBeanManager();
+        this.attributes = new BeanAttributesConfiguratorImpl<>(beanManager);
     }
 
     @Override
@@ -410,7 +410,7 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
         ImmutableBean(BeanConfiguratorImpl<T> configurator) {
             this.beanManager = configurator.getBeanManager();
             this.beanClass = configurator.beanClass;
-            this.attributes = new BeanAttributesConfiguratorImpl<T>(configurator.attributes.complete()).complete();
+            this.attributes = configurator.attributes.complete();
             this.injectionPoints = ImmutableSet.copyOf(configurator.injectionPoints);
             this.createCallback = configurator.createCallback;
             this.destroyCallback = configurator.destroyCallback;

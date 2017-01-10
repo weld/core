@@ -325,4 +325,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 178, value = "ProcessInjectionPoint.configureInjectionPoint() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
     void configureInjectionPointCalled(Object extensionName, Object bean);
 
+    @Message(id = 179, value = "{0} created by {1} cannot be processed", format = Format.MESSAGE_FORMAT)
+    DeploymentException unableToProcessConfigurator(Object configurator, Object extensionName, @Cause Throwable cause);
+
 }
