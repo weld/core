@@ -30,6 +30,8 @@
         <tomcat8.version>8.0.22</tomcat8.version>
         <jetty.version>9.3.6.v20151106</jetty.version>
         <jetty9.asm.version>5.0.3</jetty9.asm.version>
+        <!-- Weld compiles against classfilewriter 1.1.x -->
+        <classfilewriter.version>1.2.1.Final</classfilewriter.version>
         <!-- Jetty 6 API is used for GWT support only -->
         <jetty6.version>6.1.26</jetty6.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
