@@ -95,7 +95,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
         }
         checkWithinObserverNotification();
         if (configurator == null) {
-            configurator = new BeanAttributesConfiguratorImpl<>(attributes);
+            configurator = new BeanAttributesConfiguratorImpl<>(attributes, getBeanManager());
         }
         BootstrapLogger.LOG.configureBeanAttributesCalled(getReceiver(), attributes);
         return configurator;

@@ -40,6 +40,13 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            
+            <!-- CDITCK-565 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.lifecycle.broken.observerMethod.ObserverMethodWithoutNotifyMethodTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 

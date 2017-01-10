@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Model;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -82,5 +83,10 @@ public class BuilderExtension implements Extension {
 
         // Test default qualifiers
         event.addBean().addType(Configuration.class).produceWith((i) -> new Configuration(1));
+
+        // Test default scopes
+        event.addBean().addQualifier(Bla.Literal.of("dependent")).addType(Integer.class).createWith((ctx) -> 1);
+        event.addBean().addQualifier(Bla.Literal.of("model")).addStereotype(Model.class).addType(Integer.class).createWith((ctx) -> 2);
+        event.addBean().addQualifier(Bla.Literal.of("more")).addStereotype(Model.class).addStereotype(SuperCoolStereotype.class).addType(Integer.class).createWith((ctx) -> 3);
     }
 }
