@@ -26,6 +26,9 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.Unbound;
+import org.jboss.weld.event.FastEvent;
+import org.jboss.weld.literal.DestroyedLiteral;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -36,17 +39,20 @@ import org.jboss.weld.manager.BeanManagerImpl;
 @Interceptor
 @ActivateRequestContext
 @SuppressWarnings("checkstyle:magicnumber")
-@Priority(Interceptor.Priority.LIBRARY_BEFORE + 100)
+@Priority(Interceptor.Priority.PLATFORM_BEFORE + 100)
 public class ActivateRequestContextInterceptor {
 
     private final BeanManagerImpl beanManager;
-
     private final RequestContext requestContext;
+    private final FastEvent<Object> fastEventInit;
+    private final FastEvent<Object> fastEventDestroyed;
 
     @Inject
     public ActivateRequestContextInterceptor(@Unbound RequestContext requestContext, BeanManagerImpl beanManager) {
         this.requestContext = requestContext;
         this.beanManager = beanManager;
+        this.fastEventInit = FastEvent.of(Object.class, beanManager, InitializedLiteral.REQUEST);
+        this.fastEventDestroyed = FastEvent.of(Object.class, beanManager, DestroyedLiteral.REQUEST);
     }
 
     @AroundInvoke
@@ -54,12 +60,15 @@ public class ActivateRequestContextInterceptor {
         if (isRequestContextActive()) {
             return ctx.proceed();
         } else {
+            Object dummyPayload = new Object();
             try {
                 requestContext.activate();
+                fastEventInit.fire(dummyPayload);
                 return ctx.proceed();
             } finally {
                 requestContext.invalidate();
                 requestContext.deactivate();
+                fastEventDestroyed.fire(dummyPayload);
             }
         }
     }
