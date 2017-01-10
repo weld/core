@@ -161,7 +161,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <!-- http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4425695 -->
-                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true</argLine>
+                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true ${surefire.plugin.jdk9.args}</argLine>
                     <forkMode>once</forkMode>
                     <properties>
                         <property>
@@ -483,6 +483,7 @@
                             <systemPropertyVariables>
                                 <arquillian.launch>weld-se</arquillian.launch>
                                 <libPath>${project.build.outputDirectory}</libPath>
+                                <surefire.plugin.jdk9.args>${surefire.plugin.jdk9.args}</surefire.plugin.jdk9.args>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

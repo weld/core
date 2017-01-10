@@ -227,7 +227,7 @@
                             </systemProperties>
                             <test>${test}</test>
                             <!-- Travis CI build workaround -->
-                            <argLine>${travis.surefire.argLine}</argLine>
+                            <argLine>${surefire.plugin.jdk9.args} ${travis.surefire.argLine}</argLine>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -272,7 +272,7 @@
                                 <arquillian.xml>wildfly-arquillian.xml</arquillian.xml>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <additional.vm.args>${surefire.plugin.jdk9.args}${additional.vm.args}</additional.vm.args>
                                 <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
                             <test>${test}</test>
