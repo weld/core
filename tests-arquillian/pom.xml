@@ -178,7 +178,8 @@
                 </property>
             </activation>
             <properties>
-                <classfilewriter.version>1.2.0.Beta1</classfilewriter.version>
+                <!-- Weld compiles against classfilewriter 1.1.x -->
+                <classfilewriter.version>1.2.1.Final</classfilewriter.version>
             </properties>
             <dependencies>
                 <dependency>
