@@ -77,7 +77,7 @@ abstract class WildFlyMessaging {
 
         ModelNode entries = request.get("entries");
         entries.add("queue/test");
-        entries.add("java:jboss/exported/jms/queue/test");
+        entries.add(WildFly8EEResourceManager.TEST_QUEUE_DESTINATION);
 
         response = client.execute(new OperationBuilder(request).build());
 
@@ -113,7 +113,7 @@ abstract class WildFlyMessaging {
         ModelNode entries = request.get("entries");
 
         entries.add("topic/test");
-        entries.add("java:jboss/exported/jms/topic/test");
+        entries.add(WildFly8EEResourceManager.TEST_TOPIC_DESTINATION);
 
         response = client.execute(new OperationBuilder(request).build());
 
