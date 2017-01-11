@@ -34,7 +34,7 @@ import org.jboss.weld.bootstrap.BeanDeploymentModules;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.BoundContext;
 import org.jboss.weld.context.ManagedContext;
-import org.jboss.weld.context.cache.RequestScopedCache;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;

@@ -19,8 +19,8 @@ package org.jboss.weld.injection;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import org.jboss.weld.context.cache.RequestScopedCache;
-import org.jboss.weld.context.cache.RequestScopedItem;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
+import org.jboss.weld.contexts.cache.RequestScopedItem;
 
 /**
  * A stack that is kept in thread-local. Two operations were identified to be expensive in micro benchmarks:

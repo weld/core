@@ -3,9 +3,9 @@ package org.jboss.weld.tests.interceptors.weld1019;
 import java.lang.annotation.Annotation;
 
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
-import org.jboss.weld.context.AbstractContext;
-import org.jboss.weld.context.beanstore.BeanStore;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
+import org.jboss.weld.contexts.AbstractContext;
+import org.jboss.weld.contexts.beanstore.BeanStore;
+import org.jboss.weld.contexts.beanstore.HashMapBeanStore;
 
 /**
  *

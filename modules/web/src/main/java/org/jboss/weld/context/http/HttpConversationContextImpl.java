@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.context.AbstractConversationContext;
-import org.jboss.weld.context.beanstore.BoundBeanStore;
-import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.contexts.AbstractConversationContext;
+import org.jboss.weld.contexts.beanstore.BoundBeanStore;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
 import org.jboss.weld.servlet.SessionHolder;

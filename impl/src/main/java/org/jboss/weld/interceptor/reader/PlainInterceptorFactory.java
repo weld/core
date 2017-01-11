@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.interceptor.Interceptors;
 
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 

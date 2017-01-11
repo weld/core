@@ -4,9 +4,9 @@ import java.util.Iterator;
 
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.context.beanstore.AttributeBeanStore;
-import org.jboss.weld.context.beanstore.LockStore;
-import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.AttributeBeanStore;
+import org.jboss.weld.contexts.beanstore.LockStore;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
 
 public class InvocationContextBeanStore extends AttributeBeanStore {
 

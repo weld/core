@@ -33,7 +33,7 @@ import javax.enterprise.inject.spi.Producer;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.DisposalMethod;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;

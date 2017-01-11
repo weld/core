@@ -27,12 +27,12 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.weld.context.AbstractBoundContext;
-import org.jboss.weld.context.beanstore.BoundBeanStore;
-import org.jboss.weld.context.beanstore.NamingScheme;
-import org.jboss.weld.context.beanstore.SimpleNamingScheme;
+import org.jboss.weld.contexts.AbstractBoundContext;
+import org.jboss.weld.contexts.beanstore.BoundBeanStore;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.RequestBeanStore;
-import org.jboss.weld.context.cache.RequestScopedCache;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Reflections;

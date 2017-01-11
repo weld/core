@@ -10,7 +10,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.conversation.ConversationImpl;
+import org.jboss.weld.contexts.conversation.ConversationImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Conversation> {

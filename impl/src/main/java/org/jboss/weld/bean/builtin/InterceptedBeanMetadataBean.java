@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;

@@ -45,7 +45,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;

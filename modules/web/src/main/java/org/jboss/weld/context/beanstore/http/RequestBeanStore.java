@@ -4,9 +4,9 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.weld.context.beanstore.AttributeBeanStore;
-import org.jboss.weld.context.beanstore.LockStore;
-import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.AttributeBeanStore;
+import org.jboss.weld.contexts.beanstore.LockStore;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.servlet.HttpContextLifecycle;
 import org.jboss.weld.util.collections.EnumerationIterator;
 
