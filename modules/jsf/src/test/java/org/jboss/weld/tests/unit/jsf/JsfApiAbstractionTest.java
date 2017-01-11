@@ -19,7 +19,7 @@ package org.jboss.weld.tests.unit.jsf;
 import javax.faces.component.behavior.Behavior;
 import javax.faces.context.FacesContext;
 
-import org.jboss.weld.jsf.JsfApiAbstraction;
+import org.jboss.weld.module.jsf.JsfApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;

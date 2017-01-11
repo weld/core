@@ -45,7 +45,7 @@ public enum Category {
         this.name = createName(name);
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
