@@ -22,9 +22,9 @@ import javax.el.ELContextListener;
 import javax.el.ExpressionFactory;
 import javax.el.StandardELContext;
 
-import org.jboss.weld.el.WeldELContextListener;
-import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.web.el.WeldELContextListener;
+import org.jboss.weld.module.web.el.WeldExpressionFactory;
 
 /**
  * Access to EL

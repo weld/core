@@ -56,7 +56,7 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.web.WeldWebModule;
+import org.jboss.weld.module.web.WeldWebModule;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

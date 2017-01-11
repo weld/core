@@ -33,9 +33,9 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.cdi.tck.spi.EL;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
-import org.jboss.weld.el.WeldELContextListener;
-import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.web.el.WeldELContextListener;
+import org.jboss.weld.module.web.el.WeldExpressionFactory;
 
 /**
  *

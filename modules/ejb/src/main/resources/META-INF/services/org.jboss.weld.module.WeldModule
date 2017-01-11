@@ -1,1 +1,1 @@
-org.jboss.weld.ejb.WeldEjbModule
+org.jboss.weld.module.ejb.WeldEjbModule

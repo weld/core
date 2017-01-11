@@ -46,7 +46,7 @@ import org.jboss.weld.bootstrap.spi.helpers.EEModuleDescriptorImpl;
 import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
-import org.jboss.weld.el.WeldELContextListener;
+import org.jboss.weld.module.web.el.WeldELContextListener;
 import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -73,7 +73,7 @@ import org.jboss.weld.resources.ManagerObjectFactory;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.servlet.WeldInitialListener;
+import org.jboss.weld.module.web.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.util.collections.ImmutableSet;
 

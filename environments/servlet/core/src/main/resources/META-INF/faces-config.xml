@@ -9,6 +9,6 @@
    </factory>
 
    <application>
-      <view-handler>org.jboss.weld.jsf.ConversationAwareViewHandler</view-handler>
+      <view-handler>org.jboss.weld.module.jsf.ConversationAwareViewHandler</view-handler>
    </application>
 </faces-config>

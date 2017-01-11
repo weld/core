@@ -1,1 +1,1 @@
-org.jboss.weld.web.WeldWebModule
+org.jboss.weld.module.web.WeldWebModule

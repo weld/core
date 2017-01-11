@@ -24,7 +24,7 @@ import javax.faces.application.ApplicationWrapper;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.el.WeldELContextListener;
+import org.jboss.weld.module.web.el.WeldELContextListener;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.portlet.PortletSupport;

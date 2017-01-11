@@ -21,7 +21,7 @@ import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 
-import org.jboss.weld.el.WeldMethodExpression;
+import org.jboss.weld.module.web.el.WeldMethodExpression;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
