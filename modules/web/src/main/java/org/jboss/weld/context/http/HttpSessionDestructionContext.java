@@ -21,9 +21,9 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.SessionScoped;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.context.AbstractBoundContext;
-import org.jboss.weld.context.beanstore.SimpleBeanIdentifierIndexNamingScheme;
-import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.contexts.AbstractBoundContext;
+import org.jboss.weld.contexts.beanstore.SimpleBeanIdentifierIndexNamingScheme;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 

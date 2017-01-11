@@ -1,10 +1,10 @@
 package org.jboss.weld.context.ejb;
 
-import org.jboss.weld.context.AbstractBoundContext;
-import org.jboss.weld.context.beanstore.NamingScheme;
-import org.jboss.weld.context.beanstore.SimpleNamingScheme;
+import org.jboss.weld.contexts.AbstractBoundContext;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.ejb.InvocationContextBeanStore;
-import org.jboss.weld.context.cache.RequestScopedCache;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 
 import javax.enterprise.context.RequestScoped;
 import javax.interceptor.InvocationContext;

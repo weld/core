@@ -27,7 +27,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-import org.jboss.weld.context.NonexistentConversationException;
+import org.jboss.weld.contexts.NonexistentConversationException;
 
 @WebFilter(urlPatterns = "/servlet/*", filterName = "Timeout Filter")
 public class TimeoutFilter implements Filter{

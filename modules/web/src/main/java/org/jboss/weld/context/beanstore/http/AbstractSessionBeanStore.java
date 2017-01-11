@@ -8,9 +8,9 @@ import java.util.Iterator;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.context.beanstore.AttributeBeanStore;
-import org.jboss.weld.context.beanstore.LockStore;
-import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.AttributeBeanStore;
+import org.jboss.weld.contexts.beanstore.LockStore;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.EnumerationIterator;

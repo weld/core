@@ -35,7 +35,7 @@ import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.construction.api.ConstructionHandle;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;

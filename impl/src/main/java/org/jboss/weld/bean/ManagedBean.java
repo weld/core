@@ -32,7 +32,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;

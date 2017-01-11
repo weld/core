@@ -153,7 +153,7 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.Description;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.context.AbstractConversationContext;
+import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;

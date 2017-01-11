@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.el;
 
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.contexts.CreationalContextImpl;
 
 import javax.enterprise.context.spi.Contextual;
 import java.util.HashMap;

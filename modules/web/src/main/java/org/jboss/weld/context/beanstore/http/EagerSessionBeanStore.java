@@ -2,7 +2,7 @@ package org.jboss.weld.context.beanstore.http;
 
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.logging.ContextLogger;
 
 /**

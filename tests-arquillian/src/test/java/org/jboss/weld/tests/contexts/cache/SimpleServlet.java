@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.weld.context.beanstore.ConversationNamingScheme;
+import org.jboss.weld.contexts.beanstore.ConversationNamingScheme;
 
 @WebServlet(value = "/servlet", asyncSupported = true)
 public class SimpleServlet extends HttpServlet {
