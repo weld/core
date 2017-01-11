@@ -26,9 +26,11 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.jboss.weld.tests.util.WildFly8EEResourceManager;
+
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/testQueue")
+        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = WildFly8EEResourceManager.TEST_QUEUE_DESTINATION)
 })
 public class MilkMan implements MessageListener {
 

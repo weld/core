@@ -24,8 +24,6 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.naming.InitialContext;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,9 +31,9 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
+import org.jboss.weld.tests.util.WildFly8EEResourceManager;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -51,20 +49,16 @@ public class EJBTest {
                 .addAsModule(
                         ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EJBTest.class))
                                 .addPackage(EJBTest.class.getPackage())
-                        //.addAsManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
                 );
     }
 
-    @Category(Broken.class)
     @Test
-    @Ignore
-    // TODO Need a way to deploy test-destinations-service.xml to JBoss AS
     public void testMdbUsable(Control control) throws Exception {
         InitialContext ctx = new InitialContext();
         QueueConnectionFactory factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
         QueueConnection connection = factory.createQueueConnection();
         QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-        Queue queue = (Queue) ctx.lookup("queue/testQueue");
+        Queue queue = (Queue) ctx.lookup(WildFly8EEResourceManager.TEST_QUEUE_DESTINATION);
         QueueSender sender = session.createSender(queue);
         sender.send(session.createTextMessage(MESSAGE));
 

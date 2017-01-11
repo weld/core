@@ -20,6 +20,8 @@ import org.jboss.as.controller.client.ModelControllerClient;
  */
 public class WildFly8EEResourceManager {
 
+    public static final String TEST_QUEUE_DESTINATION = "java:jboss/exported/jms/queue/test";
+    public static final String TEST_TOPIC_DESTINATION = "java:jboss/exported/jms/topic/test";
     private static final Logger logger = Logger.getLogger(WildFly8EEResourceManager.class.getName());
 
     /**
