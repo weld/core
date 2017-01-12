@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.interceptors.producer.Producer.Bar;
 import org.jboss.weld.tests.interceptors.producer.Producer.Foo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,12 +67,17 @@ public class InterceptionFactoryTest {
     public void testFooEjbInterceptors(@Produced("ejbInterceptors") Foo foo) {
         assertEquals("Hello pong", foo.ping());
     }
-    
+
     @Test
     public void testFooNoInterceptors(@Produced("empty") Foo foo) {
         // Note that the produced Foo is @Dependent
         assertEquals(Foo.class, foo.getClass());
         assertEquals("pong", foo.ping());
+    }
+
+    @Test
+    public void testBarNoInterceptors(@Produced Bar bar) {
+        assertEquals("ping", bar.pong());
     }
 
     @Test

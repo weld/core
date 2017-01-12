@@ -65,7 +65,15 @@ public class Producer {
     public Foo produceFooWithNoBinding(InterceptionFactory<Foo> interceptionFactory) {
         return interceptionFactory.createInterceptedInstance(new Foo());
     }
-    
+
+    @Produced
+    @Produces
+    public Bar produceBar(InterceptionFactory<Bar> interceptionFactory, Bar bar) {
+        // The binding should be ignored
+        interceptionFactory.configure().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(bar);
+    }
+
     @Produced
     @Dependent
     @Produces
@@ -84,6 +92,15 @@ public class Producer {
 
         String ping() {
             return "pong";
+        }
+
+    }
+
+    @ApplicationScoped
+    static class Bar {
+
+        String pong() {
+            return "ping";
         }
 
     }
