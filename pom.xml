@@ -29,6 +29,8 @@
         <!-- Travis CI build workaround -->
         <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
+        <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
+       <surefire.plugin.jdk9.args></surefire.plugin.jdk9.args>
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.1.7.Final</arquillian.version>
@@ -725,6 +727,11 @@
             <activation>
                 <jdk>9</jdk>
             </activation>
+            <properties>
+                <!--This property will be added to surefire jvm args when needed. Due to reflection usage we have to to open 
+                package java.lang in module java.base to unnamed module, hence making it available for reflection-->
+                <surefire.plugin.jdk9.args>--add-opens java.base/java.lang=ALL-UNNAMED </surefire.plugin.jdk9.args>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
