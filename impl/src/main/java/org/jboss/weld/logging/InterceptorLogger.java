@@ -71,6 +71,11 @@ public interface InterceptorLogger extends WeldLogger {
     void interceptionFactoryIgnoreFinalMethodsInvoked(Object param1);
 
     @LogMessage(level = Level.DEBUG)
-    @Message(id = 1709, value = "InterceptionFactory skipped proxy creation for AnnotatedType {0} because no @AroundInvoke interceptor was bound to it.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1709, value = "InterceptionFactory skipped wrapper creation for AnnotatedType {0} because no @AroundInvoke interceptor was bound to it.", format = Format.MESSAGE_FORMAT)
     void interceptionFactoryNotRequired(Object param1);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1710, value = "InterceptionFactory skipped wrapper creation for an internal container construct of type {0}", format = Format.MESSAGE_FORMAT)
+    void interceptionFactoryInternalContainerConstruct(Object type);
+
 }

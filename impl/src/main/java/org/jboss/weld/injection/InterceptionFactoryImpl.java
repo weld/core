@@ -100,6 +100,11 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
             throw InterceptorLogger.LOG.interceptionFactoryNotReusable();
         }
 
+        if (instance instanceof ProxyObject) {
+            InterceptorLogger.LOG.interceptionFactoryInternalContainerConstruct(instance.getClass());
+            return instance;
+        }
+
         UnproxyableResolutionException exception = Proxies.getUnproxyableTypeException(annotatedType.getBaseType(), null, beanManager.getServices(),
                 ignoreFinalMethods);
         if (exception != null) {
