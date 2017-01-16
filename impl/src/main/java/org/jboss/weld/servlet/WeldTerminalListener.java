@@ -35,7 +35,7 @@ import javax.servlet.http.HttpSessionListener;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.context.http.HttpSessionContext;
-import org.jboss.weld.context.http.HttpSessionDestructionContext;
+import org.jboss.weld.contexts.http.HttpSessionDestructionContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
 

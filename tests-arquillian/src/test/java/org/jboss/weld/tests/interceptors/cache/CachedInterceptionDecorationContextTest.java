@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
-import org.jboss.weld.context.cache.RequestScopedCache;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;

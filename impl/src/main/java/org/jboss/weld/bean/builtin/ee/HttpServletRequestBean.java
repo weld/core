@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
-import org.jboss.weld.context.http.HttpRequestContextImpl;
+import org.jboss.weld.contexts.http.HttpRequestContextImpl;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;

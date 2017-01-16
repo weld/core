@@ -20,7 +20,7 @@ import java.lang.reflect.Member;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.jboss.weld.logging.UtilLogger;

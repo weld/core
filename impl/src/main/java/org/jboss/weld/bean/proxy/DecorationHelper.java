@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;

@@ -25,8 +25,8 @@ package org.jboss.weld.environment.se.contexts;
 import java.lang.annotation.Annotation;
 
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
-import org.jboss.weld.context.AbstractUnboundContext;
-import org.jboss.weld.context.beanstore.HashMapBeanStore;
+import org.jboss.weld.contexts.AbstractUnboundContext;
+import org.jboss.weld.contexts.beanstore.HashMapBeanStore;
 
 /**
  * The thread context. Works with @ThreadScoped beans, maintaining a separate

@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;

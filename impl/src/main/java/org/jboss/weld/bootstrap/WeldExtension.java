@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.context.activator.ActivateRequestContextInterceptor;
+import org.jboss.weld.contexts.activator.ActivateRequestContextInterceptor;
 import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 
 /**

@@ -28,8 +28,8 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bean.StringBeanIdentifier;
-import org.jboss.weld.context.SerializableContextualFactory;
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.contexts.SerializableContextualFactory;
+import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;

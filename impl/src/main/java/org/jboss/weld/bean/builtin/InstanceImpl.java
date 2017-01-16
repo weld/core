@@ -39,7 +39,7 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.injection.CurrentInjectionPoint;
