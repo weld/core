@@ -34,13 +34,6 @@ public enum ConfigurationKey {
      * Otherwise, single-threaded version of Deployer and Validator are used.
      *
      * By default, concurrent deployment is enabled.
-     *//**
-     * Indicates whether ConcurrentDeployer and ConcurrentValidator should be enabled. If enabled, ConcurrentDeployer and ConcurrentValidator execute their
-     * subtasks using {@link org.jboss.weld.manager.api.ExecutorServices} which can be configured separately.
-     *
-     * Otherwise, single-threaded version of Deployer and Validator are used.
-     *
-     * By default, concurrent deployment is enabled.
      */
     @Description("Indicates whether the concurrent deployment is enabled.")
     CONCURRENT_DEPLOYMENT("org.jboss.weld.bootstrap.concurrentDeployment", true),

@@ -19,8 +19,6 @@ package org.jboss.weld.bootstrap.events.configurator;
 import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,8 +27,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.inject.spi.configurator.ProducerConfigurator;
-
-import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  *
@@ -53,7 +49,7 @@ public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T>, Con
     public ProducerConfiguratorImpl(Producer<T> producer) {
         this.produceCallback = (c) -> producer.produce(c);
         this.disposeCallback = (i) -> producer.dispose(i);
-        this.injectionPoints = new HashSet<>(producer.getInjectionPoints());
+        this.injectionPoints = producer.getInjectionPoints();
     }
 
     @Override
@@ -68,33 +64,6 @@ public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T>, Con
         checkArgumentNotNull(callback);
         this.disposeCallback = cast(callback);
         return this;
-    }
-
-    @Override
-    public ProducerConfigurator<T> addInjectionPoint(InjectionPoint injectionPoint) {
-        checkArgumentNotNull(injectionPoint);
-        this.injectionPoints.add(injectionPoint);
-        return this;
-    }
-
-    @Override
-    public ProducerConfigurator<T> addInjectionPoints(InjectionPoint... injectionPoints) {
-        checkArgumentNotNull(injectionPoints);
-        Collections.addAll(this.injectionPoints, injectionPoints);
-        return this;
-    }
-
-    @Override
-    public ProducerConfigurator<T> addInjectionPoints(Set<InjectionPoint> injectionPoints) {
-        checkArgumentNotNull(injectionPoints);
-        this.injectionPoints.addAll(injectionPoints);
-        return this;
-    }
-
-    @Override
-    public ProducerConfigurator<T> injectionPoints(InjectionPoint... injectionPoints) {
-        this.injectionPoints.clear();
-        return addInjectionPoints(injectionPoints);
     }
 
     public Producer<T> complete() {
@@ -115,7 +84,7 @@ public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T>, Con
        private final Set<InjectionPoint> injectionPoints;
 
        ProducerImpl(ProducerConfiguratorImpl<T> configurator) {
-           this.injectionPoints = configurator.injectionPoints.stream().filter((e) -> e != null).collect(ImmutableSet.collector());
+           this.injectionPoints = configurator.injectionPoints;
            this.produceCallback = configurator.produceCallback;
            this.disposeCallback = configurator.disposeCallback;
        }

@@ -27,15 +27,12 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Named;
 
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -87,19 +84,6 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         read(beanAttributes);
     }
 
-    @Override
-    public <U extends T> BeanAttributesConfigurator<U> read(AnnotatedType<U> type) {
-        // TODO method will be removed in CDI 2.0.CR1
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <U extends T> BeanAttributesConfigurator<U> read(AnnotatedMember<U> member) {
-        // TODO method will be removed in CDI 2.0.CR1
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public BeanAttributesConfigurator<T> read(BeanAttributes<?> beanAttributes) {
         checkArgumentNotNull(beanAttributes);
         name(beanAttributes.getName());
