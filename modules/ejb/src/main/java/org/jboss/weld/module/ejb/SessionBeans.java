@@ -149,6 +149,6 @@ class SessionBeans {
             typeMap.put(Object.class, Object.class);
             types.addAll(typeMap.values());
         }
-        return types.build();
+        return Beans.getLegalBeanTypes(types.build(), annotated);
     }
 }
