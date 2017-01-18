@@ -470,7 +470,7 @@ public class Beans {
             typeMap.put(Object.class, Object.class);
             types.addAll(typeMap.values());
         }
-        return types.build();
+        return getLegalBeanTypes(types.build(), annotated);
     }
 
     /**
