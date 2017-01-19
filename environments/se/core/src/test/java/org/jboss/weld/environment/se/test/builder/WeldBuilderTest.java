@@ -22,7 +22,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.event.ObserverException;
 import javax.enterprise.inject.Any;
@@ -59,8 +61,20 @@ public class WeldBuilderTest {
         // Test AutoCloseable
         assertNull(WeldContainer.instance("FOO"));
         // Test alternatives selected for the synthetic BDA
-        try (WeldContainer container = weld.beanClasses(Foo.class, Bar.class, Cat.class).alternatives(Bar.class)
+        try (WeldContainer container = weld.reset().beanClasses(Foo.class, Bar.class, Cat.class).alternatives(Bar.class)
                 .alternativeStereotypes(AlternativeStereotype.class).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+            assertEquals(1, container.select(Bar.class).get().getVal());
+            assertEquals(5, container.select(Cat.class).get().getVal());
+        }
+        try (WeldContainer container = weld.reset().beanClasses(Foo.class, Bar.class, Cat.class).alternatives(Bar.class)
+                .addAlternativeStereotype(AlternativeStereotype.class).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+            assertEquals(1, container.select(Bar.class).get().getVal());
+            assertEquals(5, container.select(Cat.class).get().getVal());
+        }
+        try (WeldContainer container = weld.reset().beanClasses(Foo.class, Bar.class, Cat.class).alternatives(Bar.class)
+                .selectAlternativeStereotypes(AlternativeStereotype.class).initialize()) {
             assertEquals(10, container.select(Foo.class).get().getVal());
             assertEquals(1, container.select(Bar.class).get().getVal());
             assertEquals(5, container.select(Cat.class).get().getVal());
@@ -70,12 +84,36 @@ public class WeldBuilderTest {
                 .initialize()) {
             assertEquals(Integer.valueOf(11), container.select(Qux.class).get().ping());
         }
+        try (WeldContainer container = weld.reset().beanClasses(Qux.class, MonitoringInterceptor.class).addInterceptor(MonitoringInterceptor.class)
+                .initialize()) {
+            assertEquals(Integer.valueOf(11), container.select(Qux.class).get().ping());
+        }
+        try (WeldContainer container = weld.reset().beanClasses(Qux.class, MonitoringInterceptor.class).enableInterceptors(MonitoringInterceptor.class)
+                .initialize()) {
+            assertEquals(Integer.valueOf(11), container.select(Qux.class).get().ping());
+        }
         // Test decorator enabled for the synthetic BDA
         try (WeldContainer container = weld.reset().beanClasses(Foo.class, CoolDecorator.class).decorators(CoolDecorator.class).initialize()) {
             assertEquals("NOK", container.select(Foo.class).get().methodToBeDecorated());
         }
+        try (WeldContainer container = weld.reset().beanClasses(Foo.class, CoolDecorator.class).addDecorator(CoolDecorator.class).initialize()) {
+            assertEquals("NOK", container.select(Foo.class).get().methodToBeDecorated());
+        }
+        try (WeldContainer container = weld.reset().beanClasses(Foo.class, CoolDecorator.class).enableDecorators(CoolDecorator.class).initialize()) {
+            assertEquals("NOK", container.select(Foo.class).get().methodToBeDecorated());
+        }
         // Test addBeanClass()
         try (WeldContainer container = weld.reset().beanClasses(Bar.class).addBeanClass(Foo.class).alternatives(Bar.class).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+            assertEquals(1, container.select(Bar.class).get().getVal());
+            assertTrue(container.select(Baz.class).isUnsatisfied());
+        }
+        try (WeldContainer container = weld.reset().beanClasses(Bar.class).addBeanClass(Foo.class).addAlternative(Bar.class).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+            assertEquals(1, container.select(Bar.class).get().getVal());
+            assertTrue(container.select(Baz.class).isUnsatisfied());
+        }
+        try (WeldContainer container = weld.reset().beanClasses(Bar.class).addBeanClass(Foo.class).selectAlternatives(Bar.class).initialize()) {
             assertEquals(10, container.select(Foo.class).get().getVal());
             assertEquals(1, container.select(Bar.class).get().getVal());
             assertTrue(container.select(Baz.class).isUnsatisfied());
@@ -113,6 +151,16 @@ public class WeldBuilderTest {
                 .initialize()) {
             assertFalse(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
                     .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
+        }
+
+        //try to override configuration setProperties
+        Map<String,Object> configOverride = new HashMap<String, Object>();
+        try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class).property(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false)
+                .property(ConfigurationKey.NON_PORTABLE_MODE.get(), true).setProperties(configOverride).initialize()) {
+            // the map was empty, therefore, there should be no changes to default configuration
+            WeldConfiguration configuration = container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class);
+            assertTrue(configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
+            assertFalse(configuration.getBooleanProperty(ConfigurationKey.NON_PORTABLE_MODE));
         }
     }
 
@@ -176,6 +224,25 @@ public class WeldBuilderTest {
             assertEquals(22, container.select(Beta2.class).get().getVal());
         }
         try (WeldContainer container = weld.reset().addPackages(true, Beta1.class).initialize()) {
+            assertTrue(container.select(Alpha1.class).isUnsatisfied());
+            assertTrue(container.select(Alpha2.class).isUnsatisfied());
+            assertEquals(11, container.select(Beta1.class).get().getVal());
+            assertEquals(22, container.select(Beta2.class).get().getVal());
+        }
+        // now try the same but add Package instead of Class<?>
+        try (WeldContainer container = weld.reset().addPackages(Alpha1.class.getPackage()).initialize()) {
+            assertEquals(1, container.select(Alpha1.class).get().getVal());
+            assertEquals(2, container.select(Alpha2.class).get().getVal());
+            assertTrue(container.select(Beta1.class).isUnsatisfied());
+            assertTrue(container.select(Beta2.class).isUnsatisfied());
+        }
+        try (WeldContainer container = weld.reset().addPackages(true, Alpha2.class.getPackage()).initialize()) {
+            assertEquals(1, container.select(Alpha1.class).get().getVal());
+            assertEquals(2, container.select(Alpha2.class).get().getVal());
+            assertEquals(11, container.select(Beta1.class).get().getVal());
+            assertEquals(22, container.select(Beta2.class).get().getVal());
+        }
+        try (WeldContainer container = weld.reset().addPackages(true, Beta1.class.getPackage()).initialize()) {
             assertTrue(container.select(Alpha1.class).isUnsatisfied());
             assertTrue(container.select(Alpha2.class).isUnsatisfied());
             assertEquals(11, container.select(Beta1.class).get().getVal());
