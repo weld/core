@@ -73,6 +73,15 @@ public class WeldSEProviderTest {
             Bean<?> fooBean = TestExtension.fooBeanReference.get();
             assertNotNull(fooBean);
         }
+
+        // test the same but add the extension as Class<? extends Extension>
+        TestExtension.reset();
+        try (WeldContainer weldContainer = new Weld().disableDiscovery().beanClasses(Foo.class).addExtensions(TestExtension.class).initialize()) {
+            BeanManager beanManager = TestExtension.beanManagerReference.get();
+            assertNotNull(beanManager);
+            Bean<?> fooBean = TestExtension.fooBeanReference.get();
+            assertNotNull(fooBean);
+        }
     }
 
     private void assertCdi(CDI<Object> cdi, String id) {
