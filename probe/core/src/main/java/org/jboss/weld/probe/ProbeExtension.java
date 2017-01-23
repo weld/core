@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import javax.decorator.Decorator;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.UnproxyableResolutionException;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
@@ -73,6 +74,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.probe.BootstrapStats.EventType;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
@@ -88,6 +90,7 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  * @author Martin Kouba
  */
+@Vetoed
 public class ProbeExtension implements Extension {
 
     private final Probe probe;
@@ -105,9 +108,9 @@ public class ProbeExtension implements Extension {
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         ProbeLogger.LOG.developmentModeEnabled();
         BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
-        event.addAnnotatedType(manager.createAnnotatedType(Monitored.class), Monitored.class.getName());
-        event.addAnnotatedType(manager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
-        event.addAnnotatedType(manager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(Monitored.class, beanManager), Monitored.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(MonitoredComponent.class, beanManager), MonitoredComponent.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InvocationMonitor.class, beanManager), InvocationMonitor.class.getName());
         WeldConfiguration configuration = manager.getServices().get(WeldConfiguration.class);
         String exclude = configuration.getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
         this.invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);

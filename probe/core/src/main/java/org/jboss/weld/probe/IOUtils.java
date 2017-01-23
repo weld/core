@@ -26,10 +26,13 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  *
  * @author Martin Kouba
  */
+@Vetoed
 final class IOUtils {
 
     private static final int DEFAULT_BUFFER = 1024 * 8;

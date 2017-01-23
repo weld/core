@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.probe;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * Various string constants.
  *
  * @author Martin Kouba
  */
+@Vetoed
 public final class Strings {
 
     public static final String ID = "id";

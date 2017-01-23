@@ -26,6 +26,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.weld.util.Preconditions;
 
 /**
@@ -33,6 +35,7 @@ import org.jboss.weld.util.Preconditions;
  *
  * @author Martin Kouba
  */
+@Vetoed
 final class Json {
 
     private static final String NAME = "name";

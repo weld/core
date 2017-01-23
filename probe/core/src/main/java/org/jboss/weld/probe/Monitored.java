@@ -24,6 +24,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.enterprise.inject.Vetoed;
 import javax.interceptor.InterceptorBinding;
 
 /**
@@ -31,6 +32,7 @@ import javax.interceptor.InterceptorBinding;
  *
  * @author Martin Kouba
  */
+@Vetoed
 @Inherited
 @InterceptorBinding
 @Target({ TYPE, METHOD })

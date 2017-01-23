@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Intercepted;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -42,6 +43,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @author Martin Kouba
  */
+@Vetoed
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
 @Monitored
 @Interceptor

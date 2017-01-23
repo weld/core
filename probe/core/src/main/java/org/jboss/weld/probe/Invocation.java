@@ -24,6 +24,7 @@ import java.util.List;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
 import javax.interceptor.InvocationContext;
 
@@ -34,6 +35,7 @@ import javax.interceptor.InvocationContext;
  *
  * @author Martin Kouba
  */
+@Vetoed
 public final class Invocation {
 
     /**
