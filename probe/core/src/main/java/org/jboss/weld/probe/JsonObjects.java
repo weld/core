@@ -126,6 +126,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
@@ -178,6 +179,7 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  * @author Martin Kouba
  */
+@Vetoed
 final class JsonObjects {
 
     private static final int CONTEXTUAL_INSTANCE_TO_STRING_LIMIT = 100;

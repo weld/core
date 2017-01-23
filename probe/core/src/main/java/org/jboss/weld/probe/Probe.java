@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
@@ -60,6 +61,7 @@ import org.jboss.weld.util.collections.SetMultimap;
  *
  * @author Martin Kouba
  */
+@Vetoed
 class Probe {
 
     // If needed make this configurable

@@ -26,12 +26,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.Vetoed;
 
 /**
  * Any bean that declares this stereotype is monitored.
  *
  * @author Martin Kouba
  */
+@Vetoed
 @Monitored
 @Documented
 @Stereotype

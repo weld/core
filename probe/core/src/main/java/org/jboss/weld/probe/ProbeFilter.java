@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.regex.Pattern;
 
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -66,6 +67,7 @@ import org.jboss.weld.util.reflection.Formats;
  * @see ConfigurationKey#PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE
  * @author Martin Kouba
  */
+@Vetoed
 public class ProbeFilter implements Filter {
 
     static final String REST_URL_PATTERN_BASE = "/weld-probe";

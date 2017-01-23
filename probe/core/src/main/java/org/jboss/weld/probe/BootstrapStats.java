@@ -19,6 +19,7 @@ package org.jboss.weld.probe;
 import java.util.EnumMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
@@ -32,6 +33,7 @@ import javax.enterprise.inject.spi.ProcessProducer;
  * @author Martin Kouba
  *
  */
+@Vetoed
 class BootstrapStats {
 
     private final EnumMap<EventType, AtomicInteger> counts;
