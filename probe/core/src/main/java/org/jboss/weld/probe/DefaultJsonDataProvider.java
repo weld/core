@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -49,6 +50,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  *
  * @author Martin Kouba
  */
+@Vetoed
 public class DefaultJsonDataProvider implements JsonDataProvider {
 
     private final Probe probe;

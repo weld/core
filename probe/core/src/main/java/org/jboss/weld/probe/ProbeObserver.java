@@ -28,6 +28,7 @@ import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.Prioritized;
@@ -46,6 +47,7 @@ import org.jboss.weld.util.reflection.Formats;
  * @author Jozef Hartinger
  *
  */
+@Vetoed
 class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
     private static final int PRIORITY_OFFSET = 100;

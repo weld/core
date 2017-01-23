@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.probe;
 
+import javax.enterprise.inject.Vetoed;
 import javax.management.MXBean;
 
 import org.jboss.weld.probe.ProbeDynamicMBean.Description;
@@ -26,6 +27,7 @@ import org.jboss.weld.probe.ProbeDynamicMBean.ParamName;
  *
  * @author Martin Kouba
  */
+@Vetoed
 @MXBean
 public interface JsonDataProvider {
 

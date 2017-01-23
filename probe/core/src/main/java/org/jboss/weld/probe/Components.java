@@ -40,6 +40,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
@@ -68,6 +69,7 @@ import org.jboss.weld.util.collections.ImmutableMap;
  *
  * @author Martin Kouba
  */
+@Vetoed
 final class Components {
 
     static final Map<String, Class<? extends Annotation>> INSPECTABLE_SCOPES = ImmutableMap.<String, Class<? extends Annotation>> builder()

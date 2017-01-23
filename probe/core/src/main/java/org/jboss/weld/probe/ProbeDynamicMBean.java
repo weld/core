@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.inject.Vetoed;
 import javax.management.DynamicMBean;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
@@ -39,6 +40,7 @@ import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
  *
  * @author Martin Kouba
  */
+@Vetoed
 class ProbeDynamicMBean extends StandardMBean {
 
     private static final Map<String, Class<?>> PRIMITIVES_MAP = new HashMap<>();

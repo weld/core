@@ -19,12 +19,15 @@ package org.jboss.weld.probe;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 
 /**
  *
  * @author Martin Kouba
  */
+@Vetoed
 final class SecurityActions {
 
     private SecurityActions() {
