@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.probe;
 
+import javax.enterprise.inject.Vetoed;
+
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
@@ -31,6 +33,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
  *
  * @author Martin Kouba
  */
+@Vetoed
 @SuppressWarnings("checkstyle:magicnumber")
 @MessageLogger(projectCode = "PROBE-")
 public interface ProbeLogger extends BasicLogger {

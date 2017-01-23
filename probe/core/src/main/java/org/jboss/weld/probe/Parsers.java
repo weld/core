@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.Nonbinding;
 
@@ -54,6 +55,7 @@ import org.jboss.weld.util.reflection.WildcardTypeImpl;
  *
  * @author Martin Kouba
  */
+@Vetoed
 final class Parsers {
 
     private Parsers() {
