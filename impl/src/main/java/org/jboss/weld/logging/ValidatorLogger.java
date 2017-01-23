@@ -158,7 +158,7 @@ public interface ValidatorLogger extends WeldLogger {
     DeploymentException alternativeStereotypeSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
     @Message(id = 1422, value = "Enabled alternative class {0} ({1}) does not match any bean: the class is not found, or not annotated with @Alternative and still not registered through a portable extension, or not annotated with @Dependent inside an implicit bean archive", format = Format.MESSAGE_FORMAT)
-    DeploymentException alternativeBeanClassNotAnnotated(Object value, Object location);
+    DeploymentException alternativeBeanClassNotAnnotatedOrVetoed(Object value, Object location);
 
     @Message(id = 1424, value = "The following disposal methods were declared but did not resolve to a producer method: {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException disposalMethodsWithoutProducer(Object param1);
@@ -312,5 +312,9 @@ public interface ValidatorLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 1481, value = "Final method will be ignored during proxy generation and should never be invoked upon the proxy instance! {0} - {1}.", format = Format.MESSAGE_FORMAT)
     void notProxyableFinalMethodIgnored(Method invalidMethod, Object declaringBean);
+
+    @SuppressWarnings("weldlog:msg-value")
+    @Message(id = 1482, value = "Enabled alternative class {0} ({1}) does not match any bean, or is not annotated with @Alternative or an @Alternative stereotype, or does not declare a producer annotated with @Alternative or an @Alternative stereotype", format = Format.MESSAGE_FORMAT)
+    DeploymentException alternativeBeanClassNotAnnotated(Object value, Object location);
 
 }
