@@ -19,11 +19,14 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.util.Types.buildClassNameMap;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -48,7 +51,6 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -83,6 +85,8 @@ import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -101,6 +105,9 @@ import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.metadata.cache.StereotypeModel;
+import org.jboss.weld.security.GetDeclaredFieldsAction;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
@@ -663,7 +670,7 @@ public class Validator implements Service {
                 if (!beanManager.isStereotype(stereotype)) {
                     throw ValidatorLogger.LOG.alternativeStereotypeNotStereotype(definition);
                 }
-                if (!isAlternative(beanManager, stereotype)) {
+                if (!isAlternativeStereotype(beanManager, stereotype)) {
                     throw ValidatorLogger.LOG.alternativeStereotypeNotAnnotated(definition);
                 }
             }
@@ -689,26 +696,68 @@ public class Validator implements Service {
                 if (enabledClass.isAnnotation() || enabledClass.isInterface()) {
                     throw ValidatorLogger.LOG.alternativeBeanClassNotClass(definition);
                 } else {
-                    // check that the class is a bean class of at least one alternative
-                    boolean alternativeBeanFound = false;
-                    for (Bean<?> bean : beansByClass.get(enabledClass)) {
-                        if (bean.isAlternative()) {
-                            alternativeBeanFound = true;
+                    final WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
+                    boolean allowExcludedAlternatives = configuration.getBooleanProperty(ConfigurationKey.ALLOW_VETOED_ALTERNATIVES);
+                    // check that the class is a bean class of at least one alternative. If it is not and weld is configured to allow excluded alternatives check if the class is annotated with @Alternative or an alternative stereotype.
+                    if (!isAlternativeBean(enabledClass, beansByClass)) {
+                        if (! allowExcludedAlternatives) {
+                            throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotatedOrVetoed(definition.getValue(), definition.getLocation());
+                        } else if (! isAlternativeCandidate(enabledClass, beanManager)) {
+                            throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition.getValue(), definition.getLocation());
                         }
-                    }
-                    if (!alternativeBeanFound) {
-                        throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition.getValue(), definition.getLocation());
                     }
                 }
             }
         }
     }
 
-    private static boolean isAlternative(BeanManager beanManager, Class<? extends Annotation> stereotype) {
-        for (Annotation annotation : beanManager.getStereotypeDefinition(stereotype)) {
-            if (annotation.annotationType().equals(Alternative.class)) {
+    private boolean isAlternativeCandidate(Class<?> enabledClass, BeanManagerImpl beanManager) {
+        // Note that the deployment would fail if any alternative <class> cannot be loaded
+        // <class> exists and is annotated with @Alternative or alternative stereotype
+        if (isAlternativeOrHasAlternativeStereotype(enabledClass, beanManager)) {
+            return true;
+        }
+        // <class> declares producer with alternative
+        // Intentionally do not process the class hierarchy -
+        for (Method declaredMethod : AccessController.doPrivileged(new GetDeclaredMethodsAction(enabledClass))) {
+            if (declaredMethod.isAnnotationPresent(Produces.class) && isAlternativeOrHasAlternativeStereotype(declaredMethod, beanManager)) {
                 return true;
             }
+        }
+        for (Field declaredField : AccessController.doPrivileged(new GetDeclaredFieldsAction(enabledClass))) {
+            if (declaredField.isAnnotationPresent(Produces.class) && isAlternativeOrHasAlternativeStereotype(declaredField, beanManager)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAlternativeOrHasAlternativeStereotype(AnnotatedElement annotatedElement, BeanManagerImpl beanManager) {
+        if (annotatedElement.isAnnotationPresent(Alternative.class)) {
+                return true;
+            }
+        for (Annotation annotation : annotatedElement.getAnnotations()) {
+            if (isAlternativeStereotype(beanManager, annotation.annotationType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAlternativeBean(Class<?> enabledClass, Multimap<Class<?>, Bean<?>> beansByClass) {
+        // check that the class is a bean class of at least one alternative
+        for (Bean<?> bean : beansByClass.get(enabledClass)) {
+            if (bean.isAlternative()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAlternativeStereotype(BeanManagerImpl beanManager, Class<? extends Annotation> stereotype) {
+        final StereotypeModel<? extends Annotation> model = beanManager.getServices().get(MetaAnnotationStore.class).getStereotype(stereotype);
+        if (model.isValid() && model.isAlternative()) {
+            return true;
         }
         return false;
     }
