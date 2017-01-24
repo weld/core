@@ -160,7 +160,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1436, value = "Type {0} is not proxyable because it has a private constructor {1} - {2}.", format = Format.MESSAGE_FORMAT)
     String notProxyablePrivateConstructor(Object param1, Object param2, Object param3);
 
-    @Message(id = 1437, value = "Bean type {0} is not proxyable because it is final - {2}.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1437, value = "Bean type {0} is not proxyable because it is final - {1}.", format = Format.MESSAGE_FORMAT)
     UnproxyableResolutionException notProxyableFinalType(Object param1, Object param2);
 
     @Message(id = 1438, value = "Bean type {0} is not proxyable because it is a primitive - {1}.", format = Format.MESSAGE_FORMAT)
