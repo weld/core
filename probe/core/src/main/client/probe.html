@@ -213,7 +213,11 @@ ${head}
             <col width="3%">
             <col width="5%">
             <col width="11%">
-            <col width="59%">
+            <col width="44%">
+            <col width="5%">
+            <col width="15%">
+            <col width="2%">
+            <col width="2%">
             <col width="18%">
             <tr>
                 <th>Index</th>
@@ -236,6 +240,10 @@ ${head}
                 <th>Beans {{tip "The number does not include inteceptors, decorators and built-in beans"}}</th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
+                <th>Beans Xml URL</th>
+                <th>Beans Xml version</th>
+                <th>Trimmed</th>
+                <th>Scanning Info</th>
             </tr>
             {{#each visibleBdas}}
             <tr>
@@ -251,6 +259,10 @@ ${head}
                     {{detailIcon}} {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
+                <td>{{beansXmlUrl}}</td>
+                <td>{{beansXmlVersion}}</td>
+                <td>{{beansXmlTrimmed}}</td>
+                <td>{{beansXmlScanning}}</td>
             </tr>
             {{/each}}
         </table>
