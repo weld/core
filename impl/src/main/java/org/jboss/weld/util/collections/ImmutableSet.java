@@ -66,6 +66,9 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
         if (collection.isEmpty()) {
             return Collections.emptySet();
         }
+        if (collection instanceof Set) {
+            return from((Set<T>) collection);
+        }
         return ImmutableSet.<T> builder().addAll(collection).build();
     }
 
@@ -163,18 +166,22 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
 
         @Override
         public Set<T> build() {
-            switch (set.size()) {
-                case 0:
-                    return Collections.emptySet();
-                case 1:
-                    return new ImmutableTinySet.Singleton<T>(set);
-                case 2:
-                    return new ImmutableTinySet.Doubleton<T>(set);
-                case 3:
-                    return new ImmutableTinySet.Tripleton<T>(set);
-                default:
-                    return new ImmutableHashSet<>(set);
-            }
+            return from(set);
+        }
+    }
+
+    private static <T> Set<T> from(Set<T> set) {
+        switch (set.size()) {
+            case 0:
+                return Collections.emptySet();
+            case 1:
+                return new ImmutableTinySet.Singleton<T>(set);
+            case 2:
+                return new ImmutableTinySet.Doubleton<T>(set);
+            case 3:
+                return new ImmutableTinySet.Tripleton<T>(set);
+            default:
+                return new ImmutableHashSet<>(set);
         }
     }
 
