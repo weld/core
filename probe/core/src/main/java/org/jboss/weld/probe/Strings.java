@@ -30,6 +30,10 @@ public final class Strings {
     public static final String BDA_ID = "bdaId";
     public static final String BDA = "bda";
     public static final String BEAN_DISCOVERY_MODE = "beanDiscoveryMode";
+    public static final String BEANS_XML_SCANNING = "beansXmlScanning";
+    public static final String BEANS_XML_TRIMMED = "beansXmlTrimmed";
+    public static final String BEANS_XML_URL = "beansXmlUrl";
+    public static final String BEANS_XML_VERSION = "beansXmlVersion";
     public static final String BDAS = "bdas";
     public static final String CONFIGURATION = "configuration";
     public static final String SCOPE = "scope";

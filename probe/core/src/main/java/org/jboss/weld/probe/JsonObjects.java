@@ -27,6 +27,10 @@ import static org.jboss.weld.probe.Strings.BDA_ID;
 import static org.jboss.weld.probe.Strings.BEANS;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
+import static org.jboss.weld.probe.Strings.BEANS_XML_SCANNING;
+import static org.jboss.weld.probe.Strings.BEANS_XML_TRIMMED;
+import static org.jboss.weld.probe.Strings.BEANS_XML_URL;
+import static org.jboss.weld.probe.Strings.BEANS_XML_VERSION;
 import static org.jboss.weld.probe.Strings.BINDINGS;
 import static org.jboss.weld.probe.Strings.BOOSTRAP_STATS;
 import static org.jboss.weld.probe.Strings.CHILDREN;
@@ -53,6 +57,7 @@ import static org.jboss.weld.probe.Strings.DEPENDENTS;
 import static org.jboss.weld.probe.Strings.DESCRIPTION;
 import static org.jboss.weld.probe.Strings.DISPOSAL_METHOD;
 import static org.jboss.weld.probe.Strings.EJB_NAME;
+import static org.jboss.weld.probe.Strings.EMPTY;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
 import static org.jboss.weld.probe.Strings.EVENT_INFO;
 import static org.jboss.weld.probe.Strings.FIRED;
@@ -154,8 +159,8 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.Description;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
+import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
@@ -225,6 +230,14 @@ final class JsonObjects {
             for (Class<?> interceptor : Components.getSortedProbeComponetCandidates(enablement.getInterceptors())) {
                 interceptors.add(decorateProbeComponent(interceptor, createSimpleBeanJson(findEnabledBean(interceptor, BeanKind.INTERCEPTOR, probe), probe)));
             }
+
+            if (beansXml != null) {
+                bdaBuilder.add(BEANS_XML_URL, beansXml.getUrl() != null ? beansXml.getUrl().toString() : EMPTY);
+                bdaBuilder.add(BEANS_XML_VERSION, beansXml.getVersion() != null ? beansXml.getVersion().toString() : EMPTY);
+                bdaBuilder.add(BEANS_XML_TRIMMED, beansXml.isTrimmed());
+                bdaBuilder.add(BEANS_XML_SCANNING, beansXml.getScanning() != null ? beansXml.getScanning().toString() : EMPTY);
+            }
+
             enablementBuilder.add(INTERCEPTORS, interceptors);
             JsonArrayBuilder decorators = Json.arrayBuilder();
             for (Class<?> decorator : enablement.getDecorators()) {
