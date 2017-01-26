@@ -81,16 +81,18 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager) {
         super(injectionPoint, creationalContext, beanManager);
 
-        // Perform typesafe resolution, and possibly attempt to resolve the ambiguity
-        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
-                .setDeclaringBean(getInjectionPoint().getBean()).create();
-        TypeSafeBeanResolver beanResolver = getBeanManager().getBeanResolver();
-        this.allBeans = beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
-        // optimization for the most common path - non-null bean means we are not unsatisfied not ambiguous
-        if (allBeans.size() == 1) {
-            this.bean = allBeans.iterator().next();
+        if (injectionPoint.getQualifiers().isEmpty() && Object.class.equals(getType())) {
+            // Do not prefetch the beans for Instance<Object> with no qualifiers
+            allBeans = null;
+            bean = null;
         } else {
-            this.bean = null;
+            this.allBeans = resolveBeans();
+            // Optimization for the most common path - non-null bean means we are not unsatisfied not ambiguous
+            if (allBeans.size() == 1) {
+                this.bean = allBeans.iterator().next();
+            } else {
+                this.bean = null;
+            }
         }
         this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
         // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the
@@ -110,7 +112,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
             throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(
                     Formats.formatAnnotations(ip.getQualifiers()),
                     Formats.formatInjectionPointType(ip.getType()),
-                    WeldCollections.toMultiRowString(allBeans));
+                    WeldCollections.toMultiRowString(allBeans()));
         }
     }
 
@@ -125,15 +127,15 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     }
 
     public Iterator<T> iterator() {
-        return new InstanceImplIterator(allBeans);
+        return new InstanceImplIterator(allBeans());
     }
 
     public boolean isAmbiguous() {
-        return allBeans.size() > 1;
+        return allBeans().size() > 1;
     }
 
     public boolean isUnsatisfied() {
-        return allBeans.isEmpty();
+        return allBeans().isEmpty();
     }
 
     public WeldInstance<T> select(Annotation... qualifiers) {
@@ -191,7 +193,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
     @Override
     public boolean isResolvable() {
-        return !isUnsatisfied() && !isAmbiguous();
+        return allBeans().size() == 1;
     }
 
     @Override
@@ -199,7 +201,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         return new Iterable<WeldInstance.Handler<T>>() {
             @Override
             public Iterator<org.jboss.weld.inject.WeldInstance.Handler<T>> iterator() {
-                return new HandlerIterator(allBeans);
+                return new HandlerIterator(allBeans());
             }
         };
     }
@@ -219,6 +221,18 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         } finally {
             stack.pop();
         }
+    }
+
+    private Set<Bean<?>> allBeans() {
+        return allBeans == null ? resolveBeans() : allBeans;
+    }
+
+    private Set<Bean<?>> resolveBeans() {
+        // Perform typesafe resolution, and possibly attempt to resolve the ambiguity
+        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
+                .setDeclaringBean(getInjectionPoint().getBean()).create();
+        TypeSafeBeanResolver beanResolver = getBeanManager().getBeanResolver();
+        return beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
     }
 
     // Serialization
@@ -245,7 +259,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
     }
 
-    abstract class BeanIterator<I> implements Iterator<I> {
+    abstract class BeanIterator<TYPE> implements Iterator<TYPE> {
 
         protected final Iterator<Bean<?>> delegate;
 
