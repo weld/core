@@ -253,7 +253,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
     }
 
     public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans) {
-        if (beans.size() <= 1) {
+        if (beans.isEmpty()) {
             return beans;
         }
         /*
