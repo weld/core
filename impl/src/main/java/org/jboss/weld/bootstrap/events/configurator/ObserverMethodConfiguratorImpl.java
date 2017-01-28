@@ -76,6 +76,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         this.observedQualifiers = new HashSet<>();
         this.priority = ObserverMethod.DEFAULT_PRIORITY;
         this.extension = extension;
+        this.beanClass = extension.getClass();
     }
 
     public ObserverMethodConfiguratorImpl(ObserverMethod<T> observerMethod, Extension extension) {
