@@ -58,6 +58,7 @@ public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
             names.add(clazz.getName());
         }
         names.add(Unmanaged.class.getName());
+        names.add(CompositeCDIProvider.class.getName());
         this.knownClassNames = names.build();
         this.instanceCache = ComputingCacheBuilder.newBuilder().build(new Function<BeanManagerImpl, WeldInstance<T>>() {
 

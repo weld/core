@@ -19,6 +19,7 @@ package org.jboss.weld.util.collections;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.weld.util.Preconditions;
@@ -37,8 +38,8 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     }
 
     /**
-     * Creates an immutable list that consists of the given elements. This method should only be used in the varargs form. If there is a need to create
-     * an immutable list of an array of elements, {@link #copyOf(Object[])} should be used instead.
+     * Creates an immutable list that consists of the given elements. This method should only be used in the varargs form. If there is a need to create an
+     * immutable list of an array of elements, {@link #copyOf(Object[])} should be used instead.
      *
      * @param elements the given elements
      * @return an immutable list
@@ -50,8 +51,8 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     }
 
     /**
-     * Creates an immutable list that consists of the elements in the given array. A copy of the given array is used which means
-     * that any modifications to the given array will not affect the immutable list.
+     * Creates an immutable list that consists of the elements in the given array. A copy of the given array is used which means that any modifications to the
+     * given array will not affect the immutable list.
      *
      * @param elements the given array of elements
      * @return an immutable list
@@ -62,8 +63,8 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     }
 
     /**
-     * Creates an immutable list that consists of the elements in the given collection. If the given collection is already an immutable list,
-     * it is returned directly.
+     * Creates an immutable list that consists of the elements in the given collection. If the given collection is already an immutable list, it is returned
+     * directly.
      *
      * @param source the given collection
      * @return an immutable list
@@ -84,7 +85,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         if (source instanceof Collection<?>) {
             return copyOf((Collection<T>) source);
         }
-        return ImmutableList.<T>builder().addAll(source).build();
+        return ImmutableList.<T> builder().addAll(source).build();
     }
 
     @SuppressWarnings("unchecked")
@@ -124,6 +125,14 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         Builder<T> addAll(@SuppressWarnings("unchecked") T... items);
 
         List<T> build();
+
+        /**
+         * Sort the elements before the immutable list is built.
+         *
+         * @param comparator
+         */
+        List<T> build(Comparator<T> comparator);
+
     }
 
     private static class BuilderImpl<T> implements Builder<T> {
@@ -162,8 +171,16 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         }
 
         @Override
-        public List<T> build() {
+        public List<T> build(Comparator<T> comparator) {
+            if (comparator != null) {
+                Collections.sort(list, comparator);
+            }
             return ImmutableList.ofInternal(list.toArray());
+        }
+
+        @Override
+        public List<T> build() {
+            return build(null);
         }
     }
 }
