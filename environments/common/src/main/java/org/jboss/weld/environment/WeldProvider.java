@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.CDIProvider;
 
 import org.jboss.weld.SimpleCDI;
+import org.jboss.weld.WeldCDIProvider;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
 
@@ -31,19 +31,20 @@ import org.jboss.weld.manager.BeanManagers;
  *
  * @author Jozef Hartinger
  */
-public class WeldProvider implements CDIProvider {
+public class WeldProvider implements WeldCDIProvider {
 
     private static class EnvironmentCDI extends SimpleCDI {
 
         /*
-         * The BeanManager we are going to return when unable to precisely identify caller's BDA. We assume that all BDAs
-         * share the same classloader and therefore visibility is not a concern. The only difference this can make is per-BDA (CDI 1.0 style)
-         * enablement of alternatives / interceptors and decorators. Nothing we can do about that.
+         * The BeanManager we are going to return when unable to precisely identify caller's BDA. We assume that all BDAs share the same classloader and
+         * therefore visibility is not a concern. The only difference this can make is per-BDA (CDI 1.0 style) enablement of alternatives / interceptors and
+         * decorators. Nothing we can do about that.
          */
         private final BeanManagerImpl fallbackBeanManager;
 
         public EnvironmentCDI() {
-            // sort the managers by their ID and use the first one as the fallback BeanManager
+            // sort the managers by their ID and use the first one as the
+            // fallback BeanManager
             // this guarantees that we consistently use the same BM
             List<BeanManagerImpl> managers = new ArrayList<BeanManagerImpl>(getContainer().beanDeploymentArchives().values());
             Collections.sort(managers, BeanManagers.ID_COMPARATOR);
@@ -59,6 +60,11 @@ public class WeldProvider implements CDIProvider {
     @Override
     public CDI<Object> getCDI() {
         return new EnvironmentCDI();
+    }
+
+    @Override
+    public int getPriority() {
+        return DEFAULT_PRIORITY;
     }
 
 }

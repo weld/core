@@ -21,10 +21,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.CDIProvider;
 import javax.enterprise.inject.spi.Unmanaged;
 
+import org.jboss.weld.CompositeCDIProvider;
 import org.jboss.weld.Container;
+import org.jboss.weld.WeldCDIProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -37,7 +38,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  *
  * @author Martin Kouba
  */
-public class WeldSEProvider implements CDIProvider {
+public class WeldSEProvider implements WeldCDIProvider {
 
     private final ComputingCache<String, WeldContainer> containers;
 
@@ -52,6 +53,7 @@ public class WeldSEProvider implements CDIProvider {
         }
         names.add(Unmanaged.class.getName());
         names.add(CDI.class.getName());
+        names.add(CompositeCDIProvider.class.getName());
         this.knownClassNames = names.build();
     }
 
@@ -69,14 +71,23 @@ public class WeldSEProvider implements CDIProvider {
         if (caller != null) {
             return containers.getValue(caller);
         }
-        // We are not able to determine the caller - return the first container initialized
+        // We are not able to determine the caller - return the first container
+        // initialized
         return WeldContainer.instance(ids.get(0));
+    }
+
+    @Override
+    public int getPriority() {
+        // Note that the priority must be higher than the priority of the
+        // provider used in weld-servlet
+        return DEFAULT_PRIORITY + 1;
     }
 
     private String getCallingClassName() {
         boolean outerSubclassReached = false;
         for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-            // the method call that leads to the first invocation of this class or its subclass is considered the caller
+            // the method call that leads to the first invocation of this class
+            // or its subclass is considered the caller
             if (!knownClassNames.contains(element.getClassName())) {
                 if (outerSubclassReached) {
                     return element.getClassName();
