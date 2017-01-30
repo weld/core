@@ -609,15 +609,19 @@ public class Validator implements Service {
             }
         }
         List<String> accessibleNamespaces = beanManager.getAccessibleNamespaces();
-
         for (String name : namedAccessibleBeans.keySet()) {
-            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager));
-            if (resolvedBeans.size() > 1) {
-                throw ValidatorLogger.LOG.ambiguousElName(name, resolvedBeans);
-            }
-            if (accessibleNamespaces.contains(name)) {
-                throw ValidatorLogger.LOG.beanNameIsPrefix(name);
-            }
+            validateBeanName(name, namedAccessibleBeans, accessibleNamespaces, beanManager);
+        }
+    }
+
+    protected void validateBeanName(String name, SetMultimap<String, Bean<?>> namedAccessibleBeans, List<String> accessibleNamespaces,
+            BeanManagerImpl beanManager) {
+        Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object> resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager));
+        if (resolvedBeans.size() > 1) {
+            throw ValidatorLogger.LOG.ambiguousElName(name, resolvedBeans);
+        }
+        if (accessibleNamespaces.contains(name)) {
+            throw ValidatorLogger.LOG.beanNameIsPrefix(name);
         }
     }
 

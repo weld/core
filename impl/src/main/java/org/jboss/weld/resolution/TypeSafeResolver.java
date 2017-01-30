@@ -28,7 +28,8 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.util.Function;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
-import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Implementation of type safe bean resolution
@@ -122,12 +123,12 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
 
     protected F makeResultImmutable(C result) {
         if (result instanceof List<?>) {
-            return cast(WeldCollections.immutableListView((List<?>) result));
+            return cast(ImmutableList.copyOf(((List<?>) result)));
         }
         if (result instanceof Set<?>) {
-            return cast(WeldCollections.immutableSetView((Set<?>) result));
+            return cast(ImmutableSet.copyOf((Set<?>) result));
         }
-        throw new IllegalArgumentException("result");
+        throw new IllegalArgumentException("Unable to make result immutable");
     }
 
     /**

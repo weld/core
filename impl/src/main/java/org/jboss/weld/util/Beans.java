@@ -230,21 +230,20 @@ public class Beans {
     /**
      * Retains only beans which are enabled.
      *
-     * @param beans The beans to filter
+     * @param beans The mutable set of beans to filter
      * @param beanManager The bean manager
      * @return An immutable set of enabled beans
      */
     public static <T extends Bean<?>> Set<T> removeDisabledBeans(Set<T> beans, final BeanManagerImpl beanManager) {
-        if (beans.size() == 0) {
+        if (beans.isEmpty()) {
             return beans;
         } else {
-            ImmutableSet.Builder<T> builder = ImmutableSet.builder();
-            for (T bean : beans) {
-                if (isBeanEnabled(bean, beanManager.getEnabled())) {
-                    builder.add(bean);
+            for (Iterator<T> iterator = beans.iterator(); iterator.hasNext();) {
+                if (!isBeanEnabled(iterator.next(), beanManager.getEnabled())) {
+                    iterator.remove();
                 }
             }
-            return builder.build();
+            return beans;
         }
     }
 
