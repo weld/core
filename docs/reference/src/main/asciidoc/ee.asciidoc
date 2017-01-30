@@ -250,6 +250,13 @@ WEB-INF/classes/META-INF directories. Otherwise your application would
 not be portable.
 ====
 
+===== Trimmed bean archive
+
+Optionally `beans.xml` file in explicit bean archive can include simple `trim`
+element. This trimmed bean archive means that `ProcessAnnotatedType` event is
+fired for every `AnnotatedType`, but only types which are annotated with a
+bean defining annotation or any scope annotation will become beans.
+
 ==== Implicit bean archive
 
 An implicit bean archive is an archive which contains one or more bean
