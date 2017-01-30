@@ -213,8 +213,11 @@ ${head}
             <col width="3%">
             <col width="5%">
             <col width="11%">
-            <col width="59%">
-            <col width="18%">
+            <col width="54%">
+            <col width="5%">
+            <col width="23%">
+            <col width="2%">
+            <col width="2%">
             <tr>
                 <th>Index</th>
                 <th>
@@ -236,6 +239,9 @@ ${head}
                 <th>Beans {{tip "The number does not include inteceptors, decorators and built-in beans"}}</th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
+                <th>Beans Xml URL</th>
+                <th>Beans Xml version</th>
+                <th>Trimmed</th>
             </tr>
             {{#each visibleBdas}}
             <tr>
@@ -251,6 +257,9 @@ ${head}
                     {{detailIcon}} {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
+                <td>{{beansXmlUrl}}</td>
+                <td>{{beansXmlVersion}}</td>
+                <td>{{beansXmlTrimmed}}</td>
             </tr>
             {{/each}}
         </table>
@@ -380,6 +389,44 @@ ${head}
                         </div>
                     </div>
                     {{/if}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Scanning information:</label>
+                        <div class="col-sm-10">
+                        {{#if enablement.includes}}
+                             <b>Includes:</b>
+                             {{#each enablement.includes}}
+                             <p class="form-control-static">{{filterName}}</p>
+                             {{#if classAvailability}}
+                               {{#if inverted}}
+                                  <p class="scanning">&lt;if-class-not-available name="{{classAvailability}}"/&gt;</p>
+                               {{else}}
+                                  <p class="scanning">&lt;if-class-available name="{{classAvailability}}"/&gt;</p>
+                               {{/if}}
+                             {{/if}}
+                             {{#if sysProperty}}
+                                  <p class="scanning">&lt;if-system-property name="{{sysProperty}}" {{#if value }} value="{{value}}" {{/if}}/&gt;</p>
+                             {{/if}}
+                             {{/each}}
+                         {{/if}}
+
+                         {{#if enablement.excludes}}
+                             <b>Excludes:</b>
+                             {{#each enablement.excludes}}
+                             <p class="form-control-static">{{filterName}}</p>
+                             {{#if classAvailability}}
+                             {{#if inverted}}
+                                <p class="scanning">&lt;if-class-not-available name="{{classAvailability}}"/&gt;</p>
+                             {{else}}
+                                <p class="scanning">&lt;if-class-available name="{{classAvailability}}"/&gt;</p>
+                             {{/if}}
+                             {{/if}}
+                             {{#if sysProperty}}
+                                  <p class="scanning">&lt;if-system-property name="{{sysProperty}}" {{#if value }} value="{{value}}" {{/if}}/&gt;</p>
+                             {{/if}}
+                             {{/each}}
+                        {{/if}}
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -701,6 +748,14 @@ ${head}
                         <label class="col-sm-2 control-label">Globally {{#if isAlternative}}Selected{{else}}Enabled{{/if}} - Priority:</label>
                             <div class="col-sm-10">
                                 <p class="form-control-static"><span class="priority boxed">{{enablement.priority}} ({{enablement.priorityRange}})</span></p>
+                                {{#if enablement.warning}}
+                                    <span class="enablementConflict">{{enablement.warning}}</span>
+                                    {{#each enablement.conflicts}}
+                                    <p class="form-control-static">
+                                        {{detailIcon}} {{#link-to 'beanArchive' id class='nav-link'}}{{unbound bdaId}}{{/link-to}}
+                                    </p>
+                                    {{/each}}
+                                {{/if}}
                             </div>
                         </div>
                     </div>

@@ -282,6 +282,18 @@ div.content {
   font-weight: bold;
 }
 
+.enablementConflict{
+   font-weight: bold;
+   font-size: 14px;
+   padding: 5px;
+   color: red;
+   display: inline-block;
+}
+
+.scanning {
+   padding-left: 15px;
+}
+
 div.breadcrumbs {
   margin-top: 5px;
   color: #b0b0b0;

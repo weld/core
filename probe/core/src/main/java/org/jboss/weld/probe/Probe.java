@@ -46,6 +46,8 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -549,6 +551,30 @@ class Probe {
             }
         }
         return false;
+    }
+
+    List<String> getLocalEnablementOfBean(Class<?> clazz) {
+        List<String> localEnablementBDAIds = new ArrayList<>();
+        for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : bdaToManager.entrySet()) {
+            BeansXml beansXml = entry.getKey().getBeansXml();
+            if (beansXml != null) {
+                if (beansXml.getEnabledDecorators() != null && !beansXml.getEnabledDecorators().isEmpty()) {
+                    for (Metadata<String> metadata : entry.getKey().getBeansXml().getEnabledDecorators()) {
+                        if (metadata.getValue().equals(clazz.getName())) {
+                            localEnablementBDAIds.add(entry.getKey().getId());
+                        }
+                    }
+                }
+                if (beansXml.getEnabledInterceptors() != null && !beansXml.getEnabledInterceptors().isEmpty()) {
+                    for (Metadata<String> metadata : entry.getKey().getBeansXml().getEnabledInterceptors()) {
+                        if (metadata.getValue().equals(clazz.getName())) {
+                            localEnablementBDAIds.add(entry.getKey().getId());
+                        }
+                    }
+                }
+            }
+        }
+        return localEnablementBDAIds;
     }
 
 }
