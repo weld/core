@@ -25,19 +25,20 @@ import static org.jboss.weld.probe.Strings.AS_STRING;
 import static org.jboss.weld.probe.Strings.BDAS;
 import static org.jboss.weld.probe.Strings.BDA_ID;
 import static org.jboss.weld.probe.Strings.BEANS;
-import static org.jboss.weld.probe.Strings.BEAN_CLASS;
-import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
-import static org.jboss.weld.probe.Strings.BEANS_XML_SCANNING;
 import static org.jboss.weld.probe.Strings.BEANS_XML_TRIMMED;
 import static org.jboss.weld.probe.Strings.BEANS_XML_URL;
 import static org.jboss.weld.probe.Strings.BEANS_XML_VERSION;
+import static org.jboss.weld.probe.Strings.BEAN_CLASS;
+import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.BINDINGS;
 import static org.jboss.weld.probe.Strings.BOOSTRAP_STATS;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.CIDS;
 import static org.jboss.weld.probe.Strings.CLASS;
+import static org.jboss.weld.probe.Strings.CLASS_AVAILABILITY;
 import static org.jboss.weld.probe.Strings.CLASS_INTERCEPTOR_BINDINGS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
+import static org.jboss.weld.probe.Strings.CONFLICTS;
 import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.CONTEXTS;
 import static org.jboss.weld.probe.Strings.CONTEXT_ID;
@@ -60,15 +61,19 @@ import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.EMPTY;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
 import static org.jboss.weld.probe.Strings.EVENT_INFO;
+import static org.jboss.weld.probe.Strings.EXCLUDES;
+import static org.jboss.weld.probe.Strings.FILTER_NAME;
 import static org.jboss.weld.probe.Strings.FIRED;
 import static org.jboss.weld.probe.Strings.HASH;
 import static org.jboss.weld.probe.Strings.ID;
+import static org.jboss.weld.probe.Strings.INCLUDES;
 import static org.jboss.weld.probe.Strings.INFO;
 import static org.jboss.weld.probe.Strings.INFO_FETCHING_LAZILY;
 import static org.jboss.weld.probe.Strings.INIT_TS;
 import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
 import static org.jboss.weld.probe.Strings.INTERCEPTORS;
+import static org.jboss.weld.probe.Strings.INVERTED;
 import static org.jboss.weld.probe.Strings.INVOCATIONS;
 import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.IS_POTENTIAL;
@@ -95,6 +100,7 @@ import static org.jboss.weld.probe.Strings.SCOPE;
 import static org.jboss.weld.probe.Strings.SESSION_BEAN_TYPE;
 import static org.jboss.weld.probe.Strings.START;
 import static org.jboss.weld.probe.Strings.STEREOTYPES;
+import static org.jboss.weld.probe.Strings.SYS_PROPERTY;
 import static org.jboss.weld.probe.Strings.TIME;
 import static org.jboss.weld.probe.Strings.TIMESTAMP;
 import static org.jboss.weld.probe.Strings.TOTAL;
@@ -104,6 +110,8 @@ import static org.jboss.weld.probe.Strings.TYPES;
 import static org.jboss.weld.probe.Strings.UNUSED;
 import static org.jboss.weld.probe.Strings.VALUE;
 import static org.jboss.weld.probe.Strings.VERSION;
+import static org.jboss.weld.probe.Strings.WARNING;
+import static org.jboss.weld.probe.Strings.WARNING_CONFLICTING_ENABLEMENT;
 import static org.jboss.weld.probe.Strings.WARNING_UNRESTRICTED_PAT_OBSERVER;
 
 import java.beans.BeanInfo;
@@ -156,6 +164,10 @@ import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
+import org.jboss.weld.bootstrap.spi.Filter;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.Description;
 import org.jboss.weld.config.WeldConfiguration;
@@ -235,7 +247,10 @@ final class JsonObjects {
                 bdaBuilder.add(BEANS_XML_URL, beansXml.getUrl() != null ? beansXml.getUrl().toString() : EMPTY);
                 bdaBuilder.add(BEANS_XML_VERSION, beansXml.getVersion() != null ? beansXml.getVersion().toString() : EMPTY);
                 bdaBuilder.add(BEANS_XML_TRIMMED, beansXml.isTrimmed());
-                bdaBuilder.add(BEANS_XML_SCANNING, beansXml.getScanning() != null ? beansXml.getScanning().toString() : EMPTY);
+                if (beansXml.getScanning() != null) {
+                    enablementBuilder.add(EXCLUDES, createMetadataArrayJson(beansXml.getScanning().getExcludes()));
+                    enablementBuilder.add(INCLUDES, createMetadataArrayJson(beansXml.getScanning().getIncludes()));
+                }
             }
 
             enablementBuilder.add(INTERCEPTORS, interceptors);
@@ -519,6 +534,14 @@ final class JsonObjects {
                 int priorityValue = annotationApi.getPriority(priority);
                 enablementBuilder.add(PRIORITY, priorityValue);
                 enablementBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priorityValue).toString());
+                if(!probe.getLocalEnablementOfBean(bean.getBeanClass()).isEmpty()){
+                    enablementBuilder.add(WARNING, WARNING_CONFLICTING_ENABLEMENT);
+                    JsonArrayBuilder conflictingBdas =  Json.arrayBuilder();
+                    for (String bdaId : probe.getLocalEnablementOfBean(bean.getBeanClass())) {
+                        conflictingBdas.add(createSimpleBdaJson(bdaId));
+                    }
+                    enablementBuilder.add(CONFLICTS, conflictingBdas);
+                }
             } else {
                 JsonArrayBuilder bdasBuilder = Json.arrayBuilder();
                 Collection<BeanManagerImpl> beanManagers = Container.instance(beanManager).beanDeploymentArchives().values();
@@ -643,6 +666,38 @@ final class JsonObjects {
             builder.add(BDA_ID, Components.getId(beanManager.getId()));
         }
         return builder;
+    }
+
+    static JsonArrayBuilder createMetadataArrayJson(Collection<Metadata<Filter>> metadata) {
+        JsonArrayBuilder scanningBuilder = Json.arrayBuilder(true);
+
+        if (metadata != null && !metadata.isEmpty()) {
+            for (Metadata<Filter> filterMetadata : metadata) {
+                Filter filter = filterMetadata.getValue();
+                scanningBuilder.add(createFilterJsonArray(filter));
+            }
+        }
+        return scanningBuilder;
+    }
+
+    static JsonObjectBuilder createFilterJsonArray(Filter filter) {
+        JsonObjectBuilder filterBuilder = Json.objectBuilder(true);
+        filterBuilder.add(FILTER_NAME, filter.getName());
+        if (filter.getClassAvailableActivations() != null && !filter.getClassAvailableActivations().isEmpty()) {
+            for (Metadata<ClassAvailableActivation> metadata : filter.getClassAvailableActivations()) {
+                filterBuilder.add(INVERTED, metadata.getValue().isInverted());
+                filterBuilder.add(CLASS_AVAILABILITY, metadata.getValue().getClassName());
+            }
+        }
+        if (filter.getSystemPropertyActivations() != null && !filter.getSystemPropertyActivations().isEmpty()) {
+            for (Metadata<SystemPropertyActivation> metadata : filter.getSystemPropertyActivations()) {
+                filterBuilder.add(SYS_PROPERTY, metadata.getValue().getName());
+                if (metadata.getValue().getValue() != null) {
+                    filterBuilder.add(VALUE, metadata.getValue().getValue());
+                }
+            }
+        }
+        return filterBuilder;
     }
 
     /**
