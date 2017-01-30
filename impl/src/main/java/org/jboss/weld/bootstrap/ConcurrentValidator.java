@@ -35,9 +35,7 @@ import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
-import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * Processes validation of beans, decorators and interceptors in parallel.
@@ -115,16 +113,9 @@ public class ConcurrentValidator extends Validator {
             }
         }
         final List<String> accessibleNamespaces = beanManager.getAccessibleNamespaces();
-
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<String>(namedAccessibleBeans.keySet()) {
             protected void doWork(String name) {
-                Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager));
-                if (resolvedBeans.size() > 1) {
-                    throw ValidatorLogger.LOG.ambiguousElName(name, WeldCollections.toMultiRowString(resolvedBeans));
-                }
-                if (accessibleNamespaces.contains(name)) {
-                    throw ValidatorLogger.LOG.beanNameIsPrefix(name);
-                }
+                validateBeanName(name, namedAccessibleBeans, accessibleNamespaces, beanManager);
             }
         });
     }
