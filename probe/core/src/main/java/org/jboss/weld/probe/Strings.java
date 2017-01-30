@@ -30,8 +30,15 @@ public final class Strings {
     public static final String BDA_ID = "bdaId";
     public static final String BDA = "bda";
     public static final String BEAN_DISCOVERY_MODE = "beanDiscoveryMode";
+    public static final String WARNING = "warning";
+    public static final String EXCLUDES = "excludes";
+    public static final String INCLUDES = "includes";
+    public static final String BEANS_XML_TRIMMED = "beansXmlTrimmed";
+    public static final String BEANS_XML_URL = "beansXmlUrl";
+    public static final String BEANS_XML_VERSION = "beansXmlVersion";
     public static final String BDAS = "bdas";
     public static final String CONFIGURATION = "configuration";
+    public static final String CONFLICTS = "conflicts";
     public static final String SCOPE = "scope";
     public static final String TYPES = "types";
     public static final String TYPE = "type";
@@ -112,6 +119,10 @@ public final class Strings {
     public static final String RESOLVE = "resolve";
     public static final String HASH = "hash";
     public static final String UNUSED = "unused";
+    public static final String FILTER_NAME ="filterName";
+    public static final String INVERTED = "inverted";
+    public static final String CLASS_AVAILABILITY = "classAvailability";
+    public static final String SYS_PROPERTY = "sysProperty";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";
@@ -187,6 +198,7 @@ public final class Strings {
 
     static final String WARNING_UNRESTRICTED_PAT_OBSERVER = "BOOTSTRAP PERFORMANCE TIP: This observer method receives events for all annotated types! Consider restricting events using @WithAnnotations or a generic type with bounds.";
 
+    static final String WARNING_CONFLICTING_ENABLEMENT = "WARNING - There is additional local enablement in: ";
     static final String EMPTY = "";
 
     private static final int ABR_MIN_LIMIT = 4;
