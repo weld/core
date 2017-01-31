@@ -265,6 +265,14 @@ public enum ConfigurationKey {
     @Description("If a non-empty string and development mode is enabled, the Probe data will be automatically exported after deployment validation. The value represents a path of the directory where to export the data file.")
     PROBE_EXPORT_DATA_AFTER_DEPLOYMENT("org.jboss.weld.probe.exportDataAfterDeployment", ""),
 
+    /**
+     * If true an alternative defined in beans.xml can be vetoed. If false, vetoing an alternative defined in beans.xml will cause an exception to be thrown.
+     *
+     * By default, alternatives defined in beans.xml must not be vetoed.
+     */
+    @Description("Allows the alternatives defined in beans.xml to be vetoed.")
+    ALLOW_VETOED_ALTERNATIVES("org.jboss.weld.bootstrap.allowExcludedAlternatives", false),
+
     ;
 
     /**
