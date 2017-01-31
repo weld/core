@@ -69,9 +69,11 @@ public interface ConversationLogger extends WeldLogger {
     @Message(id = 320, value = "Cleaning up transient conversation")
     void cleaningUpTransientConversation();
 
+    @SuppressWarnings("weldlog:method-retType")
     @Message(id = 321, value = "No conversation found to restore for id {0}", format = Format.MESSAGE_FORMAT)
     NonexistentConversationException noConversationFoundToRestore(Object param1);
 
+    @SuppressWarnings("weldlog:method-retType")
     @Message(id = 322, value = "Conversation lock timed out: {0}", format = Format.MESSAGE_FORMAT)
     BusyConversationException conversationLockTimedout(Object param1);
 

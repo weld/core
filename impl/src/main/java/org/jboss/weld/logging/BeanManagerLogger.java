@@ -49,6 +49,7 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1302, value = "Duplicate qualifiers:  {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException duplicateQualifiers(Object param1);
 
+    @SuppressWarnings("weldlog:method-retType")
     @Message(id = 1303, value = "No active contexts for scope type {0}", format = Format.MESSAGE_FORMAT)
     ContextNotActiveException contextNotActive(Object param1);
 

@@ -40,43 +40,54 @@ public interface ServletLogger extends WeldLogger {
 
     ServletLogger LOG = Logger.getMessageLogger(ServletLogger.class, Category.SERVLET.getName());
 
+    @SuppressWarnings("weldlog:method-interface")
     @Message(id = 707, value = "Non Http-Servlet lifecycle not defined")
     IllegalStateException onlyHttpServletLifecycleDefined();
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.TRACE)
     @Message(id = 708, value = "Initializing request {0}", format = Format.MESSAGE_FORMAT)
     void requestInitialized(Object param1);
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.TRACE)
     @Message(id = 709, value = "Destroying request {0}", format = Format.MESSAGE_FORMAT)
     void requestDestroyed(Object param1);
 
+    @SuppressWarnings("weldlog:method-interface")
     @Message(id = 710, value = "Cannot inject {0} outside of a Servlet request", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotInjectObjectOutsideOfServletRequest(Object param1, @Cause Throwable cause);
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.WARN)
     @Message(id = 711, value = "Context activation pattern {0} ignored as it is overriden by the integrator.", format = Format.MESSAGE_FORMAT)
     void webXmlMappingPatternIgnored(String pattern);
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.WARN)
     @Message(id = 712, value = "Unable to dissociate context {0} from the storage {1}", format = Format.MESSAGE_FORMAT)
     void unableToDissociateContext(Object context, Object storage);
 
+    @SuppressWarnings({"weldlog:method-interface","weldlog:method-sig"})
     @Message(id = 713, value = "Unable to inject ServletContext. None is associated with {0}, {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotInjectServletContext(ClassLoader classLoader, ServletContextService service);
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.WARN)
     @Message(id = 714, value = "HttpContextLifecycle guard leak detected. The Servlet container is not fully compliant. The value was {0}", format = Format.MESSAGE_FORMAT)
     void guardLeak(int value);
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.WARN)
     @Message(id = 715, value = "HttpContextLifecycle guard not set. The Servlet container is not fully compliant.", format = Format.MESSAGE_FORMAT)
     void guardNotSet();
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.INFO)
     @Message(id = 716, value = "Running in Servlet 2.x environment. Asynchronous request support is disabled.")
     void servlet2Environment();
 
+    @SuppressWarnings("weldlog:method-interface")
     @LogMessage(level = Level.WARN)
     @Message(id = 717, value = "Unable to deactivate context {0} when destroying request {1}", format = Format.MESSAGE_FORMAT)
     void unableToDeactivateContext(Object context, Object request);
