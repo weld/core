@@ -1117,8 +1117,9 @@ Ember.Handlebars.registerBoundHelper('highlight', function(source, options) {
 
 Ember.Handlebars.registerBoundHelper('stackIcon', function(icon, options) {
     var large = options.hash.lg || false;
+    var dark =  options.hash.dark || false;
     return new Handlebars.SafeString(
-        '<span class="fa-stack' + (large ? ' fa-lg':'') + '"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa ' + icon + ' fa-stack-1x" title="' + options.hash.title + '"></i></span>');
+        '<span class="fa-stack' + (large ? ' fa-lg':'') + '"><i class="fa ' + (dark ? 'fa-square':'fa-square-o') + ' fa-stack-2x"></i><i class="fa ' + icon + ' fa-stack-1x" title="' + options.hash.title + '"></i></span>');
 });
 
 Ember.Handlebars.registerBoundHelper('inlineFormSep', function() {

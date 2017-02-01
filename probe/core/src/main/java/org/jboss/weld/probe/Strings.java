@@ -31,11 +31,14 @@ public final class Strings {
     public static final String BDA = "bda";
     public static final String BEAN_DISCOVERY_MODE = "beanDiscoveryMode";
     public static final String WARNING = "warning";
-    public static final String EXCLUDES = "excludes";
-    public static final String INCLUDES = "includes";
-    public static final String BEANS_XML_TRIMMED = "beansXmlTrimmed";
-    public static final String BEANS_XML_URL = "beansXmlUrl";
-    public static final String BEANS_XML_VERSION = "beansXmlVersion";
+    public static final String EXCLUDE = "exclude";
+    public static final String INCLUDE = "include";
+    public static final String ACTIVATIONS = "activations";
+    public static final String SCAN = "scan";
+    public static final String BEANS_XML = "beansXml";
+    public static final String TRIMMED = "trimmed";
+    public static final String URL = "url";
+    public static final String MARKER = "marker";
     public static final String BDAS = "bdas";
     public static final String CONFIGURATION = "configuration";
     public static final String CONFLICTS = "conflicts";
@@ -119,7 +122,6 @@ public final class Strings {
     public static final String RESOLVE = "resolve";
     public static final String HASH = "hash";
     public static final String UNUSED = "unused";
-    public static final String FILTER_NAME ="filterName";
     public static final String INVERTED = "inverted";
     public static final String CLASS_AVAILABILITY = "classAvailability";
     public static final String SYS_PROPERTY = "sysProperty";
