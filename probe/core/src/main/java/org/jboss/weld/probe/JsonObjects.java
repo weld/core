@@ -17,6 +17,7 @@
 package org.jboss.weld.probe;
 
 import static org.jboss.weld.probe.Strings.ACCESSIBLE_BDAS;
+import static org.jboss.weld.probe.Strings.ACTIVATIONS;
 import static org.jboss.weld.probe.Strings.ALTERNATIVES;
 import static org.jboss.weld.probe.Strings.ANNOTATED_METHOD;
 import static org.jboss.weld.probe.Strings.APPLICATION;
@@ -25,9 +26,7 @@ import static org.jboss.weld.probe.Strings.AS_STRING;
 import static org.jboss.weld.probe.Strings.BDAS;
 import static org.jboss.weld.probe.Strings.BDA_ID;
 import static org.jboss.weld.probe.Strings.BEANS;
-import static org.jboss.weld.probe.Strings.BEANS_XML_TRIMMED;
-import static org.jboss.weld.probe.Strings.BEANS_XML_URL;
-import static org.jboss.weld.probe.Strings.BEANS_XML_VERSION;
+import static org.jboss.weld.probe.Strings.BEANS_XML;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.BINDINGS;
@@ -60,12 +59,11 @@ import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.EMPTY;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
 import static org.jboss.weld.probe.Strings.EVENT_INFO;
-import static org.jboss.weld.probe.Strings.EXCLUDES;
-import static org.jboss.weld.probe.Strings.FILTER_NAME;
+import static org.jboss.weld.probe.Strings.EXCLUDE;
 import static org.jboss.weld.probe.Strings.FIRED;
 import static org.jboss.weld.probe.Strings.HASH;
 import static org.jboss.weld.probe.Strings.ID;
-import static org.jboss.weld.probe.Strings.INCLUDES;
+import static org.jboss.weld.probe.Strings.INCLUDE;
 import static org.jboss.weld.probe.Strings.INFO;
 import static org.jboss.weld.probe.Strings.INFO_FETCHING_LAZILY;
 import static org.jboss.weld.probe.Strings.INIT_TS;
@@ -78,6 +76,7 @@ import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.IS_POTENTIAL;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.LAST_PAGE;
+import static org.jboss.weld.probe.Strings.MARKER;
 import static org.jboss.weld.probe.Strings.METHOD;
 import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.Strings.NAME;
@@ -95,6 +94,7 @@ import static org.jboss.weld.probe.Strings.PROPERTIES;
 import static org.jboss.weld.probe.Strings.QUALIFIERS;
 import static org.jboss.weld.probe.Strings.RECEPTION;
 import static org.jboss.weld.probe.Strings.REQUIRED_TYPE;
+import static org.jboss.weld.probe.Strings.SCAN;
 import static org.jboss.weld.probe.Strings.SCOPE;
 import static org.jboss.weld.probe.Strings.SESSION_BEAN_TYPE;
 import static org.jboss.weld.probe.Strings.START;
@@ -103,6 +103,7 @@ import static org.jboss.weld.probe.Strings.SYS_PROPERTY;
 import static org.jboss.weld.probe.Strings.TIME;
 import static org.jboss.weld.probe.Strings.TIMESTAMP;
 import static org.jboss.weld.probe.Strings.TOTAL;
+import static org.jboss.weld.probe.Strings.TRIMMED;
 import static org.jboss.weld.probe.Strings.TX_PHASE;
 import static org.jboss.weld.probe.Strings.TYPE;
 import static org.jboss.weld.probe.Strings.TYPES;
@@ -112,6 +113,7 @@ import static org.jboss.weld.probe.Strings.VERSION;
 import static org.jboss.weld.probe.Strings.WARNING;
 import static org.jboss.weld.probe.Strings.WARNING_CONFLICTING_ENABLEMENT;
 import static org.jboss.weld.probe.Strings.WARNING_UNRESTRICTED_PAT_OBSERVER;
+
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -215,6 +217,7 @@ final class JsonObjects {
     static String createDeploymentJson(BeanManagerImpl beanManager, Probe probe) {
 
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
+        AnnotationApiAbstraction annotationApi = beanManager.getServices().get(AnnotationApiAbstraction.class);
         JsonObjectBuilder deploymentBuilder = Json.objectBuilder();
 
         // INIT TS
@@ -233,39 +236,100 @@ final class JsonObjects {
             // If beans.xml is not found it's likely an implicit bean archive
             BeansXml beansXml = bda.getBeansXml();
             bdaBuilder.add(BEAN_DISCOVERY_MODE, beansXml != null ? beansXml.getBeanDiscoveryMode().toString() : BeanDiscoveryMode.ANNOTATED.toString());
+
+            // beans.xml
+            if (beansXml != null) {
+                JsonObjectBuilder beansXmlBuilder = Json.objectBuilder();
+                if (beansXml.equals(BeansXml.EMPTY_BEANS_XML)) {
+                    beansXmlBuilder.add(MARKER, Boolean.TRUE);
+                } else {
+                    beansXmlBuilder.add(Strings.URL, beansXml.getUrl() != null ? beansXml.getUrl().toString() : EMPTY);
+                    beansXmlBuilder.add(VERSION, beansXml.getVersion() != null ? beansXml.getVersion().toString() : EMPTY);
+                    beansXmlBuilder.add(TRIMMED, (beansXml instanceof TrimmableBeansXml) ? ((TrimmableBeansXml) beansXml).isTrimmed() : false);
+                    if (beansXml.getScanning() != null && (!beansXml.getScanning().getExcludes().isEmpty() || !beansXml.getScanning().getExcludes().isEmpty())) {
+                        JsonArrayBuilder scanBuilder = Json.arrayBuilder();
+                        createMetadataArrayJson(scanBuilder, beansXml.getScanning().getExcludes(), EXCLUDE);
+                        createMetadataArrayJson(scanBuilder, beansXml.getScanning().getIncludes(), INCLUDE);
+                        beansXmlBuilder.add(SCAN, scanBuilder);
+                    }
+                }
+                bdaBuilder.add(Strings.BEANS_XML, beansXmlBuilder);
+            }
+
             // Enablement - interceptors, decorators, alternatives
             JsonObjectBuilder enablementBuilder = Json.objectBuilder(true);
             ModuleEnablement enablement = beanDeploymentArchivesMap.get(bda).getEnabled();
             JsonArrayBuilder interceptors = Json.arrayBuilder();
             for (Class<?> interceptor : Components.getSortedProbeComponetCandidates(enablement.getInterceptors())) {
-                interceptors.add(decorateProbeComponent(interceptor, createSimpleBeanJson(findEnabledBean(interceptor, BeanKind.INTERCEPTOR, probe), probe)));
-            }
 
-            if (beansXml != null) {
-                bdaBuilder.add(BEANS_XML_URL, beansXml.getUrl() != null ? beansXml.getUrl().toString() : EMPTY);
-                bdaBuilder.add(BEANS_XML_VERSION, beansXml.getVersion() != null ? beansXml.getVersion().toString() : EMPTY);
-                bdaBuilder.add(BEANS_XML_TRIMMED, (beansXml instanceof TrimmableBeansXml) ? ((TrimmableBeansXml) beansXml).isTrimmed() : false);
-                if (beansXml.getScanning() != null) {
-                    enablementBuilder.add(EXCLUDES, createMetadataArrayJson(beansXml.getScanning().getExcludes()));
-                    enablementBuilder.add(INCLUDES, createMetadataArrayJson(beansXml.getScanning().getIncludes()));
+                Bean<?> interceptorBean = findEnabledBean(interceptor, BeanKind.INTERCEPTOR, probe);
+                if (interceptorBean != null) {
+                    JsonObjectBuilder builder = decorateProbeComponent(interceptor, createSimpleBeanJson(interceptorBean, probe));
+                    if (beansXml != null) {
+                        for (Metadata<String> meta : beansXml.getEnabledInterceptors()) {
+                            if (meta.getValue().equals(interceptorBean.getBeanClass().getName())) {
+                                // Locally enabled
+                                builder.add(BEANS_XML, true);
+                            }
+                        }
+                    }
+                    Object priority = interceptorBean.getBeanClass().getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
+                    if (priority != null) {
+                        builder.add(PRIORITY, annotationApi.getPriority(priority));
+                    }
+                    if (builder.has(PRIORITY) && builder.has(BEANS_XML)) {
+                        builder.add(CONFLICTS, true);
+                    }
+                    interceptors.add(builder);
                 }
             }
-
             enablementBuilder.add(INTERCEPTORS, interceptors);
             JsonArrayBuilder decorators = Json.arrayBuilder();
             for (Class<?> decorator : enablement.getDecorators()) {
-                decorators.add(createSimpleBeanJson(findEnabledBean(decorator, BeanKind.DECORATOR, probe), probe));
+
+                Bean<?> decoratorBean = findEnabledBean(decorator, BeanKind.DECORATOR, probe);
+                if (decoratorBean != null) {
+                    JsonObjectBuilder builder = createSimpleBeanJson(decoratorBean, probe);
+                    if (beansXml != null) {
+                        for (Metadata<String> meta : beansXml.getEnabledDecorators()) {
+                            if (meta.getValue().equals(decoratorBean.getBeanClass().getName())) {
+                                // Locally enabled
+                                builder.add(BEANS_XML, true);
+                            }
+                        }
+                    }
+                    Object priority = decoratorBean.getBeanClass().getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
+                    if (priority != null) {
+                        builder.add(PRIORITY, annotationApi.getPriority(priority));
+                    }
+                    if (builder.has(PRIORITY) && builder.has(BEANS_XML)) {
+                        builder.add(CONFLICTS, true);
+                    }
+                    decorators.add(builder);
+                }
             }
             enablementBuilder.add(DECORATORS, decorators);
             JsonArrayBuilder alternatives = Json.arrayBuilder();
             for (Class<?> clazz : Sets.union(enablement.getAlternativeClasses(), enablement.getGlobalAlternatives())) {
-                alternatives.add(createSimpleBeanJson(findAlternativeBean(clazz, probe), probe));
+                JsonObjectBuilder builder = createSimpleBeanJson(findAlternativeBean(clazz, probe), probe);
+                if (enablement.getAlternativeClasses().contains(clazz)) {
+                    builder.add(BEANS_XML, true);
+                }
+                if (enablement.getGlobalAlternatives().contains(clazz)) {
+                    Object priority = clazz.getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
+                    if (priority != null) {
+                        builder.add(PRIORITY, annotationApi.getPriority(priority));
+                    }
+                }
+                alternatives.add(builder);
             }
             for (Class<? extends Annotation> stereotype : enablement.getAlternativeStereotypes()) {
                 Set<Bean<?>> beans = findAlternativeStereotypeBeans(stereotype, probe);
                 if (!beans.isEmpty()) {
                     for (Bean<?> bean : beans) {
-                        alternatives.add(createSimpleBeanJson(bean, probe));
+                        JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
+                        builder.add(BEANS_XML, true);
+                        alternatives.add(builder);
                     }
                 }
             }
@@ -655,33 +719,34 @@ final class JsonObjects {
         return builder;
     }
 
-    static JsonArrayBuilder createMetadataArrayJson(Collection<Metadata<Filter>> metadata) {
-        JsonArrayBuilder scanningBuilder = Json.arrayBuilder(true);
-
+    static void createMetadataArrayJson(JsonArrayBuilder scanBuilder, Collection<Metadata<Filter>> metadata, String type) {
         if (metadata != null && !metadata.isEmpty()) {
             for (Metadata<Filter> filterMetadata : metadata) {
                 Filter filter = filterMetadata.getValue();
-                scanningBuilder.add(createFilterJsonArray(filter));
+                scanBuilder.add(createFilterJsonArray(filter, type));
             }
         }
-        return scanningBuilder;
     }
 
-    static JsonObjectBuilder createFilterJsonArray(Filter filter) {
+    static JsonObjectBuilder createFilterJsonArray(Filter filter, String type) {
         JsonObjectBuilder filterBuilder = Json.objectBuilder(true);
-        filterBuilder.add(FILTER_NAME, filter.getName());
+        filterBuilder.add(TYPE, type);
+        filterBuilder.add(NAME, filter.getName());
+        JsonArrayBuilder activationsBuilder = Json.arrayBuilder(true);
+        filterBuilder.add(ACTIVATIONS, activationsBuilder);
         if (filter.getClassAvailableActivations() != null && !filter.getClassAvailableActivations().isEmpty()) {
             for (Metadata<ClassAvailableActivation> metadata : filter.getClassAvailableActivations()) {
-                filterBuilder.add(INVERTED, metadata.getValue().isInverted());
-                filterBuilder.add(CLASS_AVAILABILITY, metadata.getValue().getClassName());
+                activationsBuilder.add(Json.objectBuilder().add(INVERTED, metadata.getValue().isInverted()).add(CLASS_AVAILABILITY,
+                        metadata.getValue().getClassName()));
             }
         }
         if (filter.getSystemPropertyActivations() != null && !filter.getSystemPropertyActivations().isEmpty()) {
             for (Metadata<SystemPropertyActivation> metadata : filter.getSystemPropertyActivations()) {
-                filterBuilder.add(SYS_PROPERTY, metadata.getValue().getName());
+                JsonObjectBuilder sysPropBuilder = Json.objectBuilder().add(SYS_PROPERTY, metadata.getValue().getName());
                 if (metadata.getValue().getValue() != null) {
-                    filterBuilder.add(VALUE, metadata.getValue().getValue());
+                    sysPropBuilder.add(VALUE, metadata.getValue().getValue());
                 }
+                activationsBuilder.add(sysPropBuilder);
             }
         }
         return filterBuilder;

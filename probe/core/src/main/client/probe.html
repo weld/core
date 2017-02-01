@@ -213,11 +213,9 @@ ${head}
             <col width="3%">
             <col width="5%">
             <col width="11%">
-            <col width="54%">
-            <col width="5%">
-            <col width="23%">
-            <col width="2%">
-            <col width="2%">
+            <col width="60%">
+            <col width="10%">
+            <col width="16%">
             <tr>
                 <th>Index</th>
                 <th>
@@ -239,9 +237,7 @@ ${head}
                 <th>Beans {{tip "The number does not include inteceptors, decorators and built-in beans"}}</th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
-                <th>Beans Xml URL</th>
-                <th>Beans Xml version</th>
-                <th>Trimmed</th>
+                <th>beans.xml</th>
             </tr>
             {{#each visibleBdas}}
             <tr>
@@ -257,9 +253,16 @@ ${head}
                     {{detailIcon}} {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
-                <td>{{beansXmlUrl}}</td>
-                <td>{{beansXmlVersion}}</td>
-                <td>{{beansXmlTrimmed}}</td>
+                <td>
+                {{#if beansXml}}
+                    {{#if beansXml.marker}}Empty marker file{{/if}}
+                    {{#if beansXml.version}}<div class="boxed centered let-width-3 IN_PROGRESS" title="Version">{{beansXml.version}}</div>{{/if}}
+                    {{#if beansXml.url}}<i class="fa fa-lg fa-link" title="URL: {{unbound beansXml.url}}"></i>{{/if}}
+                    {{#if beansXml.trimmed}}<i class="fa fa-lg fa-scissors" title="This is a trimmed bean archive"></i>{{/if}}
+                {{else}}
+                    Not present
+                {{/if}}
+                </td>
             </tr>
             {{/each}}
         </table>
@@ -347,16 +350,35 @@ ${head}
                             <div class="form-control-static"><div class="boxed bda-beans let-width-3">{{beans}}</div> {{tip "The number does not include inteceptors, decorators and built-in beans"}}</div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">beans.xml: </label>
+                         <div class="col-sm-10">
+                            <div class="form-control-static">
+                             {{#if beansXml}}
+                             {{#if beansXml.marker}}Empty marker file{{/if}}
+                             {{#if beansXml.version}}<div class="boxed centered let-width-3 IN_PROGRESS" title="Version">{{beansXml.version}}</div>{{/if}}
+                             {{#if beansXml.url}}<i class="fa fa-lg fa-link" title="URL: {{unbound beansXml.url}}"></i>{{/if}}
+                             {{#if beansXml.trimmed}}<i class="fa fa-lg fa-scissors" title="This is a trimmed bean archive"></i>{{/if}}
+                             {{else}}
+                                Not present
+                             {{/if}}
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
                     {{#if enablement.interceptors}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Enabled Interceptors:</label>
                         <div class="col-sm-10">
                             {{#each enablement.interceptors}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
+                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority">{{priority}}</span>{{/if}}
+                            {{#if beansXml}}<i class="fa fa-file-code-o fa-lg" title="Enabled in beans.xml"></i>{{/if}}
+                            {{#if conflicts}}<i class="fa fa-exclamation-triangle fa-lg" title="Enabled globally and for the bean archive. It will only be invoked in the priority part of the chain."></i>{{/if}}
                             {{#if probeComponent}}
-                                {{detailIcon}} {{#link-to 'beanDetail' id class='probe-comp'}}{{beanClass}}{{/link-to}} {{probe-comp}}
+                                {{#link-to 'beanDetail' id class='probe-comp'}}{{detailIcon}} {{beanClass}}{{/link-to}} {{probe-comp}}
                             {{else}}
-                                {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
+                                {{#link-to 'beanDetail' id}}{{detailIcon}} {{beanClass}}{{/link-to}}
                             {{/if}}
                             </p>
                             {{/each}}
@@ -370,7 +392,10 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.decorators}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
+                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority">{{priority}}</span>{{/if}}
+                            {{#if beansXml}}<i class="fa fa-file-code-o fa-lg" title="Enabled in beans.xml"></i>{{/if}}
+                            {{#if conflicts}}<i class="fa fa-exclamation-triangle fa-lg" title="Enabled globally and for the bean archive. It will only be invoked in the priority part of the chain."></i>{{/if}}
+                            {{#link-to 'beanDetail' id}}{{detailIcon}} {{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                             <hr/>
@@ -383,50 +408,53 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.alternatives}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{detailIcon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
+                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority">{{priority}}</span>{{/if}}
+                            {{#if beansXml}}<i class="fa fa-file-code-o fa-lg" title="Enabled in beans.xml"></i>{{/if}}
+                            {{#link-to 'beanDetail' id}}{{detailIcon}} {{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
+                            <hr/>
                         </div>
                     </div>
                     {{/if}}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Scanning information:</label>
+                    {{#if beansXml.scan}}
+                    <label class="col-sm-2 control-label">Scan info:</label>
                         <div class="col-sm-10">
-                        {{#if enablement.includes}}
-                             <b>Includes:</b>
-                             {{#each enablement.includes}}
-                             <p class="form-control-static">{{filterName}}</p>
-                             {{#if classAvailability}}
-                               {{#if inverted}}
-                                  <p class="scanning">&lt;if-class-not-available name="{{classAvailability}}"/&gt;</p>
-                               {{else}}
-                                  <p class="scanning">&lt;if-class-available name="{{classAvailability}}"/&gt;</p>
-                               {{/if}}
-                             {{/if}}
-                             {{#if sysProperty}}
-                                  <p class="scanning">&lt;if-system-property name="{{sysProperty}}" {{#if value }} value="{{value}}" {{/if}}/&gt;</p>
-                             {{/if}}
-                             {{/each}}
-                         {{/if}}
-
-                         {{#if enablement.excludes}}
-                             <b>Excludes:</b>
-                             {{#each enablement.excludes}}
-                             <p class="form-control-static">{{filterName}}</p>
-                             {{#if classAvailability}}
+                       <table class="table table-bordered table-striped" style="width:70%;">
+                          <col width="5%">
+                          <col width="5%">
+                          <col width="40%">
+                          <col width="50%">
+                          <tr>
+                             <th>Filter</th>
+                             <th>Type</th>
+                             <th>Name</th>
+                             <th>Activation</th>
+                         </tr>
+                         {{#each beansXml.scan}}
+                         <tr>
+                            <td>{{increment _view.contentIndex}}.</td>
+                            <td>{{type}}</td>
+                            <td><strong>{{name}}</strong></td>
+                            <td><ul>
+                               {{#each activations}}<li>
+                               {{#if classAvailability}}
                              {{#if inverted}}
-                                <p class="scanning">&lt;if-class-not-available name="{{classAvailability}}"/&gt;</p>
+                                &lt;if-class-not-available name="{{classAvailability}}"/&gt;
                              {{else}}
-                                <p class="scanning">&lt;if-class-available name="{{classAvailability}}"/&gt;</p>
+                                &lt;if-class-available name="{{classAvailability}}"/&gt;
                              {{/if}}
                              {{/if}}
                              {{#if sysProperty}}
-                                  <p class="scanning">&lt;if-system-property name="{{sysProperty}}" {{#if value }} value="{{value}}" {{/if}}/&gt;</p>
+                                  &lt;if-system-property name="{{sysProperty}}" {{#if value }} value="{{value}}" {{/if}}/&gt;
                              {{/if}}
-                             {{/each}}
-                        {{/if}}
-                        </div>
+                             </li>{{/each}}
+                            </ul></td>
+                        </tr>
+                       {{/each}}
+                      </table>
                     </div>
+                    {{/if}}
                 </form>
             </div>
         </div>
