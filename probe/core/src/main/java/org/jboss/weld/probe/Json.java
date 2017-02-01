@@ -287,6 +287,10 @@ final class Json {
             return this;
         }
 
+        boolean has(String name) {
+            return properties.containsKey(name);
+        }
+
         private void addInternal(String name, Object value) {
             Preconditions.checkArgumentNotNull(name, NAME);
             if (value != null) {
