@@ -157,6 +157,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1421, value = "Cannot enable the same alternative stereotype {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeStereotypeSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
+    @SuppressWarnings({"weldlog:msg-value","weldlog:method-sig"})
     @Message(id = 1422, value = "Enabled alternative class {0} ({1}) does not match any bean: the class is not found, or not annotated with @Alternative and still not registered through a portable extension, or not annotated with @Dependent inside an implicit bean archive", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotAnnotatedOrVetoed(Object value, Object location);
 
@@ -313,8 +314,9 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1481, value = "Final method will be ignored during proxy generation and should never be invoked upon the proxy instance! {0} - {1}.", format = Format.MESSAGE_FORMAT)
     void notProxyableFinalMethodIgnored(Method invalidMethod, Object declaringBean);
 
-    @SuppressWarnings("weldlog:msg-value")
-    @Message(id = 1482, value = "Enabled alternative class {0} ({1}) does not match any bean, or is not annotated with @Alternative or an @Alternative stereotype, or does not declare a producer annotated with @Alternative or an @Alternative stereotype", format = Format.MESSAGE_FORMAT)
+    // 1482, 1483 used in Weld 3
+
+    @Message(id = 1484, value = "Enabled alternative class {0} ({1}) does not match any bean, or is not annotated with @Alternative or an @Alternative stereotype, or does not declare a producer annotated with @Alternative or an @Alternative stereotype", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotAnnotated(Object value, Object location);
 
 }

@@ -701,10 +701,10 @@ public class Validator implements Service {
                     throw ValidatorLogger.LOG.alternativeBeanClassNotClass(definition);
                 } else {
                     final WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
-                    boolean allowExcludedAlternatives = configuration.getBooleanProperty(ConfigurationKey.ALLOW_VETOED_ALTERNATIVES);
+                    boolean allowVetoedAlternatives = configuration.getBooleanProperty(ConfigurationKey.ALLOW_VETOED_ALTERNATIVES);
                     // check that the class is a bean class of at least one alternative. If it is not and weld is configured to allow excluded alternatives check if the class is annotated with @Alternative or an alternative stereotype.
                     if (!isAlternativeBean(enabledClass, beansByClass)) {
-                        if (! allowExcludedAlternatives) {
+                        if (!allowVetoedAlternatives) {
                             throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotatedOrVetoed(definition.getValue(), definition.getLocation());
                         } else if (! isAlternativeCandidate(enabledClass, beanManager)) {
                             throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition.getValue(), definition.getLocation());
