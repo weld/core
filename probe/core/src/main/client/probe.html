@@ -257,8 +257,8 @@ ${head}
                 {{#if beansXml}}
                     {{#if beansXml.marker}}Empty marker file{{/if}}
                     {{#if beansXml.version}}<div class="boxed centered let-width-3 IN_PROGRESS" title="Version">{{beansXml.version}}</div>{{/if}}
-                    {{#if beansXml.url}}<i class="fa fa-lg fa-link" title="URL: {{unbound beansXml.url}}"></i>{{/if}}
-                    {{#if beansXml.trimmed}}<i class="fa fa-lg fa-scissors" title="This is a trimmed bean archive"></i>{{/if}}
+                    {{#if beansXml.url}}<div class="boxed centered ALWAYS" title="URL: {{unbound beansXml.url}}"><i class="fa fa-lg fa-link"></i> URL</div>{{/if}}
+                    {{#if beansXml.trimmed}}<div class="boxed centered INTERCEPTOR" title="This is a trimmed bean archive"><i class="fa fa-lg fa-scissors"></i> &lt;trim/&gt;</div>{{/if}}
                 {{else}}
                     Not present
                 {{/if}}
@@ -357,8 +357,8 @@ ${head}
                              {{#if beansXml}}
                              {{#if beansXml.marker}}Empty marker file{{/if}}
                              {{#if beansXml.version}}<div class="boxed centered let-width-3 IN_PROGRESS" title="Version">{{beansXml.version}}</div>{{/if}}
-                             {{#if beansXml.url}}<i class="fa fa-lg fa-link" title="URL: {{unbound beansXml.url}}"></i>{{/if}}
-                             {{#if beansXml.trimmed}}<i class="fa fa-lg fa-scissors" title="This is a trimmed bean archive"></i>{{/if}}
+                             {{#if beansXml.url}}<div class="boxed centered ALWAYS" title="URL: {{unbound beansXml.url}}"><i class="fa fa-lg fa-link"></i> URL</div>{{/if}}
+                             {{#if beansXml.trimmed}}<div class="boxed centered INTERCEPTOR" title="This is a trimmed bean archive"><i class="fa fa-lg fa-scissors"></i> &lt;trim/&gt;</div>{{/if}}
                              {{else}}
                                 Not present
                              {{/if}}
@@ -372,8 +372,8 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.interceptors}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority">{{priority}}</span>{{/if}}
-                            {{#if beansXml}}<i class="fa fa-file-code-o fa-lg" title="Enabled in beans.xml"></i>{{/if}}
+                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority"><i class="fa fa-globe fa-lg"></i> {{priority}}</span>{{/if}}
+                            {{#if beansXml}}<span class="boxed centered IN_PROGRESS" title="Enabled in beans.xml"><i class="fa fa-file-code-o fa-lg"></i> XML</span>{{/if}}
                             {{#if conflicts}}<i class="fa fa-exclamation-triangle fa-lg" title="Enabled globally and for the bean archive. It will only be invoked in the priority part of the chain."></i>{{/if}}
                             {{#if probeComponent}}
                                 {{#link-to 'beanDetail' id class='probe-comp'}}{{detailIcon}} {{beanClass}}{{/link-to}} {{probe-comp}}
@@ -392,8 +392,8 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.decorators}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority">{{priority}}</span>{{/if}}
-                            {{#if beansXml}}<i class="fa fa-file-code-o fa-lg" title="Enabled in beans.xml"></i>{{/if}}
+                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority"><i class="fa fa-globe fa-lg"></i> {{priority}}</span>{{/if}}
+                            {{#if beansXml}}<span class="boxed centered IN_PROGRESS" title="Enabled in beans.xml"><i class="fa fa-file-code-o fa-lg"></i> XML</span>{{/if}}
                             {{#if conflicts}}<i class="fa fa-exclamation-triangle fa-lg" title="Enabled globally and for the bean archive. It will only be invoked in the priority part of the chain."></i>{{/if}}
                             {{#link-to 'beanDetail' id}}{{detailIcon}} {{beanClass}}{{/link-to}}
                             </p>
@@ -408,8 +408,8 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.alternatives}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority">{{priority}}</span>{{/if}}
-                            {{#if beansXml}}<i class="fa fa-file-code-o fa-lg" title="Enabled in beans.xml"></i>{{/if}}
+                            {{#if priority}}<span class="priority boxed" title="Enabled globally with priority"><i class="fa fa-globe fa-lg"></i> {{priority}}</span>{{/if}}
+                            {{#if beansXml}}<span class="boxed centered IN_PROGRESS" title="Enabled in beans.xml"><i class="fa fa-file-code-o fa-lg"></i> XML</span>{{/if}}
                             {{#link-to 'beanDetail' id}}{{detailIcon}} {{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
