@@ -20,15 +20,15 @@ To build Weld simply run
 Upgrading Weld in WildFly
 -------------------------
 
-Firstly, set the JBOSS_HOME environment property to point to your WildFly installation
+Firstly, set the `JBOSS_HOME` environment property to point to your WildFly installation
 
-> $ export JBOSS_HOME=/opt/wildfly8
+> $ export JBOSS_HOME=/opt/wildfly
 
 Then, run the upgrade script
 
 > $ mvn package -Pupdate-jboss-as -f jboss-as/pom.xml -Dweld.update.version=${weld.version}
 
-where ${weld.version} is the version of Weld you want to use
+where `${weld.version}` is the version of Weld you want to use
 
 Running integration tests and the TCK on WildFly
 ----------------------------------------------------
