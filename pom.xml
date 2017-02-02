@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.2.Final</version>
 
     <name>Weld Parent</name>
 
@@ -30,7 +30,7 @@
         <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
-       <surefire.plugin.jdk9.args></surefire.plugin.jdk9.args>
+       <surefire.plugin.jdk9.args />
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.1.7.Final</arquillian.version>
@@ -531,7 +531,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>HEAD</tag>
+        <tag>2.4.2.Final</tag>
     </scm>
 
 
