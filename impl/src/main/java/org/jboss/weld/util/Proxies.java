@@ -204,7 +204,7 @@ public class Proxies {
         Constructor<?> constructor = null;
         try {
             constructor = SecurityActions.getDeclaredConstructor(clazz);
-        } catch (NoSuchMethodException ignored) {
+        } catch (Exception ignored) {
         }
 
         if (clazz.isPrimitive()) {

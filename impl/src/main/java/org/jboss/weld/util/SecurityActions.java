@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.GetDeclaredConstructorAction;
 
 /**
@@ -32,13 +31,9 @@ final class SecurityActions {
     private SecurityActions() {
     }
 
-    static Constructor<?> getDeclaredConstructor(Class<?> javaClass, Class<?>... parameterTypes) throws NoSuchMethodException {
+    static Constructor<?> getDeclaredConstructor(Class<?> javaClass, Class<?>... parameterTypes) throws NoSuchMethodException, PrivilegedActionException {
         if (System.getSecurityManager() != null) {
-            try {
-                return AccessController.doPrivileged(GetDeclaredConstructorAction.of(javaClass));
-            } catch (PrivilegedActionException e) {
-                throw new WeldException(e.getCause());
-            }
+            return AccessController.doPrivileged(GetDeclaredConstructorAction.of(javaClass));
         } else {
             return javaClass.getDeclaredConstructor(parameterTypes);
         }
