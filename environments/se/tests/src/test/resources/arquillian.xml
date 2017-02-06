@@ -15,7 +15,7 @@
          <property name="logLevel">INFO</property>
          <property name="keepDeploymentArchives">false</property>
          <property name="additionalJavaOpts">${surefire.plugin.jdk9.args} ${jacoco.agent}</property>
-         <property name="waitTime">15</property>
+         <property name="waitTime">${connection.wait.time:15}</property>
       </configuration>
    </container>
 
