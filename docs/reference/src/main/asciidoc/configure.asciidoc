@@ -268,6 +268,18 @@ The functionality is implemented as a built-in portable extension processing all
 |`org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation` || A regular expression. If a non-empty string, then all annotated types whose `AnnotatedType#getJavaClass().getName()` matches this pattern are vetoed if not annotated with a bean defining annotation.
 |=======================================================================
 
+[[allow_vetoed_alternatives]]
+==== Allow vetoed alternatives
+
+By default and per CDI 1.2 specification, once there is an alternative defined in `beans.xml`, it cannot be vetoed in the code.
+Setting this configuration key to `true` will bypass this rule and allow to veto such bean.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.bootstrap.allowExcludedAlternatives` | false | If set to true, an alternative defined in beans.xml can be vetoed.
+|=======================================================================
 
 === Defining external configuration
 
