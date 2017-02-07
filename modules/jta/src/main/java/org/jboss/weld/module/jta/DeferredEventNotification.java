@@ -82,7 +82,7 @@ class DeferredEventNotification<T> implements Runnable {
             }.run();
 
         } catch (Exception e) {
-            EventLogger.LOG.asyncObserverFailure(metadata);
+            EventLogger.LOG.asyncObserverFailure(observer, metadata, e.getCause() != null ? e.getCause() : e);
             EventLogger.LOG.catchingDebug(e);
         }
     }
