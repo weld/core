@@ -42,8 +42,8 @@ public interface EventLogger extends WeldLogger {
     void asyncFire(Object param1, Object param2);
 
     @LogMessage(level=Level.ERROR)
-    @Message(id = 401, value = "Failure while notifying an observer of event {0}", format = Format.MESSAGE_FORMAT)
-    void asyncObserverFailure(Object param1);
+    @Message(id = 401, value = "Failure while notifying an observer {0} of event {1}.\n {2}", format = Format.MESSAGE_FORMAT)
+    void asyncObserverFailure(Object param1, Object param2, Object param3);
 
     @Message(id = 403, value = "Proxy required")
     InvalidObjectException serializationProxyRequired();
