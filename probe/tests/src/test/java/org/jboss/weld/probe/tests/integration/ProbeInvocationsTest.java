@@ -101,24 +101,32 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
         int id = invocationData.getJsonObject(0).getInt(ID);
         JsonObject invocationTree = getPageAsJSONObject(INVOCATIONS_PATH + "/" + id, url, webClient);
         assertEquals(ModelBean.class.getName(), invocationTree.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
-        JsonArray childsOfInvocation = invocationTree.getJsonArray(CHILDREN);
-        assertTrue("Cannot find any child invocations!", childsOfInvocation.size() > 0);
+        JsonArray children = invocationTree.getJsonArray(CHILDREN);
+        assertTrue("Cannot find any child invocations!", children.size() > 0);
+
+        JsonObject sessionScopedCreation = children.getJsonObject(0);
+        assertEquals(SessionScopedBean.class.getName(), sessionScopedCreation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
+        assertEquals("public org.jboss.weld.probe.tests.integration.deployment.beans.SessionScopedBean()", sessionScopedCreation.getString(METHOD_NAME));
 
         //test sessionScopedBean child invocation
-        JsonObject sessionScopedInvocation = childsOfInvocation.getJsonObject(0);
+        JsonObject sessionScopedInvocation = children.getJsonObject(1);
         assertEquals(SessionScopedBean.class.getName(), sessionScopedInvocation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
         assertEquals(SessionScopedBean.SOME_METHOD_NAME, sessionScopedInvocation.getString(METHOD_NAME));
 
         ReadContext ctx = JsonPath.parse(sessionScopedInvocation.toString());
-        List<String> beanClasses = ctx.read("$." + CHILDREN + "[*]." + INTERCEPTED_BEAN + "." + BEAN_CLASS, List.class);
-        List<String> methodNames = ctx.read("$." + CHILDREN + "[*]." + METHOD_NAME, List.class);
+        List<String> beanClasses = ctx.read("$." + CHILDREN + "[*]." + INTERCEPTED_BEAN + "." + BEAN_CLASS);
+        List<String> methodNames = ctx.read("$." + CHILDREN + "[*]." + METHOD_NAME);
 
         assertTrue(beanClasses.contains(ApplicationScopedObserver.class.getName()));
         assertTrue(methodNames.contains("listen"));
         assertTrue(methodNames.contains("listen1"));
 
+        JsonObject conversationScopedCreation = children.getJsonObject(2);
+        assertEquals(ConversationBean.class.getName(), conversationScopedCreation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
+        assertEquals("public org.jboss.weld.probe.tests.integration.deployment.beans.ConversationBean()", conversationScopedCreation.getString(METHOD_NAME));
+
         //test conversationScopedBean child invocation
-        JsonObject conversationScopedInvocation = childsOfInvocation.getJsonObject(1);
+        JsonObject conversationScopedInvocation = children.getJsonObject(3);
         assertEquals(ConversationBean.class.getName(), conversationScopedInvocation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
         assertEquals("start", conversationScopedInvocation.getString(METHOD_NAME));
         assertEquals("BUSINESS", conversationScopedInvocation.getString(TYPE));
