@@ -18,8 +18,11 @@ package org.jboss.weld.environment.servlet.test.se.coop;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.InetSocketAddress;
+
+import javax.enterprise.inject.spi.CDI;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -27,6 +30,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.servlet.Listener;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -38,30 +42,33 @@ public class BootstrapNotNeededTest {
     public void testBootstrapNotNeeded() throws Exception {
 
         // First boostrap Weld SE
-        Weld weld = new Weld();
-        WeldContainer container = weld.initialize();
-        TestBean testBean = container.instance().select(TestBean.class).get();
-        assertNotNull(testBean);
+        try (WeldContainer container = new Weld().initialize()) {
 
-        // Then start Jetty
-        Server server = new Server(InetSocketAddress.createUnresolved("localhost", 8080));
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-        context.addServlet(TestServlet.class, "/test");
-        context.setAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, container.getBeanManager());
-        context.addEventListener(new Listener());
-        server.start();
+            TestBean testBean = container.instance().select(TestBean.class).get();
+            assertNotNull(testBean);
 
-        // Finally verify the test bean
-        try {
-            WebClient webClient = new WebClient();
-            webClient.setThrowExceptionOnFailingStatusCode(true);
-            Page page = webClient.getPage("http://localhost:8080/test");
-            assertEquals(testBean.getId(), page.getWebResponse().getContentAsString().trim());
-        } finally {
-            server.stop();
-            weld.shutdown();
+            // Test CDIProvider
+            CDI<Object> cdi = CDI.current();
+            assertTrue(cdi instanceof WeldContainer);
+
+            // Then start Jetty
+            Server server = new Server(InetSocketAddress.createUnresolved("localhost", 8080));
+            try {
+                ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+                context.setContextPath("/");
+                server.setHandler(context);
+                context.addServlet(TestServlet.class, "/test");
+                context.setAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, container.getBeanManager());
+                context.addEventListener(new Listener());
+                server.start();
+
+                WebClient webClient = new WebClient();
+                webClient.setThrowExceptionOnFailingStatusCode(true);
+                Page page = webClient.getPage("http://localhost:8080/test");
+                assertEquals(testBean.getId(), page.getWebResponse().getContentAsString().trim());
+            } finally {
+                server.stop();
+            }
         }
     }
 
