@@ -73,6 +73,12 @@ public class WeldSEProvider implements CDIProvider {
         return WeldContainer.instance(ids.get(0));
     }
 
+    @Override
+    public int getPriority() {
+        // The priority should be always higher than the priority of CDIProvider used in Weld Servlet
+        return DEFAULT_CDI_PROVIDER_PRIORITY + 1;
+    }
+
     private String getCallingClassName() {
         boolean outerSubclassReached = false;
         for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
