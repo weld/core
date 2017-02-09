@@ -47,6 +47,10 @@ h3 {
   fill: orange;
 }
 
+.circle-constructor {
+  fill: green;
+}
+
 .circle-regular {
   fill: steelblue;
 }
@@ -231,8 +235,8 @@ div.content {
 .leg-circle {
   border-radius: 50%;
   display: inline-block;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   padding: 5px 5px 5px 10px;
   font-weight: bold;
 }
@@ -251,6 +255,18 @@ div.content {
 
 .leg-circle-nonselected {
   background: none repeat scroll 0 0 black;
+}
+
+.leg-circle-constructor {
+  background: none repeat scroll 0 0 green;
+}
+
+.leg-circle-observer {
+  background: none repeat scroll 0 0 orange;
+}
+
+.leg-circle-producer {
+  background: none repeat scroll 0 0 lightsteelblue;
 }
 
 .leg-list li {
