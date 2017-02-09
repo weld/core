@@ -30,6 +30,7 @@ import javax.enterprise.inject.Intercepted;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
+import javax.interceptor.AroundConstruct;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -37,6 +38,7 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.probe.Invocation.Type;
 
 /**
  * An invocation monitor interceptor.
@@ -93,21 +95,33 @@ public class InvocationMonitor implements Serializable {
 
     private transient volatile Boolean skipJavaBeanProperties;
 
+    @AroundConstruct
+    public void monitorCreation(InvocationContext ctx) {
+        init();
+        final Invocation.Builder builder = initBuilder();
+
+        if (interceptedBean != null) {
+            builder.setInterceptedBean(interceptedBean);
+        } else {
+            builder.setDeclaringClassName(ctx.getConstructor().getDeclaringClass().getName());
+        }
+        builder.setType(Type.CONSTRUCTOR);
+        builder.setStart(System.currentTimeMillis());
+        builder.setMethodName(ctx.getConstructor().toString());
+        try {
+            INTERCEPTOR_ACTION.perform(builder, probe, ctx);
+        } catch (Exception e) {
+            ProbeLogger.LOG.aroundConstructMonitoringProblem(interceptedBean, e);
+        }
+    }
+
     @AroundInvoke
     public Object monitor(InvocationContext ctx) throws Exception {
-
-        if (probe == null) {
-            initProbe();
-        }
-        if (skipJavaBeanProperties == null) {
-            initSkipJavaBeanProperties();
-        }
-
         if (skipJavaBeanProperties && isJavaBeanPropertyAccessor(ctx.getMethod())) {
             // Skip JavaBean accessor methods
             return ctx.proceed();
         }
-
+        init();
         final Invocation.Builder builder = initBuilder();
 
         if (interceptedBean != null) {
@@ -122,19 +136,18 @@ public class InvocationMonitor implements Serializable {
         return INTERCEPTOR_ACTION.perform(builder, probe, ctx);
     }
 
-    private synchronized void initProbe() {
+    private void init() {
         if (probe == null) {
-            probe = beanManager.getExtension(ProbeExtension.class).getProbe();
-            if (!probe.isInitialized()) {
-                throw ProbeLogger.LOG.probeNotInitialized();
+            synchronized (this) {
+                if (probe == null) {
+                    probe = beanManager.getExtension(ProbeExtension.class).getProbe();
+                    if (!probe.isInitialized()) {
+                        throw ProbeLogger.LOG.probeNotInitialized();
+                    }
+                    skipJavaBeanProperties = beanManager.getServices().get(WeldConfiguration.class)
+                            .getBooleanProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES);
+                }
             }
-        }
-    }
-
-    private synchronized void initSkipJavaBeanProperties() {
-        if (skipJavaBeanProperties == null) {
-            skipJavaBeanProperties = beanManager.getServices().get(WeldConfiguration.class)
-                    .getBooleanProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES);
         }
     }
 
