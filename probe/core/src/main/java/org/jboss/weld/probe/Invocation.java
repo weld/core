@@ -144,7 +144,7 @@ public final class Invocation {
 
     public enum Type {
 
-        BUSINESS, PRODUCER, DISPOSER, OBSERVER,
+        BUSINESS, PRODUCER, DISPOSER, OBSERVER, CONSTRUCTOR
 
     }
 

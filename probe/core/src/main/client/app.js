@@ -1496,8 +1496,11 @@ Probe.InvocationTree = Ember.View.extend({
             if (d.type == "PRODUCER" || d.type == "DISPOSER") {
                 return "circle-producer";
             }
-            if (d.type == "circle-observer") {
-                return "orange";
+            if (d.type == "OBSERVER") {
+                return "circle-observer";
+            }
+            if (d.type == "CONSTRUCTOR") {
+                return "circle-constructor";
             }
             return "circle-regular";
         });
@@ -1552,7 +1555,7 @@ Probe.InvocationTree = Ember.View.extend({
             "stroke-dasharray",
             function(d) {
                 if (d.target.type == "PRODUCER" || d.target.type == "DISPOSER"
-                    || d.target.type == "OBSERVER") {
+                    || d.target.type == "OBSERVER" || d.target.type == "CONSTRUCTOR") {
                     return "5,5";
                 }
             }).attr("marker-end", function(d) {

@@ -112,4 +112,8 @@ public interface ProbeLogger extends BasicLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 19, value = "Unable to export data: {0}", format = Format.MESSAGE_FORMAT)
     void unableToExportData(Object cause);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 20, value = "A problem occured during monitoring of bean instance construction: {0}", format = Format.MESSAGE_FORMAT)
+    void aroundConstructMonitoringProblem(Object bean, @Cause Throwable cause);
 }
