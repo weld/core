@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -41,7 +42,10 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
+import org.jboss.weld.inject.WeldInstance;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.ForwardingWeldInstance;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
@@ -334,20 +338,68 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
             return new CreateCallback<T>(null, callback, null);
         }
 
-        public CreateCallback(Supplier<T> simple, Function<CreationalContext<T>, T> create, Function<Instance<Object>, T> instance) {
+        CreateCallback(Supplier<T> simple, Function<CreationalContext<T>, T> create, Function<Instance<Object>, T> instance) {
             this.simple = simple;
             this.create = create;
             this.instance = instance;
         }
 
-        T create(CreationalContext<T> ctx, BeanManagerImpl beanManager) {
+        private T create(Bean<?> bean, CreationalContext<T> ctx, BeanManagerImpl beanManager) {
             if (simple != null) {
                 return simple.get();
             } else if (instance != null) {
-                return instance.apply(beanManager.getInstance(ctx));
+                return instance.apply(createInstance(bean, ctx, beanManager));
             } else {
                 return create.apply(ctx);
             }
+        }
+
+        private Instance<Object> createInstance(Bean<?> bean, CreationalContext<T> ctx, BeanManagerImpl beanManager) {
+            WeldInstance<Object> instance = beanManager.getInstance(ctx);
+            if (Dependent.class.equals(bean.getScope())) {
+                return instance;
+            }
+            return new GuardedInstance<>(bean, instance);
+        }
+
+    }
+
+    static class GuardedInstance<T> extends ForwardingWeldInstance<T> {
+
+        private final Bean<?> bean;
+
+        private final WeldInstance<T> delegate;
+
+        public GuardedInstance(Bean<?> bean, WeldInstance<T> delegate) {
+            this.bean = bean;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public WeldInstance<T> delegate() {
+            return delegate;
+        }
+
+        @Override
+        public <U extends T> WeldInstance<U> select(Class<U> subtype, Annotation... qualifiers) {
+            return wrap(subtype, delegate.select(subtype, qualifiers));
+        }
+
+        @Override
+        public <U extends T> WeldInstance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+            return wrap(subtype.getType(), delegate.select(subtype, qualifiers));
+        }
+
+        @Override
+        public WeldInstance<T> select(Annotation... qualifiers) {
+            return wrap(null, delegate.select(qualifiers));
+        }
+
+        private <TYPE> WeldInstance<TYPE> wrap(Type subtype, WeldInstance<TYPE> delegate) {
+            if (subtype != null && InjectionPoint.class.equals(subtype)) {
+                throw BeanLogger.LOG.cannotInjectInjectionPointMetadataIntoNonDependent(bean);
+            }
+            return new GuardedInstance<>(bean, delegate);
         }
 
     }
@@ -423,7 +475,7 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
 
         @Override
         public T create(CreationalContext<T> creationalContext) {
-            return createCallback.create(creationalContext, beanManager);
+            return createCallback.create(this, creationalContext, beanManager);
         }
 
         @Override
@@ -460,7 +512,7 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
 
         @Override
         public String toString() {
-            return "Immutable Builder Bean [" + getBeanClass().toString() + ", types: " + Formats.formatTypes(getTypes()) + ", qualifiers: "
+            return "Configurator Bean [" + getBeanClass().toString() + ", types: " + Formats.formatTypes(getTypes()) + ", qualifiers: "
                     + Formats.formatAnnotations(getQualifiers()) + "]";
         }
 

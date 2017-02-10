@@ -17,22 +17,40 @@
 package org.jboss.weld.tests.injectionPoint.beanConfigurator;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.exceptions.IllegalArgumentException;
+
 public class BeanConfiguratorExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
-        event.addBean().addType(String.class).addQualifier(Juicy.Literal.INSTANCE).produceWith((i) -> {
-            InjectionPoint ip = i.select(InjectionPoint.class).get();
-            assertNotNull(ip);
-            assertNotNull(ip.getBean());
-            return ip.getBean().getBeanClass().getName();
-        });
+        event.addBean().scope(Dependent.class).addType(String.class)
+                .addQualifier(Juicy.Literal.INSTANCE).produceWith((i) -> {
+                    InjectionPoint ip = i.select(InjectionPoint.class).get();
+                    assertNotNull(ip);
+                    assertNotNull(ip.getBean());
+                    return ip.getBean().getBeanClass().getName();
+                });
+        event.addBean().scope(ApplicationScoped.class).addType(Map.class)
+                .addQualifier(Juicy.Literal.INSTANCE).produceWith((i) -> {
+                    try {
+                        i.select(InjectionPoint.class).get();
+                        fail("Cannot inject injection point metadata into non-dependent bean");
+                    } catch (IllegalArgumentException expected) {
+                    }
+                    return new HashMap<>();
+                });
     }
 
 }
