@@ -222,12 +222,16 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     }
 
     private T getBeanInstance(Bean<?> bean) {
-        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(ip);
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(ip, isRegisterableInjectionPoint());
         try {
             return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
         } finally {
             stack.pop();
         }
+    }
+
+    private boolean isRegisterableInjectionPoint() {
+        return !getType().equals(InjectionPoint.class);
     }
 
     private Set<Bean<?>> allBeans() {
