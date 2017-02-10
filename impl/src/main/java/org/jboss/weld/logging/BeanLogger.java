@@ -516,4 +516,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1568, value = "Unable to create ClassFile for: {1}.", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToCreateClassFile(Object name, @Cause Throwable cause);
 
+    @Message(id = 1569, value = "Cannot inject injection point metadata in a non @Dependent bean: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException cannotInjectInjectionPointMetadataIntoNonDependent(Object bean);
+
 }

@@ -17,6 +17,9 @@
 package org.jboss.weld.tests.injectionPoint.beanConfigurator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Map;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -44,8 +47,9 @@ public class BeanConfiguratorInjectionPointMetadataTest {
     }
 
     @Test
-    public void testInjectionPointMetadata(BeanManager beanManager, Consumer consumer) {
+    public void testInjectionPointMetadata(BeanManager beanManager, Consumer consumer, @Juicy Map<Object, Object> map) {
         assertEquals(1, beanManager.getBeans(String.class, Juicy.Literal.INSTANCE).size());
+        assertTrue(map.isEmpty());
         assertEquals(Consumer.class.getName(), consumer.getOwnBeanClass());
     }
 }
