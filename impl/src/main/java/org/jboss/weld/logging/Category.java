@@ -19,6 +19,7 @@ package org.jboss.weld.logging;
 public enum Category {
 
     BOOTSTRAP("Bootstrap"),
+    BOOTSTRAP_TRACKER("BootstrapTracker"),
     VERSION("Version"),
     UTIL("Utilities"),
     BEAN("Bean"),
