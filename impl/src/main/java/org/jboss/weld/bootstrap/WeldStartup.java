@@ -164,6 +164,7 @@ public class WeldStartup {
     private DeploymentVisitor deploymentVisitor;
     private final ServiceRegistry initialServices = new SimpleServiceRegistry();
     private String contextId;
+    private final Tracker tracker = Trackers.create();
 
 
     public WeldStartup() {
@@ -173,7 +174,8 @@ public class WeldStartup {
         if (deployment == null) {
             throw BootstrapLogger.LOG.deploymentRequired();
         }
-
+        tracker.start(Tracker.OP_BOOTSTRAP);
+        tracker.start(Tracker.OP_START_CONTAINER);
         checkApiVersion();
 
         final ServiceRegistry registry = deployment.getServices();
@@ -207,6 +209,7 @@ public class WeldStartup {
         }
 
         // Finish the rest of registry init, setupInitialServices() requires already changed finalContextId
+        tracker.start(Tracker.OP_INIT_SERVICES);
         setupInitialServices();
         registry.addAll(initialServices.entrySet());
         if (!registry.contains(ProxyServices.class)) {
@@ -214,6 +217,7 @@ public class WeldStartup {
         }
 
         addImplementationServices(registry);
+        tracker.end();
 
         verifyServices(registry, environment.getRequiredDeploymentServices(), contextId);
         if (!registry.contains(TransactionServices.class)) {
@@ -225,7 +229,9 @@ public class WeldStartup {
         Container.initialize(finalContextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
         getContainer().setState(ContainerState.STARTING);
 
+        tracker.start(Tracker.OP_CONTEXTS);
         this.contexts = createContexts(registry);
+        tracker.end();
 
         this.bdaMapping = new BeanDeploymentArchiveMapping();
         this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts, bdaMapping);
@@ -238,9 +244,13 @@ public class WeldStartup {
 
         // Read the deployment structure, bdaMapping will be the physical structure
         // as caused by the presence of beans.xml
+        tracker.start(Tracker.OP_READ_DEPLOYMENT);
         deploymentVisitor.visit();
+        tracker.end();
 
-        return new WeldRuntime(finalContextId, deploymentManager, bdaMapping.getBdaToBeanManagerMap());
+        WeldRuntime weldRuntime = new WeldRuntime(finalContextId, deploymentManager, bdaMapping.getBdaToBeanManagerMap());
+        tracker.end();
+        return weldRuntime;
     }
 
     private void checkApiVersion() {
@@ -358,6 +368,7 @@ public class WeldStartup {
         if (deploymentManager == null) {
             throw BootstrapLogger.LOG.managerNotInitialized();
         }
+        tracker.start(Tracker.OP_START_INIT);
 
         Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(getBeanDeployments());
 
@@ -376,7 +387,9 @@ public class WeldStartup {
         // physical BDA
         deploymentVisitor.visit();
 
+        tracker.start(Tracker.OP_BBD);
         BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
+        tracker.end();
 
         // for each physical BDA transform its classes into AnnotatedType instances
         for (BeanDeployment beanDeployment : physicalBeanDeploymentArchives) {
@@ -392,15 +405,19 @@ public class WeldStartup {
             beanDeployment.createTypes();
         }
 
+        tracker.start(Tracker.OP_ATD);
         AfterTypeDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
+        tracker.end();
 
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.createEnablement();
         }
+        tracker.end();
     }
 
 
     public void deployBeans() {
+        tracker.start(Tracker.OP_DEPLOY_BEANS);
         for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.createBeans(environment);
         }
@@ -428,7 +445,9 @@ public class WeldStartup {
         // Flush caches for BeanManager.getBeans() to be usable in ABD (WELD-1729)
         flushCaches();
 
+        tracker.start(Tracker.OP_ABD);
         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
+        tracker.end();
 
         // Extensions may have registered beans / observers. We need to flush caches.
         flushCaches();
@@ -444,10 +463,12 @@ public class WeldStartup {
         }
         getContainer().putBeanDeployments(bdaMapping);
         getContainer().setState(ContainerState.DEPLOYED);
+        tracker.end();
     }
 
     public void validateBeans() {
         BootstrapLogger.LOG.validatingBeans();
+        tracker.start(Tracker.OP_VALIDATE_BEANS);
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             BeanManagerImpl beanManager = beanDeployment.getBeanManager();
             beanManager.getBeanResolver().clear();
@@ -455,11 +476,14 @@ public class WeldStartup {
             beanManager.getServices().get(InjectionTargetService.class).validate();
         }
         getContainer().setState(ContainerState.VALIDATED);
+        tracker.start(Tracker.OP_ADV);
         AfterDeploymentValidationImpl.fire(deploymentManager);
+        tracker.end();
+        tracker.end();
     }
 
     public void endInitialization() {
-
+        tracker.start(Tracker.OP_END_INIT);
         final BeanIdentifierIndex index = deploymentManager.getServices().get(BeanIdentifierIndex.class);
         if (index != null) {
             // Build a special index of bean identifiers
@@ -519,6 +543,7 @@ public class WeldStartup {
                 }
             }
         }
+        tracker.close();
     }
 
     private void flushCaches() {

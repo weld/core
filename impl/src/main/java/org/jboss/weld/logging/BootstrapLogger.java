@@ -43,6 +43,8 @@ public interface BootstrapLogger extends WeldLogger {
 
     BootstrapLogger LOG = Logger.getMessageLogger(BootstrapLogger.class, Category.BOOTSTRAP.getName());
 
+    BootstrapLogger TRACKER_LOG = Logger.getMessageLogger(BootstrapLogger.class, Category.BOOTSTRAP_TRACKER.getName());
+
     @LogMessage(level = Level.DEBUG)
     @Message(id = 100, value = "Weld initialized. Validating beans")
     void validatingBeans();
