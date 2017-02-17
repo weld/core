@@ -46,6 +46,7 @@ import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
@@ -94,8 +95,26 @@ public class Observers {
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {
-        return CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(method.getObservedType()))
-                || (Object.class.equals(method.getObservedType()) && method instanceof ExtensionObserverMethodImpl<?, ?>);
+        // case when the observed type clearly belongs to predefined set of types which make it a container lifecycle observer
+        if (CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(method.getObservedType()))) {
+            return true;
+        }
+        // the observer is in extension and looks something like this -> @Observes Object ob
+        // then there are two cases in which we considerer such observer a container event observer
+        if (Object.class.equals(method.getObservedType()) && method instanceof ExtensionObserverMethodImpl<?, ?>) {
+
+            // public void observe (@Observes Object ob){...} - this IS container event observer
+            if (method.getObservedQualifiers().isEmpty()) {
+                return true;
+            }
+
+            // public void observe (@Observes @Any Object ob){...} - this IS container event observer
+            if (method.getObservedQualifiers().size() == 1 && method.getObservedQualifiers().contains(AnyLiteral.INSTANCE)) {
+                return true;
+            }
+        }
+        // if none of the above fits, we are safe to say such observer is not a container event observer
+        return false;
     }
 
     public static boolean isObserverMethodEnabled(ObserverMethod<?> method, BeanManagerImpl manager) {
