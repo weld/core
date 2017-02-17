@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
@@ -83,8 +84,26 @@ public class Observers {
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {
-        return CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(method.getObservedType()))
-                || (Object.class.equals(method.getObservedType()) && method instanceof ContainerLifecycleEventObserverMethod);
+        // case when the observed type clearly belongs to predefined set of types which make it a container lifecycle observer
+        if (CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(method.getObservedType()))) {
+            return true;
+        }
+        // the observer is in extension and looks something like this -> @Observes Object ob
+        // then there are two cases in which we considerer such observer a container event observer
+        if (Object.class.equals(method.getObservedType()) && method instanceof ContainerLifecycleEventObserverMethod) {
+
+            // public void observe (@Observes Object ob){...} - this IS container event observer
+            if (method.getObservedQualifiers().isEmpty()) {
+                return true;
+            }
+
+            // public void observe (@Observes @Any Object ob){...} - this IS container event observer
+            if (method.getObservedQualifiers().size() == 1 && method.getObservedQualifiers().contains(Any.Literal.INSTANCE)) {
+                return true;
+            }
+        }
+        // if none of the above fits, we are safe to say such observer is not a container event observer
+        return false;
     }
 
     public static boolean isObserverMethodEnabled(ObserverMethod<?> method, BeanManagerImpl manager) {
