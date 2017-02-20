@@ -18,8 +18,10 @@
 package org.jboss.weld.tests.interceptors.producer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
@@ -29,6 +31,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.interceptors.producer.Producer.Bar;
 import org.jboss.weld.tests.interceptors.producer.Producer.Foo;
@@ -87,5 +90,23 @@ public class InterceptionFactoryTest {
         map.put(params[0], params[1]);
         assertEquals(1, Producer.INVOCATIONS.size());
         assertEquals(Arrays.toString(params), Producer.INVOCATIONS.get(0));
+    }
+
+    @Test
+    public void testListAdd(@Produced Instance<List<Object>> lists) {
+        // resolving via Instance just to make the NPE exception human-readable (direct method injection will blow up with Arq. stack)
+        // Invalid producer using an InterceptionFactory for List (interface) and applying it to ArrayList
+        try {
+            lists.get();
+            fail();
+        } catch (IllegalStateException e) {
+            //Expected
+        }
+    }
+
+
+    @Test
+    public void testParent(@Produced Producer.FooParent foo) {
+        assertEquals("Hello Parent pong", foo.ping());
     }
 }

@@ -87,6 +87,31 @@ public class Producer {
         }).findFirst().get().add(Monitor.Literal.INSTANCE);
         return interceptionFactory.createInterceptedInstance(new HashMap<>());
     }
+    
+    @Produced
+    @Dependent
+    @Produces
+    public List<Object> produceList(InterceptionFactory<List<Object>> interceptionFactory) {
+        interceptionFactory.ignoreFinalMethods().configure().filterMethods((m) -> {
+            if (m.getJavaMember().getName().equals("add")
+                    && m.getJavaMember().getParameterCount() == 1) {
+                return true;
+            }
+            return false;
+        }).findFirst().get().add(Monitor.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new ArrayList<>());
+    }
+
+
+    @Produces
+    @Produced
+    public FooParent produceFooParent(InterceptionFactory<FooParent> interceptionFactory) {
+        interceptionFactory.configure().filterMethods((m) ->
+            m.getJavaMember().getName().equals("ping")
+        ).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new FooChild());
+    }
+
 
     static class Foo {
 
@@ -107,5 +132,16 @@ public class Producer {
 
     static void reset() {
         INVOCATIONS.clear();
+    }
+
+    public static class FooParent {
+
+        String ping() {
+            return "Parent pong";
+        }
+    }
+
+    public static class FooChild extends FooParent {
+
     }
 }
