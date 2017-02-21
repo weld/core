@@ -166,6 +166,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
                 }
             }
         }
+        container.fireContainerInitializedEvent();
     }
 
     /**
@@ -209,8 +210,11 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
         this.creationalContext = beanManager().createCreationalContext(null);
         this.instance = beanManager().getInstance(creationalContext);
         this.event = beanManager().event();
-        beanManager().fireEvent(new ContainerInitialized(id), Initialized.Literal.APPLICATION);
+    }
+
+    private void fireContainerInitializedEvent() {
         WeldSELogger.LOG.weldContainerInitialized(id);
+        beanManager().fireEvent(new ContainerInitialized(id), Initialized.Literal.APPLICATION);
     }
 
     /**
