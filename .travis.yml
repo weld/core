@@ -3,3 +3,6 @@ jdk:
   - oraclejdk8
 script: "mvn verify"
 sudo: false
+cache:
+  directories:
+   - $HOME/.m2/repository
