@@ -27,7 +27,7 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * A proxy that forwards call to the current {@link SLSBInvocationInjectionPoint}.
+ * A proxy that forwards call to the current {@link CurrentInvocationInjectionPoint}.
  *
  * @author Marko Luksa
  *
@@ -36,15 +36,15 @@ class DynamicInjectionPoint extends ForwardingInjectionPoint implements Serializ
 
     private static final long serialVersionUID = 0L;
 
-    private final transient SLSBInvocationInjectionPoint invocationInjectionPoint;
+    private final transient CurrentInvocationInjectionPoint invocationInjectionPoint;
     private final String contextId;
 
     DynamicInjectionPoint(BeanManagerImpl manager) {
         this.contextId = manager.getContextId();
-        this.invocationInjectionPoint = manager.getServices().get(SLSBInvocationInjectionPoint.class);
+        this.invocationInjectionPoint = manager.getServices().get(CurrentInvocationInjectionPoint.class);
     }
 
-    private DynamicInjectionPoint(SLSBInvocationInjectionPoint invocationInjectionPoint, String contextId) {
+    private DynamicInjectionPoint(CurrentInvocationInjectionPoint invocationInjectionPoint, String contextId) {
         this.invocationInjectionPoint = invocationInjectionPoint;
         this.contextId = contextId;
     }
@@ -58,6 +58,6 @@ class DynamicInjectionPoint extends ForwardingInjectionPoint implements Serializ
     }
 
     private Object readResolve() throws ObjectStreamException {
-        return new DynamicInjectionPoint(Container.instance(contextId).services().get(SLSBInvocationInjectionPoint.class) , contextId);
+        return new DynamicInjectionPoint(Container.instance(contextId).services().get(CurrentInvocationInjectionPoint.class) , contextId);
     }
 }
