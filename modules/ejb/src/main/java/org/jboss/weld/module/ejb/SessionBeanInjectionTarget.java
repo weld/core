@@ -51,8 +51,8 @@ class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     public static <T> SessionBeanInjectionTarget<T> of(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
         LifecycleCallbackInvoker<T> invoker = DefaultLifecycleCallbackInvoker.of(type);
         Injector<T> injector;
-        if (bean.getEjbDescriptor().isStateless()) {
-            injector = new StatelessSessionBeanInjector<T>(type, bean, beanManager);
+        if (bean.getEjbDescriptor().isStateless() || bean.getEjbDescriptor().isSingleton()) {
+            injector = new DynamicInjectionPointInjector<T>(type, bean, beanManager);
         } else {
             injector = new DefaultInjector<T>(type, bean, beanManager);
         }

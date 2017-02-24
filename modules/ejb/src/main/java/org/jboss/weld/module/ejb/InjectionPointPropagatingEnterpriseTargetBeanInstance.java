@@ -41,12 +41,12 @@ class InjectionPointPropagatingEnterpriseTargetBeanInstance extends EnterpriseTa
 
     private final InjectionPointHolder injectionPointHolder;
     private final String contextId;
-    private transient SLSBInvocationInjectionPoint slsbInvocationInjectionPoint;
+    private transient CurrentInvocationInjectionPoint currentInvocationInjectionPoint;
 
     InjectionPointPropagatingEnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler, BeanManagerImpl manager) {
         super(baseType, methodHandler);
         this.contextId = manager.getContextId();
-        this.slsbInvocationInjectionPoint = manager.getServices().get(SLSBInvocationInjectionPoint.class);
+        this.currentInvocationInjectionPoint = manager.getServices().get(CurrentInvocationInjectionPoint.class);
         InjectionPoint ip = manager.getServices().get(CurrentInjectionPoint.class).peek();
         if (ip != null) {
             this.injectionPointHolder = new InjectionPointHolder(manager.getContextId(), ip);
@@ -59,9 +59,9 @@ class InjectionPointPropagatingEnterpriseTargetBeanInstance extends EnterpriseTa
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         ThreadLocalStackReference<InjectionPoint> stack = null;
         if (injectionPointHolder != null) {
-            stack = slsbInvocationInjectionPoint.push(injectionPointHolder.get());
+            stack = currentInvocationInjectionPoint.push(injectionPointHolder.get());
         } else {
-            stack = slsbInvocationInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
+            stack = currentInvocationInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
         }
 
         try {
@@ -72,7 +72,7 @@ class InjectionPointPropagatingEnterpriseTargetBeanInstance extends EnterpriseTa
     }
 
     private Object readResolve() throws ObjectStreamException {
-        this.slsbInvocationInjectionPoint = Container.instance(contextId).services().get(SLSBInvocationInjectionPoint.class);
+        this.currentInvocationInjectionPoint = Container.instance(contextId).services().get(CurrentInvocationInjectionPoint.class);
         return this;
     }
 }

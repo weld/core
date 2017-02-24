@@ -41,7 +41,7 @@ public class WeldEjbModule implements WeldModule {
 
     @Override
     public void postServiceRegistration(PostServiceRegistrationContext ctx) {
-        ctx.getServices().add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
+        ctx.getServices().add(CurrentInvocationInjectionPoint.class, new CurrentInvocationInjectionPoint());
         ctx.registerPlugableValidator(new WeldEjbValidator());
         ctx.getServices().get(ResourceInjectionFactory.class).addResourceInjectionProcessor(new EjbResourceInjectionProcessor());
     }

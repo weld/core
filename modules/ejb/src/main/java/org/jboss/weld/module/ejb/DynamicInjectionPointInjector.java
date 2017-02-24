@@ -32,7 +32,7 @@ import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * {@link Injector} implementation which prepares {@link DynamicInjectionPoint} to be injected into stateless session beans.
+ * {@link Injector} implementation which prepares {@link DynamicInjectionPoint} to be injected into stateless session beans or singleton session beans.
  *
  * @see DefaultInjector
  * @see https://issues.jboss.org/browse/WELD-1177
@@ -41,12 +41,12 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @param <T>
  */
-class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
+class DynamicInjectionPointInjector<T> extends DefaultInjector<T> {
 
     private final CurrentInjectionPoint currentInjectionPoint;
     private boolean pushDynamicInjectionPoints;
 
-    StatelessSessionBeanInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    DynamicInjectionPointInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
         this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
     }

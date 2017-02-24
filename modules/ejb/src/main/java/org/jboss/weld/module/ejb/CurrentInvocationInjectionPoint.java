@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.injection.ThreadLocalStack;
 
-class SLSBInvocationInjectionPoint extends ThreadLocalStack<InjectionPoint> implements Service {
+class CurrentInvocationInjectionPoint extends ThreadLocalStack<InjectionPoint> implements Service {
 
     @Override
     public void cleanup() {
