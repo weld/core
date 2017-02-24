@@ -40,12 +40,12 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @param <T>
  */
-public class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
+public class DynamicInjectionPointInjector<T> extends DefaultInjector<T> {
 
     private final CurrentInjectionPoint currentInjectionPoint;
     private boolean pushDynamicInjectionPoints;
 
-    public StatelessSessionBeanInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    public DynamicInjectionPointInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
         this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
     }

@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.Container;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
-import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
+import org.jboss.weld.injection.CurrentInvocationInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.InjectionPointHolder;
@@ -40,12 +40,12 @@ public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends Enter
 
     private final InjectionPointHolder injectionPointHolder;
     private final String contextId;
-    private transient SLSBInvocationInjectionPoint slsbInvocationInjectionPoint;
+    private transient CurrentInvocationInjectionPoint currentInvocationInjectionPoint;
 
     public InjectionPointPropagatingEnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler, BeanManagerImpl manager) {
         super(baseType, methodHandler);
         this.contextId = manager.getContextId();
-        this.slsbInvocationInjectionPoint = manager.getServices().get(SLSBInvocationInjectionPoint.class);
+        this.currentInvocationInjectionPoint = manager.getServices().get(CurrentInvocationInjectionPoint.class);
         InjectionPoint ip = manager.getServices().get(CurrentInjectionPoint.class).peek();
         if (ip != null) {
             this.injectionPointHolder = new InjectionPointHolder(manager.getContextId(), ip);
@@ -58,9 +58,9 @@ public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends Enter
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         ThreadLocalStackReference<InjectionPoint> stack = null;
         if (injectionPointHolder != null) {
-            stack = slsbInvocationInjectionPoint.push(injectionPointHolder.get());
+            stack = currentInvocationInjectionPoint.push(injectionPointHolder.get());
         } else {
-            stack = slsbInvocationInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
+            stack = currentInvocationInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
         }
 
         try {
@@ -71,7 +71,7 @@ public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends Enter
     }
 
     private Object readResolve() throws ObjectStreamException {
-        this.slsbInvocationInjectionPoint = Container.instance(contextId).services().get(SLSBInvocationInjectionPoint.class);
+        this.currentInvocationInjectionPoint = Container.instance(contextId).services().get(CurrentInvocationInjectionPoint.class);
         return this;
     }
 }

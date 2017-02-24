@@ -107,7 +107,7 @@ import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
+import org.jboss.weld.injection.CurrentInvocationInjectionPoint;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.BootstrapLogger;
@@ -294,7 +294,7 @@ public class WeldStartup {
 
         services.add(ContextualStore.class, new ContextualStoreImpl(contextId, beanIdentifierIndex));
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
-        services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
+        services.add(CurrentInvocationInjectionPoint.class, new CurrentInvocationInjectionPoint());
         services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
