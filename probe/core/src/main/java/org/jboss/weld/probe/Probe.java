@@ -18,7 +18,9 @@ package org.jboss.weld.probe;
 
 import static org.jboss.weld.probe.Strings.ADDITIONAL_BDA_SUFFIX;
 import static org.jboss.weld.probe.Strings.WEB_INF_CLASSES;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,7 +39,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -50,6 +54,8 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
+import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Components.BeanKind;
 import org.jboss.weld.probe.Queries.BeanFilters;
@@ -57,6 +63,7 @@ import org.jboss.weld.probe.Queries.Filters;
 import org.jboss.weld.probe.Queries.ObserverFilters;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.collections.SetMultimap;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * This component holds all the mapping and monitoring data.
@@ -533,19 +540,55 @@ class Probe {
                 // Has direct dependents
                 continue;
             }
-            if (hasDeclaredObservers(bean, observers)) {
+            if (hasDeclaredObserversOrIsInjectedIntoObserver(bean, observers)) {
+                continue;
+            }
+            if (isInjectedIntoDisposer(bean, beans)) {
                 continue;
             }
             unusedBeans.add(bean);
         }
     }
 
-    private boolean hasDeclaredObservers(Bean<?> bean, Collection<ObserverMethod<?>> observers) {
+    private boolean isInjectedIntoDisposer(Bean<?> bean, Collection<Bean<?>> beans) {
+        for (Bean<?> producerCandidate : beans) {
+            if (producerCandidate instanceof AbstractProducerBean) {
+                AbstractProducerBean<?, ?, ?> producerBean = cast(producerCandidate);
+                if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?>) {
+                    AbstractMemberProducer<?, ?> producer = Reflections.<AbstractMemberProducer<?, ?>> cast(producerBean.getProducer());
+                    if (producer.getDisposalMethod() != null) {
+                        BeanManager beanManager = getBeanManager(bean);
+                        for (InjectionPoint injectionPoint : producer.getDisposalMethod().getInjectionPoints()) {
+                            if (bean.equals(beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
+                                    injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()]))))) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasDeclaredObserversOrIsInjectedIntoObserver(Bean<?> bean, Collection<ObserverMethod<?>> observers) {
         for (ObserverMethod<?> observerMethod : observers) {
             if (observerMethod instanceof ObserverMethodImpl) {
                 ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
                 if (bean.equals(observerMethodImpl.getDeclaringBean())) {
                     return true;
+                }
+                Set<WeldInjectionPointAttributes<?, ?>> injectionPoints = observerMethodImpl.getInjectionPoints();
+                if (!injectionPoints.isEmpty()) {
+                    BeanManager beanManager = getBeanManager(observerMethodImpl.getDeclaringBean());
+                    if (beanManager != null) {
+                        for (WeldInjectionPointAttributes<?, ?> injectionPoint : injectionPoints) {
+                            if (bean.equals(beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
+                                    injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()]))))) {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
         }
