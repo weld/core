@@ -26,6 +26,7 @@ import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 /**
  * Log messages for events
@@ -75,5 +76,8 @@ public interface EventLogger extends WeldLogger {
 
     @Message(id = 412, value = "ObserverMethod.{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException observerMethodsMethodReturnsNull(Object param1, Object param2);
+
+    @Message(id = 418, value = "Observer method for container lifecycle event cannot be static. {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException staticContainerLifecycleEventObserver(ObserverMethod<?> observer, Object stackElement);
 
 }
