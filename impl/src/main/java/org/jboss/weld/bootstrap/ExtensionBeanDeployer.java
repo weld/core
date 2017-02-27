@@ -41,6 +41,8 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.DeploymentStructures;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.logging.EventLogger;
+import org.jboss.weld.util.Observers;
 
 /**
  * @author pmuir
@@ -131,6 +133,9 @@ public class ExtensionBeanDeployer {
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
         ObserverInitializationContext<T, X> observerMethodInitializer = ObserverInitializationContext.of(observer, method);
+        if (Observers.isContainerLifecycleObserverMethod(observer) && method.isStatic()) {
+            throw EventLogger.LOG.staticContainerLifecycleEventObserver(observer, Formats.formatAsStackTraceElement(method.getJavaMember()));
+        }
         observerMethodInitializers.add(observerMethodInitializer);
     }
 
