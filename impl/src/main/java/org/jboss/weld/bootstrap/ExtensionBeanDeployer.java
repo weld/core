@@ -44,7 +44,6 @@ import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.DeploymentStructures;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir
@@ -149,8 +148,13 @@ public class ExtensionBeanDeployer {
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers, boolean isAsync) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager, isAsync);
         ObserverInitializationContext<T, X> observerMethodInitializer = ObserverInitializationContext.of(observer, method);
-        if (isAsync && Observers.CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(observer.getObservedType()))) {
-            throw EventLogger.LOG.asyncContainerLifecycleEventObserver(observer, Formats.formatAsStackTraceElement(method.getJavaMember()));
+        if (Observers.isContainerLifecycleObserverMethod(observer)) {
+            if (isAsync) {
+                throw EventLogger.LOG.asyncContainerLifecycleEventObserver(observer, Formats.formatAsStackTraceElement(method.getJavaMember()));
+            }
+            if (method.isStatic()) {
+                throw EventLogger.LOG.staticContainerLifecycleEventObserver(observer, Formats.formatAsStackTraceElement(method.getJavaMember()));
+            }
         }
         observerMethodInitializers.add(observerMethodInitializer);
     }
