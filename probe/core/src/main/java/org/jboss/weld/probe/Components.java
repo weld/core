@@ -89,7 +89,7 @@ final class Components {
     static final Comparator<Annotation> PROBE_COMPONENT_ANNOTATION_COMPARATOR = new Comparator<Annotation>() {
 
         @Override
-        public int compare(Annotation o1,Annotation o2) {
+        public int compare(Annotation o1, Annotation o2) {
             // Probe components should have the lowest priority when sorting
             int result = Boolean.compare(isProbeAnnotation(o1), isProbeAnnotation(o2));
             // Unless decided compare the class names lexicographically
@@ -155,57 +155,79 @@ final class Components {
      * @return the set of dependents
      */
     static Set<Dependency> getDependents(Bean<?> bean, Probe probe) {
-        return getDependents(bean, probe.getBeans(), probe);
+        return getDependents(bean, probe.getBeans(), probe, false);
     }
 
     /**
-    *
-    * @param bean
-    * @param probe
-    * @return the set of dependents
-    */
-   static Set<Dependency> getDependents(Bean<?> bean, Collection<Bean<?>> beans, Probe probe) {
-       Set<Dependency> dependents = new HashSet<Dependency>();
-       for (Bean<?> candidate : beans) {
-           if (candidate.equals(bean)) {
-               continue;
-           }
-           BeanManager beanManager = probe.getBeanManager(candidate);
-           if (beanManager == null) {
-               // Don't process built-in beans
-               continue;
-           }
-           Set<InjectionPoint> injectionPoints = candidate.getInjectionPoints();
-           if (injectionPoints != null && !injectionPoints.isEmpty()) {
-               for (InjectionPoint injectionPoint : injectionPoints) {
-                   if (injectionPoint.isDelegate()) {
-                       // Do not include delegate injection points
-                       continue;
-                   }
-                   // At this point unsatisfied or ambiguous dependency should not exits
-                   Bean<?> candidateDependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
-                           injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
-                   if (candidateDependency.getBeanClass().equals(InstanceImpl.class)) {
-                       Bean<?> lazilyFetched = getInstanceResolvedBean(beanManager, injectionPoint);
-                       if (lazilyFetched != null && lazilyFetched.equals(bean)) {
-                           dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY, true));
-                           continue;
-                       }
-                   }
-                   boolean satisfies = false;
-                   if (isBuiltinBeanButNotExtension(candidateDependency)) {
-                       satisfies = bean.equals(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) candidateDependency)));
-                   } else {
-                       satisfies = bean.equals(candidateDependency);
-                   }
-                   if (satisfies) {
-                       dependents.add(new Dependency(candidate, injectionPoint));
-                   }
-               }
-           }
-       }
-       return dependents;
-   }
+     *
+     * @param bean
+     * @param beans
+     * @param probe
+     * @param firstMatch
+     * @return the set of dependents
+     */
+    static Set<Dependency> getDependents(Bean<?> bean, Collection<Bean<?>> beans, Probe probe, boolean firstMatch) {
+        Set<Dependency> dependents = new HashSet<Dependency>();
+        for (Bean<?> candidate : beans) {
+            if (candidate.equals(bean)) {
+                continue;
+            }
+            BeanManager beanManager = probe.getBeanManager(candidate);
+            if (beanManager == null) {
+                // Don't process built-in beans
+                continue;
+            }
+            Set<InjectionPoint> injectionPoints = candidate.getInjectionPoints();
+            if (injectionPoints != null && !injectionPoints.isEmpty()) {
+                for (InjectionPoint injectionPoint : injectionPoints) {
+                    if (injectionPoint.isDelegate()) {
+                        // Do not include delegate injection points
+                        continue;
+                    }
+                    // At this point unsatisfied or ambiguous dependency should not exits
+                    Bean<?> candidateDependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
+                            injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
+                    if (candidateDependency.getBeanClass().equals(InstanceImpl.class)) {
+                        Bean<?> lazilyFetched = getInstanceResolvedBean(beanManager, injectionPoint);
+                        if (lazilyFetched != null && lazilyFetched.equals(bean)) {
+                            dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY, true));
+                            if (firstMatch) {
+                                break;
+                            } else {
+                                continue;
+                            }
+                        }
+                    }
+                    boolean satisfies = false;
+                    if (isBuiltinBeanButNotExtension(candidateDependency)) {
+                        satisfies = bean.equals(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) candidateDependency)));
+                    } else {
+                        satisfies = bean.equals(candidateDependency);
+                    }
+                    if (satisfies) {
+                        dependents.add(new Dependency(candidate, injectionPoint));
+                        if (firstMatch) {
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        return dependents;
+    }
+
+    /**
+     *
+     * @param bean
+     * @param beans
+     * @param probe
+     * @return <code>true</code> if there's at least one bean which depends on the given bean, <code>false</code> otherwise
+     */
+    static boolean hasDependents(Bean<?> bean, Collection<Bean<?>> beans, Probe probe) {
+        return !getDependents(bean, beans, probe, true).isEmpty();
+    }
 
     /**
      *
@@ -329,13 +351,13 @@ final class Components {
     }
 
     /**
-    *
-    * @param annotation
-    * @return <code>true</code> if the given annotation is a probe annotation, <code>false</code> otherwise
-    */
-   static boolean isProbeAnnotation(Annotation annotation) {
-       return isProbeComponent(annotation.annotationType());
-   }
+     *
+     * @param annotation
+     * @return <code>true</code> if the given annotation is a probe annotation, <code>false</code> otherwise
+     */
+    static boolean isProbeAnnotation(Annotation annotation) {
+        return isProbeComponent(annotation.annotationType());
+    }
 
     /**
      *
@@ -349,15 +371,15 @@ final class Components {
     }
 
     /**
-    *
-    * @param candidates
-    * @return the sorted list of annotations, where the probe component annotations have the lowest priority
-    */
-   static <T> List<Annotation> getSortedProbeComponetAnnotationCandidates(Collection<Annotation> candidates) {
-       List<Annotation> result = new ArrayList<Annotation>(candidates);
-       Collections.sort(result, Components.PROBE_COMPONENT_ANNOTATION_COMPARATOR);
-       return result;
-   }
+     *
+     * @param candidates
+     * @return the sorted list of annotations, where the probe component annotations have the lowest priority
+     */
+    static <T> List<Annotation> getSortedProbeComponetAnnotationCandidates(Collection<Annotation> candidates) {
+        List<Annotation> result = new ArrayList<Annotation>(candidates);
+        Collections.sort(result, Components.PROBE_COMPONENT_ANNOTATION_COMPARATOR);
+        return result;
+    }
 
     /**
      *
