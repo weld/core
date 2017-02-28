@@ -536,8 +536,8 @@ class Probe {
                 // Has declared producers
                 continue;
             }
-            if (!Components.getDependents(bean, beans, this).isEmpty()) {
-                // Has direct dependents
+            if (Components.hasDependents(bean, beans, this)) {
+                // Has direct or potential (Instance<>) dependents
                 continue;
             }
             if (hasDeclaredObserversOrIsInjectedIntoObserver(bean, observers)) {
