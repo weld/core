@@ -47,6 +47,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStoreImpl;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.BeanManagerImplBean;
 import org.jboss.weld.bean.builtin.ContextBean;
@@ -630,7 +631,7 @@ public class WeldStartup {
     }
 
     /**
-     * Right now we only index all session and conversation scoped beans.
+     * Right now, only session and conversation scoped beans (except for built-in beans) are taken into account.
      *
      * @return the set of beans the index should be built from
      */
@@ -638,7 +639,8 @@ public class WeldStartup {
         Set<Bean<?>> beans = new HashSet<Bean<?>>();
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             for (Bean<?> bean : beanDeployment.getBeanManager().getBeans()) {
-                if (bean.getScope().equals(SessionScoped.class) || bean.getScope().equals(ConversationScoped.class)) {
+                if (!(bean instanceof AbstractBuiltInBean<?>)
+                        && (bean.getScope().equals(SessionScoped.class) || bean.getScope().equals(ConversationScoped.class))) {
                     beans.add(bean);
                 }
             }
