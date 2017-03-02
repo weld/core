@@ -27,11 +27,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
@@ -100,10 +98,8 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
     protected static class BuiltInBeanAttributes<T> extends ImmutableBeanAttributes<T> {
 
-        private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
-
         public BuiltInBeanAttributes(Class<T> type) {
-            super(Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, ImmutableSet.<Type>of(type, Object.class), Dependent.class);
+            super(Collections.<Class<? extends Annotation>> emptySet(), false, null, Bindings.DEFAULT_QUALIFIERS, ImmutableSet.<Type>of(type, Object.class), Dependent.class);
         }
     }
 

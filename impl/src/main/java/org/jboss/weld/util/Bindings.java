@@ -17,15 +17,19 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.resolution.QualifierInstance;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Utility methods for working with qualifiers and interceptor bindings.
@@ -34,6 +38,8 @@ import org.jboss.weld.resolution.QualifierInstance;
  *
  */
 public class Bindings {
+
+    public static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
 
     private Bindings() {
     }

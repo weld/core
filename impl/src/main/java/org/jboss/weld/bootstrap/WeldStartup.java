@@ -135,6 +135,7 @@ import org.jboss.weld.servlet.ServletContextService;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Permissions;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
@@ -582,25 +583,28 @@ public class WeldStartup {
         * these (e.g. if we are running in a servlet environment) they may be
         * useful for an application.
         */
-        contexts.add(new ContextHolder<ApplicationContext>(new ApplicationContextImpl(contextId), ApplicationContext.class, UnboundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<SingletonContext>(new SingletonContextImpl(contextId), SingletonContext.class, UnboundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(contextId, beanIdentifierIndex), BoundSessionContext.class, BoundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId, services), BoundConversationContext.class, BoundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(contextId), BoundRequestContext.class, BoundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(contextId), RequestContext.class, UnboundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, UnboundLiteral.INSTANCE));
+        Set<Annotation> boundQualifires = ImmutableSet.<Annotation>builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(BoundLiteral.INSTANCE).build();
+        Set<Annotation> unboundQualifiers = ImmutableSet.<Annotation>builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(UnboundLiteral.INSTANCE).build();
+        contexts.add(new ContextHolder<ApplicationContext>(new ApplicationContextImpl(contextId), ApplicationContext.class, unboundQualifiers));
+        contexts.add(new ContextHolder<SingletonContext>(new SingletonContextImpl(contextId), SingletonContext.class, unboundQualifiers));
+        contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(contextId, beanIdentifierIndex), BoundSessionContext.class, boundQualifires));
+        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId, services), BoundConversationContext.class, boundQualifires));
+        contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(contextId), BoundRequestContext.class, boundQualifires));
+        contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(contextId), RequestContext.class, unboundQualifiers));
+        contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, unboundQualifiers));
 
         if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
             // Register the Http contexts if not in
-            contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, beanIdentifierIndex), HttpSessionContext.class, HttpLiteral.INSTANCE));
-            contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, beanIdentifierIndex), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
-            contexts.add(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId, services), HttpConversationContext.class, HttpLiteral.INSTANCE));
-            contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, HttpLiteral.INSTANCE));
+            Set<Annotation> httpQualifiers = ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(HttpLiteral.INSTANCE).build();
+            contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, beanIdentifierIndex), HttpSessionContext.class, httpQualifiers));
+            contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, beanIdentifierIndex), HttpSessionDestructionContext.class, httpQualifiers));
+            contexts.add(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId, services), HttpConversationContext.class, httpQualifiers));
+            contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, httpQualifiers));
         }
 
         if (isEjbServicesRegistered()) {
             // Register the EJB Request context if EjbServices are available
-            contexts.add(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(contextId), EjbRequestContext.class, EjbLiteral.INSTANCE));
+            contexts.add(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(contextId), EjbRequestContext.class,  ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(EjbLiteral.INSTANCE).build()));
         }
 
         /*
