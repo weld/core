@@ -39,6 +39,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -50,8 +51,6 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  * @param <T>
  */
 public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigurator<T>, Configurator<BeanAttributes<T>> {
-
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
 
     private final BeanManagerImpl beanManager;
 
@@ -260,13 +259,13 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     private Set<Annotation> initQualifiers(Set<Annotation> qualifiers) {
         if (qualifiers.isEmpty()) {
-            return DEFAULT_QUALIFIERS;
+            return Bindings.DEFAULT_QUALIFIERS;
         }
         Set<Annotation> normalized = new HashSet<Annotation>(qualifiers);
         normalized.remove(Any.Literal.INSTANCE);
         normalized.remove(Default.Literal.INSTANCE);
         if (normalized.isEmpty()) {
-            normalized = DEFAULT_QUALIFIERS;
+            normalized = Bindings.DEFAULT_QUALIFIERS;
         } else {
             ImmutableSet.Builder<Annotation> builder = ImmutableSet.builder();
             if (normalized.size() == 1) {

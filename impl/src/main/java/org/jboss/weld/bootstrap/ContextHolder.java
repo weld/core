@@ -1,13 +1,9 @@
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.util.collections.Arrays2.asSet;
-
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 
 public class ContextHolder<T extends Context> {
 
@@ -15,11 +11,10 @@ public class ContextHolder<T extends Context> {
     private final Class<T> type;
     private final Set<Annotation> qualifiers;
 
-    public ContextHolder(T context, Class<T> type, Annotation qualifier) {
-        super();
+    public ContextHolder(T context, Class<T> type, Set<Annotation> qualifiers) {
         this.context = context;
         this.type = type;
-        this.qualifiers = asSet(Default.Literal.INSTANCE, Any.Literal.INSTANCE, qualifier);
+        this.qualifiers = qualifiers;
     }
 
     public T getContext() {

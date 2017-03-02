@@ -16,15 +16,19 @@
  */
 package org.jboss.weld.module.ejb;
 
+import java.lang.annotation.Annotation;
+
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.ejb.EjbLiteral;
 import org.jboss.weld.context.ejb.EjbRequestContext;
-import org.jboss.weld.module.ejb.context.EjbRequestContextImpl;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.WeldModule;
+import org.jboss.weld.module.ejb.context.EjbRequestContextImpl;
+import org.jboss.weld.util.Bindings;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Module that provides EJB integration
@@ -49,7 +53,8 @@ public class WeldEjbModule implements WeldModule {
     @Override
     public void postContextRegistration(PostContextRegistrationContext ctx) {
         // Register the EJB Request context
-        ctx.addContext(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(ctx.getContextId()), EjbRequestContext.class, EjbLiteral.INSTANCE));
+        ctx.addContext(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(ctx.getContextId()), EjbRequestContext.class,
+                ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(EjbLiteral.INSTANCE).build()));
     }
 
     @Override
