@@ -52,6 +52,7 @@ import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.util.Boxing;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
@@ -297,7 +298,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         //there is a remote chance that this could generate the same
         //proxy name for two interfaces with the same simple name.
         //append the hash code of the bean id to be sure
-        if (bean != null) {
+        // However, it is safe to share a proxy class for built-in beans of the same type (e.g. Event)
+        if (bean != null && !(bean instanceof AbstractBuiltInBean)) {
             final BeanIdentifier id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
             int idHash = id.hashCode();
             name.append(Math.abs(idHash == Integer.MIN_VALUE ? 0 : idHash));
