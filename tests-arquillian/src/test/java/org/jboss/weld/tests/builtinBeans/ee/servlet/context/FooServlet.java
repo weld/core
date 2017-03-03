@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,36 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.builtinBeans.ee;
+package org.jboss.weld.tests.builtinBeans.ee.servlet.context;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value = "/", name = "testServlet")
-@SuppressWarnings("serial")
-public class Servlet extends HttpServlet {
+@WebServlet("/")
+public class FooServlet extends HttpServlet {
 
     @Inject
-    private ServletBuiltinBeanInjectingBean bean;
-    
+    private ServletContext ctx;
+
+    @Inject
+    private SharedBean sharedBean;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getRequestURI().contains("/request")) {
-            bean.verifyRequest();
-        }
-        if (req.getRequestURI().endsWith("/session")) {
-            req.getSession().setAttribute("foo", "bar");
-            bean.verifySession();
-        }
-        if (req.getRequestURI().endsWith("/context")) {
-            req.getSession().getServletContext().setAttribute("foo", "bar");
-            bean.verifyServletContext();
+        resp.setContentType("text/plain");
+        try {
+            resp.getWriter().write(ctx.getContextPath() + ";" + sharedBean.getContextPath());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
