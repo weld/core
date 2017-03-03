@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,9 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.builtinBeans.ee;
+package org.jboss.weld.tests.builtinBeans.ee.servlet.session;
+
+import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
+
+import javax.servlet.http.HttpSession;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,36 +34,39 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 
+/**
+ * Test that an invocation of an injected {@link HttpSession} (provided by {@link org.jboss.weld.module.web.HttpSessionBean}) triggers session creation.
+ *
+ * @author Martin Kouba
+ * @see WELD-2346
+ */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-public class ServletBeansTest {
+public class EagerHttpSessionTest {
 
     @ArquillianResource
     private URL url;
-    
-    @Deployment(testable = false)
-    public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletBeansTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Servlet.class, ServletBuiltinBeanInjectingBean.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-    }
 
-    @Test
-    public void testHttpServletRequest() throws Exception {
-        WebClient client = new WebClient();
-        client.getPage(url + "/request?foo=bar");
+    @Deployment(testable = false)
+    public static WebArchive createTestArchive() {
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(EagerHttpSessionTest.class,
+                                Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(TestServlet.class, EagerHttpSessionTest.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test
     public void testHttpSession() throws Exception {
         WebClient client = new WebClient();
-        client.getPage(url + "/session");
+        client.setThrowExceptionOnFailingStatusCode(true);
+        Page page = client.getPage(url + "/test");
+        String id = page.getWebResponse().getContentAsString();
+        assertFalse(id.isEmpty());
     }
-    
-    @Test
-    public void testServletContext() throws Exception {
-        WebClient client = new WebClient();
-        client.getPage(url + "/context");
-    }
+
 }
