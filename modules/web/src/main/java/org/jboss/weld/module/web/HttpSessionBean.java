@@ -32,13 +32,15 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.module.web.servlet.SessionHolder;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Built-in bean exposing {@link HttpSession}.
  *
  * @author Jozef Hartinger
  * @author Martin Kouba
  */
-@SuppressWarnings("deprecation")
+@java.lang.SuppressWarnings("deprecation")
 public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<HttpSession> {
 
     public HttpSessionBean(BeanManagerImpl manager) {
@@ -59,6 +61,7 @@ public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<Http
 
         private static final long serialVersionUID = -617233973786462227L;
 
+        @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "False positive from FindBugs - field is set lazily.")
         private transient volatile HttpSession session;
 
         private SerializableProxy() {
