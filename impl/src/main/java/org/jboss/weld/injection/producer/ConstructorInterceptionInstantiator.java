@@ -28,7 +28,7 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.construction.api.ConstructionHandle;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;

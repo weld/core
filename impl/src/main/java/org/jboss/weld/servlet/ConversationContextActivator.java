@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.context.AbstractConversationContext.DESTRUCTION_QUEUE_ATTRIBUTE_NAME;
+import static org.jboss.weld.contexts.AbstractConversationContext.DESTRUCTION_QUEUE_ATTRIBUTE_NAME;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Iterator;
@@ -27,11 +27,11 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.context.AbstractConversationContext;
+import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.context.http.LazyHttpConversationContextImpl;
+import org.jboss.weld.contexts.http.LazyHttpConversationContextImpl;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;

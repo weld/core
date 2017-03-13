@@ -21,8 +21,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.EmptyStackException;
 
-import org.jboss.weld.context.cache.RequestScopedCache;
-import org.jboss.weld.context.cache.RequestScopedItem;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
+import org.jboss.weld.contexts.cache.RequestScopedItem;
 
 /**
  * A class that holds the interception (and decoration) contexts which are currently in progress.

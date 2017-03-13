@@ -27,8 +27,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ContextualInstance;
-import org.jboss.weld.context.CreationalContextImpl;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.contexts.CreationalContextImpl;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;

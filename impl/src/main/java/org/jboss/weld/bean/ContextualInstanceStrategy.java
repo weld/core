@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.inject.Singleton;
 
-import org.jboss.weld.context.cache.RequestScopedCache;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
