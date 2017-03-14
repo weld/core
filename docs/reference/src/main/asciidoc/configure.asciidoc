@@ -84,7 +84,7 @@ might be ignored. An example of such integrator is WildFly.
 [cols=",,",options="header",]
 |=======================================================================
 |Configuration key |Default value |Description
-|`org.jboss.weld.executor.threadPoolType` |`FIXED` |The type of the thread pool. Possible values
+|`org.jboss.weld.executor.threadPoolType` |`FIXED` (`COMMON` in Weld SE) |The type of the thread pool. Possible values
 are: `FIXED`, `FIXED_TIMEOUT`, `NONE`, `SINGLE_THREAD` and `COMMON`
 
 |`org.jboss.weld.executor.threadPoolSize` |`Runtime.getRuntime().availableProcessors()` |The
