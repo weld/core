@@ -979,3 +979,103 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 ** Deprecated `org.jboss.weld.environment.se.ShutdownManager` was removed.
 
 ** Deprecated `org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScope` was removed.
+
+==== Migration from Weld 2.4 to 3.0
+
+Weld 3.0 implements CDI 2.0 so this is a huge update which contains bunch of new features.
+However, this document only covers part which might prove problematic while moving existing application from Weld 2.4 to Weld 3.0.
+For more information on the CDI 2.0 itself, please consult http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html[the specification].
+
+===== Java 8
+
+Both, Weld 3.0 and CDI 2.0 require Java 8 for compile time and runtime.
+
+===== Shaded JARs name change
+
+Weld 2.4 created shaded JARs for SE and Servlet with following artifact IDs: `weld-se`, `weld-servlet`.
+In Weld 3.0 a `-shaded` affix was added to the name of these artifacts to make it clear what they contain.
+E.g. new artifact IDs of these JARs are `weld-se-shaded` and `weld-servlet-shaded` respectively.
+
+===== Weld 3 modules
+
+Weld 3.0 was fine-grained and several optional modules were separated from the core.
+Namely, Weld now has Web, JTA, JSF and EJB modules.
+
+The coordinates for these artifacts are as follows:
+
+* WEB - `org.jboss.weld.module:weld-web`
+* JTA - `org.jboss.weld.module:weld-jta`
+* JSF - `org.jboss.weld.module:weld-jsf` 
+* EJB - `org.jboss.weld.module:weld-ejb`
+
+Each module represents the logic behind Weld integration with the given technology.
+
+===== `beans.xml` change for vetoed alternatives
+
+Based on the decision taken in https://issues.jboss.org/browse/CDI-627[CDI-627], the behaviour of vetoed alternatives had changed slightly.
+`beans.xml` validation is now less strict and you can have a vetoed alternative while still having it enabled via `beans.xml`.
+This behaviour is the same as it was in CDI 1.0.
+
+===== `BeanManager#fireEvent` was deprecated
+
+While `BeanManager#fireEvent` still works, users are encouraged to use newly added `BeanManager#getEvent` method instead.
+This method returns an instance of `Event<Object>` built-in bean which can then have the types and qualifiers further specified via `select` method.
+It also allows to fire both kinds of events; synchronous and asynchronous.
+See the example below:
+
+[source.JAVA, java]
+--------------------------------------------------------------------------------------------------
+@Inject
+BeanManager bm;
+
+public void fireMyEvent() {
+    bm.getEvent().select(Any.Literal.INSTANCE).fire(new Payload());
+    bm.getEvent().select(PaymentCheck.class, Default.Literal.INSTANCE)
+        .fireAsync(new Payload());
+}
+--------------------------------------------------------------------------------------------------
+
+===== Weld-core artifact change 
+
+For historical reasons, Weld 2.4 core is released in two versions which *are identical* in their contents.
+Those are `org.jboss.weld:weld-core` and `org.jboss.weld:weld-core-impl`.
+Starting with Weld 3.0, only `org.jboss.weld:weld-core-impl` artifact will be released.
+
+===== SPI changes
+
+The SPI changes are mainly important for integrators, such as WildFly.
+Here is a list of changes based on what SPI class/method they affect:
+
+* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/bootstrap/spi/BeanDeploymentArchive.html[`org.jboss.weld.bootstrap.spi.BeanDeploymentArchive`]
+
+** Two new methods - `getKnownClasses()` and `getLoadedBeanClasses()`; both of them have default implementations
+** `getLoadedBeanClasses()`
+*** Integrators might want to override this method if they want to make use of preloaded classes during bootstrap
+** `getKnownClasses()`
+*** For explicit bean archive, the result of this method should be equal to that of `getBeanClasses()`
+*** For implicit bean archive, it should also return types which have neither bean defining annotations nor session bean definitions
+
+* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/bootstrap/spi/BeansXml.html[`org.jboss.weld.bootstrap.spi.BeansXml`]
+
+** One new method - `isTrimmed()`
+** If an explicit bean archive contains the `<trim/>` element in its `beans.xml` file, types that don’t have either a bean defining annotation or any scope annotation, are removed from the set of discovered types.
+** If an integrator provides custom implementation of `BeansXml` interface, this method will need to be implemented as well
+
+* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/security/spi/SecurityServices.html[`org.jboss.weld.security.spi.SecurityServices`]
+
+** One new method - `getSecurityContext()`
+** Returns current security context, which can then be propagated to different threads
+** This method has a default implementation which returns a no-op `SecurityContext` implementation
+
+* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/security/spi/SecurityContext.html[`org.jboss.weld.security.spi.SecurityContext`]
+
+** Newly added interface which Weld uses to associate and dissociate security context with given thread
+** The main use case for this are asynchronous event observers which are executed in separate threads, yet need to have identical context
+** There are three methods in this interface - `associate()`, `dissociate()` and `close()`
+
+* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/manager/api/WeldManager.html[`org.jboss.weld.manager.api.WeldManager`]
+
+** Following methods were removed from the SPI:
+*** `WeldManager.createActivity`
+*** `WeldManager.getCurrent`
+*** `WeldManager.setCurrentsetCurrent`
