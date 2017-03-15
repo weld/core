@@ -273,8 +273,9 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1468, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have a {3} return type.\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorMethodDoesNotHaveVoidReturnType(Object param1, Object param2, Object param3, Object param4, Object stackElement);
 
-    @Message(id = 1469, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have zero parameters.\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveZeroParameters(Object param1, Object param2, Object param3, Object stackElement);
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1469, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have zero parameters.\n", format = Format.MESSAGE_FORMAT)
+    void interceptorMethodDoesNotHaveZeroParameters(Object param1, Object param2, Object param3);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1471, value = "Interceptor method {0} defined on class {1} is not defined according to the specification. It should not throw {2}, which is a checked exception.\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
@@ -318,5 +319,8 @@ public interface ValidatorLogger extends WeldLogger {
 
     @Message(id = 1484, value = "Enabled alternative class {0} ({1}) does not match any bean, or is not annotated with @Alternative or an @Alternative stereotype, or does not declare a producer annotated with @Alternative or an @Alternative stereotype", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotAnnotated(Object value, Object location);
+
+    @Message(id = 1485, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} and it declares more than one parameter.\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorMethodDeclaresMultipleParameters(Object param1, Object param2, Object param3, Object stackElement);
 
 }
