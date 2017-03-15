@@ -61,8 +61,13 @@ public class InterceptorMetadataUtils {
                     interceptionType.annotationClassName(), Void.TYPE.getName(), Formats.formatAsStackTraceElement(method));
         }
         Class<?>[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes.length == 1) {
+            ValidatorLogger.LOG.interceptorMethodDoesNotHaveZeroParameters(
+                    method.getName(), method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName());
+        }
         if (parameterTypes.length > 1) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveZeroParameters(
+            throw ValidatorLogger.LOG.interceptorMethodDeclaresMultipleParameters(
                     method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Formats.formatAsStackTraceElement(method));
         }
