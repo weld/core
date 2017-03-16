@@ -34,15 +34,15 @@ import org.jboss.weld.bootstrap.BeanDeploymentModules;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.BoundContext;
 import org.jboss.weld.context.ManagedContext;
-import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.context.http.HttpRequestContext;
-import org.jboss.weld.module.web.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
-import org.jboss.weld.module.web.context.http.HttpSessionDestructionContext;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
-import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.web.context.http.HttpRequestContextImpl;
+import org.jboss.weld.module.web.context.http.HttpSessionDestructionContext;
+import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -144,27 +144,26 @@ public class HttpContextLifecycle implements Service {
 
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
-        synchronized (container) {
-            fireEventForApplicationScope(ctx, Initialized.Literal.APPLICATION);
-        }
+        fireEventForApplicationScope(ctx, Initialized.Literal.APPLICATION);
     }
 
     public void contextDestroyed(ServletContext ctx) {
-        synchronized (container) {
-            // TODO WELD-2282 Firing these two right after each other does not really make sense
-            fireEventForApplicationScope(ctx, BeforeDestroyed.Literal.APPLICATION);
-            fireEventForApplicationScope(ctx, Destroyed.Literal.APPLICATION);
-        }
+        // TODO WELD-2282 Firing these two right after each other does not really make sense
+        fireEventForApplicationScope(ctx, BeforeDestroyed.Literal.APPLICATION);
+        fireEventForApplicationScope(ctx, Destroyed.Literal.APPLICATION);
     }
 
     private void fireEventForApplicationScope(ServletContext ctx, Annotation qualifier) {
         if (module != null) {
-            if (module.isWebModule()) {
-                module.fireEvent(ServletContext.class, ctx, qualifier);
-            } else {
-                // fallback for backward compatibility
-                final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
+            // Deliver events sequentially
+            synchronized (container) {
+                if (module.isWebModule()) {
+                    module.fireEvent(ServletContext.class, ctx, qualifier);
+                } else {
+                    // fallback for backward compatibility
+                    final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
+                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
+                }
             }
         }
     }
