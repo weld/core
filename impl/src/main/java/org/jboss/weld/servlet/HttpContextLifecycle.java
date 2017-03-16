@@ -139,25 +139,24 @@ public class HttpContextLifecycle implements Service {
 
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
-        synchronized (container) {
-            fireEventForApplicationScope(ctx, InitializedLiteral.APPLICATION);
-        }
+        fireEventForApplicationScope(ctx, InitializedLiteral.APPLICATION);
     }
 
     public void contextDestroyed(ServletContext ctx) {
-        synchronized (container) {
-            fireEventForApplicationScope(ctx, DestroyedLiteral.APPLICATION);
-        }
+        fireEventForApplicationScope(ctx, DestroyedLiteral.APPLICATION);
     }
 
     private void fireEventForApplicationScope(ServletContext ctx, Annotation qualifier) {
         if (module != null) {
-            if (module.isWebModule()) {
-                module.fireEvent(ServletContext.class, ctx, qualifier);
-            } else {
-                // fallback for backward compatibility
-                final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
+            // Deliver events sequentially
+            synchronized (container) {
+                if (module.isWebModule()) {
+                    module.fireEvent(ServletContext.class, ctx, qualifier);
+                } else {
+                    // fallback for backward compatibility
+                    final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
+                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
+                }
             }
         }
     }

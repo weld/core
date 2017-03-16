@@ -16,15 +16,21 @@
  */
 package org.jboss.weld.environment.servlet.test.se.coop;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 
 @ApplicationScoped
 public class TestBean {
 
     private String id;
+
+    private final List<Object> initEvents = new CopyOnWriteArrayList<>();
 
     @PostConstruct
     public void init() {
@@ -33,6 +39,14 @@ public class TestBean {
 
     public String getId() {
         return id;
+    }
+
+    List<Object> getInitEvents() {
+        return initEvents;
+    }
+
+    public void onContainerInitialized(@Observes @Initialized(ApplicationScoped.class) Object event) {
+        initEvents.add(event);
     }
 
 }
