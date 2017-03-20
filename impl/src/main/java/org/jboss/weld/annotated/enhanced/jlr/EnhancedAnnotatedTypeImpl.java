@@ -57,7 +57,7 @@ import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents an annotated class
@@ -82,9 +82,9 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         MAPPED_METHOD_ANNOTATIONS = ImmutableSet.copyOf(annotations);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressFBWarnings("unchecked")
     private static final Set<Class<? extends Annotation>> MAPPED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Observes.class, ObservesAsync.class);
-    @SuppressWarnings("unchecked")
+    @SuppressFBWarnings("unchecked")
     private static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Disposes.class);
 
     // Class attributes
@@ -137,7 +137,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         }
     }
 
-    @java.lang.SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     protected EnhancedAnnotatedTypeImpl(SlimAnnotatedType<T> annotatedType, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
         super(annotatedType, annotationMap, declaredAnnotationMap, classTransformer);
         this.slim = annotatedType;

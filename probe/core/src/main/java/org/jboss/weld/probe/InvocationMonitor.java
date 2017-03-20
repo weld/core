@@ -40,7 +40,7 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Invocation.Type;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * An invocation monitor interceptor.
@@ -88,7 +88,7 @@ public class InvocationMonitor implements Serializable {
 
     @Intercepted
     @Inject
-    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "According to specification, injected bean has to be serializable.")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "According to specification, injected bean has to be serializable.")
     private Bean<?> interceptedBean;
 
     @Inject

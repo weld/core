@@ -45,6 +45,8 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.TypeResolver;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Implementation of the Event interface
  *
@@ -52,7 +54,7 @@ import org.jboss.weld.util.reflection.TypeResolver;
  * @author David Allen
  * @see javax.enterprise.event.Event
  */
-@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR", justification = "Uses SerializationProxy")
+@SuppressFBWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR", justification = "Uses SerializationProxy")
 public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>, Serializable {
 
     private static final String EVENT_ARGUMENT_NAME = "event";
