@@ -196,6 +196,7 @@ import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * Lots of utility methods for creating JSON data.
  *
@@ -216,6 +217,7 @@ final class JsonObjects {
      * @param beanManager
      * @return the root resource representation
      */
+    @SuppressWarnings(value = "REC_CATCH_EXCEPTION", justification = "We want to catch all exceptions, runtime included.")
     static String createDeploymentJson(BeanManagerImpl beanManager, Probe probe) {
 
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
@@ -1056,11 +1058,11 @@ final class JsonObjects {
         if(isUnrestrictedProcessAnnotatedTypeObserver(observerMethod)) {
             observerBuilder.add(DESCRIPTION, WARNING_UNRESTRICTED_PAT_OBSERVER);
         }
-        if (observerMethod instanceof Prioritized) {
-            final int priority = Prioritized.class.cast(observerMethod).getPriority();
-            observerBuilder.add(PRIORITY, priority);
-            observerBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priority).toString());
-        }
+        // Every OM is now instance of Prioritized
+        final int priority = Prioritized.class.cast(observerMethod).getPriority();
+        observerBuilder.add(PRIORITY, priority);
+        observerBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priority).toString());
+
         return observerBuilder;
     }
 
@@ -1205,8 +1207,9 @@ final class JsonObjects {
     }
 
     private static JsonObjectBuilder createDependency(Bean<?> bean, Dependency dependency, Probe probe) {
-        JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
+        JsonObjectBuilder builder = null;
         if (bean != null && dependency != null) {
+            builder = createSimpleBeanJson(bean, probe);
             builder.add(REQUIRED_TYPE, Formats.formatType(dependency.getInjectionPoint().getType(), false)).add(QUALIFIERS,
                     createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
         }
