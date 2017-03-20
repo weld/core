@@ -188,7 +188,7 @@ final class Parsers {
 
     private static List<String> splitQualifiers(String value) {
         if (value == null || value.isEmpty()) {
-            Collections.emptyList();
+            return Collections.emptyList();
         }
         return split(value.replace(AMPERSAND, EMPTY), COMMA.charAt(0), PARENTHESES_LEFT.charAt(0), PARENTHESES_RIGHT.charAt(0));
     }

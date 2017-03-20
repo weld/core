@@ -51,6 +51,7 @@ import static org.jboss.weld.probe.Strings.TEXT_JAVASCRIPT;
 import static org.jboss.weld.probe.Strings.TEXT_PLAIN;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -351,7 +352,8 @@ enum Resource {
                 || APPLICATION_FONT_WOFF.equals(contentType) || APPLICATION_FONT_MS.equals(contentType));
     }
 
-    abstract static class Handler {
+    abstract static class Handler implements Serializable {
+        private static final long serialVersionUID = 5253937931990206305L;
 
         protected void handle(HttpMethod method, JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req,
                 HttpServletResponse resp) throws IOException {
@@ -411,7 +413,7 @@ enum Resource {
                 return 1;
             }
             try {
-                return Integer.valueOf(pageParam);
+                return Integer.parseInt(pageParam);
             } catch (NumberFormatException e) {
                 return 1;
             }
@@ -423,7 +425,7 @@ enum Resource {
                 return Queries.DEFAULT_PAGE_SIZE;
             } else {
                 try {
-                    int result = Integer.valueOf(pageSizeParam);
+                    int result = Integer.parseInt(pageSizeParam);
                     return result > 0 ? result : 0;
                 } catch (NumberFormatException e) {
                     return 0;
