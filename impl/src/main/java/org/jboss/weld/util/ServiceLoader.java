@@ -41,7 +41,7 @@ import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * This class handles looking up service providers on the class path. It
@@ -170,7 +170,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
         return new ArrayList<URL>(loader.getResources(serviceFile));
     }
 
-    @SuppressWarnings(value = "OS_OPEN_STREAM", justification = "False positive")
+    @SuppressFBWarnings(value = "OS_OPEN_STREAM", justification = "False positive")
     private void loadServiceFile(URL serviceFile) {
         InputStream is = null;
         try {

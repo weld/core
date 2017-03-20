@@ -21,7 +21,7 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Wrapper for extension-provided {@link AnnotatedType}. This may seem unnecessary, however it does mean we are providing a
@@ -33,7 +33,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @param <X> the type
  */
-@SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressFBWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
     public static <X> UnbackedAnnotatedType<X> additionalAnnotatedType(String contextId, AnnotatedType<X> source, String bdaId, String suffix, SharedObjectCache cache) {

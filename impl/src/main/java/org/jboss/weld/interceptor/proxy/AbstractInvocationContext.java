@@ -29,7 +29,7 @@ import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.collections.ImmutableSet;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 abstract class AbstractInvocationContext implements WeldInvocationContext {
 
@@ -90,7 +90,7 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
     }
 
     @Override
-    @SuppressWarnings("EI_EXPOSE_REP")
+    @SuppressFBWarnings("EI_EXPOSE_REP")
     public Object[] getParameters() {
         if (this.method != null || this.constructor != null) {
             return parameters;
@@ -115,7 +115,7 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
         return WIDENING_TABLE.containsKey(argumentClass) && WIDENING_TABLE.get(argumentClass).contains(targetClass);
     }
 
-    @SuppressWarnings("EI_EXPOSE_REP")
+    @SuppressFBWarnings("EI_EXPOSE_REP")
     public void setParameters(Object[] params) {
         if (this.method != null || this.constructor != null) {
             // there is no requirement to do anything if params is null
@@ -200,7 +200,7 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
     }
 
     @Override
-    @java.lang.SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
         Preconditions.checkArgumentNotNull(annotationType, "annotationType");
         return interceptorBindings.stream()

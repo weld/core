@@ -141,7 +141,7 @@ public class WeldInvocationContextImpl extends ForwardingInvocationContext imple
     }
 
     @Override
-    @java.lang.SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
         Preconditions.checkArgumentNotNull(annotationType, "annotationType");
         Set<T> result = new HashSet<>();

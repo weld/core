@@ -32,7 +32,7 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Produces wrappers for {@link Contextual}s which are serializable.
@@ -45,7 +45,7 @@ public class SerializableContextualFactory {
     private SerializableContextualFactory() {
     }
 
-    @java.lang.SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <C extends Contextual<I>, I> SerializableContextual<C, I> create(String contextId, C contextual, ContextualStore contextualStore,
             BeanIdentifierIndex beanIdentifierIndex) {
         if (contextual instanceof Bean) {
@@ -67,7 +67,7 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = 46941665668478370L;
 
-        @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "A cache which is lazily loaded")
+        @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "A cache which is lazily loaded")
         // A cached, transient version of the contextual
         private transient C cached;
 

@@ -36,6 +36,8 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Implementation of {@link org.jboss.weld.serialization.spi.ContextualStore}
  *
@@ -98,7 +100,7 @@ public class ContextualStoreImpl implements ContextualStore {
      * @param contextual the contextual to add
      * @return the current id for the contextual
      */
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "RV_RETURN_VALUE_OF_PUTIFABSENT_IGNORED", justification = "Using non-standard semantics of putIfAbsent")
+    @SuppressFBWarnings(value = "RV_RETURN_VALUE_OF_PUTIFABSENT_IGNORED", justification = "Using non-standard semantics of putIfAbsent")
     public BeanIdentifier putIfAbsent(Contextual<?> contextual) {
         if (contextual instanceof CommonBean<?>) {
             // this is a Bean<?> created by Weld

@@ -17,7 +17,7 @@
 
 package org.jboss.weld.exceptions;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Provides message localization service for the
@@ -25,7 +25,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author David Allen
  */
-@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+@SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
 public class AmbiguousResolutionException extends javax.enterprise.inject.AmbiguousResolutionException {
     private static final long serialVersionUID = 2L;
 

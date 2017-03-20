@@ -31,7 +31,7 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A general purpose MethodHandler for all proxies which routes calls to the
@@ -39,7 +39,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author David Allen
  */
-@SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "bean field is loaded lazily")
+@SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "bean field is loaded lazily")
 public class ProxyMethodHandler implements MethodHandler, Serializable {
 
     private static final long serialVersionUID = 5293834510764991583L;

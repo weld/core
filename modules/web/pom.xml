@@ -73,10 +73,10 @@
         
         <!-- findbugs dependency -->
         <dependency>
-                <groupId>net.sourceforge.findbugs</groupId>
-                <artifactId>annotations</artifactId>
-                <optional>true</optional>
-            </dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <profiles>

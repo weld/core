@@ -165,7 +165,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Implementation of the Bean Manager.
@@ -790,7 +790,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                         }
                         Context context = internalGetContext(resolvedBean.getScope());
                         if (context != null) {
-                            @java.lang.SuppressWarnings({ "unchecked", "rawtypes" })
+                            @SuppressWarnings({ "unchecked", "rawtypes" })
                             final Object existinInstance = context.get(Reflections.<Contextual> cast(resolvedBean));
                             if (existinInstance != null) {
                                 return existinInstance;
@@ -961,7 +961,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    @SuppressWarnings("EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS")
+    @SuppressFBWarnings("EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS")
     public boolean equals(Object obj) {
         if (obj instanceof ForwardingBeanManager) {
             ForwardingBeanManager proxy = (ForwardingBeanManager) obj;
@@ -1258,7 +1258,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         private transient Type type;
 
-        @java.lang.SuppressWarnings("serial")
+        @SuppressWarnings("serial")
         @Override
         public Type getType() {
             if (type == null) {
@@ -1315,7 +1315,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         private transient Type type;
 
-        @java.lang.SuppressWarnings("serial")
+        @SuppressWarnings("serial")
         @Override
         public Type getType() {
             if (type == null) {
