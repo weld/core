@@ -111,6 +111,15 @@ public class Producer {
         ).findFirst().get().add(Hello.Literal.INSTANCE);
         return interceptionFactory.createInterceptedInstance(new FooChild());
     }
+    
+    @Produces
+    @Produced
+    public AbstractBar produceAbstractBar(InterceptionFactory<AbstractBar> interceptionFactory) {
+        interceptionFactory.configure().filterMethods((m) ->
+            m.getJavaMember().getName().equals("ping")
+        ).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new BarImpl());
+    }
 
 
     static class Foo {
@@ -143,5 +152,17 @@ public class Producer {
 
     public static class FooChild extends FooParent {
 
+    }
+
+    public static abstract class AbstractBar {
+        abstract String ping();
+    }
+
+    public static class BarImpl extends AbstractBar{
+
+        @Override
+        String ping() {
+            return "BarImpl pong";
+        }
     }
 }
