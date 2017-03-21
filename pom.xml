@@ -46,6 +46,7 @@
         <classfilewriter.version>1.1.2.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
+        <findbugs-annotations.version>3.0.1</findbugs-annotations.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <htmlunit.version>2.20</htmlunit.version>
         <jacoco.version>0.7.2.201409121644</jacoco.version>
@@ -452,6 +453,12 @@
                 <groupId>com.sun.faces</groupId>
                 <artifactId>jsf-impl</artifactId>
                 <version>${jsf.impl.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${findbugs-annotations.version}</version>
             </dependency>
         </dependencies>
 

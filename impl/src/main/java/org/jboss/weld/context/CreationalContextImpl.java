@@ -35,7 +35,7 @@ import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Pete Muir
@@ -48,9 +48,9 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private static final SerializationProxy SERIALIZATION_PROXY = new SerializationProxy();
 
-    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
+    @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
     private transient Map<Contextual<?>, Object> incompleteInstances;
-    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
+    @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
     private final transient Contextual<T> contextual;
 
     private final List<ContextualInstance<?>> dependentInstances;
@@ -274,7 +274,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
         private static final long serialVersionUID = 5261112077771498097L;
 
-        @java.lang.SuppressWarnings("rawtypes")
+        @SuppressWarnings("rawtypes")
         private Object readResolve() throws ObjectStreamException {
             return new CreationalContextImpl();
         }

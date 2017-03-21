@@ -56,13 +56,15 @@ import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Helper implementation for Instance for getting instances
  *
  * @param <T>
  * @author Gavin King
  */
-@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD" }, justification = "Uses SerializationProxy")
+@SuppressFBWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD" }, justification = "Uses SerializationProxy")
 public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements WeldInstance<T>, Serializable {
 
     private static final long serialVersionUID = -376721889693284887L;

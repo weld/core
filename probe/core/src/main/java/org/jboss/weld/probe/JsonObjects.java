@@ -194,7 +194,7 @@ import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Lots of utility methods for creating JSON data.
@@ -216,7 +216,7 @@ final class JsonObjects {
      * @param beanManager
      * @return the root resource representation
      */
-    @SuppressWarnings(value = "REC_CATCH_EXCEPTION", justification = "We want to catch all exceptions, runtime included.")
+    @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "We want to catch all exceptions, runtime included.")
     static String createDeploymentJson(BeanManagerImpl beanManager, Probe probe) {
 
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();

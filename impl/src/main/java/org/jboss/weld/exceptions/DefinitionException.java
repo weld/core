@@ -18,7 +18,7 @@ package org.jboss.weld.exceptions;
 
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Thrown if the definition of a bean is incorrect
@@ -26,7 +26,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Renaming the class would break backwards compatibility.")
+@SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Renaming the class would break backwards compatibility.")
 public class DefinitionException extends javax.enterprise.inject.spi.DefinitionException {
     private static final long serialVersionUID = 8014646336322875707L;
 

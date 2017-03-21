@@ -25,7 +25,7 @@ import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.executor.DaemonThreadFactory;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Allows observer methods for container lifecycle events to be resolved upfront while the deployment is waiting for classloader
@@ -67,7 +67,7 @@ public class ContainerLifecycleEventPreloader {
      * lifecycle events will then be very fast.
      *
      */
-    @SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", justification = "We never need to synchronize with the preloader.")
+    @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", justification = "We never need to synchronize with the preloader.")
     void preloadContainerLifecycleEvent(Class<?> eventRawType, Type... typeParameters) {
         executor.submit(new PreloadingTask(new ParameterizedTypeImpl(eventRawType, typeParameters, null)));
     }

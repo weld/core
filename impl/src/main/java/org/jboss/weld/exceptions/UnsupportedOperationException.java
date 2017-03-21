@@ -17,7 +17,7 @@
 
 package org.jboss.weld.exceptions;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * An {@link java.lang.UnsupportedOperationException} with support for
@@ -25,7 +25,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author David Allen
  */
-@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+@SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
 public class UnsupportedOperationException extends java.lang.UnsupportedOperationException {
 
     private static final long serialVersionUID = 2L;
