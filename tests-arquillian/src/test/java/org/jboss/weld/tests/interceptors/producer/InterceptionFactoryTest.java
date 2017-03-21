@@ -109,4 +109,9 @@ public class InterceptionFactoryTest {
     public void testParent(@Produced Producer.FooParent foo) {
         assertEquals("Hello Parent pong", foo.ping());
     }
+
+    @Test
+    public void testAbstractBar(@Produced Producer.AbstractBar bar) {
+        assertEquals("Hello BarImpl pong", bar.ping());
+    }
 }
