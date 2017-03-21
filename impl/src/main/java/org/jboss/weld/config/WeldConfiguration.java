@@ -46,6 +46,8 @@ import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Represents an immutable per-deployment Weld configuration.
  *
@@ -297,7 +299,7 @@ public class WeldConfiguration implements Service {
         return null;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
+    @SuppressFBWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
     private Set<URL> findPropertiesFiles(Deployment deployment, String fileName) {
         Set<ResourceLoader> resourceLoaders = new HashSet<ResourceLoader>();
         Set<URL> files = new HashSet<URL>();
@@ -366,7 +368,7 @@ public class WeldConfiguration implements Service {
      * @param resourceLoader
      * @return all the properties from the weld.properties file
      */
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
+    @SuppressFBWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
     private Map<ConfigurationKey, Object> readFileProperties(Set<URL> files) {
         Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         for (URL file : files) {
@@ -379,7 +381,7 @@ public class WeldConfiguration implements Service {
         return found;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
+    @SuppressFBWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
     private Map<ConfigurationKey, Object> readObsoleteFileProperties(Set<URL> files, Map<String, ConfigurationKey> nameToKeyMap) {
         if (files.isEmpty()) {
             return Collections.emptyMap();

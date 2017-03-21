@@ -33,7 +33,7 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Base for the Context implementations. Delegates calls to the abstract
@@ -66,7 +66,7 @@ public abstract class AbstractContext implements AlterableContext {
      * @see javax.enterprise.context.spi.Context#get(BaseBean, boolean)
      */
     @Override
-    @SuppressWarnings(value = "UL_UNRELEASED_LOCK", justification = "False positive from FindBugs")
+    @SuppressFBWarnings(value = "UL_UNRELEASED_LOCK", justification = "False positive from FindBugs")
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
         if (!isActive()) {
             throw new ContextNotActiveException();

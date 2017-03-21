@@ -23,9 +23,9 @@ import org.jboss.weld.serialization.ConstructorHolder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Constructor<X>> implements AnnotatedConstructor<X>, Serializable {
 
     public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {

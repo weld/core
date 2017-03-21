@@ -32,7 +32,7 @@ import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Function;
 import org.jboss.weld.util.Preconditions;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.Iterables;
 
@@ -48,7 +48,7 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
 
     private static final Function<AnnotatedMethod<?>, Method> ACCESSIBLE_METHOD_FUNCTION = new Function<AnnotatedMethod<?>, Method>() {
         @Override
-        @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
+        @SuppressFBWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
         public Method apply(AnnotatedMethod<?> method) {
             Preconditions.checkArgumentNotNull(method, "method");
             return AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method.getJavaMember()));

@@ -32,7 +32,7 @@ import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Serializable holder for {@link InjectionPoint}.
@@ -98,7 +98,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private static final long serialVersionUID = 6952579330771485841L;
 
-        @SuppressWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+        @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient InjectionPoint ip;
 
         public TransientInjectionPointIdentifier(InjectionPoint ip) {

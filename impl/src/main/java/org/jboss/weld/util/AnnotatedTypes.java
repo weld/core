@@ -52,7 +52,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Scope;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
@@ -78,7 +78,7 @@ public class AnnotatedTypes {
      * Does the first stage of comparing AnnotatedCallables, however it cannot
      * compare the method parameters
      */
-    @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
     private static class AnnotatedCallableComparator<T> implements Comparator<AnnotatedCallable<? super T>> {
 
         public int compare(AnnotatedCallable<? super T> arg0, AnnotatedCallable<? super T> arg1) {
@@ -97,7 +97,7 @@ public class AnnotatedTypes {
 
     }
 
-    @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
     private static class AnnotatedMethodComparator<T> implements Comparator<AnnotatedMethod<? super T>> {
 
         public static <T> Comparator<AnnotatedMethod<? super T>> instance() {
@@ -130,7 +130,7 @@ public class AnnotatedTypes {
 
     }
 
-    @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
     private static class AnnotatedConstructorComparator<T> implements Comparator<AnnotatedConstructor<? super T>> {
 
         public static <T> Comparator<AnnotatedConstructor<? super T>> instance() {
@@ -163,7 +163,7 @@ public class AnnotatedTypes {
 
     }
 
-    @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
     private static class AnnotatedFieldComparator<T> implements Comparator<AnnotatedField<? super T>> {
 
         public static <T> Comparator<AnnotatedField<? super T>> instance() {
@@ -179,7 +179,7 @@ public class AnnotatedTypes {
 
     }
 
-    @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
     private static class AnnotationComparator implements Comparator<Annotation> {
 
         public static final Comparator<Annotation> INSTANCE = new AnnotationComparator();
@@ -189,7 +189,7 @@ public class AnnotatedTypes {
         }
     }
 
-    @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
     private static class MethodComparator implements Comparator<Method> {
 
         public static final Comparator<Method> INSTANCE = new MethodComparator();

@@ -42,7 +42,7 @@ import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * High-level representation of an injected constructor. This class does not need to be serializable because it is never injected.
@@ -52,7 +52,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @param <T>
  */
-@SuppressWarnings("EQ_DOESNT_OVERRIDE_EQUALS")
+@SuppressFBWarnings("EQ_DOESNT_OVERRIDE_EQUALS")
 public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint<T, T, Constructor<T>> {
 
     private final AnnotatedConstructor<T> constructor;

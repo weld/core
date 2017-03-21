@@ -18,9 +18,9 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedField<X> extends UnbackedAnnotatedMember<X> implements AnnotatedField<X>, Serializable {
 
     public static <X, Y extends X> AnnotatedField<X> of(AnnotatedField<X> originalField, UnbackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {

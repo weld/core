@@ -20,14 +20,14 @@ package org.jboss.weld.context;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
 import org.jboss.weld.exceptions.WeldExceptionStringMessage;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A localized message version of the {@link javax.enterprise.context.ContextNotActiveException}.
  *
  * @author David Allen
  */
-@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+@SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
 public class ContextNotActiveException extends javax.enterprise.context.ContextNotActiveException {
 
     private static final long serialVersionUID = 2L;

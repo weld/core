@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 /**
  * Helper class for bean store creation locking.
  *
@@ -34,7 +34,7 @@ public class LockStore implements Serializable {
 
     private static final long serialVersionUID = -698649566870070414L;
 
-    @SuppressWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+    @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     private transient volatile Map<BeanIdentifier, ReferenceCountedLock> locks = new HashMap<BeanIdentifier, ReferenceCountedLock>();
 
     public LockedBean lock(BeanIdentifier id) {

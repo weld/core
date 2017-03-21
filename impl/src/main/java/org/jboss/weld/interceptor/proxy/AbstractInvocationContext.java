@@ -28,7 +28,7 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.collections.ImmutableSet;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 abstract class AbstractInvocationContext implements InvocationContext {
 
@@ -81,7 +81,7 @@ abstract class AbstractInvocationContext implements InvocationContext {
     }
 
     @Override
-    @SuppressWarnings("EI_EXPOSE_REP")
+    @SuppressFBWarnings("EI_EXPOSE_REP")
     public Object[] getParameters() {
         if (this.method != null || this.constructor != null) {
             return parameters;
@@ -106,7 +106,7 @@ abstract class AbstractInvocationContext implements InvocationContext {
         return WIDENING_TABLE.containsKey(argumentClass) && WIDENING_TABLE.get(argumentClass).contains(targetClass);
     }
 
-    @SuppressWarnings("EI_EXPOSE_REP")
+    @SuppressFBWarnings("EI_EXPOSE_REP")
     public void setParameters(Object[] params) {
         if (this.method != null || this.constructor != null) {
             // there is no requirement to do anything if params is null
