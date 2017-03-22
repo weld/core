@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.se.test.shutdown.hook;
 
-import static org.jboss.weld.environment.se.test.shutdown.hook.AbstractShutdownHookTest.DEPLOYMENT_NAME;
-
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

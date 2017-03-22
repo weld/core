@@ -20,15 +20,19 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.enterprise.event.NotificationOptions;
 import javax.enterprise.event.ObserverException;
@@ -39,6 +43,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.event.NotificationOptionKeys.NotificationMode;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -55,6 +60,8 @@ import org.jboss.weld.util.Types;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.reflection.Reflections;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Provides event-related operations such as observer method resolution and event delivery.
@@ -302,12 +309,11 @@ public class ObserverNotifier {
         if (!observers.isMetadataRequired()) {
             metadata = null;
         }
-        final ObserverExceptionHandler handler = new CollectingExceptionHandler();
-        return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, options.getExecutor(), handler);
+        return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, options.getExecutor(), options);
     }
 
     protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata,
-            Executor executor, final ObserverExceptionHandler handler) {
+            Executor executor, NotificationOptions options) {
         if (executor == null) {
             executor = asyncEventExecutor;
         }
@@ -315,20 +321,62 @@ public class ObserverNotifier {
             return AsyncEventDeliveryStage.completed(event, executor);
         }
         final SecurityContext securityContext = securityServices.getSecurityContext();
-        return new AsyncEventDeliveryStage<>(() -> {
+        final ObserverExceptionHandler exceptionHandler;
+        NotificationMode mode = NotificationMode.of(options.get(NotificationOptionKeys.MODE));
+
+        if (observers.size() > 1 && NotificationMode.PARALLEL.equals(mode)) {
+            // Async observers are notified in parallel (if possible)
+            exceptionHandler = new CollectingExceptionHandler(new CopyOnWriteArrayList<>());
+            List<CompletableFuture<T>> completableFutures = new ArrayList<>(observers.size());
+            for (ObserverMethod<? super T> observer : observers) {
+                completableFutures.add(CompletableFuture.supplyAsync(createSupplier(securityContext, event, metadata, exceptionHandler, () -> {
+                    notifyAsyncObserver(observer, event, metadata, exceptionHandler);
+                }, false), executor));
+            }
+            return new AsyncEventDeliveryStage<>(CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[] {})).thenApply((ignoredVoid) -> {
+                handleExceptions(exceptionHandler);
+                return event;
+            }), executor);
+        }
+
+        // Async observers are notified serially in a single worker thread
+        exceptionHandler = new CollectingExceptionHandler();
+        return new AsyncEventDeliveryStage<>(createSupplier(securityContext, event, metadata, exceptionHandler, () -> {
+            for (ObserverMethod<? super T> observer : observers) {
+                notifyAsyncObserver(observer, event, metadata, exceptionHandler);
+            }
+        }, true), executor);
+    }
+
+    private <T, U extends T> void notifyAsyncObserver(ObserverMethod<? super T> observer, U event, EventMetadata metadata,
+            ObserverExceptionHandler exceptionHandler) {
+        try {
+            Observers.notify(observer, event, metadata);
+        } catch (Throwable e) {
+            exceptionHandler.handle(e);
+        }
+    }
+
+    /**
+     * The supplier associates the security context with the current thread, activates the request context, runs the "notify" action and handles exceptions if
+     * required.
+     *
+     * @param event
+     * @param metadata
+     * @param handler
+     * @param notifyAction
+     * @param handleExceptions
+     * @return a new supplier
+     */
+    private <T, U extends T> Supplier<T> createSupplier(SecurityContext securityContext, U event, EventMetadata metadata, ObserverExceptionHandler handler,
+            Runnable notifyAction, boolean handleExceptions) {
+        return () -> {
             final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
             final RequestContext requestContext = requestContextHolder.get();
             try {
                 securityContext.associate();
                 requestContext.activate();
-                // Note that all async observers are notified serially in a single worker thread
-                for (ObserverMethod<? super T> observer : observers) {
-                    try {
-                        Observers.notify(observer, event, metadata);
-                    } catch (Throwable e) {
-                        handler.handle(e);
-                    }
-                }
+                notifyAction.run();
             } finally {
                 stack.pop();
                 requestContext.invalidate();
@@ -336,28 +384,35 @@ public class ObserverNotifier {
                 securityContext.dissociate();
                 securityContext.close();
             }
-            List<Throwable> handledExceptions = handler.getHandledExceptions();
-            if (!handledExceptions.isEmpty()) {
-                CompletionException exception = null;
-                if (handledExceptions.size() == 1) {
-                    exception = new CompletionException(handledExceptions.get(0));
-                } else {
-                    exception = new CompletionException(null);
-                }
-                for (Throwable handledException : handledExceptions) {
-                    exception.addSuppressed(handledException);
-                }
-                throw exception;
+            if (handleExceptions) {
+                handleExceptions(handler);
             }
             return event;
-        }, executor);
+        };
+    }
+
+    @SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "https://github.com/findbugsproject/findbugs/issues/79")
+    private void handleExceptions(ObserverExceptionHandler handler) {
+        List<Throwable> handledExceptions = handler.getHandledExceptions();
+        if (!handledExceptions.isEmpty()) {
+            CompletionException exception = null;
+            if (handledExceptions.size() == 1) {
+                exception = new CompletionException(handledExceptions.get(0));
+            } else {
+                exception = new CompletionException(null);
+            }
+            for (Throwable handledException : handledExceptions) {
+                exception.addSuppressed(handledException);
+            }
+            throw exception;
+        }
     }
 
     /**
      * There are two different strategies of exception handling for observer methods. When an exception is raised by a synchronous or transactional observer for
      * a synchronous event, this exception stops the notification chain and the exception is propagated immediately. On the other hand, an exception thrown
      * during asynchronous event delivery never is never propagated directly. Instead, all the exceptions for a given asynchronous event are collected and then
-     * made available together using FireAsyncException.
+     * made available together using CompletionException.
      *
      * @author Jozef Hartinger
      *
@@ -383,7 +438,15 @@ public class ObserverNotifier {
 
     static class CollectingExceptionHandler implements ObserverExceptionHandler {
 
-        private List<Throwable> throwables = new LinkedList<>();
+        private List<Throwable> throwables;
+
+        CollectingExceptionHandler() {
+            this(new LinkedList<>());
+        }
+
+        CollectingExceptionHandler(List<Throwable> throwables) {
+            this.throwables = throwables;
+        }
 
         @Override
         public void handle(Throwable throwable) {
