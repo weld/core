@@ -99,4 +99,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 418, value = "Observer method for container lifecycle event cannot be static. {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException staticContainerLifecycleEventObserver(ObserverMethod<?> observer, Object stackElement);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 419, value = "{0} is not a valid notification mode, using the default: {1}", format = Format.MESSAGE_FORMAT)
+    void invalidNotificationMode(Object mode, Object defaultMode);
 }

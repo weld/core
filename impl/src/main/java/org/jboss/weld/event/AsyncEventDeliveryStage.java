@@ -47,7 +47,7 @@ public class AsyncEventDeliveryStage<T> extends ForwardingCompletionStage<T> {
         this(CompletableFuture.supplyAsync(supplier, executor), executor);
     }
 
-    private AsyncEventDeliveryStage(CompletionStage<T> delegate, Executor executor) {
+    AsyncEventDeliveryStage(CompletionStage<T> delegate, Executor executor) {
         this.delegate = delegate;
         this.defaultExecutor = executor;
     }
