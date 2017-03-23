@@ -61,7 +61,7 @@ public void afterDocumentUpdate(@Observes @Updated Document document) { ... }
 -----------------------------------------------------------------------------
 
 An observer method need not specify any event qualifiers—in this case it
-is interested in every event whose type is assignable to the observed event type. 
+is interested in every event whose type is assignable to the observed event type.
 Such observer will trigger on both events shown below:
 
 [source.JAVA, java]
@@ -70,8 +70,8 @@ Such observer will trigger on both events shown below:
 @Inject @Updated Event<Document> anotherDocumentEvent;
 -------------------------------------------
 
-If the observer does specify qualifiers, it will be notified of an event if the event 
-object is assignable to the observed event type, and if the set of observed event 
+If the observer does specify qualifiers, it will be notified of an event if the event
+object is assignable to the observed event type, and if the set of observed event
 qualifiers is a subset of all the event qualifiers of the event.
 
 The observer method may have additional parameters, which are injection
@@ -226,7 +226,7 @@ Event qualifiers may be combined, for example:
 if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);
 -------------------------------------------------------------------------------------------
 
-The above shown event is fired with two qualifiers - `@Blog` and `@Updated`. 
+The above shown event is fired with two qualifiers - `@Blog` and `@Updated`.
 An observer method is notified if the set of observer qualifiers is a subset of the fired event's qualifiers.
 Assume the following observers in this example:
 
@@ -367,3 +367,22 @@ public class Catalog {
    }
 }
 -----------------------------------------------------------------------------------
+
+=== Notification options
+
+The `Event.fireAsync()` method may be called with a `NotificationOptions` parameter to configure the observer methods notification, e.g. to specify an `Executor` object to be used for asynchronous delivery.
+Weld defines the following non-portable notification options:
+
+[cols=",,",options="header",]
+|=======================================================================
+|Key |Default value |Description
+|`org.jboss.weld.notification.mode` |`SERIAL`|The notification mode. Possible values are: `SERIAL`, `PARALLEL`. See also <<notification-modes-table,Notification modes>>.
+|=======================================================================
+
+.[[notification-modes-table]]Notification modes
+[cols=",",options="header",]
+|=======================================================================
+|Mode|Description
+|`SERIAL` |Asynchronous observers are notified serially in a single worker thread.
+|`PARALLEL` |Asynchronous observers are notified in parallel assuming that the `java.util.concurrent.Executor` used supports parallel execution.
+|=======================================================================
