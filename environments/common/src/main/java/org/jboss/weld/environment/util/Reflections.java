@@ -21,9 +21,15 @@ import java.lang.annotation.Inherited;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.inject.Stereotype;
 
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Reflection utilities.
@@ -32,6 +38,8 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Martin Kouba
  */
 public final class Reflections {
+
+    public static final List<Class<? extends Annotation>> META_ANNOTATIONS = ImmutableList.of(Stereotype.class, NormalScope.class);
 
     private Reflections() {
     }
@@ -123,7 +131,7 @@ public final class Reflections {
         }
         try {
             return cast(Class.forName(className));
-        } catch (Exception e) {
+        } catch (Exception | LinkageError e) {
             throw CommonLogger.LOG.cannotLoadClass(className, e);
         }
     }
@@ -154,6 +162,22 @@ public final class Reflections {
                 return true;
             }
             if (checkMetaAnnotations && containsAnnotation(annotationType.getAnnotations(), requiredAnnotation, false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasBeanDefiningAnnotation(Class<?> clazz, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        for (Class<? extends Annotation> beanDefiningAnnotation : initialBeanDefiningAnnotations) {
+            if (clazz.isAnnotationPresent(beanDefiningAnnotation)) {
+                return true;
+            }
+        }
+        for (Class<? extends Annotation> metaAnnotation : META_ANNOTATIONS) {
+            // The check is not perfomed recursively as bean defining annotations must be declared directly on a bean class
+            // Also we don't cache the results and rely completely on the reflection optimizations
+            if (hasBeanDefiningMetaAnnotationSpecified(clazz.getAnnotations(), metaAnnotation)) {
                 return true;
             }
         }

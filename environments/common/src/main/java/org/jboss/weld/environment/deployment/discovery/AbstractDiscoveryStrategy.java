@@ -25,9 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.Stereotype;
-
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -37,7 +34,6 @@ import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  *
@@ -57,8 +53,6 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
     protected BeanArchiveScanner scanner;
 
-    protected final List<Class<? extends Annotation>> metaAnnotations;
-
     private final List<BeanArchiveHandler> handlers;
 
     /**
@@ -71,7 +65,6 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         this.resourceLoader = resourceLoader;
         this.bootstrap = bootstrap;
         this.handlers = new LinkedList<BeanArchiveHandler>();
-        this.metaAnnotations = ImmutableList.of(Stereotype.class, NormalScope.class);
         this.initialBeanDefiningAnnotations = initialBeanDefiningAnnotations;
     }
 
