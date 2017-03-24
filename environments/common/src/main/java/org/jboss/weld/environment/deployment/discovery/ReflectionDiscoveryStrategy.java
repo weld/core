@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
-import static org.jboss.weld.environment.util.Reflections.hasBeanDefiningMetaAnnotationSpecified;
-
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
@@ -26,8 +24,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.logging.CommonLogger;
+import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * This implementation supports bean-discovery-mode="annotated" and makes use of reflection to detect a class with a bean defining annotation.
@@ -53,28 +51,12 @@ public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
         Iterator<String> classIterator = builder.getClassIterator();
         while (classIterator.hasNext()) {
             String className = classIterator.next();
-            Class<?> clazz = Reflections.loadClass(className, resourceLoader);
-            if (clazz == null || !hasBeanDefiningAnnotation(clazz, initialBeanDefiningAnnotations)) {
+            Class<?> clazz = Reflections.loadClass(resourceLoader, className);
+            if (clazz == null || !Reflections.hasBeanDefiningAnnotation(clazz, initialBeanDefiningAnnotations)) {
                 classIterator.remove();
             }
         }
         return builder.build();
-    }
-
-    private boolean hasBeanDefiningAnnotation(Class<?> clazz, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
-        for (Class<? extends Annotation> beanDefiningAnnotation : initialBeanDefiningAnnotations) {
-            if (clazz.isAnnotationPresent(beanDefiningAnnotation)) {
-                return true;
-            }
-        }
-        for (Class<? extends Annotation> metaAnnotation : metaAnnotations) {
-            // The check is not perfomed recursively as bean defining annotations must be declared directly on a bean class
-            // Also we don't cache the results and rely completely on the reflection optimizations
-            if (hasBeanDefiningMetaAnnotationSpecified(clazz.getAnnotations(), metaAnnotation)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }
