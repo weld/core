@@ -23,6 +23,9 @@ import java.util.function.Consumer;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.ContainerInstanceFactory;
@@ -38,7 +41,7 @@ import org.jboss.weld.util.Preconditions;
  * custom listener the request context will not be active during its notifications. In this case place this listener before any other listener definitions in
  * web.xml.
  *
- * ServletContext notifications are no-op in case of the {@link EnhancedListener} is registered as well.
+ * {@link ServletContextListener#contextInitialized(ServletContextEvent)} is no-op in case of the {@link EnhancedListener} is registered as well.
  *
  * @author Pete Muir
  * @author Ales Justin
@@ -51,6 +54,7 @@ public class Listener extends ForwardingServletListener {
 
     /**
      * Creates a new Listener that uses the given {@link BeanManager} instead of initializing a new Weld container instance.
+     *
      * @param manager the bean manager to be used
      * @return a new Listener instance
      */
@@ -104,7 +108,7 @@ public class Listener extends ForwardingServletListener {
         ServletContext context = sce.getServletContext();
         lifecycle = (WeldServletLifecycle) context.getAttribute(WeldServletLifecycle.INSTANCE_ATTRIBUTE_NAME);
         context.setAttribute(LISTENER_USED_ATTRIBUTE_NAME, Boolean.TRUE);
-        if (lifecycle != null) {
+        if (Boolean.TRUE.equals(context.getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
             WeldServletLogger.LOG.enhancedListenerUsedForNotifications();
             return;
         }
@@ -119,13 +123,43 @@ public class Listener extends ForwardingServletListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        super.contextDestroyed(sce);
         if (lifecycle == null) {
-            // This should never happen
-            WeldServletLogger.LOG.noServletLifecycleToDestroy();
+            if (!Boolean.TRUE.equals(sce.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
+                // This should never happen
+                WeldServletLogger.LOG.noServletLifecycleToDestroy();
+            }
             return;
         }
+        super.contextDestroyed(sce);
         lifecycle.destroy(sce.getServletContext());
+    }
+
+    @Override
+    public void requestDestroyed(ServletRequestEvent sre) {
+        if (lifecycle != null) {
+            super.requestDestroyed(sre);
+        }
+    }
+
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+        if (lifecycle != null) {
+            super.requestInitialized(sre);
+        }
+    }
+
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        if (lifecycle != null) {
+            super.sessionCreated(se);
+        }
+    }
+
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        if (lifecycle != null) {
+            super.sessionDestroyed(se);
+        }
     }
 
     @Override

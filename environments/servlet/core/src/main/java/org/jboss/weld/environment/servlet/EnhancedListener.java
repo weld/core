@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpSessionEvent;
@@ -36,7 +37,7 @@ import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
  * This listener MUST NOT be defined in web.xml because it registers itself during {@link ServletContainerInitializer#onStartup(Set, ServletContext)}
  * notification!
  *
- * ServletRequest and HttpSession notifications are no-op in case of the {@link Listener} is registered as well.
+ * {@link ServletContextListener#contextDestroyed(ServletContextEvent)}, ServletRequest and HttpSession notifications are no-op in case of the {@link Listener} is registered as well.
  *
  * @author Martin Kouba
  * @author Jan Bartel
