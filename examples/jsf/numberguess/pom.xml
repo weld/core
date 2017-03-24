@@ -124,12 +124,6 @@
             <id>tomcat</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.spec.javax.annotation</groupId>
-                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                    <scope>compile</scope>
-                </dependency>
-
-                <dependency>
                     <groupId>org.jboss.spec.javax.faces</groupId>
                     <artifactId>jboss-jsf-api_2.2_spec</artifactId>
                 </dependency>
