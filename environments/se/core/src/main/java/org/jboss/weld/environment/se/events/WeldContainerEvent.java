@@ -33,4 +33,8 @@ public abstract class WeldContainerEvent {
         return containerId;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " event for container with ID: " + getContainerId();
+    }
 }
