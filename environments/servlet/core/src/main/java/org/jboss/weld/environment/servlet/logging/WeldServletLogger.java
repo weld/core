@@ -59,7 +59,7 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     // log message with id 1005 was removed
 
     @LogMessage(level = Level.INFO)
-    @Message(id = 1006, value = "org.jboss.weld.environment.servlet.EnhancedListener used for ServletContext notifications")
+    @Message(id = 1006, value = "org.jboss.weld.environment.servlet.EnhancedListener used to initialize Weld")
     void enhancedListenerUsedForNotifications();
 
     @LogMessage(level = Level.INFO)
