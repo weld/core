@@ -38,7 +38,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.environment.se.test.instance.enhanced.WeldInstanceTest;
 import org.jboss.weld.event.NotificationOptionKeys;
 import org.jboss.weld.event.NotificationOptionKeys.NotificationMode;
 import org.jboss.weld.test.util.Utils;
@@ -54,7 +53,7 @@ public class ParallelNotificationModeTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceTest.class))
+        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ParallelNotificationModeTest.class))
                 .addPackage(ParallelNotificationModeTest.class.getPackage())).build();
     }
 

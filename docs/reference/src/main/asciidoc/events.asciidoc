@@ -370,13 +370,13 @@ public class Catalog {
 
 === Notification options
 
-The `Event.fireAsync()` method may be called with a `NotificationOptions` parameter to configure the observer methods notification, e.g. to specify an `Executor` object to be used for asynchronous delivery.
+The `Event.fireAsync()` method may be called with a `NotificationOptions` parameter to configure the notification of asynchronous observer methods , e.g. to specify an `Executor` object to be used for asynchronous delivery.
 Weld defines the following non-portable notification options:
 
 [cols=",,",options="header",]
 |=======================================================================
-|Key |Default value |Description
-|`org.jboss.weld.notification.mode` |`SERIAL`|The notification mode. Possible values are: `SERIAL`, `PARALLEL`. See also <<notification-modes-table,Notification modes>>.
+|Key |Value type|Description
+|`org.jboss.weld.notification.mode` |`String`|The notification mode. Possible values are: `SERIAL` (default), `PARALLEL`. See also <<notification-modes-table,Notification modes>>.
 |=======================================================================
 
 .[[notification-modes-table]]Notification modes
