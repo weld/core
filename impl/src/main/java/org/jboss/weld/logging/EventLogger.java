@@ -99,4 +99,6 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 418, value = "Observer method for container lifecycle event cannot be static. {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException staticContainerLifecycleEventObserver(ObserverMethod<?> observer, Object stackElement);
 
+    @Message(id = 419, value = "Observer method cannot be annotated with a stereotype annotation: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidStereotype(Object param1, Object stackElement);
 }

@@ -214,7 +214,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
             throw EventLogger.LOG.invalidDisposesParameter(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         // Check annotations on the method to make sure this is not a producer
-        // method, initializer method, or destructor method.
+        // method, initializer method, destructor method or is not annotated with a stereotype.
         if (this.observerMethod.getAnnotated().isAnnotationPresent(Produces.class)) {
             throw EventLogger.LOG.invalidProducer(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
@@ -226,6 +226,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
             // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
             if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !parameter.isAnnotationPresent(ObservesAsync.class) && !BeanManager.class.equals(parameter.getBaseType())) {
                 throw EventLogger.LOG.invalidInjectionPoint(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
+            }
+        }
+        for (Annotation annotation : this.observerMethod.getAnnotated().getAnnotations()) {
+            if (beanManager.isStereotype((annotation.annotationType()))) {
+                throw EventLogger.LOG.invalidStereotype(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
             }
         }
 
