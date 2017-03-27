@@ -20,7 +20,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.weld.exceptions.DeploymentException;
@@ -37,6 +39,18 @@ import org.jboss.weld.manager.api.ExecutorServices;
 public abstract class AbstractExecutorServices implements ExecutorServices {
 
     private static final long SHUTDOWN_TIMEOUT = 60L;
+
+    private final ScheduledExecutorService timerExecutor =
+        Executors.newScheduledThreadPool(1, new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), "weld-timer-"));
+
+    /**
+     * Returns a singleton instance of ScheduledExecutorService.
+     * @return A managed instance of ScheduledExecutorService
+     */
+    @Override
+    public ScheduledExecutorService getTimerExecutor() {
+        return timerExecutor;
+    }
 
     @Override
     public <T> List<Future<T>> invokeAllAndCheckForExceptions(Collection<? extends Callable<T>> tasks) {
@@ -84,6 +98,7 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
 
     protected void shutdown() {
         getTaskExecutor().shutdown();
+        getTimerExecutor().shutdown();
         try {
             // Wait a while for existing tasks to terminate
             if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
@@ -92,12 +107,27 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
                 if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
                     // Log the error here
                     BootstrapLogger.LOG.timeoutShuttingDownThreadPool(getTaskExecutor(), this);
-                    // log.warn(BootstrapMessage.TIMEOUT_SHUTTING_DOWN_THREAD_POOL, getTaskExecutor(), this);
                 }
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted
             getTaskExecutor().shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
+
+        // Do the same for timer executor
+        try {
+            if (!getTimerExecutor().isShutdown()) { //no need to do the full wait, one already elapsed
+                getTimerExecutor().shutdownNow();
+                if (!getTimerExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
+                    // Log the error here
+                    BootstrapLogger.LOG.timeoutShuttingDownThreadPool(getTimerExecutor(), this);
+                }
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            getTimerExecutor().shutdownNow();
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }

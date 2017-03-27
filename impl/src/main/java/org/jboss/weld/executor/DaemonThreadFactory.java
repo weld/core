@@ -26,6 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DaemonThreadFactory implements ThreadFactory {
 
+    public static final String WELD_WORKERS = "weld-workers";
+
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String threadNamePrefix;
     private final ThreadGroup threadGroup ;
