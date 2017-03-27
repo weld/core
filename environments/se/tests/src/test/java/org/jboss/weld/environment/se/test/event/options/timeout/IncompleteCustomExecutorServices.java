@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,26 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.event.async.stage;
+package org.jboss.weld.environment.se.test.event.options.timeout;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.jboss.weld.executor.AbstractExecutorServices;
 import org.jboss.weld.executor.DaemonThreadFactory;
 
-public class CustomExecutorServices extends AbstractExecutorServices {
+/**
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ */
+public class IncompleteCustomExecutorServices extends AbstractExecutorServices {
 
     static final String PREFIX = "weld-worker-test";
 
     private final transient ExecutorService taskExecutor = Executors
-            .newSingleThreadExecutor(new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), PREFIX));
+        .newSingleThreadExecutor(new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), PREFIX));
 
-    /**
-     * Provides access to the executor service used for asynchronous tasks.
-     *
-     * @return the ExecutorService for this manager
-     */
     public ExecutorService getTaskExecutor() {
         return taskExecutor;
     }
@@ -41,6 +41,12 @@ public class CustomExecutorServices extends AbstractExecutorServices {
     @Override
     protected int getThreadPoolSize() {
         return 1;
+    }
+
+    @Override
+    public ScheduledExecutorService getTimerExecutor() {
+        // deliberately return null
+        return null;
     }
 
 }

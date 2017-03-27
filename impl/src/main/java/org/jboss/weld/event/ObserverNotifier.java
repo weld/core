@@ -31,6 +31,9 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -85,6 +88,7 @@ public class ObserverNotifier {
     protected final CurrentEventMetadata currentEventMetadata;
     private final ComputingCache<Type, RuntimeException> eventTypeCheckCache;
     private final Executor asyncEventExecutor;
+    private final ScheduledExecutorService timerExecutor;
     private final SecurityServices securityServices;
     private final LazyValueHolder<RequestContext> requestContextHolder;
 
@@ -101,6 +105,8 @@ public class ObserverNotifier {
         }
         // fall back to FJP.commonPool() if ExecutorServices are not installed
         this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
+        // ScheduledExecutor might have null value
+        this.timerExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTimerExecutor()).orElse(null);
         this.securityServices = services.getRequired(SecurityServices.class);
         // LazyValueHolder is used because contexts are not ready yet at the point when ObserverNotifier is first initialized
         this.requestContextHolder = LazyValueHolder
@@ -323,8 +329,8 @@ public class ObserverNotifier {
             return AsyncEventDeliveryStage.completed(event, executor);
         }
         // We should always initialize and validate all notification options first
-        final NotificationMode mode = initMode(options.get(WeldNotificationOptions.MODE));
-
+        final NotificationMode mode = initModeOption(options.get(WeldNotificationOptions.MODE));
+        final Long timeout = initTimeoutOption(options.get(WeldNotificationOptions.TIMEOUT));
         final SecurityContext securityContext = securityServices.getSecurityContext();
         final ObserverExceptionHandler exceptionHandler;
         CompletableFuture<U> completableFuture;
@@ -352,12 +358,36 @@ public class ObserverNotifier {
             }), executor);
         }
 
-        // TODO if timeout set then wrap the completableFuture
-
+        // If NotificationOptionKeys.TIMEOUT is set, we will trigger the counter and use CompletableFuture.anyOf()
+        if (timeout != null) {
+            completableFuture = CompletableFuture.anyOf(completableFuture, startTimer(timeout)).thenApply((ignoredObject) -> event);
+        }
         return new AsyncEventDeliveryStage<>(completableFuture, executor);
     }
 
-    private NotificationMode initMode(Object value) {
+    /**
+     * Verifies that, if timeout options was set, the executor is available and input value for timeout can be interpreted as Long.
+     * Returns the timeout value if all is alright, null if this option was not requested.
+     */
+    private Long initTimeoutOption(Object timeoutOptionValue) {
+        if (timeoutOptionValue  != null) {
+            // throw exception if we don't have scheduled executor available
+            if (timerExecutor == null) {
+                throw EventLogger.LOG.noScheduledExecutorServicesProvided();
+            }
+            // now verify that the input value makes sense
+            try {
+                String inputValue = timeoutOptionValue.toString();
+                return Long.parseLong(inputValue);
+            } catch (NumberFormatException nfe) {
+            throw  EventLogger.LOG.invalidInputValueForTimeout(nfe);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private NotificationMode initModeOption(Object value) {
         if (value != null) {
             NotificationMode mode = NotificationMode.of(value);
             if (mode == null) {
@@ -366,6 +396,15 @@ public class ObserverNotifier {
             return mode;
         }
         return null;
+    }
+
+    /**
+     * Starts the timer thread and returns it as CompletableFuture.
+     */
+    private <T> CompletableFuture<T> startTimer(Long timeout) {
+        CompletableFuture<T> timeoutFuture = new CompletableFuture<T>();
+        timerExecutor.schedule(() -> timeoutFuture.completeExceptionally(new TimeoutException()), timeout, TimeUnit.MILLISECONDS);
+        return timeoutFuture;
     }
 
     private <T, U extends T> void notifyAsyncObserver(ObserverMethod<? super T> observer, U event, EventMetadata metadata,

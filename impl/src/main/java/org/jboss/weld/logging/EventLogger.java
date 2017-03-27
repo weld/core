@@ -101,4 +101,10 @@ public interface EventLogger extends WeldLogger {
 
     @Message(id = 419, value = "{0} is not a valid notification mode for asynchronous observers", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException invalidNotificationMode(Object mode);
+
+    @Message(id = 420, value = "Asynchronous observer notification with timeout option requires an implementation of ExecutorServices which provides an instance of ScheduledExecutorServices.", format = Format.MESSAGE_FORMAT)
+    UnsupportedOperationException noScheduledExecutorServicesProvided();
+
+    @Message(id = 421, value = "Invalid input value for asynchronous observer notification timeout. Has to be parseable String, java.lang.Long or long. Original exception: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException invalidInputValueForTimeout(Object nfe);
 }
