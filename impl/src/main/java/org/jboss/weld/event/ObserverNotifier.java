@@ -322,30 +322,34 @@ public class ObserverNotifier {
         }
         final SecurityContext securityContext = securityServices.getSecurityContext();
         final ObserverExceptionHandler exceptionHandler;
-        NotificationMode mode = NotificationMode.of(options.get(NotificationOptionKeys.MODE));
+        CompletableFuture<U> completableFuture;
 
-        if (observers.size() > 1 && NotificationMode.PARALLEL.equals(mode)) {
-            // Async observers are notified in parallel (if possible)
+        if (observers.size() > 1 && NotificationMode.PARALLEL.equals(NotificationMode.of(options.get(NotificationOptionKeys.MODE)))) {
+            // Attempt to notify async observers in parallel
             exceptionHandler = new CollectingExceptionHandler(new CopyOnWriteArrayList<>());
             List<CompletableFuture<T>> completableFutures = new ArrayList<>(observers.size());
             for (ObserverMethod<? super T> observer : observers) {
-                completableFutures.add(CompletableFuture.supplyAsync(createSupplier(securityContext, event, metadata, exceptionHandler, () -> {
+                completableFutures.add(CompletableFuture.supplyAsync(createSupplier(securityContext, event, metadata, exceptionHandler, false, () -> {
                     notifyAsyncObserver(observer, event, metadata, exceptionHandler);
-                }, false), executor));
+                }), executor));
             }
-            return new AsyncEventDeliveryStage<>(CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[] {})).thenApply((ignoredVoid) -> {
+            completableFuture = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[] {})).thenApply((ignoredVoid) -> {
                 handleExceptions(exceptionHandler);
                 return event;
+            });
+        } else {
+            // Async observers are notified serially in a single worker thread
+            exceptionHandler = new CollectingExceptionHandler();
+            completableFuture = CompletableFuture.supplyAsync(createSupplier(securityContext, event, metadata, exceptionHandler, true, () -> {
+                for (ObserverMethod<? super T> observer : observers) {
+                    notifyAsyncObserver(observer, event, metadata, exceptionHandler);
+                }
             }), executor);
         }
 
-        // Async observers are notified serially in a single worker thread
-        exceptionHandler = new CollectingExceptionHandler();
-        return new AsyncEventDeliveryStage<>(createSupplier(securityContext, event, metadata, exceptionHandler, () -> {
-            for (ObserverMethod<? super T> observer : observers) {
-                notifyAsyncObserver(observer, event, metadata, exceptionHandler);
-            }
-        }, true), executor);
+        // TODO if timeout set then wrap the completableFuture
+
+        return new AsyncEventDeliveryStage<>(completableFuture, executor);
     }
 
     private <T, U extends T> void notifyAsyncObserver(ObserverMethod<? super T> observer, U event, EventMetadata metadata,
@@ -363,13 +367,13 @@ public class ObserverNotifier {
      *
      * @param event
      * @param metadata
-     * @param handler
-     * @param notifyAction
+     * @param exceptionHandler
      * @param handleExceptions
+     * @param notifyAction
      * @return a new supplier
      */
-    private <T, U extends T> Supplier<T> createSupplier(SecurityContext securityContext, U event, EventMetadata metadata, ObserverExceptionHandler handler,
-            Runnable notifyAction, boolean handleExceptions) {
+    private <T, U extends T> Supplier<T> createSupplier(SecurityContext securityContext, U event, EventMetadata metadata, ObserverExceptionHandler exceptionHandler,
+            boolean handleExceptions, Runnable notifyAction) {
         return () -> {
             final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
             final RequestContext requestContext = requestContextHolder.get();
@@ -385,7 +389,7 @@ public class ObserverNotifier {
                 securityContext.close();
             }
             if (handleExceptions) {
-                handleExceptions(handler);
+                handleExceptions(exceptionHandler);
             }
             return event;
         };
