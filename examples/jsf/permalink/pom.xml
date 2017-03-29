@@ -24,13 +24,6 @@
     </licenses>
 
     <properties>
-        <jetty.http.port>9090</jetty.http.port>
-        <jetty.stop.port>9091</jetty.stop.port>
-        <jetty.debug.port>9190</jetty.debug.port>
-        <jetty.daemon>false</jetty.daemon>
-        <tomcat.http.port>8080</tomcat.http.port>
-        <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
-        <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
         <webapp.directory>src/main/webapp</webapp.directory>
     </properties>
 
@@ -106,8 +99,6 @@
                                 <include>META-INF/**</include>
                                 <include>WEB-INF/classes/**</include>
                                 <include>WEB-INF/lib/**</include>
-                                <include>WEB-INF/jetty-env.xml</include>
-                                <include>WEB-INF/jetty-context.xml</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
@@ -142,11 +133,6 @@
             <id>tomcat</id>
 
             <dependencies>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.annotation</groupId>
-                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                </dependency>
 
                 <dependency>
                     <groupId>org.jboss.spec.javax.faces</groupId>
@@ -223,146 +209,6 @@
                             </webResources>
                         </configuration>
                     </plugin>
-
-                   <plugin>
-                      <groupId>org.apache.tomcat.maven</groupId>
-                      <artifactId>tomcat7-maven-plugin</artifactId>
-                      <configuration>
-                          <path>/${project.build.finalName}</path>
-                          <!--
-                             uncomment to use server configuration override; see
-                             readme.txt for details
-                          -->
-                          <!--<server>tomcat</server>-->
-                          <url>http://localhost:${tomcat.http.port}/manager/text</url>
-                      </configuration>
-                   </plugin>
-
-                </plugins>
-            </build>
-
-        </profile>
-
-        <profile>
-            <id>jetty</id>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.spec.javax.annotation</groupId>
-                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld.servlet</groupId>
-                    <artifactId>weld-servlet-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.2_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.sun.faces</groupId>
-                    <artifactId>jsf-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-core-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-core-jsf</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.transaction</groupId>
-                    <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-validator</artifactId>
-                    <version>4.0.0.GA</version>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>javax.xml.bind</groupId>
-                            <artifactId>jaxb-api</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.sun.xml.bind</groupId>
-                            <artifactId>jaxb-impl</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/log/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources-jetty</directory>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>jetty-maven-plugin</artifactId>
-                        <version>${jetty.version}</version>
-                        <configuration>
-                            <connectors>
-                                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                                    <port>${jetty.http.port}</port>
-                                    <maxIdleTime>3600000</maxIdleTime>
-                                </connector>
-                            </connectors>
-                            <daemon>${jetty.daemon}</daemon>
-                            <stopPort>${jetty.stop.port}</stopPort>
-                            <stopKey>HASTA_LA_VISTA</stopKey>
-                            <scanIntervalSeconds>10</scanIntervalSeconds>
-                            <webApp>
-                                <contextPath>/${project.build.finalName}</contextPath>
-                                <overrideDescriptor>src/main/webapp-jetty/WEB-INF/override-web.xml</overrideDescriptor>
-                                <jettyEnvXml>src/main/webapp-jetty/WEB-INF/jetty-env.xml</jettyEnvXml>
-                            </webApp>
-                            <contextXml>src/main/webapp-jetty/WEB-INF/jetty-context.xml</contextXml>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <webResources>
-                                <resource>
-                                    <directory>src/main/webapp-jetty</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </plugin>
                 </plugins>
             </build>
 
@@ -431,10 +277,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-
-        <profile>
-            <id>arquillian-jetty-embedded-7</id>
         </profile>
 
         <profile>

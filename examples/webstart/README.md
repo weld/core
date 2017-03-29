@@ -11,7 +11,7 @@ Running the Example
   in `examples/se/numberguess` is built. If not, run `mvn clean install`
   in `examples/se/numberguess`
 
-- Build and run the launcher applicationby running `mvn clean jetty:run-war` in this
+- Build and run the launcher application by running `mvn clean jetty:run-war` in this
   directory. This will build the application and start a Jetty server hosting the application.
   Alternatively, you can deploy the `weld-se-numberguess-webstart.war` to any other Servlet container.
   
