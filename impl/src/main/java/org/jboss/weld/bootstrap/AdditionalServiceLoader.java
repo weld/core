@@ -21,19 +21,17 @@ import java.util.Set;
 
 import javax.annotation.Priority;
 
-import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.ServiceLoader;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.Services;
 
 /**
  * Loads {@link Service} implementations using {@link ServiceLoader}. This can be used e.g. by a JTA library
@@ -47,8 +45,6 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  */
 class AdditionalServiceLoader {
-
-    private static final int DEFAULT_PLATFORM_PRIORITY = 4500;
 
     private final Deployment deployment;
 
@@ -64,59 +60,11 @@ class AdditionalServiceLoader {
         for (ResourceLoader loader : getResourceLoaders()) {
             for (Metadata<Service> metadata : ServiceLoader.load(Service.class, loader)) {
                 Service service = metadata.getValue();
-                for (Class<? extends Service> serviceInterface : identifyServiceInterfaces(service.getClass(), new HashSet<Class<? extends Service>>())) {
-                    put(registry, serviceInterface, service);
+                for (Class<? extends Service> serviceInterface : Services.identifyServiceInterfaces(service.getClass(), new HashSet<Class<? extends Service>>())) {
+                    Services.put(registry, serviceInterface, service);
                 }
             }
         }
-    }
-
-    /**
-     * Identifies service views for a service implementation class. A service view is either: - an interface that directly extends {@link Service} or
-     * {@link BootstrapService} - a clazz that directly implements {@link Service} or {@link BootstrapService}
-     *
-     * @param clazz the given class
-     * @param serviceInterfaces a set that this method populates with service views
-     * @return serviceInterfaces
-     */
-    private Set<Class<? extends Service>> identifyServiceInterfaces(Class<?> clazz, Set<Class<? extends Service>> serviceInterfaces) {
-        if (clazz == null || Object.class.equals(clazz) || BootstrapService.class.equals(clazz)) {
-            return serviceInterfaces;
-        }
-        for (Class<?> interfac3 : clazz.getInterfaces()) {
-            if (Service.class.equals(interfac3) || BootstrapService.class.equals(interfac3)) {
-                serviceInterfaces.add(Reflections.<Class<? extends Service>>cast(clazz));
-            }
-        }
-        for (Class<?> interfac3 : clazz.getInterfaces()) {
-            identifyServiceInterfaces(interfac3, serviceInterfaces);
-        }
-        identifyServiceInterfaces(clazz.getSuperclass(), serviceInterfaces);
-        return serviceInterfaces;
-    }
-
-    private <T extends Service> void put(ServiceRegistry registry, Class<T> key, Service value) {
-        Service previous = registry.get(key);
-        if (previous == null) {
-            BootstrapLogger.LOG.debugv("Installing additional service {0} ({1})", key.getName(), value.getClass());
-            registry.add(key, Reflections.<T>cast(value));
-        } else if (shouldOverride(key, previous, value)) {
-            BootstrapLogger.LOG.debugv("Overriding service implementation for {0}. Previous implementation {1} is replaced with {2}", key.getName(), previous
-                    .getClass().getName(), value.getClass().getName());
-            registry.add(key, Reflections.<T>cast(value));
-        }
-    }
-
-    protected boolean shouldOverride(Class<? extends Service> key, Service previous, Service next) {
-        return getPriority(next) > getPriority(previous);
-    }
-
-    private int getPriority(Service service) {
-        Priority priority = service.getClass().getAnnotation(Priority.class);
-        if (priority != null) {
-            return priority.value();
-        }
-        return DEFAULT_PLATFORM_PRIORITY;
     }
 
     private Set<ResourceLoader> getResourceLoaders() {
