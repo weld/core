@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.event.options.parallel;
+package org.jboss.weld.environment.se.test.event.options.mode;
 
 import javax.enterprise.event.ObservesAsync;
 
