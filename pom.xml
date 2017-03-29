@@ -42,7 +42,7 @@
         <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
         <arquillian.weld.version>2.0.0.Beta4</arquillian.weld.version>
         <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
-        <arquillian.tomcat.version>1.0.0.CR6</arquillian.tomcat.version>
+        <arquillian.tomcat.version>1.0.0.CR8</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>

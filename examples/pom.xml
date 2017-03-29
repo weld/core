@@ -106,14 +106,10 @@
     <properties>
         <jsf.version>2.1</jsf.version>
         <facelets.version>1.1.15</facelets.version>
-        <tomcat.version>7.0.53</tomcat.version>
-        <jetty.version>8.1.13.v20130916</jetty.version>
         <wildfly.plugin.version>1.0.1.Final</wildfly.plugin.version>
-        <glassfish.plugin.version>2.1</glassfish.plugin.version>
         <uel.version>2.2</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
-        <glassfish.home>${env.GLASSFISH_HOME}</glassfish.home>
     </properties>
 
     <dependencyManagement>
@@ -126,45 +122,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-plus</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-jndi</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-webapp</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.glassfish.web</groupId>
                 <artifactId>el-impl</artifactId>
                 <version>${uel.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>catalina</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>jasper</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>coyote</artifactId>
-                <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
@@ -239,42 +199,6 @@
                     <groupId>org.wildfly.plugins</groupId>
                     <artifactId>wildfly-maven-plugin</artifactId>
                     <version>${wildfly.plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.glassfish.maven.plugin</groupId>
-                    <artifactId>maven-glassfish-plugin</artifactId>
-                    <version>${glassfish.plugin.version}</version>
-                    <configuration>
-                        <user>admin</user>
-                        <passwordFile>${project.basedir}/src/glassfish/password_file</passwordFile>
-                        <echo>true</echo>
-                        <glassfishDirectory>${glassfish.home}</glassfishDirectory>
-                        <domain>
-                            <name>${project.artifactId}</name>
-                            <adminPort>4848</adminPort>
-                            <httpPort>7070</httpPort>
-                            <httpsPort>8443</httpsPort>
-                            <iiopPort>3700</iiopPort>
-                            <jmsPort>7676</jmsPort>
-                            <reuse>false</reuse>
-                        </domain>
-                        <components>
-                            <component>
-                                <name>${project.artifactId}</name>
-                                <artifact>${project.build.directory}/${project.build.finalName}.${project.packaging}</artifact>
-                            </component>
-                        </components>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat6-maven-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -393,103 +317,6 @@
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>arquillian-tomcat-embdedded-7</id>
-            <activation>
-                <property>
-                    <name>arquillian</name>
-                    <value>tomcat-embedded-7</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-tomcat-embedded-7</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-                    <artifactId>shrinkwrap-descriptors-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-      
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-jasper</artifactId>
-                    <version>${tomcat.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-logging-juli</artifactId>
-                    <version>${tomcat.version}</version>
-                    <scope>test</scope>
-                </dependency>
-
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>arquillian-jetty-embedded-7</id>
-            <activation>
-                <property>
-                    <name>arquillian</name>
-                    <value>jetty-embedded-7</value>
-                </property>
-            </activation>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jetty-embedded-7</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-                    <artifactId>shrinkwrap-descriptors-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-plus</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-jndi</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-webapp</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <scope>runtime</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>javax.el</groupId>
-                            <artifactId>el-api</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>javax.servlet.jsp</groupId>
-                    <artifactId>jsp-api</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
