@@ -11,13 +11,4 @@
     <container qualifier="wildfly-remote-8">
     </container>
     
-    <container qualifier="tomcat-embedded-7">
-        <configuration>
-            <property name="unpackArchive">true</property>
-        </configuration>
-    </container>
-    
-    <container qualifier="jetty-embedded-7">
-    </container>
-    
 </arquillian>

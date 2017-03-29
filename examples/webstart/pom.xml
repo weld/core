@@ -11,7 +11,7 @@
     
     <properties>
         <webstart.maven.plugin.version>1.0-beta-2</webstart.maven.plugin.version>
-        <webstart.jnlp.servlet.version>1.0-6.0.02_ea_b02.2</webstart.jnlp.servlet.version>
+        <webstart.jnlp.servlet.version>1.0-beta-7</webstart.jnlp.servlet.version>
     </properties>
     
     <build>
@@ -81,7 +81,7 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.codehaus.mojo.webstart</groupId>
+            <groupId>org.codehaus.mojo</groupId>
             <artifactId>webstart-jnlp-servlet</artifactId>
             <version>${webstart.jnlp.servlet.version}</version>
         </dependency>

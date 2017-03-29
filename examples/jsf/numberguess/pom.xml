@@ -124,12 +124,6 @@
             <id>tomcat</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.spec.javax.annotation</groupId>
-                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                    <scope>compile</scope>
-                </dependency>
-
-                <dependency>
                     <groupId>org.jboss.spec.javax.faces</groupId>
                     <artifactId>jboss-jsf-api_2.2_spec</artifactId>
                 </dependency>
@@ -170,149 +164,6 @@
             </build>
         </profile>
 
-        <!-- WARNING: Jetty Maven plugin is temporarily unsupported -->
-        <profile>
-            <id>jetty</id>
-            <dependencies>
-
-                <dependency>
-                    <groupId>javax.enterprise</groupId>
-                    <artifactId>cdi-api</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>javax.inject</groupId>
-                    <artifactId>javax.inject</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.annotation</groupId>
-                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                    <scope>compile</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld.servlet</groupId>
-                    <artifactId>weld-servlet-core</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.spec.javax.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.2_spec</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.sun.faces</groupId>
-                    <artifactId>jsf-impl</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-core-impl</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld.module</groupId>
-                    <artifactId>weld-jsf</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <scope>runtime</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>javax.el</groupId>
-                            <artifactId>el-api</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-
-            </dependencies>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <webResources>
-                                <resource>
-                                    <directory>src/main/webapp-jetty</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>gae</id>
-            <dependencies>
-
-                <!-- Use JSF 1.2, JSF 2 has issues on GAE still -->
-
-                <dependency>
-                    <groupId>javax.faces</groupId>
-                    <artifactId>jsf-api</artifactId>
-                    <version>1.2_13</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>javax.faces</groupId>
-                    <artifactId>jsf-impl</artifactId>
-                    <scope>runtime</scope>
-                    <version>1.2_13</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld.servlet</groupId>
-                    <artifactId>weld-servlet-shaded</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.sun.facelets</groupId>
-                    <artifactId>jsf-facelets</artifactId>
-                    <version>1.1.15.B1</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>javax.el</groupId>
-                    <artifactId>el-api</artifactId>
-                    <version>1.1</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <version>1.1</version>
-                </dependency>
-
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <webResources>
-                                <resource>
-                                    <directory>src/main/webapp-gae</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <!-- functional tests -->
         <profile>
             <id>ftest</id>
@@ -328,10 +179,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-
-        <profile>
-            <id>arquillian-jetty-embedded-7</id>
         </profile>
 
         <profile>
@@ -373,56 +220,12 @@
                             <includes>
                                 <include>WEB-INF/classes/**</include>
                                 <include>WEB-INF/lib/**</include>
-                                <include>META-INF/context.xml</include>
                                 <include>WEB-INF/web.xml</include>
-                                <include>WEB-INF/jetty-env.xml</include>
-                                <include>WEB-INF/jetty-context.xml</include>
-                                <include>WEB-INF/appengine-web.xml</include>
                                 <include>WEB-INF/logging.properties</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                     </filesets>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <configuration>
-                    <path>/${project.build.finalName}</path>
-                    <!--
-                       uncomment to use server configuration override; see
-                       readme for details
-                    -->
-                    <!--<server>tomcat</server>-->
-                    <url>http://localhost:${tomcat.http.port}/manager/text</url>
-                </configuration>
-            </plugin>
-
-            <!-- This plugin only works for Jetty 7.x and 8.x -->
-            <!-- http://wiki.eclipse.org/Jetty/Feature/Jetty_Maven_Plugin -->
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
-                <configuration>
-                    <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>${jetty.http.port}</port>
-                            <maxIdleTime>3600000</maxIdleTime>
-                        </connector>
-                    </connectors>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <webApp>
-                        <contextPath>/${project.build.finalName}</contextPath>
-                        <jettyEnvXml>src/main/webapp-jetty/WEB-INF/jetty-env.xml</jettyEnvXml>
-                    </webApp>
-                    <contextXml>src/main/webapp-jetty/WEB-INF/jetty-context.xml</contextXml>
-                    <!-- if you don't want to use war:inplace, use this path instead -->
-                    <!--
-                       <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
-                    -->
                 </configuration>
             </plugin>
 
@@ -438,12 +241,6 @@
     </build>
 
     <properties>
-        <jetty.http.port>9090</jetty.http.port>
-        <jetty.debug.port>9190</jetty.debug.port>
-        <tomcat.http.port>8080</tomcat.http.port>
-        <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
-        <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
-
         <node1.contextPath>http://127.0.1.1:8080/weld-numberguess</node1.contextPath>
         <node2.contextPath>http://127.0.2.1:8080/weld-numberguess</node2.contextPath>
     </properties>
