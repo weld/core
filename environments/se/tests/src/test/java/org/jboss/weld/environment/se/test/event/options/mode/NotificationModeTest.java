@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.event.options.parallel;
+package org.jboss.weld.environment.se.test.event.options.mode;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -38,8 +39,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.event.NotificationOptionKeys;
-import org.jboss.weld.event.NotificationOptionKeys.NotificationMode;
+import org.jboss.weld.events.WeldNotificationOptions;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,12 +49,12 @@ import org.junit.runner.RunWith;
  * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
-public class ParallelNotificationModeTest {
+public class NotificationModeTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ParallelNotificationModeTest.class))
-                .addPackage(ParallelNotificationModeTest.class.getPackage())).build();
+        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotificationModeTest.class))
+                .addPackage(NotificationModeTest.class.getPackage())).build();
     }
 
     @Test
@@ -62,8 +62,9 @@ public class ParallelNotificationModeTest {
         try (WeldContainer container = createWeld()) {
             BlockingQueue<Message> synchronizer = new LinkedBlockingQueue<>();
             Set<String> threadNames = new CopyOnWriteArraySet<>();
-            container.event().select(Message.class).fireAsync(() -> threadNames.add(Thread.currentThread().getName()),
-                    NotificationOptions.of(NotificationOptionKeys.MODE, NotificationMode.PARALLEL)).thenAccept(synchronizer::add);
+            container.event().select(Message.class)
+                    .fireAsync(() -> threadNames.add(Thread.currentThread().getName()), WeldNotificationOptions.withParallelMode())
+                    .thenAccept(synchronizer::add);
             Message message = synchronizer.poll(2, TimeUnit.SECONDS);
             assertNotNull(message);
             // Eeach observer was notified using a different thread
@@ -76,18 +77,31 @@ public class ParallelNotificationModeTest {
         try (WeldContainer container = createWeld()) {
             BlockingQueue<Throwable> synchronizer = new LinkedBlockingQueue<>();
             container.event().select(Message.class).fireAsync(() -> {
-                throw new IllegalStateException(ParallelNotificationModeTest.class.getName());
-            }, NotificationOptions.of(NotificationOptionKeys.MODE, NotificationMode.PARALLEL))
-                    .whenComplete((event, throwable) -> synchronizer.add(throwable));
+                throw new IllegalStateException(NotificationModeTest.class.getName());
+            }, WeldNotificationOptions.withParallelMode()).whenComplete((event, throwable) -> synchronizer.add(throwable));
 
             Throwable materializedThrowable = synchronizer.poll(2, TimeUnit.SECONDS);
             assertTrue(materializedThrowable instanceof CompletionException);
             Throwable[] suppressed = ((CompletionException) materializedThrowable).getSuppressed();
             assertEquals(2, suppressed.length);
             assertTrue(suppressed[0] instanceof IllegalStateException);
-            assertEquals(ParallelNotificationModeTest.class.getName(), suppressed[0].getMessage());
+            assertEquals(NotificationModeTest.class.getName(), suppressed[0].getMessage());
             assertTrue(suppressed[1] instanceof IllegalStateException);
-            assertEquals(ParallelNotificationModeTest.class.getName(), suppressed[1].getMessage());
+            assertEquals(NotificationModeTest.class.getName(), suppressed[1].getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidMode() throws InterruptedException {
+        Set<String> foos = new CopyOnWriteArraySet<>();
+        try (WeldContainer container = createWeld()) {
+            try {
+                container.event().select(Message.class).fireAsync(() -> foos.add("bar"), NotificationOptions.of(WeldNotificationOptions.MODE, "unsupported"));
+                fail("Notification should have failed ");
+            } catch (IllegalArgumentException expected) {
+            }
+            // Assert that observers were not notified
+            assertTrue(foos.isEmpty());
         }
     }
 

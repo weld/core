@@ -43,8 +43,10 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
-import org.jboss.weld.event.NotificationOptionKeys.NotificationMode;
+import org.jboss.weld.events.WeldNotificationOptions;
+import org.jboss.weld.events.WeldNotificationOptions.NotificationMode;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
+import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.resolution.QualifierInstance;
@@ -320,11 +322,14 @@ public class ObserverNotifier {
         if (observers.isEmpty()) {
             return AsyncEventDeliveryStage.completed(event, executor);
         }
+        // We should always initialize and validate all notification options first
+        final NotificationMode mode = initMode(options.get(WeldNotificationOptions.MODE));
+
         final SecurityContext securityContext = securityServices.getSecurityContext();
         final ObserverExceptionHandler exceptionHandler;
         CompletableFuture<U> completableFuture;
 
-        if (observers.size() > 1 && NotificationMode.PARALLEL.equals(NotificationMode.of(options.get(NotificationOptionKeys.MODE)))) {
+        if (observers.size() > 1 && NotificationMode.PARALLEL.equals(mode)) {
             // Attempt to notify async observers in parallel
             exceptionHandler = new CollectingExceptionHandler(new CopyOnWriteArrayList<>());
             List<CompletableFuture<T>> completableFutures = new ArrayList<>(observers.size());
@@ -350,6 +355,17 @@ public class ObserverNotifier {
         // TODO if timeout set then wrap the completableFuture
 
         return new AsyncEventDeliveryStage<>(completableFuture, executor);
+    }
+
+    private NotificationMode initMode(Object value) {
+        if (value != null) {
+            NotificationMode mode = NotificationMode.of(value);
+            if (mode == null) {
+                throw EventLogger.LOG.invalidNotificationMode(value);
+            }
+            return mode;
+        }
+        return null;
     }
 
     private <T, U extends T> void notifyAsyncObserver(ObserverMethod<? super T> observer, U event, EventMetadata metadata,
