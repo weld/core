@@ -470,7 +470,7 @@ consists of two classes: `Weld` and `WeldContainer`.
 [source.JAVA, java]
 ---------------------------------------------------------------------------------
 /** A builder used to bootsrap a Weld SE container. */
-public class Weld
+public class Weld extends SeContainerInitializer implements ContainerInstanceFactory
 {
 
    /** Boots Weld and creates and returns a WeldContainer instance, through which
@@ -486,7 +486,7 @@ public class Weld
 [source.JAVA, java]
 ---------------------------------------------------------------
 /** Represents a Weld SE container. */
-public class WeldContainer implements javax.enterprise.inject.Instance<Object>
+public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable, ContainerInstance, SeContainer
 {
 
    /** Provides access to all events within the application. */
