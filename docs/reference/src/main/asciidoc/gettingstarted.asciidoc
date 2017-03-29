@@ -172,32 +172,16 @@ of WildFly (or Apache Tomcat).
 Next, make sure the `GLASSFISH_HOME` environment variable is set to
 point to the GlassFish installation.
 
-Now switch to the example directory again and create a new GlassFish
-domain for the example.
+Now switch to the `GLASSFISH_HOME` directory and deploy the example.
 
 [source, console]
 ------------------------------
-$> cd examples/jsf/numberguess
-$> mvn glassfish:create-domain
+$> ./bin/asadmin
+asadmin> deploy /path/examples/jsf/numberguess/target/weld-numberguess.war
 ------------------------------
-
-You are now ready to deploy the example by running:
-
-[source, console]
--------------------------------
-$> mvn package glassfish:deploy
--------------------------------
 
 Once the command completes the application is available at
 http://localhost:7070/weld-numberguess
-
-The example is deployed using the `maven-glassfish-plugin`. For more
-information about the plugin see the
-http://maven-glassfish-plugin.java.net/[plugin documentation]
-
-There are alternative ways of,deploying applications to GlassFish either
-by using the http://localhost:4848[GlassFish Admin Console] or the
-`asadmin` command.
 
 The reason the same artifact can be deployed to both WildFly and
 GlassFish, without any modifications, is because all of the features
@@ -221,13 +205,13 @@ your application might require some additional configuration as well
 (see <<_tomcat>> and <<_jetty>> for more info).
 
 Let's give the Weld servlet extension a spin on Apache Tomcat. First,
-you'll need to download Tomcat 7.0.50 or later from
-http://tomcat.apache.org/download-70.cgi[tomcat.apache.org] and extract
+you'll need to download Tomcat 8.0.42 or later from
+http://tomcat.apache.org/download-80.cgi[tomcat.apache.org] and extract
 it.
 
 [source, console]
 ---------------------------------
-$> unzip apache-tomcat-7.0.53.zip
+$> unzip apache-tomcat-8.0.42.zip
 ---------------------------------
 
 The Maven plugin communicates with Tomcat over HTTP, so it doesn't care
@@ -237,16 +221,7 @@ hostname of localhost and port `8080`. The `readme.txt` file in the
 example directory has information about how to modify the Maven settings
 to accommodate a different setup.
 
-To allow Maven to communicate with Tomcat over HTTP, edit the
-`conf/tomcat-users.xml` file in your Tomcat installation. For Tomcat 7
-and higher add the following line:
-
-[source.XML, xml]
------------------------------------------------------------
-<user username="admin" password="" roles="manager-script"/>
------------------------------------------------------------
-
-Next, start Tomcat. You can either start Tomcat from a Linux shell:
+You can either start Tomcat from a Linux shell:
 
 [source, console]
 ------------------------------
@@ -264,116 +239,18 @@ $> start
 
 or you can start the server using an IDE, like Eclipse.
 
-Now you're ready to deploy the numberguess example to Tomcat!
-
 Change to the `examples/jsf/numberguess` directory again and run the
 following Maven command:
 
 [source, console]
 ---------------------------------------------------------
 $> cd examples/jsf/numberguess
-$> mvn clean compile war:exploded tomcat7:deploy -Ptomcat
+$> mvn clean package -Ptomcat
 ---------------------------------------------------------
 
-Once the application is deployed, you can redeploy it using this
-command:
+Now you're ready to deploy the numberguess example to Tomcat!
 
 [source, console]
---------------------------------
-$> mvn tomcat7:redeploy -Ptomcat
---------------------------------
-
-The `-Ptomcat` argument activates the `tomcat` profile defined in the
-Maven POM (`pom.xml`). Among other things, this profile activates the
-Tomcat plugin.
-
-Rather than shipping the container off to a standalone Tomcat
-installation, you can also execute the application in an embedded Tomcat
-6 container:
-
-[source, console]
----------------------------------------
-$> mvn war:inplace tomcat7:run -Ptomcat
----------------------------------------
-
-The advantage of using the embedded server is that changes to assets in
-`src/main/webapp` take effect immediately. If a change to a webapp
-configuration file is made, the application may automatically redeploy
-(depending on the plugin configuration). If you make a change to a
-classpath resource, you need to execute a build:
-
-[source, console]
------------------------------------
-$> mvn compile war:inplace -Ptomcat
------------------------------------
-
-Finally, you can run the functional tests:
-
-[source, console]
------------------------------------------------------
-$> mvn verify -Darquillian=tomcat-embedded-7 -Ptomcat
------------------------------------------------------
-
-There are several other Maven goals that you can use if you are hacking
-on the example, which are documented in the example's `README.md` file.
-
-=== Deploying to Jetty
-
-WARNING: Jetty Maven plugin is temporarily unsupported in Weld examples.
-
-If you've read through the entire Tomcat section, then you're all ready
-to go. The Maven build parallels the embedded Tomcat deployment. If not,
-don't worry. We'll still go over everything that you need to know again
-in this section.
-
-The Maven POM (`pom.xml`) includes a profile named `jetty` that
-activates the Maven Jetty plugin, which you can use to start Jetty in
-embedded mode and deploy the application in place. You don't need
-anything else installed except to have the Maven command (`mvn`) on your
-path. The rest will be downloaded from the internet when the build is
-run.
-
-To run the `weld-numberguess` example on Jetty, switch to the example
-directory and execute the `inplace` goal of the Maven war plugin
-followed by the `run` goal of the Maven Jetty plugin with the `jetty`
-profile enabled, as follows:
-
-[source, console]
-------------------------------------
-$> cd examples/jsf/numberguess
-$> mvn war:inplace jetty:run -Pjetty
-------------------------------------
-
-The log output of Jetty will be shown in the console. Once Jetty reports
-that the application has deployed, you can access it at the following
-local URL: http://localhost:9090/weld-numberguess. The port is defined
-in the Maven Jetty plugin configuration within the `jetty` profile.
-
-Any changes to assets in `src/main/webapp` take effect immediately. If a
-change to a webapp configuration file is made, the application may
-automatically redeploy. The redeploy behavior can be fined-tuned in the
-plugin configuration. If you make a change to a classpath resource, you
-need to execute a build and the `inplace` goal of the Maven war plugin,
-again with the `jetty` profile enabled.
-
-[source, console]
-----------------------------------
-$> mvn compile war:inplace -Pjetty
-----------------------------------
-
-The `war:inplace` goal copies the compiled classes and jars inside
-`src/main/webapp`, under `WEB-INF/classes` and `WEB-INF/lib`,
-respectively, mixing source and compiled files. However, the build does
-work around these temporary files by excluding them from the packaged
-war and cleaning them during the Maven clean phase.
-
-Finally, you can run the functional tests:
-
-[source, console]
----------------------------------------------------
-$> mvn verify -Darquillian=jetty-embedded-7 -Pjetty
----------------------------------------------------
-
-Now that you have gotten the starter applications deployed on the server
-of your choice, you probably want to know a little bit about how they
-actually work.
+---------------------------------------------------------
+$> cp examples/jsf/numberguess/target/weld-numberguess.war apache-tomcat/webapps/
+---------------------------------------------------------

@@ -67,11 +67,5 @@ The` jsf/numberguess` example can also be tested in a cluster. Follow these step
 
         -Dnode1.contextPath=http://127.0.1.1:8080/weld-numberguess -Dnode2.contextPath=http://127.0.2.1:8080/weld-numberguess
 
-The `jsf/numberguess` and `jsf/permalink` examples can be also tested with Tomcat and Jetty embedded containers. The following command will execute functional tests with embedded Tomcat container:
 
-    mvn -Ptomcat -Darquillian=tomcat-embedded-6 clean verify 
-
-The following command will execute functional tests with embedded Jetty container:
-
-    mvn -Pjetty -Darquillian=jetty-embedded-7 clean verify
 
