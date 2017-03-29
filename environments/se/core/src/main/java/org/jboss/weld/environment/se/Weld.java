@@ -47,6 +47,7 @@ import java.util.UUID;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.Vetoed;
@@ -93,6 +94,7 @@ import org.jboss.weld.security.GetClassLoaderAction;
 import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.ServiceLoader;
+import org.jboss.weld.util.Services;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
@@ -242,6 +244,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     private ResourceLoader resourceLoader;
 
+    private final Map<Class<? extends Service>, Service> additionalServices;
+
     public Weld() {
         this(null);
     }
@@ -264,6 +268,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         this.packages = new HashSet<PackInfo>();
         this.containerLifecycleObservers = new LinkedList<>();
         this.resourceLoader = new WeldResourceLoader();
+        this.additionalServices = new HashMap<>();
     }
 
     /**
@@ -632,7 +637,31 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Reset the synthetic bean archive (bean classes and enablement), explicitly added extensions and custom beans added via {@link #addBean()}.
+     * Register per-deployment services which are shared across the entire application.
+     * <p>
+     * Weld uses services to communicate with its environment, e.g. {@link org.jboss.weld.manager.api.ExecutorServices} or
+     * {@link org.jboss.weld.transaction.spi.TransactionServices}.
+     * </p>
+     * <p>
+     * Service implementation may specify their priority using {@link Priority}. Services with higher priority have precedence. Services that do not specify
+     * priority have the default priority of 4500.
+     * </p>
+     *
+     * @param services
+     * @return self
+     * @see Service
+     */
+    public Weld addServices(Service... services) {
+        for (Service service : services) {
+            for (Class<? extends Service> serviceInterface : Services.identifyServiceInterfaces(service.getClass(), new HashSet<>())) {
+                additionalServices.put(serviceInterface, service);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Reset the synthetic bean archive (bean classes and enablement), explicitly added extensions, services and container lifecycle observers.
      *
      * @return self
      */
@@ -644,6 +673,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         enabledInterceptors.clear();
         enabledDecorators.clear();
         extensions.clear();
+        containerLifecycleObservers.clear();
+        additionalServices.clear();
         return this;
     }
 
@@ -816,7 +847,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final Deployment deployment;
         final Set<WeldBeanDeploymentArchive> beanDeploymentArchives = new HashSet<WeldBeanDeploymentArchive>();
-        final Map<Class<? extends Service>, Service> additionalServices = new HashMap<>();
+        final Map<Class<? extends Service>, Service> additionalServices = new HashMap<>(this.additionalServices);
 
         if (discoveryEnabled) {
             DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
@@ -863,7 +894,10 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             CommonLogger.LOG.archiveIsolationDisabled();
         }
 
-        deployment.getServices().addAll(additionalServices.entrySet());
+        // Register additional services if a service with higher priority not present
+        for (Entry<Class<? extends Service>, Service> entry : additionalServices.entrySet()) {
+            Services.put(deployment.getServices(), entry.getKey(), entry.getValue());
+        }
         return deployment;
     }
 
