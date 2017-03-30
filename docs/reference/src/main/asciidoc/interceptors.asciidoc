@@ -169,11 +169,7 @@ It gets quite tricky when used along with interceptors annotated with
 interceptors enabled using `beans.xml`, the lower priority values are
 called first.
 
-NOTE: Having an interceptor enabled by `@Priority` and in the same time listed
-in `beans.xml` leads to a non-portable behaviour! This combination of enablement 
-should therefore be avoided in order to maintain consistent behaviour across 
-different CDI implementations.
-As for Weld, such interceptor is only invoked once in the `@Priority part of the 
+NOTE: An interceptor enabled by `@Priority` and in the same time listed in beans.xml is only invoked once in the `@Priority`  part of the
 invocation chain. E.g. the enablement via `beans.xml` will be ignored.
 
 === Interceptor bindings with members

@@ -44,11 +44,18 @@ public @interface Updated {}
 === Event observers
 
 An _observer method_ is a method of a bean with a parameter annotated
-`@Observes`.
+`@Observes` or `@ObservesAsync`.
 
 [source.JAVA, java]
 -------------------------------------------------------------------
 public void onAnyDocumentEvent(@Observes Document document) { ... }
+-------------------------------------------------------------------
+
+or in asynchronous version
+
+[source.JAVA, java]
+-------------------------------------------------------------------
+public void onAnyDocumentEvent(@ObservesAsync Document document) { ... }
 -------------------------------------------------------------------
 
 The annotated parameter is called the _event parameter_. The type of the
@@ -84,7 +91,7 @@ public void afterDocumentUpdate(@Observes @Updated Document document, User user)
 
 === Event producers
 
-Event producers fire events using an instance of the parameterized
+Event producers fire events either synchronously or asynchronously using an instance of the parameterized
 `Event` interface. An instance of this interface is obtained by
 injection:
 
@@ -93,7 +100,8 @@ injection:
 @Inject @Any Event<Document> documentEvent;
 -------------------------------------------
 
-A producer raises events by calling the `fire()` method of the `Event`
+==== Synchronous event producers
+A producer raises synchronous events by calling the `fire()` method of the `Event`
 interface, passing the event object:
 
 [source.JAVA, java]
@@ -101,17 +109,60 @@ interface, passing the event object:
 documentEvent.fire(document);
 -----------------------------
 
-This particular event will be delivered to every observer method that:
+This particular event will only be delivered to synchronous observer method that:
 
 * has an event parameter to which the event object (the `Document`) is
 assignable, and
 * specifies no qualifiers.
 
-The container simply calls all the observer methods, passing the event
+The container simply calls all the synchronous observer methods, passing the event
 object as the value of the event parameter. If any observer method
 throws an exception, the container stops calling observer methods, and
 the exception is rethrown by the `fire()` method.
 
+==== Asynchronous event producers
+A producer raises asynchronous events by calling the `fireAsync()` method of the `Event`
+interface, passing the event object:
+
+[source.JAVA, java]
+-----------------------------
+documentEvent.fireAsync(document);
+-----------------------------
+
+This particular event will only be delivered to asynchronous observer method that:
+
+* has an event parameter to which the event object (the `Document`) is
+assignable, and
+* specifies no qualifiers.
+
+`fireAsync` method returns immediately and all the resolved asynchronous observers are notified in one or more different threads.
+If any observer method throws an exception, the container will suppress it and notify remaining observers.
+The resulting `CompletionStage` will then finish exceptionally with `CompletionException` containing all previously suppressed exceptions.
+
+===== Notification options
+
+The `Event.fireAsync()` method may be called with a `NotificationOptions` parameter to configure the notification of asynchronous observer methods , e.g. to specify an `Executor` object to be used for asynchronous delivery.
+Weld defines the following non-portable notification options (see `WeldNotificationOptions`):
+
+[cols=",,",options="header",]
+|=======================================================================
+|Key |Value type|Description
+|`weld.async.notification.mode` |`String`|The notification mode. Possible values are: `SERIAL` (default), `PARALLEL`. See also <<notification-modes-table,Notification modes>>.
+|`weld.async.notification.timeout` |`Long` or `String` which can be parsed as a long|The notification timeout (in milliseconds) after which the returned completion stage must be completed. If the time expires the stage is completed exceptionally with a `CompletionException` holding the `java.util.concurrent.TimeoutException` as its cause. The expiration does not abort the notification of the observers.
+|=======================================================================
+
+
+NOTE: It is also possible to use the key constants and static convenient methods declared on `org.jboss.weld.events.WeldNotificationOptions` from Weld API, e.g. `WeldNotificationOptions.TIMEOUT` or `WeldNotificationOptions.withParallelMode()`.
+
+.[[notification-modes-table]]Notification modes
+[cols=",",options="header",]
+|=======================================================================
+|Mode|Description
+|`SERIAL` |Asynchronous observers are notified serially in a single worker thread (default behavior).
+|`PARALLEL` |Asynchronous observers are notified in parallel assuming that the `java.util.concurrent.Executor` used supports parallel execution.
+|=======================================================================
+
+==== Applying qualifiers to event
 Qualifiers can be applied to an event in one of two ways:
 
 * by annotating the `Event` injection point, or
@@ -367,26 +418,3 @@ public class Catalog {
    }
 }
 -----------------------------------------------------------------------------------
-
-=== Notification options
-
-The `Event.fireAsync()` method may be called with a `NotificationOptions` parameter to configure the notification of asynchronous observer methods , e.g. to specify an `Executor` object to be used for asynchronous delivery.
-Weld defines the following non-portable notification options:
-
-[cols=",,",options="header",]
-|=======================================================================
-|Key |Value type|Description
-|`weld.async.notification.mode` |`String`|The notification mode. Possible values are: `SERIAL` (default), `PARALLEL`. See also <<notification-modes-table,Notification modes>>.
-|`weld.async.notification.timeout` |`Long` or `String` which can be parsed as a long|The notification timeout (in milliseconds) after which the returned completion stage must be completed. If the time expires the stage is completed exceptionally with a `CompletionException` holding the `java.util.concurrent.TimeoutException` as its cause. The expiration does not abort the notification of the observers.
-|=======================================================================
-
-
-NOTE: It is also possible to use the key constants and static convenient methods declared on `org.jboss.weld.events.WeldNotificationOptions` from Weld API, e.g. `WeldNotificationOptions.TIMEOUT` or `WeldNotificationOptions.withParallelMode()`.
-
-.[[notification-modes-table]]Notification modes
-[cols=",",options="header",]
-|=======================================================================
-|Mode|Description
-|`SERIAL` |Asynchronous observers are notified serially in a single worker thread (default behavior).
-|`PARALLEL` |Asynchronous observers are notified in parallel assuming that the `java.util.concurrent.Executor` used supports parallel execution.
-|=======================================================================
