@@ -33,12 +33,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.events.WeldNotificationOptions;
-import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -114,7 +111,7 @@ public class NotificationTimeoutTest {
     @Test
     public void testBadTimeoutInputThrowsException() throws InterruptedException {
         SUCCESSION_OF_EVENTS.clear();
-        CountDownLatch latch = new CountDownLatch(0);
+        CountDownLatch latch = new CountDownLatch(1);
         try (WeldContainer container = new Weld().initialize()) {
             container.event().select(CountDownLatch.class)
                 .fireAsync(latch, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, 1.2345));
@@ -122,6 +119,7 @@ public class NotificationTimeoutTest {
         } catch (IllegalArgumentException iae) {
             // expected, should throw IAE
             // assert that no observers were notified
+            Assert.assertFalse(latch.await(500, TimeUnit.MILLISECONDS));
             Assert.assertTrue(SUCCESSION_OF_EVENTS.isEmpty());
         }
     }
@@ -178,11 +176,16 @@ public class NotificationTimeoutTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testCustomExecutorServiceNotImplementingTimerExecutor() {
+    public void testCustomExecutorServiceNotImplementingTimerExecutor() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         Weld weld = new Weld().disableDiscovery().addBeanClasses(HardworkingObserver.class).addServices(new IncompleteCustomExecutorServices());
         try (WeldContainer container = weld.initialize()) {
-            container.event().select(CountDownLatch.class)
-                .fireAsync(new CountDownLatch(0), NotificationOptions.of(WeldNotificationOptions.TIMEOUT, "2000"));
+            try {
+                container.event().select(CountDownLatch.class).fireAsync(latch, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, "2000"));
+            } catch (IllegalArgumentException e) {
+                // expected, should throw IAE
+                Assert.assertFalse(latch.await(500, TimeUnit.MILLISECONDS));
+            }
         }
     }
 

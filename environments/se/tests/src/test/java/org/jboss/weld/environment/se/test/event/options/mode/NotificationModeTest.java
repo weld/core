@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se.test.event.options.mode;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -93,15 +95,15 @@ public class NotificationModeTest {
 
     @Test
     public void testInvalidMode() throws InterruptedException {
-        Set<String> foos = new CopyOnWriteArraySet<>();
+        CountDownLatch latch = new CountDownLatch(1);
         try (WeldContainer container = createWeld()) {
             try {
-                container.event().select(Message.class).fireAsync(() -> foos.add("bar"), NotificationOptions.of(WeldNotificationOptions.MODE, "unsupported"));
+                container.event().select(Message.class).fireAsync(() -> latch.countDown(), NotificationOptions.of(WeldNotificationOptions.MODE, "unsupported"));
                 fail("Notification should have failed ");
             } catch (IllegalArgumentException expected) {
             }
             // Assert that observers were not notified
-            assertTrue(foos.isEmpty());
+            assertFalse(latch.await(500, TimeUnit.MILLISECONDS));
         }
     }
 

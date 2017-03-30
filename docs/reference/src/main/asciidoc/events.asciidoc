@@ -376,13 +376,17 @@ Weld defines the following non-portable notification options:
 [cols=",,",options="header",]
 |=======================================================================
 |Key |Value type|Description
-|`org.jboss.weld.notification.mode` |`String`|The notification mode. Possible values are: `SERIAL` (default), `PARALLEL`. See also <<notification-modes-table,Notification modes>>.
+|`weld.async.notification.mode` |`String`|The notification mode. Possible values are: `SERIAL` (default), `PARALLEL`. See also <<notification-modes-table,Notification modes>>.
+|`weld.async.notification.timeout` |`Long` or `String` which can be parsed as a long|The notification timeout (in milliseconds) after which the returned completion stage must be completed. If the time expires the stage is completed exceptionally with a `CompletionException` holding the `java.util.concurrent.TimeoutException` as its cause. The expiration does not abort the notification of the observers.
 |=======================================================================
+
+
+NOTE: It is also possible to use the key constants and static convenient methods declared on `org.jboss.weld.events.WeldNotificationOptions` from Weld API, e.g. `WeldNotificationOptions.TIMEOUT` or `WeldNotificationOptions.withParallelMode()`.
 
 .[[notification-modes-table]]Notification modes
 [cols=",",options="header",]
 |=======================================================================
 |Mode|Description
-|`SERIAL` |Asynchronous observers are notified serially in a single worker thread.
+|`SERIAL` |Asynchronous observers are notified serially in a single worker thread (default behavior).
 |`PARALLEL` |Asynchronous observers are notified in parallel assuming that the `java.util.concurrent.Executor` used supports parallel execution.
 |=======================================================================
