@@ -5,7 +5,7 @@ Weld comes with a number of examples. We recommend you start with
 `examples/jsf/numberguess` and `examples/jsf/translator`. Numberguess is
 a web (war) example containing only non-transactional managed beans.
 This example can be run on a wide range of servers, including WildFly ,
-GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant
+GlassFish, Apache Tomcat, Jetty, and any compliant
 Java EE 7 container. Translator is an enterprise (ear) example that
 contains session beans. This example must be run on WildFly 8 or better,
 GlassFish 4 or better, or any compliant Java EE 7 container.
@@ -20,8 +20,8 @@ following:
 
 * the latest release of Weld, which contains the examples
 * Maven 3, to build and deploy the examples
-* a supported runtime environment (minimum versions shown)
-** WildFly 8.0.0.Final,
+* optionally, a supported runtime environment (minimum versions shown)
+** WildFly 8.0.0.Final (10.1.0.Final recommended),
 ** GlassFish 4.0,
 ** Apache Tomcat 7 or better (war example only), or
 ** Jetty 9 or better (war example only)
@@ -33,12 +33,24 @@ You can also deploy the generated artifact (war or ear) to any other
 container that supports Java EE 7, such as GlassFish 4.
 
 The sections below cover the steps for deploying with Maven in detail.
-Let's start with WildFly.
+
+=== First try
+
+If you simply want to run the numberguess example without the requirement of a specific runtime you can start with the following commands:
+
+[source, console]
+------------------------------
+$> cd examples/jsf/numberguess
+$> mvn wildfly:run
+------------------------------
+
+The https://docs.jboss.org/wildfly/plugins/maven/latest/[Maven WildFly plugin] will run WildFly and deploy the example and the server will be automatically downloaded in the `target` directory.
+The numberguess application is available at http://localhost:8080/weld-numberguess.
 
 === Deploying to WildFly
 
-To deploy the examples to WildFly, you'll need
-http://wildfly.org/downloads/[WildFly 8.0.0.Final] or above. The good
+To deploy the examples to a WildFly instance, you'll need to download
+http://wildfly.org/downloads/[WildFly] first. The good
 news is that there are no additional modifications you have to make to
 the server. It's ready to go!
 
@@ -50,8 +62,8 @@ installation directory, or `JBOSS_HOME`.
 
 [source, console]
 --------------------------------
-$> unzip wildfly-8.0.0.Final.zip
-$> mv wildfly-8.*/ wildfly-8
+$> unzip wildfly-10.1.0.Final.zip
+$> mv wildfly-10.*/ wildfly-10
 --------------------------------
 
 In order for the build scripts to know where to deploy the example, you
@@ -60,9 +72,9 @@ have to tell them where to find your WildFly installation. Set the
 e.g.:
 
 [source, console]
----------------------------------------
-$> export JBOSS_HOME=/path/to/wildfly-8
----------------------------------------
+-------------------------------------
+$> export JBOSS_HOME=/path/to/wildfly
+-------------------------------------
 
 You're now ready to run your first example!
 
@@ -72,7 +84,7 @@ Switch to the `examples/jsf/numberguess` directory and execute the Maven
 [source, console]
 ------------------------------
 $> cd examples/jsf/numberguess
-$> mvn jboss-as:run
+$> mvn wildfly:deploy
 ------------------------------
 
 NOTE: If you are using Eclipse, you should seriously consider installing the
