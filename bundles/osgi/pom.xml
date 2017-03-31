@@ -71,28 +71,36 @@
                             <!-- Weld API and SPI -->
                             org.jboss.weld.*.api.*;
                             org.jboss.weld.*.spi.*;
+                            org.jboss.weld.bootstrap.event;
+                            org.jboss.weld.context.*;
+                            org.jboss.weld.events;
+                            org.jboss.weld.inject;
+                            org.jboss.weld.interceptor;
 
+                            <!-- Probe development tool -->
+                            org.jboss.weld.probe;
+
+                            <!-- Weld modules -->
+                            org.jboss.weld.module.*;
+
+                            <!-- Internal packages -->
                             org.jboss.weld;
                             org.jboss.weld.bean;
                             org.jboss.weld.bean.builtin;
                             org.jboss.weld.bean.proxy;
                             org.jboss.weld.bootstrap;
                             org.jboss.weld.config;
-                            org.jboss.weld.context;
-                            org.jboss.weld.module.ejb;
-                            org.jboss.weld.module.web.el;
                             org.jboss.weld.event;
                             org.jboss.weld.exceptions;
                             org.jboss.weld.injection;
                             org.jboss.weld.interceptor.proxy;
                             org.jboss.weld.interceptor.util.proxy;
-                            org.jboss.weld.module.jsf;
+                            org.jboss.weld.logging;
                             org.jboss.weld.manager;
-                            org.jboss.weld.module.web.servlet;
+                            org.jboss.weld.security;
                             org.jboss.weld.util;
                             org.jboss.weld.xml;
-                            org.jboss.weld.security;
-                            org.jboss.weld.probe;
+
                             version=${osgi.version}
                         </_exportcontents>
 
