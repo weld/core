@@ -106,7 +106,7 @@
     <properties>
         <jsf.version>2.1</jsf.version>
         <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>1.0.1.Final</wildfly.plugin.version>
+        <wildfly.plugin.version>1.1.0.Final</wildfly.plugin.version>
         <uel.version>2.2</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
