@@ -129,42 +129,11 @@ the session scope. This error will _not_ be detected by the container,
 so please take extra care when returning bean instances from producer
 methods!
 
-There's at least three ways we could go about fixing this bug. We could
+There are at least two ways we could go to fix this bug. We could
 change the scope of the `CreditCardPaymentStrategy` implementation, but
 this would affect other clients of that bean. A better option would be
 to change the scope of the producer method to `@Dependent` or
 `@RequestScoped`.
-
-But a more common solution is to use the special `@New` qualifier
-annotation.
-
-=== Use of `@New` with producer methods
-
-Consider the following producer method:
-
-[source.JAVA, java]
-------------------------------------------------------------------------------
-@Produces @Preferred @SessionScoped
-public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
-                                          @New CheckPaymentStrategy cps,
-                                          @New PayPalPaymentStrategy ppps) {
-   switch (paymentStrategy) {
-      case CREDIT_CARD: return ccps;
-      case CHEQUE: return cps;
-      case PAYPAL: return ppps;
-      default: return null;
-   }
-}
-------------------------------------------------------------------------------
-
-Then a new _dependent_ instance of `CreditCardPaymentStrategy` will be
-created, passed to the producer method, returned by the producer method
-and finally bound to the session context. The dependent object won't be
-destroyed until the `Preferences` object is destroyed, at the end of the
-session.
-
-WARNING: The @New qualifier was deprecated in CDI 1.1. CDI applications are
-encouraged to inject @Dependent scoped beans instead.
 
 === Disposer methods
 

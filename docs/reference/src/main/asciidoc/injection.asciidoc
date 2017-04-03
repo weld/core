@@ -234,8 +234,7 @@ Whenever a bean or injection point does not explicitly declare a
 qualifier, the container assumes the qualifier `@Default`. From time to
 time, you'll need to declare an injection point without specifying a
 qualifier. There's a qualifier for that too. All beans have the
-qualifier`
-                @Any`. Therefore, by explicitly specifying `@Any` at an
+qualifier `@Any`. Therefore, by explicitly specifying `@Any` at an
 injection point, you suppress the default qualifier, without otherwise
 restricting the beans that are eligible for injection.
 
@@ -335,9 +334,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
 By default, `@Alternative` beans are disabled. We need to _enable_ an
 alternative in the `beans.xml` descriptor of a bean archive to make it
 available for instantiation and injection. However, this activation only
-applies to the beans in that archive. From CDI 1.1 onwards the
-alternative can be enabled for the whole application using `@Priority`
-annotation.
+applies to the beans in that archive.
 
 [source.XML, xml]
 ---------------------------------------------------------------
@@ -351,6 +348,16 @@ annotation.
          <class>org.mycompany.mock.MockPaymentProcessor</class>
    </alternatives>
 </beans>
+---------------------------------------------------------------
+
+From CDI 1.1 onwards the alternative can be enabled for the whole application using `@Priority` annotation.
+
+[source.JAVA, java]
+---------------------------------------------------------------
+@Priority(100) @Alternative @Synchronous @Asynchronous
+public class MockPaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
+}
 ---------------------------------------------------------------
 
 When an ambiguous dependency exists at an injection point, the container
@@ -550,6 +557,12 @@ Annotation qualifier = synchronously ?
       new SynchronousQualifier() : new AsynchronousQualifier();
 PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment);
 ----------------------------------------------------------------------------------
+
+[NOTE]
+====
+Since CDI 2.0, most annotations from `javax.enterprise` package have their `AnnotationLiteral` implementations.
+Therefore, in order to programmatically obtain (for instance) `@Any` annotation, you can simply do `Any.Literal.INSTANCE`.
+====
 
 === The `InjectionPoint` object
 

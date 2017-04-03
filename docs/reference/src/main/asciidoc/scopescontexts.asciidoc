@@ -368,7 +368,7 @@ or any stateful session bean.
 
 Now, if the singleton instance is a simple, immutable, serializable
 object like a string, a number or a date, we probably don't mind too
-much if it gets duplicated via serialization. However, that makes it no
+much if it gets duplicated via serialization. However, that makes it
 stop being a true singleton, and we may as well have just declared it
 with the default scope.
 
@@ -424,47 +424,3 @@ holds a direct reference to its instance.
 
 CDI makes it easy to obtain a dependent instance of a bean, even if the
 bean is already declared as a bean with some other scope type.
-
-=== The `@New` qualifier
-
-The built-in qualifier `@New` allows us to obtain a dependent object of
-a specified class.
-
-[source.JAVA, java]
------------------------------------
-@Inject @New Calculator calculator;
------------------------------------
-
-The class must be a valid managed bean or session bean, but need not be
-an enabled bean.
-
-This works even if `Calculator` is _already_ declared with a different
-scope type, for example:
-
-[source.JAVA, java]
--------------------------------
-@ConversationScoped
-public class Calculator { ... }
--------------------------------
-
-So the following injected attributes each get a different instance of
-`Calculator`:
-
-[source.JAVA, java]
------------------------------------------
-public class PaymentCalc {
-   @Inject Calculator calculator;
-   @Inject @New Calculator newCalculator;
-}
------------------------------------------
-
-The `calculator` field has a conversation-scoped instance of
-`Calculator` injected. The `newCalculator` field has a new instance of
-`Calculator` injected, with a lifecycle that is bound to the owning
-`PaymentCalc`.
-
-This feature is particularly useful with producer methods, as we'll see
-in <<producer_methods>>.
-
-WARNING: The `@New` qualifier was deprecated in CDI 1.1. CDI applications are
-encouraged to inject @Dependent scoped beans instead.
