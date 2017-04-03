@@ -160,7 +160,7 @@
                 <configuration>
                     <includeProjectDependencies>true</includeProjectDependencies>
                     <classpathScope>test</classpathScope>
-                    <mainClass>org.jboss.weld.tests.util.TestClassToHashMapper</mainClass>
+                    <mainClass>org.jboss.weld.tests.TestClassToHashMapper</mainClass>
                 </configuration>
             </plugin>
         </plugins>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.util;
+package org.jboss.weld.tests;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,6 +32,9 @@ import org.jboss.weld.test.util.Utils;
  * install maven phase.
  */
 public class TestClassToHashMapper {
+
+    private TestClassToHashMapper(){
+    }
 
     public static final String TEST_SUFFIX = "Test.java";
     public static final String OUTPUT_FILE_NAME = "test-classes-with-hash.txt";
