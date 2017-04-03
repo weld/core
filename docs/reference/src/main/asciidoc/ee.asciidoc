@@ -266,12 +266,21 @@ later), with the bean-discovery-mode of `annotated`. Weld only discovers
 Java classes with a bean defining annotation within an implicit bean
 archive.
 
-NOTE: Any scope type is a bean defining annotation. If you place a scope type
-on a bean class, then it has a bean defining annotation. See
-http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations[2.5.1.
-Bean defining annotations] to learn more.
+[NOTE]
+====
+The set of bean defining annotations contains:
 
-==== What archive is not a bean archive
+* `@ApplicationScoped`, `@SessionScoped`, `@ConversationScoped` and `@RequestScoped` annotations,
+* all other normal scope types,
+* `@Interceptor` and `@Decorator` annotations,
+* all stereotype annotations (i.e. annotations annotated with `@Stereotype`),
+* and the `@Dependent` scope annotation.
+
+However, `@Singleton` is not a bean defining annotation.
+See http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations[2.5.1. Bean defining annotations] to learn more.
+====
+
+==== Which archive is not a bean archive
 
 Although quite obvious, let's sum it up:
 
@@ -279,6 +288,9 @@ Although quite obvious, let's sum it up:
 class with a _bean defining annotation_,
 * an archive which contains a `beans.xml` file with the
 bean-discovery-mode of `none`.
+
+Actually, there is one more special rule (designed to retain backward compatibility): an archive which contains a portable extension and no `beans.xml` is not a bean archive either.
+However, this is not a very common use case.
 
 NOTE: For compatibility with CDI 1.0, each Java EE product (WildFly,
 GlassFish, etc.) must contain an option to cause an archive to be
