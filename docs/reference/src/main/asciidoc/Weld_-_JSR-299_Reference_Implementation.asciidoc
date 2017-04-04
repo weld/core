@@ -5,11 +5,11 @@
 [preface]
 = A note about naming and nomenclature
 
-Throughout this document, mentions of JSR-299 and JSR-346 appear. JSR is
+Throughout this document, mentions of JSR-299, JSR-346 and JSR-365 appear. JSR is
 a document of a proposed specification used in the Java Community
 Process (JCP). JSRs are somewhat analogous to RFCs used by IETF. JSR-299
 and JSR-346 are the JCP specification names for the 1.0 and 1.1 versions
-of CDI, respectively.
+of CDI, respectively. JSR-365 is the JCP specification name for the CDI 2.0 version.
 
 Shortly before the final draft of JSR-299 was submitted, the
 specification changed its name from "Web Beans" to "Java Contexts and

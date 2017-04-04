@@ -143,7 +143,7 @@ An extension observer method is not allowed to inject any other object.
 CDI 2.0 introduced the Configurators API - a new way to easily configure some parts of the SPI during container lifecycle event notification.
 E.g. to add a qualifier to a bean an extension can observe `ProcessBeanAttributes`, then obtain a configurator instance through `ProcessBeanAttributes.configureBeanAttributes()` and finally use `BeanAttributesConfigurator.addQualifier(Annotation)`.
 No need to wrap/delegate to the original `BeanAttributes`.
-See also chapter http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#configurators[Configurators interfaces] of the CDI specification.
+See also chapter http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#configurators[Configurators interfaces] of the CDI specification.
 
 === The `BeanManager` object
 

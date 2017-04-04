@@ -277,7 +277,7 @@ The set of bean defining annotations contains:
 * and the `@Dependent` scope annotation.
 
 However, `@Singleton` is not a bean defining annotation.
-See http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations[2.5.1. Bean defining annotations] to learn more.
+See http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#bean_defining_annotations[2.5.1. Bean defining annotations] to learn more.
 ====
 
 ==== Which archive is not a bean archive
