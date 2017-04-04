@@ -65,7 +65,7 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
 
     // 2013 used to warn on deprecated org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScope
 
-    @Message(id = 2014, value = "Weld SE container {0} not initialized completely", format = Format.MESSAGE_FORMAT)
-    IllegalStateException weldContainerNotInitializedCompletely(Object id);
+    @Message(id = 2014, value = "Weld SE container with id {0} has not yet validated the deployment - methods for programmatic lookup cannot be used", format = Format.MESSAGE_FORMAT)
+    IllegalStateException weldContainerDeploymentNotValidated(Object id);
 
 }
