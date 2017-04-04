@@ -298,6 +298,8 @@ types). We can choose between alternatives at deployment time by
 _selecting_ an alternative in the CDI deployment descriptor
 `META-INF/beans.xml` of the jar or Java EE module that uses it.
 Different modules can specify that they use different alternatives.
+The other way to enable an alternative is to annotate the bean with
+`@Priority` annotation. This will enable it globally.
 
 We cover alternatives in more detail in <<alternatives>>.
 
@@ -313,7 +315,7 @@ The way that interceptors were defined in Java EE 5 was
 counter-intuitive. You were required to specify the _implementation_ of
 the interceptor directly on the _implementation_ of the EJB, either in
 the `@Interceptors` annotation or in the XML descriptor. You might as
-well just put the interceptor code _in_ the implementation! Second, the
+well just put the interceptor code _in_ the implementation! Furthermore, the
 order in which the interceptors are applied is taken from the order in
 which they are declared in the annotation or the XML descriptor. Perhaps
 this isn't so bad if you're applying the interceptors to a single bean.
@@ -365,6 +367,8 @@ Interceptors are deployment-specific. (We don't need a
 is disabled. We can enable an interceptor using the CDI deployment
 descriptor `META-INF/beans.xml` of the jar or Java EE module. This is
 also where we specify the interceptor ordering.
+Better still, we can use `@Priority` annotation to enable the interceptor
+and define it's ordering at the same time.
 
 We'll discuss interceptors, and their cousins, decorators, in <<interceptors>> and <<decorators>>.
 

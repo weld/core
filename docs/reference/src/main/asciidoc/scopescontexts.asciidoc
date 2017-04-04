@@ -368,7 +368,7 @@ or any stateful session bean.
 
 Now, if the singleton instance is a simple, immutable, serializable
 object like a string, a number or a date, we probably don't mind too
-much if it gets duplicated via serialization. However, that makes it no
+much if it gets duplicated via serialization. However, that makes it
 stop being a true singleton, and we may as well have just declared it
 with the default scope.
 

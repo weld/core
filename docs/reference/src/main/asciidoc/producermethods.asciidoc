@@ -129,7 +129,7 @@ the session scope. This error will _not_ be detected by the container,
 so please take extra care when returning bean instances from producer
 methods!
 
-There's at least three ways we could go about fixing this bug. We could
+There are at least two ways we could go about fixing this bug. We could
 change the scope of the `CreditCardPaymentStrategy` implementation, but
 this would affect other clients of that bean. A better option would be
 to change the scope of the producer method to `@Dependent` or
