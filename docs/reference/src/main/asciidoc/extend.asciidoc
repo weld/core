@@ -76,9 +76,8 @@ events, including:
 * `ProcessInjectionTarget` and `ProcessProducer`
 * `ProcessInjectionPoint`
 * `ProcessBeanAttributes`
-* `ProcessBean`, `ProcessManagedBean`, `ProcessSessionBean`,
-`ProcessProducerMethod` and `ProcessProducerField`
-* `ProcessObserverMethod`
+* `ProcessBean`, `ProcessManagedBean`, `ProcessSessionBean`, `ProcessProducerMethod`, `ProcessProducerField` and `ProcessSyntheticBean`
+* `ProcessObserverMethod` and `ProcessSyntheticObserverMethod`
 * `AfterBeanDiscovery`
 * `AfterDeploymentValidation`
 
@@ -138,54 +137,18 @@ An extension observer method is not allowed to inject any other object.
 
 === The `BeanManager` object
 
-The nerve center for extending CDI is the `BeanManager` object. The
-`BeanManager` interface lets us obtain beans, interceptors, decorators,
-observers and contexts programmatically.
+The nerve center for extending CDI is the `BeanManager` object.
+The `BeanManager` interface provides operations of use to portable extensions, e.g. lets us obtain beans, interceptors, decorators, observers and contexts programmatically.
+Note that some of the methods may not be called before the `AfterBeanDiscovery` event is fired, e.g. `BeanManager.getBeans()`.
+Furthermore, the `BeanManager.getReference()` and `BeanManager.getInjectableReference()` methods may not be called  before the `AfterDeploymentValidation` event is fired.
+See also the javadoc for more details.
+
+Any container lifecycle event observer method can obtain an injected `BeanManager` reference:
 
 [source.JAVA, java]
---------------------------------------------------------------------------------------------------------------------------
-public interface BeanManager {
-   public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx);
-   public Object getInjectableReference(InjectionPoint ij, CreationalContext<?> ctx);
-   public <T> CreationalContext<T> createCreationalContext(Contextual<T> contextual);
-   public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers);
-   public Set<Bean<?>> getBeans(String name);
-   public Bean<?> getPassivationCapableBean(String id);
-   public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans);
-   public void validate(InjectionPoint injectionPoint);
-   public void fireEvent(Object event, Annotation... qualifiers);
-   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... qualifiers);
-   public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers);
-   public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings);
-   public boolean isScope(Class<? extends Annotation> annotationType);
-   public boolean isNormalScope(Class<? extends Annotation> annotationType);
-   public boolean isPassivatingScope(Class<? extends Annotation> annotationType);
-   public boolean isQualifier(Class<? extends Annotation> annotationType);
-   public boolean isInterceptorBinding(Class<? extends Annotation> annotationType);
-   public boolean isStereotype(Class<? extends Annotation> annotationType);
-   public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType);
-   public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype);
-   public boolean areQualifiersEquivalent(Annotation qualifier1, Annotation qualifier2);
-   public boolean areInterceptorBindingsEquivalent(Annotation interceptorBinding1, Annotation interceptorBinding2);
-   public int getQualifierHashCode(Annotation qualifier);
-   public int getInterceptorBindingHashCode(Annotation interceptorBinding);
-   public Context getContext(Class<? extends Annotation> scopeType);
-   public ELResolver getELResolver();
-   public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory);
-   public <T> AnnotatedType<T> createAnnotatedType(Class<T> type);
-   public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type);
-   public <T> InjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> annotatedType);
-   public <X> ProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field, Bean<X> declaringBean);
-   public <X> ProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean);
-   public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type);
-   public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> type);
-   public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass,
-   public <T, X> Bean<T> createBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> producerFactory);
-   public InjectionPoint createInjectionPoint(AnnotatedField<?> field);
-   public InjectionPoint createInjectionPoint(AnnotatedParameter<?> parameter);
-   public <T extends Extension> T getExtension(Class<T> extensionClass);
-}
---------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {};
+----------------------------------------------------------------------------------------
 
 Any bean or other Java EE component which supports injection can obtain
 an instance of `BeanManager` via injection:
@@ -342,93 +305,21 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 public class SecurityManagerExtension implements Extension {
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager bm) {
-
-        //use this to read annotations of the class
-        AnnotatedType<SecurityManager> at = bm.createAnnotatedType(SecurityManager.class);
-
-        //use this to instantiate the class and inject dependencies
-        final InjectionTarget<SecurityManager> it = bm.createInjectionTarget(at);
-
-        abd.addBean( new Bean<SecurityManager>() {
-
-            @Override
-            public Class<?> getBeanClass() {
-                return SecurityManager.class;
-            }
-
-            @Override
-            public Set<InjectionPoint> getInjectionPoints() {
-                return it.getInjectionPoints();
-            }
-
-            @Override
-            public String getName() {
-                return "securityManager";
-            }
-
-            @Override
-            public Set<Annotation> getQualifiers() {
-                Set<Annotation> qualifiers = new HashSet<Annotation>();
-                qualifiers.add( new AnnotationLiteral<Default>() {} );
-                qualifiers.add( new AnnotationLiteral<Any>() {} );
-                return qualifiers;
-            }
-
-            @Override
-            public Class<? extends Annotation> getScope() {
-                return ApplicationScoped.class;
-            }
-
-            @Override
-            public Set<Class<? extends Annotation>> getStereotypes() {
-                return Collections.emptySet();
-            }
-
-            @Override
-            public Set<Type> getTypes() {
-                Set<Type> types = new HashSet<Type>();
-                types.add(SecurityManager.class);
-                types.add(Object.class);
-                return types;
-            }
-
-            @Override
-            public boolean isAlternative() {
-                return false;
-            }
-
-            @Override
-            public boolean isNullable() {
-                return false;
-            }
-
-            @Override
-            public SecurityManager create(CreationalContext<SecurityManager> ctx) {
-                SecurityManager instance = it.produce(ctx);
-                it.inject(instance, ctx);
-                it.postConstruct(instance);
-                return instance;
-            }
-
-            @Override
-            public void destroy(SecurityManager instance,
-                                CreationalContext<SecurityManager> ctx) {
-                it.preDestroy(instance);
-                it.dispose(instance);
-                ctx.release();
-            }
-
-        } );
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager bm) {
+        event.addBean()
+           /* read annotations of the class and create an InjectionTarget used to instantiate the class and inject dependencies */
+           .read(bm.createAnnotatedType(SecurityManager.class))
+           .beanClass(SecurityManager.class)
+           .scope(ApplicationScoped.class)
+           .name("securityManager");
     }
 
 }
 -------------------------------------------------------------------------------------------
 
-But a portable extension can also mess with beans that are discovered
-automatically by the container.
+But a portable extension can also mess with beans that are discovered automatically by the container.
 
-=== Wrapping an `AnnotatedType`
+=== Configuring an `AnnotatedType`
 
 One of the most interesting things that an extension class can do is
 process the annotations of a bean class _before_ the container builds
@@ -437,7 +328,7 @@ its metamodel.
 Let's start with an example of an extension that provides support for
 the use of `@Named` at the package level. The package-level name is used
 to qualify the EL names of all beans defined in that package. The
-portable extension uses the `ProcessAnnotatedType` event to wrap the
+portable extension uses the `ProcessAnnotatedType` event to configure the
 `AnnotatedType` object and override the `value()` of the `@Named`
 annotation.
 
@@ -450,127 +341,28 @@ import java.lang.annotation.Annotation;
 
 public class QualifiedNameExtension implements Extension {
 
-    <X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {
+    <X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> event) {
 
         /* wrap this to override the annotations of the class */
-        final AnnotatedType<X> at = pat.getAnnotatedType();
+        final AnnotatedType<X> at = event.getAnnotatedType();
 
         /* Only wrap AnnotatedTypes for classes with @Named packages */
         Package pkg = at.getJavaClass().getPackage();
-        if ( !pkg.isAnnotationPresent(Named.class) ) {
+        if (pkg == null || !pkg.isAnnotationPresent(Named.class) ) {
             return;
         }
 
-        AnnotatedType<X> wrapped = new AnnotatedType<X>() {
+        String unqualifiedName = "";
+        if (at.isAnnotationPresent(Named.class)) {
+            unqualifiedName = at.getAnnotation(Named.class).value();
+        }
+        if (unqualifiedName.isEmpty()) {
+            unqualifiedName = Introspector.decapitalize(at.getJavaClass().getSimpleName());
+        }
+        final String qualifiedName = pkg.getAnnotation(Named.class).value()
+                            + '_' + unqualifiedName;
 
-            class NamedLiteral extends AnnotationLiteral<Named>
-            implements Named {
-                @Override
-                public String value() {
-                    Package pkg = at.getJavaClass().getPackage();
-
-                    String unqualifiedName = "";
-                    if (at.isAnnotationPresent(Named.class)) {
-                        unqualifiedName = at.getAnnotation(Named.class).value();
-                    }
-
-                    if (unqualifiedName.isEmpty()) {
-                        unqualifiedName = Introspector.decapitalize(at.getJavaClass().getSimpleName());
-                    }
-
-                    final String qualifiedName;
-                    if ( pkg.isAnnotationPresent(Named.class) ) {
-                        qualifiedName = pkg.getAnnotation(Named.class).value()
-                            + '.' + unqualifiedName;
-                    }
-                    else {
-                        qualifiedName = unqualifiedName;
-                    }
-
-                    return qualifiedName;
-                }
-            }
-
-            private final NamedLiteral namedLiteral = new NamedLiteral();
-
-            @Override
-            public Set<AnnotatedConstructor<X>> getConstructors() {
-                return at.getConstructors();
-            }
-
-            @Override
-            public Set<AnnotatedField<? super X>> getFields() {
-                return at.getFields();
-            }
-
-            @Override
-            public Class<X> getJavaClass() {
-                return at.getJavaClass();
-            }
-
-            @Override
-            public Set<AnnotatedMethod<? super X>> getMethods() {
-                return at.getMethods();
-            }
-
-            @Override
-            public <T extends Annotation> T getAnnotation(final Class<T> annType) {
-                if (Named.class.equals(annType)) {
-                    return (T) namedLiteral;
-                }
-                else {
-                    return at.getAnnotation(annType);
-                }
-            }
-
-            @Override
-            public Set<Annotation> getAnnotations() {
-                Set<Annotation> original = at.getAnnotations();
-                Set<Annotation> annotations = new HashSet<Annotation>();
-
-                boolean hasNamed = false;
-
-                for (Annotation annotation : original) {
-                    if (annotation.annotationType().equals(Named.class)) {
-                        annotations.add(getAnnotation(Named.class));
-                        hasNamed = true;
-                    }
-                    else {
-                        annotations.add(annotation);
-                    }
-                }
-
-                if (!hasNamed) {
-                    Package pkg = at.getJavaClass().getPackage();
-                    if (pkg.isAnnotationPresent(Named.class)) {
-                        annotations.add(getAnnotation(Named.class));
-                    }
-                }
-
-                return annotations;
-            }
-
-            @Override
-            public Type getBaseType() {
-                return at.getBaseType();
-            }
-
-            @Override
-            public Set<Type> getTypeClosure() {
-                return at.getTypeClosure();
-            }
-
-            @Override
-            public boolean isAnnotationPresent(Class<? extends Annotation> annType) {
-                if (Named.class.equals(annType)) {
-                    return true;
-                }
-                return at.isAnnotationPresent(annType);
-            }
-
-        };
-
-        pat.setAnnotatedType(wrapped);
+        event.configureAnnotatedType().remove((a) -> a.annotationType().equals(Named.class)).add(NamedLiteral.of(qualifiedName));
     }
 
 }
@@ -582,55 +374,23 @@ class which implements a certain `Service` interface.
 [source.JAVA, java]
 ---------------------------------------------------------------------------------------------------------------
 import javax.enterprise.inject.spi.Extension;
-import java.lang.annotation.Annotation;
+import javax.enterprise.inject.Alternative;
 ...
 
 class ServiceAlternativeExtension implements Extension {
 
-   <T extends Service> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
-
-      final AnnotatedType<T> type = pat.getAnnotatedType();
-
-      /* if the class implements Service, make it an @Alternative */
-      AnnotatedType<T> wrapped = new AnnotatedType<T>() {
-
-         class AlternativeLiteral extends AnnotationLiteral<Alternative> implements Alternative {}
-
-         private final AlternativeLiteral alternativeLiteral = new AlternativeLiteral();
-
-         @Override
-         public <X extends Annotation> X getAnnotation(final Class<X> annType) {
-            return (X) (annType.equals(Alternative.class) ?  alternativeLiteral : type.getAnnotation(annType));
-         }
-
-         @Override
-         public Set<Annotation> getAnnotations() {
-            Set<Annotation> annotations = new HashSet<Annotation>(type.getAnnotations());
-            annotations.add(alternativeLiteral);
-            return annotations;
-         }
-
-         @Override
-         public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-            return annotationType.equals(Alternative.class) ?
-               true : type.isAnnotationPresent(annotationType);
-         }
-
-         /* remaining methods of AnnotatedType */
-         ...
-      }
-
-      pat.setAnnotatedType(wrapped);
+   <T extends Service> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
+      event.configureAnnotatedType().add(Alternative.Literal.INSTANCE);
    }
 }
 ---------------------------------------------------------------------------------------------------------------
 
-The `AnnotatedType` is not the only thing that can be wrapped by an
+The `AnnotatedType` is not the only thing that can be configured/wrapped by an
 extension.
 
-=== Overriding attributes of a bean by wrapping `BeanAttributes`
+=== Overriding attributes of a bean
 
-Wrapping an `AnnotatedType` is a low-level approach to overriding CDI
+Configuring an `AnnotatedType` is a low-level approach to overriding CDI
 metadata by adding, removing or replacing annotations. Since version
 1.1, CDI provides a higher-level facility for overriding attributes of
 beans discovered by the CDI container.
@@ -668,6 +428,8 @@ public interface ProcessBeanAttributes<T> {
 
     public BeanAttributes<T> getBeanAttributes();
 
+    public BeanAttributesConfigurator<T> configureBeanAttributes();
+
     public void setBeanAttributes(BeanAttributes<T> beanAttributes);
 
     public void addDefinitionError(Throwable t);
@@ -677,7 +439,7 @@ public interface ProcessBeanAttributes<T> {
 }
 --------------------------------------------------------------------
 
-The `BeanManager` provides two utility methods for creating the
+The `BeanManager` also provides two utility methods for creating the
 `BeanAttributes` object from scratch:
 
 [source.JAVA, java]
@@ -832,6 +594,7 @@ fires an event of type
 -----------------------------------------------------------------
 public interface ProcessInjectionPoint<T, X> {
     public InjectionPoint getInjectionPoint();
+    public InjectionPointConfigurator configureInjectionPoint();
     public void setInjectionPoint(InjectionPoint injectionPoint);
     public void addDefinitionError(Throwable t);
 }
@@ -902,4 +665,4 @@ allows an application to remove instances of contextual objects from a
 context.
 
 For more information on implementing a custom context see this
-http://in.relation.to/Bloggers/CreatingACustomScope[blog post].
+http://in.relation.to/Bloggers/CreatingACustomScope[blog post] or the https://github.com/weld/command-context-example[Command context example].
