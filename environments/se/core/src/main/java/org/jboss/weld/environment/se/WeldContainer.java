@@ -27,6 +27,8 @@ import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.AbstractCDI;
+import org.jboss.weld.Container;
+import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Singleton;
@@ -204,9 +206,9 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     }
 
     private void complete() {
-        this.creationalContext = beanManager().createCreationalContext(null);
-        this.instance = beanManager().getInstance(creationalContext);
-        this.event = beanManager().event();
+        // Make sure the volatile fields are initialized
+        getInstance();
+        event();
     }
 
     private void fireContainerInitializedEvent() {
@@ -215,9 +217,11 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     }
 
     /**
-     * Provides access to all beans within the application. Retained for backward compatibility.
+     * Provides access to all beans within the application. Retained for backward compatibility - WeldContainer implements
+     * {@link javax.enterprise.inject.Instance}.
      *
      * @return the instance
+     * @deprecated Applications are encouraged to use methods for programmatic lookup directly.
      */
     public Instance<Object> instance() {
         checkState();
@@ -234,7 +238,14 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      * @return the event
      */
     public Event<Object> event() {
-        checkState();
+        checkIsRunning();
+        if (event == null) {
+            synchronized (this) {
+                if (event == null) {
+                    event = beanManager().event();
+                }
+            }
+        }
         return event;
     }
 
@@ -288,6 +299,14 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     @Override
     protected WeldInstance<Object> getInstance() {
+        if (instance == null) {
+            synchronized (this) {
+                if (instance == null) {
+                    creationalContext = beanManager().createCreationalContext(null);
+                    instance = beanManager().getInstance(creationalContext);
+                }
+            }
+        }
         return instance;
     }
 
@@ -311,13 +330,14 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     @Override
     protected void checkState() {
-        checkInitializedCompletely();
+        checkDeploymentValidated();
         checkIsRunning();
     }
 
-    private void checkInitializedCompletely() {
-        if (instance == null) {
-            throw WeldSELogger.LOG.weldContainerNotInitializedCompletely(id);
+    private void checkDeploymentValidated() {
+        ContainerState state = Container.instance(id).getState();
+        if (state.compareTo(ContainerState.VALIDATED) < 0) {
+            throw WeldSELogger.LOG.weldContainerDeploymentNotValidated(id);
         }
     }
 
