@@ -6,10 +6,8 @@ If you want to use Weld in another environment, you will need to provide
 certain information to Weld via the integration SPI. In this Appendix we
 will briefly discuss the steps needed.
 
-If you are upgrading existing Weld integration to work with Weld 2, see
-this
-https://community.jboss.org/wiki/WeldIntegratorGuide-ChangesForWeld20[migration
-document].
+If you are upgrading existing Weld integration to work with Weld 3, see
+<<weld_2_to_3_migration>>.
 
 NOTE: If you just want to use managed beans, and not take advantage of
 enterprise services (EE resource injection, CDI injection into EE
@@ -168,7 +166,7 @@ provided per-BDA. BDA services are provided using
 they are provided.
 
 The contract for `Deployment` requires the container to specify the
-portable extensions (see chapter 12 of the CDI specification) which
+portable extensions (http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#packaging_deployment[see chapter _Packaging and deployment_ of the CDI specification]) which
 should be loaded by the application. To aid the container integrator,
 Weld provides the method `Bootstrap.loadExtensions(ClassLoader)` which
 will load the extensions for the specified classloader.
@@ -212,7 +210,7 @@ it generated is used for creating instances instead of the component class.
 An integrator can communicate such layout to Weld by additionally implementing the optional
 `SubclassedComponentDescriptor` interface in the `EjbDescriptor` implementation.
 The return value of the
-link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/spi/SubclassedComponentDescriptor.html#getComponentSubclass--[SubclassedComponentDescriptor.getComponentSubclass()]
+link:http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/ejb/spi/SubclassedComponentDescriptor.html#getComponentSubclass--[SubclassedComponentDescriptor.getComponentSubclass()]
 method determines which class will be used by Weld when creating new EJB instances.
 
 ==== EE resource injection and resolution services
@@ -311,6 +309,7 @@ The following methods were deprecated in Weld 2:
 
 *
 `JpaInjectionServices.resolvePersistenceContext(InjectionPoint injectionPoint)`
+
 *
 `JpaInjectionServices.resolvePersistenceUnit(InjectionPoint injectionPoint)`
 
@@ -354,6 +353,7 @@ The following methods were deprecated in Weld 2:
 
 *
 `ResourceInjectionServices.resolveResource(InjectionPoint injectionPoint)`
+
 *
 `ResourceInjectionServices.resolveResource(String jndiName, String mappedName)`
 
@@ -362,6 +362,7 @@ following methods:
 
 *
 `ResourceInjectionServices.registerResourceInjectionPoint(InjectionPoint injectionPoint)`
+
 *
 `ResourceInjectionServices.registerResourceInjectionPoint(String jndiName, String mappedName)`
 ====
@@ -483,13 +484,6 @@ public interface ResourceLoader extends Service {
 }
 -----------------------------------------------------
 
-[[annotationDiscovery]]
-==== AnnotationDiscovery
-
-The optional `AnnotationDiscovery` service has been deprecated and is
-not used by Weld since Weld 2.2. Integrators are encouraged to implement
-`ClassFileServices` instead.
-
 [[classFileServices]]
 ==== ClassFileServices
 
@@ -511,7 +505,7 @@ bytecode-scanning capabilities to Weld. If present, Weld will try to use
 the service to avoid loading of classes that do not need to be loaded.
 These are classes that:
 
-* are not http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#what_classes_are_beans[CDI managed beans] and
+* are not http://docs.jboss.org/cdi/spec/2.0-PFD/cdi-spec.html#what_classes_are_beans[CDI managed beans] and
 * are not assignable to any ProcessAnnotatedType observer
 
 This usually yields improved bootstrap performance especially in large
@@ -545,7 +539,7 @@ See the JavaDoc for more details.
 
 The standard way for an integrator to provide Service implementations is via
 the <<deployment-structure,deployment structure>>. Alternatively, services may be registered
-using the link:http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html[ServiceLoader]
+using the link:http://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]
 mechanism. This is useful e.g. for a library running
 in `weld-servlet` environment. Such library may provide `TransactionServices` implementation
 which would not otherwise be provided by `weld-servlet`.
@@ -635,10 +629,7 @@ CDI application which uses JSF. This filter can be registered for all
 Servlet deployment safely.
 
 
-NOTE: Weld only supports JSF 1.2 and above.
-
-NOTE: `org.jboss.weld.jsf.WeldPhaseListener` was deprecated in Weld 2 and is
-no longer present in Weld.
+NOTE: Weld 3 only supports JSF 2.2 and above.
 
 NOTE: `org.jboss.weld.servlet.ConversationPropagationFilter` was deprecated
 and should no longer be used.
@@ -722,7 +713,7 @@ method method early in the deployment.
 
 Alternatively, an integrating part may provide a specialized
 implementation such as the one provided by
-https://github.com/wildfly/wildfly/blob/master/weld/src/main/java/org/jboss/as/weld/WeldProvider.java[WildFly
+https://github.com/wildfly/wildfly/blob/master/weld/subsystem/src/main/java/org/jboss/as/weld/WeldProvider.java[WildFly
 integration].
 
 ==== Performing CDI injection on Java EE component classes
@@ -834,8 +825,8 @@ In addition, an integrator may register a callback in which it performs addition
 operations around the constructor call. This way an integrator may for example
 implement support for additional interceptors (e.g. those bound using the deployment descriptor).
 
-See link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/construction/api/AroundConstructCallback.html[AroundConstructCallback]
-and link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/construction/api/WeldCreationalContext.html#registerAroundConstructCallback-org.jboss.weld.construction.api.AroundConstructCallback-[WeldCreationalContext.registerAroundConstructCallback()]
+See link:http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/construction/api/AroundConstructCallback.html[AroundConstructCallback]
+and link:http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/construction/api/WeldCreationalContext.html#registerAroundConstructCallback-org.jboss.weld.construction.api.AroundConstructCallback-[WeldCreationalContext.registerAroundConstructCallback()]
 for more details.
 
 ==== Probe Development Tool (Optional)
@@ -935,7 +926,7 @@ See the http://cdi-spec.org[specification] for more information.
 http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/manager/api/WeldInjectionTargetBuilder.html[WeldInjectionTargetBuilder]
 SPI was added. The SPI allows an integrator to obtain a customized
 `InjectionTarget` implementation using the builder pattern.
-* link:#annotationDiscovery[The AnnotationDiscovery service] was deprecated in favor of link:#classFileServices[ClassFileServices].
+* The AnnotationDiscovery service was deprecated in favor of link:#classFileServices[ClassFileServices].
 * http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/bootstrap/api/CDI11Bootstrap.html#startContainer%28java.lang.String,%20org.jboss.weld.bootstrap.api.Environment,%20org.jboss.weld.bootstrap.spi.Deployment%29[CDIBootstrap.startContainer()] method, which allows a container identifier to be passed as a parameter, was added.
 * The contract of the http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/api/SessionObjectReference.html#getBusinessObject%28java.lang.Class%29[SessionObjectReference.getBusinessObject()] method was altered. Weld may now call
 this method passing in a remote view of a session bean.
@@ -980,6 +971,7 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 
 ** Deprecated `org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScope` was removed.
 
+[[weld_2_to_3_migration]]
 ==== Migration from Weld 2.4 to 3.0
 
 Weld 3.0 implements CDI 2.0 so this is a huge update which contains bunch of new features.
@@ -1072,6 +1064,13 @@ Here is a list of changes based on what SPI class/method they affect:
 ** Newly added interface which Weld uses to associate and dissociate security context with given thread
 ** The main use case for this are asynchronous event observers which are executed in separate threads, yet need to have identical context
 ** There are three methods in this interface - `associate()`, `dissociate()` and `close()`
+
+* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/manager/api/ExecutorServices.html[`org.jboss.weld.manager.api.ExecutorServices`]
+
+** One new method - `getTimerExecutor()`
+** Returns an instance of https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ScheduledExecutorService.html[`ScheduledExecutorService`]
+** This executor is only required for the timeout feature of asynchronous events
+** This method has a default implementation returning `null'
 
 * http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/manager/api/WeldManager.html[`org.jboss.weld.manager.api.WeldManager`]
 
