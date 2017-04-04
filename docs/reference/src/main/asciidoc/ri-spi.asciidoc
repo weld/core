@@ -166,7 +166,7 @@ provided per-BDA. BDA services are provided using
 they are provided.
 
 The contract for `Deployment` requires the container to specify the
-portable extensions (http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#packaging_deployment[see chapter _Packaging and deployment_ of the CDI specification]) which
+portable extensions (http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#packaging_deployment[see chapter _Packaging and deployment_ of the CDI specification]) which
 should be loaded by the application. To aid the container integrator,
 Weld provides the method `Bootstrap.loadExtensions(ClassLoader)` which
 will load the extensions for the specified classloader.
@@ -505,7 +505,7 @@ bytecode-scanning capabilities to Weld. If present, Weld will try to use
 the service to avoid loading of classes that do not need to be loaded.
 These are classes that:
 
-* are not http://docs.jboss.org/cdi/spec/2.0-PFD/cdi-spec.html#what_classes_are_beans[CDI managed beans] and
+* are not http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#what_classes_are_beans[CDI managed beans] and
 * are not assignable to any ProcessAnnotatedType observer
 
 This usually yields improved bootstrap performance especially in large
@@ -921,7 +921,7 @@ order to satisfy Weld's dependencies:
 ==== Migration from Weld 2.1 to 2.2
 
 * The definition of a _bean defining annotation_ was altered in CDI 1.2.
-See the http://cdi-spec.org[specification] for more information.
+See the http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations[specification] for more information.
 * A new
 http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/manager/api/WeldInjectionTargetBuilder.html[WeldInjectionTargetBuilder]
 SPI was added. The SPI allows an integrator to obtain a customized
@@ -976,7 +976,7 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 
 Weld 3.0 implements CDI 2.0 so this is a huge update which contains bunch of new features.
 However, this document only covers part which might prove problematic while moving existing application from Weld 2.4 to Weld 3.0.
-For more information on the CDI 2.0 itself, please consult http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html[the specification].
+For more information on the CDI 2.0 itself, please consult http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[the specification].
 
 ===== Java 8
 

@@ -310,7 +310,7 @@ to deployment problem.
 CDI 1.1 allows you to exclude classes in your archive from being
 scanned, having container lifecycle events fired, and being deployed as
 beans. See also
-http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#exclude_filters[12.4.2
+http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#exclude_filters[12.4.2
 Exclude filters].
 
 NOTE: Weld still supports the original non-portable way of excluding classes
