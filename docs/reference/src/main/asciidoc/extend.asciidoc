@@ -65,6 +65,8 @@ MyBean(MyExtension myExtension) {
 And, like beans, extensions can have observer methods. Usually, the
 observer methods observe _container lifecycle events_.
 
+NOTE: Weld SE allows to define so called synthetic container lifecycle event observers. Such observers do not belong to a particular extension. See also `org.jboss.weld.environment.se.ContainerLifecycleObserver` and `Weld.addContainerLifecycleObserver()`.
+
 === Container lifecycle events
 
 During the initialization process, the container fires a series of
