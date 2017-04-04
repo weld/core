@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -51,10 +52,19 @@ public class TestExtension implements Extension {
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
+        try {
+            CDI.current().select(Foo.class);
+            fail();
+        } catch (IllegalStateException expected) {
+        }
         BeanManager beanManager = beanManagerReference.get();
         if (beanManager != null) {
             fooBeanReference.set(beanManager.resolve(beanManager.getBeans(Foo.class)));
         }
+    }
+
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event) {
+        CDI.current().select(Foo.class).get().getCurrent().equals(CDI.current());
     }
 
     static void reset() {
