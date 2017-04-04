@@ -67,6 +67,7 @@ observer methods observe _container lifecycle events_.
 
 NOTE: Weld SE allows to define so called synthetic container lifecycle event observers. Such observers do not belong to a particular extension. See also `org.jboss.weld.environment.se.ContainerLifecycleObserver` and `Weld.addContainerLifecycleObserver()`.
 
+[[_container_lifecycle_events]]
 === Container lifecycle events
 
 During the initialization process, the container fires a series of
@@ -128,7 +129,7 @@ NOTE: The `@WithAnnotations` annotation causes the container to deliver the
 ProcessAnnotatedType events only for the types which contain the
 specified annotation.
 
-The observer method may inject a `BeanManager`
+Container lifecycle event observer methods may inject a `BeanManager`:
 
 [source.JAVA, java]
 -----------------------------------------------------------------------------------------------------
@@ -137,22 +138,29 @@ The observer method may inject a `BeanManager`
 
 An extension observer method is not allowed to inject any other object.
 
+==== Configurators
+
+CDI 2.0 introduced the Configurators API - a new way to easily configure some parts of the SPI during container lifecycle event notification.
+E.g. to add a qualifier to a bean an extension can observe `ProcessBeanAttributes`, then obtain a configurator instance through `ProcessBeanAttributes.configureBeanAttributes()` and finally use `BeanAttributesConfigurator.addQualifier(Annotation)`.
+No need to wrap/delegate to the original `BeanAttributes`.
+See also chapter http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#configurators[Configurators interfaces] of the CDI specification.
+
 === The `BeanManager` object
 
 The nerve center for extending CDI is the `BeanManager` object.
-The `BeanManager` interface provides operations of use to portable extensions, e.g. lets us obtain beans, interceptors, decorators, observers and contexts programmatically.
+The `BeanManager` interface provides operations useful for portable extensions, e.g. lets us obtain beans, interceptors, decorators, observers and contexts programmatically.
 Note that some of the methods may not be called before the `AfterBeanDiscovery` event is fired, e.g. `BeanManager.getBeans()`.
 Furthermore, the `BeanManager.getReference()` and `BeanManager.getInjectableReference()` methods may not be called  before the `AfterDeploymentValidation` event is fired.
 See also the javadoc for more details.
 
-Any container lifecycle event observer method can obtain an injected `BeanManager` reference:
+As already stated in <<_container_lifecycle_events>>, any container lifecycle event observer method can obtain an injected `BeanManager` reference:
 
 [source.JAVA, java]
-----------------------------------------------------------------------------------------
-void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {};
-----------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) { ... }
+--------------------------------------------------------------------------------------------
 
-Any bean or other Java EE component which supports injection can obtain
+Furthermore, any bean or other Java EE component which supports injection can obtain
 an instance of `BeanManager` via injection:
 
 [source.JAVA, java]
