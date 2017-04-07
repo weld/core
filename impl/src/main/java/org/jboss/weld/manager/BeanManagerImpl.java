@@ -91,6 +91,7 @@ import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.Validator;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
@@ -154,6 +155,7 @@ import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BiConsumer;
 import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.ForwardingBeanManager;
 import org.jboss.weld.util.Function;
@@ -300,6 +302,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     private final transient CurrentInjectionPoint currentInjectionPoint;
     private final transient boolean clientProxyOptimization;
+
+    private final transient List<BiConsumer<Exception, Environment>> validationFailureCallbacks;
 
     /**
      * Request context lifecycle events
@@ -462,7 +466,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 return FastEvent.of(Object.class, BeanManagerImpl.this, DestroyedLiteral.REQUEST);
             }
         };
-
+        this.validationFailureCallbacks = new CopyOnWriteArrayList<>();
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
@@ -1340,6 +1344,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             beanSet.clear();
             beanSet = null;
         }
+        this.validationFailureCallbacks.clear();
     }
 
     public ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel> getInterceptorModelRegistry() {
@@ -1654,6 +1659,20 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public void fireRequestContextDestroyed(Object payload) {
         requestDestroyedEvent.get().fire(payload);
+    }
+
+    public void addValidationFailureCallback(BiConsumer<Exception, Environment> callback) {
+        this.validationFailureCallbacks.add(callback);
+    }
+
+    public void validationFailed(Exception failure, Environment environment) {
+        for (BiConsumer<Exception, Environment> callback : validationFailureCallbacks) {
+            try {
+                callback.accept(failure, environment);
+            } catch (Throwable ignored) {
+                BootstrapLogger.LOG.catchingDebug(ignored);
+            }
+        }
     }
 
 }

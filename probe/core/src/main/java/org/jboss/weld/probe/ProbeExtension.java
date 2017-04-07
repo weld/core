@@ -63,6 +63,7 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
@@ -73,6 +74,7 @@ import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.probe.BootstrapStats.EventType;
+import org.jboss.weld.util.BiConsumer;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
@@ -107,7 +109,15 @@ public class ProbeExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         ProbeLogger.LOG.developmentModeEnabled();
-        BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
+        final BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
+        manager.addValidationFailureCallback(new BiConsumer<Exception, Environment>() {
+            @Override
+            public void accept(Exception exception, Environment environment) {
+                // Note that eventual problems are ignored during callback invocation
+                probe.init(manager);
+                Reports.generateValidationReport(probe, exception, environment, manager);
+            }
+        });
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(Monitored.class, beanManager), Monitored.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(MonitoredComponent.class, beanManager), MonitoredComponent.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InvocationMonitor.class, beanManager), InvocationMonitor.class.getName());
@@ -301,7 +311,7 @@ public class ProbeExtension implements Extension {
         }
         if (resolvedObservers != null && eventType != null) {
             Iterable<ObserverMethod<?>> observerMethods = Reflections.cast(resolvedObservers.getAllObservers());
-            probe.addEvent(new EventInfo(eventType, Collections.<Annotation>emptySet(), info, null, observerMethods, true, System.currentTimeMillis(), false));
+            probe.addEvent(new EventInfo(eventType, Collections.<Annotation> emptySet(), info, null, observerMethods, true, System.currentTimeMillis(), false));
         }
     }
 
@@ -333,7 +343,7 @@ public class ProbeExtension implements Extension {
             try {
                 Files.write(new File(exportPath, "weld-probe-export.zip").toPath(), Exports.exportJsonData(jsonDataProvider));
             } catch (IOException e) {
-                ProbeLogger.LOG.unableToExportData(e.getCause() != null ? e.getCause() : e);
+                ProbeLogger.LOG.unableToExportData(exportPath, e.getCause() != null ? e.getCause() : e);
                 ProbeLogger.LOG.catchingTrace(e);
             }
         }

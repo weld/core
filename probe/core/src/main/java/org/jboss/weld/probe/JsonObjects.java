@@ -73,7 +73,9 @@ import static org.jboss.weld.probe.Strings.INTERCEPTORS;
 import static org.jboss.weld.probe.Strings.INVERTED;
 import static org.jboss.weld.probe.Strings.INVOCATIONS;
 import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
+import static org.jboss.weld.probe.Strings.IS_AMBIGUOUS;
 import static org.jboss.weld.probe.Strings.IS_POTENTIAL;
+import static org.jboss.weld.probe.Strings.IS_UNSATISFIED;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.LAST_PAGE;
 import static org.jboss.weld.probe.Strings.MARKER;
@@ -119,7 +121,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -170,7 +171,6 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
 import org.jboss.weld.bootstrap.spi.TrimmableBeansXml;
 import org.jboss.weld.config.ConfigurationKey;
-import org.jboss.weld.config.Description;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
@@ -351,42 +351,17 @@ final class JsonObjects {
         deploymentBuilder.add(BDAS, bdasBuilder);
 
         // CONFIGURATION
-        List<ConfigurationKey> configurationKeys = new ArrayList<>();
-        Collections.addAll(configurationKeys, ConfigurationKey.values());
-        Collections.sort(configurationKeys, new Comparator<ConfigurationKey>() {
-            @Override
-            public int compare(ConfigurationKey o1, ConfigurationKey o2) {
-                return o1.get().compareTo(o2.get());
-            }
-        });
         JsonArrayBuilder configBuilder = Json.arrayBuilder();
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
-        for (ConfigurationKey key : configurationKeys) {
+        for (ConfigurationKey key : Reports.getSortedConfigurationKeys()) {
             Object defaultValue = key.getDefaultValue();
-            String desc = "";
-            try {
-                Field field = ConfigurationKey.class.getDeclaredField(key.toString());
-                if (field != null && field.isEnumConstant()) {
-                    Description description = field.getAnnotation(Description.class);
-                    if (description == null) {
-                        // Don't show config options without description
-                        continue;
-                    }
-                    desc = description.value();
-                }
-            } catch (Exception e) {
-                // Ignored
+            String desc = Reports.getDesc(key);
+            if (desc == null) {
+                // Don't show config options without description
+                continue;
             }
-            Object value;
-            if (defaultValue instanceof Boolean) {
-                value = configuration.getBooleanProperty(key);
-            } else if (defaultValue instanceof Long) {
-                value = configuration.getLongProperty(key);
-            } else if (defaultValue instanceof Integer) {
-                value = configuration.getIntegerProperty(key);
-            } else if (defaultValue instanceof String) {
-                value = configuration.getStringProperty(key);
-            } else {
+            Object value = Reports.getValue(key, configuration);
+            if (value == null) {
                 // Unsupported property type
                 continue;
             }
@@ -812,6 +787,14 @@ final class JsonObjects {
         JsonArrayBuilder dependenciesBuilder = Json.arrayBuilder(true);
 
         for (Dependency dep : Components.getDependencies(bean, beanManager, probe)) {
+            if (dep.isUnsatisfied()) {
+                dependenciesBuilder.add(createDependency(null, dep, probe).add(IS_UNSATISFIED, true));
+                continue;
+            }
+            if (dep.isAmbiguous()) {
+                dependenciesBuilder.add(createDependency(null, dep, probe).add(IS_AMBIGUOUS, true));
+                continue;
+            }
             if (Components.isBuiltinBeanButNotExtension(dep.getBean())) {
                 dependenciesBuilder.add(createBuiltInDependency(dep, probe, beanManager, DEPENDENCIES));
                 continue;
@@ -1191,8 +1174,13 @@ final class JsonObjects {
 
     private static JsonObjectBuilder createDependency(Bean<?> bean, Dependency dependency, Probe probe) {
         JsonObjectBuilder builder = null;
-        if (bean != null && dependency != null) {
+        if (bean != null) {
             builder = createSimpleBeanJson(bean, probe);
+        }
+        if (dependency != null) {
+            if (builder == null) {
+                builder = Json.objectBuilder(true);
+            }
             builder.add(REQUIRED_TYPE, Formats.formatType(dependency.getInjectionPoint().getType(), false)).add(QUALIFIERS,
                     createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
         }
@@ -1334,11 +1322,11 @@ final class JsonObjects {
     }
 
 
-    private static String simplifiedScope(Class<? extends Annotation> scope) {
+    static String simplifiedScope(Class<? extends Annotation> scope) {
         return "@" + (Components.isBuiltinScope(scope) ? scope.getSimpleName() : scope.getName());
     }
 
-    private static String simplifiedAnnotation(Annotation annotation) {
+    static String simplifiedAnnotation(Annotation annotation) {
         return "@" + annotation.annotationType().getSimpleName();
     }
 

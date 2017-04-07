@@ -16,7 +16,12 @@
  */
 package org.jboss.weld.probe;
 
+import java.io.IOException;
+import java.util.Map;
+
 import javax.enterprise.inject.Vetoed;
+
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * Various string constants.
@@ -107,6 +112,8 @@ public final class Strings {
     public static final String DESCRIPTION = "description";
     public static final String INFO = "info";
     public static final String IS_POTENTIAL = "isPotential";
+    public static final String IS_UNSATISFIED = "isUnsatisfied";
+    public static final String IS_AMBIGUOUS = "isAmbiguous";
     public static final String BINDINGS = "bindings";
     public static final String DELEGATE_TYPE = "delegateType";
     public static final String DELEGATE_QUALIFIERS = "delegateQualifiers";
@@ -206,6 +213,9 @@ public final class Strings {
     private static final int ABR_MIN_LIMIT = 4;
     private static final String ABR_MARKER = "...";
 
+    private static final Map<Character, String> REPLACEMENTS = ImmutableMap.<Character, String> builder().put('"', "&quot;").put('\'', "&#39;")
+            .put('&', "&amp;").put('<', "&lt;").put('>', "&gt;").build();
+
     private Strings() {
     }
 
@@ -218,5 +228,45 @@ public final class Strings {
         }
         return value.substring(0, limit - ABR_MARKER.length()) + ABR_MARKER;
     }
+
+    /**
+     *
+     * @param value
+     * @return an escaped value
+     */
+    static String escape(String value) {
+        if (value == null || value.isEmpty()) {
+            return value;
+        }
+        for (int i = 0; i < value.length(); i++) {
+            String replacement = REPLACEMENTS.get(value.charAt(i));
+            if (replacement != null) {
+                StringBuilder result = new StringBuilder();
+                result.append(value.substring(0, i));
+                result.append(replacement);
+                try {
+                    escapeNext(value, i, result);
+                } catch (IOException e) {
+                    throw new IllegalStateException(e);
+                }
+                return result.toString();
+            }
+        }
+        return value;
+    }
+
+    private static void escapeNext(String value, int index, Appendable appendable) throws IOException {
+        int length = value.length();
+        while (++index < length) {
+            char c = value.charAt(index);
+            String replacement = REPLACEMENTS.get(c);
+            if (replacement != null) {
+                appendable.append(replacement);
+            } else {
+                appendable.append(c);
+            }
+        }
+    }
+
 
 }
