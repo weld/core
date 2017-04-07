@@ -43,7 +43,10 @@ import java.util.function.Function;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
+import javax.enterprise.context.BeforeDestroyed;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -106,6 +109,7 @@ import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.event.EventMetadataImpl;
+import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -158,6 +162,7 @@ import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.ForwardingBeanManager;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Interceptors;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
@@ -291,6 +296,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient boolean clientProxyOptimization;
 
     /**
+     * Request context lifecycle events
+     */
+    private final transient LazyValueHolder<FastEvent<Object>> requestInitializedEvent;
+    private final transient LazyValueHolder<FastEvent<Object>> requestBeforeDestroyedEvent;
+    private final transient LazyValueHolder<FastEvent<Object>> requestDestroyedEvent;
+
+    /**
      * Create a new, root, manager
      *
      * @param serviceRegistry
@@ -382,7 +394,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
                 createDynamicAccessibleIterable(BeanManagerImpl::getObservers), getServices().get(WeldConfiguration.class));
-        this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class).create(contextId, accessibleObserverResolver, getServices(), false);
+        this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class)
+                .create(contextId, accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
         this.globalStrictObserverNotifier = globalObserverNotifierService.getGlobalStrictObserverNotifier();
@@ -391,6 +404,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.registry = getServices().get(SpecializationAndEnablementRegistry.class);
         this.currentInjectionPoint = getServices().get(CurrentInjectionPoint.class);
         this.clientProxyOptimization = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION);
+        this.requestInitializedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Initialized.Literal.REQUEST));
+        this.requestBeforeDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, BeforeDestroyed.Literal.REQUEST));
+        this.requestDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Destroyed.Literal.REQUEST));
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Function<BeanManagerImpl, Iterable<T>> transform) {
@@ -1541,6 +1557,18 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public BeanManagerImpl unwrap() {
         return this;
+    }
+
+    public void fireRequestContextInitialized(Object payload) {
+        requestInitializedEvent.get().fire(payload);
+    }
+
+    public void fireRequestContextBeforeDestroyed(Object payload) {
+        requestBeforeDestroyedEvent.get().fire(payload);
+    }
+
+    public void fireRequestContextDestroyed(Object payload) {
+        requestDestroyedEvent.get().fire(payload);
     }
 
 }

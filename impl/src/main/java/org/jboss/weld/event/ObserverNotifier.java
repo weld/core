@@ -370,7 +370,7 @@ public class ObserverNotifier {
      * Returns the timeout value if all is alright, null if this option was not requested.
      */
     private Long initTimeoutOption(Object timeoutOptionValue) {
-        if (timeoutOptionValue  != null) {
+        if (timeoutOptionValue != null) {
             // throw exception if we don't have scheduled executor available
             if (timerExecutor == null) {
                 throw EventLogger.LOG.noScheduledExecutorServicesProvided();
@@ -380,7 +380,7 @@ public class ObserverNotifier {
                 String inputValue = timeoutOptionValue.toString();
                 return Long.parseLong(inputValue);
             } catch (NumberFormatException nfe) {
-            throw  EventLogger.LOG.invalidInputValueForTimeout(nfe);
+                throw EventLogger.LOG.invalidInputValueForTimeout(nfe);
             }
         } else {
             return null;
