@@ -474,11 +474,16 @@ public class WeldStartup {
     public void validateBeans() {
         BootstrapLogger.LOG.validatingBeans();
         tracker.start(Tracker.OP_VALIDATE_BEANS);
-        for (BeanDeployment beanDeployment : getBeanDeployments()) {
-            BeanManagerImpl beanManager = beanDeployment.getBeanManager();
-            beanManager.getBeanResolver().clear();
-            deployment.getServices().get(Validator.class).validateDeployment(beanManager, beanDeployment);
-            beanManager.getServices().get(InjectionTargetService.class).validate();
+        try {
+            for (BeanDeployment beanDeployment : getBeanDeployments()) {
+                BeanManagerImpl beanManager = beanDeployment.getBeanManager();
+                beanManager.getBeanResolver().clear();
+                deployment.getServices().get(Validator.class).validateDeployment(beanManager, beanDeployment);
+                beanManager.getServices().get(InjectionTargetService.class).validate();
+            }
+        } catch (Exception e) {
+            validationFailed(e);
+            throw e;
         }
         getContainer().setState(ContainerState.VALIDATED);
         tracker.start(Tracker.OP_ADV);
@@ -674,6 +679,12 @@ public class WeldStartup {
 
     private boolean isEEModulesAwareEnvironment() {
         return !Environments.SE.equals(environment);
+    }
+
+    private void validationFailed(Exception failure) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
+            beanDeployment.getBeanManager().validationFailed(failure, environment);
+        }
     }
 
 }

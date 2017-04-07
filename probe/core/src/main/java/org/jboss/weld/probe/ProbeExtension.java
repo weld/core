@@ -107,6 +107,11 @@ public class ProbeExtension implements Extension {
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         ProbeLogger.LOG.developmentModeEnabled();
         BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
+        manager.addValidationFailureCallback((exception, environment) -> {
+            // Note that eventual problems are ignored during callback invocation
+            probe.init(manager);
+            Reports.generateValidationReport(probe, exception, environment, manager);
+        });
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(Monitored.class, beanManager), Monitored.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(MonitoredComponent.class, beanManager), MonitoredComponent.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(InvocationMonitor.class, beanManager), InvocationMonitor.class.getName());
@@ -332,7 +337,7 @@ public class ProbeExtension implements Extension {
             try {
                 Files.write(new File(exportPath, "weld-probe-export.zip").toPath(), Exports.exportJsonData(jsonDataProvider));
             } catch (IOException e) {
-                ProbeLogger.LOG.unableToExportData(e.getCause() != null ? e.getCause() : e);
+                ProbeLogger.LOG.unableToExportData(exportPath, e.getCause() != null ? e.getCause() : e);
                 ProbeLogger.LOG.catchingTrace(e);
             }
         }
