@@ -107,6 +107,7 @@ import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.event.EventMetadataImpl;
+import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -125,6 +126,8 @@ import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.producer.WeldInjectionTargetBuilderImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataReader;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.literal.DestroyedLiteral;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
@@ -156,6 +159,7 @@ import org.jboss.weld.util.ForwardingBeanManager;
 import org.jboss.weld.util.Function;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Interceptors;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
@@ -296,6 +300,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     private final transient CurrentInjectionPoint currentInjectionPoint;
     private final transient boolean clientProxyOptimization;
+
+    /**
+     * Request context lifecycle events
+     */
+    private final transient LazyValueHolder<FastEvent<Object>> requestInitializedEvent;
+    private final transient LazyValueHolder<FastEvent<Object>> requestDestroyedEvent;
 
     /**
      * Create a new, root, manager
@@ -440,6 +450,19 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.registry = getServices().get(SpecializationAndEnablementRegistry.class);
         this.currentInjectionPoint = getServices().get(CurrentInjectionPoint.class);
         this.clientProxyOptimization = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION);
+        this.requestInitializedEvent = new LazyValueHolder<FastEvent<Object>>() {
+            @Override
+            protected FastEvent<Object> computeValue() {
+                return FastEvent.of(Object.class, BeanManagerImpl.this, InitializedLiteral.REQUEST);
+            }
+        };
+        this.requestDestroyedEvent = new LazyValueHolder<FastEvent<Object>>() {
+            @Override
+            protected FastEvent<Object> computeValue() {
+                return FastEvent.of(Object.class, BeanManagerImpl.this, DestroyedLiteral.REQUEST);
+            }
+        };
+
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
@@ -1624,4 +1647,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public BeanManagerImpl unwrap() {
         return this;
     }
+
+    public void fireRequestContextInitialized(Object payload) {
+        requestInitializedEvent.get().fire(payload);
+    }
+
+    public void fireRequestContextDestroyed(Object payload) {
+        requestDestroyedEvent.get().fire(payload);
+    }
+
 }

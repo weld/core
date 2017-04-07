@@ -168,10 +168,12 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             RequestContext context = getUnboundRequestContext();
             try {
                 context.activate();
+                beanManager.fireRequestContextInitialized(getId());
                 getProducer().postConstruct(instance);
             } finally {
                 context.invalidate();
                 context.deactivate();
+                beanManager.fireRequestContextDestroyed(getId());
             }
         }
         return instance;
@@ -286,7 +288,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             BasicInjectionTarget<?> weldProducer = (BasicInjectionTarget<?>) producer;
             final InterceptionModel interceptors = getInterceptors();
             if (interceptors == null || interceptors.getInterceptors(InterceptionType.POST_CONSTRUCT, null).isEmpty()) {
-                if (!weldProducer.getLifecycleCallbackInvoker().hasPostConstructMethods()) {
+                if (!weldProducer.getLifecycleCallbackInvoker().hasPostConstructCallback()) {
                     return false;
                 }
             }
