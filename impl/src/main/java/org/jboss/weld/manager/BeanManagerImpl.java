@@ -39,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import javax.el.ELResolver;
@@ -97,6 +98,7 @@ import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.Validator;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
@@ -175,8 +177,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 /**
  * Implementation of the Bean Manager.
  * <p/>
- * Essentially a singleton for registering Beans, Contexts, Observers,
- * Interceptors etc. as well as providing resolution
+ * Essentially a singleton for registering Beans, Contexts, Observers, Interceptors etc. as well as providing resolution
  *
  * @author Pete Muir
  * @author Marius Bogoevici
@@ -189,15 +190,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private static final String CREATIONAL_CONTEXT = "creationalContext";
     /*
-    * Application scoped services
-    * ***************************
-    */
+     * Application scoped services ***************************
+     */
     private final transient ServiceRegistry services;
 
     /*
-    * Application scoped data structures
-    * ***********************************
-    */
+     * Application scoped data structures ***********************************
+     */
 
     // Contexts are shared across the application
     private final transient Map<Class<? extends Annotation>, List<Context>> contexts;
@@ -208,26 +207,21 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
 
     /*
-    * Archive scoped data structures
-    * ******************************
-    */
-
-    /* These data structures are all non-transitive in terms of bean deployment
-    * archive accessibility, and the configuration for this bean deployment
-    * archive
-    */
-    private transient volatile ModuleEnablement enabled;
-
+     * Archive scoped data structures ******************************
+     */
 
     /*
-    * Bean Archive scoped services
-    * *************************
-    */
+     * These data structures are all non-transitive in terms of bean deployment archive accessibility, and the configuration for this bean deployment archive
+     */
+    private transient volatile ModuleEnablement enabled;
 
-    /* These services are scoped to this bean archive only, but use data
-    * structures that are transitive accessible from other bean deployment
-    * archives
-    */
+    /*
+     * Bean Archive scoped services *************************
+     */
+
+    /*
+     * These services are scoped to this bean archive only, but use data structures that are transitive accessible from other bean deployment archives
+     */
     private final transient TypeSafeBeanResolver beanResolver;
     private final transient TypeSafeDecoratorResolver decoratorResolver;
     private final transient TypeSafeInterceptorResolver interceptorResolver;
@@ -235,22 +229,21 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ELResolver weldELResolver;
 
     /*
-     * Lenient instances do not perform event type checking - this is required for firing container lifecycle events.
-     * Strict instances do perform event type checking and are used for firing application an extension events.
+     * Lenient instances do not perform event type checking - this is required for firing container lifecycle events. Strict instances do perform event type
+     * checking and are used for firing application an extension events.
      */
     private final transient ObserverNotifier accessibleLenientObserverNotifier;
     private final transient ObserverNotifier globalLenientObserverNotifier;
     private final transient ObserverNotifier globalStrictObserverNotifier;
 
     /*
-    * Bean archive scoped data structures
-    * ********************************
-    */
+     * Bean archive scoped data structures ********************************
+     */
 
-    /* These data structures are scoped to this bean deployment archive
-    * only and represent the beans, decorators, interceptors, namespaces and
-    * observers deployed in this bean deployment archive
-    */
+    /*
+     * These data structures are scoped to this bean deployment archive only and represent the beans, decorators, interceptors, namespaces and observers
+     * deployed in this bean deployment archive
+     */
     private final transient List<Bean<?>> enabledBeans;
     // shared beans are accessible from other bean archives (generally all beans except for built-in beans and @New beans)
     private final transient List<Bean<?>> sharedBeans;
@@ -260,8 +253,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient List<ObserverMethod<?>> observers;
 
     /*
-    * set that is only used to make sure that no duplicate beans are added
-    */
+     * set that is only used to make sure that no duplicate beans are added
+     */
     private transient Set<Bean<?>> beanSet = Collections.synchronizedSet(new HashSet<Bean<?>>());
 
     /*
@@ -270,9 +263,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient Set<BeanManagerImpl> managers;
 
     /*
-    * These data structures represent the managers *accessible* from this bean
-    * deployment archive
-    */
+     * These data structures represent the managers *accessible* from this bean deployment archive
+     */
     private final transient HashSet<BeanManagerImpl> accessibleManagers;
 
     private final transient AtomicInteger childIds;
@@ -295,6 +287,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient CurrentInjectionPoint currentInjectionPoint;
     private final transient boolean clientProxyOptimization;
 
+    private final transient List<BiConsumer<Exception, Environment>> validationFailureCallbacks;
+
     /**
      * Request context lifecycle events
      */
@@ -311,59 +305,24 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public static BeanManagerImpl newRootManager(String contextId, String id, ServiceRegistry serviceRegistry) {
         Map<Class<? extends Annotation>, List<Context>> contexts = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
 
-        return new BeanManagerImpl(
-                serviceRegistry,
-                new CopyOnWriteArrayList<Bean<?>>(),
-                new CopyOnWriteArrayList<Bean<?>>(),
-                new CopyOnWriteArrayList<Decorator<?>>(),
-                new CopyOnWriteArrayList<Interceptor<?>>(),
-                new CopyOnWriteArrayList<ObserverMethod<?>>(),
-                new CopyOnWriteArrayList<String>(),
-                new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
-                new ClientProxyProvider(contextId),
-                contexts,
-                ModuleEnablement.EMPTY_ENABLEMENT,
-                id,
-                new AtomicInteger(),
-                new HashSet<BeanManagerImpl>(),
-                contextId);
+        return new BeanManagerImpl(serviceRegistry, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(),
+                new CopyOnWriteArrayList<Decorator<?>>(), new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(),
+                new CopyOnWriteArrayList<String>(), new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(), new ClientProxyProvider(contextId), contexts,
+                ModuleEnablement.EMPTY_ENABLEMENT, id, new AtomicInteger(), new HashSet<BeanManagerImpl>(), contextId);
     }
 
     public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services) {
-        return new BeanManagerImpl(
-                services,
-                new CopyOnWriteArrayList<Bean<?>>(),
-                new CopyOnWriteArrayList<Bean<?>>(),
-                new CopyOnWriteArrayList<Decorator<?>>(),
-                new CopyOnWriteArrayList<Interceptor<?>>(),
-                new CopyOnWriteArrayList<ObserverMethod<?>>(),
-                new CopyOnWriteArrayList<String>(),
-                rootManager.getEnterpriseBeans(),
-                rootManager.getClientProxyProvider(),
-                rootManager.getContexts(),
-                ModuleEnablement.EMPTY_ENABLEMENT,
-                id,
-                new AtomicInteger(),
-                rootManager.managers,
-                rootManager.contextId);
+        return new BeanManagerImpl(services, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Decorator<?>>(),
+                new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(), new CopyOnWriteArrayList<String>(),
+                rootManager.getEnterpriseBeans(), rootManager.getClientProxyProvider(), rootManager.getContexts(), ModuleEnablement.EMPTY_ENABLEMENT, id,
+                new AtomicInteger(), rootManager.managers, rootManager.contextId);
     }
 
-    private BeanManagerImpl(
-            ServiceRegistry serviceRegistry,
-            List<Bean<?>> beans,
-            List<Bean<?>> transitiveBeans,
-            List<Decorator<?>> decorators,
-            List<Interceptor<?>> interceptors,
-            List<ObserverMethod<?>> observers,
-            List<String> namespaces,
-            Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans,
-            ClientProxyProvider clientProxyProvider,
-            Map<Class<? extends Annotation>, List<Context>> contexts,
-            ModuleEnablement enabled,
-            String id,
-            AtomicInteger childIds,
-            Set<BeanManagerImpl> managers,
-            String contextId) {
+    private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<Bean<?>> transitiveBeans, List<Decorator<?>> decorators,
+            List<Interceptor<?>> interceptors, List<ObserverMethod<?>> observers, List<String> namespaces,
+            Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, ClientProxyProvider clientProxyProvider,
+            Map<Class<? extends Annotation>, List<Context>> contexts, ModuleEnablement enabled, String id, AtomicInteger childIds,
+            Set<BeanManagerImpl> managers, String contextId) {
         this.services = serviceRegistry;
         this.enabledBeans = beans;
         this.sharedBeans = transitiveBeans;
@@ -394,8 +353,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
                 createDynamicAccessibleIterable(BeanManagerImpl::getObservers), getServices().get(WeldConfiguration.class));
-        this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class)
-                .create(contextId, accessibleObserverResolver, getServices(), false);
+        this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class).create(contextId, accessibleObserverResolver, getServices(),
+                false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
         this.globalStrictObserverNotifier = globalObserverNotifierService.getGlobalStrictObserverNotifier();
@@ -407,6 +366,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.requestInitializedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Initialized.Literal.REQUEST));
         this.requestBeforeDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, BeforeDestroyed.Literal.REQUEST));
         this.requestDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Destroyed.Literal.REQUEST));
+        this.validationFailureCallbacks = new CopyOnWriteArrayList<>();
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Function<BeanManagerImpl, Iterable<T>> transform) {
@@ -439,6 +399,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     /**
      * Optimization which modifies CopyOnWrite structures only once instead of once for every bean.
+     *
      * @param beans
      */
     public void addBeans(Collection<? extends Bean<?>> beans) {
@@ -526,7 +487,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Set<Bean<?>> getBeans(InjectionPoint injectionPoint) {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
-        final ThreadLocalStackReference<InjectionPoint> stack =  currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
         try {
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
             return beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
@@ -563,8 +524,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * The beans registered with the Web Bean manager which are resolvable. Does
-     * not include interceptor and decorator beans
+     * The beans registered with the Web Bean manager which are resolvable. Does not include interceptor and decorator beans
      *
      * @return The list of known beans
      */
@@ -629,17 +589,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @param observer =
      */
     public void addObserver(ObserverMethod<?> observer) {
-        //checkEventType(observer.getObservedType());
+        // checkEventType(observer.getObservedType());
         observers.add(observer);
     }
 
     /**
      * Fires an event object with given event object for given bindings
      *
-     * @param event      The event object to pass along
+     * @param event The event object to pass along
      * @param qualifiers The binding types to match
-     * @see javax.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object,
-     *      java.lang.annotation.Annotation[])
+     * @see javax.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
      */
     @Override
     public void fireEvent(Object event, Annotation... qualifiers) {
@@ -650,8 +609,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Gets an active context of the given scope. Throws an exception if there
-     * are no active contexts found or if there are too many matches
+     * Gets an active context of the given scope. Throws an exception if there are no active contexts found or if there are too many matches
      *
      * @throws IllegalStateException if there are multiple active scopes for a given context
      * @param scopeType The scope to match
@@ -740,7 +698,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         try {
             return getReference(bean, requestedType, creationalContext, false);
         } finally {
-             stack.pop();
+            stack.pop();
         }
     }
 
@@ -868,15 +826,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Resolves a list of interceptors based on interception type and interceptor
-     * bindings. Transitive interceptor bindings of the interceptor bindings passed
+     * Resolves a list of interceptors based on interception type and interceptor bindings. Transitive interceptor bindings of the interceptor bindings passed
      * as a parameter are considered in the resolution process.
      *
-     * @param type                The interception type to resolve
+     * @param type The interception type to resolve
      * @param interceptorBindings The binding types to match
      * @return A list of matching interceptors
-     * @see javax.enterprise.inject.spi.BeanManager#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType,
-     *      java.lang.annotation.Annotation[])
+     * @see javax.enterprise.inject.spi.BeanManager#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType, java.lang.annotation.Annotation[])
      */
     @Override
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
@@ -885,7 +841,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
         for (Annotation annotation : interceptorBindings) {
             if (!isInterceptorBinding(annotation.annotationType())) {
-               throw BeanManagerLogger.LOG.notInterceptorBindingType(annotation);
+                throw BeanManagerLogger.LOG.notInterceptorBindingType(annotation);
             }
         }
         Set<Annotation> flattenedInterceptorBindings = Interceptors.flattenInterceptorBindings(null, this, Arrays.asList(interceptorBindings), true, true);
@@ -893,23 +849,18 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Resolves a list of interceptors based on interception type and interceptor
-     * bindings. Transitive interceptor bindings of the interceptor bindings passed
-     * as a parameter are NOT considered in the resolution process. Therefore, the caller
-     * is responsible for filtering of transitive interceptor bindings in order to comply
-     * with interceptor binding inheritance and overriding (See JSR-346 9.5.2).
-     * This is a Weld-specific method.
+     * Resolves a list of interceptors based on interception type and interceptor bindings. Transitive interceptor bindings of the interceptor bindings passed
+     * as a parameter are NOT considered in the resolution process. Therefore, the caller is responsible for filtering of transitive interceptor bindings in
+     * order to comply with interceptor binding inheritance and overriding (See JSR-346 9.5.2). This is a Weld-specific method.
      *
-     * @param type                The interception type to resolve
+     * @param type The interception type to resolve
      * @param interceptorBindings The binding types to match
      * @return A list of matching interceptors
      */
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Collection<Annotation> interceptorBindings) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class, this)
-        .setInterceptionType(type)
-        .addQualifiers(interceptorBindings)
-        .create();
+        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class, this).setInterceptionType(type)
+                .addQualifiers(interceptorBindings).create();
         return interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindings));
     }
 
@@ -1090,12 +1041,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public Bean<?> getPassivationCapableBean(String id) {
-        return getServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);
+        return getServices().get(ContextualStore.class).<Bean<Object>, Object> getContextual(id);
     }
 
     @Override
     public Bean<?> getPassivationCapableBean(BeanIdentifier identifier) {
-        return getServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(identifier);
+        return getServices().get(ContextualStore.class).<Bean<Object>, Object> getContextual(identifier);
     }
 
     @Override
@@ -1151,7 +1102,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory) {
         return services.getOptional(ExpressionLanguageSupport.class)
-                .orElseThrow(() -> BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class, id)).wrapExpressionFactory(expressionFactory);
+                .orElseThrow(() -> BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class, id))
+                .wrapExpressionFactory(expressionFactory);
     }
 
     @Override
@@ -1236,6 +1188,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             beanSet.clear();
             beanSet = null;
         }
+        this.validationFailureCallbacks.clear();
     }
 
     public ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel> getInterceptorModelRegistry() {
@@ -1432,7 +1385,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public ParameterInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedParameter<?> parameter) {
         AnnotatedTypeValidator.validateAnnotatedParameter(parameter);
         EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class).loadEnhancedParameter(parameter, getId());
-        return validateInjectionPoint(InferringParameterInjectionPointAttributes.of(enhancedParameter, null, parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
+        return validateInjectionPoint(InferringParameterInjectionPointAttributes.of(enhancedParameter, null,
+                parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
     }
 
     private <T extends InjectionPoint> T validateInjectionPoint(T injectionPoint) {
@@ -1507,8 +1461,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Creates an {@link InjectionTargetFactory} for a given type. The {@link BeanManager} for the {@link InjectionTarget} will
-     * be inferred using {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
+     * Creates an {@link InjectionTargetFactory} for a given type. The {@link BeanManager} for the {@link InjectionTarget} will be inferred using
+     * {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
      */
     @Override
     public <T> WeldInjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> type) {
@@ -1541,10 +1495,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private Bean<?> findNormalScopedDependant(CreationalContextImpl<?> weldCreationalContext) {
         CreationalContextImpl<?> parent = weldCreationalContext.getParentCreationalContext();
-        if(parent != null) {
-            if(parent.getContextual() instanceof Bean) {
+        if (parent != null) {
+            if (parent.getContextual() instanceof Bean) {
                 Bean<?> bean = (Bean<?>) parent.getContextual();
-                if(isNormalScope(bean.getScope())) {
+                if (isNormalScope(bean.getScope())) {
                     return bean;
                 } else {
                     return findNormalScopedDependant(parent);
@@ -1569,6 +1523,20 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public void fireRequestContextDestroyed(Object payload) {
         requestDestroyedEvent.get().fire(payload);
+    }
+
+    public void addValidationFailureCallback(BiConsumer<Exception, Environment> callback) {
+        this.validationFailureCallbacks.add(callback);
+    }
+
+    public void validationFailed(Exception failure, Environment environment) {
+        for (BiConsumer<Exception, Environment> callback : validationFailureCallbacks) {
+            try {
+                callback.accept(failure, environment);
+            } catch (Throwable ignored) {
+                BootstrapLogger.LOG.catchingDebug(ignored);
+            }
+        }
     }
 
 }

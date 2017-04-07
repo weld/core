@@ -110,10 +110,14 @@ public interface ProbeLogger extends BasicLogger {
     void invalidExportPath(Object path);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 19, value = "Unable to export data: {0}", format = Format.MESSAGE_FORMAT)
-    void unableToExportData(Object cause);
+    @Message(id = 19, value = "Unable to export data to {0}: {1}", format = Format.MESSAGE_FORMAT)
+    void unableToExportData(Object path, Object cause);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 20, value = "A problem occured during monitoring of bean instance construction: {0}", format = Format.MESSAGE_FORMAT)
     void aroundConstructMonitoringProblem(Object bean, @Cause Throwable cause);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 21, value = "\n=====================================\n Weld - Deployment Validation: FAILED \n ------------------------------------\n HTML report exported to: \n\n {0} \n=====================================", format = Format.MESSAGE_FORMAT)
+    void validationReportExported(Object path);
 }
