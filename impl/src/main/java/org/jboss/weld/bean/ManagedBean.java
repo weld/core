@@ -32,9 +32,9 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
@@ -168,10 +168,13 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             RequestContext context = getUnboundRequestContext();
             try {
                 context.activate();
+                beanManager.fireRequestContextInitialized(getId());
                 getProducer().postConstruct(instance);
             } finally {
+                beanManager.fireRequestContextBeforeDestroyed(getId());
                 context.invalidate();
                 context.deactivate();
+                beanManager.fireRequestContextDestroyed(getId());
             }
         }
         return instance;
@@ -286,7 +289,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             BasicInjectionTarget<?> weldProducer = (BasicInjectionTarget<?>) producer;
             final InterceptionModel interceptors = getInterceptors();
             if (interceptors == null || interceptors.getInterceptors(InterceptionType.POST_CONSTRUCT, null).isEmpty()) {
-                if (!weldProducer.getLifecycleCallbackInvoker().hasPostConstructMethods()) {
+                if (!weldProducer.getLifecycleCallbackInvoker().hasPostConstructCallback()) {
                     return false;
                 }
             }
