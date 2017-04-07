@@ -110,4 +110,9 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
     public boolean hasPostConstructMethods() {
         return !accessiblePostConstructMethods.isEmpty();
     }
+
+    @Override
+    public boolean hasPostConstructCallback() {
+        return hasPostConstructMethods();
+    }
 }

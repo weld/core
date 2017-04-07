@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,29 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer;
+package org.jboss.weld.environment.se.test.context.requestScope.postConstruct;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
-/**
- * Implementations of this interface are capable of performing {@link PostConstruct} / {@link PreDestroy} lifecycle callback
- * invocations.
- *
- * @author Jozef Hartinger
- *
- * @param <T>
- */
-public interface LifecycleCallbackInvoker<T> {
+public class Beta {
 
-    void postConstruct(T instance, Instantiator<T> instantiator);
+    public void ping(){
 
-    void preDestroy(T instance, Instantiator<T> instantiator);
+    }
 
-    boolean hasPreDestroyMethods();
+    @PostConstruct
+    public void init(){
 
-    boolean hasPostConstructMethods();
-
-    boolean hasPostConstructCallback();
-
+    }
 }
