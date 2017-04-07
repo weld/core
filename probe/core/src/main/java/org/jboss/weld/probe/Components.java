@@ -40,6 +40,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -184,13 +185,21 @@ final class Components {
                         // Do not include delegate injection points
                         continue;
                     }
-                    // At this point unsatisfied or ambiguous dependency should not exits
-                    Bean<?> candidateDependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
-                            injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
+                    Set<Bean<?>> foundBeans = beanManager.getBeans(injectionPoint.getType(),
+                            injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()]));
+                    if (foundBeans.isEmpty()) {
+                        continue;
+                    }
+                    Bean<?> candidateDependency;
+                    try {
+                        candidateDependency = beanManager.resolve(foundBeans);
+                    } catch (AmbiguousResolutionException e) {
+                        continue;
+                    }
                     if (candidateDependency.getBeanClass().equals(InstanceImpl.class)) {
                         Bean<?> lazilyFetched = getInstanceResolvedBean(beanManager, injectionPoint);
                         if (lazilyFetched != null && lazilyFetched.equals(bean)) {
-                            dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY, true));
+                            dependents.add(Dependency.createPotential(candidate, injectionPoint, INFO_FETCHING_LAZILY));
                             if (firstMatch) {
                                 break;
                             } else {
@@ -245,13 +254,21 @@ final class Components {
                     // Do not include delegate injection points
                     continue;
                 }
-                // At this point unsatisfied or ambiguous dependency should not exits
-                Bean<?> dependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
-                        injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
-                if (isBuiltinBeanButNotExtension(dependency)) {
-                    dependency = probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependency));
+                Set<Bean<?>> beans = beanManager.getBeans(injectionPoint.getType(),
+                        injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()]));
+                if (beans.isEmpty()) {
+                    dependencies.add(Dependency.createUnsatisfied(injectionPoint, null));
+                } else {
+                    try {
+                        Bean<?> dependency = beanManager.resolve(beans);
+                        if (isBuiltinBeanButNotExtension(dependency)) {
+                            dependency = probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependency));
+                        }
+                        dependencies.add(new Dependency(dependency, injectionPoint));
+                    } catch (AmbiguousResolutionException e) {
+                        dependencies.add(Dependency.createAmbiguous(injectionPoint, null));
+                    }
                 }
-                dependencies.add(new Dependency(dependency, injectionPoint));
             }
         }
         return dependencies;
@@ -387,6 +404,19 @@ final class Components {
      */
     static class Dependency {
 
+        static Dependency createPotential(Bean<?> bean, InjectionPoint injectionPoint, String info) {
+            return new Dependency(bean, injectionPoint, info, true, false, false);
+        }
+
+        static Dependency createUnsatisfied(InjectionPoint injectionPoint, String info) {
+            return new Dependency(null, injectionPoint, info, false, true, false);
+        }
+
+        static Dependency createAmbiguous(InjectionPoint injectionPoint, String info) {
+            return new Dependency(null, injectionPoint, info, false, false, true);
+        }
+
+
         private final Bean<?> bean;
 
         private final InjectionPoint injectionPoint;
@@ -395,15 +425,21 @@ final class Components {
 
         private final boolean isPotential;
 
+        private final boolean isUnsatisfied;
+
+        private final boolean isAmbiguous;
+
         Dependency(Bean<?> bean, InjectionPoint injectionPoint) {
-            this(bean, injectionPoint, null, false);
+            this(bean, injectionPoint, null, false, false, false);
         }
 
-        Dependency(Bean<?> bean, InjectionPoint injectionPoint, String info, boolean isPotential) {
+        Dependency(Bean<?> bean, InjectionPoint injectionPoint, String info, boolean isPotential,  boolean isUnsatisfied, boolean isAmbiguous) {
             this.bean = bean;
             this.injectionPoint = injectionPoint;
             this.info = info;
             this.isPotential = isPotential;
+            this.isUnsatisfied = isUnsatisfied;
+            this.isAmbiguous = isAmbiguous;
         }
 
         Bean<?> getBean() {
@@ -418,8 +454,16 @@ final class Components {
             return info;
         }
 
-        public boolean isPotential() {
+        boolean isPotential() {
             return isPotential;
+        }
+
+        boolean isUnsatisfied() {
+            return isUnsatisfied;
+        }
+
+        boolean isAmbiguous() {
+            return isAmbiguous;
         }
 
     }
