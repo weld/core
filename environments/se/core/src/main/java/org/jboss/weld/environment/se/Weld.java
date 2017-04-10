@@ -79,6 +79,7 @@ import org.jboss.weld.environment.deployment.WeldResourceLoader;
 import org.jboss.weld.environment.deployment.discovery.ClassPathBeanArchiveScanner;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
+import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.se.ContainerLifecycleObserver.ContainerLifecycleObserverExtension;
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
@@ -850,10 +851,10 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         final Map<Class<? extends Service>, Service> additionalServices = new HashMap<>(this.additionalServices);
 
         if (discoveryEnabled) {
-            DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
-                    ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
-                            // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
-                            .add(ThreadScoped.class).build());
+            DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
+                // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
+                .add(ThreadScoped.class).build(), isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false));
+
             if (isImplicitScanEnabled()) {
                 strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
             }
