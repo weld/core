@@ -75,6 +75,7 @@ import org.jboss.weld.environment.deployment.WeldResourceLoader;
 import org.jboss.weld.environment.deployment.discovery.ClassPathBeanArchiveScanner;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
+import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
@@ -850,7 +851,7 @@ public class Weld implements ContainerInstanceFactory {
             DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
                     ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
                             // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
-                            .add(ThreadScoped.class).build());
+                            .add(ThreadScoped.class).build(), isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false));
             if (isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false)) {
                 strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
             }

@@ -37,17 +37,22 @@ public final class DiscoveryStrategyFactory {
      * @param resourceLoader
      * @param bootstrap
      * @param initialBeanDefiningAnnotations
+     * @param jandexStrategyDisabled
      * @return the discovery strategy
      */
     public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap,
-            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, boolean jandexStrategyDisabled) {
         if (Jandex.isJandexAvailable(resourceLoader)) {
-            CommonLogger.LOG.usingJandex();
-            try {
-                return Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
-            } catch (Exception e) {
-                throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
+            if (jandexStrategyDisabled) {
+                CommonLogger.LOG.jandexDiscoveryStrategyDisabled();
+            } else {
+                CommonLogger.LOG.usingJandex();
+                try {
+                    return Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+                } catch (Exception e) {
+                    throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
                         Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
+                }
             }
         }
         return new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
