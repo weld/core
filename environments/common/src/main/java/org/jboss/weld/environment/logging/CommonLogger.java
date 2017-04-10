@@ -155,4 +155,8 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 39, value = "Bean archive reference {0} handled by {1}", format = Format.MESSAGE_FORMAT)
     void beanArchiveReferenceHandled(Object beanArchiveRef, Object handler);
 
+    @LogMessage(level = Level.INFO)
+    @Message(id = 40, value = "Jandex discovery strategy was disabled.", format = Format.MESSAGE_FORMAT)
+    void jandexDiscoveryStrategyDisabled();
+
 }

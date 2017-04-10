@@ -18,6 +18,13 @@ public class Jandex {
     private static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
     public static final String JANDEX_DISCOVERY_STRATEGY_CLASS_NAME = "org.jboss.weld.environment.deployment.discovery.jandex.JandexDiscoveryStrategy";
 
+    /**
+     * By default, when there is Jandex on classpath, it will be used for bean discovery. However, in some rare cases, other
+     * dependencies might bring in unwanted Jandex dependency which will cause problems. Setting this option to true will
+     * force a non-Jandex discovery strategy.
+     */
+    public static final String DISABLE_JANDEX_DISCOVERY_STRATEGY = "org.jboss.weld.discovery.disableJandexDiscovery";
+
     private Jandex() {
     }
 

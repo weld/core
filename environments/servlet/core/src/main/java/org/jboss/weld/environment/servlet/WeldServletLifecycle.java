@@ -285,7 +285,9 @@ public class WeldServletLifecycle {
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final EEModuleDescriptor eeModule = new EEModuleDescriptorImpl(context.getContextPath(), ModuleType.WEB);
 
-        final DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations());
+        final DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations(),
+            Boolean.parseBoolean(context.getInitParameter(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY)));
+
         if (Jandex.isJandexAvailable(resourceLoader)) {
             try {
                 Class<? extends BeanArchiveHandler> handlerClass = Reflections.loadClass(resourceLoader, JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER);
