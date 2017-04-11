@@ -182,6 +182,7 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
 
     @Override
     public WeldInstance<Object> createInstance() {
+        checkContainerState("createInstance()", ContainerState.VALIDATED);
         return delegate().createInstance();
     }
 
