@@ -1,24 +1,22 @@
 package org.jboss.weld.bean.builtin;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.spi.CreationalContext;
+
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
-
 public class ConversationBean extends AbstractBuiltInBean<Conversation> {
 
     private static final Set<Type> TYPES = Arrays2.<Type>asSet(Conversation.class, Object.class);
-
-    private Instance<ConversationContext> conversationContexts;
 
     public ConversationBean(BeanManagerImpl beanManager) {
         super(Conversation.class.getName(), beanManager);
@@ -27,7 +25,6 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation> {
     @Override
     public void initialize(BeanDeployerEnvironment environment) {
         super.initialize(environment);
-        this.conversationContexts = getBeanManager().instance().select(ConversationContext.class);
     }
 
     public Set<Type> getTypes() {
@@ -45,7 +42,7 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation> {
         * return this dummy Conversation which will simply throw a
         * ContextNotActiveException for every method call as the spec requires.
         */
-        return new ConversationImpl(conversationContexts);
+        return new ConversationImpl(super.getBeanManager());
     }
 
     public void destroy(Conversation instance, CreationalContext<Conversation> creationalContext) {
