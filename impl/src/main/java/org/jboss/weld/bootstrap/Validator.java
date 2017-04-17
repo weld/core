@@ -494,12 +494,12 @@ public class Validator implements Service {
     }
 
     private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager) {
-        Set<Class<?>> interceptorBeanClasses = new HashSet<Class<?>>();
+        Set<String> interceptorBeanClasses = new HashSet<String>();
         for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors()) {
-            interceptorBeanClasses.add(interceptor.getBeanClass());
+            interceptorBeanClasses.add(interceptor.getBeanClass().getCanonicalName());
         }
         for (Metadata<Class<?>> enabledInterceptorClass : beanManager.getEnabled().getInterceptors()) {
-            if (!interceptorBeanClasses.contains(enabledInterceptorClass.getValue())) {
+            if (!interceptorBeanClasses.contains(enabledInterceptorClass.getValue().getCanonicalName())) {
                 throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, enabledInterceptorClass);
             }
         }
