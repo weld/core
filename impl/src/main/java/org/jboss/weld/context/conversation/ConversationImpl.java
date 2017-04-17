@@ -16,18 +16,6 @@
  */
 package org.jboss.weld.context.conversation;
 
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.ManagedConversation;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
-
 import static org.jboss.weld.logging.Category.CONVERSATION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ConversationMessage.BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION;
@@ -40,12 +28,27 @@ import static org.jboss.weld.logging.messages.ConversationMessage.END_CALLED_ON_
 import static org.jboss.weld.logging.messages.ConversationMessage.ILLEGAL_CONVERSATION_UNLOCK_ATTEMPT;
 import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANSIENT;
 
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.ConversationScoped;
+import javax.inject.Inject;
+
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.ManagedConversation;
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.slf4j.cal10n.LocLogger;
+
 /**
  * @author Nicklas Karlsson
+ * @author Marko Luksa
  */
 public class ConversationImpl implements ManagedConversation, Serializable {
 
-    private static final long serialVersionUID = 8873338254645033645L;
+    private static final long serialVersionUID = -5566903049468084035L;
 
     private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
@@ -56,29 +59,15 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     private ReentrantLock concurrencyLock;
     private long lastUsed;
 
-    private final Instance<ConversationContext> conversationContexts;
+    private BeanManagerImpl manager;
 
     @Inject
-    public ConversationImpl(Instance<ConversationContext> conversationContexts) {
-        this.conversationContexts = conversationContexts;
+    public ConversationImpl(BeanManagerImpl manager) {
+        this.manager = manager;
         this._transient = true;
-        ConversationContext conversationContext = getConversationContext();
-        if (conversationContext != null) {
-            this.timeout = conversationContext.getDefaultTimeout();
-        } else {
-            this.timeout = 0;
-        }
+        this.timeout = isContextActive() ? getActiveConversationContext().getDefaultTimeout() : 0;
         this.concurrencyLock = new ReentrantLock();
         touch();
-    }
-
-    private ConversationContext getConversationContext() {
-        for (ConversationContext conversationContext : conversationContexts) {
-            if (conversationContext.isActive()) {
-                return conversationContext;
-            }
-        }
-        return null;
     }
 
     public void begin() {
@@ -89,7 +78,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         _transient = false;
         if (this.id == null) {
             // This a conversation that was made transient previously in this request
-            this.id = getConversationContext().generateConversationId();
+            this.id = getActiveConversationContext().generateConversationId();
         }
         log.debug(PROMOTED_TRANSIENT, id);
     }
@@ -99,14 +88,13 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         if (!_transient) {
             throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
         }
-        if (getConversationContext().getConversation(id) != null) {
-            throw new IllegalStateException(CONVERSATION_ID_ALREADY_IN_USE, id);
+        if (getActiveConversationContext().getConversation(id) != null) {
+            throw new IllegalArgumentException(CONVERSATION_ID_ALREADY_IN_USE + id);
         }
         _transient = false;
         this.id = id;
         log.debug(PROMOTED_TRANSIENT, id);
     }
-
 
     public void end() {
         verifyConversationContextActive();
@@ -192,10 +180,17 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     }
 
     private void verifyConversationContextActive() {
-        ConversationContext ctx = getConversationContext();
-        if (ctx == null) {
+        if (!isContextActive()) {
             throw new ContextNotActiveException("Conversation Context not active when method called on conversation " + this);
         }
     }
 
+    public boolean isContextActive() {
+        return manager.isContextActive(ConversationScoped.class);
+    }
+
+    private ConversationContext getActiveConversationContext() {
+        return (ConversationContext) manager.getUnwrappedContext(ConversationScoped.class);
+
+    }
 }
