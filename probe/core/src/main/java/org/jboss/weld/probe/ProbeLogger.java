@@ -118,6 +118,6 @@ public interface ProbeLogger extends BasicLogger {
     void aroundConstructMonitoringProblem(Object bean, @Cause Throwable cause);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 21, value = "\n=====================================\n Weld - Deployment Validation: FAILED \n ------------------------------------\n HTML report exported to: \n\n {0} \n=====================================", format = Format.MESSAGE_FORMAT)
+    @Message(id = 21, value = "\n=====================================\n Weld - Deployment Validation: FAILED \n ------------------------------------\n HTML report generated to: \n\n {0} \n=====================================", format = Format.MESSAGE_FORMAT)
     void validationReportExported(Object path);
 }
