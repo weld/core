@@ -79,3 +79,26 @@ However, a default UI - HTML client (single-page application) is only available 
 Right now, the integration is provided for WildFly 10, Tomcat and Jetty (Weld Servlet) and Weld SE.
 
 TIP: There are some configuration properties which allow to tune or disable Probe features, e.g. to restrict the set of components which will be monitored. See also <<config-dev-mode>>.
+
+
+[[validation-report]]
+==== Validation Report
+
+If a deployment validation fails and the development mode is enabled a simple HTML report is generated.
+The report contains a lot of useful information such as Weld version, list of enabled beans, list of bean archives, Weld configuration, etc.
+By default, the report is generated to the user's current working directory, ie. `user.dir`.
+However, it is also possible to specify a path to the target directory using the `org.jboss.weld.probe.exportDataAfterDeployment` configuration property - see also <<config-dev-mode>>.
+
+You should see a similar log message which contains the path to the report file:
+
+-----------------------------------------------------------------------------------------------------------
+=====================================
+ Weld - Deployment Validation: FAILED
+ ------------------------------------
+ HTML report generated to:
+
+ file:///path/to/report/weld-validation-report.html
+=====================================
+-----------------------------------------------------------------------------------------------------------
+
+TIP: We encourage you to always attach this report when asking a question on the mailing list or any other communication channel.
