@@ -184,6 +184,71 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- Merge all WeldModule implementations into one file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            
+                            <createSourcesJar>true</createSourcesJar>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            
+                            <artifactSet>
+                                <includes>
+                                    <include>org.jboss.weld:weld-osgi-bundle</include>
+                                    <include>org.jboss.weld.module:weld-ejb</include>
+                                    <include>org.jboss.weld.module:weld-jsf</include>
+                                    <include>org.jboss.weld.module:weld-jta</include>
+                                    <include>org.jboss.weld.module:weld-web</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <!-- Include previously created OSGI bundle, but don't take META-INF/services -->
+                                <filter>
+                                    <artifact>org.jboss.weld:weld-osgi-bundle</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/services/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <!-- From modules, we want to only extract META-INF/services and merge them together using transformer -->
+                                <filter>
+                                    <artifact>org.jboss.weld.module:weld-ejb</artifact>
+                                    <includes>
+                                        <include>META-INF/services/**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.jboss.weld.module:weld-jta</artifact>
+                                    <includes>
+                                        <include>META-INF/services/**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.jboss.weld.module:weld-jsf</artifact>
+                                    <includes>
+                                        <include>META-INF/services/**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.jboss.weld.module:weld-web</artifact>
+                                    <includes>
+                                        <include>META-INF/services/**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -235,7 +300,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-      <tag>3.0.0-SNAPSHOT</tag>
-  </scm>
+        <tag>3.0.0-SNAPSHOT</tag>
+    </scm>
 
 </project>
