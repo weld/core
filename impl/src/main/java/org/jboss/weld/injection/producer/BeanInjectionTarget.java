@@ -138,10 +138,24 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         }
     }
 
-    protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
+    protected void checkConstructors(EnhancedAnnotatedType<T> type) {
         if (!beanManager.getServices().get(ProxyInstantiator.class).isUsingConstructor()) {
-            return;
+            checkNonPrivateConstructor(type);
+        } else {
+            checkNoArgsConstructor(type);
         }
+    }
+
+    protected void checkNonPrivateConstructor(EnhancedAnnotatedType<T> type) {
+        if (type.getEnhancedConstructors().stream().anyMatch(c -> !c.isPrivate())) {
+            return;
+        } else {
+            throw BeanLogger.LOG.decoratedMustHaveNonPrivateConstructor(this);
+        }
+    }
+
+    protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
+
         EnhancedAnnotatedConstructor<T> constructor = type.getNoArgsEnhancedConstructor();
         if (constructor == null) {
             throw BeanLogger.LOG.decoratedHasNoNoargsConstructor(this);
@@ -154,7 +168,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         if (type.isFinal()) {
             throw BeanLogger.LOG.finalBeanClassWithDecoratorsNotAllowed(this);
         }
-        checkNoArgsConstructor(type);
+        checkConstructors(type);
         for (Decorator<?> decorator : decorators) {
             EnhancedAnnotatedType<?> decoratorClass;
             if (decorator instanceof DecoratorImpl<?>) {
