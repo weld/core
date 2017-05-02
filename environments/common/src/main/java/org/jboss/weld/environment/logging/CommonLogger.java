@@ -114,7 +114,7 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 26, value = "Unable to instantiate {0} using parameters: {1}.", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToInstantiate(Object param1, Object param2, @Cause Throwable cause);
 
-    @LogMessage(level = Level.INFO)
+    @LogMessage(level = Level.WARN)
     @Message(id = 28, value = "Weld initialization skipped - no bean archive found")
     void initSkippedNoBeanArchiveFound();
 
