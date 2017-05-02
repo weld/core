@@ -70,14 +70,17 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
     }
 
     /**
-     * Get conversation context.
+     * Get conversation context. May return null if the container is not available.
      *
-     * @return the conversation context
+     * @return the conversation context or null if the container is not booted
      */
     private ConversationContext getConversationContext(String id) {
         if (conversationContext == null) {
             synchronized (this) {
                 if (conversationContext == null) {
+                    if (!Container.available(id)) {
+                        return null;
+                    }
                     Container container = Container.instance(id);
                     conversationContext = container.deploymentManager().instance().select(HttpConversationContext.class).get();
                 }
@@ -108,7 +111,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
         }
         String actionUrl = super.getActionURL(facesContext, viewId);
         final ConversationContext ctx = getConversationContext(contextId);
-        if (ctx.isActive() && !getSource().equals(Source.BOOKMARKABLE) && !ctx.getCurrentConversation().isTransient()) {
+        if (ctx != null && ctx.isActive() && !getSource().equals(Source.BOOKMARKABLE) && !ctx.getCurrentConversation().isTransient()) {
             return new FacesUrlTransformer(actionUrl, facesContext)
                 .appendConversationIdIfNecessary(getConversationContext(contextId).getParameterName(), ctx.getCurrentConversation().getId())
                 .getUrl();
