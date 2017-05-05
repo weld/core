@@ -519,7 +519,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1569, value = "Cannot inject injection point metadata in a non @Dependent bean: {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException cannotInjectInjectionPointMetadataIntoNonDependent(Object bean);
 
-    @Message(id = 1570, value = "Bean class which has decorators should declare at least one non private constructor: {0}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1570, value = "Bean class which has decorators in relaxed mode should declare at least one non private constructor with no args or annotated with @Inject: {0}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DeploymentException decoratedMustHaveNonPrivateConstructor(Object param1);
 
 }

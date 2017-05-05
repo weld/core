@@ -26,6 +26,9 @@ public class BravoImpl implements Bravo{
     private BravoImpl() {
     }
 
+    public BravoImpl(String foo) {
+    }
+
     @Override
     public String saySomething() {
         return "bravo";

@@ -42,15 +42,12 @@ public class DecoratedWithPrivateConstructorTest {
                 .build();
     }
 
-    @Test
+    @Test(expected = DeploymentException.class)
     public void privateConstructorTest() {
-        try {
-            WeldContainer container = new Weld().initialize();
-            Assert.fail();
-        } catch (DeploymentException e) {
-            Assert.assertTrue(e.getMessage().contains("Bean class which has decorators should declare at least one non private constructor"));
-        }
-
+        WeldContainer container = new Weld()
+                .property("org.jboss.weld.construction.relaxed", true)
+                .initialize();
+        Assert.fail();
     }
 }
 

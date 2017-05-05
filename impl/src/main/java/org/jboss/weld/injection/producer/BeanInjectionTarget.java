@@ -24,6 +24,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -147,11 +148,12 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected void checkNonPrivateConstructor(EnhancedAnnotatedType<T> type) {
-        if (type.getEnhancedConstructors().stream().anyMatch(c -> !c.isPrivate())) {
-            return;
-        } else {
-            throw BeanLogger.LOG.decoratedMustHaveNonPrivateConstructor(this);
+        for (EnhancedAnnotatedConstructor<T> eac : type.getEnhancedConstructors()) {
+            if (!eac.isPrivate() && (eac.getParameters().size() == 0 || eac.isAnnotationPresent(Inject.class))) {
+                return;
+            }
         }
+        throw BeanLogger.LOG.decoratedMustHaveNonPrivateConstructor(this);
     }
 
     protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
