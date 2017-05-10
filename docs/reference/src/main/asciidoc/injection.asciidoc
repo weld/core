@@ -564,6 +564,64 @@ Since CDI 2.0, most annotations from `javax.enterprise` package have their `Anno
 Therefore, in order to programmatically obtain (for instance) `@Any` annotation, you can simply do `Any.Literal.INSTANCE`.
 ====
 
+==== Enhanced version of `javax.enterprise.inject.Instance`
+
+Weld also provides `org.jboss.weld.inject.WeldInstance` - an enhanced version of `javax.enterprise.inject.Instance`.
+There are two additional methods.
+The first one - `getHandler()` - allows to obtain a contextual reference handler which not only holds the contextual reference but also allows to inspect the metadata of the relevant bean and to destroy the underlying contextual instance.
+Moreover, the handler implements `AutoCloseable`:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------
+import org.jboss.weld.inject.WeldInstance;
+
+class Foo {
+
+  @Inject
+  WeldInstance<Bar> instance;
+
+  void doWork() {
+    try (Handler<Bar> barHandler = instance.getHandler()) {
+        barHandler.get().doBusiness();
+        // Note that Bar will be automatically destroyed at the end of the try-with-resources statement
+    }
+    Handler<Bar> barHandler = instance.getHandler()
+    barHandler.get().doBusiness();
+    // Calls Instance.destroy()
+    barHandler.destroy();
+  }
+
+}
+----------------------------------------------------------------------------------
+
+The next method - `handlers()` - returns an `Iterable` which allows to iterate over handlers for all the beans that have the required type and required qualifiers and are eligible for injection.
+This might be useful if you need more control inside the loop:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------
+@ApplicationScoped
+class OrderService {
+
+  @Inject
+  @Any
+  WeldInstance<OrderProcessor> instance;
+
+  void create(Order order) {
+    for (Handler<OrderProcessor> handler : instance.handlers()) {
+            handler.get().process(order);
+            if (Dependent.class.equals(handler.getBean().getScope()) {
+                // Destroy only dependent processors
+                handler.destroy();
+            }
+        }
+  }
+}
+----------------------------------------------------------------------------------
+
+`WeldInstance` is automatically available in Weld SE and Weld Servlet where the Weld API is always on the class path.
+It is also available in Weld-powered EE containers.
+In this case, users would have to compile their application against the Weld API and exclude the Weld API artifact from the deployment (e.g. use `provided` scope in Maven).
+
 === The `InjectionPoint` object
 
 There are certain kinds of dependent objects (beans with scope

@@ -138,12 +138,43 @@ Container lifecycle event observer methods may inject a `BeanManager`:
 
 An extension observer method is not allowed to inject any other object.
 
+[[_configurators]]
 ==== Configurators
 
 CDI 2.0 introduced the Configurators API - a new way to easily configure some parts of the SPI during container lifecycle event notification.
-E.g. to add a qualifier to a bean an extension can observe `ProcessBeanAttributes`, then obtain a configurator instance through `ProcessBeanAttributes.configureBeanAttributes()` and finally use `BeanAttributesConfigurator.addQualifier(Annotation)`.
+E.g. to add a qualifier to a bean, an extension can observe `ProcessBeanAttributes`, then obtain a configurator instance through `ProcessBeanAttributes.configureBeanAttributes()` and finally use `BeanAttributesConfigurator.addQualifier(Annotation)`.
 No need to wrap/delegate to the original `BeanAttributes`.
 See also chapter http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#configurators[Configurators interfaces] of the CDI specification.
+
+==== Weld-enriched container lifecycle events
+
+Apart from CDI-defined lifecycle events, Weld also offers enriched observable container lifecycle event - `WeldAfterBeanDiscovery`.
+Compared to `javax.enterprise.inject.spi.AfterBeanDiscovery`, it adds one extra method - `addInterceptor()`.
+This method works in the same way as the aforementioned <<_configurators>>; you get back an `InterceptorConfigurator` instance, where you can set all the desired data.
+The interceptor is created automatically, once the methods exits and the configurator instance is not reusable.
+But if you need to create several interceptors, you can simply request several configurator instances.
+Here is a code snippet to demonstrate the idea:
+
+[source.JAVA, java]
+------------------------------------------------------------------------------------------------------------------------------------
+public void afterBeanDiscovery(@Observes WeldAfterBeanDiscovery event) {
+
+        // type level interceptor
+        event.addInterceptor().intercept(InterceptionType.AROUND_INVOKE, (invocationContext) -> {
+            try {
+                getAnswerToLifeTheUniverseAndEverything();
+                return invocationContext.proceed();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).priority(2500).addBinding(MyTypeBinding.MyTypeBindingLiteral.INSTANCE);
+}
+------------------------------------------------------------------------------------------------------------------------------------
+
+The sample presents a simple interception use case where you supply `java.util.function.Function` as the interceptor body method.
+For more complex cases, you may also choose to use `interceptWithMetadata` method which accepts `java.util.function.BiFunction` instead.
+The second parameter of the `BiFunction` emulates `@Inject @Intercepted Bean<?>` allowing access to metadata.
 
 === The `BeanManager` object
 
