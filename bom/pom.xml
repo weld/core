@@ -30,6 +30,7 @@
 
     <properties>
         <weld.api.bom.version>2.4.SP1</weld.api.bom.version>
+        <gpg.plugin.version>1.6</gpg.plugin.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
         <ossrh.releases.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</ossrh.releases.repo.url>
@@ -106,6 +107,36 @@
     </scm>
 
     <profiles>
+      <profile>
+         <id>release</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <version>${gpg.plugin.version}</version>
+                  <configuration>
+                     <passphrase>${gpg.passphrase}</passphrase>
+                     <useAgent>${gpg.useAgent}</useAgent>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
       <!-- JBoss release repository -->
       <profile>
          <id>jboss-release-repo</id>
