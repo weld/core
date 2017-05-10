@@ -139,6 +139,7 @@ assignable, and
 If any observer method throws an exception, the container will suppress it and notify remaining observers.
 The resulting `CompletionStage` will then finish exceptionally with `CompletionException` containing all previously suppressed exceptions.
 
+[[_notification_options]]
 ===== Notification options
 
 The `Event.fireAsync()` method may be called with a `NotificationOptions` parameter to configure the notification of asynchronous observer methods , e.g. to specify an `Executor` object to be used for asynchronous delivery.

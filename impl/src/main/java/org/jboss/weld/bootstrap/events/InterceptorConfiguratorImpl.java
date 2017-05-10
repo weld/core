@@ -108,7 +108,6 @@ public class InterceptorConfiguratorImpl implements InterceptorConfigurator {
         return this;
     }
 
-    @Override
     public Interceptor<?> build() {
         BuilderInterceptorBean interceptor;
         if (type == null) {
