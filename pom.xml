@@ -78,7 +78,7 @@
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
         <testng.version>6.8.8</testng.version>
-        <weld.api.version>3.0.CR3</weld.api.version>
+        <weld.api.version>3.0.Final</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
     </properties>
