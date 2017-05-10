@@ -331,3 +331,56 @@ However, this approach suffers the following drawbacks:
 in which interceptors are listed at the class level.
 
 Therefore, we recommend the use of CDI-style interceptor bindings.
+
+=== Enhanced version of `javax.interceptor.InvocationContext`
+
+For even more control over interceptors, Weld offers enhanced version of `javax.interceptor.InvocationContext` - `org.jboss.weld.interceptor.WeldInvocationContext`.
+It comes with two additional methods - `getInterceptorBindings` and `getInterceptorBindingsByType(Class<T> annotationType)`.
+You shouldn't need this in most cases, but it comes handy when working with `@Nonbinding` values in interceptor binding annotations.
+
+Assume you have the following interceptor binding:
+
+[source.JAVA, java]
+------------------------------------------------------------------------
+@InterceptorBinding
+@Inherited
+@Target({ TYPE, METHOD, CONSTRUCTOR})
+@Retention(RUNTIME)
+public @interface FooBinding {
+
+    @Nonbinding
+    String secret() default "";
+
+}
+------------------------------------------------------------------------
+
+Then, in the interceptor class, you can retrieve the secret `String` in the following way:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------
+@Priority(value = Interceptor.Priority.APPLICATION)
+@Interceptor
+@FooBinding(secret = "nonbinding")
+public class AroundConstructInterceptor {
+
+    @SuppressWarnings("unchecked")
+    @AroundConstruct
+    void intercept(InvocationContext ctx) throws Exception {
+        if(ctx instanceof WeldInvocationContext) {
+            Set<Annotation> bindings =  ((WeldInvocationContext)ctx).getInterceptorBindings();
+	    for (Annotation annotation : bindings) {
+                if (annotation.annotationType().equals(FooBinding.class)) {
+                    FooBinding fooBinding = (FooBinding) annotation;
+                    String secret = fooBinding.secret();
+                }
+        }
+        ctx.proceed();
+    }
+}
+-------------------------------------------------------------------------------------------------
+
+`WeldInvocationContext` can be used with the following interceptor types:
+
+* `@AroundConstruct`
+* `@PostConstruct`
+* `@AroundInvoke`
