@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>36</version>
+        <version>37</version>
     </parent>
 
     <prerequisites>
@@ -413,7 +413,7 @@
                 <artifactId>shrinkwrap-descriptors-impl</artifactId>
                 <version>${shrinkwrap.descriptors.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.shrinkwrap.resolver</groupId>
                 <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
