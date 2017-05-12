@@ -25,13 +25,6 @@
 
             <!-- Issues in the spec -->
 
-            <!-- CDI-437 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.broken.AmbiguousELNamesTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- Issues in the TCK -->
 
             <!-- Issues in Weld (the RI) -->
