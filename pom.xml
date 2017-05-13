@@ -448,7 +448,7 @@
             <dependency>
                 <groupId>org.jboss.cdi.tck</groupId>
                 <artifactId>cdi-tck-ext-lib</artifactId>
-                <version>${cdi.tck-1-2.version}</version>
+                <version>${cdi.tck-2-0.version}</version>
             </dependency>
 
             <dependency>
