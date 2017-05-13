@@ -84,6 +84,12 @@
             <artifactId>annotations</artifactId>
             <optional>true</optional>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.bcel</groupId>
+            <artifactId>bcel</artifactId>
+            <version>5.2</version>
+        </dependency>
 
         <!-- test dependencies -->
 
