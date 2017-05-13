@@ -318,13 +318,18 @@ public class BeansXmlHandler extends DefaultHandler {
     }
 
     private void processRootElement(Attributes attributes) {
-        String discoveryMode = attributes.getValue(BEAN_DISCOVERY_MODE_ATTRIBUTE_NAME);
-        if (discoveryMode != null) {
-            this.discoveryMode = BeanDiscoveryMode.valueOf(discoveryMode.toUpperCase());
-        }
         String version = attributes.getValue(VERSION_ATTRIBUTE_NAME);
         if (version != null) {
             this.version = version;
+        }
+        String discoveryMode = attributes.getValue(BEAN_DISCOVERY_MODE_ATTRIBUTE_NAME);
+        if (discoveryMode != null) {
+            this.discoveryMode = BeanDiscoveryMode.valueOf(discoveryMode.toUpperCase());
+        } else {
+            if (version != null && !version.equals("1.0")) {
+                // Use the default bean discovery mode for 1.1 or later
+                this.discoveryMode = BeanDiscoveryMode.ANNOTATED;
+            }
         }
     }
 
