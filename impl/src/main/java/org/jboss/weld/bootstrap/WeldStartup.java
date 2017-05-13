@@ -512,24 +512,17 @@ public class WeldStartup {
             beanManager.getServices().cleanupAfterBoot();
             beanManager.cleanupAfterBoot();
             // clean up beans
-            for (Bean<?> bean : beanManager.getBeans()) {
-                if (bean instanceof RIBean<?>) {
-                    RIBean<?> riBean = (RIBean<?>) bean;
-                    riBean.cleanupAfterBoot();
-                }
-            }
+            beanManager.getBeans().stream().filter(bean -> RIBean.class.isInstance(bean)).forEach(bean -> {
+                RIBean.class.cast(bean).cleanupAfterBoot();
+            });
             // clean up decorators
-            for (Decorator<?> decorator : beanManager.getDecorators()) {
-                if (decorator instanceof DecoratorImpl<?>) {
-                    Reflections.<DecoratorImpl<?>>cast(decorator).cleanupAfterBoot();
-                }
-            }
+            beanManager.getDecorators().stream().filter(decorator -> DecoratorImpl.class.isInstance(decorator)).forEach(decorator -> {
+                DecoratorImpl.class.cast(decorator).cleanupAfterBoot();
+            });
             // clean up interceptors
-            for (Interceptor<?> interceptor : beanManager.getInterceptors()) {
-                if (interceptor instanceof InterceptorImpl<?>) {
-                    Reflections.<InterceptorImpl<?>>cast(interceptor).cleanupAfterBoot();
-                }
-            }
+            beanManager.getInterceptors().stream().filter(interceptor -> InterceptorImpl.class.isInstance(interceptor)).forEach(interceptor -> {
+                InterceptorImpl.class.cast(interceptor).cleanupAfterBoot();
+            });
         }
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.getBeanDeployer().cleanup();
