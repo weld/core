@@ -35,7 +35,7 @@ public class TopSecretBriefing {
         return briefingPerformed;
     }
 
-    private final String getBriefingMessage() {
+    private String getBriefingMessage() {
         return MESSAGE;
     }
 }

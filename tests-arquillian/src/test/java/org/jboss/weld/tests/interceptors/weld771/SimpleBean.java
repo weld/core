@@ -33,7 +33,7 @@ public class SimpleBean {
         return interceptedInvocationCount;
     }
 
-    private final void notIntercepted() {
+    private void notIntercepted() {
         notInterceptedInvocationCount++;
     }
 

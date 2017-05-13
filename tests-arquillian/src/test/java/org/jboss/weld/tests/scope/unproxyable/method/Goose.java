@@ -21,7 +21,7 @@ import javax.enterprise.context.RequestScoped;
 @RequestScoped
 public class Goose {
 
-    public static final Goose getInstance() {
+    public static Goose getInstance() {
         return new Goose();
     }
 
