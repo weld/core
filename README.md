@@ -40,3 +40,12 @@ within WildFly. Then, run:
 
 > $ mvn clean verify -Dincontainer -f jboss-tck-runner/pom.xml
 
+If you want to run a specific test you can use the -Dtest=<test_name> flag. For tck 1.2 use -DtckTest=<test_name>. For example 
+
+> $ mvn clean verify -Dincontainer -f jboss-tck-runner/pom.xml -DtckTest=FireEventTest
+
+Will run all the tests defined in FireEventTest.java
+
+> $ mvn clean verify -Dincontainer -f jboss-tck-runner/pom.xml -DtckTest=FireEventTest.testInjectedEventAcceptsEventObject 
+
+Will only run testInjectedEventAcceptsEventObject.
