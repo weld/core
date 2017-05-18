@@ -24,6 +24,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -138,10 +139,25 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         }
     }
 
-    protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
+    protected void checkConstructors(EnhancedAnnotatedType<T> type) {
         if (!beanManager.getServices().get(ProxyInstantiator.class).isUsingConstructor()) {
-            return;
+            checkNonPrivateConstructor(type);
+        } else {
+            checkNoArgsConstructor(type);
         }
+    }
+
+    protected void checkNonPrivateConstructor(EnhancedAnnotatedType<T> type) {
+        for (EnhancedAnnotatedConstructor<T> eac : type.getEnhancedConstructors()) {
+            if (!eac.isPrivate() && (eac.getParameters().size() == 0 || eac.isAnnotationPresent(Inject.class))) {
+                return;
+            }
+        }
+        throw BeanLogger.LOG.decoratedMustHaveNonPrivateConstructor(this);
+    }
+
+    protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
+
         EnhancedAnnotatedConstructor<T> constructor = type.getNoArgsEnhancedConstructor();
         if (constructor == null) {
             throw BeanLogger.LOG.decoratedHasNoNoargsConstructor(this);
@@ -154,7 +170,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         if (type.isFinal()) {
             throw BeanLogger.LOG.finalBeanClassWithDecoratorsNotAllowed(this);
         }
-        checkNoArgsConstructor(type);
+        checkConstructors(type);
         for (Decorator<?> decorator : decorators) {
             EnhancedAnnotatedType<?> decoratorClass;
             if (decorator instanceof DecoratorImpl<?>) {
