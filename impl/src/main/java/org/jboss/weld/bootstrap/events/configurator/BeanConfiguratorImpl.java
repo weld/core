@@ -311,6 +311,12 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
     }
 
     public Bean<T> complete() {
+        if (createCallback == null) {
+            // not callback specified, Weld does not know how to instantiate this new custom bean
+            throw BeanLogger.LOG.noCallbackSpecifiedForCustomBean("bean [" + beanClass.toString()
+                + ", with types: " + Formats.formatTypes(attributes.types)
+                + ", and qualifiers: " + Formats.formatAnnotations(attributes.qualifiers) + "]");
+        }
         return new ImmutableBean<>(this);
     }
 
@@ -513,7 +519,7 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
         @Override
         public String toString() {
             return "Configurator Bean [" + getBeanClass().toString() + ", types: " + Formats.formatTypes(getTypes()) + ", qualifiers: "
-                    + Formats.formatAnnotations(getQualifiers()) + "]";
+                + Formats.formatAnnotations(getQualifiers()) + "]";
         }
 
     }

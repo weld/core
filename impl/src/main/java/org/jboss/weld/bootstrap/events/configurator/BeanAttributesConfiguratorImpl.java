@@ -56,13 +56,13 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     private String name;
 
-    private final Set<Annotation> qualifiers;
+    final Set<Annotation> qualifiers;
 
     private Class<? extends Annotation> scope;
 
     private final Set<Class<? extends Annotation>> stereotypes;
 
-    private Set<Type> types;
+    final Set<Type> types;
 
     private boolean isAlternative;
 
