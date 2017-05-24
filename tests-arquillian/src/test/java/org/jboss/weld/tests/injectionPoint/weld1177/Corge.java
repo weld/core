@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,38 +16,17 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1177;
 
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-
-import javax.ejb.Stateless;
-import javax.enterprise.inject.spi.InjectionPoint;
+import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-@Stateless
-public class Baz {
+@Singleton
+public class Corge {
 
     @Inject
     private Garply garply;
 
-    @Inject
-    private InjectionPoint injectionPoint;
-
-    public InjectionPoint getInjectionPoint() {
-        return injectionPoint;
-    }
-
-    public void doSomething() {
-    }
-
-    public Member getInjectionPointMember() {
-        return injectionPoint.getMember();
-    }
-
-    public Type getInjectionPointType() {
-        return injectionPoint.getType();
-    }
-
     public Garply getGarply() {
         return garply;
     }
+
 }

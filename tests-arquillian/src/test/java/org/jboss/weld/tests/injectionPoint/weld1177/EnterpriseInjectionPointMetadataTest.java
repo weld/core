@@ -2,9 +2,13 @@ package org.jboss.weld.tests.injectionPoint.weld1177;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,12 +27,12 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-public class Weld1177Test {
+public class EnterpriseInjectionPointMetadataTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(Weld1177Test.class))
-                .addPackage(Weld1177Test.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnterpriseInjectionPointMetadataTest.class))
+                .addPackage(EnterpriseInjectionPointMetadataTest.class.getPackage())
                 .addClass(Utils.class);
     }
 
@@ -45,6 +49,12 @@ public class Weld1177Test {
     private Baz baz;
 
     @Inject
+    private Qux qux;
+
+    @Inject
+    private Corge corge;
+
+    @Inject
     private Instance<Foo> fooInstance;
 
     @Inject
@@ -53,21 +63,44 @@ public class Weld1177Test {
     @Test
     public void testInjectionPointInManagedBean() throws Exception {
         assertNotNull(bar.getInjectionPoint());
-        assertEquals(Weld1177Test.class.getDeclaredField("bar"), bar.getInjectionPointMember());
+        assertEquals(EnterpriseInjectionPointMetadataTest.class.getDeclaredField("bar"), bar.getInjectionPointMember());
         assertEquals(Bar.class, bar.getInjectionPointType());
     }
 
     @Test
     public void testInjectionPointInSLSB() throws Exception {
-        assertEquals(Weld1177Test.class.getDeclaredField("foo"), foo.getInjectionPointMember());
-        assertEquals(Weld1177Test.class.getDeclaredField("foo2"), foo2.getInjectionPointMember());
-        assertEquals(Weld1177Test.class.getDeclaredField("baz"), baz.getInjectionPointMember());
+        assertEquals(EnterpriseInjectionPointMetadataTest.class.getDeclaredField("foo"), foo.getInjectionPointMember());
+        assertEquals(EnterpriseInjectionPointMetadataTest.class.getDeclaredField("foo2"), foo2.getInjectionPointMember());
+        assertEquals(EnterpriseInjectionPointMetadataTest.class.getDeclaredField("baz"), baz.getInjectionPointMember());
         assertEquals(Foo.class, foo.getInjectionPointType());
         assertEquals(Foo.class, foo2.getInjectionPointType());
         assertEquals(Baz.class, baz.getInjectionPointType());
 
         assertEquals(Foo.class.getDeclaredField("bar"), foo.getBarInjectionPointMember());
         assertEquals(Foo.class.getDeclaredField("bar"), foo2.getBarInjectionPointMember());
+        assertBeanIsNotNull(Baz.class, baz.getGarply().getInjectionPoint().getBean());
+    }
+
+    @Test
+    public void testInjectionPointMetadataInSFSB() throws Exception {
+        assertBeanIsNotNull(Qux.class, qux.getGarply().getInjectionPoint().getBean());
+    }
+
+    @Test
+    public void testInjectionPointMetadataInSingletonSB() throws Exception {
+        assertBeanIsNotNull(Corge.class, corge.getGarply().getInjectionPoint().getBean());
+    }
+
+    @Test
+    public void testInjectionPointMetadataInNonContextualEJB() throws NamingException {
+        Baz baz = (Baz) new InitialContext().lookup("java:module/Baz");
+        assertBeanIsNull(baz.getClass(), baz.getGarply().getInjectionPoint().getBean());
+
+        Corge corge = (Corge) new InitialContext().lookup("java:module/Corge");
+        assertBeanIsNull(corge.getClass(), corge.getGarply().getInjectionPoint().getBean());
+
+        Qux qux = (Qux) new InitialContext().lookup("java:module/Qux");
+        assertBeanIsNull(qux.getClass(), qux.getGarply().getInjectionPoint().getBean());
     }
 
     @Test
@@ -78,8 +111,8 @@ public class Weld1177Test {
         foo2.doSomething();
         assertNotNull(foo.getInjectionPoint());
         assertNotNull(foo2.getInjectionPoint());
-        assertEquals(Weld1177Test.class.getDeclaredField("fooInstance"), foo.getInjectionPointMember());
-        assertEquals(Weld1177Test.class.getDeclaredField("fooInstance2"), foo2.getInjectionPointMember());
+        assertEquals(EnterpriseInjectionPointMetadataTest.class.getDeclaredField("fooInstance"), foo.getInjectionPointMember());
+        assertEquals(EnterpriseInjectionPointMetadataTest.class.getDeclaredField("fooInstance2"), foo2.getInjectionPointMember());
         assertEquals(Foo.class, foo.getInjectionPointType());
         assertEquals(Foo.class, foo2.getInjectionPointType());
     }
@@ -90,6 +123,14 @@ public class Weld1177Test {
         // This should yield an exception - injection point metadata injected into a stateless session bean may only be accessed within its business method
         // invocation
         foo.getInjectionPoint().getType();
+    }
+
+    private void assertBeanIsNull(Class<?> clazz, Bean<?> bean) {
+        assertNull("InjectionPoint Bean metadata was not null in " + clazz, bean);
+    }
+
+    private void assertBeanIsNotNull(Class<?> clazz, Bean<?> bean) {
+        assertNotNull("InjectionPoint Bean metadata was null in " + clazz, bean);
     }
 
 }
