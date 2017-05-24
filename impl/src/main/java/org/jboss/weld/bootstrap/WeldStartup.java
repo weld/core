@@ -693,7 +693,7 @@ public class WeldStartup {
     }
 
     private boolean isEEModulesAwareEnvironment() {
-        return !Environments.SE.equals(environment);
+        return Environments.EE.equals(environment) || Environments.EE_INJECT.equals(environment) || Environments.SERVLET.equals(environment);
     }
 
     private void validationFailed(Exception failure) {
