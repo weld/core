@@ -117,6 +117,7 @@ import static org.jboss.weld.probe.Strings.WARNING;
 import static org.jboss.weld.probe.Strings.WARNING_CONFLICTING_ENABLEMENT;
 import static org.jboss.weld.probe.Strings.WARNING_UNRESTRICTED_PAT_OBSERVER;
 
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
