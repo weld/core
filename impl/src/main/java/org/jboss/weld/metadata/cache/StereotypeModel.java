@@ -72,16 +72,16 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     @Override
     protected void init(EnhancedAnnotation<T> annotatedAnnotation) {
         super.init(annotatedAnnotation);
-        initAlternative(annotatedAnnotation);
-        initDefaultScopeType(annotatedAnnotation);
-        initBeanNameDefaulted(annotatedAnnotation);
-        initInterceptorBindings(annotatedAnnotation);
-        initInheritedStereotypes(annotatedAnnotation);
-        checkBindings(annotatedAnnotation);
-        this.metaAnnotations = annotatedAnnotation.getAnnotations();
+        if (valid) {
+            initAlternative(annotatedAnnotation);
+            initDefaultScopeType(annotatedAnnotation);
+            initBeanNameDefaulted(annotatedAnnotation);
+            initInterceptorBindings(annotatedAnnotation);
+            initInheritedStereotypes(annotatedAnnotation);
+            checkBindings(annotatedAnnotation);
+            this.metaAnnotations = annotatedAnnotation.getAnnotations();
+        }
     }
-
-
 
     /**
      * Validates the binding types
@@ -152,17 +152,16 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
             } else {
                 ElementType[] elementTypes = annotatedAnnotation.getAnnotation(Target.class).value();
                 if (!(Arrays2.unorderedEquals(elementTypes, METHOD, FIELD, TYPE) ||
-                                Arrays2.unorderedEquals(elementTypes, TYPE) ||
-                                Arrays2.unorderedEquals(elementTypes, METHOD) ||
-                                Arrays2.unorderedEquals(elementTypes, FIELD) ||
-                                Arrays2.unorderedEquals(elementTypes, METHOD, TYPE)
+                        Arrays2.unorderedEquals(elementTypes, TYPE) ||
+                        Arrays2.unorderedEquals(elementTypes, METHOD) ||
+                        Arrays2.unorderedEquals(elementTypes, FIELD) ||
+                        Arrays2.unorderedEquals(elementTypes, METHOD, TYPE)
                 )) {
                     ReflectionLogger.LOG.missingTargetMethodFieldTypeParameterOrTargetMethodTypeOrTargetMethodOrTargetTypeOrTargetField(annotatedAnnotation);
                 }
             }
         }
     }
-
 
     /**
      * Get the default scope type the stereotype specifies
