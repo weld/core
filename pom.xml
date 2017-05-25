@@ -62,7 +62,7 @@
         <jsf.impl.version>2.2.10</jsf.impl.version>
         <jsp.api.version>2.2</jsp.api.version>
         <jstl.api.version>1.2</jstl.api.version>
-        <junit.version>4.8.1</junit.version>
+        <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
         <shade.plugin.version>2.3</shade.plugin.version>
