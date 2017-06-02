@@ -68,4 +68,7 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     @Message(id = 2014, value = "Weld SE container with id {0} has not yet validated the deployment - methods for programmatic lookup cannot be used", format = Format.MESSAGE_FORMAT)
     IllegalStateException weldContainerDeploymentNotValidated(Object id);
 
+    @Message(id = 2015, value = "Bean discovery mode NONE is not a valid option for Weld SE deployment archive - Weld SE container with id {0}.", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException beanArchiveWithModeNone(Object id);
+
 }
