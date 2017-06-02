@@ -87,6 +87,7 @@ import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
+import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -226,6 +227,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     private boolean discoveryEnabled = true;
 
     private final Set<Class<?>> beanClasses;
+
+    private BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
 
     private final List<Metadata<String>> selectedAlternatives;
 
@@ -662,7 +665,23 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Reset the synthetic bean archive (bean classes and enablement), explicitly added extensions, services and container lifecycle observers.
+     * Sets the bean discovery mode for synthetic bean archive. Default mode is ALL.
+     * @param mode bean discovery mode in a form of an enum from {@link org.jboss.weld.bootstrap.spi.BeanDiscoveryMode}. Accepted values are ALL, ANNOTATED
+     *
+     * @return  self
+     * @throws IllegalArgumentException if BeanDiscoveryMode.NONE is passed as an argument
+     */
+    public Weld setBeanDiscoveryMode(BeanDiscoveryMode mode) {
+        // NONE makes no sense as an option
+        if (mode.equals(beanDiscoveryMode.NONE)) {
+            throw WeldSELogger.LOG.beanArchiveWithModeNone(containerId);
+        }
+        beanDiscoveryMode = mode;
+        return this;
+    }
+
+    /**
+     * Reset the synthetic bean archive (bean classes and enablement), explicitly added extensions and services.
      *
      * @return self
      */
@@ -849,12 +868,15 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         final Deployment deployment;
         final Set<WeldBeanDeploymentArchive> beanDeploymentArchives = new HashSet<WeldBeanDeploymentArchive>();
         final Map<Class<? extends Service>, Service> additionalServices = new HashMap<>(this.additionalServices);
+        final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.<Class<? extends Annotation>> builder()
+            .addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
+            // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
+            .add(ThreadScoped.class)
+            .build();
 
         if (discoveryEnabled) {
-            DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
-                // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
-                .add(ThreadScoped.class).build(), isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false));
-
+            DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
+                   beanDefiningAnnotations, isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false));
             if (isImplicitScanEnabled()) {
                 strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
             }
@@ -868,8 +890,21 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         if (isSyntheticBeanArchiveRequired()) {
             ImmutableSet.Builder<String> beanClassesBuilder = ImmutableSet.builder();
             beanClassesBuilder.addAll(scanPackages());
-            WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, beanClassesBuilder.build(), null,
-                    buildSyntheticBeansXml(), Collections.emptySet(), ImmutableSet.copyOf(beanClasses));
+            Set<String> setOfAllBeanClasses = beanClassesBuilder.build();
+            // the creation process differs based on bean discovery mode
+            if (BeanDiscoveryMode.ANNOTATED.equals(beanDiscoveryMode)) {
+                // Annotated bean discovery mode, filter classes
+                ImmutableSet.Builder<String> filteredSetbuilder = ImmutableSet.builder();
+                for (String className : setOfAllBeanClasses) {
+                    Class<?> clazz = Reflections.loadClass(resourceLoader, className);
+                    if (clazz != null && Reflections.hasBeanDefiningAnnotation(clazz, beanDefiningAnnotations)) {
+                       filteredSetbuilder.add(className);
+                    }
+                }
+                setOfAllBeanClasses = filteredSetbuilder.build();
+            }
+            WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, setOfAllBeanClasses, null,
+                buildSyntheticBeansXml(), Collections.emptySet(), ImmutableSet.copyOf(beanClasses));
             beanDeploymentArchives.add(syntheticBeanArchive);
         }
 
@@ -975,7 +1010,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     private BeansXml buildSyntheticBeansXml() {
         return new BeansXmlImpl(ImmutableList.copyOf(selectedAlternatives), ImmutableList.copyOf(selectedAlternativeStereotypes),
-                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), null, null, BeanDiscoveryMode.ALL, null, false);
+                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), null, null, beanDiscoveryMode, null, false);
     }
 
     private MetadataImpl<String> syntheticMetadata(Class<?> clazz) {
@@ -1163,11 +1198,11 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
                 return false;
             }
             PackInfo other = (PackInfo) obj;
-            if (packClassName == null) {
-                if (other.packClassName != null) {
+            if (packName == null) {
+                if (other.packName != null) {
                     return false;
                 }
-            } else if (!packClassName.equals(other.packClassName)) {
+            } else if (!packName.equals(other.packName)) {
                 return false;
             }
             return true;
