@@ -267,8 +267,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     private final transient HashSet<BeanManagerImpl> accessibleManagers;
 
-    private final transient AtomicInteger childIds;
-
     private final String id;
     private final String contextId;
 
@@ -335,7 +333,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.enabled = enabled;
         this.namespaces = namespaces;
         this.id = id;
-        this.childIds = new AtomicInteger();
         this.managers = managers;
         this.contextId = contextId;
 
@@ -994,10 +991,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public String getId() {
         return id;
-    }
-
-    public AtomicInteger getChildIds() {
-        return childIds;
     }
 
     public List<ObserverMethod<?>> getObservers() {
