@@ -8,6 +8,7 @@ import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.environment.logging.Category;
 import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 
 /**
  * A source of localized log/bundle messages and exceptions. Note that this interface extends {@link WeldEnvironmentLogger} so that regular logger methods are
