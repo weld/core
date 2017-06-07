@@ -97,7 +97,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     // interceptors, decorators and observers go first
-    public AbstractBeanDeployer<E> deploySpecialized() {
+    protected AbstractBeanDeployer<E> deploySpecialized() {
         // ensure that all decorators are initialized before initializing
         // the rest of the beans
         for (DecoratorImpl<?> bean : getEnvironment().getDecorators()) {
@@ -115,37 +115,50 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         return this;
     }
 
-    public AbstractBeanDeployer<E> initializeBeans() {
+    protected AbstractBeanDeployer<E> initializeBeans() {
         for (RIBean<?> bean : getEnvironment().getBeans()) {
             bean.initialize(getEnvironment());
         }
         return this;
     }
 
-    public AbstractBeanDeployer<E> fireBeanEvents() {
+    protected AbstractBeanDeployer<E> fireProcessBeanEvents() {
         for (RIBean<?> bean : getEnvironment().getBeans()) {
-            fireBeanEvents(bean);
+            if (!(bean instanceof NewBean)) {
+                containerLifecycleEvents.fireProcessBean(getManager(), bean);
+            }
         }
         return this;
     }
 
-    public void fireBeanEvents(RIBean<?> bean) {
-        if (!(bean instanceof NewBean)) {
-            if (bean instanceof AbstractProducerBean<?, ?, ?>) {
-                containerLifecycleEvents.fireProcessProducer(manager, Reflections.<AbstractProducerBean<?, ?, Member>>cast(bean));
-            } else if (bean instanceof AbstractClassBean<?>) {
-                containerLifecycleEvents.fireProcessInjectionTarget(manager, (AbstractClassBean<?>) bean);
+    protected void processInjectionTargetEvents(Iterable<? extends AbstractBean<?, ?>> beans) {
+        if (!containerLifecycleEvents.isProcessInjectionTargetObserved()) {
+            return;
+        }
+        for (AbstractBean<?, ?> bean : beans) {
+            if (!(bean instanceof NewBean) && bean instanceof AbstractClassBean<?>) {
+                containerLifecycleEvents.fireProcessInjectionTarget(getManager(), (AbstractClassBean<?>) bean);
             }
-            containerLifecycleEvents.fireProcessBean(getManager(), bean);
         }
     }
 
-    public AbstractBeanDeployer<E> deployBeans() {
+    protected void processProducerEvents(Iterable<? extends AbstractBean<?, ?>> beans) {
+        if (!containerLifecycleEvents.isProcessProducerObserved()) {
+            return;
+        }
+        for (AbstractBean<?, ?> bean : beans) {
+            if (!(bean instanceof NewBean) && bean instanceof AbstractProducerBean<?, ?, ?>) {
+                containerLifecycleEvents.fireProcessProducer(getManager(), Reflections.<AbstractProducerBean<?, ?, Member>>cast(bean));
+            }
+        }
+    }
+
+    protected AbstractBeanDeployer<E> deployBeans() {
         manager.addBeans(getEnvironment().getBeans());
         return this;
     }
 
-    public AbstractBeanDeployer<E> initializeObserverMethods() {
+    protected AbstractBeanDeployer<E> initializeObserverMethods() {
         for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
             if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
                 observerInitializer.initialize();
@@ -154,7 +167,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         return this;
     }
 
-    public AbstractBeanDeployer<E> deployObserverMethods() {
+    protected AbstractBeanDeployer<E> deployObserverMethods() {
         for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
             if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
                 BootstrapLogger.LOG.foundObserverMethod(observerInitializer.getObserver());
@@ -295,7 +308,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         getEnvironment().addBuiltInBean(bean);
     }
 
-    public void addExtension(ExtensionBean bean) {
+    protected void addExtension(ExtensionBean bean) {
         getEnvironment().addExtension(bean);
     }
 
