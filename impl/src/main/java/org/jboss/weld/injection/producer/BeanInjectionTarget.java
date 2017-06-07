@@ -139,14 +139,20 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
-        if (!beanManager.getServices().get(ProxyInstantiator.class).isUsingConstructor()) {
-            return;
-        }
         EnhancedAnnotatedConstructor<T> constructor = type.getNoArgsEnhancedConstructor();
         if (constructor == null) {
-            throw BeanLogger.LOG.decoratedHasNoNoargsConstructor(this);
-        } else if (constructor.isPrivate()) {
-            throw BeanLogger.LOG.decoratedNoargsConstructorIsPrivate(this, Formats.formatAsStackTraceElement(constructor.getJavaMember()));
+            if (!beanManager.getServices().get(ProxyInstantiator.class).isUsingConstructor()) {
+                // Relaxed construction allows us to bypass non-existent no-arg constructor
+                return;
+            } else {
+                // Without relaxed contruction, CDI enforces existence of no-arg constructor
+                throw BeanLogger.LOG.decoratedHasNoNoargsConstructor(this);
+            }
+        } else {
+            if (constructor.isPrivate()) {
+                // Private no-arg constructor is a problem while creating the decorator and we have to blow up
+                throw BeanLogger.LOG.decoratedNoargsConstructorIsPrivate(this, Formats.formatAsStackTraceElement(constructor.getJavaMember()));
+            }
         }
     }
 
