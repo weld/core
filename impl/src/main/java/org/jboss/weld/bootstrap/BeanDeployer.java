@@ -246,9 +246,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         preInitializeBeans(getEnvironment().getDecorators());
         preInitializeBeans(getEnvironment().getInterceptors());
 
-        processBeanAttributes(getEnvironment().getClassBeans());
-        processBeanAttributes(getEnvironment().getDecorators());
-        processBeanAttributes(getEnvironment().getInterceptors());
+        processBeans(getEnvironment().getClassBeans());
+        processBeans(getEnvironment().getDecorators());
+        processBeans(getEnvironment().getInterceptors());
 
         // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
         searchForNewBeanDeclarations(getEnvironment().getClassBeans());
@@ -260,6 +260,14 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         for (AbstractBean<?, ?> bean : beans) {
             bean.preInitialize();
         }
+    }
+
+    protected void processBeans(Iterable<? extends AbstractBean<?, ?>> beans) {
+        // firstly, we handle PIT and PP
+        processInjectionTargetEvents(beans);
+        processProducerEvents(beans);
+        // now we move onto PBA
+        processBeanAttributes(beans);
     }
 
     protected void processBeanAttributes(Iterable<? extends AbstractBean<?, ?>> beans) {
@@ -289,7 +297,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             getEnvironment().vetoBean(bean);
         }
         // if a specializing bean was vetoed, let's process the specializing bean now
-        processBeanAttributes(previouslySpecializedBeans);
+        processBeans(previouslySpecializedBeans);
     }
 
     protected void searchForNewBeanDeclarations(Iterable<? extends AbstractBean<?, ?>> beans) {
@@ -305,11 +313,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void processProducerAttributes() {
-        processBeanAttributes(getEnvironment().getProducerFields());
+        processBeans(getEnvironment().getProducerFields());
         searchForNewBeanDeclarations(getEnvironment().getProducerFields());
         // process BeanAttributes for producer methods
         preInitializeBeans(getEnvironment().getProducerMethodBeans());
-        processBeanAttributes(getEnvironment().getProducerMethodBeans());
+        processBeans(getEnvironment().getProducerMethodBeans());
         searchForNewBeanDeclarations(getEnvironment().getProducerMethodBeans());
     }
 
@@ -325,7 +333,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void deploy() {
         initializeBeans();
-        fireBeanEvents();
+        fireProcessBeanEvents();
         deployBeans();
         initializeObserverMethods();
         deployObserverMethods();
