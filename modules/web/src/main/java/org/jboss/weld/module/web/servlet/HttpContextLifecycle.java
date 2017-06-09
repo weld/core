@@ -161,6 +161,7 @@ public class HttpContextLifecycle implements Service {
                     module.fireEvent(ServletContext.class, ctx, qualifier);
                 } else {
                     // fallback for backward compatibility
+                    ServletLogger.LOG.noEeModuleDescriptor(beanManager);
                     final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
                     beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
                 }

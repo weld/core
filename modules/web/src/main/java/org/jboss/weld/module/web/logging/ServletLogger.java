@@ -92,4 +92,8 @@ public interface ServletLogger extends WeldLogger {
     @Message(id = 717, value = "Unable to deactivate context {0} when destroying request {1}", format = Format.MESSAGE_FORMAT)
     void unableToDeactivateContext(Object context, Object request);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 718, value = "No EEModuleDescriptor defined for bean archive with ID: {0}. @Initialized and @Destroyed events for ApplicationScoped may be fired twice.", format = Format.MESSAGE_FORMAT)
+    void noEeModuleDescriptor(Object beanArchiveId);
+
 }
