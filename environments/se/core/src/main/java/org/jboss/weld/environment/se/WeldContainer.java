@@ -126,6 +126,23 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     }
 
     /**
+     * A convenient method for {@link CDI.current()}. Returns current {@link WeldContainer} instance
+     * if there is exactly one instance running. Throws {@link IllegalStateException} in any other case.
+     * @return Current {@link WeldContainer} instance if and only if exactly one instance exists
+     * @throws {@link IllegalStateException} if there is 0 or more than 1 instance running
+     */
+    public static WeldContainer current() {
+        List<String> ids = WeldContainer.getRunningContainerIds();
+        if (ids.size() == 1) {
+            return WeldContainer.instance(ids.get(0));
+        } else {
+            // if there is either no container or multiple containers we want to throw exception
+            // in this case Weld cannot determine which container is "current"
+            throw WeldSELogger.LOG.zeroOrMoreThanOneContainerRunning();
+        }
+    }
+
+    /**
      *
      * @return an immutable list of ids of running containers
      */
