@@ -33,7 +33,7 @@
         
         <!-- Following section is dedicated to WFLY download/update and patch creation -->
         <!--Path to the patched WFLY server, if you chose to let Mavne download it, this default will be used-->
-        <wildflyPatched>${project.build.directory}/wildfly-patched</wildflyPatched>
+        <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</wildflyPatched>
         <!--Path to patch file; only change if you have your own, else Maven downloads it-->
         <patchConfigFile>${project.build.directory}/patch.xml</patchConfigFile>
         <!--These patches are automatically downloaded from github.com/weld/build/tree/master/wildfly, specify the file name here to determine which one to use-->
@@ -42,7 +42,7 @@
         <patchOutputFile>${project.build.directory}/patch.zip</patchOutputFile>
         <!--Path to original (pristine) WFLY-->
         <!--Running with -Pdownload-wfly will make Maven download the version specified below-->
-        <wildflyOriginal>${project.build.directory}/wildfly-original</wildflyOriginal>
+        <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
         <wildfly.download.version>10.1.0.Final</wildfly.download.version>
         
         <!--Plugin versions-->
@@ -189,20 +189,20 @@
                                         </pathconvert>
                                         <!-- weld-core-impl is the right core
                                         artifact if weld-core-jsf is used by the application server -->
-                                        <condition property="weld.core.file" value="weld-core-impl.jar">
+                                        <condition property="weld.core.file" value="weld-core-impl-${weld.update.version}.jar">
                                             <and>
                                                 <isset property="weld.jsf.path" />
                                             </and>
                                         </condition>
-                                        <condition property="weld.jsf.file" value="weld-core-jsf.jar">
+                                        <condition property="weld.jsf.file" value="weld-core-jsf-${weld.update.version}.jar">
                                             <and>
                                                 <isset property="weld.jsf.path" />
                                             </and>
                                         </condition>
                                         <!-- otherwise, use the old artifact
                                         (weld-core) -->
-                                        <property name="weld.core.file" value="weld-core.jar" />
-                                        <property name="weld.probe.file" value="weld-probe-core.jar" />
+                                        <property name="weld.core.file" value="weld-core-${weld.update.version}.jar" />
+                                        <property name="weld.probe.file" value="weld-probe-core-${weld.update.version}.jar" />
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
@@ -235,19 +235,19 @@
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
-                                                <include name="weld-spi.jar" />
+                                                <include name="weld-spi-${weld.api.version}.jar" />
                                             </fileset>
                                         </copy>
 
-                                        <replaceregexp file="${module.dir}/spi/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-spi.jar&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/spi/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-spi-${weld.api.version}.jar&quot;" byline="true" />
 
                                         <copy todir="${module.dir}/api/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
-                                                <include name="weld-api.jar" />
+                                                <include name="weld-api-${weld.api.version}.jar" />
                                             </fileset>
                                         </copy>
 
-                                        <replaceregexp file="${module.dir}/api/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-api.jar&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/api/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-api-${weld.api.version}.jar&quot;" byline="true" />
 
                                         <!-- Update the weld-core-jsf artifact
                                         (this one is only used post WF 8.0.0.Alpha1) -->
@@ -257,7 +257,7 @@
                                             </fileset>
                                         </copy>
 
-                                        <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-core-jsf.*?&quot;" replace="path=&quot;weld-core-jsf.jar&quot;" byline="true" />
+                                        <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-core-jsf.*?&quot;" replace="path=&quot;weld-core-jsf-${weld.update.version}.jar&quot;" byline="true" />
                                     </target>
                                 </configuration>
                             </execution>
@@ -303,7 +303,7 @@
                                     <target>
                                         <copy todir="${env.JBOSS_HOME}/standalone/lib/ext" overwrite="true">
                                             <fileset dir="target/dependency/lib">
-                                                <include name="cdi-tck-ext-lib.jar" />
+                                                <include name="cdi-tck-ext-lib-${cdi.tck-1-2.version}.jar" />
                                             </fileset>
                                         </copy>
                                     </target>
@@ -390,7 +390,6 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                            <stripVersion>true</stripVersion>
                             <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-core-jsf,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
                         </configuration>
                     </execution>
