@@ -522,4 +522,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1570, value = "Invalid BeanConfigurator setup - no callback was specified for {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException noCallbackSpecifiedForCustomBean(Object bean);
 
+    @LogMessage(level = Level.INFO)
+    @Message(id = 1571, value = "Proxy for {0} created in {1} because {2}.", format = Format.MESSAGE_FORMAT)
+    void generatingProxyToDefaultPackage(Object param1, Object param2, Object param3);
+
 }
