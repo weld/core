@@ -499,4 +499,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1568, value = "Unable to create ClassFile for: {1}.", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToCreateClassFile(Object name, @Cause Throwable cause);
 
+    @LogMessage(level = Level.INFO)
+    @Message(id = 1571, value = "Proxy for {0} created in {1} because {2}.", format = Format.MESSAGE_FORMAT)
+    void generatingProxyToDefaultPackage(Object param1, Object param2, Object param3);
+
 }
