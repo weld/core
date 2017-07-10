@@ -121,6 +121,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     protected static final String INIT_METHOD_NAME = "<init>";
     protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
     static final String JAVA = "java";
+    static final String NULL = "the class package is null";
+    static final String SIGNED = "the class is signed";
 
     private static final Set<ProxiedMethodFilter> METHOD_FILTERS;
 
@@ -232,15 +234,19 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             if (superInterface == null) {
                 throw new IllegalArgumentException("Proxied bean type cannot be java.lang.Object without an interface");
             } else {
-                if (superInterface.getPackage() == null) {
+                String reason = getDefaultPackageReason(superInterface);
+                if (reason != null) {
                     proxyPackage = DEFAULT_PROXY_PACKAGE;
+                    BeanLogger.LOG.generatingProxyToDefaultPackage(superInterface, DEFAULT_PROXY_PACKAGE, reason);
                 } else {
                     proxyPackage = superInterface.getPackage().getName();
                 }
             }
         } else {
-            if (proxiedBeanType.getPackage() == null) {
+            String reason = getDefaultPackageReason(proxiedBeanType);
+            if (reason != null) {
                 proxyPackage = DEFAULT_PROXY_PACKAGE;
+                BeanLogger.LOG.generatingProxyToDefaultPackage(proxiedBeanType, DEFAULT_PROXY_PACKAGE, reason);
             } else {
                 proxyPackage = proxiedBeanType.getPackage().getName();
             }
@@ -939,5 +945,15 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private Class<?> getProxySuperclass() {
         return getBeanType().isInterface() ? Object.class : getBeanType();
+    }
+
+    private static String getDefaultPackageReason(Class<?> clazz) {
+        if (clazz.getPackage() == null) {
+            return NULL;
+        }
+        if (clazz.getSigners() != null) {
+            return SIGNED;
+        }
+        return null;
     }
 }
