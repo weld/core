@@ -50,7 +50,7 @@
         <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.9.Final</cdi.tck-1-2.version>
-        <cdi.tck-2-0.version>2.0.0.Final</cdi.tck-2-0.version>
+        <cdi.tck-2-0.version>2.0.1.Final</cdi.tck-2-0.version>
         <classfilewriter.version>1.1.2.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
