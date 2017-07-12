@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,6 +49,7 @@ import java.net.URL;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
+@Ignore
 public class JsfStressTest {
     protected final String MAIN_PAGE = "/home.jsf";
     protected final String GUESS_MESSAGES = "numberGuess:messages";
