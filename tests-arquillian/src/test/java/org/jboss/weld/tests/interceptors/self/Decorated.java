@@ -5,4 +5,5 @@ package org.jboss.weld.tests.interceptors.self;
  */
 public interface Decorated {
     void doDecorated();
+
 }

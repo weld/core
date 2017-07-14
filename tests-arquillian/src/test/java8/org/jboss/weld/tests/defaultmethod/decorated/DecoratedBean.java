@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
+ * Copyright 2017, Red Hat, Inc. and/or its affiliates, and individual
+ * contributors by the @authors tag. See the copyright.txt in the
+ * distribution for a full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.defaultmethod;
+package org.jboss.weld.tests.defaultmethod.decorated;
 
-import javax.enterprise.context.ApplicationScoped;
+public class DecoratedBean implements Decorated {
 
-@ApplicationScoped
-@Fast
-public class Foo implements Omega {
-
-    @Override
-    public int ping() {
-        return 1;
+    public void doUndecorated() {
+        doDecorated();
+        defaultDecorated();
     }
 
+
+    @Override
+    public void doDecorated() {
+
+    }
 }

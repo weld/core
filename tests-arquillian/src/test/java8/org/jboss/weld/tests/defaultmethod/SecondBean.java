@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,25 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.defaultmethod;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+package org.jboss.weld.tests.defaultmethod;
 
-import javax.annotation.Priority;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+public class SecondBean implements ISecondBean {
 
-@Priority(Interceptor.Priority.APPLICATION + 1)
-@Fast
-@Interceptor
-public class MissileInterceptor {
+    public void doUnintercepted() {
+        ping();
+        defaultPing();
+    }
 
-    static final AtomicBoolean INTERCEPTED = new AtomicBoolean(false);
-
-    @AroundInvoke
-    public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
-        INTERCEPTED.set(true);
-        return ctx.proceed();
+    @Secured
+    public void ping() {
+        // do nothing
     }
 }

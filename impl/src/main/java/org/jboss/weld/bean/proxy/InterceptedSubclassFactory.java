@@ -140,11 +140,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
                             if (interceptedMethodSignatures.contains(methodSignature)) {
                                 // create delegate-to-super method
-                                int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
-                                ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.makeDescriptor(method.getReturnType()),
-                                        DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
-                                delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
-                                createDelegateToSuper(delegatingMethod, methodInfo);
+                                createDelegateMethod(proxyClassType, method, methodInfo);
 
                                 // this method is intercepted
                                 // override a subclass method to delegate to method handler
@@ -198,16 +194,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     MethodSignature signature = new MethodSignatureImpl(method);
                     if (enhancedMethodSignatures.contains(signature) && !processedBridgeMethods.contains(signature)) {
                         try {
+                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
+
                             if (interceptedMethodSignatures.contains(signature) && Reflections.isDefault(method)) {
-                                MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                                // create delegate-to-super method
-                                int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC
-                                        & ~AccessFlag.PROTECTED;
-                                ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX,
-                                        DescriptorUtils.makeDescriptor(method.getReturnType()),
-                                        DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
-                                delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
-                                createDelegateToSuper(delegatingMethod, methodInfo);
+                                createDelegateMethod(proxyClassType, method, methodInfo);
 
                                 // this method is intercepted
                                 // override a subclass method to delegate to method handler
@@ -216,10 +206,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                                 createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
                                 BeanLogger.LOG.addingMethodToProxy(method);
                             } else {
-                                MethodInformation methodInformation = new RuntimeMethodInformation(method);
-                                final ClassMethod classMethod = proxyClassType.addMethod(method);
-                                createSpecialMethodBody(classMethod, methodInformation, staticConstructor);
-                                BeanLogger.LOG.addingMethodToProxy(method);
+                                if (Reflections.isDefault(method)) {
+                                    createDelegateMethod(proxyClassType, method, methodInfo);
+                                } else {
+                                    final ClassMethod classMethod = proxyClassType.addMethod(method);
+                                    createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
+                                    BeanLogger.LOG.addingMethodToProxy(method);
+                                }
                             }
                         } catch (DuplicateMemberException e) {
                         }
@@ -427,6 +420,16 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     @Override
     protected Class<? extends MethodHandler> getMethodHandlerType() {
         return CombinedInterceptorAndDecoratorStackMethodHandler.class;
+    }
+
+    private void createDelegateMethod(ClassFile proxyClassType, Method method, MethodInformation methodInformation) {
+        int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC
+                & ~AccessFlag.PROTECTED;
+        ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX,
+                DescriptorUtils.makeDescriptor(method.getReturnType()),
+                DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
+        delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
+        createDelegateToSuper(delegatingMethod, methodInformation);
     }
 
 }

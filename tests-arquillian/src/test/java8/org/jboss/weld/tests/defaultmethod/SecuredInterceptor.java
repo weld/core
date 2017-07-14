@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.self;
+package org.jboss.weld.tests.defaultmethod;
 
 import java.util.ArrayList;
 import java.util.List;
