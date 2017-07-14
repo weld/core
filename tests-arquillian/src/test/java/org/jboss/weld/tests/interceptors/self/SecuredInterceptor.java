@@ -17,7 +17,6 @@
 
 package org.jboss.weld.tests.interceptors.self;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
