@@ -14,14 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.defaultmethod;
+package org.jboss.weld.tests.defaultmethod.intercepted;
 
-public interface Omega {
+import javax.enterprise.context.ApplicationScoped;
 
-    int ping();
+@ApplicationScoped
+@Fast
+public class Foo implements Omega {
 
-    default int pong() {
-        return 5;
+    @Override
+    public int ping() {
+        return 1;
     }
 
 }

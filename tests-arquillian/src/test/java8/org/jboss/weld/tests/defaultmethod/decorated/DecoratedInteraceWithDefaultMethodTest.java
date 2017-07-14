@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.self;
+package org.jboss.weld.tests.defaultmethod.decorated;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,43 +23,34 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-/**
- * @author Marius Bogoevici
- */
 @RunWith(Arquillian.class)
-public class SelfInvocationTest {
+// this needs jboss-classfilewriter 1.2.0 and newer - see WELD-2093 and WELD-2407
+@Category(EmbeddedContainer.class)
+public class DecoratedInteraceWithDefaultMethodTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SelfInvocationTest.class))
-                .intercept(SecuredInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratedInteraceWithDefaultMethodTest.class))
                 .decorate(BeanDecorator.class)
-                .addPackage(SelfInvocationTest.class.getPackage());
+                .addPackage(DecoratedInteraceWithDefaultMethodTest.class.getPackage());
     }
 
     @Test
-    public void testSelfInterception(Bean bean) {
-        // safety-check: make sure that intercepted method is intercepted when invoked standalone
-        SecuredInterceptor.reset();
-        bean.doIntercepted();
-        Assert.assertEquals(1, SecuredInterceptor.interceptedInvocations.size());
-        Assert.assertTrue(SecuredInterceptor.interceptedInvocations.contains("doIntercepted"));
-
+    public void testSelfInvocationOfDecoratedMethod(DecoratedBean bean) {
         // safety-check: make sure that decorated method is decorated when invoked standalone
         BeanDecorator.reset();
         bean.doDecorated();
         Assert.assertEquals(1, BeanDecorator.decoratedInvocationCount);
 
-        // safety-check: make sure that intercepted and decorated methods are not intercepted when invoked from unintercepted method
-        SecuredInterceptor.reset();
+        // safety-check: make sure that decorated method is not decorated when invoked from undecorated method
         BeanDecorator.reset();
-        bean.doUnintercepted();
-        Assert.assertEquals(0, SecuredInterceptor.interceptedInvocations.size());
+        bean.doUndecorated();
         Assert.assertEquals(0, BeanDecorator.decoratedInvocationCount);
     }
-
 }

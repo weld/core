@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2016, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.tests.defaultmethod.intercepted;
 
-package org.jboss.weld.tests.interceptors.self;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-/**
- * @author Marius Bogoevici
- */
+@Priority(Interceptor.Priority.APPLICATION + 1)
+@Fast
 @Interceptor
-@Secured
-public class SecuredInterceptor {
+public class MissileInterceptor {
 
-    static List<String> interceptedInvocations = new ArrayList<String>();
-
-    public static void reset() {
-        interceptedInvocations = new ArrayList<String>();
-    }
+    static final AtomicBoolean INTERCEPTED = new AtomicBoolean(false);
 
     @AroundInvoke
-    public Object doSecured(InvocationContext invocationContext) throws Exception {
-        interceptedInvocations.add(invocationContext.getMethod().getName());
-        return invocationContext.proceed();
+    public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
+        INTERCEPTED.set(true);
+        return ctx.proceed();
     }
 }
