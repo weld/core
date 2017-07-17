@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
+@AroundConstructBinding
 public class MessageDriven implements MessageListener {
 
     @Inject
@@ -58,6 +59,11 @@ public class MessageDriven implements MessageListener {
 
     @Override
     public void onMessage(Message arg0) {
+    }
+
+    @AroundInvokeBinding
+    public void ping(){
+
     }
 
     public BeanManager getField() {

@@ -34,8 +34,11 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.AbstractInstantiator;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
+import org.jboss.weld.injection.producer.ConstructorInterceptionInstantiator;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
+import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.injection.producer.InterceptionModelInitializer;
+import org.jboss.weld.injection.producer.InterceptorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -70,12 +73,24 @@ class EjbSupportImpl implements EjbSupport {
         InternalEjbDescriptor<T> descriptor = InternalEjbDescriptor.of(d);
         EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass(descriptor, manager, type);
 
-        AbstractInstantiator<T> instantiator = null;
+        Instantiator<T> instantiator = null;
         if (type.equals(implementationClass)) {
             instantiator = new DefaultInstantiator<T>(type, null, manager);
         } else {
             // Session bean subclassed by the EJB container
             instantiator = SubclassedComponentInstantiator.forSubclassedEjb(type, implementationClass, null, manager);
+        }
+        InterceptionModel interceptionModel = manager.getInterceptorModelRegistry().get(type.slim());
+        if (interceptionModel != null) {
+            if (interceptionModel.hasExternalNonConstructorInterceptors()) {
+                instantiator = SubclassedComponentInstantiator
+                        .forInterceptedDecoratedBean(implementationClass, null, (AbstractInstantiator<T>) instantiator, manager);
+                instantiator = new InterceptorApplyingInstantiator<>(instantiator, interceptionModel, type.slim());
+
+            }
+            if (interceptionModel.hasExternalConstructorInterceptors()) {
+                instantiator = new ConstructorInterceptionInstantiator<>(instantiator, interceptionModel, type.slim());
+            }
         }
         return BasicInjectionTarget.createDefault(type, null, manager, instantiator);
     }
