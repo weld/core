@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.beanManager.injectionTarget.mdb;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -111,13 +112,16 @@ public class MessageDrivenInjectionTargetTest {
             }
         });
 
-        CreationalContext<MessageDriven> ctx = manager.<MessageDriven> createCreationalContext(null);
+        CreationalContext<MessageDriven> ctx = manager.<MessageDriven>createCreationalContext(null);
+        AroundInvokeInterceptor.reset();
+
         MessageDriven instance = it.produce(ctx);
         assertFalse(instance.isPostConstruct());
         assertFalse(instance.isDestroyed());
         assertNull(instance.getField());
         assertNull(instance.getInitializer());
         assertNotNull(instance.getConstructor());
+        assertTrue(AroundConstructInterceptor.aroundConstructCalled);
 
         it.inject(instance, ctx);
         assertFalse(instance.isPostConstruct());
@@ -132,6 +136,10 @@ public class MessageDrivenInjectionTargetTest {
         assertNotNull(instance.getField());
         assertNotNull(instance.getInitializer());
         assertNotNull(instance.getConstructor());
+
+        instance.ping();
+        assertEquals(1, AroundInvokeInterceptor.interceptedInvocations.size());
+        assertTrue(AroundInvokeInterceptor.interceptedInvocations.contains("ping"));
 
         it.preDestroy(instance);
         assertTrue(instance.isPostConstruct());
