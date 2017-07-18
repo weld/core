@@ -115,6 +115,11 @@
             <version>${groovy.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.classfilewriter</groupId>
+            <artifactId>jboss-classfilewriter</artifactId>
+            <version>${classfilewriter.version}</version>
+        </dependency>
 
     </dependencies>
 
