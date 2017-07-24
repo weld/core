@@ -18,9 +18,12 @@ package org.jboss.weld.xml;
 
 import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -89,6 +92,52 @@ public class BeansXmlParser {
             if (source.getByteStream().available() == 0) {
                 // The file is just acting as a marker file
                 return EMPTY_BEANS_XML;
+            } else {
+                // handle beans.xml files with only comment inside - we consider these to be equal to empty beans.xml files
+                BufferedReader reader = new BufferedReader(new InputStreamReader(source.getByteStream(), Charset.forName("UTF-8")));
+                String commentBegin = "<!--";
+                String commentEnd = "-->";
+                boolean commentStartFound = false;
+                boolean commentOnlyFound = false;
+                String oneLine;
+                while ((oneLine = reader.readLine()) != null) {
+                    if (oneLine.isEmpty()) {
+                        continue;
+                    }
+                    if (!commentStartFound) {
+                        if (oneLine.startsWith(commentBegin)) {
+                            // marks start of the comment
+                            commentStartFound = true;
+
+                            if (oneLine.endsWith(commentEnd)) {
+                                // comment also ends in one line, this is valid
+                                commentOnlyFound = true;
+                                commentStartFound = false;
+                            }
+                        } else {
+                            // found something else than comments inside
+                            commentOnlyFound = false;
+                            break;
+                        }
+                    } else {
+                        // we are looking for end of comment
+                        if (oneLine.endsWith(commentEnd)) {
+                            // comment also ends in one line, this is valid
+                            commentOnlyFound = true;
+                            commentStartFound = false;
+                        } else {
+                            // no-op, this line is part of the multi-line comment
+                        }
+                    }
+                }
+                reader.close();
+                if (commentOnlyFound) {
+                    return EMPTY_BEANS_XML;
+                } else {
+                    // since we have read from the stream, we need to reset it back to the beginning
+                    beansXmlInputStream = beansXml.openStream();
+                    source = new InputSource(beansXmlInputStream);
+                }
             }
             BeansXmlHandler handler = getHandler(beansXml);
 
@@ -191,7 +240,6 @@ public class BeansXmlParser {
 
         return xsds.toArray(EMPTY_INPUT_SOURCE_ARRAY);
     }
-
 
     private static InputSource loadXsd(String name, ClassLoader classLoader) {
         InputStream in = classLoader.getResourceAsStream(name);
