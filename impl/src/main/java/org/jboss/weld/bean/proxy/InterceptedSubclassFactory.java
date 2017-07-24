@@ -302,7 +302,9 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         // this is a self invocation optimisation
         // test to see if this is a self invocation, and if so invokespecial the
         // superclass method directly
-        if (addProceed) {
+        // do not optimize in the case of default methods,
+        // they are never self invocated
+        if (addProceed && !Reflections.isDefault(methodInfo.getMethod())) {
             b.dup();
 
             // get the Stack
