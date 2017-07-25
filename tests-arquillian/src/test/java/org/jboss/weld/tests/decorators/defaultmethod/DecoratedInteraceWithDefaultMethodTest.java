@@ -23,15 +23,11 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-// this needs jboss-classfilewriter 1.2.0 and newer - see WELD-2093 and WELD-2407
-@Category(EmbeddedContainer.class)
 public class DecoratedInteraceWithDefaultMethodTest {
 
     @Deployment
