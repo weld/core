@@ -59,6 +59,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.proxy.WeldConstruct;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.security.GetProtectionDomainAction;
@@ -427,6 +428,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private void addDefaultAdditionalInterfaces() {
         additionalInterfaces.add(Serializable.class);
+        // add a marker interface denoting that the resulting class uses weld internal contructs
+        additionalInterfaces.add(WeldConstruct.class);
     }
 
     /**
