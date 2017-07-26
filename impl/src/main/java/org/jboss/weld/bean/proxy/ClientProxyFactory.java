@@ -36,6 +36,8 @@ import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.proxy.WeldClientProxy;
 import org.jboss.weld.security.GetDeclaredFieldAction;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -93,6 +95,38 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         } catch (PrivilegedActionException e) {
             throw new RuntimeException(e.getCause());
         }
+    }
+
+    @Override
+    protected void addAdditionalInterfaces(Set<Class<?>> interfaces) {
+        // add marker interface for client proxy, this also requires adding interface methods implementations
+        interfaces.add(WeldClientProxy.class);
+    }
+
+    @Override
+    protected void addMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
+        // delegate to ProxyFactory#addMethods
+        super.addMethods(proxyClassType, staticConstructor);
+
+        // add method from WeldClientProxy
+        generateWeldClientProxyMethod(proxyClassType);
+    }
+
+    private void generateWeldClientProxyMethod(ClassFile proxyClassType) {
+        try {
+            Method getContextualMetadata = WeldClientProxy.class.getMethod("getMetadata");
+            generateBodyForWeldClientProxyMethod(proxyClassType.addMethod(getContextualMetadata));
+        } catch (Exception e) {
+            throw new WeldException(e);
+        }
+    }
+
+    private void generateBodyForWeldClientProxyMethod(ClassMethod method) throws Exception {
+        // ProxyMethodHandler implements ContextualMetadata, so let's just return reference to it
+        final CodeAttribute b = method.getCodeAttribute();
+        b.aload(0);
+        getMethodHandlerField(method.getClassFile(), b);
+        b.returnInstruction();
     }
 
     @Override

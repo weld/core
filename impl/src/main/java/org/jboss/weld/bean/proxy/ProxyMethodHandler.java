@@ -28,6 +28,7 @@ import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.proxy.WeldClientProxy.Metadata;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
@@ -40,7 +41,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author David Allen
  */
 @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "bean field is loaded lazily")
-public class ProxyMethodHandler implements MethodHandler, Serializable {
+public class ProxyMethodHandler implements MethodHandler, Serializable, Metadata {
 
     private static final long serialVersionUID = 5293834510764991583L;
 
@@ -64,6 +65,11 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
         } else {
             this.beanId = null;
         }
+    }
+
+    @Override
+    public Object getContextualInstance() {
+        return this.getInstance();
     }
 
     /* (non-Javadoc)
