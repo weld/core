@@ -292,27 +292,32 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         b.aload(0);
         getMethodHandlerField(method.getClassFile(), b);
 
-        // this is a self invocation optimisation
-        // test to see if this is a self invocation, and if so invokespecial the
-        // superclass method directly
         if (addProceed) {
             b.dup();
 
             // get the Stack
             b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack", "()" + DescriptorUtils.makeDescriptor(Stack.class));
-            b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
-            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "(" + DescriptorUtils.makeDescriptor(Stack.class) + ")" + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
 
-            b.iconst(0);
-            BranchEnd invokeSuperDirectly = b.ifIcmpeq();
-            // now build the bytecode that invokes the super class method
-            b.pop2(); // pop Stack and Handler
-            b.aload(0);
-            // create the method invocation
-            b.loadMethodParameters();
-            b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
-            b.returnInstruction();
-            b.branchEnd(invokeSuperDirectly);
+
+            // this is a self invocation optimisation
+            // test to see if this is a self invocation, and if so invokespecial the
+            // superclass method directly
+            // do not optimize in the case of default methods
+            if (!Reflections.isDefault(methodInfo.getMethod())) {
+                b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
+                b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "(" + DescriptorUtils.makeDescriptor(Stack.class) + ")" + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
+
+                b.iconst(0);
+                BranchEnd invokeSuperDirectly = b.ifIcmpeq();
+                // now build the bytecode that invokes the super class method
+                b.pop2(); // pop Stack and Handler
+                b.aload(0);
+                // create the method invocation
+                b.loadMethodParameters();
+                b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+                b.returnInstruction();
+                b.branchEnd(invokeSuperDirectly);
+            }
         } else {
             b.aconstNull();
         }
@@ -422,6 +427,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         return CombinedInterceptorAndDecoratorStackMethodHandler.class;
     }
 
+    @SuppressWarnings("unchecked")
     private void createDelegateMethod(ClassFile proxyClassType, Method method, MethodInformation methodInformation) {
         int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC
                 & ~AccessFlag.PROTECTED;
