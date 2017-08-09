@@ -55,7 +55,6 @@ import org.jboss.weld.bean.proxy.ProtectionDomainCache;
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Environment;
-import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
@@ -345,7 +344,7 @@ public class WeldStartup {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));
-        if (isEEModulesAwareEnvironment()) {
+        if (environment.isEEModulesAware()) {
             services.add(BeanDeploymentModules.class, new BeanDeploymentModules(contextId, services));
         }
     }
@@ -675,10 +674,6 @@ public class WeldStartup {
 
     Deployment getDeployment() {
         return deployment;
-    }
-
-    private boolean isEEModulesAwareEnvironment() {
-        return !Environments.SE.equals(environment);
     }
 
     private void validationFailed(Exception failure) {
