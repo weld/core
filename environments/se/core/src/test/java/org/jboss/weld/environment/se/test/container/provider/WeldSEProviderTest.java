@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se.test.container.provider;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -82,6 +83,16 @@ public class WeldSEProviderTest {
             Bean<?> fooBean = TestExtension.fooBeanReference.get();
             assertNotNull(fooBean);
         }
+    }
+
+    @Test
+    public void testDependentInstanceDestroyedDuringShutdown() {
+        Baz.DISPOSED.set(false);
+        try (WeldContainer weldContainer = new Weld().disableDiscovery().beanClasses(Baz.class).initialize()) {
+            assertTrue(CDI.current().select(Baz.class).get().ping());
+            assertFalse(Baz.DISPOSED.get());
+        }
+        assertTrue(Baz.DISPOSED.get());
     }
 
     private void assertCdi(CDI<Object> cdi, String id) {
