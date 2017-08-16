@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,31 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean;
+package org.jboss.weld.tests.alternatives.customBeanPriority;
 
-import javax.enterprise.inject.spi.Bean;
-
-import org.jboss.weld.serialization.spi.BeanIdentifier;
+import javax.enterprise.inject.Vetoed;
 
 /**
- * A {@link Bean} implementation provided by Weld.
  *
- * @author Jozef Hartinger
- *
- * @param <T> the type of the bean instance
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-public interface WeldBean<T> extends Bean<T> {
+@Vetoed
+public class FooAlternative extends PlainFoo {
 
-    /**
-     * @return the {@link BeanIdentifier} for this bean
-     */
-    BeanIdentifier getIdentifier();
-
-    /**
-     * Used for custom beans registered via WeldBeanConfigurator.
-     * @return bean priority or null if not set or overriden
-     */
-    default Integer getPriority() {
-        return null;
+    @Override
+    public String ping() {
+        return "bar";
     }
 }
