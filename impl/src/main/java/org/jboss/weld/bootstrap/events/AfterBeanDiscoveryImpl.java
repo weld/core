@@ -43,6 +43,7 @@ import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
+import org.jboss.weld.bean.WeldBean;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
@@ -50,6 +51,7 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.event.InterceptorConfigurator;
 import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
+import org.jboss.weld.bootstrap.event.WeldBeanConfigurator;
 import org.jboss.weld.bootstrap.events.configurator.BeanConfiguratorImpl;
 import org.jboss.weld.bootstrap.events.configurator.ObserverMethodConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -99,7 +101,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     @Override
-    public <T> BeanConfigurator<T> addBean() {
+    public <T> WeldBeanConfigurator<T> addBean() {
         checkWithinObserverNotification();
         BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(getReceiver().getClass(), getBeanDeploymentFinder());
         additionalBeans.add(BeanRegistration.of(configurator, getReceiver()));
@@ -194,6 +196,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
         // Custom beans (alternatives, interceptors, decorators) may also implement javax.enterprise.inject.spi.Prioritized
         Integer priority = (bean instanceof Prioritized) ? ((Prioritized) bean).getPriority() : null;
+        // if added via WeldBeanConfigurator, there might be a priority specified as well
+        if (priority == null && bean instanceof WeldBean) {
+            priority = ((WeldBean) bean).getPriority();
+        }
 
         if (bean instanceof Interceptor<?>) {
             beanManager.addInterceptor((Interceptor<?>) bean);
