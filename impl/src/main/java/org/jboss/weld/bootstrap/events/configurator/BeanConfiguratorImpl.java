@@ -37,10 +37,11 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.configurator.BeanConfigurator;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bean.StringBeanIdentifier;
+import org.jboss.weld.bean.WeldBean;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.logging.BeanLogger;
@@ -49,6 +50,8 @@ import org.jboss.weld.util.ForwardingWeldInstance;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.bootstrap.event.WeldBeanConfigurator;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
  *
@@ -56,7 +59,7 @@ import org.jboss.weld.util.reflection.Formats;
  *
  * @param <T>
  */
-public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurator<Bean<T>> {
+public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configurator<Bean<T>> {
 
     private final BeanManagerImpl beanManager;
 
@@ -72,6 +75,8 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
 
     private DestroyCallback<T> destroyCallback;
 
+    private Integer priority = null;
+
     /**
      *
      * @param defaultBeanClass
@@ -85,82 +90,88 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
     }
 
     @Override
-    public BeanConfigurator<T> beanClass(Class<?> beanClass) {
+    public WeldBeanConfigurator<T> priority(int priority){
+        this.priority = priority;
+        return this;
+    }
+
+    @Override
+    public WeldBeanConfigurator<T> beanClass(Class<?> beanClass) {
         checkArgumentNotNull(beanClass);
         this.beanClass = beanClass;
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addInjectionPoint(InjectionPoint injectionPoint) {
+    public WeldBeanConfigurator<T> addInjectionPoint(InjectionPoint injectionPoint) {
         checkArgumentNotNull(injectionPoint);
         this.injectionPoints.add(injectionPoint);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addInjectionPoints(InjectionPoint... injectionPoints) {
+    public WeldBeanConfigurator<T> addInjectionPoints(InjectionPoint... injectionPoints) {
         checkArgumentNotNull(injectionPoints);
         Collections.addAll(this.injectionPoints, injectionPoints);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addInjectionPoints(Set<InjectionPoint> injectionPoints) {
+    public WeldBeanConfigurator<T> addInjectionPoints(Set<InjectionPoint> injectionPoints) {
         checkArgumentNotNull(injectionPoints);
         this.injectionPoints.addAll(injectionPoints);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> injectionPoints(InjectionPoint... injectionPoints) {
+    public WeldBeanConfigurator<T> injectionPoints(InjectionPoint... injectionPoints) {
         this.injectionPoints.clear();
         return addInjectionPoints(injectionPoints);
     }
 
     @Override
-    public BeanConfigurator<T> injectionPoints(Set<InjectionPoint> injectionPoints) {
+    public WeldBeanConfigurator<T> injectionPoints(Set<InjectionPoint> injectionPoints) {
         this.injectionPoints.clear();
         return addInjectionPoints(injectionPoints);
     }
 
     @Override
-    public BeanConfigurator<T> id(String id) {
+    public WeldBeanConfigurator<T> id(String id) {
         checkArgumentNotNull(id);
         this.id = id;
         return this;
     }
 
     @Override
-    public <U extends T> BeanConfigurator<U> createWith(Function<CreationalContext<U>, U> callback) {
+    public <U extends T> WeldBeanConfigurator<U> createWith(Function<CreationalContext<U>, U> callback) {
         checkArgumentNotNull(callback);
         this.createCallback = cast(CreateCallback.fromCreateWith(callback));
         return cast(this);
     }
 
     @Override
-    public <U extends T> BeanConfigurator<U> produceWith(Function<Instance<Object>, U> callback) {
+    public <U extends T> WeldBeanConfigurator<U> produceWith(Function<Instance<Object>, U> callback) {
         checkArgumentNotNull(callback);
         this.createCallback = cast(CreateCallback.fromProduceWith(callback));
         return cast(this);
     }
 
     @Override
-    public BeanConfigurator<T> destroyWith(BiConsumer<T, CreationalContext<T>> callback) {
+    public WeldBeanConfigurator<T> destroyWith(BiConsumer<T, CreationalContext<T>> callback) {
         checkArgumentNotNull(callback);
         this.destroyCallback = DestroyCallback.fromDestroy(callback);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> disposeWith(BiConsumer<T, Instance<Object>> callback) {
+    public WeldBeanConfigurator<T> disposeWith(BiConsumer<T, Instance<Object>> callback) {
         checkArgumentNotNull(callback);
         this.destroyCallback = DestroyCallback.fromDispose(callback);
         return this;
     }
 
     @Override
-    public <U extends T> BeanConfigurator<U> read(AnnotatedType<U> type) {
+    public <U extends T> WeldBeanConfigurator<U> read(AnnotatedType<U> type) {
         checkArgumentNotNull(type);
         final InjectionTarget<T> injectionTarget = cast(beanManager.getInjectionTargetFactory(type).createInjectionTarget(null));
         addInjectionPoints(injectionTarget.getInjectionPoints());
@@ -180,132 +191,132 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
     }
 
     @Override
-    public BeanConfigurator<T> read(BeanAttributes<?> beanAttributes) {
+    public WeldBeanConfigurator<T> read(BeanAttributes<?> beanAttributes) {
         checkArgumentNotNull(beanAttributes);
         this.attributes.read(beanAttributes);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addType(Type type) {
+    public WeldBeanConfigurator<T> addType(Type type) {
         checkArgumentNotNull(type);
         this.attributes.addType(type);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addType(TypeLiteral<?> typeLiteral) {
+    public WeldBeanConfigurator<T> addType(TypeLiteral<?> typeLiteral) {
         checkArgumentNotNull(typeLiteral);
         this.attributes.addType(typeLiteral.getType());
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addTypes(Type... types) {
+    public WeldBeanConfigurator<T> addTypes(Type... types) {
         checkArgumentNotNull(types);
         this.attributes.addTypes(types);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addTypes(Set<Type> types) {
+    public WeldBeanConfigurator<T> addTypes(Set<Type> types) {
         checkArgumentNotNull(types);
         this.attributes.addTypes(types);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addTransitiveTypeClosure(Type type) {
+    public WeldBeanConfigurator<T> addTransitiveTypeClosure(Type type) {
         checkArgumentNotNull(type);
         this.attributes.addTransitiveTypeClosure(type);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> types(Type... types) {
+    public WeldBeanConfigurator<T> types(Type... types) {
         checkArgumentNotNull(types);
         this.attributes.types(types);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> types(Set<Type> types) {
+    public WeldBeanConfigurator<T> types(Set<Type> types) {
         checkArgumentNotNull(types);
         this.attributes.types(types);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> scope(Class<? extends Annotation> scope) {
+    public WeldBeanConfigurator<T> scope(Class<? extends Annotation> scope) {
         checkArgumentNotNull(scope);
         this.attributes.scope(scope);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addQualifier(Annotation qualifier) {
+    public WeldBeanConfigurator<T> addQualifier(Annotation qualifier) {
         checkArgumentNotNull(qualifier);
         this.attributes.addQualifier(qualifier);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addQualifiers(Annotation... qualifiers) {
+    public WeldBeanConfigurator<T> addQualifiers(Annotation... qualifiers) {
         checkArgumentNotNull(qualifiers);
         this.attributes.addQualifiers(qualifiers);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addQualifiers(Set<Annotation> qualifiers) {
+    public WeldBeanConfigurator<T> addQualifiers(Set<Annotation> qualifiers) {
         checkArgumentNotNull(qualifiers);
         this.attributes.addQualifiers(qualifiers);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> qualifiers(Annotation... qualifiers) {
+    public WeldBeanConfigurator<T> qualifiers(Annotation... qualifiers) {
         checkArgumentNotNull(qualifiers);
         this.attributes.qualifiers(qualifiers);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> qualifiers(Set<Annotation> qualifiers) {
+    public WeldBeanConfigurator<T> qualifiers(Set<Annotation> qualifiers) {
         checkArgumentNotNull(qualifiers);
         this.attributes.qualifiers(qualifiers);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addStereotype(Class<? extends Annotation> stereotype) {
+    public WeldBeanConfigurator<T> addStereotype(Class<? extends Annotation> stereotype) {
         checkArgumentNotNull(stereotype);
         this.attributes.addStereotype(stereotype);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> addStereotypes(Set<Class<? extends Annotation>> stereotypes) {
+    public WeldBeanConfigurator<T> addStereotypes(Set<Class<? extends Annotation>> stereotypes) {
         checkArgumentNotNull(stereotypes);
         this.attributes.addStereotypes(stereotypes);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> stereotypes(Set<Class<? extends Annotation>> stereotypes) {
+    public WeldBeanConfigurator<T> stereotypes(Set<Class<? extends Annotation>> stereotypes) {
         checkArgumentNotNull(stereotypes);
         this.attributes.stereotypes(stereotypes);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> name(String name) {
+    public WeldBeanConfigurator<T> name(String name) {
         this.attributes.name(name);
         return this;
     }
 
     @Override
-    public BeanConfigurator<T> alternative(boolean alternative) {
+    public WeldBeanConfigurator<T> alternative(boolean alternative) {
         this.attributes.alternative(alternative);
         return this;
     }
@@ -445,9 +456,11 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
      *
      * @param <T> the class of the bean instance
      */
-    static class ImmutableBean<T> extends ForwardingBeanAttributes<T> implements Bean<T>, PassivationCapable {
+    static class ImmutableBean<T> extends ForwardingBeanAttributes<T> implements WeldBean<T>, PassivationCapable {
 
         private final String id;
+
+        private final Integer priority;
 
         private final BeanManagerImpl beanManager;
 
@@ -472,6 +485,7 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
             this.injectionPoints = ImmutableSet.copyOf(configurator.injectionPoints);
             this.createCallback = configurator.createCallback;
             this.destroyCallback = configurator.destroyCallback;
+            this.priority = configurator.priority;
             if (configurator.id != null) {
                 this.id = configurator.id;
             } else {
@@ -497,6 +511,12 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
         }
 
         @Override
+        public BeanIdentifier getIdentifier() {
+            // this will likely never get called, so it's ok to create new object here
+            return new StringBeanIdentifier(id);
+        }
+
+        @Override
         public Set<InjectionPoint> getInjectionPoints() {
             return injectionPoints;
         }
@@ -514,6 +534,11 @@ public class BeanConfiguratorImpl<T> implements BeanConfigurator<T>, Configurato
         @Override
         public String getId() {
             return id;
+        }
+
+        @Override
+        public Integer getPriority() {
+            return priority;
         }
 
         @Override

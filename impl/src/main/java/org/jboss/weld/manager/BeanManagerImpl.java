@@ -90,6 +90,7 @@ import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.SyntheticBeanFactory;
+import org.jboss.weld.bean.WeldBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
@@ -410,9 +411,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.sharedBeans.addAll(transitiveBeans);
     }
 
+    /**
+     * Helper method which allows to recognize if bean was created by BeanConfigurator and has any priority set.
+     * Note that such bean will not implement Prioritized interface.
+     */
+    private boolean isConfiguratorBeanWithPriority(Bean<?> bean) {
+        return bean instanceof WeldBean && ((WeldBean) bean).getPriority() != null;
+    }
+
     private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
         if (beanSet.add(bean)) {
-            if (bean.isAlternative() && (!registry.isEnabledInAnyBeanDeployment(bean) && !(bean instanceof Prioritized))) {
+            if (bean.isAlternative() && (!registry.isEnabledInAnyBeanDeployment(bean) && !(bean instanceof Prioritized)) && !isConfiguratorBeanWithPriority(bean)) {
                 BootstrapLogger.LOG.foundDisabledAlternative(bean);
             } else if (registry.isSpecializedInAnyBeanDeployment(bean)) {
                 BootstrapLogger.LOG.foundSpecializedBean(bean);
