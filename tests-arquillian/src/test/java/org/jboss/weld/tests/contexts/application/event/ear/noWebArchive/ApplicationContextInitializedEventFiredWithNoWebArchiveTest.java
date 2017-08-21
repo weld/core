@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Testcase for WFLY-3334, WELD-2401
+ *
  * @author Matej Novotny
  *
  */
@@ -46,8 +47,8 @@ public class ApplicationContextInitializedEventFiredWithNoWebArchiveTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        JavaArchive lib = ShrinkWrap.create(JavaArchive.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(Library.class, ApplicationContextInitializedEventFiredWithNoWebArchiveTest.class);
-        JavaArchive ejb = Testable.archiveToTest(ShrinkWrap.create(JavaArchive.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addClass(SessionBean.class));
+        JavaArchive lib = ShrinkWrap.create(JavaArchive.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addClass(Library.class);
+        JavaArchive ejb = Testable.archiveToTest(ShrinkWrap.create(JavaArchive.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(SessionBean.class, ApplicationContextInitializedEventFiredWithNoWebArchiveTest.class));
         return ShrinkWrap.create(EnterpriseArchive.class).addAsModule(ejb).addAsLibrary(lib);
     }
 
