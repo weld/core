@@ -77,6 +77,7 @@
                             org.jboss.weld.events;
                             org.jboss.weld.inject;
                             org.jboss.weld.interceptor;
+                            org.jboss.weld.proxy;
 
                             <!-- Probe development tool -->
                             org.jboss.weld.probe;
