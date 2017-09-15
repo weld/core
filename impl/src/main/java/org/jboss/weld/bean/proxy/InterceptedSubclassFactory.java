@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.security.AccessController;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -123,18 +124,18 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         try {
 
             final Set<MethodSignature> finalMethods = new HashSet<MethodSignature>();
-            final Set<MethodSignature> processedBridgeMethods = new HashSet<MethodSignature>();
+            final Set<BridgeMethod> processedBridgeMethods = new HashSet<BridgeMethod>();
 
             // Add all methods from the class hierarchy
             Class<?> cls = getBeanType();
             while (cls != null) {
-                Set<MethodSignature> declaredBridgeMethods = new HashSet<MethodSignature>();
+                Set<BridgeMethod> declaredBridgeMethods = new HashSet<BridgeMethod>();
                 for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
 
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
 
                     if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
-                            && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
+                            && !finalMethods.contains(methodSignature) && !bridgeMethodsContainsMethod(processedBridgeMethods, methodSignature, method.getGenericReturnType())) {
                         try {
                             final MethodInformation methodInfo = new RuntimeMethodInformation(method);
 
@@ -182,7 +183,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             finalMethods.add(methodSignature);
                         }
                         if (method.isBridge()) {
-                            declaredBridgeMethods.add(methodSignature);
+                            declaredBridgeMethods.add(new BridgeMethod(methodSignature, method.getGenericReturnType()));
                         }
                     }
                 }
@@ -192,10 +193,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             for (Class<?> c : getAdditionalInterfaces()) {
                 for (Method method : c.getMethods()) {
                     MethodSignature signature = new MethodSignatureImpl(method);
-                    if (enhancedMethodSignatures.contains(signature) && !processedBridgeMethods.contains(signature)) {
+                    // For interfaces we do not consider return types when going through processed bridge methods
+                    if (enhancedMethodSignatures.contains(signature) && !bridgeMethodsContainsMethod(processedBridgeMethods, signature, null)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
-
                             if (interceptedMethodSignatures.contains(signature) && Reflections.isDefault(method)) {
                                 createDelegateMethod(proxyClassType, method, methodInfo);
 
@@ -218,13 +219,25 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                         }
                     }
                     if (method.isBridge()) {
-                        processedBridgeMethods.add(signature);
+                        processedBridgeMethods.add(new BridgeMethod(signature, method.getGenericReturnType()));
                     }
                 }
             }
         } catch (Exception e) {
             throw new WeldException(e);
         }
+    }
+
+    private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType) {
+        for (BridgeMethod bridgeMethod : processedBridgeMethods) {
+            if (bridgeMethod.signature.equals(signature)) {
+                if (returnType != null) {
+                    return bridgeMethod.returnType.equals(returnType) ? true : false;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
@@ -436,6 +449,63 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                 DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
         delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
         createDelegateToSuper(delegatingMethod, methodInformation);
+    }
+
+    private static class BridgeMethod {
+
+        private final Type returnType;
+
+        private final MethodSignature signature;
+
+        public BridgeMethod(MethodSignature signature, Type returnType) {
+            this.signature = signature;
+            this.returnType = returnType;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
+            result = prime * result + ((signature == null) ? 0 : signature.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (!(obj instanceof BridgeMethod)) {
+                return false;
+            }
+            BridgeMethod other = (BridgeMethod) obj;
+            if (returnType == null) {
+                if (other.returnType != null) {
+                    return false;
+                }
+            } else if (!returnType.equals(other.returnType)) {
+                return false;
+            }
+            if (signature == null) {
+                if (other.signature != null) {
+                    return false;
+                }
+            } else if (!signature.equals(other.signature)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder().append("method ").append(returnType).append(" ").append(signature.getMethodName())
+                    .append(Arrays.toString(signature.getParameterTypes()).replace('[', '(').replace(']', ')')).toString();
+        }
+
     }
 
 }
