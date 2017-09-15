@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.bridgemethods.hierarchy;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -24,11 +26,11 @@ import javax.interceptor.InvocationContext;
 @Interceptor
 public class MissileInterceptor {
 
-    public static boolean intercepted = false;
+    public final static AtomicBoolean INTERCEPTED = new AtomicBoolean(false);
 
     @AroundInvoke
     public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
-        intercepted = true;
+        INTERCEPTED.set(true);
         return ctx.proceed();
     }
 }

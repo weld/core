@@ -18,32 +18,18 @@ package org.jboss.weld.tests.interceptors.bridgemethods.hierarchy;
 
 import org.jboss.weld.test.util.ActionSequence;
 
-@Fast
-public class Parent<T> implements Base<T> {
+public interface Base<T> {
 
-    public void invokeA(T param) {
-        ActionSequence.addAction(Parent.class.getName());
-    }
+    void invokeA(T param);
 
-    public T getA() {
-        ActionSequence.addAction(Parent.class.getName());
-        return null;
-    }
+    T getA();
 
-    @Override
-    public void invokeB(T param) {
-        ActionSequence.addAction(Parent.class.getName());
-    }
+    void invokeB(T param);
 
-    @Override
-    public T getB() {
-        ActionSequence.addAction(Parent.class.getName());
-        return null;
-    }
+    T getB();
 
-    @Override
-    public void invokeDefault(T param) {
-        ActionSequence.addAction(Parent.class.getName());
+    default void invokeDefault(T param) {
+        ActionSequence.addAction(Base.class.getName());
     }
 
 }
