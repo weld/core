@@ -79,6 +79,27 @@ public class ManagedBeanBridgeMethodTest {
         assertEquals(1, SomeInterceptor.invocationCount);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testBaseServiceSetSomething() {
+        baseService.setSomething("foo");
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testBaseServiceSetSomethingWithInvalidArgumentType() {
+        // no bridge with class cast
+        baseService.setSomething(Boolean.TRUE);
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testBaseServiceGetSomething() {
+        baseService.getSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
     @Test
     public void testStringBaseServiceDoSomething() {
         stringBaseService.doSomething("foo");
@@ -88,6 +109,18 @@ public class ManagedBeanBridgeMethodTest {
     @Test
     public void testStringBaseServiceReturnSomething() {
         stringBaseService.returnSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testStringBaseServiceSetSomething() {
+        stringBaseService.setSomething("foo");
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testStringBaseServiceGetSomething() {
+        stringBaseService.getSomething();
         assertEquals(1, SomeInterceptor.invocationCount);
     }
 
@@ -104,6 +137,18 @@ public class ManagedBeanBridgeMethodTest {
     }
 
     @Test
+    public void testSpecialServiceSetSomething() {
+        specialService.setSomething("foo");
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testSpecialServiceGetSomething() {
+        specialService.getSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
     public void testManagedSpecialServiceImplDoSomething() {
         managedSpecialServiceImpl.doSomething("foo");
         assertEquals(1, SomeInterceptor.invocationCount);
@@ -112,6 +157,18 @@ public class ManagedBeanBridgeMethodTest {
     @Test
     public void testManagedSpecialServiceImplReturnSomething() {
         managedSpecialServiceImpl.returnSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testManagedSpecialServiceImplSetSomething() {
+        managedSpecialServiceImpl.setSomething("foo");
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testManagedSpecialServiceImplGetSomething() {
+        managedSpecialServiceImpl.getSomething();
         assertEquals(1, SomeInterceptor.invocationCount);
     }
 

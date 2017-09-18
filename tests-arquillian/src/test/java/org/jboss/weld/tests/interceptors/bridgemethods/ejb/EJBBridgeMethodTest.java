@@ -93,14 +93,57 @@ public class EJBBridgeMethodTest {
     }
 
     @Test
+    public void testSpecialServiceSetSomething() {
+        specialService.setSomething("foo");
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testStringBaseServiceSetSomething() {
+        stringBaseService.setSomething("foo");
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testBaseServiceSetSomething() {
+        baseService.setSomething("foo");
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
     public void testSpecialServiceDoSomethingElse() {
         specialService.returnSomething();
         assertEquals(1, SomeInterceptor.invocationCount);
     }
 
     @Test
+    public void testStringBaseServiceDoSomethingElse() {
+        stringBaseService.returnSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
     public void testBaseServiceDoSomethingElse() {
         baseService.returnSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testSpecialServiceGetSomething() {
+        specialService.getSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testStringBaseServiceGetSomething() {
+        stringBaseService.getSomething();
+        assertEquals(1, SomeInterceptor.invocationCount);
+    }
+
+    @Test
+    public void testBaseServiceGetSomething() {
+        baseService.getSomething();
         assertEquals(1, SomeInterceptor.invocationCount);
     }
 
