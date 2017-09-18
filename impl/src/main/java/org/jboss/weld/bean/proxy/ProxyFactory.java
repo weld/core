@@ -245,7 +245,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             }
         } else {
             String reason = getDefaultPackageReason(proxiedBeanType);
-            if (reason != null) {
+            if (reason != null && reason.equals(NULL)) {
                 proxyPackage = DEFAULT_PROXY_PACKAGE;
                 BeanLogger.LOG.generatingProxyToDefaultPackage(proxiedBeanType, DEFAULT_PROXY_PACKAGE, reason);
             } else {
