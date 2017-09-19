@@ -25,6 +25,7 @@ public class BarExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
         event.addBean(new BarBean(manager));
+        event.addBean(new JuicyBarBean(manager));
     }
 
 }

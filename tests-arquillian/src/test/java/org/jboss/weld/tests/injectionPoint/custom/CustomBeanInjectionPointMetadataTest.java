@@ -55,4 +55,14 @@ public class CustomBeanInjectionPointMetadataTest {
         assertEquals(1, bar.getInjetionPointMetadata().getQualifiers().size());
         assertEquals(Default.Literal.INSTANCE, bar.getInjetionPointMetadata().getQualifiers().iterator().next());
     }
+
+    @Test
+    public void testInjectionPointMetadataInstanceLookup(@Juicy Bar bar) {
+        assertNotNull(bar);
+        assertNull(bar.getInjetionPointMetadata().getBean());
+        assertEquals(Bar.class, bar.getInjetionPointMetadata().getType());
+        assertEquals(1, bar.getInjetionPointMetadata().getQualifiers().size());
+        assertEquals(Juicy.Literal.INSTANCE, bar.getInjetionPointMetadata().getQualifiers().iterator().next());
+    }
+
 }
