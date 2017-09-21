@@ -673,7 +673,7 @@ public class Weld implements ContainerInstanceFactory {
      */
     public Weld setBeanDiscoveryMode(BeanDiscoveryMode mode) {
         // NONE makes no sense as an option
-        if (mode.equals(beanDiscoveryMode.NONE)) {
+        if (mode.equals(BeanDiscoveryMode.NONE)) {
             throw WeldSELogger.LOG.beanArchiveWithModeNone(containerId);
         }
         beanDiscoveryMode = mode;
@@ -831,6 +831,46 @@ public class Weld implements ContainerInstanceFactory {
         Preconditions.checkNotNull(resourceLoader);
         this.resourceLoader = resourceLoader;
         return this;
+    }
+
+    /**
+     * Disable bean archive isolation, i.e. use a "flat" deployment structure.
+     *
+     * @return self
+     * @see #ARCHIVE_ISOLATION_SYSTEM_PROPERTY
+     */
+    public Weld disableIsolation() {
+        return property(ARCHIVE_ISOLATION_SYSTEM_PROPERTY, false);
+    }
+
+    /**
+     * Skip shutdown hook registration.
+     *
+     * @return self
+     * @see #SHUTDOWN_HOOK_SYSTEM_PROPERTY
+     */
+    public Weld skipShutdownHook() {
+        return property(SHUTDOWN_HOOK_SYSTEM_PROPERTY, false);
+    }
+
+    /**
+     * Scans the class path entries - implicit bean archives which don't contain a beans.xml file are supported.
+     *
+     * @return self
+     * @see #SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY
+     */
+    public Weld scanClasspathEntries() {
+        return property(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, true);
+    }
+
+    /**
+     * Enable the development mode.
+     *
+     * @return self
+     * @see #DEV_MODE_SYSTEM_PROPERTY
+     */
+    public Weld enableDevMode() {
+        return property(DEV_MODE_SYSTEM_PROPERTY, true);
     }
 
     /**

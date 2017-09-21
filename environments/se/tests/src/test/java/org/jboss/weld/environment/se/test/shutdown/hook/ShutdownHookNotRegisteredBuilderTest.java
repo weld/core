@@ -42,7 +42,7 @@ public class ShutdownHookNotRegisteredBuilderTest extends ShutdownHookNotRegiste
 
     @Override
     protected WeldContainer initWeld() {
-        return new Weld().property(Weld.SHUTDOWN_HOOK_SYSTEM_PROPERTY, false).initialize();
+        return new Weld().skipShutdownHook().initialize();
     }
 
 }
