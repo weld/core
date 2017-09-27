@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.api.Service;
@@ -147,8 +148,9 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
                 throw UtilLogger.LOG.resourceSetterInjectionNotAJavabean(method);
             }
             if (accept(method, processorContext)) {
+                EnhancedAnnotatedParameter<?, ?> parameter = method.getEnhancedParameters().get(0);
                 resourceInjections.add(createSetterResourceInjection(
-                        InjectionPointFactory.silentInstance().createParameterInjectionPoint(method.getEnhancedParameters().get(0), declaringBean,
+                        InjectionPointFactory.silentInstance().createParameterInjectionPoint(parameter, declaringBean,
                                 declaringClass, manager), injectionServices, processorContext));
             }
         }
