@@ -34,6 +34,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.construction.api.WeldCreationalContext;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -43,6 +44,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @see https://issues.jboss.org/browse/WELD-1345
+ * @see https://issues.jboss.org/browse/WELD-2404
  * @author Jozef Hartinger
  *
  */
@@ -59,7 +61,74 @@ public class MessageDrivenInjectionTargetTest {
 
     @Test
     public void testInjectionTargetCreatedForMessageDrivenBean() {
-        InjectionTarget<MessageDriven> it = manager.createInjectionTarget(new EjbDescriptor<MessageDriven>() {
+        InjectionTarget<MessageDriven> it = manager.createInjectionTarget(createEjbDescriptor());
+
+        CreationalContext<MessageDriven> ctx = manager.<MessageDriven>createCreationalContext(null);
+        AroundInvokeInterceptor.reset();
+
+        MessageDriven instance = it.produce(ctx);
+        assertFalse(instance.isPostConstruct());
+        assertFalse(instance.isDestroyed());
+        assertNull(instance.getField());
+        assertNull(instance.getInitializer());
+        assertNotNull(instance.getConstructor());
+        assertTrue(AroundConstructInterceptor.aroundConstructCalled);
+
+        it.inject(instance, ctx);
+        assertFalse(instance.isPostConstruct());
+        assertFalse(instance.isDestroyed());
+        assertNotNull(instance.getField());
+        assertNotNull(instance.getInitializer());
+        assertNotNull(instance.getConstructor());
+
+        it.postConstruct(instance);
+        assertTrue(instance.isPostConstruct());
+        assertFalse(instance.isDestroyed());
+        assertNotNull(instance.getField());
+        assertNotNull(instance.getInitializer());
+        assertNotNull(instance.getConstructor());
+
+        instance.ping();
+        assertEquals(1, AroundInvokeInterceptor.interceptedInvocations.size());
+        assertTrue(AroundInvokeInterceptor.interceptedInvocations.contains("ping"));
+
+        it.preDestroy(instance);
+        assertTrue(instance.isPostConstruct());
+        assertTrue(instance.isDestroyed());
+        assertNotNull(instance.getField());
+        assertNotNull(instance.getInitializer());
+        assertNotNull(instance.getConstructor());
+
+        it.dispose(instance);
+        ctx.release();
+    }
+
+    @Test
+    public void testInjectionTargetCreatedForMessageDrivenBeanWithNoAroundConstruct() {
+        InjectionTarget<MessageDriven> it = manager.createInjectionTarget(createEjbDescriptor());
+
+        CreationalContext<MessageDriven> ctx = manager.<MessageDriven>createCreationalContext(null);
+        // use Weld CC to disable around construct
+        WeldCreationalContext<MessageDriven> weldCC = (WeldCreationalContext<MessageDriven>) ctx;
+        weldCC.setConstructorInterceptionSuppressed(true);
+
+        AroundInvokeInterceptor.reset();
+
+        MessageDriven instance = it.produce(ctx);
+        assertFalse(instance.isPostConstruct());
+        assertFalse(instance.isDestroyed());
+        assertNull(instance.getField());
+        assertNull(instance.getInitializer());
+        assertNotNull(instance.getConstructor());
+        // @AroundConstruct should NOT be invoked here
+        assertFalse(AroundConstructInterceptor.aroundConstructCalled);
+        
+        it.dispose(instance);
+        weldCC.release();
+    }
+
+    private EjbDescriptor<MessageDriven> createEjbDescriptor() {
+        return new EjbDescriptor<MessageDriven>() {
 
             @Override
             public Class<MessageDriven> getBeanClass() {
@@ -110,45 +179,6 @@ public class MessageDrivenInjectionTargetTest {
             public boolean isPassivationCapable() {
                 return false;
             }
-        });
-
-        CreationalContext<MessageDriven> ctx = manager.<MessageDriven>createCreationalContext(null);
-        AroundInvokeInterceptor.reset();
-
-        MessageDriven instance = it.produce(ctx);
-        assertFalse(instance.isPostConstruct());
-        assertFalse(instance.isDestroyed());
-        assertNull(instance.getField());
-        assertNull(instance.getInitializer());
-        assertNotNull(instance.getConstructor());
-        assertTrue(AroundConstructInterceptor.aroundConstructCalled);
-
-        it.inject(instance, ctx);
-        assertFalse(instance.isPostConstruct());
-        assertFalse(instance.isDestroyed());
-        assertNotNull(instance.getField());
-        assertNotNull(instance.getInitializer());
-        assertNotNull(instance.getConstructor());
-
-        it.postConstruct(instance);
-        assertTrue(instance.isPostConstruct());
-        assertFalse(instance.isDestroyed());
-        assertNotNull(instance.getField());
-        assertNotNull(instance.getInitializer());
-        assertNotNull(instance.getConstructor());
-
-        instance.ping();
-        assertEquals(1, AroundInvokeInterceptor.interceptedInvocations.size());
-        assertTrue(AroundInvokeInterceptor.interceptedInvocations.contains("ping"));
-
-        it.preDestroy(instance);
-        assertTrue(instance.isPostConstruct());
-        assertTrue(instance.isDestroyed());
-        assertNotNull(instance.getField());
-        assertNotNull(instance.getInitializer());
-        assertNotNull(instance.getConstructor());
-
-        it.dispose(instance);
-        ctx.release();
+        };
     }
 }

@@ -739,7 +739,8 @@ To help the integrator, Weld provides
 -----------------------------------------------------------------------
 // Fire ProcessInjectionTarget, returning the InjectionTarget
 // to use
-InjectionTarget it = weldBeanManager.fireProcessInjectionTarget(clazz);
+AnnotatedType<?> at = weldBeanManager.createAnnotatedType(clazz);
+InjectionTarget it = weldBeanManager.fireProcessInjectionTarget(at);
 
 // Per instance required, create the creational context
 CreationalContext<?> cc = beanManager.createCreationalContext(null);
@@ -775,11 +776,17 @@ correct bean manager for the bean deployment archive containing the EJB.
 // You may choose to use this utility method to get the descriptor
 EjbDescriptor<T> ejbDescriptor = beanManager.<T>getEjbDescriptor(ejbName);
 
-// Get an the Bean object
+// Get the Bean object
 Bean<T> bean = beanManager.getBean(ejbDescriptor);
+
+// Create AnnotatedType from the implementation class of the EJB descriptor
+AnnotatedType<T> at = beanManager.createAnnotatedType(descriptorImplClazz);
 
 // Create the injection target
 InjectionTarget<T> it = beanManager.createInjectionTarget(ejbDescriptor);
+
+// Fire ProcessInjectionTarget event and store new IT as it can be modified by extensions
+it = beanManager.fireProcessInjectionTarget(at, it);
 
 // Per instance required, create the creational context
 WeldCreationalContext<T> cc = beanManager.createCreationalContext(bean);
