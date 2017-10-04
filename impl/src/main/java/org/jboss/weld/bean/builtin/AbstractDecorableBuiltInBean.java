@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -50,6 +51,9 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
         InjectionPoint ip = getInjectionPoint(cip);
         List<Decorator<?>> decorators = getDecorators(ip);
         T instance = newInstance(ip, creationalContext);
+        if (decorators == null) {
+            decorators = beanManager.resolveDecorators(Collections.singleton(ip.getType()), getQualifiers());
+        }
         if (decorators.isEmpty()) {
             return instance;
         }
