@@ -19,14 +19,22 @@ package org.jboss.weld.environment.se.test.resource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+
+import javax.enterprise.util.TypeLiteral;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.inject.WeldInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,15 +48,31 @@ public class EEResourceInjectionIgnoredTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(EEResourceInjectionIgnoredTest.class, Golf.class, Delta.class)).build();
+        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(EEResourceInjectionIgnoredTest.class, 
+                                                                                       Golf.class, Delta.class, AsyncValue.class, AsyncValueImpl.class,
+                                                                                       AsyncProducer.class)).build();
     }
 
     @Test
-    public void testInjection() {
+    public void testInjection() throws InterruptedException, ExecutionException {
         try (WeldContainer container = new Weld().initialize()) {
-            Golf golf = container.select(Golf.class).get();
-            assertNull(golf.getEntityManager());
-            assertEquals(10, golf.getDelta().ping());
+        	  WeldInstance<Golf> instance = container.select(Golf.class);
+        	  System.err.println("Select async");
+        	  CompletableFuture<Void> future = ((InstanceImpl<Golf>)instance).getAsync().thenAccept(golf -> {
+        	    System.err.println("Got async value: "+golf);
+        	    assertNull(golf.getEntityManager());
+        	    assertEquals(10, golf.getDelta().ping());
+              assertEquals(10, golf.getAsyncValue().ping());
+        	  }).toCompletableFuture();
+            System.err.println("Done asking");
+            
+            // Either produce it ourselves, or produce it async in AsyncProducer
+            CompletionStage<AsyncValue> valueFuture = container.select(new TypeLiteral<CompletionStage<AsyncValue>>(){}).get();
+            valueFuture.toCompletableFuture().complete(new AsyncValueImpl(null));
+            
+            System.err.println("Now waiting");
+        	  future.get();
+            System.err.println("Waiting done");
         }
     }
 

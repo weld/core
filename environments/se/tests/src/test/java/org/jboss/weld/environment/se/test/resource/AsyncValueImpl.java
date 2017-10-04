@@ -16,31 +16,24 @@
  */
 package org.jboss.weld.environment.se.test.resource;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.annotation.PostConstruct;
 
-public class Golf {
+public class AsyncValueImpl implements AsyncValue {
 
-    @Inject
-    Delta delta;
+    AsyncValueImpl(Object param) {
+      init();
+    }
+    
+    private int val;
 
-    @Inject
-    AsyncValue asyncValue;
-
-    @PersistenceContext(unitName="myDb")
-    EntityManager entityManager;
-
-    public Delta getDelta() {
-      return delta;
+    @PostConstruct
+    public void init() {
+        val = 10;
     }
 
-    public AsyncValue getAsyncValue() {
-      return asyncValue;
-  }
-
-    public EntityManager getEntityManager() {
-        return entityManager;
+    @Override
+    public int ping() {
+        return val;
     }
 
 }
