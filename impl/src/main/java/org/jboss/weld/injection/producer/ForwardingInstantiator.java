@@ -17,6 +17,7 @@
 package org.jboss.weld.injection.producer;
 
 import java.lang.reflect.Constructor;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 
@@ -37,6 +38,11 @@ public class ForwardingInstantiator<T> implements Instantiator<T> {
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         return delegate().newInstance(ctx, manager);
+    }
+
+    @Override
+    public CompletionStage<T> newInstanceAsync(CreationalContext<T> ctx, BeanManagerImpl manager) {
+        return delegate().newInstanceAsync(ctx, manager);
     }
 
     @Override

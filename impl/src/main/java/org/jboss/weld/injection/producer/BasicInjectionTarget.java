@@ -18,6 +18,7 @@ package org.jboss.weld.injection.producer;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -112,9 +113,17 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
         return instantiator.newInstance(ctx, beanManager);
     }
 
+    public CompletionStage<T> produceAsync(CreationalContext<T> ctx) {
+      return instantiator.newInstanceAsync(ctx, beanManager);
+    }
+
     @Override
     public void inject(T instance, CreationalContext<T> ctx) {
         injector.inject(instance, ctx, beanManager, type, this);
+    }
+
+    public CompletionStage<Void> injectAsync(T instance, CreationalContext<T> ctx) {
+      return injector.injectAsync(instance, ctx, beanManager, type, this);
     }
 
     @Override

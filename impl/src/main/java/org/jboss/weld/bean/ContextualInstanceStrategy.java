@@ -18,6 +18,8 @@ package org.jboss.weld.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
@@ -31,6 +33,7 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.inject.Singleton;
 
 import org.jboss.weld.contexts.cache.RequestScopedCache;
+import org.jboss.weld.contexts.unbound.DependentContextImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
@@ -75,6 +78,7 @@ public abstract class ContextualInstanceStrategy<T> {
     }
 
     abstract T get(Bean<T> bean, BeanManagerImpl manager, CreationalContext<?> ctx);
+    abstract CompletionStage<T> getAsync(Bean<T> bean, BeanManagerImpl manager, CreationalContext<?> ctx);
 
     abstract T getIfExists(Bean<T> bean, BeanManagerImpl manager);
 
@@ -100,6 +104,22 @@ public abstract class ContextualInstanceStrategy<T> {
                 instance = context.get(bean, Reflections.<CreationalContext<T>> cast(ctx));
             }
             return instance;
+        }
+
+        @Override
+        CompletionStage<T> getAsync(Bean<T> bean, BeanManagerImpl manager, CreationalContext<?> ctx) {
+            Context context = manager.getContext(bean.getScope());
+            T instance = context.get(bean);
+            if (instance == null) {
+                if (ctx == null) {
+                    ctx = manager.createCreationalContext(bean);
+                }
+                if(context instanceof DependentContextImpl) {
+                  return ((DependentContextImpl)context).getAsync(bean, Reflections.<CreationalContext<T>> cast(ctx));
+                }
+                instance = context.get(bean, Reflections.<CreationalContext<T>> cast(ctx));
+            }
+            return CompletableFuture.completedFuture(instance);
         }
 
         @Override

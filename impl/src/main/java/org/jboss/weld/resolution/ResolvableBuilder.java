@@ -21,12 +21,14 @@ import java.lang.annotation.Repeatable;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Member;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -90,6 +92,42 @@ public class ResolvableBuilder {
         addQualifiers(injectionPoint.getQualifiers(), injectionPoint);
         setDeclaringBean(injectionPoint.getBean());
         this.delegate = injectionPoint.isDelegate();
+    }
+
+    public ResolvableBuilder(InjectionPoint injectionPoint, final BeanManagerImpl manager, boolean useless) {
+      this(makeAsyncType(injectionPoint.getType()), manager);
+      addQualifiers(injectionPoint.getQualifiers(), injectionPoint);
+      setDeclaringBean(injectionPoint.getBean());
+      this.delegate = injectionPoint.isDelegate();
+    }
+
+    public static Type makeAsyncType(Type async) {
+      // we want a CompletionStage<returnType>
+      return new ParameterizedType(){
+
+         @Override
+         public Type[] getActualTypeArguments() {
+            return new Type[]{
+                              async
+                              };
+         }
+
+         @Override
+         public Type getOwnerType() {
+            return null;
+         }
+
+         @Override
+         public Type getRawType() {
+            return CompletionStage.class;
+         }
+
+         @Override
+        public String toString() {
+          return getRawType()+"<"+async+">";
+        }
+         // FIXME: equals/hashCode?
+      };
     }
 
     public ResolvableBuilder setDeclaringBean(Bean<?> declaringBean) {

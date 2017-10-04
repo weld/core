@@ -18,6 +18,7 @@ package org.jboss.weld.injection.producer;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -192,6 +193,20 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         }
         return instance;
     }
+
+    public CompletionStage<T> produceAsync(CreationalContext<T> ctx) {
+      CompletionStage<T> instance = super.produceAsync(ctx);
+      if (bean != null && !bean.getScope().equals(Dependent.class) && !getInstantiator().hasDecoratorSupport()) {
+          // This should be safe, but needs verification PLM
+          // Without this, the chaining of decorators will fail as the
+          // incomplete instance will be resolved
+        instance = instance.thenApply(inst -> {
+          ctx.push(inst);
+          return inst;
+        });
+      }
+      return instance;
+  }
 
     @Override
     public Bean<T> getBean() {

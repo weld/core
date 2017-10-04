@@ -22,6 +22,8 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.security.AccessController;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
@@ -71,6 +73,45 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
         }
         Class<?> rawType = Reflections.getRawType(attributes.getType());
         return !InjectionPoint.class.isAssignableFrom(rawType) && !Instance.class.isAssignableFrom(rawType);
+    }
+
+    public CompletionStage<Void> injectAsync(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+      try {
+        Object instanceToInject = declaringInstance;
+        if (!(instanceToInject instanceof DecoratorProxy)) {
+          // if declaringInstance is a proxy, unwrap it
+          if (declaringInstance instanceof TargetInstanceProxy) {
+            instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
+          }
+        }
+        CompletionStage<Object> objectToInject;
+        if (!cacheable) {
+          objectToInject = manager.getInjectableReferenceAsync(this, creationalContext);
+        } else {
+          if (cachedBean == null) {
+            cachedBean = manager.resolve(manager.getBeans(this));
+          }
+          objectToInject = manager.getInjectableReferenceAsync(this, cachedBean, creationalContext);
+        }
+        Object realInstanceToInject = instanceToInject;
+        return objectToInject.thenCompose(val -> {
+          // unwrap if required
+          if(val instanceof CompletionStage && !CompletionStage.class.isAssignableFrom(accessibleField.getType())){
+            return ((CompletionStage<Object>)val);
+          } else {
+            return (CompletionStage<Object>)CompletableFuture.completedFuture(val);
+          }
+        }).thenAccept(val -> {
+          try{
+            accessibleField.set(realInstanceToInject, val);
+          } catch (IllegalAccessException e) {
+            rethrowException(e);
+          }
+        });
+      } catch (IllegalArgumentException e) {
+        rethrowException(e);
+        return null;
+      }
     }
 
     public void inject(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {

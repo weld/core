@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.injection.producer;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.injection.ConstructorInjectionPoint;
@@ -26,6 +28,11 @@ public abstract class AbstractInstantiator<T> implements Instantiator<T> {
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         return getConstructorInjectionPoint().newInstance(manager, ctx);
+    }
+
+    @Override
+    public CompletionStage<T> newInstanceAsync(CreationalContext<T> ctx, BeanManagerImpl manager) {
+        return getConstructorInjectionPoint().newInstanceAsync(manager, ctx);
     }
 
     public abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();

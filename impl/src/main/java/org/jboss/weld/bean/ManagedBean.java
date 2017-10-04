@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.bean.BeanIdentifiers.forManagedBean;
 
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
@@ -36,6 +37,7 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
+import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
@@ -179,6 +181,36 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
         return instance;
     }
+
+    public CompletionStage<T> createAsync(CreationalContext<T> creationalContext) {
+      CompletionStage<T> instance = ((BeanInjectionTarget<T>)getProducer()).produceAsync(creationalContext);
+      instance = instance.thenCompose(inst ->
+        ((BeanInjectionTarget<T>)getProducer()).injectAsync(inst, creationalContext).thenApply(v -> inst));
+
+      instance = instance.thenApply(inst -> {
+        if (!hasPostConstructCallback || beanManager.isContextActive(RequestScoped.class)) {
+          getProducer().postConstruct(inst);
+        } else {
+          /*
+           * CDI-219
+           * The request scope is active during @PostConstruct callback of any bean.
+           */
+          RequestContext context = getUnboundRequestContext();
+          try {
+            context.activate();
+            beanManager.fireRequestContextInitialized(getId());
+            getProducer().postConstruct(inst);
+          } finally {
+            beanManager.fireRequestContextBeforeDestroyed(getId());
+            context.invalidate();
+            context.deactivate();
+            beanManager.fireRequestContextDestroyed(getId());
+          }
+        }
+        return inst;
+      });
+      return instance;
+  }
 
     /**
      * Destroys an instance of the bean

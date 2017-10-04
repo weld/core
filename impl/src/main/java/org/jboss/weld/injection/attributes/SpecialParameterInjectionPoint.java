@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.injection.attributes;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
@@ -50,6 +53,12 @@ public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPoi
     @Override
     public T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
         throw new UnsupportedOperationException();
+    }
+
+    public CompletionStage<T> getValueToInjectAsync(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+      CompletableFuture<T> ret = new CompletableFuture<T>();
+      ret.completeExceptionally(new UnsupportedOperationException());
+      return ret;
     }
 
     @Override

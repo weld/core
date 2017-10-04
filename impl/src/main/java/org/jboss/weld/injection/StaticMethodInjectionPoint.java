@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.TransientReference;
@@ -90,6 +92,24 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
         }
     }
 
+    @Override
+    public CompletionStage<T> invokeAsync(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx,
+                                          Class<? extends RuntimeException> exceptionTypeToThrow) {
+      CreationalContext<?> transientReferenceContext = null;
+      if (hasTransientReferenceParameter) {
+          transientReferenceContext = manager.createCreationalContext(null);
+      }
+      try {
+        return getParameterValuesAsync(specialValue, manager, ctx, transientReferenceContext).thenApply(parameterValues ->
+          invoke(receiver, parameterValues, exceptionTypeToThrow));
+      } finally {
+        // FIXME: wrong
+          if (hasTransientReferenceParameter) {
+              transientReferenceContext.release();
+          }
+      }
+    }
+
     public T invoke(Object receiver, Object[] parameters, Class<? extends RuntimeException> exceptionTypeToThrow) {
         try {
             return cast(getMethod(receiver).invoke(receiver, parameters));
@@ -136,6 +156,37 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
         }
         return parameterValues;
     }
+
+    protected CompletionStage<Object[]> getParameterValuesAsync(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> transientReferenceContext) {
+      if (getInjectionPoints().isEmpty()) {
+          if (specialInjectionPointIndex == -1) {
+              return CompletableFuture.completedFuture(Arrays2.EMPTY_ARRAY);
+          } else {
+              return CompletableFuture.completedFuture(new Object[] { specialVal });
+          }
+      }
+      Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
+      CompletionStage<Void> stage = CompletableFuture.completedFuture(null);
+      List<ParameterInjectionPoint<?, X>> parameters = getParameterInjectionPoints();
+      for (int i = 0; i < parameterValues.length; i++) {
+          ParameterInjectionPoint<?, ?> param = parameters.get(i);
+          CompletionStage<?> thisStage;
+          if (i == specialInjectionPointIndex) {
+              thisStage = CompletableFuture.completedFuture(specialVal);
+          } else if (hasTransientReferenceParameter && param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
+              thisStage = param.getValueToInjectAsync(manager, transientReferenceContext);
+          } else {
+              thisStage = param.getValueToInjectAsync(manager, ctx);
+          }
+          int capturedI = i;
+          CompletionStage<Void> thisStage2 = thisStage.thenApply(val -> {
+            parameterValues[capturedI] = val;
+            return null;
+          });
+          stage = stage.thenCompose(v -> thisStage2);
+      }
+      return stage.thenApply(v -> parameterValues);
+  }
 
     protected Method getMethod(Object receiver) throws NoSuchMethodException {
         return accessibleMethod;

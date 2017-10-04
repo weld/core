@@ -17,6 +17,7 @@
 package org.jboss.weld.injection.producer;
 
 import java.lang.reflect.Constructor;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 
@@ -33,6 +34,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public interface Instantiator<T> {
 
     T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager);
+    CompletionStage<T> newInstanceAsync(CreationalContext<T> ctx, BeanManagerImpl manager);
 
     /**
      * Indicates whether instances created by this Instantiator support interception.

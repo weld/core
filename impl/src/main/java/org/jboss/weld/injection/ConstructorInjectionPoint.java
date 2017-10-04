@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.TransientReference;
@@ -64,6 +66,28 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         this.constructor = constructor.slim();
         this.signature = constructor.getSignature();
         this.accessibleConstructor = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Constructor<T>>(constructor.getJavaMember()));
+    }
+
+    public CompletionStage<T> newInstanceAsync(BeanManagerImpl manager, CreationalContext<?> ctx) {
+      CreationalContext<?> transientReferenceContext = null;
+      if (hasTransientReferenceParameter) {
+          transientReferenceContext = manager.createCreationalContext(null);
+      }
+      try {
+          return getParameterValuesAsync(manager, ctx, transientReferenceContext).thenApply(parameterValues -> {
+            if (ctx instanceof CreationalContextImpl<?>) {
+              CreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
+              return invokeAroundConstructCallbacks(parameterValues, weldCtx);
+            } else {
+              return newInstance(parameterValues);
+            }
+          });
+      } finally {
+        // FIXME: this is wrong: place in async
+          if (hasTransientReferenceParameter) {
+              transientReferenceContext.release();
+          }
+      }
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx) {
@@ -152,6 +176,28 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         }
         return parameterValues;
     }
+
+    public CompletionStage<Object[]> getParameterValuesAsync(BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> transientReference) {
+      if (getInjectionPoints().isEmpty()) {
+          return CompletableFuture.completedFuture(Arrays2.EMPTY_ARRAY);
+      }
+      Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
+      @SuppressWarnings("unchecked")
+      CompletableFuture<Void>[] parameterValueStages = new CompletableFuture[getParameterInjectionPoints().size()];
+      List<ParameterInjectionPoint<?, T>> parameters = getParameterInjectionPoints();
+      for (int i = 0; i < parameterValues.length; i++) {
+          ParameterInjectionPoint<?, ?> param = parameters.get(i);
+          CompletionStage<?> stage;
+          if (hasTransientReferenceParameter && param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
+              stage = param.getValueToInjectAsync(manager, transientReference);
+          } else {
+              stage = param.getValueToInjectAsync(manager, ctx);
+          }
+          int currentI = i;
+          parameterValueStages[i] = stage.thenAccept(value -> parameterValues[currentI] = value).toCompletableFuture();
+      }
+      return CompletableFuture.allOf(parameterValueStages).thenApply(v -> parameterValues);
+  }
 
     public AnnotatedConstructor<T> getAnnotated() {
         return constructor;

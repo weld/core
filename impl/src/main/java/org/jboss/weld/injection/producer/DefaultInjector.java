@@ -18,6 +18,7 @@ package org.jboss.weld.injection.producer;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -71,6 +72,17 @@ public class DefaultInjector<T> implements Injector<T> {
                 Beans.injectFieldsAndInitializers(instance, ctx, manager, injectableFields, initializerMethods);
             }
         }.run();
+    }
+
+    @Override
+    public CompletionStage<Void> injectAsync(final T instance, final CreationalContext<T> ctx, final BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget) {
+      // FIXME: support InjectionServices
+//      new InjectionContextImpl<T>(manager, injectionTarget, type, instance) {
+//        @Override
+//        public CompletionStage<Void> proceedAsync() {
+          return Beans.injectFieldsAndInitializersAsync(instance, ctx, manager, injectableFields, initializerMethods);
+//        }
+//      }.runAsync();
     }
 
     @Override

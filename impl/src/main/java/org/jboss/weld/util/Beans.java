@@ -34,6 +34,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
@@ -337,6 +339,15 @@ public class Beans {
         }
     }
 
+    public static <T> CompletionStage<Void> injectBoundFieldsAsync(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager,
+                                             Iterable<? extends FieldInjectionPoint<?, ?>> injectableFields) {
+      CompletionStage<Void> stage = CompletableFuture.completedFuture(null);
+      for (FieldInjectionPoint<?, ?> injectableField : injectableFields) {
+        stage = stage.thenCompose(v -> injectableField.injectAsync(instance, manager, creationalContext));
+      }
+      return stage;
+    }
+
     public static <T> void injectFieldsAndInitializers(T instance, CreationalContext<T> ctx, BeanManagerImpl beanManager,
             List<? extends Iterable<? extends FieldInjectionPoint<?, ?>>> injectableFields,
             List<? extends Iterable<? extends MethodInjectionPoint<?, ?>>> initializerMethods) {
@@ -349,6 +360,21 @@ public class Beans {
         }
     }
 
+    public static <T> CompletionStage<Void> injectFieldsAndInitializersAsync(T instance, CreationalContext<T> ctx, BeanManagerImpl beanManager,
+                                                       List<? extends Iterable<? extends FieldInjectionPoint<?, ?>>> injectableFields,
+                                                           List<? extends Iterable<? extends MethodInjectionPoint<?, ?>>> initializerMethods) {
+      if (injectableFields.size() != initializerMethods.size()) {
+        throw UtilLogger.LOG.invalidQuantityInjectableFieldsAndInitializerMethods(injectableFields, initializerMethods);
+      }
+      CompletionStage<Void> stage = CompletableFuture.completedFuture(null);
+      for (int i = 0; i < injectableFields.size(); i++) {
+        int capturedI = i;
+        stage = stage.thenCompose(v -> injectBoundFieldsAsync(instance, ctx, beanManager, injectableFields.get(capturedI)));
+        stage = stage.thenCompose(v -> callInitializersAsync(instance, ctx, beanManager, initializerMethods.get(capturedI)));
+      }
+      return stage;
+    }
+
     /**
      * Calls all initializers of the bean
      *
@@ -359,6 +385,15 @@ public class Beans {
         for (MethodInjectionPoint<?, ?> initializer : initializerMethods) {
             initializer.invoke(instance, null, manager, creationalContext, CreationException.class);
         }
+    }
+
+    public static <T> CompletionStage<Void> callInitializersAsync(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager,
+                                            Iterable<? extends MethodInjectionPoint<?, ?>> initializerMethods) {
+      CompletionStage<Void> stage = CompletableFuture.completedFuture(null);
+      for (MethodInjectionPoint<?, ?> initializer : initializerMethods) {
+        stage = (CompletionStage<Void>) stage.thenCompose(v -> initializer.invokeAsync(instance, null, manager, creationalContext, CreationException.class));
+      }
+      return stage;
     }
 
     public static <T> boolean isInterceptor(AnnotatedType<T> annotatedItem) {

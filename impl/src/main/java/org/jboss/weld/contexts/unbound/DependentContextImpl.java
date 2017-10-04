@@ -23,6 +23,8 @@
 package org.jboss.weld.contexts.unbound;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
@@ -76,6 +78,31 @@ public class DependentContextImpl implements DependentContext {
             return null;
         }
     }
+
+    public <T> CompletionStage<T> getAsync(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+      if (!isActive()) {
+          throw new ContextNotActiveException();
+      }
+      if (creationalContext != null) {
+          CompletionStage<T> instance;
+          // FIXME: other cases
+          if(contextual instanceof ManagedBean) {
+            instance = ((ManagedBean<T>)contextual).createAsync(creationalContext);
+          }else {
+            instance = CompletableFuture.completedFuture(contextual.create(creationalContext));
+          }
+          if (creationalContext instanceof WeldCreationalContext<?>) {
+            // FIXME: right time?
+              instance = instance.thenApply(inst -> {
+                addDependentInstance(inst, contextual, (WeldCreationalContext<T>) creationalContext);
+                return inst;
+              });
+          }
+          return instance;
+      } else {
+          return null;
+      }
+  }
 
     protected <T> void addDependentInstance(T instance, Contextual<T> contextual, WeldCreationalContext<T> creationalContext) {
         // by this we are making sure that the dependent instance has no transitive dependency with @PreDestroy / disposal method

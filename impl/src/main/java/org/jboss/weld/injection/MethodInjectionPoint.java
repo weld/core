@@ -17,6 +17,7 @@
 package org.jboss.weld.injection;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -54,6 +55,8 @@ public abstract class MethodInjectionPoint<T, X> extends AbstractCallableInjecti
      * @return the value returned from the method
      */
     public abstract T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow);
+
+    public abstract CompletionStage<T> invokeAsync(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow);
 
     abstract T invoke(Object receiver, Object[] parameters, Class<? extends RuntimeException> exceptionTypeToThrow);
 

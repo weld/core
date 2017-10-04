@@ -19,6 +19,8 @@ package org.jboss.weld.module.ejb;
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -46,6 +48,12 @@ class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     SessionBeanProxyInstantiator(EnhancedAnnotatedType<T> type, SessionBeanImpl<T> bean) {
         this.bean = bean;
         this.proxyClass = new EnterpriseProxyFactory<T>(type.getJavaClass(), bean).getProxyClass();
+    }
+
+    @Override
+    public CompletionStage<T> newInstanceAsync(CreationalContext<T> ctx, BeanManagerImpl manager) {
+      // FIXME: async
+      return CompletableFuture.completedFuture(newInstance(ctx, manager));
     }
 
     @Override

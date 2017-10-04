@@ -19,6 +19,7 @@ package org.jboss.weld.injection;
 import static org.jboss.weld.injection.FieldInjectionPoint.isCacheableInjectionPoint;
 
 import java.io.Serializable;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedParameter;
@@ -76,6 +77,19 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
             objectToInject = Reflections.<T> cast(manager.getInjectableReference(this, cachedBean, creationalContext));
         }
         return objectToInject;
+    }
+
+    public CompletionStage<T> getValueToInjectAsync(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+      CompletionStage<T> objectToInject;
+      if (!cacheable) {
+          objectToInject = Reflections.<CompletionStage<T>> cast(manager.getInjectableReferenceAsync(this, creationalContext));
+      } else {
+          if (cachedBean == null) {
+              cachedBean = manager.resolve(manager.getBeans(this));
+          }
+          objectToInject = Reflections.<CompletionStage<T>> cast(manager.getInjectableReferenceAsync(this, cachedBean, creationalContext));
+      }
+      return objectToInject;
     }
 
     @Override

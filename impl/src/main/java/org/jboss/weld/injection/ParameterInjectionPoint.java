@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.injection;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
@@ -28,4 +30,5 @@ public interface ParameterInjectionPoint<T, X> extends WeldInjectionPointAttribu
     AnnotatedParameter<X> getAnnotated();
 
     T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext);
+    CompletionStage<T> getValueToInjectAsync(BeanManagerImpl manager, CreationalContext<?> creationalContext);
 }

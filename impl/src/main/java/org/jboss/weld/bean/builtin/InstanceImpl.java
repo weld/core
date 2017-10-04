@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.AlterableContext;
@@ -113,6 +115,22 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         checkBeanResolved();
         return getBeanInstance(bean);
     }
+
+    public CompletionStage<T> getAsync() {
+      if (bean != null) {
+          return getBeanInstanceAsync(bean);
+      } else if (isUnsatisfied()) {
+          throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(
+              Formats.formatAnnotations(ip.getQualifiers()),
+              Formats.formatInjectionPointType(ip.getType()),
+              InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
+      } else {
+          throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(
+              Formats.formatAnnotations(ip.getQualifiers()),
+              Formats.formatInjectionPointType(ip.getType()),
+              WeldCollections.toMultiRowString(allBeans()));
+      }
+  }
 
     /**
      * Gets a string representation
@@ -254,6 +272,15 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
             stack.pop();
         }
     }
+
+    private CompletionStage<T> getBeanInstanceAsync(Bean<?> bean) {
+      final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(ip, isRegisterableInjectionPoint());
+      try {
+          return Reflections.<CompletableFuture<T>>cast(getBeanManager().getReferenceAsync(bean, getType(), getCreationalContext(), false));
+      } finally {
+          stack.pop();
+      }
+  }
 
     private boolean isRegisterableInjectionPoint() {
         return !getType().equals(InjectionPoint.class);

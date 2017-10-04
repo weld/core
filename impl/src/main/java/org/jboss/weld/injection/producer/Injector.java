@@ -18,6 +18,7 @@ package org.jboss.weld.injection.producer;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -39,6 +40,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public interface Injector<T> {
 
     void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget);
+    CompletionStage<Void> injectAsync(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget);
 
     /**
      * Add field/parameter injection points to the set of injection points of an InjectionTarget. The resulting set is returned

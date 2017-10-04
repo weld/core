@@ -35,6 +35,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -514,7 +516,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
         try {
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
-            return beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
+            Set<Bean<?>> resolved = beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
+            if(resolved.isEmpty()) {
+              resolved = beanResolver.resolve(new ResolvableBuilder(injectionPoint, this, false).create(), true);
+            }
+            return resolved;
         } finally {
             stack.pop();
         }
@@ -682,6 +688,26 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return activeContext;
     }
 
+    public CompletionStage<Object> getReferenceAsync(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
+      if (creationalContext instanceof CreationalContextImpl<?>) {
+        creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
+      }
+      if (!noProxy && isProxyRequired(bean)) {
+        if (creationalContext != null || ContextualInstance.getIfExists(bean, this) != null) {
+          // FIXME: later?
+          if (requestedType == null) {
+            return CompletableFuture.completedFuture(clientProxyProvider.getClientProxy(bean));
+          } else {
+            return CompletableFuture.completedFuture(clientProxyProvider.getClientProxy(bean, requestedType));
+          }
+        } else {
+          return null;
+        }
+      } else {
+        return (CompletionStage<Object>) ContextualInstance.getAsync(bean, this, creationalContext);
+      }
+    }
+
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
         if (creationalContext instanceof CreationalContextImpl<?>) {
             creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
@@ -749,7 +775,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @return the injectable reference
      */
     public Object getInjectableReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
-        Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
+        Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBeanStopBotheringMeStupidCheckStyle");
         Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
 
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
@@ -804,6 +830,66 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    public CompletionStage<Object> getInjectableReferenceAsync(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
+      Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
+      Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
+
+      boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
+      boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
+
+      // FIXME: wrong
+      final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
+      try {
+          Type requestedType = null;
+          if (injectionPoint != null) {
+              requestedType = injectionPoint.getType();
+          }
+
+          if (clientProxyOptimization && injectionPoint != null && injectionPoint.getBean() != null) {
+              // For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup
+              // This should also partially solve circular @PostConstruct invocation
+              CreationalContextImpl<?> weldCreationalContext = null;
+              Bean<?> bean = injectionPoint.getBean();
+
+              // Do not optimize for self injection
+              if (!bean.equals(resolvedBean)) {
+
+                  if (creationalContext instanceof CreationalContextImpl) {
+                      weldCreationalContext = (CreationalContextImpl<?>) creationalContext;
+                  }
+
+                  if (weldCreationalContext != null && Dependent.class.equals(bean.getScope()) && isNormalScope(resolvedBean.getScope())) {
+                      bean = findNormalScopedDependant(weldCreationalContext);
+                  }
+
+                  if (InjectionPoints.isInjectableReferenceLookupOptimizationAllowed(bean, resolvedBean)) {
+                      if (weldCreationalContext != null) {
+                          final Object incompleteInstance = weldCreationalContext.getIncompleteInstance(resolvedBean);
+                          // FIXME: async
+                          if (incompleteInstance != null) {
+                              return CompletableFuture.completedFuture(incompleteInstance);
+                          }
+                      }
+                      Context context = internalGetContext(resolvedBean.getScope());
+                      if (context != null) {
+                          @SuppressWarnings({ "unchecked", "rawtypes" })
+                          final Object existinInstance = context.get(Reflections.<Contextual> cast(resolvedBean));
+                          // FIXME: async
+                          if (existinInstance != null) {
+                              return CompletableFuture.completedFuture(existinInstance);
+                          }
+                      }
+                  }
+              }
+          }
+          return getReferenceAsync(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
+
+      } finally {
+        // FIXME: wrong
+          stack.pop();
+      }
+  }
+
     @Override
     public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
         if (injectionPoint.isDelegate()) {
@@ -813,6 +899,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             return getInjectableReference(injectionPoint, resolvedBean, creationalContext);
         }
     }
+
+    public CompletionStage<Object> getInjectableReferenceAsync(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
+      if (injectionPoint.isDelegate()) {
+          return CompletableFuture.completedFuture(DecorationHelper.peek().getNextDelegate(injectionPoint, creationalContext));
+      } else {
+          Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint, this).create());
+          return getInjectableReferenceAsync(injectionPoint, resolvedBean, creationalContext);
+      }
+  }
 
     public <T> Bean<T> getBean(Resolvable resolvable) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals

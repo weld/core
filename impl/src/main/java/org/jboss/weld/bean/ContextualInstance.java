@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
@@ -48,6 +50,10 @@ public final class ContextualInstance {
      */
     public static <T> T get(Bean<T> bean, BeanManagerImpl manager, CreationalContext<?> ctx) {
         return getStrategy(bean).get(bean, manager, ctx);
+    }
+
+    public static <T> CompletionStage<T> getAsync(Bean<T> bean, BeanManagerImpl manager, CreationalContext<?> ctx) {
+      return getStrategy(bean).getAsync(bean, manager, ctx);
     }
 
     /**
