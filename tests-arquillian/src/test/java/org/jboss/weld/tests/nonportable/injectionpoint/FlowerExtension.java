@@ -21,15 +21,19 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.test.util.ActionSequence;
-
 public class FlowerExtension implements Extension {
+
+    private String pingResult;
+
+    public String getPingResult() {
+        return pingResult;
+    }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         Fig fig = (Fig) beanManager.getReference(
-                beanManager.resolve(beanManager.getBeans(Fig.class)), Object.class,
-                beanManager.createCreationalContext(null));
-        ActionSequence.addAction(fig.bloom.ping());
+            beanManager.resolve(beanManager.getBeans(Fig.class)), Object.class,
+            beanManager.createCreationalContext(null));
+        pingResult = fig.bloom.ping();
     }
 
 }
