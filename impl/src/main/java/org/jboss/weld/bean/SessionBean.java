@@ -146,6 +146,11 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      */
     @Override
     public T create(final CreationalContext<T> creationalContext) {
+        if (proxyInstantiator == null) {
+            // initializeAfterBeanDiscovery wasn't yet invoked
+            // this can happen if you attempt to create bean prior to fully booting container
+            throw BeanLogger.LOG.initABDnotInvoked(annotatedType);
+        }
         return proxyInstantiator.newInstance(creationalContext, beanManager);
     }
 

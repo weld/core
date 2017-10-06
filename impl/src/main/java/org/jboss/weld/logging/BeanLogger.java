@@ -503,4 +503,6 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1571, value = "Proxy for {0} created in {1} because {2}.", format = Format.MESSAGE_FORMAT)
     void generatingProxyToDefaultPackage(Object param1, Object param2, Object param3);
 
+    @Message(id = 1572, value = "Cannot create instance of session bean from Annotated Type {0} before AfterDeploymentValidation phase.", format = Format.MESSAGE_FORMAT)
+    CreationException initABDnotInvoked(Object bean);
 }
