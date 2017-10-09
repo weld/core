@@ -19,9 +19,12 @@ package org.jboss.weld.bean.proxy;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.ejb.EJBException;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -124,6 +127,9 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         }
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
 
+        if (!Modifier.isPublic(method.getModifiers())) {
+            throw new EJBException("Not a business method " + method.toString() +". Do not call non-public methods on EJB's.");
+        }
         Object returnValue = Reflections.invokeAndUnwrap(proxiedInstance, method, args);
         BeanLogger.LOG.callProxiedMethod(method, proxiedInstance, args, returnValue);
         return returnValue;
