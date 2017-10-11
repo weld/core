@@ -24,7 +24,6 @@ import javax.enterprise.context.BeforeDestroyed;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.se.SeContainer;
@@ -45,6 +44,7 @@ import org.jboss.weld.environment.se.events.ContainerBeforeShutdown;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
+import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableList;
@@ -206,7 +206,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     private volatile WeldInstance<Object> instance;
 
-    private volatile Event<Object> event;
+    private volatile WeldEvent<Object> event;
 
     private volatile CreationalContext<?> creationalContext;
 
@@ -257,7 +257,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      *
      * @return the event
      */
-    public Event<Object> event() {
+    public WeldEvent<Object> event() {
         checkIsRunning();
         if (event == null) {
             synchronized (this) {

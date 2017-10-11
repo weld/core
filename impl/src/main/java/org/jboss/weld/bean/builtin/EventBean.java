@@ -27,15 +27,16 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.event.EventImpl;
+import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
 
-public class EventBean extends AbstractFacadeBean<Event<?>> {
+public class EventBean extends AbstractFacadeBean<WeldEvent<?>> {
 
-    private static final Class<Event<?>> TYPE = cast(Event.class);
+    private static final Class<WeldEvent<?>> TYPE = cast(WeldEvent.class);
     @SuppressWarnings("serial")
     private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>(){}.getType();
-    private static final Set<Type> TYPES = ImmutableSet.<Type>of(Event.class, Object.class);
+    private static final Set<Type> TYPES = ImmutableSet.<Type>of(Event.class, Object.class, WeldEvent.class);
 
     public EventBean(BeanManagerImpl manager) {
         super(manager, TYPE);
@@ -47,7 +48,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
     }
 
     @Override
-    protected Event<?> newInstance(InjectionPoint ip, CreationalContext<Event<?>> creationalContext) {
+    protected WeldEvent<?> newInstance(InjectionPoint ip, CreationalContext<WeldEvent<?>> creationalContext) {
         return EventImpl.of(ip, getBeanManager());
     }
 

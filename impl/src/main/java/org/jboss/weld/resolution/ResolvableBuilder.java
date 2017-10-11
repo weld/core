@@ -40,6 +40,7 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.logging.BeanManagerLogger;
@@ -50,7 +51,8 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class ResolvableBuilder {
 
-    private static final Class<?>[] FACADE_TYPES = new Class<?>[] { Event.class, Instance.class, WeldInstance.class, Provider.class, InterceptionFactory.class };
+    private static final Class<?>[] FACADE_TYPES = new Class<?>[] { Event.class, Instance.class, WeldEvent.class,
+        WeldInstance.class, Provider.class, InterceptionFactory.class };
     private static final Class<?>[] METADATA_TYPES = new Class<?>[] { Interceptor.class, Decorator.class, Bean.class };
     private static final Set<QualifierInstance> ANY_SINGLETON = Collections.singleton(QualifierInstance.ANY);
 
