@@ -80,4 +80,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 418, value = "Observer method for container lifecycle event cannot be static. {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException staticContainerLifecycleEventObserver(ObserverMethod<?> observer, Object stackElement);
 
+    // id 419 - 421 are present in 3.x
+    @Message(id = 422, value = "WeldEvent.select(Type subtype, Annotation... qualifiers) can be invoked only on an instance of WeldEvent<Object>.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException selectByTypeOnlyWorksOnObject();
 }

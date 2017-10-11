@@ -146,6 +146,18 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         return selectInstance(subtype.getType(), qualifiers);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <X> WeldInstance<X> select(Type subtype, Annotation... qualifiers) {
+        // verify if this was invoked on WeldInstance<Object>
+        if (!this.getType().equals(Object.class)) {
+            throw BeanLogger.LOG.selectByTypeOnlyWorksOnObject();
+        }
+        // This cast should be safe, we make sure that this method is only invoked on WeldInstance<Object>
+        // and any type X will always extend Object
+        return (WeldInstance<X>)selectInstance(subtype, qualifiers);
+    }
+
     private <U extends T> WeldInstance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
         InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class, subtype, getQualifiers(),
                 newQualifiers);
@@ -213,12 +225,6 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         return new PriorityComparator(getBeanManager().getServices().get(AnnotationApiAbstraction.class));
     }
 
-    @Override
-    public <X> WeldInstance<X> select(Type subtype, Annotation... qualifiers) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     private void destroyDependentInstance(T instance) {
         CreationalContext<? super T> ctx = getCreationalContext();
         if (ctx instanceof WeldCreationalContext<?>) {
@@ -255,7 +261,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     private Set<Bean<?>> resolveBeans() {
         // Perform typesafe resolution, and possibly attempt to resolve the ambiguity
         Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
-                .setDeclaringBean(getInjectionPoint().getBean()).create();
+            .setDeclaringBean(getInjectionPoint().getBean()).create();
         TypeSafeBeanResolver beanResolver = getBeanManager().getBeanResolver();
         return beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
     }

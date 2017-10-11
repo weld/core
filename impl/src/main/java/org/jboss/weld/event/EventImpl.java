@@ -33,6 +33,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.AbstractFacade;
 import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
+import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -53,7 +54,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @see javax.enterprise.event.Event
  */
 @SuppressFBWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR", justification = "Uses SerializationProxy")
-public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>, Serializable {
+public class EventImpl<T> extends AbstractFacade<T, WeldEvent<T>> implements WeldEvent<T>, Serializable {
 
     private static final String SUBTYPE_ARGUMENT_NAME = "subtype";
     private static final long serialVersionUID = 656782657242515455L;
@@ -116,23 +117,34 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     @Override
-    public Event<T> select(Annotation... qualifiers) {
+    public WeldEvent<T> select(Annotation... qualifiers) {
         return selectEvent(this.getType(), qualifiers);
     }
 
     @Override
-    public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldEvent<U> select(Class<U> subtype, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype, qualifiers);
     }
 
     @Override
-    public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+    public <U extends T> WeldEvent<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype.getType(), qualifiers);
     }
 
-    private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
+    @Override
+    public <X> WeldEvent<X> select(Type type, Annotation... qualifiers) {
+        // verify if this was invoked on WeldInstance<Object>
+        if (!this.getType().equals(Object.class)) {
+            throw EventLogger.LOG.selectByTypeOnlyWorksOnObject();
+        }
+        // This cast should be safe, we make sure that this method is only invoked on WeldEvent<Object>
+        // and any type X will always extend Object
+        return (WeldEvent<X>)selectEvent(type, qualifiers);
+    }
+
+    private <U extends T> WeldEvent<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
         getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
         return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Event.class, subtype, getQualifiers(), newQualifiers),
                 getBeanManager());
@@ -170,7 +182,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         throw EventLogger.LOG.serializationProxyRequired();
     }
 
-    private static class SerializationProxy<T> extends AbstractFacadeSerializationProxy<T, Event<T>> {
+    private static class SerializationProxy<T> extends AbstractFacadeSerializationProxy<T, WeldEvent<T>> {
 
         private static final long serialVersionUID = 9181171328831559650L;
 
