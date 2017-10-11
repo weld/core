@@ -107,4 +107,7 @@ public interface EventLogger extends WeldLogger {
 
     @Message(id = 421, value = "Invalid input value for asynchronous observer notification timeout. Has to be parseable String, java.lang.Long or long. Original exception: {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException invalidInputValueForTimeout(Object nfe);
+
+    @Message(id = 422, value = "WeldEvent.select(Type subtype, Annotation... qualifiers) can be invoked only on an instance of WeldEvent<Object>.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException selectByTypeOnlyWorksOnObject();
 }

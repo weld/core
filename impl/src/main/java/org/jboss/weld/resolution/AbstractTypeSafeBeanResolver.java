@@ -39,6 +39,7 @@ import javax.inject.Provider;
 
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -210,6 +211,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
             || Provider.class.equals(resolvable.getJavaClass())
             || InterceptionFactory.class.equals(resolvable.getJavaClass())
             || WeldInstance.class.equals(resolvable.getJavaClass())
+            || WeldEvent.class.equals(resolvable.getJavaClass())
             || resolvable.getTypes().contains(Serializable.class)) {
             return super.getAllBeans(resolvable);
         }
