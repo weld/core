@@ -111,6 +111,7 @@ import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
+import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -1483,7 +1484,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     }
 
-    public Event<Object> event() {
+    public WeldEvent<Object> event() {
         return EventImpl.of(EventInjectionPoint.INSTANCE, this);
     }
 

@@ -512,4 +512,7 @@ public interface BeanLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 1574, value = "Cannot destroy contextual instance for {0} - producing WeldInstance does not exist anymore", format = Format.MESSAGE_FORMAT)
     void cannotDestroyHandlerContextualReference(Object handler);
+
+    @Message(id = 1575, value = "WeldInstance.select(Type subtype, Annotation... qualifiers) can be invoked only on an instance of WeldInstance<Object>.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException selectByTypeOnlyWorksOnObject();
 }

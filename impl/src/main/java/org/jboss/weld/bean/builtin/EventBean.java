@@ -16,9 +16,8 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
@@ -26,16 +25,23 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.event.EventImpl;
+import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class EventBean extends AbstractFacadeBean<Event<?>> {
 
-    private static final Class<Event<?>> TYPE = cast(Event.class);
-    @SuppressWarnings("serial")
-    private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>(){}.getType();
+    private static final Type EVENT_TYPE = new TypeLiteral<Event<Object>>(){
+        private static final long serialVersionUID = 3109256773218160485L;
+    }.getType();
+    private static final Type WELD_EVENT_TYPE = new TypeLiteral<WeldEvent<Object>>(){
+        private static final long serialVersionUID = 3109256773218160485L;
+    }.getType();
+    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(WELD_EVENT_TYPE, EVENT_TYPE);
 
     public EventBean(BeanManagerImpl manager) {
-        super(manager, TYPE);
+        super(manager, Reflections.<Class<Event<?>>>cast(Event.class));
     }
 
     @Override
@@ -55,7 +61,10 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
 
     @Override
     protected Type getDefaultType() {
-        return DEFAULT_TYPE;
+        return EVENT_TYPE;
     }
 
+    public Set<Type> getTypes() {
+        return DEFAULT_TYPES;
+    }
 }
