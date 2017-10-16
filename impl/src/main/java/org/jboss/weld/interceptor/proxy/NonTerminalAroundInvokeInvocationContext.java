@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.interceptor.proxy;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
@@ -40,20 +41,20 @@ class NonTerminalAroundInvokeInvocationContext extends AroundInvokeInvocationCon
     private final int position;
     private final List<InterceptorMethodInvocation> chain;
 
-    public NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
+    public NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters, Set<Annotation> interceptorBindings,
             List<InterceptorMethodInvocation> chain, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
-        this(target, method, proceed, parameters, new HashMap<String, Object>(), 0, chain, currentHandler);
+        this(target, method, proceed, parameters, newContextData(interceptorBindings), interceptorBindings, 0, chain, currentHandler);
     }
 
     public NonTerminalAroundInvokeInvocationContext(NonTerminalAroundInvokeInvocationContext ctx) {
-        this(ctx.getTarget(), ctx.getMethod(), ctx.getProceed(), ctx.getParameters(), ctx.contextData, ctx.position + 1,
-                ctx.chain, ctx.currentHandler);
+        this(ctx.getTarget(), ctx.getMethod(), ctx.getProceed(), ctx.getParameters(), ctx.contextData, ctx.getInterceptorBindings(), ctx.position + 1,
+            ctx.chain, ctx.currentHandler);
     }
 
     private NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters, Map<String, Object> contextData,
-            int position, List<InterceptorMethodInvocation> chain,
+            Set<Annotation> interceptorBindings, int position, List<InterceptorMethodInvocation> chain,
             CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
-        super(target, method, proceed, parameters, contextData, currentHandler);
+        super(target, method, proceed, parameters, contextData, interceptorBindings, currentHandler);
         this.position = position;
         this.chain = chain;
     }

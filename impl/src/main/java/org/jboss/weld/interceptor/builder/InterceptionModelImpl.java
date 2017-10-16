@@ -17,6 +17,8 @@
 
 package org.jboss.weld.interceptor.builder;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +56,10 @@ class InterceptionModelImpl implements InterceptionModel {
 
     private final TargetClassInterceptorMetadata targetClassInterceptorMetadata;
 
+    private final Map<Member, Set<Annotation>> memberInterceptorBindings;
+
+    private final Set<Annotation> classInterceptorBindings;
+
     InterceptionModelImpl(InterceptionModelBuilder builder) {
         this.hasExternalNonConstructorInterceptors = builder.isHasExternalNonConstructorInterceptors();
         this.globalInterceptors = ImmutableMap.<InterceptionType, List<InterceptorClassMetadata<?>>>copyOf(builder.getGlobalInterceptors());
@@ -61,6 +67,8 @@ class InterceptionModelImpl implements InterceptionModel {
         this.methodsIgnoringGlobalInterceptors = ImmutableSet.<Method>copyOf(builder.getMethodsIgnoringGlobalInterceptors());
         this.allInterceptors = ImmutableSet.<InterceptorClassMetadata<?>>copyOf(builder.getAllInterceptors());
         this.targetClassInterceptorMetadata = builder.getTargetClassInterceptorMetadata();
+        this.memberInterceptorBindings = ImmutableMap.<Member, Set<Annotation>>copyOf(builder.getMemberInterceptorBindings());
+        this.classInterceptorBindings = ImmutableSet.copyOf(builder.getClassInterceptorBindings());
     }
 
     @Override
@@ -128,5 +136,15 @@ class InterceptionModelImpl implements InterceptionModel {
     @Override
     public TargetClassInterceptorMetadata getTargetClassInterceptorMetadata() {
         return targetClassInterceptorMetadata;
+    }
+
+    @Override
+    public Set<Annotation> getClassInterceptorBindings() {
+        return classInterceptorBindings;
+    }
+
+    @Override
+    public Set<Annotation> getMemberInterceptorBindings(Member member) {
+        return memberInterceptorBindings.get(member);
     }
 }

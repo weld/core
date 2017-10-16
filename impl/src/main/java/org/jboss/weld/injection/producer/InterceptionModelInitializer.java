@@ -22,7 +22,6 @@ import static org.jboss.weld.util.Interceptors.mergeBeanInterceptorBindings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,6 +52,7 @@ import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -140,6 +140,9 @@ public class InterceptionModelInitializer<T> {
 
     private void initCdiInterceptors() {
         Map<Class<? extends Annotation>, Annotation> classBindingAnnotations = getClassInterceptorBindings();
+
+        builder.setClassInterceptorBindings(ImmutableSet.copyOf(classBindingAnnotations.values()));
+
         initCdiLifecycleInterceptors(classBindingAnnotations);
         initCdiConstructorInterceptors(classBindingAnnotations);
         initCdiBusinessMethodInterceptors(classBindingAnnotations);
@@ -157,17 +160,21 @@ public class InterceptionModelInitializer<T> {
         if (classBindingAnnotations.size() == 0) {
             return;
         }
-        final Collection<Annotation> qualifiers = classBindingAnnotations.values();
-        initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, qualifiers);
-        initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, qualifiers);
-        initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, qualifiers);
-        initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, qualifiers);
+        final Set<Annotation> qualifiers = ImmutableSet.copyOf(classBindingAnnotations.values());
+        initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, null, qualifiers);
+        initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, null, qualifiers);
+        initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, null, qualifiers);
+        initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, null, qualifiers);
     }
 
-    private void initLifeCycleInterceptor(InterceptionType interceptionType, Collection<Annotation> annotations) {
+    private void initLifeCycleInterceptor(InterceptionType interceptionType, AnnotatedConstructor<?> constructor, Set<Annotation> annotations) {
         List<Interceptor<?>> resolvedInterceptors = manager.resolveInterceptors(interceptionType, annotations);
         if (!resolvedInterceptors.isEmpty()) {
-            builder.intercept(interceptionType, asInterceptorMetadata(resolvedInterceptors));
+            if(constructor != null) {
+                builder.interceptGlobal(interceptionType, constructor.getJavaMember(),  asInterceptorMetadata(resolvedInterceptors), annotations);
+            } else {
+                builder.interceptGlobal(interceptionType, null, asInterceptorMetadata(resolvedInterceptors), null);
+            }
         }
     }
 
@@ -181,7 +188,7 @@ public class InterceptionModelInitializer<T> {
         }
     }
 
-    private void initCdiBusinessMethodInterceptor(AnnotatedMethod<?> method, Collection<Annotation> methodBindingAnnotations) {
+    private void initCdiBusinessMethodInterceptor(AnnotatedMethod<?> method, Set<Annotation> methodBindingAnnotations) {
         if (methodBindingAnnotations.size() == 0) {
             return;
         }
@@ -189,7 +196,7 @@ public class InterceptionModelInitializer<T> {
         initInterceptor(InterceptionType.AROUND_TIMEOUT, method, methodBindingAnnotations);
     }
 
-    private void initInterceptor(InterceptionType interceptionType, AnnotatedMethod<?> method, Collection<Annotation> methodBindingAnnotations) {
+    private void initInterceptor(InterceptionType interceptionType, AnnotatedMethod<?> method, Set<Annotation> methodBindingAnnotations) {
         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(interceptionType, methodBindingAnnotations);
         if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
             Method javaMethod = method.getJavaMember();
@@ -200,7 +207,7 @@ public class InterceptionModelInitializer<T> {
                     throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
                 }
             } else {
-                builder.intercept(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors));
+                builder.interceptMethod(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors), methodBindingAnnotations);
             }
         }
     }
@@ -210,17 +217,17 @@ public class InterceptionModelInitializer<T> {
      */
 
     private void initCdiConstructorInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-        Collection<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations, constructor.getAnnotations());
+        Set<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations, constructor.getAnnotations());
         if (constructorBindings.isEmpty()) {
             return;
         }
-        initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, constructorBindings);
+        initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, this.constructor, constructorBindings);
     }
 
-    private Collection<Annotation> getMemberBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations,
+    private Set<Annotation> getMemberBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations,
             Set<Annotation> memberAnnotations) {
         Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
-        return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
+        return ImmutableSet.copyOf(mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values());
     }
 
     /*
@@ -253,7 +260,7 @@ public class InterceptionModelInitializer<T> {
                         continue;
                     }
                     if (interceptor.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType))) {
-                        builder.intercept(interceptionType, Collections.<InterceptorClassMetadata<?>>singleton(interceptor));
+                        builder.interceptGlobal(interceptionType, null, Collections.<InterceptorClassMetadata<?>>singleton(interceptor), null);
                     }
                 }
             }
@@ -267,8 +274,8 @@ public class InterceptionModelInitializer<T> {
         Class<?>[] constructorDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
         if (constructorDeclaredInterceptors != null) {
             for (Class<?> clazz : constructorDeclaredInterceptors) {
-                builder.intercept(InterceptionType.AROUND_CONSTRUCT,
-                        Collections.<InterceptorClassMetadata<?>>singleton(reader.getPlainInterceptorMetadata(clazz)));
+                builder.interceptGlobal(InterceptionType.AROUND_CONSTRUCT, null,
+                        Collections.<InterceptorClassMetadata<?>>singleton(reader.getPlainInterceptorMetadata(clazz)), null);
             }
         }
     }
@@ -290,7 +297,7 @@ public class InterceptionModelInitializer<T> {
             InterceptionType interceptionType = isTimeoutAnnotationPresentOn(method)
                     ? InterceptionType.AROUND_TIMEOUT
                     : InterceptionType.AROUND_INVOKE;
-            builder.intercept(interceptionType, javaMethod, getMethodDeclaredInterceptorMetadatas(methodDeclaredInterceptors));
+            builder.interceptMethod(interceptionType, javaMethod, getMethodDeclaredInterceptorMetadatas(methodDeclaredInterceptors), null);
         }
     }
 
@@ -311,7 +318,7 @@ public class InterceptionModelInitializer<T> {
      * override bean interceptor bindings. The bean binding map is not modified - a copy is used.
      */
     protected Map<Class<? extends Annotation>, Annotation> mergeMethodInterceptorBindings(Map<Class<? extends Annotation>, Annotation> beanBindings,
-            Collection<Annotation> methodBindingAnnotations) {
+            Set<Annotation> methodBindingAnnotations) {
 
         Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>(beanBindings);
         // conflict detection

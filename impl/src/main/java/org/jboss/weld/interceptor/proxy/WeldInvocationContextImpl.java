@@ -16,19 +16,25 @@
  */
 package org.jboss.weld.interceptor.proxy;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
+import org.jboss.weld.interceptor.WeldInvocationContext;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.util.ForwardingInvocationContext;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * Weld's {@link InvocationContext} implementation. This is a forwarding implementation that delegates most method calls to an underlying
@@ -40,34 +46,54 @@ import org.jboss.weld.util.ForwardingInvocationContext;
  * @author Jozef Hartinger
  *
  */
-public class WeldInvocationContext extends ForwardingInvocationContext {
+public class WeldInvocationContextImpl extends ForwardingInvocationContext implements WeldInvocationContext {
 
     private int position;
     private final List<InterceptorMethodInvocation> chain;
     private final CombinedInterceptorAndDecoratorStackMethodHandler currentHandler;
     private final InvocationContext delegate;
+    private final Set<Annotation> interceptorBindings;
 
-    public WeldInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, List<InterceptorMethodInvocation> chain) {
-        this(new SimpleInvocationContext(constructor, parameters, contextData), chain, null);
+    public WeldInvocationContextImpl(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings) {
+        this(new SimpleInvocationContext(constructor, parameters, contextData, interceptorBindings), chain, interceptorBindings, null);
     }
 
-    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Stack stack) {
-        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, (stack == null) ? null : stack.peek());
+    public WeldInvocationContextImpl(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, Stack stack) {
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters, interceptorBindings), chain, interceptorBindings, (stack == null) ? null : stack.peek());
     }
 
-    public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain) {
-        this(delegate, chain, null);
-    }
-
-    public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
+    public WeldInvocationContextImpl(InvocationContext delegate, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
         this.delegate = delegate;
         this.chain = chain;
         this.currentHandler = currentHandler;
+        if (interceptorBindings == null) {
+            this.interceptorBindings = Collections.<Annotation>emptySet();
+        } else {
+            this.interceptorBindings = interceptorBindings;
+        }
+        getContextData().put(InterceptorMethodHandler.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
     }
 
     @Override
     protected InvocationContext delegate() {
         return delegate;
+    }
+
+    @Override
+    public Set<Annotation> getInterceptorBindings() {
+        return interceptorBindings;
+    }
+
+    @Override
+    public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
+        Preconditions.checkArgumentNotNull(annotationType, "annotationType");
+        Set<T> result = new HashSet<>();
+        for (Annotation interceptorBinding : interceptorBindings) {
+            if (interceptorBinding.annotationType().equals(annotationType)) {
+                result.add((T) interceptorBinding);
+            }
+        }
+        return result;
     }
 
     public boolean hasNextInterceptor() {
@@ -80,7 +106,7 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
             InterceptorMethodInvocation nextInterceptorMethodInvocation = chain.get(position++);
             InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation);
             if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
-                return nextInterceptorMethodInvocation.invoke(WeldInvocationContext.this);
+                return nextInterceptorMethodInvocation.invoke(WeldInvocationContextImpl.this);
             } else {
                 nextInterceptorMethodInvocation.invoke(null);
                 while (hasNextInterceptor()) {
