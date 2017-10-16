@@ -315,17 +315,20 @@ final class JsonObjects {
             enablementBuilder.add(DECORATORS, decorators);
             JsonArrayBuilder alternatives = Json.arrayBuilder();
             for (Class<?> clazz : Sets.union(enablement.getAlternativeClasses(), enablement.getGlobalAlternatives())) {
-                JsonObjectBuilder builder = createSimpleBeanJson(findAlternativeBean(clazz, probe), probe);
-                if (enablement.getAlternativeClasses().contains(clazz)) {
-                    builder.add(BEANS_XML, true);
-                }
-                if (enablement.getGlobalAlternatives().contains(clazz)) {
-                    Object priority = clazz.getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
-                    if (priority != null) {
-                        builder.add(PRIORITY, annotationApi.getPriority(priority));
+                Bean<?> alternativeBean = findAlternativeBean(clazz, probe);
+                if (alternativeBean != null) {
+                    JsonObjectBuilder builder = createSimpleBeanJson(alternativeBean, probe);
+                    if (enablement.getAlternativeClasses().contains(clazz)) {
+                        builder.add(BEANS_XML, true);
                     }
+                    if (enablement.getGlobalAlternatives().contains(clazz)) {
+                        Object priority = clazz.getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
+                        if (priority != null) {
+                            builder.add(PRIORITY, annotationApi.getPriority(priority));
+                        }
+                    }
+                    alternatives.add(builder);
                 }
-                alternatives.add(builder);
             }
             for (Class<? extends Annotation> stereotype : enablement.getAlternativeStereotypes()) {
                 Set<Bean<?>> beans = findAlternativeStereotypeBeans(stereotype, probe);

@@ -29,6 +29,7 @@ import java.net.URL;
 import javax.json.JsonObject;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -36,6 +37,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
+import org.jboss.weld.probe.tests.integration.deployment.beans.almostAlternative.AlmostAlternativeBean;
 import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,9 +54,11 @@ public class ProbeDeploymentsTest extends ProbeIntegrationTest {
     private static final String TEST_ARCHIVE_NAME = "probe-deployments-test-explicit";
     private static final String TEST_IMPLICIT_ARCHIVE_NAME = "probe-deployments-test-implicit";
     private static final String NOT_BEAN_ARCHIVE_NAME = "probe-deployments-test-none";
+    private static final String PRIORITY_NON_ALTERNATIVE_BEAN_ARCHIVE_NAME = "probe-deployments-test-priority";
     private static final String EXPLICIT_ARCHIVE = "explicit-archive";
     private static final String IMPLICIT_ARCHIVE = "implicit-archive";
     private static final String NON_BEAN_ARCHIVE = "not-bean-archive";
+    private static final String PRIORITY_NON_ALTERNATIVE_BEAN_ARCHIVE = "priority-non-alternative-bean-archive";
 
     @Deployment(testable = false, name = EXPLICIT_ARCHIVE)
     public static WebArchive deployExplicitArchive() {
@@ -75,6 +79,13 @@ public class ProbeDeploymentsTest extends ProbeIntegrationTest {
         return ShrinkWrap.create(WebArchive.class, TEST_IMPLICIT_ARCHIVE_NAME + ".war")
                 .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "web.xml", "web.xml")
                 .addPackage(ModelBean.class.getPackage());
+    }
+
+    @Deployment(testable = false, name = PRIORITY_NON_ALTERNATIVE_BEAN_ARCHIVE)
+    public static WebArchive deployArchiveWithPriorityNonAlternativeBean() {
+        return ShrinkWrap.create(WebArchive.class, PRIORITY_NON_ALTERNATIVE_BEAN_ARCHIVE_NAME + ".war")
+                .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "web.xml", "web.xml")
+                .addClass(AlmostAlternativeBean.class);
     }
 
     @Test
@@ -105,4 +116,11 @@ public class ProbeDeploymentsTest extends ProbeIntegrationTest {
         }
     }
 
+    @Test
+    @OperateOnDeployment(PRIORITY_NON_ALTERNATIVE_BEAN_ARCHIVE)
+    public void testDeploymentWithPriorityNonAlternativeBean() throws IOException {
+        JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, PRIORITY_NON_ALTERNATIVE_BEAN_ARCHIVE_NAME, url);
+        // this should not crash, bean with @Priority and no other annotation is correct
+        assertNotNull("Cannot find test archive in Probe deployments!", testArchive);
+    }
 }
