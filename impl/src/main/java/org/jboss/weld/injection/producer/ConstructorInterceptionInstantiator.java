@@ -32,7 +32,7 @@ import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
-import org.jboss.weld.interceptor.proxy.WeldInvocationContext;
+import org.jboss.weld.interceptor.proxy.WeldInvocationContextImpl;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -80,7 +80,7 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                 final AtomicReference<T> target = new AtomicReference<T>();
 
                 List<InterceptorMethodInvocation> chain = interceptionContext.buildInterceptorMethodInvocationsForConstructorInterception();
-                InvocationContext invocationContext = new WeldInvocationContext(constructor.getJavaMember(), parameters, data, chain) {
+                InvocationContext invocationContext = new WeldInvocationContextImpl(constructor.getJavaMember(), parameters, data, chain, model.getMemberInterceptorBindings(getConstructor())) {
 
                     @Override
                     protected Object interceptorChainCompleted() throws Exception {

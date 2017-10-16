@@ -16,21 +16,23 @@
  */
 package org.jboss.weld.interceptor.proxy;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.interceptor.InvocationContext;
-
+import org.jboss.weld.interceptor.WeldInvocationContext;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-abstract class AbstractInvocationContext implements InvocationContext {
+abstract class AbstractInvocationContext implements WeldInvocationContext {
 
     protected Map<String, Object> contextData;
     protected final Method method;
@@ -39,6 +41,7 @@ abstract class AbstractInvocationContext implements InvocationContext {
     protected final Object timer;
     protected final Constructor<?> constructor;
     protected final Method proceed;
+    protected final Set<Annotation> interceptorBindings;
 
     private static final Map<Class<?>, Set<Class<?>>> WIDENING_TABLE;
 
@@ -53,11 +56,11 @@ abstract class AbstractInvocationContext implements InvocationContext {
         WIDENING_TABLE = Collections.unmodifiableMap(wideningTable);
     }
 
-    protected AbstractInvocationContext(Object target, Method method, Method proceed, Object[] parameters,Map<String, Object> contextData) {
-        this(target, method, proceed, null, parameters, null, contextData);
+    protected AbstractInvocationContext(Object target, Method method, Method proceed, Object[] parameters,Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
+        this(target, method, proceed, null, parameters, null, contextData, interceptorBindings);
     }
 
-    protected AbstractInvocationContext(Object target, Method method, Method proceed, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData) {
+    protected AbstractInvocationContext(Object target, Method method, Method proceed, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
         this.target = target;
         this.method = method;
         this.proceed = proceed;
@@ -65,14 +68,21 @@ abstract class AbstractInvocationContext implements InvocationContext {
         this.parameters = parameters;
         this.timer = timer;
         this.contextData = contextData;
+        this.interceptorBindings = interceptorBindings;
     }
 
     @Override
     public Map<String, Object> getContextData() {
         if (contextData == null) {
-            contextData = new HashMap<String, Object>();
+            contextData = newContextData(interceptorBindings);
         }
         return contextData;
+    }
+
+    protected static Map<String, Object> newContextData(Set<Annotation> interceptorBindings) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put(InterceptorMethodHandler.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
+        return result;
     }
 
     @Override
@@ -193,4 +203,22 @@ abstract class AbstractInvocationContext implements InvocationContext {
     protected Method getProceed() {
         return proceed;
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
+        Preconditions.checkArgumentNotNull(annotationType, "annotationType");
+        Set<T> filteredSet = new HashSet<>();
+        for (Annotation annotation : interceptorBindings) {
+            if (annotation.annotationType().equals(annotationType)) {
+                filteredSet.add((T) annotation);
+            }
+        }
+        return filteredSet;
+    }
+
+    @Override
+    public Set<Annotation> getInterceptorBindings() {
+        return interceptorBindings;
+}
 }

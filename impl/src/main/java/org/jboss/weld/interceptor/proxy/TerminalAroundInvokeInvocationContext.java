@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.interceptor.proxy;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
@@ -36,12 +38,12 @@ import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandl
 class TerminalAroundInvokeInvocationContext extends AroundInvokeInvocationContext {
 
     public TerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters, Map<String, Object> contextData,
-            CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
-        super(target, method, proceed, parameters, (contextData == null) ? null : new HashMap<String, Object>(contextData), currentHandler);
+            Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
+        super(target, method, proceed, parameters, (contextData == null) ? null : new HashMap<String, Object>(contextData), interceptorBindings, currentHandler);
     }
 
     public TerminalAroundInvokeInvocationContext(NonTerminalAroundInvokeInvocationContext ctx) {
-        super(ctx.getTarget(), ctx.getMethod(), ctx.getProceed(), ctx.getParameters(), ctx.contextData, ctx.currentHandler);
+        super(ctx.getTarget(), ctx.getMethod(), ctx.getProceed(), ctx.getParameters(), ctx.contextData, ctx.getInterceptorBindings(), ctx.currentHandler);
     }
 
     @Override

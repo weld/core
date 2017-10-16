@@ -1,4 +1,4 @@
-/*
+    /*
  * JBoss, Home of Professional Open Source
  * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -18,10 +18,12 @@ package org.jboss.weld.interceptor.proxy;
 
 import static org.jboss.weld.util.reflection.Reflections.unwrapInvocationTargetException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.Asynchronous;
 import javax.interceptor.InvocationContext;
@@ -53,20 +55,20 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 abstract class AroundInvokeInvocationContext extends AbstractInvocationContext {
 
     public static AroundInvokeInvocationContext create(Object instance, Method method, Method proceed, Object[] args,  List<InterceptorMethodInvocation> chain,
-            Stack stack) {
+            Set<Annotation> interceptorBindings, Stack stack) {
         CombinedInterceptorAndDecoratorStackMethodHandler currentHandler = (stack == null) ? null : stack.peek();
         if (chain.size() == 1) {
-            return new TerminalAroundInvokeInvocationContext(instance, method, proceed, args, null, currentHandler);
+            return new TerminalAroundInvokeInvocationContext(instance, method, proceed, args, null, interceptorBindings, currentHandler);
         } else {
-            return new NonTerminalAroundInvokeInvocationContext(instance, method, proceed, args, chain, currentHandler);
+            return new NonTerminalAroundInvokeInvocationContext(instance, method, proceed, args, interceptorBindings, chain, currentHandler);
         }
     }
 
     final CombinedInterceptorAndDecoratorStackMethodHandler currentHandler;
 
     AroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters, Map<String, Object> contextData,
-            CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
-        super(target, method, proceed, parameters, contextData);
+            Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
+        super(target, method, proceed, parameters, contextData, interceptorBindings);
         this.currentHandler = currentHandler;
     }
 

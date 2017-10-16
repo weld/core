@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.interceptor.proxy;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
@@ -31,12 +33,12 @@ import javax.interceptor.InvocationContext;
  */
 public class SimpleInvocationContext extends AbstractInvocationContext {
 
-    public SimpleInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters) {
-        super(target, targetMethod, proceed, null, parameters, null, null);
+    public SimpleInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, Set<Annotation> interceptorBindings) {
+        super(target, targetMethod, proceed, null, parameters, null, null, interceptorBindings);
     }
 
-    public SimpleInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData) {
-        super(null, null, null, constructor, parameters, null, contextData);
+    public SimpleInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
+        super(null, null, null, constructor, parameters, null, contextData, interceptorBindings);
     }
 
     @Override
