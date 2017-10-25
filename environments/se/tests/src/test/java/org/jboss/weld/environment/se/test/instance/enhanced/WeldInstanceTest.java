@@ -18,6 +18,8 @@ package org.jboss.weld.environment.se.test.instance.enhanced;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
@@ -45,6 +47,7 @@ import org.junit.runner.RunWith;
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
 public class WeldInstanceTest {
@@ -74,26 +77,31 @@ public class WeldInstanceTest {
             Handler<Alpha> alpha1 = instance.getHandler();
             assertEquals(alphaBean, alpha1.getBean());
             assertEquals(Dependent.class, alpha1.getBean().getScope());
+            // Contextual reference is obtained lazily
+            assertNull(ActionSequence.getSequenceData());
 
             String alpha2Id;
 
             // Test try-with-resource
             try (Handler<Alpha> alpha2 = instance.getHandler()) {
+                assertNull(ActionSequence.getSequenceData());
                 alpha2Id = alpha2.get().getId();
                 assertFalse(alpha1.get().getId().equals(alpha2Id));
             }
 
             List<String> sequence = ActionSequence.getSequenceData();
-            assertEquals(1, sequence.size());
-            assertEquals(alpha2Id, sequence.get(0));
+            assertEquals(3, sequence.size());
+            assertEquals("c" + alpha2Id, sequence.get(0));
+            assertEquals("c" + alpha1.get().getId(), sequence.get(1));
+            assertEquals("d" + alpha2Id, sequence.get(2));
 
             alpha1.destroy();
+            // Alpha1 destroyed
+            sequence = ActionSequence.getSequenceData();
+            assertEquals(4, sequence.size());
+            assertEquals("d" + alpha1.get().getId(), sequence.get(3));
             // Subsequent invocations are no-op
             alpha1.destroy();
-
-            sequence = ActionSequence.getSequenceData();
-            assertEquals(2, sequence.size());
-            assertEquals(alpha1.get().getId(), sequence.get(1));
 
             // Test normal scoped bean is also destroyed
             WeldInstance<Bravo> bravoInstance = container.select(Bravo.class);
@@ -104,7 +112,7 @@ public class WeldInstanceTest {
             }
             sequence = ActionSequence.getSequenceData();
             assertEquals(1, sequence.size());
-            assertEquals(bravoId, sequence.get(0));
+            assertEquals("d" + bravoId, sequence.get(0));
         }
     }
 
@@ -135,4 +143,33 @@ public class WeldInstanceTest {
         }
 
     }
+
+    @Test
+    public void testHandlersStream() {
+        ActionSequence.reset();
+        try (WeldContainer container = new Weld().initialize()) {
+
+            Handler<Processor> processor = container.select(Processor.class).handlersStream().filter(h -> Dependent.class.equals(h.getBean().getScope()))
+                    .findFirst().orElse(null);
+            assertNull(ActionSequence.getSequenceData());
+            assertNotNull(processor);
+            assertEquals(FirstProcessor.class, processor.getBean().getBeanClass());
+            assertEquals(FirstProcessor.class.getName(), processor.get().getId());
+            processor.destroy();
+            List<String> sequence = ActionSequence.getSequenceData();
+            assertEquals(1, sequence.size());
+            assertEquals("firstDestroy", sequence.get(0));
+
+            Handler<WithPriority> withPriority = container.select(WithPriority.class).handlersStream().sorted(container.getPriorityComparator()).findFirst()
+                    .orElse(null);
+            assertNotNull(withPriority);
+            assertEquals(Priority3.class, withPriority.getBean().getBeanClass());
+            withPriority.get();
+            sequence = ActionSequence.getSequenceData();
+            assertEquals(2, sequence.size());
+            assertEquals("firstDestroy", sequence.get(0));
+            assertEquals("c" + Priority3.class.getName(), sequence.get(1));
+        }
+    }
+
 }

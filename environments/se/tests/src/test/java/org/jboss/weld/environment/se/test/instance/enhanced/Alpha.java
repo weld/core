@@ -16,32 +16,10 @@
  */
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
-import java.util.UUID;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-import org.jboss.weld.test.util.ActionSequence;
-
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-public class Alpha {
+public class Alpha extends Base {
 
-    private String id;
-
-    @PostConstruct
-    void init() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    String getId() {
-        return id;
-    }
-
-    @PreDestroy
-    void destroy() {
-        ActionSequence.addAction(id);
-    }
 }

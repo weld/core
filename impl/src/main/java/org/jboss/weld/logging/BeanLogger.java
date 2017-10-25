@@ -528,4 +528,11 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1572, value = "Cannot create instance of session bean from Annotated Type {0} before AfterDeploymentValidation phase.", format = Format.MESSAGE_FORMAT)
     CreationException initABDnotInvoked(Object bean);
+
+    @Message(id = 1573, value = "Cannot obtain contextual reference for {0} - producing WeldInstance does not exist anymore", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotObtainHandlerContextualReference(Object handler);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1574, value = "Cannot destroy contextual instance for {0} - producing WeldInstance does not exist anymore", format = Format.MESSAGE_FORMAT)
+    void cannotDestroyHandlerContextualReference(Object handler);
 }

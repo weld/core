@@ -25,8 +25,11 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.AlterableContext;
@@ -51,7 +54,9 @@ import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
+import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.InjectionPoints;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -75,9 +80,9 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     private final transient CurrentInjectionPoint currentInjectionPoint;
     private final transient InjectionPoint ip;
     private final transient EjbSupport ejbSupport;
+    private final transient PriorityComparator priorityComparator;
 
-    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext,
-        BeanManagerImpl beanManager) {
+    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager) {
         return new InstanceImpl<I>(injectionPoint, creationalContext, beanManager);
     }
 
@@ -103,22 +108,12 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         // qualifiers and type
         this.ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
         this.ejbSupport = beanManager.getServices().get(EjbSupport.class);
+        this.priorityComparator = new PriorityComparator(beanManager.getServices().get(AnnotationApiAbstraction.class));
     }
 
     public T get() {
-        if (bean != null) {
-            return getBeanInstance(bean);
-        } else if (isUnsatisfied()) {
-            throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(
-                Formats.formatAnnotations(ip.getQualifiers()),
-                Formats.formatInjectionPointType(ip.getType()),
-                InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
-        } else {
-            throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(
-                Formats.formatAnnotations(ip.getQualifiers()),
-                Formats.formatInjectionPointType(ip.getType()),
-                WeldCollections.toMultiRowString(allBeans()));
-        }
+        checkBeanResolved();
+        return getBeanInstance(bean);
     }
 
     /**
@@ -157,7 +152,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
     private <U extends T> WeldInstance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
         InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class, subtype, getQualifiers(),
-            newQualifiers);
+                newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
 
@@ -193,7 +188,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
     @Override
     public Handler<T> getHandler() {
-        return new HandlerImpl<T>(get(), this, bean);
+        checkBeanResolved();
+        return new HandlerImpl<T>(() -> getBeanInstance(bean), this, bean);
     }
 
     @Override
@@ -211,6 +207,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         };
     }
 
+    @Override
+    public Comparator<Handler<?>> getPriorityComparator() {
+        return priorityComparator;
+    }
+
     private boolean isSessionBeanProxy(T instance) {
         return ejbSupport != null ? ejbSupport.isSessionBeanProxy(instance) : false;
     }
@@ -223,10 +224,22 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         }
     }
 
+    private void checkBeanResolved() {
+        if (bean != null) {
+            return;
+        } else if (isUnsatisfied()) {
+            throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(Formats.formatAnnotations(ip.getQualifiers()),
+                    Formats.formatInjectionPointType(ip.getType()), InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
+        } else {
+            throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(Formats.formatAnnotations(ip.getQualifiers()),
+                    Formats.formatInjectionPointType(ip.getType()), WeldCollections.toMultiRowString(allBeans()));
+        }
+    }
+
     private T getBeanInstance(Bean<?> bean) {
         final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(ip, isRegisterableInjectionPoint());
         try {
-            return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
+            return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
         } finally {
             stack.pop();
         }
@@ -312,31 +325,35 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         @Override
         public Handler<T> next() {
             Bean<?> bean = delegate.next();
-            return new HandlerImpl<>(getBeanInstance(bean), InstanceImpl.this, bean);
+            return new HandlerImpl<>(() -> getBeanInstance(bean), InstanceImpl.this, bean);
         }
 
     }
 
     private static class HandlerImpl<T> implements Handler<T> {
 
-        private final T value;
+        private final LazyValueHolder<T> value;
 
         private final Bean<?> bean;
 
-        private final WeakReference<WeldInstance<T>> weldInstance;
+        private final WeakReference<WeldInstance<T>> instance;
 
-        private boolean destroyed;
+        private final AtomicBoolean isDestroyed;
 
-        HandlerImpl(T value, WeldInstance<T> instance, Bean<?> bean) {
-            this.value = value;
+        HandlerImpl(Supplier<T> supplier, WeldInstance<T> instance, Bean<?> bean) {
+            this.value = LazyValueHolder.forSupplier(supplier);
             this.bean = bean;
-            this.weldInstance = new WeakReference<>(instance);
-            this.destroyed = false;
+            this.instance = new WeakReference<>(instance);
+            this.isDestroyed = new AtomicBoolean(false);
         }
 
         @Override
         public T get() {
-            return value;
+            if (!value.isAvailable() && instance.get() == null) {
+                // Contextual reference cannot be obtained if the producing Instance does not exist
+                throw BeanLogger.LOG.cannotObtainHandlerContextualReference(this);
+            }
+            return value.get();
         }
 
         @Override
@@ -346,17 +363,23 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
         @Override
         public void destroy() {
-            WeldInstance<T> instance = weldInstance.get();
-            if (instance == null || destroyed) {
-                return;
+            WeldInstance<T> ref = instance.get();
+            if (ref == null) {
+                BeanLogger.LOG.cannotDestroyHandlerContextualReference(this);
             }
-            instance.destroy(value);
-            destroyed = true;
+            if (value.isAvailable() && isDestroyed.compareAndSet(false, true)) {
+                ref.destroy(value.get());
+            }
         }
 
         @Override
         public void close() {
             destroy();
+        }
+
+        @Override
+        public String toString() {
+            return "HandlerImpl [bean=" + bean + "]";
         }
 
     }
