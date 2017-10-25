@@ -17,6 +17,7 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import javax.enterprise.inject.Instance;
@@ -81,6 +82,11 @@ public abstract class ForwardingWeldInstance<T> implements WeldInstance<T> {
     @Override
     public Iterable<org.jboss.weld.inject.WeldInstance.Handler<T>> handlers() {
         return delegate().handlers();
+    }
+
+    @Override
+    public Comparator<Handler<?>> getPriorityComparator() {
+        return delegate().getPriorityComparator();
     }
 
 }

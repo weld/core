@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,15 +16,30 @@
  */
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
-/**
- *
- * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
- */
-public interface Processor {
+import java.util.UUID;
 
-    void ping();
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
-    int getPriority();
+import org.jboss.weld.test.util.ActionSequence;
 
-    String getId();
+public abstract class Base {
+
+    private String id;
+
+    @PostConstruct
+    void init() {
+        this.id = UUID.randomUUID().toString();
+        ActionSequence.addAction("c" + getId());
+    }
+
+    String getId() {
+        return id;
+    }
+
+    @PreDestroy
+    void destroy() {
+        ActionSequence.addAction("d" + getId());
+    }
+
 }

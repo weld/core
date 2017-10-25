@@ -42,4 +42,9 @@ public class SecondProcessor implements Processor {
     void destroy() {
         ActionSequence.addAction("secondDestroy");
     }
+
+    @Override
+    public String getId() {
+        return SecondProcessor.class.getName();
+    }
 }

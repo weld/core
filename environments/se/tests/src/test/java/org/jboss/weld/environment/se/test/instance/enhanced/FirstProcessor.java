@@ -40,4 +40,9 @@ public class FirstProcessor implements Processor {
     void destroy() {
         ActionSequence.addAction("firstDestroy");
     }
+
+    @Override
+    public String getId() {
+        return FirstProcessor.class.getName();
+    }
 }

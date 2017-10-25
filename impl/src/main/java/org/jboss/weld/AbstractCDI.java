@@ -19,6 +19,7 @@ package org.jboss.weld;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -28,9 +29,11 @@ import javax.enterprise.inject.spi.Unmanaged;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
+import org.jboss.weld.bean.builtin.PriorityComparator;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -116,6 +119,11 @@ public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
     @Override
     public Iterable<Handler<T>> handlers() {
         return getInstance().handlers();
+    }
+
+    @Override
+    public Comparator<Handler<?>> getPriorityComparator() {
+        return new PriorityComparator(BeanManagerProxy.unwrap(getBeanManager()).getServices().get(AnnotationApiAbstraction.class));
     }
 
     /**
