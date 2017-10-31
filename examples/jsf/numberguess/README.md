@@ -12,7 +12,7 @@ Deploying to WildFly
 Make sure you have assigned the absolute path of your installation to the
 `JBOSS_HOME` environment variable.
 
-1. Open terminal and start the server by running 
+1. Open terminal and start the server by running
 
         $JBOSS_HOME/bin/standalone.sh
 
@@ -50,9 +50,21 @@ Deploying to standalone Tomcat 8
 
 If you want to run the application on a standalone Tomcat, first download and
 extract Tomcat. This build assumes you will be running Tomcat in its default
-configuration, with a hostname of localhost and port 8080. Build example using 
+configuration, with a hostname of localhost and port 8080. Build example using
 command
- 
+
       mvn clean package -Ptomcat
-  
-and deploy created WAR to Tomcat. 
+
+and deploy the created WAR to Tomcat.
+
+Deploying to standalone Jetty
+-----------------------------
+
+If you want to run the application on a standalone Jetty, first download and
+extract the Jetty distribution. This build assumes you will be running Jetty in its default
+configuration, with a hostname of localhost and port 8080. Build example using
+command
+
+      mvn clean package -Pjetty
+
+and deploy the created WAR to Jetty (e.g. copy the artifact to webapps directory).
