@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.util.Decorator</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.util.DecoratedObjectFactory</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.server.handler.ContextHandler.</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.server.handler.ContextHandler</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.servlet.ServletContextHandler</Arg>
+   </Call>
+   <New id="BeanManager" class="org.eclipse.jetty.plus.jndi.Resource">
+      <Arg>
+         <Ref id="webAppCtx" />
+      </Arg>
+      <Arg>BeanManager</Arg>
+      <Arg>
+         <New class="javax.naming.Reference">
+            <Arg>javax.enterprise.inject.spi.BeanManager</Arg>
+            <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
+            <Arg />
+         </New>
+      </Arg>
+   </New>
+</Configure>

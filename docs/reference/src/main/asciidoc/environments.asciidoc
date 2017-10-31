@@ -174,29 +174,34 @@ Jetty 9.1.1 and newer.
 
 ===== Class Loading
 
-No further configuration is needed when starting Jetty as an embedded webapp server from within another Java program. However, if you’re using a Jetty standalone instance one more configuration step is required.
+No further configuration is needed when starting Jetty as an embedded webapp server from within another Java program.
+However, if you’re using a Jetty standalone instance one more configuration step is required.
 
-The reason is that since Jetty 8 some internal classes are not visible from the web application. See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Setting Server Classes]. Therefore, we have to tell Jetty not to hide the system classes which Weld integration code is using. Unfortunately, it’s not so simple. The only workaround is to use a http://www.eclipse.org/jetty/documentation/current/configuring-specific-webapp-deployment.html[Jetty Deployable Descriptor XML File] (this is a Jetty 9 feature, in Jetty 8 a similar feature is incorporated - http://wiki.eclipse.org/Jetty/Feature/ContextDeployer[ContextProvider]). For instance, if there is an application archive named `weld-numberguess.war` deployed in the `webapps` directory, an XML descriptor named `weld-numberguess.xml` should be created in the same directory (the file should have the same base name as the war - see alse the scanning rules described in http://www.eclipse.org/jetty/documentation/current/deployment-architecture.html#default-web-app-provider[Jetty docs]):
+The reason is that since Jetty 8 some internal classes are not visible from the web application.
+See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Setting Server Classes].
+Therefore, we have to tell Jetty not to hide the system classes which Weld integration code is using.
+We can use the `jetty-web.xml` descriptor (see also https://www.eclipse.org/jetty/documentation/current/jetty-web-xml-config.html[Jetty XML Reference]):
 
 [source.XML, xml]
 -------------------------------------------------------------
-<?xml version="1.0"?>
-<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
-  <Set name="contextPath">/weld-numberguess</Set>
-  <Set name="war"><Property name="jetty.webapps" default="."/>/weld-numberguess.war</Set>
-  <Call name="prependServerClass">
-    <Arg>-org.eclipse.jetty.server.handler.ContextHandler</Arg>
-  </Call>
-  <Call name="prependServerClass">
-    <Arg>-org.eclipse.jetty.servlet.FilterHolder</Arg>
-  </Call>
-  <Call name="prependServerClass">
-    <Arg>-org.eclipse.jetty.servlet.ServletContextHandler</Arg>
-  </Call>
-  <Call name="prependServerClass">
-    <Arg>-org.eclipse.jetty.servlet.ServletHolder</Arg>
-  </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.util.Decorator</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.util.DecoratedObjectFactory</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.server.handler.ContextHandler.</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.server.handler.ContextHandler</Arg>
+   </Call>
+   <Call name="prependServerClass">
+      <Arg>-org.eclipse.jetty.servlet.ServletContextHandler</Arg>
+   </Call>
 </Configure>
 -------------------------------------------------------------
 
