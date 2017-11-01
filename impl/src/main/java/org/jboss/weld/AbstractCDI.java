@@ -19,6 +19,7 @@ package org.jboss.weld;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
@@ -88,6 +89,11 @@ public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
 
     @Override
     public <U extends T> WeldInstance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+        return instanceInternal().select(subtype, qualifiers);
+    }
+
+    @Override
+    public <X> WeldInstance<X> select(Type subtype, Annotation... qualifiers) {
         return instanceInternal().select(subtype, qualifiers);
     }
 

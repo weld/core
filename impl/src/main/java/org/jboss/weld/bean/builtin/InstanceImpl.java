@@ -150,6 +150,12 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         return selectInstance(subtype.getType(), qualifiers);
     }
 
+    @Override
+    public <X> WeldInstance<X> select(Type subtype, Annotation... qualifiers) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     private <U extends T> WeldInstance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
         InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class, subtype, getQualifiers(),
                 newQualifiers);

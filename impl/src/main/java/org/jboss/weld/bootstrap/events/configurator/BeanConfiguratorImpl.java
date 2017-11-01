@@ -43,15 +43,15 @@ import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bean.WeldBean;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
+import org.jboss.weld.bootstrap.event.WeldBeanConfigurator;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.ForwardingWeldInstance;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.bootstrap.event.WeldBeanConfigurator;
-import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
  *
@@ -410,6 +410,11 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         @Override
         public WeldInstance<T> select(Annotation... qualifiers) {
             return wrap(null, delegate.select(qualifiers));
+        }
+
+        @Override
+        public <X> WeldInstance<X> select(Type subtype, Annotation... qualifiers) {
+            return wrap(subtype, delegate.select(subtype, qualifiers));
         }
 
         private <TYPE> WeldInstance<TYPE> wrap(Type subtype, WeldInstance<TYPE> delegate) {
