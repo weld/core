@@ -80,7 +80,7 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
 
     protected static Map<String, Object> newContextData(Set<Annotation> interceptorBindings) {
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put(InterceptorMethodHandler.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
+        result.put(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
         return result;
     }
 
