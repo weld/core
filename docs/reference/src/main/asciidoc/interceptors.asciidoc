@@ -373,6 +373,7 @@ public class AroundConstructInterceptor {
                     FooBinding fooBinding = (FooBinding) annotation;
                     String secret = fooBinding.secret();
                 }
+            }
         }
         ctx.proceed();
     }
@@ -384,3 +385,31 @@ public class AroundConstructInterceptor {
 * `@AroundConstruct`
 * `@PostConstruct`
 * `@AroundInvoke`
+
+Alternatively, you can gain access to these binding directly from `InvocationContext` as we store them there using a key `org.jboss.weld.interceptor.bindings`.
+This key is easily accessible from `WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY`.
+Let's alter the previous example to demonstrate this:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------
+@Priority(value = Interceptor.Priority.APPLICATION)
+@Interceptor
+@FooBinding(secret = "nonbinding")
+public class AroundConstructInterceptor {
+
+    @SuppressWarnings("unchecked")
+    @AroundConstruct
+    void intercept(InvocationContext ctx) throws Exception {
+        // retrieve data directly from InvocationContext
+        Set<Annotation> bindings = (Set<Annotation>) ctx.getContextData().get(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY);
+	if (bindings != null) {
+            for (Annotation annotation : bindings) {
+                if (annotation.annotationType().equals(FooBinding.class)) {
+                    FooBinding fooBinding = (FooBinding) annotation;
+                    String secret = fooBinding.secret();
+                }
+            }
+        }
+        ctx.proceed();
+    }
+}

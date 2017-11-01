@@ -31,6 +31,7 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
+import org.jboss.weld.interceptor.WeldInvocationContext;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.util.ForwardingInvocationContext;
 import org.jboss.weld.util.Preconditions;
@@ -70,7 +71,7 @@ public class WeldInvocationContextImpl extends ForwardingInvocationContext imple
         } else {
             this.interceptorBindings = interceptorBindings;
         }
-        getContextData().put(InterceptorMethodHandler.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
+        getContextData().put(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
     }
 
     @Override

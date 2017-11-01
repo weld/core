@@ -26,7 +26,6 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class InterceptorMethodHandler implements StackAwareMethodHandler, Serializable {
 
-    public static final String INTERCEPTOR_BINDINGS_KEY = "org.jboss.weld.interceptor.bindings";
     private static final long serialVersionUID = 1L;
 
     private final InterceptionContext ctx;
