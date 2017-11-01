@@ -42,8 +42,6 @@ public class InvocationContextInterceptorBindingsTest {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvocationContextInterceptorBindingsTest.class)).addPackage(InvocationContextInterceptorBindingsTest.class.getPackage());
     }
 
-    static final String KEY = "org.jboss.weld.interceptor.bindings";
-
     @Test
     public void testAroundInvokeBindings(SimpleBean bean) {
         AroundInvokeInterceptor.reset();

@@ -38,7 +38,7 @@ public class PostConstructInterceptor {
     @SuppressWarnings("unchecked")
     @PostConstruct
     void intercept(InvocationContext ctx) throws Exception {
-        contextDataBindings = (Set<Annotation>) ctx.getContextData().get(InvocationContextInterceptorBindingsTest.KEY);
+        contextDataBindings = (Set<Annotation>) ctx.getContextData().get(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY);
         if (ctx instanceof WeldInvocationContext) {
             contextBindings = ((WeldInvocationContext) ctx).getInterceptorBindings();
         }
