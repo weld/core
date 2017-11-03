@@ -20,6 +20,10 @@ import javax.annotation.PreDestroy;
 
 import org.jboss.weld.test.util.ActionSequence;
 
+/**
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ */
 public class FirstProcessor implements Processor {
 
     @Override
@@ -37,4 +41,8 @@ public class FirstProcessor implements Processor {
         ActionSequence.addAction("firstDestroy");
     }
 
+    @Override
+    public String getId() {
+        return FirstProcessor.class.getName();
+    }
 }

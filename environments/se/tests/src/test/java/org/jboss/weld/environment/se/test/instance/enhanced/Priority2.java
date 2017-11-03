@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2017, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,15 +16,17 @@
  */
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
+import javax.annotation.Priority;
+
 /**
  *
- * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-public interface Processor {
+@Priority(2)
+public class Priority2 extends Base implements WithPriority {
 
-    void ping();
+    @Override
+    String getId() {
+        return Priority2.class.getName();
+    }
 
-    int getPriority();
-
-    String getId();
 }

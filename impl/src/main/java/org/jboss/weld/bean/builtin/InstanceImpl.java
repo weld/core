@@ -24,8 +24,10 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.AlterableContext;
@@ -50,8 +52,11 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
+import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.InjectionPoints;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.Supplier;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -103,19 +108,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     }
 
     public T get() {
-        if (bean != null) {
-            return getBeanInstance(bean);
-        } else if (isUnsatisfied()) {
-            throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(
-                    Formats.formatAnnotations(ip.getQualifiers()),
-                    Formats.formatInjectionPointType(ip.getType()),
-                    InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
-        } else {
-            throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(
-                    Formats.formatAnnotations(ip.getQualifiers()),
-                    Formats.formatInjectionPointType(ip.getType()),
-                    WeldCollections.toMultiRowString(allBeans()));
-        }
+        checkBeanResolved();
+        return getBeanInstance(bean);
     }
 
     /**
@@ -190,7 +184,13 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
     @Override
     public Handler<T> getHandler() {
-        return new HandlerImpl<T>(get(), this, bean);
+        checkBeanResolved();
+        return new HandlerImpl<T>(new Supplier<T>() {
+            @Override
+            public T get() {
+                return getBeanInstance(bean);
+            }
+        }, this, bean);
     }
 
     @Override
@@ -208,11 +208,34 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         };
     }
 
+    @Override
+    public Comparator<Handler<?>> getPriorityComparator() {
+        return new PriorityComparator(getBeanManager().getServices().get(AnnotationApiAbstraction.class));
+    }
+
+    @Override
+    public <X> WeldInstance<X> select(Type subtype, Annotation... qualifiers) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     private void destroyDependentInstance(T instance) {
         CreationalContext<? super T> ctx = getCreationalContext();
         if (ctx instanceof WeldCreationalContext<?>) {
             WeldCreationalContext<? super T> weldCtx = cast(ctx);
             weldCtx.destroyDependentInstance(instance);
+        }
+    }
+
+    private void checkBeanResolved() {
+        if (bean != null) {
+            return;
+        } else if (isUnsatisfied()) {
+            throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(Formats.formatAnnotations(ip.getQualifiers()),
+                    Formats.formatInjectionPointType(ip.getType()), InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
+        } else {
+            throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(Formats.formatAnnotations(ip.getQualifiers()),
+                    Formats.formatInjectionPointType(ip.getType()), WeldCollections.toMultiRowString(allBeans()));
         }
     }
 
@@ -302,32 +325,41 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
         @Override
         public Handler<T> next() {
-            Bean<?> bean = delegate.next();
-            return new HandlerImpl<>(getBeanInstance(bean), InstanceImpl.this, bean);
+            final Bean<?> bean = delegate.next();
+            return new HandlerImpl<>(new Supplier<T>() {
+                @Override
+                public T get() {
+                    return getBeanInstance(bean);
+                }
+            }, InstanceImpl.this, bean);
         }
 
     }
 
     private static class HandlerImpl<T> implements Handler<T> {
 
-        private final T value;
+        private final LazyValueHolder<T> value;
 
         private final Bean<?> bean;
 
-        private final WeakReference<WeldInstance<T>> weldInstance;
+        private final WeakReference<WeldInstance<T>> instance;
 
-        private boolean destroyed;
+        private final AtomicBoolean isDestroyed;
 
-        HandlerImpl(T value, WeldInstance<T> instance, Bean<?> bean) {
-            this.value = value;
+        HandlerImpl(Supplier<T> supplier, WeldInstance<T> instance, Bean<?> bean) {
+            this.value = LazyValueHolder.forSupplier(supplier);
             this.bean = bean;
-            this.weldInstance = new WeakReference<>(instance);
-            this.destroyed = false;
+            this.instance = new WeakReference<>(instance);
+            this.isDestroyed = new AtomicBoolean(false);
         }
 
         @Override
         public T get() {
-            return value;
+            if (!value.isAvailable() && instance.get() == null) {
+                // Contextual reference cannot be obtained if the producing Instance does not exist
+                throw BeanLogger.LOG.cannotObtainHandlerContextualReference(this);
+            }
+            return value.get();
         }
 
         @Override
@@ -337,17 +369,23 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
         @Override
         public void destroy() {
-            WeldInstance<T> instance = weldInstance.get();
-            if (instance == null || destroyed) {
-                return;
+            WeldInstance<T> ref = instance.get();
+            if (ref == null) {
+                BeanLogger.LOG.cannotDestroyHandlerContextualReference(this);
             }
-            instance.destroy(value);
-            destroyed = true;
+            if (value.isAvailable() && isDestroyed.compareAndSet(false, true)) {
+                ref.destroy(value.get());
+            }
         }
 
         @Override
         public void close() {
             destroy();
+        }
+
+        @Override
+        public String toString() {
+            return "HandlerImpl [bean=" + bean + "]";
         }
 
     }

@@ -71,7 +71,7 @@
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
         <testng.version>6.8.8</testng.version>
-        <weld.api.version>2.4.SP1</weld.api.version>
+        <weld.api.version>2.4.SP2-Beta1</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
 
@@ -462,7 +462,7 @@
                 <artifactId>jsf-impl</artifactId>
                 <version>${jsf.impl.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
@@ -743,7 +743,7 @@
                 <jdk>9</jdk>
             </activation>
             <properties>
-                <!--This property will be added to surefire jvm args when needed. Due to reflection usage we have to to open 
+                <!--This property will be added to surefire jvm args when needed. Due to reflection usage we have to to open
                 package java.lang in module java.base to unnamed module, hence making it available for reflection-->
                 <surefire.plugin.jdk9.args>--add-opens java.base/java.lang=ALL-UNNAMED </surefire.plugin.jdk9.args>
             </properties>
@@ -756,7 +756,7 @@
                             <artifactId>maven-assembly-plugin</artifactId>
                             <version>3.0.0</version>
                         </plugin>
-             
+
                         <!-- To have truly JDK 9 compatible compiler, we want 3.6.0+ -->
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
