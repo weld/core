@@ -22,6 +22,10 @@ import javax.inject.Inject;
 
 import org.jboss.weld.inject.WeldInstance;
 
+/**
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ */
 public class Client {
 
     @Inject
@@ -45,5 +49,4 @@ public class Client {
     WeldInstance<Object> getInstance() {
         return instance;
     }
-
 }

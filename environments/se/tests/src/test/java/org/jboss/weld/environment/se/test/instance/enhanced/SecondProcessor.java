@@ -21,6 +21,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.weld.test.util.ActionSequence;
 
+/**
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ */
 @ApplicationScoped
 public class SecondProcessor implements Processor {
 
@@ -34,11 +38,13 @@ public class SecondProcessor implements Processor {
         return 10;
     }
 
-
     @PreDestroy
     void destroy() {
         ActionSequence.addAction("secondDestroy");
     }
 
-
+    @Override
+    public String getId() {
+        return SecondProcessor.class.getName();
+    }
 }

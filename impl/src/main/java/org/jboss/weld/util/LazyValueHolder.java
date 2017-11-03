@@ -37,6 +37,15 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T> {
         };
     }
 
+    public static <T> LazyValueHolder<T> forSupplier(final Supplier<T> supplier) {
+        return new LazyValueHolder<T>() {
+            @Override
+            protected T computeValue() {
+                return supplier.get();
+            }
+        };
+    }
+
     private transient volatile T value;
 
     public T get() {
@@ -61,6 +70,10 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T> {
         synchronized (this) {
             value = null;
         }
+    }
+
+    public boolean isAvailable() {
+        return value != null;
     }
 
     protected abstract T computeValue();
