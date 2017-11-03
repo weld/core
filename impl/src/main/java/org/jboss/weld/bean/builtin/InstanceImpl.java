@@ -80,7 +80,6 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     private final transient CurrentInjectionPoint currentInjectionPoint;
     private final transient InjectionPoint ip;
     private final transient EjbSupport ejbSupport;
-    private final transient PriorityComparator priorityComparator;
 
     public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager) {
         return new InstanceImpl<I>(injectionPoint, creationalContext, beanManager);
@@ -108,7 +107,6 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         // qualifiers and type
         this.ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
         this.ejbSupport = beanManager.getServices().get(EjbSupport.class);
-        this.priorityComparator = new PriorityComparator(beanManager.getServices().get(AnnotationApiAbstraction.class));
     }
 
     public T get() {
@@ -221,7 +219,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
     @Override
     public Comparator<Handler<?>> getPriorityComparator() {
-        return priorityComparator;
+        return new PriorityComparator(getBeanManager().getServices().get(AnnotationApiAbstraction.class));
     }
 
     private boolean isSessionBeanProxy(T instance) {
