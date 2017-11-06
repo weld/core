@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -30,16 +28,16 @@ import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Reflections;
 
-public class EventBean extends AbstractFacadeBean<WeldEvent<?>> {
+public class EventBean extends AbstractFacadeBean<Event<?>> {
 
-    private static final Class<WeldEvent<?>> TYPE = cast(WeldEvent.class);
     @SuppressWarnings("serial")
     private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>(){}.getType();
     private static final Set<Type> TYPES = ImmutableSet.<Type>of(Event.class, Object.class, WeldEvent.class);
 
     public EventBean(BeanManagerImpl manager) {
-        super(manager, TYPE);
+        super(manager, Reflections.<Class<Event<?>>>cast(Event.class));
     }
 
     @Override
@@ -48,7 +46,7 @@ public class EventBean extends AbstractFacadeBean<WeldEvent<?>> {
     }
 
     @Override
-    protected WeldEvent<?> newInstance(InjectionPoint ip, CreationalContext<WeldEvent<?>> creationalContext) {
+    protected Event<?> newInstance(InjectionPoint ip, CreationalContext<Event<?>> creationalContext) {
         return EventImpl.of(ip, getBeanManager());
     }
 
