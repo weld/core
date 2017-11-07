@@ -24,17 +24,6 @@
         <classes>
 
             <!-- Issues in the spec -->
-            <!-- CDI-471 - interceptor binding conflicts need to be clarified if support for repeating annotations is to be added -->
-            <class name="org.jboss.cdi.tck.interceptors.tests.bindings.broken.InvalidTransitiveInterceptorBindingAnnotationsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.interceptors.tests.bindings.broken.InvalidStereotypeInterceptorBindingAnnotationsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- CDI-437 -->
             <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.broken.AmbiguousELNamesTest">
@@ -44,53 +33,14 @@
             </class>
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-517 -->
-            <class name="org.jboss.cdi.tck.interceptors.tests.bindings.resolution.InterceptorBindingResolutionTest">
-                <methods>
-                    <exclude name="testConstructorInterceptorBindings"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.interceptors.tests.contract.interceptorLifeCycle.aroundConstruct.AroundConstructLifeCycleTest">
-                <methods>
-                    <exclude name="testInstanceNotCreatedUnlessInvocationContextProceedCalled"/>
-                </methods>
-            </class>
 
             <!-- changes in Weld 3 which were not reflected in TCK yet -->
-            <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
+            
+            <!--This one cannot be deployed as beginning with CDI 2.0, OM cannot be remote bussiness method--> 
+            <!--In TCK 2.0, the relevant part of this test was ommited--> 
+            <class name="org.jboss.cdi.tck.tests.event.observer.resolve.enterprise.ResolveEnterpriseEventObserverTest" >
                 <methods>
-                    <exclude name="testDuplicateBindingsToFireEventFails"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.event.select.SelectEventTest">
-                <methods>
-                    <exclude name="testEventSelectThrowsExceptionForDuplicateBindingType"/>
-                    <exclude name="testEventSelectWithSubtypeThrowsExceptionForDuplicateBindingType"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.lookup.dynamic.DynamicLookupTest">
-                <methods>
-                    <exclude name="testDuplicateBindingsThrowsException"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.extensions.bean.bytype.BeanByTypeTest">
-                <methods>
-                    <exclude name="testSameBindingTwice"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.interceptors.definition.InterceptorDefinitionTest">
-                <methods>
-                    <exclude name="testSameBindingTypesToResolveInterceptorsFails"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.tests.event.resolve.binding.DuplicateBindingTypesWhenResolvingTest">
-                <methods>
-                    <exclude name="testDuplicateBindingTypesWhenResolvingFails"/>
+                    <exclude name=".*" />
                 </methods>
             </class>
 
