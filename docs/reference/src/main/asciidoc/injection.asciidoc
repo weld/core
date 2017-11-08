@@ -567,7 +567,7 @@ Therefore, in order to programmatically obtain (for instance) `@Any` annotation,
 ==== Enhanced version of `javax.enterprise.inject.Instance`
 
 Weld also provides `org.jboss.weld.inject.WeldInstance` - an enhanced version of `javax.enterprise.inject.Instance`.
-There are two additional methods.
+There are three additional methods.
 The first one - `getHandler()` - allows to obtain a contextual reference handler which not only holds the contextual reference but also allows to inspect the metadata of the relevant bean and to destroy the underlying contextual instance.
 Moreover, the handler implements `AutoCloseable`:
 
@@ -614,9 +614,39 @@ class OrderService {
                 handler.destroy();
             }
         }
+    }
   }
-}
 ----------------------------------------------------------------------------------
+
+Third method is a twist on the `select()` method, but it accepts `java.lang.reflect.Type` as parameter and optionally qualifier(s).
+This allows for generic selection of instances which can be handy while dealing with third party beans through extensions.
+However, in order to stay type-safe, this method has a limitation - it can only be invoked on `WeldInstance<Object>`.
+Invocation on any other type than `Object` will result in an  `IllegalStateException`.
+Please note that the return value if such select will always be `WeldInstance<Object>` unless you specify it further using `<SomeType>` before invoking this `select()`.
+Let's look at actual code:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------
+class MyCustomExtension implements Extension {
+
+  @Inject
+  @Any
+  WeldInstance<Object> instance;
+
+  private Set<Type> allTypes = new HashSet<>();
+
+  public void observe(@Observes ProcessBean<?> bean) {
+    // gather all bean types, even those that we do not own
+    allTypes.add(bean.getAnnotated().getBaseType());
+  }
+
+  public void doWorkWithBeans(@Observes AfterDeploymentValidation adv) {
+    for (Type t : allTypes) {
+      // now we can select based on Type once we are sure all beans are initialized
+      instance.select(t).isResolvable() ? logValidBeanFound(t) : logInvalidBeanFound(t);
+    }
+  }
+-------------------------------------------------------------------------------------------
 
 `WeldInstance` is automatically available in Weld SE and Weld Servlet where the Weld API is always on the class path.
 It is also available in Weld-powered EE containers.
