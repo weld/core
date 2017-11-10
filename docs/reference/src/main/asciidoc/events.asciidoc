@@ -367,3 +367,24 @@ public class Catalog {
    }
 }
 -----------------------------------------------------------------------------------
+
+=== Enhanced version of `javax.enterprise.event.Event`
+
+Weld API offers slight advantage when dealing with events - `org.jboss.weld.events.WeldEvent`, an augmented version of `javax.enterprise.event.Event`.
+
+Currently there is only one additional method, `select(Type type, Annotation... qualifiers)`.
+This method allows to perform well-known selection with `java.lang.reflect.Type` as parameter which means things can get pretty generic.
+While there are no limitations to what you can select, there are limitation to the `WeldEvent` instance you perform selection on.
+In order to preserve type-safety, you have to invoke this method on `WeldInstance<Object>`.
+Using any other parameter will result in `IllegalStateException`.
+Usage looks just as you would except:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------
+@Inject
+WeldEvent<Object> event;
+
+public void selectAndFireEventForType(Type type) {
+  event.select(type).fire(new Payload());
+}
+-------------------------------------------------------------------------------------------
