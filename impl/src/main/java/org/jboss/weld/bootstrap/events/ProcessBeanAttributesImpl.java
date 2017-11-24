@@ -110,6 +110,7 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     @Override
     public void ignoreFinalMethods() {
+        BootstrapLogger.LOG.ignoreFinalMethodsCalled(getReceiver(), attributes);
         ignoreFinalMethods = true;
     }
 
@@ -122,7 +123,6 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     }
 
     public boolean isIgnoreFinalMethods() {
-        BootstrapLogger.LOG.ignoreFinalMethodsCalled(getReceiver(), attributes);
         return ignoreFinalMethods;
     }
 
