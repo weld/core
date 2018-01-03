@@ -200,7 +200,12 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
             // FastProcessAnnotatedTypeResolver does not consider special scope inheritance rules (see CDI - section 4.1)
             if (checkScopeInheritanceRules(event.getOriginalAnnotatedType(), observer, beanManager)) {
                 try {
-                    observer.notify(event);
+                    //TODO: CDI 1.1 HACK remove once no longer required
+                    if(observer instanceof ObserverMethodImpl) {
+                        ((ObserverMethodImpl)observer).notify(event);
+                    } else {
+                        observer.notify(event);
+                    }
                 } catch (Throwable e) {
                     errors.add(e);
                 }

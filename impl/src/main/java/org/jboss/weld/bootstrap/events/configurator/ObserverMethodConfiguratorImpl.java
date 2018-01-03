@@ -38,6 +38,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.EventContext;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.Prioritized;
 import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
 import org.jboss.weld.event.SyntheticObserverMethod;
@@ -141,7 +142,10 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         reception(observerMethod.getReception());
         transactionPhase(observerMethod.getTransactionPhase());
         priority(observerMethod.getPriority());
-        async(observerMethod.isAsync());
+        //TODO: CDI 1.1 HACK remove once no longer required
+        if(Prioritized.class.isAssignableFrom(ObserverMethod.class)) {
+            async(observerMethod.isAsync());
+        }
         return this;
     }
 
