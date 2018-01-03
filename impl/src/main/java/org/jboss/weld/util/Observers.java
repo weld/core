@@ -163,7 +163,12 @@ public class Observers {
      * @param metadata May be null
      */
     public static <T> void notify(ObserverMethod<? super T> observerMethod, T event, EventMetadata metadata) {
-        observerMethod.notify(new EventContextImpl<>(event, metadata));
+        //TODO: CDI 1.1 HACK remove once no longer required 
+        if(observerMethod instanceof ObserverMethodImpl) {
+            ((ObserverMethodImpl)observerMethod).notify(event);
+        } else {
+            observerMethod.notify(new EventContextImpl<>(event, metadata));
+        }
     }
 
     private static boolean hasNotifyOverriden(Class<?> clazz, ObserverMethod<?> observerMethod) {

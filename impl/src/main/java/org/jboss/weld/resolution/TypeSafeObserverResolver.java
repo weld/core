@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.Prioritized;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.config.WeldConfiguration;
@@ -103,7 +104,10 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     @Override
     protected List<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched) {
         List<ObserverMethod<?>> observers = new ArrayList<>(matched);
-        Collections.sort(observers, ObserverMethodComparator.INSTANCE);
+        //TODO: CDI 1.1 HACK remove once no longer required
+        if(Prioritized.class.isAssignableFrom(ObserverMethod.class)) {
+            Collections.sort(observers, ObserverMethodComparator.INSTANCE);
+        }
         return observers;
     }
 

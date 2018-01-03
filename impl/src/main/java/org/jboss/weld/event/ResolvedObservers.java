@@ -25,6 +25,7 @@ import java.util.List;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.Prioritized;
 
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.collections.ImmutableList;
@@ -54,7 +55,8 @@ public class ResolvedObservers<T> {
         List<ObserverMethod<? super T>> transactionObservers = new ArrayList<ObserverMethod<? super T>>();
         List<ObserverMethod<? super T>> asyncObservers = new ArrayList<ObserverMethod<? super T>>();
         for (ObserverMethod<? super T> observer : observers) {
-            if(observer.isAsync()) {
+            //TODO: CDI 1.1 HACK remove once no longer required
+            if(Prioritized.class.isAssignableFrom(ObserverMethod.class) && observer.isAsync()) {
                 asyncObservers.add(observer);
             } else if (TransactionPhase.IN_PROGRESS == observer.getTransactionPhase()) {
                 immediateSyncObservers.add(observer);

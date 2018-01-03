@@ -91,7 +91,12 @@ public class FastEvent<T> {
 
     public void fire(T event) {
         for (ObserverMethod<? super T> observer : resolvedObserverMethods.getImmediateSyncObservers()) {
-            observer.notify(event);
+            //TODO: CDI 1.1 HACK remove once no longer required
+            if(observer instanceof ObserverMethodImpl) {
+                ((ObserverMethodImpl)observer).notify(event);
+            } else {
+                observer.notify(event);
+            }
         }
     }
 
