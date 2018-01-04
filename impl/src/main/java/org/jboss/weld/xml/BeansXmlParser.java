@@ -18,9 +18,14 @@ package org.jboss.weld.xml;
 
 import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -85,6 +90,19 @@ public class BeansXmlParser {
         InputStream beansXmlInputStream = null;
         try {
             beansXmlInputStream = beansXml.openStream();
+
+            // quick check of beans.xml to find out version
+            StringBuilder beansXmlTextBuilder = new StringBuilder();
+            try (Reader reader = new BufferedReader(new InputStreamReader(beansXmlInputStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
+                int c = 0;
+                while ((c = reader.read()) != -1) {
+                    beansXmlTextBuilder.append((char) c);
+                }
+            }
+            // close and re-open stream as we already read from it
+            beansXmlInputStream.close();
+            beansXmlInputStream = beansXml.openStream();
+
             InputSource source = new InputSource(beansXmlInputStream);
             if (source.getByteStream().available() == 0) {
                 // The file is just acting as a marker file
@@ -94,7 +112,7 @@ public class BeansXmlParser {
 
             try {
                 parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
-                parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", loadXsds());
+                parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", loadXsds(beansXmlTextBuilder.toString()));
             } catch (IllegalArgumentException e) {
                 // No op, we just don't validate the XML
             } catch (SAXNotRecognizedException e) {
@@ -178,11 +196,11 @@ public class BeansXmlParser {
         return false;
     }
 
-    private static InputSource[] loadXsds() {
+    private static InputSource[] loadXsds(String beansXmlAsString) {
 
         List<InputSource> xsds = new ArrayList<InputSource>();
 
-        for (XmlSchema schema : XmlSchema.values()) {
+        for (XmlSchema schema : XmlSchema.getSchemas(beansXmlAsString != null && beansXmlAsString.contains(XmlSchema.CDI11.getFileName()))) {
             InputSource source = loadXsd(schema.getFileName(), schema.getClassLoader());
             if (source != null) {
                 xsds.add(source);
@@ -191,7 +209,6 @@ public class BeansXmlParser {
 
         return xsds.toArray(EMPTY_INPUT_SOURCE_ARRAY);
     }
-
 
     private static InputSource loadXsd(String name, ClassLoader classLoader) {
         InputStream in = classLoader.getResourceAsStream(name);
