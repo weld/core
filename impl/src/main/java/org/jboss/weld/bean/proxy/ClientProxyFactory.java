@@ -67,10 +67,12 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      * field.
      */
     private static final String BEAN_ID_FIELD = "BEAN_ID_FIELD";
+    private static final String CONTEXT_ID_FIELD = "CONTEXT_ID_FIELD";
 
     private final BeanIdentifier beanId;
 
     private volatile Field beanIdField;
+    private volatile Field contextIdField;
 
     public ClientProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
         super(contextId, proxiedBeanType, typeClosure, bean);
@@ -86,7 +88,13 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
                 AccessController.doPrivileged(SetAccessibleAction.of(f));
                 beanIdField = f;
             }
+            if (contextIdField == null) {
+                final Field f = AccessController.doPrivileged(new GetDeclaredFieldAction(instance.getClass(), CONTEXT_ID_FIELD));
+                AccessController.doPrivileged(SetAccessibleAction.of(f));
+                contextIdField = f;
+            }
             beanIdField.set(instance, beanId);
+            contextIdField.set(instance, getContextId());
             return instance;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -99,6 +107,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     protected void addFields(final ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         super.addFields(proxyClassType, initialValueBytecode);
         proxyClassType.addField(AccessFlag.VOLATILE | AccessFlag.PRIVATE, BEAN_ID_FIELD, BeanIdentifier.class);
+        proxyClassType.addField(AccessFlag.VOLATILE | AccessFlag.PRIVATE, CONTEXT_ID_FIELD, String.class);
     }
 
     @Override
@@ -117,7 +126,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.dup();
         b.aload(0);
         b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, BeanIdentifier.class);
-        b.ldc(getContextId());
+        b.aload(0);
+        b.getfield(proxyClassType.getName(), CONTEXT_ID_FIELD, String.class);
         b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(" + LBEAN_IDENTIFIER + LJAVA_LANG_STRING + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
