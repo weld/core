@@ -114,7 +114,7 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
             }
             ref = getBeanArchiveReferenceForJar(ref, url);
         } else {
-            logger.warnv("Unable to adapt URL: {0}, using its external form instead", url);
+            logger.infov("Unable to adapt URL: {0}, using its external form instead", url);
             ref = url.toExternalForm();
         }
         logger.debugv("Resolved bean archive reference: {0} for URL: {1}", ref, url);
@@ -167,7 +167,7 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
                 CommonLogger.LOG.jnlpClassLoaderInvocationException(iacce);
             }
         }
-        logger.warnv("Unable to adapt JAR file URL: {0}, using its external form instead", path);
+        logger.infov("Unable to adapt JAR file URL: {0}, using its external form instead", path);
         return fallback.toExternalForm();
     }
 }
