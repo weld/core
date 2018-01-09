@@ -17,23 +17,30 @@
 package org.jboss.weld.environment.deployment.discovery;
 
 import java.lang.annotation.Annotation;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
-import org.jboss.logging.Logger;
+import javax.annotation.Priority;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveScanner.ScanResult;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.ServiceLoader;
 
 /**
  *
@@ -42,8 +49,6 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Jozef Hartinger
  */
 public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
-
-    private static final Logger logger = Logger.getLogger(AbstractDiscoveryStrategy.class);
 
     protected final ResourceLoader resourceLoader;
 
@@ -83,6 +88,8 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         final List<BeanArchiveBuilder> beanArchiveBuilders = new ArrayList<BeanArchiveBuilder>();
         final Set<String> processedRefs = new HashSet<String>();
 
+        List<BeanArchiveHandler> beanArchiveHandlers = initBeanArchiveHandlers();
+
         for (ScanResult scanResult : scanner.scan()) {
             final String ref = scanResult.getBeanArchiveRef();
             if (processedRefs.contains(ref)) {
@@ -91,7 +98,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
             CommonLogger.LOG.processingBeanArchiveReference(ref);
             processedRefs.add(ref);
             BeanArchiveBuilder builder = null;
-            for (BeanArchiveHandler handler : handlers) {
+            for (BeanArchiveHandler handler : beanArchiveHandlers) {
                 builder = handler.handle(ref);
                 if (builder != null) {
                     CommonLogger.LOG.beanArchiveReferenceHandled(ref, handler);
@@ -102,7 +109,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
                 }
             }
             if (builder == null) {
-                CommonLogger.LOG.beanArchiveReferenceCannotBeHandled(ref, handlers);
+                CommonLogger.LOG.beanArchiveReferenceCannotBeHandled(ref, beanArchiveHandlers);
             }
         }
 
@@ -150,7 +157,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         }
         if (bda.isEmpty()) {
             // Most probably an unsuccessful candidate for an implicit bean archive with no beans.xml
-            logger.debugv("Empty bean deployment archive ignored: {0}", bda.getId());
+            CommonLogger.LOG.debugv("Empty bean deployment archive ignored: {0}", bda.getId());
             return;
         }
         deploymentArchives.add(bda);
@@ -192,6 +199,43 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
     @Override
     public void registerHandler(BeanArchiveHandler handler) {
         handlers.add(handler);
+    }
+
+    List<BeanArchiveHandler> initBeanArchiveHandlers() {
+        List<SimpleEntry<Integer, BeanArchiveHandler>> entries = new ArrayList<>();
+
+        // Add programatically added handlers
+        for (ListIterator<BeanArchiveHandler> iterator = handlers.listIterator(); iterator.hasNext();) {
+            entries.add(new SimpleEntry<>(handlers.size() - iterator.nextIndex(), iterator.next()));
+        }
+
+        // Load additional bean archive handlers - use Weld ServiceLoader so that we can use the given ResourceLoader
+        for (Metadata<BeanArchiveHandler> meta : ServiceLoader.load(BeanArchiveHandler.class, resourceLoader)) {
+            BeanArchiveHandler handler = meta.getValue();
+            CommonLogger.LOG.debugv("Additional BeanArchiveHandler loaded: {0}", handler.getClass());
+            entries.add(new SimpleEntry<>(getPriority(handler), handler));
+        }
+
+        Collections.sort(entries, new Comparator<SimpleEntry<Integer, BeanArchiveHandler>>() {
+            @Override
+            public int compare(SimpleEntry<Integer, BeanArchiveHandler> o1, SimpleEntry<Integer, BeanArchiveHandler> o2) {
+                return Integer.compare(o2.getKey(), o1.getKey());
+            }
+        });
+
+        List<BeanArchiveHandler> beanArchiveHandlers = new ArrayList<>(entries.size());
+        for (SimpleEntry<Integer, BeanArchiveHandler> entry : entries) {
+            beanArchiveHandlers.add(entry.getValue());
+        }
+        return beanArchiveHandlers;
+    }
+
+    private static int getPriority(BeanArchiveHandler handler) {
+        Priority priority = handler.getClass().getAnnotation(Priority.class);
+        if (priority != null) {
+            return priority.value();
+        }
+        return 0;
     }
 
 }
