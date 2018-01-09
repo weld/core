@@ -16,10 +16,22 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import java.util.ServiceLoader;
+
 /**
  * Handles the reference to a bean archive.
+ * <p>
+ * The standard way to register a handler is via {@link DiscoveryStrategy#registerHandler(BeanArchiveHandler)}. Alternatively, handlers may be registered using
+ * the {@link ServiceLoader} mechanism.
+ * </p>
+ * <p>
+ * Additionaly, handlers could specify their priority using {@code javax.annotation.Priority}. Handlers with higher priority have precedence. The default
+ * priority is 0. Handlers registered programatically have the default priority {@code registeredHandlers.size - index}, i.e. derived from the order they were
+ * inserted.
+ * </p>
  *
  * @author Martin Kouba
+ * @see DiscoveryStrategy#registerHandler(BeanArchiveHandler)
  */
 public interface BeanArchiveHandler {
 
