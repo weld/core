@@ -55,7 +55,8 @@ public class ResolvedObservers<T> {
         List<ObserverMethod<? super T>> transactionObservers = new ArrayList<ObserverMethod<? super T>>();
         List<ObserverMethod<? super T>> asyncObservers = new ArrayList<ObserverMethod<? super T>>();
         for (ObserverMethod<? super T> observer : observers) {
-            //TODO: CDI 1.1 HACK remove once no longer required
+            //WELD-2452, remove once WFLY is fully EE 8 compatible
+            // temporary hack to determine what version of CDI library are we running against
             if(Prioritized.class.isAssignableFrom(ObserverMethod.class) && observer.isAsync()) {
                 asyncObservers.add(observer);
             } else if (TransactionPhase.IN_PROGRESS == observer.getTransactionPhase()) {

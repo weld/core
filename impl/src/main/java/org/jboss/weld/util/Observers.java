@@ -32,6 +32,7 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.EventContext;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.Prioritized;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
@@ -163,11 +164,12 @@ public class Observers {
      * @param metadata May be null
      */
     public static <T> void notify(ObserverMethod<? super T> observerMethod, T event, EventMetadata metadata) {
-        //TODO: CDI 1.1 HACK remove once no longer required 
-        if(observerMethod instanceof ObserverMethodImpl) {
-            ((ObserverMethodImpl)observerMethod).notify(event);
-        } else {
+        //WELD-2452, remove once WFLY is fully EE 8 compatible
+        // temporary hack to determine what version of CDI library are we running against
+        if (Prioritized.class.isAssignableFrom(ObserverMethod.class)) {
             observerMethod.notify(new EventContextImpl<>(event, metadata));
+        } else {
+            observerMethod.notify(event);
         }
     }
 

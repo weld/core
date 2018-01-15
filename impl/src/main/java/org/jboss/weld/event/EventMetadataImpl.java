@@ -20,10 +20,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
@@ -57,7 +57,7 @@ public final class EventMetadataImpl implements EventMetadata {
     @Override
     public Set<Annotation> getQualifiers() {
         ImmutableSet.Builder<Annotation> builder = ImmutableSet.<Annotation> builder();
-        builder.add(Any.Literal.INSTANCE);
+        builder.add(AnyLiteral.INSTANCE);
         if (qualifiers != null) {
             return builder.addAll(qualifiers).build();
         } else if (qualifierArray != null) {

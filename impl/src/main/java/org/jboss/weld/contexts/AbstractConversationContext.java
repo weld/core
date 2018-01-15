@@ -38,9 +38,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.enterprise.context.BeforeDestroyed;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Destroyed;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -55,6 +53,8 @@ import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.contexts.conversation.ConversationIdGenerator;
 import org.jboss.weld.contexts.conversation.ConversationImpl;
 import org.jboss.weld.event.FastEvent;
+import org.jboss.weld.literal.BeforeDestroyedLiteral;
+import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
@@ -89,13 +89,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private final LazyValueHolder<FastEvent<String>> conversationBeforeDestroyedEvent = new LazyValueHolder<FastEvent<String>>() {
         @Override
         protected FastEvent<String> computeValue() {
-            return FastEvent.of(String.class, manager, manager.getGlobalLenientObserverNotifier(), BeforeDestroyed.Literal.CONVERSATION);
+            return FastEvent.of(String.class, manager, manager.getGlobalLenientObserverNotifier(), BeforeDestroyedLiteral.CONVERSATION);
         }
     };
     private final LazyValueHolder<FastEvent<String>> conversationDestroyedEvent = new LazyValueHolder<FastEvent<String>>() {
         @Override
         protected FastEvent<String> computeValue() {
-            return FastEvent.of(String.class, manager, manager.getGlobalLenientObserverNotifier(), Destroyed.Literal.CONVERSATION);
+            return FastEvent.of(String.class, manager, manager.getGlobalLenientObserverNotifier(), DestroyedLiteral.CONVERSATION);
         }
     };
 

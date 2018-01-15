@@ -44,10 +44,7 @@ import java.util.function.Function;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.enterprise.context.BeforeDestroyed;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -138,6 +135,9 @@ import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.producer.WeldInjectionTargetBuilderImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataReader;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.literal.BeforeDestroyedLiteral;
+import org.jboss.weld.literal.DestroyedLiteral;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
@@ -368,9 +368,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.registry = getServices().get(SpecializationAndEnablementRegistry.class);
         this.currentInjectionPoint = getServices().get(CurrentInjectionPoint.class);
         this.clientProxyOptimization = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION);
-        this.requestInitializedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Initialized.Literal.REQUEST));
-        this.requestBeforeDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, BeforeDestroyed.Literal.REQUEST));
-        this.requestDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Destroyed.Literal.REQUEST));
+        this.requestInitializedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, InitializedLiteral.REQUEST));
+        this.requestBeforeDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, BeforeDestroyedLiteral.REQUEST));
+        this.requestDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, DestroyedLiteral.REQUEST));
         this.validationFailureCallbacks = new CopyOnWriteArrayList<>();
     }
 

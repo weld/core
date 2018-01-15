@@ -35,6 +35,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.TypeEqualitySpecializationUtils;
@@ -162,7 +163,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         Set<Annotation> qualifiers = new HashSet<Annotation>();
         for (Annotation qualifier : attributes().getQualifiers()) {
             // Don't include implicit javax.enterprise.inject.Default qualifier
-            if (!qualifier.equals(Default.Literal.INSTANCE) || getAnnotated().isAnnotationPresent(Default.class)) {
+            if (!qualifier.equals(DefaultLiteral.INSTANCE) || getAnnotated().isAnnotationPresent(Default.class)) {
                 qualifiers.add(qualifier);
             }
         }

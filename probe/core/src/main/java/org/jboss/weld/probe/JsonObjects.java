@@ -1026,6 +1026,7 @@ final class JsonObjects {
         return observerBuilder;
     }
 
+    @SuppressFBWarnings(value = "BC_VACUOUS_INSTANCEOF", justification = "WELD-2452, with CDI 1.2 API, this doesn't need to be true.")
     static JsonObjectBuilder createBasicObserverJson(ObserverMethod<?> observerMethod, Probe probe) {
         JsonObjectBuilder observerBuilder = createSimpleObserverJson(observerMethod, probe);
         observerBuilder.add(RECEPTION, observerMethod.getReception().toString());
@@ -1044,10 +1045,13 @@ final class JsonObjects {
         if(isUnrestrictedProcessAnnotatedTypeObserver(observerMethod)) {
             observerBuilder.add(DESCRIPTION, WARNING_UNRESTRICTED_PAT_OBSERVER);
         }
-        // Every OM is now instance of Prioritized
-        final int priority = Prioritized.class.cast(observerMethod).getPriority();
-        observerBuilder.add(PRIORITY, priority);
-        observerBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priority).toString());
+        // WELD-2452 to be removed once WFLY is EE 8 certified
+        if (observerMethod instanceof Prioritized) {
+            // Every OM is now instance of Prioritized
+            final int priority = Prioritized.class.cast(observerMethod).getPriority();
+            observerBuilder.add(PRIORITY, priority);
+            observerBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priority).toString());
+        }
 
         return observerBuilder;
     }

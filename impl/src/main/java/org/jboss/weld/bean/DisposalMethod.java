@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Specializes;
@@ -45,6 +44,7 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
 import org.jboss.weld.injection.MethodInvocationStrategy;
 import org.jboss.weld.injection.ParameterInjectionPoint;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -169,7 +169,7 @@ public class DisposalMethod<X, T> {
     private Set<QualifierInstance> getRequiredQualifiers(EnhancedAnnotatedParameter<?, ? super X> enhancedDisposedParameter) {
         Set<Annotation> disposedParameterQualifiers = enhancedDisposedParameter.getMetaAnnotations(Qualifier.class);
         if (disposedParameterQualifiers.isEmpty()) {
-            disposedParameterQualifiers = Collections.<Annotation> singleton(Default.Literal.INSTANCE);
+            disposedParameterQualifiers = Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
         }
         return beanManager.getServices().get(MetaAnnotationStore.class).getQualifierInstances(disposedParameterQualifiers);
     }

@@ -1,9 +1,8 @@
 package org.jboss.weld.bootstrap;
 
+import javax.enterprise.context.spi.Context;
 import java.lang.annotation.Annotation;
 import java.util.Set;
-
-import javax.enterprise.context.spi.Context;
 
 public class ContextHolder<T extends Context> {
 

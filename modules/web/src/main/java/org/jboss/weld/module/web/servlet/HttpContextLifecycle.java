@@ -19,9 +19,6 @@ package org.jboss.weld.module.web.servlet;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequestListener;
@@ -39,6 +36,9 @@ import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
+import org.jboss.weld.literal.BeforeDestroyedLiteral;
+import org.jboss.weld.literal.DestroyedLiteral;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.web.context.http.HttpRequestContextImpl;
 import org.jboss.weld.module.web.context.http.HttpSessionDestructionContext;
@@ -107,12 +107,12 @@ public class HttpContextLifecycle implements Service {
         this.ignoreForwards = ignoreForwards;
         this.ignoreIncludes = ignoreIncludes;
         this.contextActivationFilter = contextActivationFilter;
-        this.requestInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, Initialized.Literal.REQUEST);
-        this.requestBeforeDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, BeforeDestroyed.Literal.REQUEST);
-        this.requestDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, Destroyed.Literal.REQUEST);
-        this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, Initialized.Literal.SESSION);
-        this.sessionBeforeDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, BeforeDestroyed.Literal.SESSION);
-        this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, Destroyed.Literal.SESSION);
+        this.requestInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.REQUEST);
+        this.requestBeforeDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, BeforeDestroyedLiteral.REQUEST);
+        this.requestDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.REQUEST);
+        this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, InitializedLiteral.SESSION);
+        this.sessionBeforeDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, BeforeDestroyedLiteral.SESSION);
+        this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, DestroyedLiteral.SESSION);
         this.servletApi = beanManager.getServices().get(ServletApiAbstraction.class);
         this.servletContextService = beanManager.getServices().get(ServletContextService.class);
         this.nestedInvocationGuardEnabled = nestedInvocationGuardEnabled;
@@ -144,13 +144,13 @@ public class HttpContextLifecycle implements Service {
 
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
-        fireEventForApplicationScope(ctx, Initialized.Literal.APPLICATION);
+        fireEventForApplicationScope(ctx, InitializedLiteral.APPLICATION);
     }
 
     public void contextDestroyed(ServletContext ctx) {
         // TODO WELD-2282 Firing these two right after each other does not really make sense
-        fireEventForApplicationScope(ctx, BeforeDestroyed.Literal.APPLICATION);
-        fireEventForApplicationScope(ctx, Destroyed.Literal.APPLICATION);
+        fireEventForApplicationScope(ctx, BeforeDestroyedLiteral.APPLICATION);
+        fireEventForApplicationScope(ctx, DestroyedLiteral.APPLICATION);
     }
 
     private void fireEventForApplicationScope(ServletContext ctx, Annotation qualifier) {
