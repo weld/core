@@ -104,7 +104,8 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     @Override
     protected List<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched) {
         List<ObserverMethod<?>> observers = new ArrayList<>(matched);
-        //TODO: CDI 1.1 HACK remove once no longer required
+        //WELD-2452, remove once WFLY is fully EE 8 compatible
+        // temporary hack to determine what version of CDI library are we running against
         if(Prioritized.class.isAssignableFrom(ObserverMethod.class)) {
             Collections.sort(observers, ObserverMethodComparator.INSTANCE);
         }

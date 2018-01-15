@@ -18,12 +18,12 @@ package org.jboss.weld.module.ejb;
 
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.transaction.UserTransaction;
 
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.PlugableValidator;
@@ -35,7 +35,7 @@ class WeldEjbValidator implements PlugableValidator {
         // check that UserTransaction is not injected into a SessionBean with container-managed transactions
         if (bean instanceof SessionBean<?>) {
             SessionBean<?> sessionBean = (SessionBean<?>) bean;
-            if (UserTransaction.class.equals(ij.getType()) && (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(Default.Literal.INSTANCE))
+            if (UserTransaction.class.equals(ij.getType()) && (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE))
                     && hasContainerManagedTransactions(sessionBean)) {
                 throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij, Formats.formatAsStackTraceElement(ij));
             }

@@ -19,10 +19,10 @@ package org.jboss.weld.util;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
@@ -39,7 +39,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class Bindings {
 
-    public static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
+    public static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
 
     private Bindings() {
     }
