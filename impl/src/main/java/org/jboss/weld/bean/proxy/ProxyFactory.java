@@ -348,7 +348,15 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     @Override
     public T run() {
         try {
-            return proxyInstantiator.newInstance(getProxyClass());
+            Class<T> proxyClass = getProxyClass();
+            boolean hasConstrutedField = SecurityActions.hasField(proxyClass, CONSTRUCTED_FLAG_NAME);
+            if (hasConstrutedField != proxyInstantiator.isUsingConstructor()) {
+                // The proxy class was created with a different type of ProxyInstantiator
+                ProxyInstantiator newInstantiator = ProxyInstantiator.Factory.create(!hasConstrutedField);
+                BeanLogger.LOG.creatingProxyInstanceUsingDifferentInstantiator(proxyClass, newInstantiator, proxyInstantiator);
+                return newInstantiator.newInstance(proxyClass);
+            }
+            return proxyInstantiator.newInstance(proxyClass);
         } catch (InstantiationException e) {
             throw new DefinitionException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
         } catch (IllegalAccessException e) {
