@@ -24,6 +24,7 @@ import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.GetConstructorAction;
+import org.jboss.weld.security.GetDeclaredFieldAction;
 import org.jboss.weld.security.SetAccessibleAction;
 
 /**
@@ -67,5 +68,23 @@ final class SecurityActions {
         }
     }
 
+    static boolean hasField(Class<?> javaClass, String name) {
+        if (System.getSecurityManager() == null) {
+            try {
+                javaClass.getDeclaredField(name);
+                return true;
+            } catch (NoSuchFieldException e) {
+                return false;
+            }
+        }
+        try {
+            return AccessController.doPrivileged(new GetDeclaredFieldAction(javaClass, name)) != null;
+        } catch (PrivilegedActionException e) {
+            if (e.getCause() instanceof NoSuchFieldException) {
+                return false;
+            }
+            throw new WeldException(e.getCause());
+        }
+    }
 
 }
