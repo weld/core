@@ -81,24 +81,14 @@ public interface ProxyInstantiator extends Service {
         }
 
         /**
-         * Obtains new ProxyInstantiator based on given {@link WeldConfiguration}.
+         * Obtains a ProxyInstantiator instance, {@link ConfigurationKey#PROXY_INSTANTIATOR} is not taken into account.
          *
          * @param configuration
-         * @return
+         * @return proxy instantiator
          */
-        @SuppressWarnings("deprecation")
-        public static ProxyInstantiator create(WeldConfiguration configuration) {
+        public static ProxyInstantiator create(boolean relaxedConstruction) {
             ProxyInstantiator result = DefaultProxyInstantiator.INSTANCE;
-            final String instantiator = configuration.getStringProperty(ConfigurationKey.PROXY_INSTANTIATOR);
-            if (!instantiator.isEmpty()) {
-                if (!DefaultProxyInstantiator.class.getName().equals(instantiator)) {
-                    try {
-                        result = newInstance(instantiator);
-                    } catch (Exception e) {
-                        throw new WeldException(e);
-                    }
-                }
-            } else if (configuration.getBooleanProperty(ConfigurationKey.RELAXED_CONSTRUCTION) || configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE)) {
+            if (relaxedConstruction) {
                 for (String implementation : IMPLEMENTATIONS) {
                     // use the first suitable implementation
                     try {
@@ -110,6 +100,33 @@ public interface ProxyInstantiator extends Service {
                         BootstrapLogger.LOG.catchingDebug(e);
                     }
                 }
+            }
+            return result;
+        }
+
+        /**
+         * Obtains a ProxyInstantiator based on given {@link WeldConfiguration}.
+         *
+         * @param configuration
+         * @return proxy instantiator
+         */
+        @SuppressWarnings("deprecation")
+        public static ProxyInstantiator create(WeldConfiguration configuration) {
+            ProxyInstantiator result = null;
+            String instantiator = configuration.getStringProperty(ConfigurationKey.PROXY_INSTANTIATOR);
+            if (!instantiator.isEmpty()) {
+                if (!DefaultProxyInstantiator.class.getName().equals(instantiator)) {
+                    try {
+                        result = newInstance(instantiator);
+                    } catch (Exception e) {
+                        throw new WeldException(e);
+                    }
+                } else {
+                    result = DefaultProxyInstantiator.INSTANCE;
+                }
+            } else {
+                result = create(configuration.getBooleanProperty(ConfigurationKey.RELAXED_CONSTRUCTION)
+                        || configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE));
             }
             BootstrapLogger.LOG.debugv("Using instantiator: {0}", result.getClass().getName());
             return result;
@@ -126,4 +143,5 @@ public interface ProxyInstantiator extends Service {
             return clazz.newInstance();
         }
     }
+
 }

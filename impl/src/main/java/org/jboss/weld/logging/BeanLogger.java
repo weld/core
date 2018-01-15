@@ -515,4 +515,8 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1575, value = "WeldInstance.select(Type subtype, Annotation... qualifiers) can be invoked only on an instance of WeldInstance<Object>.", format = Format.MESSAGE_FORMAT)
     IllegalStateException selectByTypeOnlyWorksOnObject();
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1576, value = "Using {1} to instantiate a shared proxy class {0}; the deployment implementation [{2}] does not match the instantiator the proxy was created with", format = Format.MESSAGE_FORMAT)
+    void creatingProxyInstanceUsingDifferentInstantiator(Object proxyClass, Object newInstantiator, Object oldInstantiator);
 }
