@@ -18,6 +18,7 @@ package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -25,6 +26,7 @@ import java.security.PrivilegedActionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.GetConstructorAction;
 import org.jboss.weld.security.GetDeclaredFieldAction;
+import org.jboss.weld.security.GetDeclaredFieldsAction;
 import org.jboss.weld.security.SetAccessibleAction;
 
 /**
@@ -68,23 +70,34 @@ final class SecurityActions {
         }
     }
 
-    static boolean hasField(Class<?> javaClass, String name) {
-        if (System.getSecurityManager() == null) {
+    static <T> Field getDeclaredField(Class<T> javaClass, String name) throws NoSuchFieldException {
+        if (System.getSecurityManager() != null) {
             try {
-                javaClass.getDeclaredField(name);
+                return AccessController.doPrivileged(new GetDeclaredFieldAction(javaClass, name));
+            } catch (PrivilegedActionException e) {
+                if (e.getCause() instanceof NoSuchFieldException) {
+                    throw (NoSuchFieldException) e.getCause();
+                }
+                throw new WeldException(e.getCause());
+            }
+        } else {
+            return javaClass.getDeclaredField(name);
+        }
+    }
+
+    static boolean hasDeclaredField(Class<?> javaClass, String name) {
+        Field[] fields;
+        if (System.getSecurityManager() == null) {
+            fields = javaClass.getDeclaredFields();
+        } else {
+            fields = AccessController.doPrivileged(new GetDeclaredFieldsAction(javaClass));
+        }
+        for (Field field : fields) {
+            if (field.getName().equals(name)) {
                 return true;
-            } catch (NoSuchFieldException e) {
-                return false;
             }
         }
-        try {
-            return AccessController.doPrivileged(new GetDeclaredFieldAction(javaClass, name)) != null;
-        } catch (PrivilegedActionException e) {
-            if (e.getCause() instanceof NoSuchFieldException) {
-                return false;
-            }
-            throw new WeldException(e.getCause());
-        }
+        return false;
     }
 
 }
