@@ -22,8 +22,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.util.List;
 import java.util.Set;
 
@@ -36,8 +34,6 @@ import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
-import org.jboss.weld.security.GetDeclaredFieldAction;
-import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
@@ -84,13 +80,13 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         try {
             final T instance = super.create(beanInstance);
             if (beanIdField == null) {
-                final Field f = AccessController.doPrivileged(new GetDeclaredFieldAction(instance.getClass(), BEAN_ID_FIELD));
-                AccessController.doPrivileged(SetAccessibleAction.of(f));
+                final Field f = SecurityActions.getDeclaredField(instance.getClass(), BEAN_ID_FIELD);
+                SecurityActions.ensureAccessible(f);
                 beanIdField = f;
             }
             if (contextIdField == null) {
-                final Field f = AccessController.doPrivileged(new GetDeclaredFieldAction(instance.getClass(), CONTEXT_ID_FIELD));
-                AccessController.doPrivileged(SetAccessibleAction.of(f));
+                final Field f = SecurityActions.getDeclaredField(instance.getClass(), CONTEXT_ID_FIELD);
+                SecurityActions.ensureAccessible(f);
                 contextIdField = f;
             }
             beanIdField.set(instance, beanId);
@@ -98,7 +94,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
             return instance;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        } catch (PrivilegedActionException e) {
+        } catch (NoSuchFieldException e) {
             throw new RuntimeException(e.getCause());
         }
     }
