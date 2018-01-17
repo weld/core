@@ -119,6 +119,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     protected static final String LJAVA_LANG_THREAD_LOCAL = "Ljava/lang/ThreadLocal;";
 
     protected static final String INIT_METHOD_NAME = "<init>";
+    protected static final String INVOKE_METHOD_NAME = "invoke";
     protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
     static final String JAVA = "java";
     static final String NULL = "the class package is null";
@@ -348,7 +349,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     public T run() {
         try {
             Class<T> proxyClass = getProxyClass();
-            boolean hasConstrutedField = SecurityActions.hasField(proxyClass, CONSTRUCTED_FLAG_NAME);
+            boolean hasConstrutedField = SecurityActions.hasDeclaredField(proxyClass, CONSTRUCTED_FLAG_NAME);
             if (hasConstrutedField != proxyInstantiator.isUsingConstructor()) {
                 // The proxy class was created with a different type of ProxyInstantiator
                 ProxyInstantiator newInstantiator = ProxyInstantiator.Factory.create(!hasConstrutedField);
@@ -824,8 +825,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         }
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), "invoke", LJAVA_LANG_OBJECT, new String[] { LJAVA_LANG_OBJECT,
-            LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
+        b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT, new String[] { LJAVA_LANG_OBJECT,
+                LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
         if (addReturnInstruction) {
             // now we need to return the appropriate type
             if (method.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
