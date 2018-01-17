@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.bean.proxy.BeanInstance;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
+import org.jboss.weld.bean.proxy.InterceptedSubclassFactory;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
@@ -90,6 +91,8 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
         } else {
             if (instance instanceof ProxyObject) {
                 ((ProxyObject) instance).setHandler(new CombinedInterceptorAndDecoratorStackMethodHandler());
+                // Set method handler for private methods if necessary
+                InterceptedSubclassFactory.setPrivateMethodHandler(instance);
             }
         }
         return instance;

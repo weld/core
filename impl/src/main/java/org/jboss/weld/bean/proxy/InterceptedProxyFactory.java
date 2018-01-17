@@ -55,8 +55,6 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
 
     public static final String PROXY_SUFFIX = "InterceptedProxy";
 
-    private static final String INVOKE = "invoke";
-
     private static final String JAVA_LANG_OBJECT = "java.lang.Object";
 
     private final Set<MethodSignature> enhancedMethodSignatures;
@@ -134,7 +132,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
                                     }
                                 }
 
-                                b.invokeinterface(StackAwareMethodHandler.class.getName(), INVOKE, LJAVA_LANG_OBJECT,
+                                b.invokeinterface(StackAwareMethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
                                         InterceptedSubclassFactory.INVOKE_METHOD_PARAMETERS);
 
                                 if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
@@ -181,7 +179,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
                                     }
                                 }
 
-                                b.invokeinterface(MethodHandler.class.getName(), INVOKE, LJAVA_LANG_OBJECT,
+                                b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
                                         new String[] { LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
 
                                 if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {

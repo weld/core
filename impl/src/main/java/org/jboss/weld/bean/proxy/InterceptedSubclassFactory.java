@@ -21,6 +21,7 @@ import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
 import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
 import static org.jboss.classfilewriter.util.DescriptorUtils.makeDescriptor;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -58,6 +59,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Marius Bogoevici
  */
 public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
+
     // Default proxy class name suffix
     public static final String PROXY_SUFFIX = "Subclass";
 
@@ -65,6 +67,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     static final String COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME = CombinedInterceptorAndDecoratorStackMethodHandler.class.getName();
     static final String[] INVOKE_METHOD_PARAMETERS = new String[] { makeDescriptor(Stack.class), LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT  };
+
+    protected static final String PRIVATE_METHOD_HANDLER_FIELD_NAME = "privateMethodHandler";
 
     private final Set<MethodSignature> enhancedMethodSignatures;
     private final Set<MethodSignature> interceptedMethodSignatures;
@@ -83,8 +87,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      * @param typeClosure              the bean types of the bean
      * @param enhancedMethodSignatures a restricted set of methods that need to be intercepted
      */
-
-    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures, Set<MethodSignature> interceptedMethodSignatures) {
+    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean,
+            Set<MethodSignature> enhancedMethodSignatures, Set<MethodSignature> interceptedMethodSignatures) {
         super(contextId, proxiedBeanType, typeClosure, proxyName, bean, true);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
         this.interceptedMethodSignatures = interceptedMethodSignatures;
@@ -156,12 +160,17 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                                 new RunWithinInterceptionDecorationContextGenerator(classMethod, this) {
 
                                     @Override
-                                    void doWork(CodeAttribute b, ClassMethod method) {
-                                        // build the bytecode that invokes the super class method directly
-                                        b.aload(0);
-                                        // create the method invocation
-                                        b.loadMethodParameters();
-                                        b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+                                    void doWork(CodeAttribute b, ClassMethod classMethod) {
+                                        if (Modifier.isPrivate(classMethod.getAccessFlags())) {
+                                            // Weld cannot use invokespecial to invoke a private method from the superclass
+                                            invokePrivateMethodHandler(b, classMethod, methodInfo, staticConstructor);
+                                        } else {
+                                            // build the bytecode that invokes the super class method directly
+                                            b.aload(0);
+                                            // create the method invocation
+                                            b.loadMethodParameters();
+                                            b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+                                        }
                                         // leave the result on top of the stack
                                     }
 
@@ -351,7 +360,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
 
         b.iconst(methodInfo.getParameterTypes().length);
-        b.anewarray("java.lang.Object");
+        b.anewarray(Object.class.getName());
 
         int localVariableCount = 1;
 
@@ -373,7 +382,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(StackAwareMethodHandler.class.getName(), "invoke", LJAVA_LANG_OBJECT, INVOKE_METHOD_PARAMETERS);
+        b.invokeinterface(StackAwareMethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT, INVOKE_METHOD_PARAMETERS);
         if (addReturnInstruction) {
             // now we need to return the appropriate type
             if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
@@ -448,6 +457,74 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                 DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
         delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
         createDelegateToSuper(delegatingMethod, methodInformation);
+    }
+
+    private void invokePrivateMethodHandler(CodeAttribute b, ClassMethod classMethod, MethodInformation methodInfo, ClassMethod staticConstructor) {
+        try {
+            classMethod.getClassFile().addField(AccessFlag.PRIVATE, PRIVATE_METHOD_HANDLER_FIELD_NAME, MethodHandler.class);
+        } catch (DuplicateMemberException ignored) {
+        }
+        // 1. Load private method handler
+        b.aload(0);
+        b.getfield(classMethod.getClassFile().getName(), PRIVATE_METHOD_HANDLER_FIELD_NAME,
+                DescriptorUtils.makeDescriptor(MethodHandler.class));
+        // 2. Load this
+        b.aload(0);
+        // 3. Load method
+        DEFAULT_METHOD_RESOLVER.getDeclaredMethod(classMethod, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes(),
+                staticConstructor);
+        // 4. No proceed method
+        b.aconstNull();
+        // 5. Load method params
+        b.iconst(methodInfo.getParameterTypes().length);
+        b.anewarray(Object.class.getName());
+        int localVariableCount = 1;
+        for (int i = 0; i < methodInfo.getParameterTypes().length; ++i) {
+            String typeString = methodInfo.getParameterTypes()[i];
+            b.dup(); // duplicate the array reference
+            b.iconst(i);
+            // load the parameter value
+            BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
+            // box the parameter if necessary
+            Boxing.boxIfNessesary(b, typeString);
+            // and store it in the array
+            b.aastore();
+            if (isWide(typeString)) {
+                localVariableCount = localVariableCount + 2;
+            } else {
+                localVariableCount++;
+            }
+        }
+        // Invoke PrivateMethodHandler
+        b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
+                new String[] { LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
+        if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
+            // No-op
+        } else if (isPrimitive(methodInfo.getReturnType())) {
+            Boxing.unbox(b, methodInfo.getReturnType());
+        } else {
+            b.checkcast(BytecodeUtils.getName(methodInfo.getReturnType()));
+        }
+    }
+
+    /**
+     * If the given instance represents a proxy and its class is synthetic and its class name ends with {@value #PROXY_SUFFIX}, attempt to find the
+     * {@value #PRIVATE_METHOD_HANDLER_FIELD_NAME} field and set its value to {@link PrivateMethodHandler#INSTANCE}.
+     *
+     * @param instance
+     */
+    public static <T> void setPrivateMethodHandler(T instance) {
+        if (instance instanceof ProxyObject && instance.getClass().isSynthetic() && instance.getClass().getName().endsWith(PROXY_SUFFIX)
+                && SecurityActions.hasDeclaredField(instance.getClass(), PRIVATE_METHOD_HANDLER_FIELD_NAME)) {
+            try {
+                Field privateMethodHandlerField = SecurityActions.getDeclaredField(instance.getClass(), PRIVATE_METHOD_HANDLER_FIELD_NAME);
+                SecurityActions.ensureAccessible(privateMethodHandlerField);
+                privateMethodHandlerField.set(instance, PrivateMethodHandler.INSTANCE);
+            } catch (NoSuchFieldException ignored) {
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private static class BridgeMethod {
