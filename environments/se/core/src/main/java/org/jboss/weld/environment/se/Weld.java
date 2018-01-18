@@ -226,9 +226,9 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     private boolean discoveryEnabled = true;
 
-    private final Set<Class<?>> beanClasses;
+    protected final Set<Class<?>> beanClasses;
 
-    private BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
+    protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
 
     private final List<Metadata<String>> selectedAlternatives;
 
@@ -248,7 +248,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     private ResourceLoader resourceLoader;
 
-    private final Map<Class<? extends Service>, Service> additionalServices;
+    protected final Map<Class<? extends Service>, Service> additionalServices;
 
     public Weld() {
         this(null);
@@ -1001,15 +1001,15 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         return type.cast(manager.getReference(bean, type, cc));
     }
 
-    private boolean isImplicitScanEnabled() {
+    protected boolean isImplicitScanEnabled() {
         return isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false) || isEnabled(JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, false);
     }
 
-    private boolean isSyntheticBeanArchiveRequired() {
+    protected boolean isSyntheticBeanArchiveRequired() {
         return !beanClasses.isEmpty() || !packages.isEmpty();
     }
 
-    private Iterable<Metadata<Extension>> getExtensions() {
+    protected Iterable<Metadata<Extension>> getExtensions() {
         Set<Metadata<Extension>> result = new HashSet<Metadata<Extension>>();
         if (discoveryEnabled) {
             Iterables.addAll(result, loadExtensions(resourceLoader));
@@ -1048,7 +1048,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         return ServiceLoader.load(Extension.class, resourceLoader);
     }
 
-    private BeansXml buildSyntheticBeansXml() {
+    protected BeansXml buildSyntheticBeansXml() {
         return new BeansXmlImpl(ImmutableList.copyOf(selectedAlternatives), ImmutableList.copyOf(selectedAlternativeStereotypes),
                 ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), null, null, beanDiscoveryMode, null, false);
     }
@@ -1057,7 +1057,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         return new MetadataImpl<String>(clazz.getName(), SYNTHETIC_LOCATION_PREFIX + clazz.getName());
     }
 
-    private Set<String> scanPackages() {
+    protected Set<String> scanPackages() {
 
         if (packages.isEmpty()) {
             return Collections.emptySet();
@@ -1162,7 +1162,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         return value.split("/");
     }
 
-    private boolean isEnabled(String key, boolean defaultValue) {
+    protected boolean isEnabled(String key, boolean defaultValue) {
         Object value = properties.get(key);
         if (value != null) {
             return Boolean.TRUE.equals(value);
@@ -1170,6 +1170,14 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         String system = AccessController.doPrivileged(new GetSystemPropertyAction(key));
         if (system != null) {
             return Boolean.valueOf(system);
+        }
+        return defaultValue;
+    }
+
+    protected Object getPropertyValue(String key, Object defaultValue) {
+        Object value = properties.get(key);
+        if (value != null) {
+            return value;
         }
         return defaultValue;
     }
