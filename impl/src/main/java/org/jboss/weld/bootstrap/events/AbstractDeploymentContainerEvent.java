@@ -34,7 +34,11 @@ public abstract class AbstractDeploymentContainerEvent extends AbstractContainer
     public void fire() {
         super.fire();
         if (!getErrors().isEmpty()) {
-            throw new DeploymentException(getErrors());
+            if (getErrors().size() == 1) {
+                throw new DeploymentException(getErrors().get(0));
+            } else {
+                throw new DeploymentException(getErrors());
+            }
         }
     }
 }
