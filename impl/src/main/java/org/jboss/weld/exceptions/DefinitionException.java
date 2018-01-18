@@ -52,6 +52,9 @@ public class DefinitionException extends javax.enterprise.inject.spi.DefinitionE
     public DefinitionException(List<Throwable> errors) {
         super(DefinitionException.class.getName()); // the no-args constructor is missing
         this.message = new WeldExceptionListMessage(errors);
+        for (Throwable error : errors) {
+            addSuppressed(error);
+        }
     }
 
     /**
