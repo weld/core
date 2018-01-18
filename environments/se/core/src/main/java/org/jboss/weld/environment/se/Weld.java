@@ -216,9 +216,9 @@ public class Weld implements ContainerInstanceFactory {
 
     private boolean discoveryEnabled = true;
 
-    private BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
+    protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
 
-    private final Set<String> beanClasses;
+    protected final Set<String> beanClasses;
 
     private final List<Metadata<String>> selectedAlternatives;
 
@@ -236,7 +236,7 @@ public class Weld implements ContainerInstanceFactory {
 
     private ResourceLoader resourceLoader;
 
-    private final Map<Class<? extends Service>, Service> additionalServices;
+    protected final Map<Class<? extends Service>, Service> additionalServices;
 
     public Weld() {
         this(null);
@@ -999,11 +999,11 @@ public class Weld implements ContainerInstanceFactory {
         return type.cast(manager.getReference(bean, type, cc));
     }
 
-    private boolean isSyntheticBeanArchiveRequired() {
+    protected boolean isSyntheticBeanArchiveRequired() {
         return !beanClasses.isEmpty() || !packages.isEmpty();
     }
 
-    private Iterable<Metadata<Extension>> getExtensions() {
+    protected Iterable<Metadata<Extension>> getExtensions() {
         Set<Metadata<Extension>> result = new HashSet<Metadata<Extension>>();
         if (discoveryEnabled) {
             Iterables.addAll(result, loadExtensions(resourceLoader));
@@ -1040,7 +1040,7 @@ public class Weld implements ContainerInstanceFactory {
         return ServiceLoader.load(Extension.class, resourceLoader);
     }
 
-    private BeansXml buildSyntheticBeansXml() {
+    protected BeansXml buildSyntheticBeansXml() {
         return new BeansXmlImpl(ImmutableList.copyOf(selectedAlternatives), ImmutableList.copyOf(selectedAlternativeStereotypes),
                 ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), null, null, beanDiscoveryMode, null, false);
     }
@@ -1049,7 +1049,7 @@ public class Weld implements ContainerInstanceFactory {
         return new MetadataImpl<String>(clazz.getName(), SYNTHETIC_LOCATION_PREFIX + clazz.getName());
     }
 
-    private Set<String> scanPackages() {
+    protected Set<String> scanPackages() {
 
         if (packages.isEmpty()) {
             return Collections.emptySet();
@@ -1159,7 +1159,7 @@ public class Weld implements ContainerInstanceFactory {
         return value.split("/");
     }
 
-    private boolean isEnabled(String key, boolean defaultValue) {
+    protected boolean isEnabled(String key, boolean defaultValue) {
         Object value = properties.get(key);
         if (value != null) {
             return Boolean.TRUE.equals(value);
@@ -1167,6 +1167,14 @@ public class Weld implements ContainerInstanceFactory {
         String system = AccessController.doPrivileged(new GetSystemPropertyAction(key));
         if (system != null) {
             return Boolean.valueOf(system);
+        }
+        return defaultValue;
+    }
+
+    protected Object getPropertyValue(String key, Object defaultValue) {
+        Object value = properties.get(key);
+        if (value != null) {
+            return value;
         }
         return defaultValue;
     }
