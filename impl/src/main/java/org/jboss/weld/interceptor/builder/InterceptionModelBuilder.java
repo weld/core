@@ -22,18 +22,21 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.EnumMap;
 
 import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 
 /**
@@ -42,7 +45,6 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
  * @author Martin Kouba
- *
  */
 public class InterceptionModelBuilder {
 
@@ -50,19 +52,28 @@ public class InterceptionModelBuilder {
 
     private boolean hasExternalNonConstructorInterceptors;
 
-    private final Set<Method> methodsIgnoringGlobalInterceptors = new HashSet<Method>();
+    private final ImmutableSet.Builder<Method> methodsIgnoringGlobalInterceptors;
 
-    private final Set<InterceptorClassMetadata<?>> allInterceptors = new LinkedHashSet<InterceptorClassMetadata<?>>();
+    private final ImmutableSet.Builder<InterceptorClassMetadata<?>> allInterceptors;
 
-    private final Map<InterceptionType, List<InterceptorClassMetadata<?>>> globalInterceptors = new EnumMap<InterceptionType, List<InterceptorClassMetadata<?>>>(InterceptionType.class);
+    private final Map<InterceptionType, List<InterceptorClassMetadata<?>>> globalInterceptors;
 
-    private final Map<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> methodBoundInterceptors = new EnumMap<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>>(InterceptionType.class);
+    private final Map<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> methodBoundInterceptors;
 
     private TargetClassInterceptorMetadata targetClassInterceptorMetadata;
 
-    private final Map<Member, Set<Annotation>> memberInterceptorBindings = new HashMap<Member, Set<Annotation>>();
+    private final ImmutableMap.Builder<Member, Set<Annotation>> memberInterceptorBindings;
 
     private Set<Annotation> classInterceptorBindings;
+
+
+    public InterceptionModelBuilder() {
+        this.methodsIgnoringGlobalInterceptors = ImmutableSet.builder();
+        this.allInterceptors = ImmutableSet.builder();
+        this.globalInterceptors = new EnumMap<>(InterceptionType.class);
+        this.methodBoundInterceptors = new EnumMap<>(InterceptionType.class);
+        this.memberInterceptorBindings = ImmutableMap.builder();
+    }
 
     /**
      * @return an immutable {@link InterceptionModel} instance
@@ -79,19 +90,18 @@ public class InterceptionModelBuilder {
         if (weldInterceptionType.isLifecycleCallback()) {
             throw new IllegalArgumentException("Illegal interception type: " + interceptionType);
         }
-
         if (null == methodBoundInterceptors.get(weldInterceptionType)) {
-            methodBoundInterceptors.put(weldInterceptionType, new HashMap<Method, List<InterceptorClassMetadata<?>>>());
+            methodBoundInterceptors.put(weldInterceptionType, new HashMap<>());
         }
         List<InterceptorClassMetadata<?>> interceptorsList = methodBoundInterceptors.get(weldInterceptionType).get(method);
         if (interceptorsList == null) {
-            interceptorsList = new ArrayList<InterceptorClassMetadata<?>>();
+            interceptorsList = new ArrayList<>();
             methodBoundInterceptors.get(weldInterceptionType).put(method, interceptorsList);
         }
         interceptorsList.addAll(interceptors);
-        intercept(weldInterceptionType, interceptorsList);
+        intercept(weldInterceptionType, interceptors);
 
-        if(interceptorBindings != null) {
+        if (interceptorBindings != null) {
             // WELD-1742 Associate method interceptor bindings
             memberInterceptorBindings.put(method, interceptorBindings);
         }
@@ -103,13 +113,13 @@ public class InterceptionModelBuilder {
 
         List<InterceptorClassMetadata<?>> interceptorsList = globalInterceptors.get(weldInterceptionType);
         if (interceptorsList == null) {
-            interceptorsList = new ArrayList<InterceptorClassMetadata<?>>();
+            interceptorsList = new ArrayList<>();
             globalInterceptors.put(weldInterceptionType, interceptorsList);
         }
         interceptorsList.addAll(interceptors);
-        intercept(weldInterceptionType, interceptorsList);
+        intercept(weldInterceptionType, interceptors);
 
-        if(constructor != null) {
+        if (constructor != null) {
             // WELD-1742 Associate constructor interceptor bindings
             memberInterceptorBindings.put(constructor, interceptorBindings);
         }
@@ -132,23 +142,41 @@ public class InterceptionModelBuilder {
     }
 
     Set<Method> getMethodsIgnoringGlobalInterceptors() {
-        return methodsIgnoringGlobalInterceptors;
+        return methodsIgnoringGlobalInterceptors.build();
     }
 
     Set<InterceptorClassMetadata<?>> getAllInterceptors() {
-        return allInterceptors;
+        return allInterceptors.build();
     }
 
     Map<InterceptionType, List<InterceptorClassMetadata<?>>> getGlobalInterceptors() {
-        return globalInterceptors;
+        if (globalInterceptors.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        ImmutableMap.Builder<InterceptionType, List<InterceptorClassMetadata<?>>> builder = ImmutableMap.builder();
+        for (Entry<InterceptionType, List<InterceptorClassMetadata<?>>> entry : globalInterceptors.entrySet()) {
+            builder.put(entry.getKey(), ImmutableList.copyOf(entry.getValue()));
+        }
+        return builder.build();
     }
 
     Map<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> getMethodBoundInterceptors() {
-        return methodBoundInterceptors;
+        if (methodBoundInterceptors.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        ImmutableMap.Builder<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> builder = ImmutableMap.builder();
+        for (Entry<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> entry : methodBoundInterceptors.entrySet()) {
+            ImmutableMap.Builder<Method, List<InterceptorClassMetadata<?>>> metadataBuilder = ImmutableMap.builder();
+            for (Entry<Method, List<InterceptorClassMetadata<?>>> metadataEntry : entry.getValue().entrySet()) {
+                metadataBuilder.put(metadataEntry.getKey(), ImmutableList.copyOf(metadataEntry.getValue()));
+            }
+            builder.put(entry.getKey(), metadataBuilder.build());
+        }
+        return builder.build();
     }
 
     private void checkModelNotBuilt() {
-        if(isModelBuilt) {
+        if (isModelBuilt) {
             throw new IllegalStateException("InterceptionModelBuilder cannot be reused");
         }
     }
@@ -170,7 +198,7 @@ public class InterceptionModelBuilder {
     }
 
     Map<Member, Set<Annotation>> getMemberInterceptorBindings() {
-        return memberInterceptorBindings;
+        return memberInterceptorBindings.build();
     }
 
 }
