@@ -30,7 +30,6 @@ import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
@@ -62,12 +61,12 @@ class InterceptionModelImpl implements InterceptionModel {
 
     InterceptionModelImpl(InterceptionModelBuilder builder) {
         this.hasExternalNonConstructorInterceptors = builder.isHasExternalNonConstructorInterceptors();
-        this.globalInterceptors = ImmutableMap.<InterceptionType, List<InterceptorClassMetadata<?>>>copyOf(builder.getGlobalInterceptors());
-        this.methodBoundInterceptors = ImmutableMap.<InterceptionType, Map<Method,List<InterceptorClassMetadata<?>>>>copyOf(builder.getMethodBoundInterceptors());
-        this.methodsIgnoringGlobalInterceptors = ImmutableSet.<Method>copyOf(builder.getMethodsIgnoringGlobalInterceptors());
-        this.allInterceptors = ImmutableSet.<InterceptorClassMetadata<?>>copyOf(builder.getAllInterceptors());
+        this.globalInterceptors = builder.getGlobalInterceptors();
+        this.methodBoundInterceptors = builder.getMethodBoundInterceptors();
+        this.methodsIgnoringGlobalInterceptors = builder.getMethodsIgnoringGlobalInterceptors();
+        this.allInterceptors = builder.getAllInterceptors();
         this.targetClassInterceptorMetadata = builder.getTargetClassInterceptorMetadata();
-        this.memberInterceptorBindings = ImmutableMap.<Member, Set<Annotation>>copyOf(builder.getMemberInterceptorBindings());
+        this.memberInterceptorBindings = builder.getMemberInterceptorBindings();
         this.classInterceptorBindings = ImmutableSet.copyOf(builder.getClassInterceptorBindings());
     }
 
