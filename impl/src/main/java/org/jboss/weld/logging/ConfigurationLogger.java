@@ -65,4 +65,8 @@ public interface ConfigurationLogger extends WeldLogger {
     @Message(id = 1907, value = "Reading properties file: {0}", format = Format.MESSAGE_FORMAT)
     void readingPropertiesFile(Object file);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1908, value = "Configuration property {0} can only be set by integrator - value {1} ignored", format = Format.MESSAGE_FORMAT)
+    void cannotSetIntegratorOnlyConfigurationProperty(Object key, Object value);
+
 }

@@ -16,7 +16,11 @@
  */
 package org.jboss.weld.config;
 
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
+
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.configuration.spi.ExternalConfiguration;
 
 /**
  * This enum lists all the supported configuration keys.
@@ -257,6 +261,16 @@ public enum ConfigurationKey {
     @Description("If a non-empty string and development mode is enabled, the Probe data will be automatically exported after deployment validation. The value represents a path of the directory where to export the data file.")
     PROBE_EXPORT_DATA_AFTER_DEPLOYMENT("org.jboss.weld.probe.exportDataAfterDeployment", ""),
 
+    /**
+     * If set to <code>true</code>:
+     * <ul>
+     * <li>Weld is allowed to perform efficient cleanup and further optimizations after bootstrap</li>
+     * <li>{@link Bootstrap#endInitialization()} must be called after all EE components which support injection are installed (that means all relevant {@link ProcessInjectionTarget} events were already fired)</li>
+     * </ul>
+     * This property can only be set by integrators through {@link ExternalConfiguration}.
+     */
+    ALLOW_OPTIMIZED_CLEANUP("org.jboss.weld.bootstrap.allowOptimizedCleanup", false, true),
+
     ;
 
     /**
@@ -265,17 +279,30 @@ public enum ConfigurationKey {
      * @param defaultValue The default value
      */
     ConfigurationKey(String key, Object defaultValue) {
+        this(key, defaultValue, false);
+    }
+
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @param integratorOnly
+     */
+    ConfigurationKey(String key, Object defaultValue, boolean integratorOnly) {
         this.key = key;
         // Fail fast if a new key with unsupported value type is introduced
         if (!isValueTypeSupported(defaultValue.getClass())) {
             throw new IllegalArgumentException("Unsupported value type: " + defaultValue);
         }
         this.defaultValue = defaultValue;
+        this.integratorOnly = integratorOnly;
     }
 
     private final String key;
 
     private final Object defaultValue;
+
+    private final boolean integratorOnly;
 
     /**
      * @return the string representation of the key
@@ -289,6 +316,14 @@ public enum ConfigurationKey {
      */
     public Object getDefaultValue() {
         return defaultValue;
+    }
+
+    /**
+     *
+     * @return <code>true</code> if only values set through {@link ExternalConfiguration} are considered
+     */
+    public boolean isIntegratorOnly() {
+        return integratorOnly;
     }
 
     /**
