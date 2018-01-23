@@ -210,6 +210,14 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     public static final String JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT = "javax.enterprise.inject.scan.implicit";
 
+    /**
+     * By default, Weld is allowed to perform efficient cleanup and further optimizations after bootstrap. This feature is normally controlled by integrator
+     * through {@link ConfigurationKey#ALLOW_OPTIMIZED_CLEANUP} but in Weld SE a client of the bootstrap API is de facto in the role of integrator.
+     * <p>
+     * This key can be also used through {@link #property(String, Object)}.
+     */
+    public static final String ALLOW_OPTIMIZED_CLEANUP = "org.jboss.weld.se.allowOptimizedCleanup";
+
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
     static {
@@ -768,7 +776,9 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
                 // weld-se uses CommonForkJoinPoolExecutorServices by default
                 .add(EXECUTOR_THREAD_POOL_TYPE.get(), COMMON.toString())
                 // weld-se uses relaxed construction by default
-                .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true);
+                .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true)
+                // allow optimized cleanup by default
+                .add(ConfigurationKey.ALLOW_OPTIMIZED_CLEANUP.get(), isEnabled(ALLOW_OPTIMIZED_CLEANUP, true));
         for (Entry<String, Object> property : properties.entrySet()) {
             String key = property.getKey();
             if (SHUTDOWN_HOOK_SYSTEM_PROPERTY.equals(key) || ARCHIVE_ISOLATION_SYSTEM_PROPERTY.equals(key) || DEV_MODE_SYSTEM_PROPERTY.equals(key)

@@ -462,6 +462,8 @@ To validate the deployed beans, call `Bootstrap.validateBeans()`.
 To place the container into a state where it can service requests, call
 `Bootstrap.endInitialization()`
 
+NOTE: Integrators can set `org.jboss.weld.bootstrap.allowOptimizedCleanup` configuration property using <<external_config>> to allow to perform efficient cleanup and further optimizations after bootstrap. In this case, `Bootstrap.endInitialization()` must be called after all EE components which support injection are installed (that means all relevant `ProcessInjectionTarget` events were already fired).
+
 To shutdown the container you call `Bootstrap.shutdown()`. This allows
 the container to perform any cleanup operations needed.
 
@@ -1004,7 +1006,7 @@ The coordinates for these artifacts are as follows:
 
 * WEB - `org.jboss.weld.module:weld-web`
 * JTA - `org.jboss.weld.module:weld-jta`
-* JSF - `org.jboss.weld.module:weld-jsf` 
+* JSF - `org.jboss.weld.module:weld-jsf`
 * EJB - `org.jboss.weld.module:weld-ejb`
 
 Each module represents the logic behind Weld integration with the given technology.
@@ -1034,7 +1036,7 @@ public void fireMyEvent() {
 }
 --------------------------------------------------------------------------------------------------
 
-===== Weld-core artifact change 
+===== Weld-core artifact change
 
 For historical reasons, Weld 2.4 core is released in two versions which *are identical* in their contents.
 Those are `org.jboss.weld:weld-core` and `org.jboss.weld:weld-core-impl`.

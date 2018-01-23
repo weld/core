@@ -413,7 +413,7 @@ public class WeldConfiguration implements Service {
     private Map<ConfigurationKey, Object> processExternalConfiguration(Map<String, Object> externalConfiguration) {
         Map<ConfigurationKey, Object> found =  new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         for (Entry<String, Object> entry : externalConfiguration.entrySet()) {
-            processKeyValue(found, entry.getKey(), entry.getValue());
+            processKeyValue(found, entry.getKey(), entry.getValue(), true);
         }
         return found;
     }
@@ -460,9 +460,17 @@ public class WeldConfiguration implements Service {
      * @param value
      */
     private void processKeyValue(Map<ConfigurationKey, Object> properties, String stringKey, Object value) {
+        processKeyValue(properties, stringKey, value, false);
+    }
+
+    private void processKeyValue(Map<ConfigurationKey, Object> properties, String stringKey, Object value, boolean integratorSource) {
         ConfigurationKey key = ConfigurationKey.fromString(stringKey);
         if (key != null) {
-            processKeyValue(properties, key, value);
+            if (key.isIntegratorOnly() && !integratorSource) {
+                ConfigurationLogger.LOG.cannotSetIntegratorOnlyConfigurationProperty(stringKey, value);
+            } else {
+                processKeyValue(properties, key, value);
+            }
         } else {
             ConfigurationLogger.LOG.unsupportedConfigurationKeyFound(stringKey);
         }

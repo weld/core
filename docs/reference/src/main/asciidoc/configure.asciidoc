@@ -273,7 +273,7 @@ The functionality is implemented as a built-in portable extension processing all
 |`org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation` || A regular expression. If a non-empty string, then all annotated types whose `AnnotatedType#getJavaClass().getName()` matches this pattern are vetoed if not annotated with a bean defining annotation.
 |=======================================================================
 
-
+[[external_config]]
 === Defining external configuration
 
 Weld allows integrators to provide an external configuration - a class which implements `org.jboss.weld.configuration.spi.ExternalConfiguration` interface.

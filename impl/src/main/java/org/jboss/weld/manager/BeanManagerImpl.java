@@ -62,6 +62,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.Extension;
@@ -74,6 +75,8 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Prioritized;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProducerFactory;
 import javax.enterprise.util.TypeLiteral;
 
@@ -99,6 +102,7 @@ import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.Validator;
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
@@ -110,6 +114,7 @@ import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.contexts.PassivatingContextWrapper;
 import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
@@ -167,6 +172,7 @@ import org.jboss.weld.util.ForwardingBeanManager;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
@@ -417,7 +423,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * Note that such bean will not implement Prioritized interface.
      */
     private boolean isConfiguratorBeanWithPriority(Bean<?> bean) {
-        return bean instanceof WeldBean && ((WeldBean) bean).getPriority() != null;
+        return bean instanceof WeldBean && ((WeldBean<?>) bean).getPriority() != null;
     }
 
     private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
@@ -1182,16 +1188,32 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Clear the bean set that is only used to make sure that no duplicate beans are added.
-     *
      * For internal use only.
+     *
+     * @see Bootstrap#endInitialization()
      */
     public void cleanupAfterBoot() {
+        // Clear the bean set that is only used to make sure that no duplicate beans are added
         if (beanSet != null) {
             beanSet.clear();
             beanSet = null;
         }
         this.validationFailureCallbacks.clear();
+        boolean isOptimizedCleanupAllowed = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.ALLOW_OPTIMIZED_CLEANUP);
+        // Drop removable container lifecycle event observers
+        if (!observers.isEmpty()) {
+            observers.removeIf((o) -> {
+                return o instanceof ContainerLifecycleEventObserverMethod
+                        // Do not use Observers.isContainerLifecycleObserverMethod() - e.g. @Observes Object must be retained
+                        && Observers.CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(o.getObservedType()))
+                        // Do not drop BeforeShutdown
+                        && !BeforeShutdown.class.equals(Reflections.getRawType(o.getObservedType()))
+                        // Note that some integrators may call Bootstrap.endInitialization() before all EE components are installed
+                        && (isOptimizedCleanupAllowed
+                                || (!isOptimizedCleanupAllowed && !ProcessInjectionPoint.class.equals(Reflections.getRawType(o.getObservedType()))
+                                        && !ProcessInjectionTarget.class.equals(Reflections.getRawType(o.getObservedType()))));
+            });
+        }
     }
 
     public ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel> getInterceptorModelRegistry() {
