@@ -86,6 +86,7 @@
           </export.contents>
           <import.package>
                             javax.annotation; version="1.1",
+                            javax.ejb; resolution:=optional,
                             javax.el; version=1.0; resolution:=optional,
                             javax.faces.*; resolution:=optional,
                             javax.interceptor.*; version="1.0",
