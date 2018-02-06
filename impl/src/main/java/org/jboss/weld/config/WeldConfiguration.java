@@ -123,10 +123,10 @@ public class WeldConfiguration implements Service {
         this.proxyIgnoreFinalMethodsPattern = initProxyIgnoreFinalMethodsPattern();
         StringBuilder logOuputBuilder = new StringBuilder("{");
         String prefix = "";
-        for (ConfigurationKey key : properties.keySet()) {
+        for (Entry<ConfigurationKey, Object> entry: properties.entrySet()) {
             logOuputBuilder.append(prefix);
             prefix = ", ";
-            logOuputBuilder.append(key.get() + "=" + properties.get(key));
+            logOuputBuilder.append(entry.getKey().get()).append("=").append(entry.getValue());
         }
         logOuputBuilder.append("}");
         ConfigurationLogger.LOG.configurationInitialized(logOuputBuilder.toString());
