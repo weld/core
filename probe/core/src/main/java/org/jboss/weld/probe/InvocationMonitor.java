@@ -143,10 +143,11 @@ public class InvocationMonitor implements Serializable {
         if (probe == null) {
             synchronized (this) {
                 if (probe == null) {
-                    probe = beanManager.getExtension(ProbeExtension.class).getProbe();
-                    if (!probe.isInitialized()) {
+                    Probe probeExt = beanManager.getExtension(ProbeExtension.class).getProbe();
+                    if (!probeExt.isInitialized()) {
                         throw ProbeLogger.LOG.probeNotInitialized();
                     }
+                    probe = probeExt;
                     skipJavaBeanProperties = beanManager.getServices().get(WeldConfiguration.class)
                             .getBooleanProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES);
                 }

@@ -31,7 +31,7 @@
         <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
-       <surefire.plugin.jdk9.args />
+        <surefire.plugin.jdk9.args />
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.1.7.Final</arquillian.version>
@@ -46,8 +46,8 @@
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
         <classfilewriter.version>1.1.2.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
-        <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
-        <findbugs-annotations.version>3.0.1</findbugs-annotations.version>
+        <spotbugs-maven-plugin.version>3.1.1</spotbugs-maven-plugin.version>
+        <spotbugs-annotations.version>3.1.1</spotbugs-annotations.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <htmlunit.version>2.20</htmlunit.version>
         <jacoco.version>0.7.9</jacoco.version>
@@ -464,9 +464,9 @@
             </dependency>
 
             <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${findbugs-annotations.version}</version>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>${spotbugs-annotations.version}</version>
             </dependency>
         </dependencies>
 
@@ -482,9 +482,9 @@
                     <version>${cargo.maven2.plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>${findbugs-maven-plugin.version}</version>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
