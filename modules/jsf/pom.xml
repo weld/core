@@ -62,6 +62,13 @@
             <classifier>jdk15</classifier>
             <scope>test</scope>
         </dependency>
+        
+        <!-- spotbugs dependency -->
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
     
     <profiles>
@@ -70,8 +77,8 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
                         <configuration>
                             <effort>Max</effort>
                             <xmlOutput>true</xmlOutput>

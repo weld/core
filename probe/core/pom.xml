@@ -41,10 +41,10 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- findbugs dependency -->
+        <!-- spotbugs dependency -->
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -230,8 +230,8 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
                         <configuration>
                             <effort>Max</effort>
                             <xmlOutput>true</xmlOutput>

@@ -536,7 +536,7 @@ public class Formats {
     public static String getSimpleVersion() {
         Properties buildProperties = getBuildProperties();
         if(buildProperties != null) {
-            buildProperties.getProperty(BUILD_PROPERTIES_VERSION);
+            return buildProperties.getProperty(BUILD_PROPERTIES_VERSION);
         }
         return getManifestImplementationVersion();
     }

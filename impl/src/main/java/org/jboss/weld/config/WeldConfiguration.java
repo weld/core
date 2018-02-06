@@ -123,8 +123,8 @@ public class WeldConfiguration implements Service {
         this.proxyDumpFilePath = initProxyDumpFilePath();
         this.proxyIgnoreFinalMethodsPattern = initProxyIgnoreFinalMethodsPattern();
         StringJoiner logOutputBuilder = new StringJoiner(", ", "{", "}");
-        for (ConfigurationKey key : properties.keySet()) {
-            logOutputBuilder.add(key.get() + "=" + properties.get(key));
+        for (Entry<ConfigurationKey, Object> entry : properties.entrySet()) {
+            logOutputBuilder.add(entry.getKey().get() + "=" + entry.getValue());
         }
         ConfigurationLogger.LOG.configurationInitialized(logOutputBuilder.toString());
     }

@@ -81,8 +81,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -105,15 +105,15 @@
     <build>
         <plugins>
             <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-compiler-plugin</artifactId>
-               <configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
                     <!-- This path is not used for default properties files yet -->
                     <!-- https://issues.jboss.org/browse/LOGTOOL-65 -->
                     <compilerArguments>
                         <AgeneratedTranslationFilesPath>${project.build.directory}/generated-translation-files</AgeneratedTranslationFilesPath>
                     </compilerArguments>
-               </configuration>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -143,7 +143,7 @@
                         </goals>
                     </execution>
                 </executions>
-             </plugin>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -191,8 +191,8 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
                         <configuration>
                             <effort>Max</effort>
                             <xmlOutput>true</xmlOutput>
@@ -200,7 +200,7 @@
                             <failOnError>${findbugs.failOnError}</failOnError>
                             <excludeFilterFile>${project.basedir}/findbugsfilter.xml</excludeFilterFile>
                         </configuration>
-                        <executions>
+                         <executions>
                             <execution>
                                 <goals>
                                     <goal>check</goal>
