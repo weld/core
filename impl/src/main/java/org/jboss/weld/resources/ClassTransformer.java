@@ -21,11 +21,13 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
@@ -35,6 +37,7 @@ import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
+import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -301,5 +304,13 @@ public class ClassTransformer implements BootstrapService {
         cleanupAfterBoot();
         slimAnnotatedTypesById.clear();
         syntheticAnnotationsAnnotatedTypes.clear();
+    }
+
+    public void removeAll(Set<Bean<?>> removable) {
+        for (Bean<?> bean : removable) {
+            if (bean instanceof AbstractClassBean) {
+                slimAnnotatedTypesById.remove(((AbstractClassBean<?>) bean).getAnnotated().getIdentifier());
+            }
+        }
     }
 }

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.enterprise.inject.spi.Bean;
@@ -48,8 +49,8 @@ public class ConcurrentValidator extends Validator {
 
     private final ExecutorServices executor;
 
-    public ConcurrentValidator(Set<PlugableValidator> plugableValidators, ExecutorServices executor) {
-        super(plugableValidators);
+    public ConcurrentValidator(Set<PlugableValidator> plugableValidators, ExecutorServices executor, ConcurrentMap<Bean<?>, Boolean> resolvedInjectionPoints) {
+        super(plugableValidators, resolvedInjectionPoints);
         this.executor = executor;
     }
 

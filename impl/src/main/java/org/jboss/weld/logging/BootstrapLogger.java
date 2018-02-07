@@ -330,4 +330,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 179, value = "{0} created by {1} cannot be processed", format = Format.MESSAGE_FORMAT)
     DeploymentException unableToProcessConfigurator(Object configurator, Object extensionName, @Cause Throwable cause);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 180, value = "Drop unused bean metadata: {0}", format = Format.MESSAGE_FORMAT)
+    void dropUnusedBeanMetadata(Object bean);
+
 }

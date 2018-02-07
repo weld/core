@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.config;
 
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
@@ -271,6 +274,54 @@ public enum ConfigurationKey {
      */
     ALLOW_OPTIMIZED_CLEANUP("org.jboss.weld.bootstrap.allowOptimizedCleanup", false, true),
 
+    /**
+     * A regular expression. If {@link #ALLOW_OPTIMIZED_CLEANUP} is set to true this property can be used to extend the set of beans which should never be
+     * considered <strong>unused</strong>. {@link Bean#getBeanClass()} is used to match the pattern.
+     *
+     * <p>
+     * Two special values are considered. {@link UnusedBeans#ALL} (default value) means that all beans are excluded. If set to {@link UnusedBeans#NONE}, no
+     * beans are excluded.
+     * </p>
+     *
+     * An unused bean:
+     * <ul>
+     * <li>is not excluded by this property or {@link #UNUSED_BEANS_EXCLUDE_ANNOTATION}</li>
+     * <li>is not a built-in bean, session bean, extension, interceptor or decorator,</li>
+     * <li>does not have a name</li>
+     * <li>does not declare an observer</li>
+     * <li>is not eligible for injection to any injection point</li>
+     * <li>does not declare a producer which is eligible for injection to any injection point</li>
+     * <li>is not eligible for injection into any {@link Instance} injection point</li>
+     * </ul>
+     *
+     * @see ConfigurationKey#UNUSED_BEANS_EXCLUDE_ANNOTATION
+     */
+    UNUSED_BEANS_EXCLUDE_TYPE("org.jboss.weld.bootstrap.unusedBeans.excludeType", UnusedBeans.ALL),
+
+    /**
+     * A regular expression. If {@link #ALLOW_OPTIMIZED_CLEANUP} is set to true this property can be used to extend the set of beans which should never be
+     * considered <strong>unused</strong>. A bean is excluded if the corresponding {@link AnnotatedType}, or any member, is annotated with an annotation which
+     * matches this pattern.
+     *
+     * <p>
+     * By default, JAX-RS annotations are considered. If undefined (an empty string), no annotations are considered.
+     * </p>
+     *
+     * An unused bean:
+     * <ul>
+     * <li>is not excluded by this property or {@link #UNUSED_BEANS_EXCLUDE_ANNOTATION}</li>
+     * <li>is not a built-in bean, session bean, extension, interceptor or decorator,</li>
+     * <li>does not have a name</li>
+     * <li>does not declare an observer</li>
+     * <li>is not eligible for injection to any injection point</li>
+     * <li>does not declare a producer which is eligible for injection to any injection point</li>
+     * <li>is not eligible for injection into any {@link Instance} injection point</li>
+     * </ul>
+     *
+     * @see #UNUSED_BEANS_EXCLUDE_TYPE
+     */
+    UNUSED_BEANS_EXCLUDE_ANNOTATION("org.jboss.weld.bootstrap.unusedBeans.excludeAnnotation", "javax\\.ws\\.rs.*"),
+
     ;
 
     /**
@@ -296,6 +347,24 @@ public enum ConfigurationKey {
         }
         this.defaultValue = defaultValue;
         this.integratorOnly = integratorOnly;
+    }
+
+    public static final class UnusedBeans {
+
+        public static final String ALL = "ALL";
+        public static final String NONE = "NONE";
+
+        public static final boolean isEnabled(WeldConfiguration configuration) {
+            return isEnabled(configuration.getStringProperty(UNUSED_BEANS_EXCLUDE_TYPE));
+        }
+
+        public static final boolean isEnabled(String value) {
+            return !ALL.equals(value) && !".*".equals(value);
+        }
+
+        public static final boolean excludeNone(String value) {
+            return NONE.equals(value);
+        }
     }
 
     private final String key;
@@ -383,5 +452,6 @@ public enum ConfigurationKey {
         }
         return null;
     }
+
 
 }

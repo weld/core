@@ -67,6 +67,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -664,6 +665,14 @@ public class Beans {
             return abstractBean.isIgnoreFinalMethods();
         }
         return false;
+    }
+
+    public static Bean<?> unwrap(Bean<?> bean) {
+        if (bean instanceof ForwardingBean) {
+            ForwardingBean<?> forwarding = (ForwardingBean<?>) bean;
+            return forwarding.delegate();
+        }
+        return bean;
     }
 
     /**
