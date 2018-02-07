@@ -41,6 +41,8 @@ class AnnotatedTypeLoader {
     final MissingDependenciesRegistry missingDependenciesRegistry;
     final ContainerLifecycleEvents containerLifecycleEvents;
 
+    static final String MODULEINFO_CLASS_NAME = "module-info";
+
     AnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ContainerLifecycleEvents containerLifecycleEvents) {
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.classTransformer = transformer;
@@ -73,6 +75,9 @@ class AnnotatedTypeLoader {
     }
 
     protected <T> Class<T> loadClass(String className) {
+        if (isModuleInfo(className)) {
+            return null;
+        }
         try {
             return cast(resourceLoader.classForName(className));
         } catch (ResourceLoadingException e) {
@@ -104,5 +109,9 @@ class AnnotatedTypeLoader {
             return SlimAnnotatedTypeContext.of(type);
         }
         return null;
+    }
+
+    protected boolean isModuleInfo(String className) {
+        return MODULEINFO_CLASS_NAME.equals(className);
     }
 }
