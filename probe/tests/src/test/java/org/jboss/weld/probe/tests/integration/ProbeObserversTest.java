@@ -79,7 +79,7 @@ public class ProbeObserversTest extends ProbeIntegrationTest {
     @Test
     public void testObserversEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
-        JsonObject observers = getPageAsJSONObject(JSONTestUtil.OBSERVERS_PATH, url, client);
+        JsonObject observers = getPageAsJSONObject(JSONTestUtil.OBSERVERS_PATH_ALL, url, client);
         ReadContext ctx = JsonPath.parse(observers.toString());
         List<String> beanClasses = ctx.read("$." + DATA + "[*]." + BEAN_CLASS, List.class);
         List<String> txPhases = ctx.read("$." + DATA + "[*]." + TX_PHASE, List.class);

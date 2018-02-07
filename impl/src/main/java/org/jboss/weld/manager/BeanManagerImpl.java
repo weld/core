@@ -41,6 +41,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
@@ -84,6 +85,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.NewBean;
@@ -99,6 +101,7 @@ import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.Validator;
+import org.jboss.weld.bootstrap.WeldUnusedMetadataExtension;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -106,6 +109,7 @@ import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.ConfigurationKey.UnusedBeans;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.contexts.PassivatingContextWrapper;
@@ -116,6 +120,7 @@ import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.event.GlobalObserverNotifierService;
+import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -164,6 +169,7 @@ import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
@@ -176,6 +182,7 @@ import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -254,6 +261,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient List<Bean<?>> enabledBeans;
     // shared beans are accessible from other bean archives (generally all beans except for built-in beans and @New beans)
     private final transient List<Bean<?>> sharedBeans;
+    private final transient List<Bean<?>> specializedBeans;
     private final transient List<Decorator<?>> decorators;
     private final transient List<Interceptor<?>> interceptors;
     private final transient List<String> namespaces;
@@ -370,7 +378,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.requestInitializedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, InitializedLiteral.REQUEST));
         this.requestBeforeDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, BeforeDestroyedLiteral.REQUEST));
         this.requestDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, DestroyedLiteral.REQUEST));
+
         this.validationFailureCallbacks = new CopyOnWriteArrayList<>();
+        this.specializedBeans = new CopyOnWriteArrayList<>();
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Function<BeanManagerImpl, Iterable<T>> transform) {
@@ -418,8 +428,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Helper method which allows to recognize if bean was created by BeanConfigurator and has any priority set.
-     * Note that such bean will not implement Prioritized interface.
+     * Helper method which allows to recognize if bean was created by BeanConfigurator and has any priority set. Note that such bean will not implement
+     * Prioritized interface.
      */
     private boolean isConfiguratorBeanWithPriority(Bean<?> bean) {
         return bean instanceof WeldBean && ((WeldBean<?>) bean).getPriority() != null;
@@ -427,13 +437,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
         if (beanSet.add(bean)) {
-            if (bean.isAlternative() && (!registry.isEnabledInAnyBeanDeployment(bean) && !(bean instanceof Prioritized)) && !isConfiguratorBeanWithPriority(bean)) {
+            if (bean.isAlternative() && (!registry.isEnabledInAnyBeanDeployment(bean) && !(bean instanceof Prioritized))
+                    && !isConfiguratorBeanWithPriority(bean)) {
                 BootstrapLogger.LOG.foundDisabledAlternative(bean);
             } else if (registry.isSpecializedInAnyBeanDeployment(bean)) {
                 BootstrapLogger.LOG.foundSpecializedBean(bean);
             } else if (bean instanceof AbstractProducerBean<?, ?, ?>
                     && registry.isSpecializedInAnyBeanDeployment(((AbstractProducerBean<?, ?, ?>) bean).getDeclaringBean())) {
                 BootstrapLogger.LOG.foundProducerOfSpecializedBean(bean);
+                specializedBeans.add(bean);
             } else {
                 BootstrapLogger.LOG.foundBean(bean);
                 beanList.add(bean);
@@ -1183,7 +1195,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * For internal use only.
+     * For internal use only. This happens after bootstrap services cleanup but before {@link RIBean#cleanupAfterBoot()}.
      *
      * @see Bootstrap#endInitialization()
      */
@@ -1201,13 +1213,21 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 return o instanceof ContainerLifecycleEventObserverMethod
                         // Do not use Observers.isContainerLifecycleObserverMethod() - e.g. @Observes Object must be retained
                         && Observers.CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(o.getObservedType()))
-                        // Do not drop BeforeShutdown
+                // Do not drop BeforeShutdown
                         && !BeforeShutdown.class.equals(Reflections.getRawType(o.getObservedType()))
-                        // Note that some integrators may call Bootstrap.endInitialization() before all EE components are installed
-                        && (isOptimizedCleanupAllowed
-                                || (!ProcessInjectionPoint.class.equals(Reflections.getRawType(o.getObservedType()))
-                                        && !ProcessInjectionTarget.class.equals(Reflections.getRawType(o.getObservedType()))));
+                // Note that some integrators may call Bootstrap.endInitialization() before all EE components are installed
+                        && (isOptimizedCleanupAllowed || (!ProcessInjectionPoint.class.equals(Reflections.getRawType(o.getObservedType()))
+                                && !ProcessInjectionTarget.class.equals(Reflections.getRawType(o.getObservedType()))));
             });
+        }
+        if (isOptimizedCleanupAllowed) {
+            removeUnusedBeans();
+            // Make sure specialized beans and corresponding resources are released
+            if (!specializedBeans.isEmpty()) {
+                ((ContextualStoreImpl) getServices().get(ContextualStore.class)).removeAll(specializedBeans);
+                cleanupBeansAfterBoot(specializedBeans);
+                specializedBeans.clear();
+            }
         }
     }
 
@@ -1556,6 +1576,155 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             } catch (Throwable ignored) {
                 BootstrapLogger.LOG.catchingDebug(ignored);
             }
+        }
+    }
+
+    private void removeUnusedBeans() {
+        String excludeTypeProperty = getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.UNUSED_BEANS_EXCLUDE_TYPE);
+
+        if (UnusedBeans.isEnabled(excludeTypeProperty)) {
+            String excludeAnnotationProperty = getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.UNUSED_BEANS_EXCLUDE_ANNOTATION);
+            // Init exclude patterns
+            Pattern excludeAnnotation = excludeAnnotationProperty.isEmpty() ? null : Pattern.compile(excludeAnnotationProperty);
+            Pattern excludeType = UnusedBeans.excludeNone(excludeTypeProperty) ? null : Pattern.compile(excludeTypeProperty);
+            Validator validator = getServices().get(Validator.class);
+            // Build bean to declared producers and declared observers maps
+            SetMultimap<Bean<?>, AbstractProducerBean<?, ?, ?>> beanToDeclaredProducers = SetMultimap.newSetMultimap();
+            SetMultimap<Bean<?>, ObserverMethod<?>> beanToDeclaredObservers = SetMultimap.newSetMultimap();
+            for (Bean<?> bean : enabledBeans) {
+                if (bean instanceof AbstractProducerBean) {
+                    AbstractProducerBean<?, ?, ?> producer = (AbstractProducerBean<?, ?, ?>) bean;
+                    beanToDeclaredProducers.put(producer.getDeclaringBean(), producer);
+                }
+            }
+            for (ObserverMethod<?> observerMethod : observers) {
+                if (observerMethod instanceof ObserverMethodImpl) {
+                    ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
+                    beanToDeclaredObservers.put(observerMethodImpl.getDeclaringBean(), observerMethod);
+                }
+            }
+            Set<Bean<?>> removable = new HashSet<>();
+            Set<Bean<?>> unusedProducers = new HashSet<>();
+            WeldUnusedMetadataExtension metadataExtension = getUnusedMetadataExtension();
+
+            for (Bean<?> bean : enabledBeans) {
+                bean = Beans.unwrap(bean);
+                // Built-in bean, extension, interceptor, decorator, session bean
+                if (bean instanceof AbstractBuiltInBean || bean instanceof ExtensionBean || bean instanceof Interceptor || bean instanceof Decorator
+                        || bean instanceof SessionBean) {
+                    continue;
+                }
+                // Has a name
+                if (bean.getName() != null) {
+                    continue;
+                }
+                // The type is excluded
+                if (excludeType != null && excludeType.matcher(bean.getBeanClass().getName()).matches()) {
+                    continue;
+                }
+                // Declares an observer
+                if (beanToDeclaredObservers.containsKey(bean)) {
+                    continue;
+                }
+                // Declares a used producer - see also second pass
+                if (beanToDeclaredProducers.containsKey(bean)) {
+                    continue;
+                }
+                // Is resolved for an injection point
+                if (validator.isResolved(bean) || (metadataExtension != null
+                        && (metadataExtension.isInjectedByEEComponent(bean, this) || metadataExtension.isInstanceResolvedBean(bean, this)))) {
+                    continue;
+                }
+                // The type is annotated with an exclude annotation
+                if (excludeAnnotation != null && hasExcludeAnnotation(bean, excludeAnnotation)) {
+                    continue;
+                }
+                // This bean is very likely an unused producer
+                if (bean instanceof AbstractProducerBean) {
+                    unusedProducers.add(bean);
+                }
+                BootstrapLogger.LOG.dropUnusedBeanMetadata(bean);
+                removable.add(bean);
+            }
+
+            // Second pass to find beans which themselves are unused and declare only unused producers
+            if (!unusedProducers.isEmpty()) {
+                for (Bean<?> bean : beanToDeclaredProducers.keySet()) {
+                    bean = Beans.unwrap(bean);
+                    if (!unusedProducers.containsAll(beanToDeclaredProducers.get(bean))) {
+                        continue;
+                    }
+                    BootstrapLogger.LOG.dropUnusedBeanMetadata(bean);
+                    removable.add(bean);
+                }
+            }
+
+            if (!removable.isEmpty()) {
+                // First remove unused beans from BeanManager
+                enabledBeans.removeAll(removable);
+                sharedBeans.removeAll(removable);
+                // Then perform additional cleanup
+                beanResolver.clear();
+                // Removed beans are skipped in WeldStartup.endInitialization()
+                cleanupBeansAfterBoot(removable);
+                ((ContextualStoreImpl) getServices().get(ContextualStore.class)).removeAll(removable);
+                getServices().get(ClassTransformer.class).removeAll(removable);
+            }
+        }
+    }
+
+    private void cleanupBeansAfterBoot(Iterable<Bean<?>> beans) {
+        for (Bean<?> bean : beans) {
+            if (bean instanceof RIBean<?>) {
+                RIBean<?> riBean = (RIBean<?>) bean;
+                riBean.cleanupAfterBoot();
+            }
+        }
+    }
+
+    private boolean hasExcludeAnnotation(Bean<?> bean, Pattern excludeAnnotation) {
+        if (bean instanceof AbstractClassBean) {
+            return hasExcludeAnnotation((AbstractClassBean<?>) bean, excludeAnnotation);
+        } else if (bean instanceof AbstractProducerBean) {
+            return hasExcludeAnnotation(((AbstractProducerBean<?, ?, ?>) bean).getDeclaringBean(), excludeAnnotation);
+        }
+        return false;
+    }
+
+    private boolean hasExcludeAnnotation(AbstractClassBean<?> classBean, Pattern excludeAnnotation) {
+        AnnotatedType<?> annotatedType = classBean.getAnnotated();
+        return hasExcludeAnnotation(annotatedType, excludeAnnotation) || anyHasExcludeAnnotation(annotatedType.getMethods(), excludeAnnotation)
+                || anyHasExcludeAnnotation(annotatedType.getFields(), excludeAnnotation)
+                || anyHasExcludeAnnotation(annotatedType.getConstructors(), excludeAnnotation);
+    }
+
+    private <E extends Annotated> boolean anyHasExcludeAnnotation(Set<E> annotatedSet, Pattern excludeAnnotation) {
+        if (annotatedSet.isEmpty()) {
+            return false;
+        }
+        for (E annotated : annotatedSet) {
+            if (hasExcludeAnnotation(annotated, excludeAnnotation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasExcludeAnnotation(Annotated annotated, Pattern excludeAnnotation) {
+        for (Annotation annotation : annotated.getAnnotations()) {
+            if (excludeAnnotation.matcher(annotation.annotationType().getName()).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private WeldUnusedMetadataExtension getUnusedMetadataExtension() {
+        try {
+            return getExtension(WeldUnusedMetadataExtension.class);
+        } catch (IllegalArgumentException e) {
+            // In some configurations the root manager does not have access to extensions
+            return null;
         }
     }
 

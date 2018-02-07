@@ -131,8 +131,11 @@ public class Validator implements Service {
 
     private final Set<PlugableValidator> plugableValidators;
 
-    public Validator(Set<PlugableValidator> plugableValidators) {
+    private final Map<Bean<?>, Boolean> resolvedInjectionPoints;
+
+    public Validator(Set<PlugableValidator> plugableValidators, Map<Bean<?>, Boolean> resolvedInjectionPoints) {
         this.plugableValidators = plugableValidators;
+        this.resolvedInjectionPoints = resolvedInjectionPoints;
     }
 
     protected void validateGeneralBean(Bean<?> bean, BeanManagerImpl beanManager) {
@@ -370,7 +373,7 @@ public class Validator implements Service {
         if (ij.isDelegate()) {
             return; // do not validate delegate injection points as these are special
         }
-        Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
+        Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
         if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
             throw ValidatorLogger.LOG.injectionPointHasUnsatisfiedDependencies(
                     ij,
@@ -403,6 +406,11 @@ public class Validator implements Service {
 
         for (PlugableValidator validator : plugableValidators) {
             validator.validateInjectionPointForDeploymentProblems(ij, bean, beanManager);
+        }
+
+        if (resolvedInjectionPoints != null) {
+            // Store result to identify unused beans
+            resolvedInjectionPoints.put(resolvedBeans.iterator().next(), Boolean.TRUE);
         }
     }
 
@@ -987,6 +995,17 @@ public class Validator implements Service {
 
     @Override
     public void cleanup() {
+    }
+
+    // This covers beans, producers, disposers and observers injection points
+    public boolean isResolved(Bean<?> bean) {
+        return resolvedInjectionPoints != null ? resolvedInjectionPoints.containsKey(bean) : false;
+    }
+
+    public void clearResolved() {
+        if (resolvedInjectionPoints != null) {
+            resolvedInjectionPoints.clear();
+        }
     }
 
 }

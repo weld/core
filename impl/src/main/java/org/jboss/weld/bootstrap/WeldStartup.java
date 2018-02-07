@@ -21,9 +21,11 @@ import static org.jboss.weld.config.ConfigurationKey.ROLLING_UPGRADES_ID_DELIMIT
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
@@ -72,6 +74,7 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.ConfigurationKey.UnusedBeans;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;
@@ -193,10 +196,13 @@ public class WeldStartup {
         // Add extension to register built-in components
         this.extensions.add(MetadataImpl.from(new WeldExtension()));
 
-        // Add Weld extensions
+        // Additional Weld extensions
         String vetoTypeRegex = configuration.getStringProperty(ConfigurationKey.VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION);
         if (!vetoTypeRegex.isEmpty()) {
             this.extensions.add(MetadataImpl.from(new WeldVetoExtension(vetoTypeRegex)));
+        }
+        if (UnusedBeans.isEnabled(configuration)) {
+            this.extensions.add(MetadataImpl.from(new WeldUnusedMetadataExtension()));
         }
 
         // Finish the rest of registry init, setupInitialServices() requires already changed finalContextId
@@ -326,11 +332,15 @@ public class WeldStartup {
         /*
          * Setup Validator
          */
+        Validator validator;
         if (configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
-            services.add(Validator.class, new ConcurrentValidator(modules.getPluggableValidators(), executor));
+            validator = new ConcurrentValidator(modules.getPluggableValidators(), executor,
+                    UnusedBeans.isEnabled(configuration) ? new ConcurrentHashMap<>() : null);
         } else {
-            services.add(Validator.class, new Validator(modules.getPluggableValidators()));
+            validator = new Validator(modules.getPluggableValidators(),
+                    UnusedBeans.isEnabled(configuration) ? new HashMap<>() : null);
         }
+        services.add(Validator.class, validator);
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services, contextId);
         services.add(GlobalObserverNotifierService.class, observerNotificationService);
@@ -538,6 +548,16 @@ public class WeldStartup {
         if (modules != null) {
             modules.processBeanDeployments(getBeanDeployments());
             BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
+        }
+
+        // Perform additional cleanup if removing unused beans
+        if (UnusedBeans.isEnabled(deploymentManager.getServices().get(WeldConfiguration.class))) {
+            deploymentManager.getBeanResolver().clear();
+            for (BeanDeployment beanDeployment : getBeanDeployments()) {
+                beanDeployment.getBeanManager().getBeanResolver().clear();
+            }
+            deploymentManager.getServices().get(Validator.class).clearResolved();
+            deploymentManager.getServices().get(ClassTransformer.class).cleanupAfterBoot();
         }
 
         getContainer().setState(ContainerState.INITIALIZED);

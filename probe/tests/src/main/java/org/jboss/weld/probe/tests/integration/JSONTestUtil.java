@@ -40,7 +40,7 @@ public class JSONTestUtil {
     public static final String DEPLOYMENT_PATH = "weld-probe/deployment";
     public static final String INVOCATIONS_PATH = "weld-probe/invocations";
     public static final String EVENTS_PATH = "weld-probe/events";
-    public static final String OBSERVERS_PATH = "weld-probe/observers";
+    public static final String OBSERVERS_PATH_ALL = "weld-probe/observers?pageSize=0";
     public static final String BEANS_PATH = "weld-probe/beans";
     public static final String SESSION_CONTEXTS_PATH = "weld-probe/contexts/session";
     public static final String APPLICATION_CONTEXTS_PATH = "weld-probe/contexts/application";

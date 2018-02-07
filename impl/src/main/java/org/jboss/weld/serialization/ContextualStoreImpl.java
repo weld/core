@@ -24,9 +24,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.bean.CommonBean;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.contexts.SerializableContextualFactory;
 import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
@@ -148,5 +150,18 @@ public class ContextualStoreImpl implements ContextualStore {
         contextuals.clear();
         contextualsInverse.clear();
         passivationCapableContextuals.clear();
+    }
+
+    public void removeAll(Iterable<Bean<?>> removable) {
+        for (Bean<?> bean : removable) {
+            BeanIdentifier beanIdentifier = contextuals.remove(bean);
+            if (beanIdentifier == null && bean instanceof RIBean) {
+                beanIdentifier = ((RIBean<?>) bean).getIdentifier();
+            }
+            if (beanIdentifier != null) {
+                contextualsInverse.remove(beanIdentifier);
+                passivationCapableContextuals.remove(beanIdentifier);
+            }
+        }
     }
 }
