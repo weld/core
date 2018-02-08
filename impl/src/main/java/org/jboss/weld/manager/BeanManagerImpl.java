@@ -1210,7 +1210,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                         && !BeforeShutdown.class.equals(Reflections.getRawType(o.getObservedType()))
                         // Note that some integrators may call Bootstrap.endInitialization() before all EE components are installed
                         && (isOptimizedCleanupAllowed
-                                || (!isOptimizedCleanupAllowed && !ProcessInjectionPoint.class.equals(Reflections.getRawType(o.getObservedType()))
+                                || (!ProcessInjectionPoint.class.equals(Reflections.getRawType(o.getObservedType()))
                                         && !ProcessInjectionTarget.class.equals(Reflections.getRawType(o.getObservedType()))));
             });
         }
