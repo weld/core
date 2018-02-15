@@ -73,11 +73,16 @@ public class ProtectionDomainCache extends AbstractBootstrapService {
         if (domain.implies(ACCESS_DECLARED_MEMBERS_PERMISSION)) {
             return domain;
         }
-        Enumeration<Permission> permissions = domain.getPermissions().elements();
+        PermissionCollection permissions = domain.getPermissions();
         PermissionCollection proxyPermissions = new Permissions();
-        while (permissions.hasMoreElements()) {
-            proxyPermissions.add(permissions.nextElement());
+
+        if (permissions != null) {
+            Enumeration<Permission> permissionElements = permissions.elements();
+            while (permissionElements.hasMoreElements()) {
+                proxyPermissions.add(permissionElements.nextElement());
+            }
         }
+
         proxyPermissions.add(ACCESS_DECLARED_MEMBERS_PERMISSION);
         return new ProtectionDomain(domain.getCodeSource(), proxyPermissions);
     }
