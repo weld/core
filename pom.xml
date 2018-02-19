@@ -73,7 +73,7 @@
         <testng.version>6.8.8</testng.version>
         <weld.api.version>2.4.SP2</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
-        <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
+        <wildfly.arquillian.version>2.1.0.Final</wildfly.arquillian.version>
 
         <!--Override for dependecy version from parent pom.xml - use last JDK 7 compatible version of checkstyle-->
         <checkstyle.version>6.19</checkstyle.version>
