@@ -27,8 +27,6 @@
         <htmlunit.version>2.9</htmlunit.version>
         <!-- allows local IP address to be overridden for ipv6 testing -->
         <node.address>127.0.0.1</node.address>
-        <!-- dummy property as workaround for https://github.com/wildfly/wildfly-arquillian/issues/96 -->
-        <additional.jboss.args>-Dorg.jboss.weld.wildfly.args.dummy</additional.jboss.args>
     </properties>
 
     <dependencies>
