@@ -38,7 +38,7 @@
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.1.11.Final</arquillian.version>
+        <arquillian.version>1.4.0.Final</arquillian.version>
         <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
         <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
         <arquillian.weld.version>2.0.0.Beta4</arquillian.weld.version>
@@ -78,10 +78,11 @@
         <shrinkwrap.version>1.1.3</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
-        <testng.version>6.8.8</testng.version>
+        <testng.version>6.14.3</testng.version>
+        <testng.jcommander.version>1.74</testng.jcommander.version>
         <weld.api.version>3.0.SP2</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
-        <wildfly.arquillian.version>1.0.1.Final</wildfly.arquillian.version>
+        <wildfly.arquillian.version>2.1.0.Final</wildfly.arquillian.version>
     </properties>
 
     <modules>
@@ -196,6 +197,15 @@
                 <groupId>org.jboss.classfilewriter</groupId>
                 <artifactId>jboss-classfilewriter</artifactId>
                 <version>${classfilewriter.version}</version>
+            </dependency>
+
+            <!--Keep this Arq. BOM as first of all Arquillian dependencies in order to make it fetch correct versions!-->
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>
@@ -444,6 +454,12 @@
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>${testng.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.beust</groupId>
+                <artifactId>jcommander</artifactId>
+                <version>${testng.jcommander.version}</version>
             </dependency>
 
             <dependency>
@@ -790,4 +806,11 @@
         </profile>
     </profiles>
 
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
 </project>
