@@ -174,7 +174,6 @@ import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
-import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.WeldCollections;
@@ -808,10 +807,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         Bean<T> bean = cast(resolve(beanResolver.resolve(resolvable, true)));
         if (bean == null) {
             throw BeanManagerLogger.LOG.unresolvableElement(resolvable);
-        }
-
-        if (isNormalScope(bean.getScope()) && !Beans.isBeanProxyable(bean, this)) {
-            throw Proxies.getUnproxyableTypesException(bean, services);
         }
         return bean;
     }
