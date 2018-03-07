@@ -18,13 +18,14 @@ package org.jboss.weld.xml;
 
 import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +60,20 @@ import org.xml.sax.SAXNotSupportedException;
  */
 public class BeansXmlParser {
 
+    private static final SAXParserFactory PARSER_FACTORY = SAXParserFactory.newInstance();
+
     private static final InputSource[] EMPTY_INPUT_SOURCE_ARRAY = new InputSource[0];
 
+    private static final int BEANS_XML_BUFFER_SIZE = 1024;
+
+    static {
+        PARSER_FACTORY.setValidating(!SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled());
+        PARSER_FACTORY.setNamespaceAware(true);
+    }
+
     private Function<URL, BeansXml> URL_TO_BEANS_XML_FUNCTION = BeansXmlParser.this::parse;
+
+    private SAXParser parser;
 
     private static Function<BeanDeploymentArchive, BeansXml> BEAN_ARCHIVE_TO_BEANS_XML_FUNCTION = archive -> {
         if (archive == null) {
@@ -72,71 +84,79 @@ public class BeansXmlParser {
 
     private static Function<BeansXml, BeansXml> BEANS_XML_IDENTITY_FUNCTION = beansXml -> beansXml;
 
+    public void reset() {
+        this.parser = null;
+    }
+
     public BeansXml parse(final URL beansXml) {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(!SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled());
-        factory.setNamespaceAware(true);
         if (beansXml == null) {
             throw XmlLogger.LOG.loadError("unknown", null);
         }
-        SAXParser parser;
-        try {
-            parser = factory.newSAXParser();
-        } catch (SAXException e) {
-            throw XmlLogger.LOG.configurationError(e);
-        } catch (ParserConfigurationException e) {
-            throw XmlLogger.LOG.configurationError(e);
-        }
-        InputStream beansXmlInputStream = null;
-        try {
-            beansXmlInputStream = beansXml.openStream();
-
-            // quick check of beans.xml to find out version
-            StringBuilder beansXmlTextBuilder = new StringBuilder();
-            try (Reader reader = new BufferedReader(new InputStreamReader(beansXmlInputStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
-                int c = 0;
-                while ((c = reader.read()) != -1) {
-                    beansXmlTextBuilder.append((char) c);
-                }
-            }
-            // close and re-open stream as we already read from it
-            beansXmlInputStream.close();
-            beansXmlInputStream = beansXml.openStream();
-
-            InputSource source = new InputSource(beansXmlInputStream);
-            if (source.getByteStream().available() == 0) {
-                // The file is just acting as a marker file
-                return EMPTY_BEANS_XML;
-            }
-            BeansXmlHandler handler = getHandler(beansXml);
-
+        SAXParser parser = this.parser;
+        if (parser == null) {
             try {
-                parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
-                parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", loadXsds(beansXmlTextBuilder.toString()));
-            } catch (IllegalArgumentException e) {
-                // No op, we just don't validate the XML
-            } catch (SAXNotRecognizedException e) {
-                // No op, we just don't validate the XML
-            } catch (SAXNotSupportedException e) {
-                // No op, we just don't validate the XML
+                synchronized (PARSER_FACTORY) {
+                    parser = PARSER_FACTORY.newSAXParser();
+                }
+            } catch (SAXException e) {
+                throw XmlLogger.LOG.configurationError(e);
+            } catch (ParserConfigurationException e) {
+                throw XmlLogger.LOG.configurationError(e);
             }
+            this.parser = parser;
+        }
 
+        // quick check of beans.xml to find out version
+        StringBuilder beansXmlTextBuilder = new StringBuilder();
+        char[] buffer = new char[BEANS_XML_BUFFER_SIZE];
+        try (Reader reader = new BufferedReader(new InputStreamReader(beansXml.openStream(), StandardCharsets.UTF_8))) {
+            int charsRead = 0;
+            while ((charsRead = reader.read(buffer, 0, buffer.length)) != -1) {
+                beansXmlTextBuilder.append(buffer, 0, charsRead);
+            }
+        } catch (IOException e) {
+            throw XmlLogger.LOG.loadError(beansXml, e);
+        }
+        buffer = null;
+
+        String beansXmlText = beansXmlTextBuilder.toString();
+        if (beansXmlText.isEmpty()) {
+            // The file is just acting as a marker file
+            return EMPTY_BEANS_XML;
+        }
+
+        Reader beansXmlTextReader = new StringReader(beansXmlText);
+
+        InputSource source = new InputSource(beansXmlTextReader);
+
+        BeansXmlHandler handler = getHandler(beansXml);
+
+        try {
+            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
+            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", loadXsds(beansXmlText));
+        } catch (IllegalArgumentException e) {
+            // No op, we just don't validate the XML
+        } catch (SAXNotRecognizedException e) {
+            // No op, we just don't validate the XML
+        } catch (SAXNotSupportedException e) {
+            // No op, we just don't validate the XML
+        }
+        try {
             parser.parse(source, handler);
-
-            return handler.createBeansXml();
         } catch (IOException e) {
             throw XmlLogger.LOG.loadError(beansXml, e);
         } catch (SAXException e) {
             throw XmlLogger.LOG.parsingError(beansXml, e);
         } finally {
-            if (beansXmlInputStream != null) {
+            if (beansXmlTextReader != null) {
                 try {
-                    beansXmlInputStream.close();
+                    beansXmlTextReader.close();
                 } catch (IOException e) {
                     throw new IllegalStateException(e);
                 }
             }
         }
+        return handler.createBeansXml();
     }
 
     public BeansXml parse(Iterable<URL> urls) {
@@ -215,7 +235,9 @@ public class BeansXmlParser {
         if (in == null) {
             return null;
         } else {
-            return new InputSource(in);
+            // The underlying InputStream is closed at the conclusion
+            // of parsing per InputSource's specification
+            return new InputSource(new BufferedInputStream(in));
         }
     }
 
