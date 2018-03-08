@@ -240,8 +240,15 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType) {
         for (BridgeMethod bridgeMethod : processedBridgeMethods) {
             if (bridgeMethod.signature.equals(signature)) {
+                // method signature is equal (name and params) but return type can still differ
                 if (returnType != null) {
-                    return bridgeMethod.returnType.equals(returnType) ? true : false;
+                    if (bridgeMethod.returnType.equals(Object.class)) {
+                        // bridge method with matching signature has type variable as return type, this is a match
+                        return true;
+                    } else {
+                        // in all other cases we compare return types
+                        return bridgeMethod.returnType.equals(returnType);
+                    }
                 }
                 return true;
             }
