@@ -20,7 +20,7 @@ package org.jboss.weld.tests.interceptors.abstractClass.proxy;
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-public abstract class Serviceman<T> {
+public abstract class Serviceman<T extends Vehicle> {
 
     public abstract T repair();
 }
