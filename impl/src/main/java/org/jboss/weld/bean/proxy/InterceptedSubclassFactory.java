@@ -139,7 +139,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
 
                     if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
-                            && !finalMethods.contains(methodSignature) && !bridgeMethodsContainsMethod(processedBridgeMethods, methodSignature, method.getGenericReturnType())) {
+                            && !finalMethods.contains(methodSignature)
+                            && !bridgeMethodsContainsMethod(processedBridgeMethods, methodSignature, method.getGenericReturnType(), Modifier.isAbstract(method.getModifiers()))) {
                         try {
                             final MethodInformation methodInfo = new RuntimeMethodInformation(method);
 
@@ -203,7 +204,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                 for (Method method : c.getMethods()) {
                     MethodSignature signature = new MethodSignatureImpl(method);
                     // For interfaces we do not consider return types when going through processed bridge methods
-                    if (enhancedMethodSignatures.contains(signature) && !bridgeMethodsContainsMethod(processedBridgeMethods, signature, null)) {
+                    if (enhancedMethodSignatures.contains(signature) && !bridgeMethodsContainsMethod(processedBridgeMethods, signature, null, Modifier.isAbstract(method.getModifiers()))) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             if (interceptedMethodSignatures.contains(signature) && Reflections.isDefault(method)) {
@@ -237,13 +238,15 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
     }
 
-    private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType) {
+    private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType, boolean isMethodAbstract) {
         for (BridgeMethod bridgeMethod : processedBridgeMethods) {
             if (bridgeMethod.signature.equals(signature)) {
                 // method signature is equal (name and params) but return type can still differ
                 if (returnType != null) {
-                    if (bridgeMethod.returnType.equals(Object.class)) {
-                        // bridge method with matching signature has type variable as return type, this is a match
+                    if (bridgeMethod.returnType.equals(Object.class) || isMethodAbstract) {
+                        // bridge method with matching signature has Object as return type
+                        // or the method we compare against is abstract meaning the bridge overrides it
+                        // both cases are a match
                         return true;
                     } else {
                         // in all other cases we compare return types

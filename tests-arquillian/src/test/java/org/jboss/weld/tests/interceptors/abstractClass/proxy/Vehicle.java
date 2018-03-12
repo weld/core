@@ -23,6 +23,6 @@ import javax.enterprise.inject.Vetoed;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @Vetoed
-public class Car extends Vehicle {
-
+public class Vehicle {
+    
 }
