@@ -97,7 +97,6 @@ public class WeldBootstrap implements CDI11Bootstrap {
             weldStartup.endInitialization();
             weldStartup = null;
         }
-        this.beansXmlParser.reset();
         return this;
     }
 

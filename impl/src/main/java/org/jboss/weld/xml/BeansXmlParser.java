@@ -73,8 +73,6 @@ public class BeansXmlParser {
 
     private Function<URL, BeansXml> URL_TO_BEANS_XML_FUNCTION = BeansXmlParser.this::parse;
 
-    private SAXParser parser;
-
     private static Function<BeanDeploymentArchive, BeansXml> BEAN_ARCHIVE_TO_BEANS_XML_FUNCTION = archive -> {
         if (archive == null) {
             return null;
@@ -84,26 +82,19 @@ public class BeansXmlParser {
 
     private static Function<BeansXml, BeansXml> BEANS_XML_IDENTITY_FUNCTION = beansXml -> beansXml;
 
-    public void reset() {
-        this.parser = null;
-    }
-
     public BeansXml parse(final URL beansXml) {
         if (beansXml == null) {
             throw XmlLogger.LOG.loadError("unknown", null);
         }
-        SAXParser parser = this.parser;
-        if (parser == null) {
-            try {
-                synchronized (PARSER_FACTORY) {
-                    parser = PARSER_FACTORY.newSAXParser();
-                }
-            } catch (SAXException e) {
-                throw XmlLogger.LOG.configurationError(e);
-            } catch (ParserConfigurationException e) {
-                throw XmlLogger.LOG.configurationError(e);
-            }
-            this.parser = parser;
+        SAXParser parser = null;
+        try {
+          synchronized (PARSER_FACTORY) {
+            parser = PARSER_FACTORY.newSAXParser();
+          }
+        } catch (SAXException e) {
+          throw XmlLogger.LOG.configurationError(e);
+        } catch (ParserConfigurationException e) {
+          throw XmlLogger.LOG.configurationError(e);
         }
 
         // quick check of beans.xml to find out version
