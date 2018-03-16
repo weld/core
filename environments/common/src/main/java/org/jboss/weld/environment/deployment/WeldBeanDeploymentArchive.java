@@ -139,7 +139,7 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @return the "flat" bean deployment archive
      */
     public static <T extends BeanDeploymentArchive> WeldBeanDeploymentArchive merge(CDI11Bootstrap bootstrap, Iterable<T> archives) {
-        BeansXml mergedBeansXml = new BeansXmlParser().mergeExisting(archives, true);
+        BeansXml mergedBeansXml = BeansXmlParser.mergeExisting(archives, true);
         Set<String> beanClasses = new HashSet<String>();
         for (BeanDeploymentArchive archive : archives) {
             beanClasses.addAll(archive.getBeanClasses());

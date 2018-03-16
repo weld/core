@@ -43,8 +43,6 @@ import org.junit.Test;
  */
 public class BeansXmlMergeTest {
 
-    private final BeansXmlParser parser = new BeansXmlParser();
-
     private class FilterStub implements Filter {
         @Override
         public String getName() {
@@ -65,7 +63,7 @@ public class BeansXmlMergeTest {
     @Test
     public void testMergeEmptyBeansXML() {
         final List<BeansXml> beansXMLFiles = Arrays.asList(BeansXml.EMPTY_BEANS_XML, BeansXml.EMPTY_BEANS_XML);
-        final BeansXml mergedBeansXml = parser.mergeExistingDescriptors(beansXMLFiles, false);
+        final BeansXml mergedBeansXml = BeansXmlParser.mergeExistingDescriptors(beansXMLFiles, false);
         assertNotNull(mergedBeansXml);
         assertNotNull(mergedBeansXml.getEnabledAlternativeClasses());
         assertNotNull(mergedBeansXml.getEnabledAlternativeStereotypes());
@@ -82,7 +80,7 @@ public class BeansXmlMergeTest {
         final BeansXml beansXml2 = createBeansXmlTestInstance();
 
         final List<BeansXml> beansXMLFiles = Arrays.asList(beansXml1, beansXml2, BeansXml.EMPTY_BEANS_XML);
-        final BeansXml mergedBeansXml = parser.mergeExistingDescriptors(beansXMLFiles, false);
+        final BeansXml mergedBeansXml = BeansXmlParser.mergeExistingDescriptors(beansXMLFiles, false);
 
         assertNotNull(mergedBeansXml);
         assertNotNull(mergedBeansXml.getEnabledAlternativeClasses());
@@ -107,7 +105,7 @@ public class BeansXmlMergeTest {
         final BeansXml beansXml2 = createBeansXmlTestInstance();
 
         final List<BeansXml> beansXMLFiles = Arrays.asList(beansXml1, beansXml2, BeansXml.EMPTY_BEANS_XML);
-        final BeansXml mergedBeansXml = parser.mergeExistingDescriptors(beansXMLFiles, true);
+        final BeansXml mergedBeansXml = BeansXmlParser.mergeExistingDescriptors(beansXMLFiles, true);
 
         assertNotNull(mergedBeansXml);
         assertNotNull(mergedBeansXml.getEnabledAlternativeClasses());

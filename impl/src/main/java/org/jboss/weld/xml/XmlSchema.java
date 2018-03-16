@@ -16,14 +16,16 @@
  */
 package org.jboss.weld.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.inject.spi.BeanManager;
 
 public enum XmlSchema {
 
-    CDI10("beans_1_0.xsd", BeanManager.class.getClassLoader()), CDI11("beans_1_1.xsd", BeanManager.class.getClassLoader()), CDI20("beans_2_0.xsd", BeanManager.class.getClassLoader()), WELD11("weld_1_1.xsd", BeansXmlParser.class.getClassLoader());
+    CDI10("beans_1_0.xsd", BeanManager.class.getClassLoader()), CDI11("beans_1_1.xsd", BeanManager.class.getClassLoader()), CDI20("beans_2_0.xsd",
+            BeanManager.class.getClassLoader()), WELD11("weld_1_1.xsd", BeansXmlStreamParser.class.getClassLoader());
+
+    static final XmlSchema[] CDI11_SCHEMAS = { CDI10, WELD11, CDI11 };
+
+    static final XmlSchema[] CDI20_SCHEMAS = { CDI10, WELD11, CDI20 };
 
     private final String fileName;
     private final transient ClassLoader classLoader;
@@ -39,18 +41,6 @@ public enum XmlSchema {
 
     public ClassLoader getClassLoader() {
         return classLoader;
-    }
-
-    public static List<XmlSchema> getSchemas(boolean isBeansXml11){
-        List<XmlSchema> result = new ArrayList<>();
-        result.add(CDI10);
-        result.add(WELD11);
-        if (isBeansXml11) {
-            result.add(CDI11);
-        } else {
-            result.add(CDI20);
-        }
-        return result;
     }
 
 }

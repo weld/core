@@ -29,10 +29,13 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.config.SystemPropertiesConfiguration;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.xml.BeansXmlParser;
+import org.jboss.weld.xml.BeansXmlStreamParser;
+import org.jboss.weld.xml.BeansXmlValidator;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -47,11 +50,11 @@ public class WeldBootstrap implements CDI11Bootstrap {
     private WeldStartup weldStartup;
     private WeldRuntime weldRuntime;
 
-    private final BeansXmlParser beansXmlParser;
+    private final BeansXmlValidator beansXmlValidator;
 
     public WeldBootstrap() {
         weldStartup = new WeldStartup();
-        beansXmlParser = new BeansXmlParser();
+        beansXmlValidator = SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled() ? null : new BeansXmlValidator();
     }
 
     @Override
@@ -122,12 +125,15 @@ public class WeldBootstrap implements CDI11Bootstrap {
 
     @Override
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-        return beansXmlParser.parse(urls, removeDuplicates);
+        return BeansXmlParser.merge(urls, this::parse, removeDuplicates);
     }
 
     @Override
     public BeansXml parse(URL url) {
-        return beansXmlParser.parse(url);
+        if (beansXmlValidator != null) {
+            beansXmlValidator.validate(url);
+        }
+        return new BeansXmlStreamParser(url).parse();
     }
 
     @Override
