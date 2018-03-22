@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.Set;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
@@ -54,6 +53,7 @@ import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.event.SyntheticObserverMethod;
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
@@ -99,7 +99,7 @@ public class Observers {
             }
 
             // public void observe (@Observes @Any Object ob){...} - this IS container event observer
-            if (method.getObservedQualifiers().size() == 1 && method.getObservedQualifiers().contains(Any.Literal.INSTANCE)) {
+            if (method.getObservedQualifiers().size() == 1 && method.getObservedQualifiers().contains(AnyLiteral.INSTANCE)) {
                 return true;
             }
         }
