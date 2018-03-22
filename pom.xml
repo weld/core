@@ -51,7 +51,7 @@
         <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
-        <cdi.tck-2-0.version>2.0.3.Final</cdi.tck-2-0.version>
+        <cdi.tck-2-0.version>2.0.4.Final</cdi.tck-2-0.version>
         <classfilewriter.version>1.1.2.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <spotbugs-maven-plugin.version>3.1.1</spotbugs-maven-plugin.version>
