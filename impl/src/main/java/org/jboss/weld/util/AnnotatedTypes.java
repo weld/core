@@ -18,6 +18,7 @@ package org.jboss.weld.util;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,7 +26,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.security.AccessController;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -52,10 +56,12 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Scope;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Class that can take an AnnotatedType and return a unique string
@@ -207,10 +213,24 @@ public class AnnotatedTypes {
      *
      * @param <X>
      * @param annotatedType
-     * @return
+     * @return hash of a signature for a concrete annotated type
      */
     public static <X> String createTypeId(AnnotatedType<X> annotatedType) {
-        return createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
+        String id = createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
+        String hash = hash(id);
+        MetadataLogger.LOG.tracef("Generated AnnotatedType id hash for %s: %s", id, hash);
+        return hash;
+    }
+
+    public static String hash(String id) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            return Base64.getEncoder().encodeToString(md.digest(id.getBytes("UTF-8")));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 not supported", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -220,7 +240,7 @@ public class AnnotatedTypes {
      * @param annotatedType
      * @return
      */
-    public static <X> String createTypeId(Class<X> clazz, Collection<Annotation> annotations, Collection<AnnotatedMethod<? super X>> methods, Collection<AnnotatedField<? super X>> fields, Collection<AnnotatedConstructor<X>> constructors) {
+    private static <X> String createTypeId(Class<X> clazz, Collection<Annotation> annotations, Collection<AnnotatedMethod<? super X>> methods, Collection<AnnotatedField<? super X>> fields, Collection<AnnotatedConstructor<X>> constructors) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(clazz.getName());

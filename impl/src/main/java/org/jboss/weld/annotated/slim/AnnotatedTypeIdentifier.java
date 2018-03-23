@@ -141,13 +141,15 @@ public class AnnotatedTypeIdentifier implements Identifier {
         StringBuilder builder = new StringBuilder();
         builder.append(contextId);
         builder.append(ID_SEPARATOR);
-        builder.append(bdaId);
+        // Bean deployment archive id very often starts with context id
+        builder.append(bdaId != null ? (bdaId.startsWith(contextId) ? bdaId.substring(contextId.length()) : bdaId) : bdaId);
         builder.append(ID_SEPARATOR);
         builder.append(className);
         builder.append(ID_SEPARATOR);
-        builder.append(suffix);
+        // AnnodatedType added by an extension often has suffix starting with class FQCN
+        builder.append(suffix != null ? (suffix.startsWith(className) ? suffix.substring(className.length()) : suffix) : suffix);
         builder.append(ID_SEPARATOR);
-        builder.append(modified);
+        builder.append(modified ? 1 : 0);
         return builder.toString();
     }
 
@@ -156,6 +158,5 @@ public class AnnotatedTypeIdentifier implements Identifier {
         return "AnnotatedTypeIdentifier [contextId=" + contextId + ", bdaId=" + bdaId + ", className=" + className + ", suffix=" + suffix + ", modified="
                 + modified + "]";
     }
-
 
 }

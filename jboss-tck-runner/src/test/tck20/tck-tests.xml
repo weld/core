@@ -26,7 +26,13 @@
             <!-- Issues in the spec -->
 
             <!-- Issues in the TCK -->
-            
+            <!-- CDITCK-614 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.configurators.invalid.ConfiguratorAndSetMethodTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
