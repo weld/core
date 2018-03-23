@@ -46,7 +46,7 @@ import org.xml.sax.SAXParseException;
  */
 public class BeansXmlValidator implements ErrorHandler {
 
-    private static final Source[] EMPTY_SOURCE_ARRAY = new Source[0];
+    private static final StreamSource[] EMPTY_SOURCE_ARRAY = new StreamSource[0];
     private static final String ROOT_ELEMENT_NAME = "beans";
     // See also http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#cvc-elt
     private static final String VALIDATION_ERROR_CODE_CVC_ELT_1 = "cvc-elt.1";
@@ -96,8 +96,8 @@ public class BeansXmlValidator implements ErrorHandler {
         }
         Validator validator = schema.newValidator();
         validator.setErrorHandler(errorHandler);
-        try {
-            validator.validate(new StreamSource(beansXml.toExternalForm()));
+        try (InputStream in = beansXml.openStream()) {
+            validator.validate(new StreamSource(in));
         } catch (SAXException | IOException e) {
             // No-op - validation is optional
         }
@@ -126,7 +126,7 @@ public class BeansXmlValidator implements ErrorHandler {
         throw e;
     }
 
-    private static Source[] loadXsds(XmlSchema[] schemas) {
+    private static StreamSource[] loadXsds(XmlSchema[] schemas) {
         List<Source> xsds = new ArrayList<>();
         for (XmlSchema schema : schemas) {
             Source source = loadXsd(schema.getFileName(), schema.getClassLoader());
@@ -147,11 +147,23 @@ public class BeansXmlValidator implements ErrorHandler {
     }
 
     private Schema initSchema(SchemaFactory factory, XmlSchema[] schemas) {
+        StreamSource[] sources = null;
         try {
-            return factory.newSchema(loadXsds(schemas));
+            sources = loadXsds(schemas);
+            return factory.newSchema(sources);
         } catch (SAXException e) {
             XmlLogger.LOG.warnf("Error initializing schema from %s", Arrays.toString(schemas));
             return null;
+        } finally {
+            if (sources != null) {
+                for (StreamSource source : sources) {
+                    try {
+                        source.getInputStream().close();
+                    } catch (IOException e) {
+                        XmlLogger.LOG.warn("Error closing schema resource", e);
+                    }
+                }
+            }
         }
     }
 
