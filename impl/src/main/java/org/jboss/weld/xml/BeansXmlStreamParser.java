@@ -214,11 +214,11 @@ public class BeansXmlStreamParser {
             } else if (event.isStartElement()) {
                 StartElement element = (StartElement) event;
                 if (isStartElement(element, CLASS)) {
-                    selectedAlternatives.add(
-                            new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml, element.getLocation().getLineNumber()));
+                    selectedAlternatives.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                            element.getLocation().getLineNumber()));
                 } else if (isStartElement(element, STEREOTYPE)) {
-                    selectedAlternativeStereotypes.add(
-                            new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml, element.getLocation().getLineNumber()));
+                    selectedAlternativeStereotypes.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                            element.getLocation().getLineNumber()));
                 }
             }
         }
@@ -236,8 +236,8 @@ public class BeansXmlStreamParser {
             } else if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
                 if (isStartElement(element, CLASS)) {
-                    enabledInterceptors.add(
-                            new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml, element.getLocation().getLineNumber()));
+                    enabledInterceptors.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                            element.getLocation().getLineNumber()));
                 }
             }
         }
@@ -255,8 +255,8 @@ public class BeansXmlStreamParser {
             } else if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
                 if (isStartElement(element, CLASS)) {
-                    enabledDecorators.add(
-                            new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml, element.getLocation().getLineNumber()));
+                    enabledDecorators.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                            element.getLocation().getLineNumber()));
                 }
 
             }
