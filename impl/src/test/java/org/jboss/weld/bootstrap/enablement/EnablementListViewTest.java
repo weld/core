@@ -21,9 +21,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.Extension;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -60,12 +62,18 @@ public class EnablementListViewTest {
         int doublePriority = 300;
         int bigIntegerPriority = 301;
         int floatPriority = (((bigIntegerPriority * Item.ITEM_PRIORITY_SCALE_POWER) - (doublePriority * Item.ITEM_PRIORITY_SCALE_POWER)) / 2)
-                + (doublePriority * Item.ITEM_PRIORITY_SCALE_POWER);
+            + (doublePriority * Item.ITEM_PRIORITY_SCALE_POWER);
 
         list.add(new Item(Integer.class, 20));
         list.add(new Item(String.class, stringPriority));
         list.add(new Item(Double.class, doublePriority));
 
+        // test contains(), index() and lastIndexOf(), note that list is *not* sorted
+        assertTrue(view.contains(Integer.class));
+        assertEquals(2, view.indexOf(Double.class));
+        assertEquals(0, view.lastIndexOf(Integer.class));
+        
+        
         assertEquals(stringPriority, list.get(1).getOriginalPriority());
         assertEquals(stringPriority, list.get(1).getPriority());
         assertEquals(0, list.get(1).getNumberOfScaling());
@@ -98,6 +106,10 @@ public class EnablementListViewTest {
 
         view.set(0, StringBuilder.class);
         assertEquals(stringPriority * Item.ITEM_PRIORITY_SCALE_POWER, list.get(0).getPriority());
+        
+        // remove via List.remove(Object)
+        view.remove(Double.class);
+        assertEquals(4, list.size());
     }
 
     @Test
@@ -145,4 +157,57 @@ public class EnablementListViewTest {
         assertEquals(stringPriority, list.get(1).getPriority());
     }
 
+    @Test
+    public void testMassListOperations() {
+        final List<Item> list = new ArrayList<>();
+        EnablementListView view = new EnablementListView() {
+            @Override
+            protected EnablementListView.ViewType getViewType() {
+                return null;
+            }
+
+            @Override
+            protected Extension getExtension() {
+                return null;
+            }
+
+            @Override
+            protected List<Item> getDelegate() {
+                return list;
+            }
+        };
+        list.add(new Item(Integer.class, 10));
+        list.add(new Item(String.class, 20));
+        list.add(new Item(Double.class, 30));
+        list.add(new Item(Float.class, 50));
+
+        // note that these operations indirectly test List.contains()
+        // try removeAll()
+        Collection<Object> testList = new ArrayList<Object>();
+        testList.add(Integer.class);
+        testList.add(Float.class);
+
+        view.removeAll(testList);
+
+        assertEquals(2, list.size());
+        assertEquals(String.class, list.get(0).getJavaClass());
+        assertEquals(Double.class, list.get(1).getJavaClass());
+
+        // re-add missing items
+        list.add(new Item(Integer.class, 10));
+        list.add(new Item(Float.class, 50));
+
+        // try retainAll()
+        view.retainAll(testList);
+        assertEquals(2, list.size());
+        assertEquals(Integer.class, list.get(0).getJavaClass());
+        assertEquals(Float.class, list.get(1).getJavaClass());
+        
+        // re-add missing items
+        list.add(new Item(String.class, 20));
+        list.add(new Item(Double.class, 30));
+        
+        // try containsAll()
+        assertTrue(view.containsAll(testList));
+    }
 }

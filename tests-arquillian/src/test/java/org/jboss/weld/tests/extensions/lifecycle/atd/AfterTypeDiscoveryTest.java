@@ -59,15 +59,18 @@ public class AfterTypeDiscoveryTest {
 
     @Test
     public void testInitialAlternatives() {
-        assertEquals(extension.getInitialAlternatives().size(), 2);
+        assertEquals(extension.getInitialAlternatives().size(), 3);
         assertEquals(extension.getInitialAlternatives().get(0), AlphaAlternative.class);
         assertEquals(extension.getInitialAlternatives().get(1), BravoAlternative.class);
+        assertEquals(extension.getInitialAlternatives().get(2), EchoAlternative.class);
     }
 
     @Test
     public void testFinalAlternatives() {
         // AlphaAlternative was removed from the list
         assertTrue(beanManager.getBeans(AlphaAlternative.class).isEmpty());
+        // EchoAlternative was removed from the list
+        assertTrue(beanManager.getBeans(EchoAlternative.class).isEmpty());
         // CharlieAlternative was enabled
         assertEquals(1, beanManager.getBeans(CharlieAlternative.class).size());
     }
@@ -76,6 +79,7 @@ public class AfterTypeDiscoveryTest {
     public void testInitialInterceptors() {
         assertTrue(extension.getInitialInterceptors().contains(BravoInterceptor.class));
         assertTrue(extension.getInitialInterceptors().contains(AlphaInterceptor.class));
+        assertTrue(extension.getInitialInterceptors().contains(EchoInterceptor.class));
     }
 
     @Test
@@ -90,14 +94,15 @@ public class AfterTypeDiscoveryTest {
 
     @Test
     public void testInitialDecorators() {
-        assertEquals(extension.getInitialDecorators().size(), 2);
+        assertEquals(extension.getInitialDecorators().size(), 3);
         assertEquals(extension.getInitialDecorators().get(0), AlphaDecorator.class);
         assertEquals(extension.getInitialDecorators().get(1), BravoDecorator.class);
+        assertEquals(extension.getInitialDecorators().get(2), EchoDecorator.class);
     }
 
     @Test
     public void testFinalDecorators(TransactionLogger logger) {
-        assertEquals(logger.log("ping"), "pingbravoalphacharlie");
+        assertEquals("pingbravoalphacharlie", logger.log("ping"));
     }
 
 }

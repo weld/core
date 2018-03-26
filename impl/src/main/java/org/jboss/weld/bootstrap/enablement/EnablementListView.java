@@ -31,6 +31,7 @@ import org.jboss.weld.util.collections.ListView;
 /**
  *
  * @author Martin Kouba
+ * @author Matej Novotny
  *
  */
 abstract class EnablementListView extends ListView<Item, Class<?>> {
@@ -105,7 +106,8 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         if (getExtension() != null) {
             BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), c, REMOVE_OPERATION, getViewType());
         }
-        return getDelegate().removeAll(c);
+        // use impl from AbstractCollection, that one will still invoke our contains() method
+        return super.removeAll(c);
     }
 
     @Override
@@ -113,7 +115,7 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         if (getExtension() != null) {
             BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), o, REMOVE_OPERATION, getViewType());
         }
-        return getDelegate().remove(o);
+        return getDelegate().remove(objectToItemIfNeeded(o));
     }
 
     @Override
@@ -121,7 +123,8 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         if (getExtension() != null) {
             BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), c, RETAIN_OPERATION, getViewType());
         }
-        return getDelegate().retainAll(c);
+        // use impl from AbstractCollection, that one will still invoke our contains() method
+        return super.retainAll(c);
     }
 
     @Override
@@ -187,6 +190,27 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         return new EnablementListViewIterator(getDelegate().listIterator(index));
     }
 
+    @Override
+    /**
+     * Override contains to support Object -> Item conversion
+     */
+    public boolean contains(Object o) {
+        return getDelegate().contains(objectToItemIfNeeded(o));
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return getDelegate().indexOf(objectToItemIfNeeded(o));
+    }
+
+    private Object objectToItemIfNeeded(Object o) {
+        if (o instanceof Item) {
+            return o;
+        } else {
+            return createSource((Class<?>) o, 0);
+        }
+    }
+
     class EnablementListViewIterator extends ListViewIterator {
 
         public EnablementListViewIterator(ListIterator<Item> delegate) {
@@ -232,7 +256,7 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         public void remove() {
             if (getExtension() != null) {
                 BootstrapLogger.LOG
-                        .typeModifiedInAfterTypeDiscovery(getExtension(), getDelegate().get(delegate.nextIndex()).getJavaClass(), REMOVE_OPERATION, getViewType());
+                    .typeModifiedInAfterTypeDiscovery(getExtension(), getDelegate().get(delegate.nextIndex()).getJavaClass(), REMOVE_OPERATION, getViewType());
             }
             delegate.remove();
         }
@@ -240,6 +264,7 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
     }
 
     enum ViewType {
+
         ALTERNATIVES("getAlternatives()"),
         INTERCEPTORS("getInterceptors()"),
         DECORATORS("getDecorators()");
