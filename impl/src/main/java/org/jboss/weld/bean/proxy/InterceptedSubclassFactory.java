@@ -458,6 +458,11 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         return CombinedInterceptorAndDecoratorStackMethodHandler.class;
     }
 
+    @Override
+    protected boolean isUsingProxyInstantiator() {
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     private void createDelegateMethod(ClassFile proxyClassType, Method method, MethodInformation methodInformation) {
         int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC

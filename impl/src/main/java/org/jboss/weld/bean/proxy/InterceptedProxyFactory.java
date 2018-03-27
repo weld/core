@@ -44,7 +44,7 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 
 /**
- * Generates proxies used to apply intercptors to custom bean instances and return values of producer methods.
+ * Generates proxies used to apply interceptors to custom bean instances and return values of producer methods.
  *
  * @author Martin Kouba
  *

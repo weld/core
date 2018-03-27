@@ -351,7 +351,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         try {
             Class<T> proxyClass = getProxyClass();
             boolean hasConstrutedField = SecurityActions.hasDeclaredField(proxyClass, CONSTRUCTED_FLAG_NAME);
-            if (hasConstrutedField != proxyInstantiator.isUsingConstructor()) {
+            if (hasConstrutedField != useConstructedFlag()) {
                 // The proxy class was created with a different type of ProxyInstantiator
                 ProxyInstantiator newInstantiator = ProxyInstantiator.Factory.create(!hasConstrutedField);
                 BeanLogger.LOG.creatingProxyInstanceUsingDifferentInstantiator(proxyClass, newInstantiator, proxyInstantiator);
@@ -536,7 +536,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         try {
             if (getBeanType().isInterface()) {
-                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, !proxyInstantiator.isUsingConstructor());
+                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, !useConstructedFlag());
             } else {
                 boolean constructorFound = false;
                 for (Constructor<?> constructor : AccessController.doPrivileged(new GetDeclaredConstructorsAction(getBeanType()))) {
@@ -546,7 +546,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                         for (int i = 0; i < exceptions.length; ++i) {
                             exceptions[i] = constructor.getExceptionTypes()[i].getName();
                         }
-                        ConstructorUtils.addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, DescriptorUtils.parameterDescriptors(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, !proxyInstantiator.isUsingConstructor());
+                        ConstructorUtils.addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, DescriptorUtils.parameterDescriptors(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, !useConstructedFlag());
                     }
                 }
                 if (!constructorFound) {
@@ -564,7 +564,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         // The field representing the underlying instance or special method
         // handling
         proxyClassType.addField(AccessFlag.PRIVATE, METHOD_HANDLER_FIELD_NAME, getMethodHandlerType());
-        if (proxyInstantiator.isUsingConstructor()) {
+        if (useConstructedFlag()) {
             // field used to indicate that super() has been called
             proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
         }
@@ -709,7 +709,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * bean instance until after the constructor has finished.
      */
     protected void addConstructedGuardToMethodBody(final ClassMethod classMethod, String className) {
-        if (!proxyInstantiator.isUsingConstructor()) {
+        if (!useConstructedFlag()) {
             return;
         }
         // now create the conditional
@@ -928,6 +928,20 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     protected Class<?> getProxySuperclass() {
         return getBeanType().isInterface() ? Object.class : getBeanType();
+    }
+
+    /**
+     * @return {@code true} if {@link ProxyInstantiator} is used to instantiate proxy instances
+     */
+    protected boolean isUsingProxyInstantiator() {
+        return true;
+    }
+
+    /**
+     * @return {@code true} if {@link #CONSTRUCTED_FLAG_NAME} should be used
+     */
+    private boolean useConstructedFlag() {
+        return !isUsingProxyInstantiator() || proxyInstantiator.isUsingConstructor();
     }
 
     private static String getDefaultPackageReason(Class<?> clazz) {
