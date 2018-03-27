@@ -77,4 +77,9 @@ class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
     protected boolean isMethodAccepted(Method method, Class<?> proxySuperclass) {
         return super.isMethodAccepted(method, proxySuperclass) && CommonProxiedMethodFilters.NON_PRIVATE.accept(method, proxySuperclass);
     }
+
+    @Override
+    protected boolean isUsingProxyInstantiator() {
+        return false;
+    }
 }

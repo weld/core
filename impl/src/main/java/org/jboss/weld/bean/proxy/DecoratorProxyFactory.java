@@ -57,10 +57,12 @@ import org.jboss.weld.util.bytecode.StaticMethodInformation;
  * @author Stuart Douglas
  */
 public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
+
     public static final String PROXY_SUFFIX = "DecoratorProxy";
     private static final String INIT_MH_METHOD_NAME = "_initMH";
     private final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private final Field delegateField;
+    private final TargetInstanceBytecodeMethodResolver targetInstanceBytecodeMethodResolver = new TargetInstanceBytecodeMethodResolver();
 
     public DecoratorProxyFactory(String contextId, Class<T> proxyType, WeldInjectionPointAttributes<?, ?> delegateInjectionPoint, Bean<?> bean) {
         super(contextId, proxyType, Collections.<Type>emptySet(), bean);
@@ -175,6 +177,11 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         return PROXY_SUFFIX;
     }
 
+    @Override
+    protected boolean isUsingProxyInstantiator() {
+        return false;
+    }
+
     private void createAbstractMethodCode(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
         if ((delegateField != null) && (!Modifier.isPrivate(delegateField.getModifiers()))) {
             // Call the corresponding method directly on the delegate
@@ -198,7 +205,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // method handler to call getTargetClass to get the correct class type to
                 // resolve the method with, and then resolves this method
 
-                invokeMethodHandler(classMethod, method, true, TARGET_INSTANCE_BYTECODE_METHOD_RESOLVER, staticConstructor);
+                invokeMethodHandler(classMethod, method, true, targetInstanceBytecodeMethodResolver, staticConstructor);
             } else {
                 // if the delegate is private we need to use the method handler
                 createInterceptorBody(classMethod, method, staticConstructor);
@@ -280,7 +287,5 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         }
 
     }
-
-    private final TargetInstanceBytecodeMethodResolver TARGET_INSTANCE_BYTECODE_METHOD_RESOLVER = new TargetInstanceBytecodeMethodResolver();
 
 }
