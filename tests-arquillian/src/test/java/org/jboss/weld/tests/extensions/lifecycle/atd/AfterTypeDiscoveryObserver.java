@@ -65,6 +65,11 @@ public class AfterTypeDiscoveryObserver implements Extension {
         }
         // Enable CharlieAlternative globally
         event.getAlternatives().add(0, CharlieAlternative.class);
+        
+        // Remove alternative, interceptor and decorator via List.remove(Object)
+        event.getAlternatives().remove(EchoAlternative.class);
+        event.getDecorators().remove(EchoDecorator.class);
+        event.getInterceptors().remove(EchoInterceptor.class);
     }
 
     public List<Class<?>> getInitialInterceptors() {
