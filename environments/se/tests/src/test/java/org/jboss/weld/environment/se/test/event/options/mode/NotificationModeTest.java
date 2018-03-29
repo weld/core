@@ -22,9 +22,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,7 +43,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.se.test.event.options.mode.PriorityObservers.PriorityMessage;
 import org.jboss.weld.events.WeldNotificationOptions;
+import org.jboss.weld.events.WeldNotificationOptions.NotificationMode;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +61,28 @@ public class NotificationModeTest {
     public static Archive<?> createTestArchive() {
         return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotificationModeTest.class))
                 .addPackage(NotificationModeTest.class.getPackage())).build();
+    }
+
+    @Test
+    public void testObserversNotifiedSerially() throws InterruptedException {
+        try (WeldContainer container = createWeld()) {
+            CountDownLatch latch = new CountDownLatch(4);
+            Set<String> threadNames = new CopyOnWriteArraySet<>();
+            List<String> observers = new CopyOnWriteArrayList<>();
+            container.event().select(PriorityMessage.class).fireAsync((id) -> {
+                threadNames.add(Thread.currentThread().getName());
+                observers.add(id);
+                latch.countDown();
+            }, NotificationOptions.builder().set(WeldNotificationOptions.MODE, NotificationMode.SERIAL).build());
+            assertTrue(latch.await(2, TimeUnit.SECONDS));
+            // Observers were notified using the same thread
+            assertEquals(1, threadNames.size());
+            assertEquals(4, observers.size());
+            assertEquals("1", observers.get(0));
+            assertEquals("20", observers.get(1));
+            assertEquals("300", observers.get(2));
+            assertEquals("last", observers.get(3));
+        }
     }
 
     @Test
