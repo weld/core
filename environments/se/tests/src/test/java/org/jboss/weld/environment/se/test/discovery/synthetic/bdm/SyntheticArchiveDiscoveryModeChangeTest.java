@@ -65,12 +65,17 @@ public class SyntheticArchiveDiscoveryModeChangeTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDiscoveryModeNone() {
         Weld weld = new Weld();
-        weld.disableDiscovery().setBeanDiscoveryMode(BeanDiscoveryMode.NONE).addPackages(Foo.class.getPackage(), Bar.class.getPackage());
-        try (WeldContainer container = weld.initialize()) {
+        weld.disableDiscovery().addPackages(Foo.class.getPackage(), Bar.class.getPackage());
+        try {
+            weld.setBeanDiscoveryMode(BeanDiscoveryMode.NONE);
+        } catch (IllegalArgumentException e) {
+            // expected, end test
+            return;
         }
+        Assert.fail();
     }
 
 }
