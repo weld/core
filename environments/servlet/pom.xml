@@ -39,7 +39,6 @@
         <undertow.version>1.3.0.Beta1</undertow.version>
         <!-- Testing deps -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <junit.version>4.7</junit.version>
         <htmlunit.version>2.4</htmlunit.version>
     </properties>
 
