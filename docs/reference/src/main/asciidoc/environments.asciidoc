@@ -68,7 +68,7 @@ NOTE: There is quite a special use-case where one more special component must
 be involved. If you want the session context to be active during
 `HttpSessionListener.sessionDestroyed()` invocation when the session
 times out or when all the sessions are destroyed because the deployment
-is being removed then `org.jboss.weld.servlet.WeldTerminalListener` must
+is being removed then `org.jboss.weld.module.web.servlet.WeldTerminalListener` must
 be specified as the last one in your `web.xml`. This listener activates
 the session context before other listeners are invoked (note that the
 listeners are notified in reverse order when a session is being
