@@ -32,6 +32,7 @@
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
         <surefire.plugin.jdk9.args />
+        <jax.artifacts.version>2.3.0</jax.artifacts.version>
 
         <manifest.specification.title>JSR-365 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
