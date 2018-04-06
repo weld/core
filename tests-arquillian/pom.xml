@@ -23,7 +23,7 @@
 
     <properties>
         <!-- Overriding parent version to pass tests on ipv6.
-             TCK tests still use version 2.4 from parent  -->
+        TCK tests still use version 2.4 from parent  -->
         <htmlunit.version>2.9</htmlunit.version>
         <!-- allows local IP address to be overridden for ipv6 testing -->
         <node.address>127.0.0.1</node.address>
@@ -319,6 +319,42 @@
             </build>
         </profile>
 
+        <profile>
+            <!-- auto-activated profile for any JDK 9+ -->
+            <id>jdk9+</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <!--org.jboss.weld.tests.ws.interceptors.WebServiceInterceptorTest requires these as they are no longer--> 
+            <!--available by default in the JDK-->
+            <dependencies>
+                <dependency>
+                    <groupId>javax.xml.ws</groupId>
+                    <artifactId>jaxws-api</artifactId>
+                    <version>${jax.artifacts.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.ws</groupId>
+                    <artifactId>jaxws-ri</artifactId>
+                    <version>${jax.artifacts.version}</version>
+                    <type>zip</type>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-ri</artifactId>
+                    <version>${jax.artifacts.version}</version>
+                    <type>zip</type>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
 </project>
