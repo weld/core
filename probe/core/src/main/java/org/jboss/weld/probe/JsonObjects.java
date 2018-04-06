@@ -1034,7 +1034,9 @@ final class JsonObjects {
         if (!observerMethod.getObservedQualifiers().isEmpty()) {
             JsonArrayBuilder qualifiersBuilder = Json.arrayBuilder();
             for (Annotation qualifier : observerMethod.getObservedQualifiers()) {
-                qualifiersBuilder.add(qualifier.toString());
+                // JDK 8 -> Collector(value=A)
+                // JDK 9+ -> Collector(value="A")
+                qualifiersBuilder.add(qualifier.toString().replace("\"", ""));
             }
             observerBuilder.add(QUALIFIERS, qualifiersBuilder);
         }
