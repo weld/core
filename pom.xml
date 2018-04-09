@@ -84,6 +84,8 @@
         <weld.api.version>3.0.SP2</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>2.1.0.Final</wildfly.arquillian.version>
+        <!--Temportary version override, once alligned in WFLY-Arq adapter, we can remove this-->
+        <jboss.marshalling.override>2.0.5.Final</jboss.marshalling.override>
     </properties>
 
     <modules>
