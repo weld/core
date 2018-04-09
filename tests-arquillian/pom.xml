@@ -258,6 +258,17 @@
                     <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
                     <scope>test</scope>
                 </dependency>
+                <!--Even latest wildfly-arquillian-container-managed uses old marshalling, we want to override that-->
+                <dependency>
+                    <groupId>org.jboss.marshalling</groupId>
+                    <artifactId>jboss-marshalling-river</artifactId>
+                    <version>${jboss.marshalling.override}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.marshalling</groupId>
+                    <artifactId>jboss-marshalling</artifactId>
+                    <version>${jboss.marshalling.override}</version>
+                </dependency>
             </dependencies>
 
             <build>
@@ -275,7 +286,6 @@
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
                                 <additional.vm.args>${surefire.plugin.jdk9.args}${additional.vm.args}</additional.vm.args>
-                                <additional.jboss.args>${additional.jboss.args}</additional.jboss.args>
                                 <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
                             <test>${test}</test>
