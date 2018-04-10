@@ -459,6 +459,7 @@
                 <version>${testng.version}</version>
             </dependency>
 
+            <!--Can be removed once TestNG dependency contains JCommander 1.74 or newer-->
             <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
@@ -809,6 +810,8 @@
         </profile>
     </profiles>
 
+    <!--This repository can be removed once TestNG 6.14.3 or newer and JCommander 1.74 or newer appear in Maven Central-->
+    <!--For some reason they keep most releases on bintray and we need these versions for JDK 10-->
     <repositories>
         <repository>
             <id>jcenter</id>
