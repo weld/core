@@ -79,6 +79,12 @@
             <artifactId>spotbugs-annotations</artifactId>
             <optional>true</optional>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.bcel</groupId>
+            <artifactId>bcel</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- test dependencies -->
 
@@ -98,17 +104,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <!-- This path is not used for default properties files yet -->
-                    <!-- https://issues.jboss.org/browse/LOGTOOL-65 -->
-                    <compilerArguments>
-                        <AgeneratedTranslationFilesPath>${project.build.directory}/generated-translation-files</AgeneratedTranslationFilesPath>
-                    </compilerArguments>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -175,7 +170,7 @@
                             <failOnError>${findbugs.failOnError}</failOnError>
                             <excludeFilterFile>${project.basedir}/findbugsfilter.xml</excludeFilterFile>
                         </configuration>
-                         <executions>
+                        <executions>
                             <execution>
                                 <goals>
                                     <goal>check</goal>

@@ -40,6 +40,7 @@
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
+        <apache.bcel>6.2</apache.bcel>
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.4.0.Final</arquillian.version>
         <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
@@ -105,6 +106,13 @@
     <dependencyManagement>
 
         <dependencies>
+            <!--Optional BCEL classes dependency-->
+            <dependency>
+                <groupId>org.apache.bcel</groupId>
+                <artifactId>bcel</artifactId>
+                <version>${apache.bcel}</version>
+                <optional>true</optional>
+            </dependency>
 
             <dependency>
                 <groupId>commons-httpclient</groupId>
