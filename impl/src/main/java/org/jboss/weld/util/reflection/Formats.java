@@ -42,12 +42,13 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.LineNumberTable;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
-import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoader;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -60,21 +61,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class Formats {
 
+    private static final String BCEL_CLASS = "org.apache.bcel.classfile.ClassParser";
+
     private static final String SNAPSHOT = "SNAPSHOT";
     private static final String NULL = "null";
     private static final String SQUARE_BRACKETS = "[]";
-
-    private static final String BCEL_CLASS_PARSER_FQCN = "com.sun.org.apache.bcel.internal.classfile.ClassParser";
-    private static final String BCEL_JAVA_CLASS_FQCN = "com.sun.org.apache.bcel.internal.classfile.JavaClass";
-    private static final String BCEL_METHOD_FQCN = "com.sun.org.apache.bcel.internal.classfile.Method";
-    private static final String BCEL_LINE_NUMBER_TABLE_FQCN = "com.sun.org.apache.bcel.internal.classfile.LineNumberTable";
-    private static final String BCEL_M_PARSE = "parse";
-    private static final String BCEL_M_GET_METHODS = "getMethods";
-    private static final String BCEL_M_GET_LINE_NUMBER_TABLE = "getLineNumberTable";
-    private static final String BCEL_M_GET_SOURCE_LINE = "getSourceLine";
-    private static final String BCEL_M_GET_NAME = "getName";
-    private static final String BCEL_M_GET_MODIFIERS = "getModifiers";
-    private static final String BCEL_M_GET_SIGNATURE = "getSignature";
 
     private static final String INIT_METHOD_NAME = "<init>";
 
@@ -142,15 +133,9 @@ public class Formats {
             return 0;
         }
 
-        ResourceLoader bcelResourceLoader = WeldClassLoaderResourceLoader.INSTANCE;
-
-        if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, bcelResourceLoader)) {
-            // Try TCCL as a fallback
-            bcelResourceLoader = DefaultResourceLoader.INSTANCE;
-            if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, bcelResourceLoader)) {
-                // Apache BCEL classes not found on the classpath
-                return 0;
-            }
+        // BCEL is an optional dependency, if we cannot load it, simply return 0
+        if (!Reflections.isClassLoadable(BCEL_CLASS, WeldClassLoaderResourceLoader.INSTANCE)) {
+            return 0;
         }
 
         String classFile = member.getDeclaringClass().getName().replace('.', '/');
@@ -166,18 +151,13 @@ public class Formats {
             }
             in = classFileUrl.openStream();
 
-            Class<?> classParserClass = Reflections.loadClass(BCEL_CLASS_PARSER_FQCN, bcelResourceLoader);
-            Class<?> javaClassClass = Reflections.loadClass(BCEL_JAVA_CLASS_FQCN, bcelResourceLoader);
-            Class<?> methodClass = Reflections.loadClass(BCEL_METHOD_FQCN, bcelResourceLoader);
-            Class<?> lntClass = Reflections.loadClass(BCEL_LINE_NUMBER_TABLE_FQCN, bcelResourceLoader);
-
-            Object parser = classParserClass.getConstructor(InputStream.class, String.class).newInstance(in, classFile);
-            Object javaClass = classParserClass.getMethod(BCEL_M_PARSE).invoke(parser);
+            ClassParser cp = new ClassParser(in, classFile);
+            JavaClass javaClass = cp.parse();
 
             // First get all declared methods and constructors
             // Note that in bytecode constructor is translated into a method
-            Object[] methods = (Object[]) javaClassClass.getMethod(BCEL_M_GET_METHODS).invoke(javaClass);
-            Object match = null;
+            org.apache.bcel.classfile.Method[] methods = javaClass.getMethods();
+            org.apache.bcel.classfile.Method match = null;
 
             String signature;
             String name;
@@ -191,19 +171,19 @@ public class Formats {
                 return 0;
             }
 
-            for (Object method : methods) {
+            for (org.apache.bcel.classfile.Method method : methods) {
                 // Matching method must have the same name, modifiers and signature
-                if (methodClass.getMethod(BCEL_M_GET_NAME).invoke(method).equals(name)
-                        && methodClass.getMethod(BCEL_M_GET_MODIFIERS).invoke(method).equals(member.getModifiers())
-                        && methodClass.getMethod(BCEL_M_GET_SIGNATURE).invoke(method).equals(signature)) {
+                if (method.getName().equals(name)
+                        && member.getModifiers() == method.getModifiers()
+                        && method.getSignature().equals(signature)) {
                     match = method;
                 }
             }
             if (match != null) {
                 // If a method is found, try to obtain the optional LineNumberTable attribute
-                Object lineNumberTable = methodClass.getMethod(BCEL_M_GET_LINE_NUMBER_TABLE).invoke(match);
+                LineNumberTable lineNumberTable = match.getLineNumberTable();
                 if (lineNumberTable != null) {
-                    int line = (int) lntClass.getMethod(BCEL_M_GET_SOURCE_LINE, int.class).invoke(lineNumberTable, 0);
+                    int line = lineNumberTable.getSourceLine(0);
                     return line == -1 ? 0 : line;
                 }
             }
