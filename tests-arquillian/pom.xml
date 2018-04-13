@@ -206,10 +206,6 @@
                     <name>!incontainer</name>
                 </property>
             </activation>
-            <properties>
-                <!-- Weld compiles against classfilewriter 1.1.x -->
-                <classfilewriter.version>1.2.1.Final</classfilewriter.version>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
