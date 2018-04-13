@@ -14,9 +14,15 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.lang.reflect.AccessibleObject;
+
+import sun.misc.Unsafe;
+
 public class ThreadLocalTestCase {
+
     @SuppressWarnings("unused")
     @Inject
     private Foo foo;
@@ -37,9 +43,9 @@ public class ThreadLocalTestCase {
 
         try {
             manager.getReference(
-                    testBean,
-                    ThreadLocalTestCase.class,
-                    manager.createCreationalContext(testBean));
+                testBean,
+                ThreadLocalTestCase.class,
+                manager.createCreationalContext(testBean));
         } catch (RuntimeException e) {
             // Ignore, expected
         }
@@ -57,9 +63,9 @@ public class ThreadLocalTestCase {
         Bean<?> testBean = manager.resolve(manager.getBeans(Baz.class));
 
         Baz baz = cast(manager.getReference(
-                testBean,
-                Baz.class,
-                manager.createCreationalContext(testBean)));
+            testBean,
+            Baz.class,
+            manager.createCreationalContext(testBean)));
         baz.getBar().ping();
 
         container.stopContainer();
@@ -76,10 +82,10 @@ public class ThreadLocalTestCase {
     private void verifyThreadLocals() throws Exception {
         Field threadLocalsField = Thread.class.getDeclaredField("threadLocals");
 
-        threadLocalsField.setAccessible(true);
+        makeAccessible(threadLocalsField);
         Field inheritableThreadLocalsField = Thread.class.getDeclaredField("inheritableThreadLocals");
 
-        inheritableThreadLocalsField.setAccessible(true);
+        makeAccessible(inheritableThreadLocalsField);
 
         Thread thread = Thread.currentThread();
 
@@ -87,16 +93,16 @@ public class ThreadLocalTestCase {
         Field size = tlmClass.getDeclaredField("size");
         Field table = tlmClass.getDeclaredField("table");
 
-        size.setAccessible(true);
-        table.setAccessible(true);
+        makeAccessible(size);
+        makeAccessible(table);
 
         verifyThreadLocalValues(
-                extractThreadLocalValues(
-                        threadLocalsField.get(thread), table));
+            extractThreadLocalValues(
+                threadLocalsField.get(thread), table));
 
         verifyThreadLocalValues(
-                extractThreadLocalValues(
-                        inheritableThreadLocalsField.get(thread), table));
+            extractThreadLocalValues(
+                inheritableThreadLocalsField.get(thread), table));
 
     }
 
@@ -105,20 +111,19 @@ public class ThreadLocalTestCase {
             String keyName = String.valueOf(entry.getKey());
             if (keyName != null) {
                 Assert.assertFalse(
-                        keyName.startsWith("org.jboss.weld"),
-                        "ThreadLocal variable with key [" + keyName + "] with value[" + entry.getValue() + "] found");
+                    keyName.startsWith("org.jboss.weld"),
+                    "ThreadLocal variable with key [" + keyName + "] with value[" + entry.getValue() + "] found");
             }
         }
     }
 
     private Map<Object, Object> extractThreadLocalValues(Object map, Field internalTableField) throws NoSuchMethodException,
-            IllegalAccessException, NoSuchFieldException, InvocationTargetException {
+        IllegalAccessException, NoSuchFieldException, InvocationTargetException {
         Map<Object, Object> values = new HashMap<Object, Object>();
         if (map != null) {
-            Method mapRemove = map.getClass().getDeclaredMethod("remove", new Class[]
-                    { ThreadLocal.class });
+            Method mapRemove = map.getClass().getDeclaredMethod("remove", new Class[] { ThreadLocal.class });
 
-            mapRemove.setAccessible(true);
+            makeAccessible(mapRemove);
             Object[] table = (Object[]) (Object[]) internalTableField.get(map);
             if (table != null) {
                 for (Object aTable : table) {
@@ -126,7 +131,7 @@ public class ThreadLocalTestCase {
                         Object key = ((Reference<?>) aTable).get();
                         Field valueField = aTable.getClass().getDeclaredField("value");
 
-                        valueField.setAccessible(true);
+                        makeAccessible(valueField);
                         Object value = valueField.get(aTable);
                         values.put(key, value);
                     }
@@ -134,5 +139,22 @@ public class ThreadLocalTestCase {
             }
         }
         return values;
+    }
+
+    /**
+     * JDK 9+ doesn't allow us to call setAccessible() directly, hence we hack it with Unsafe 
+     */
+    private void makeAccessible(AccessibleObject ao) throws NoSuchFieldException, IllegalAccessException {
+        // get Unsafe singleton instance
+        Field singleoneInstanceField = Unsafe.class.getDeclaredField("theUnsafe");
+        singleoneInstanceField.setAccessible(true);
+        Unsafe theUnsafe = (Unsafe) singleoneInstanceField.get(null);
+
+        // get the offset of the override field in AccessibleObject
+        long overrideOffset = theUnsafe.objectFieldOffset(AccessibleObject.class.getDeclaredField("override"));
+
+        // make both accessible
+        theUnsafe.putBoolean(ao, overrideOffset, true);
+        theUnsafe.putBoolean(ao, overrideOffset, true);
     }
 }
