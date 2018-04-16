@@ -11,7 +11,7 @@
     <container qualifier="wildfly-8" default="true">
         <configuration>
             <property name="serverConfig">standalone-full.xml</property>
-            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true -Dee8.preview.mode=${ee8.preview.mode} ${additional.vm.args} ${jacoco.agent}</property>
+            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true -Dee8.preview.mode=${ee8.preview.mode} ${illegal.access.option} ${additional.vm.args} ${jacoco.agent}</property>
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="startupTimeoutInSeconds">${server.startup.timeout:60}</property>
