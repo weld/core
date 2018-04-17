@@ -74,7 +74,6 @@ import org.jboss.weld.util.bytecode.ConstructorUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Reflections;
@@ -127,33 +126,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     static final String SIGNED = "the class is signed";
 
     private static final Set<ProxiedMethodFilter> METHOD_FILTERS;
-
-    // class access flags are configurable since classfilewriter 1.1.2.Final
-    // with older versions we silently fall back to default access flags (no SYNTHETIC support)
-    private static final boolean CONFIGURABLE_ACCESS_FLAGS;
-
-    // classloader is configurable since classfilewriter 1.2.0.Beta1
-    // with older versions we silently fall back - no default method interception support
-    private static final Constructor<ClassFile> CONFIGURABLE_CLASSLOADER_CONSTRUCTOR;
-
-    static {
-        Constructor<ClassFile> temp = null;
-        try {
-            temp = SecurityActions.getConstructor(ClassFile.class, String.class, int.class, String.class, ClassLoader.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
-        } catch (NoSuchMethodException ignored) {
-        }
-        if (temp != null) {
-            CONFIGURABLE_CLASSLOADER_CONSTRUCTOR = temp;
-            CONFIGURABLE_ACCESS_FLAGS = true;
-        } else {
-            try {
-                temp = SecurityActions.getConstructor(ClassFile.class, String.class, int.class, String.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
-            } catch (NoSuchMethodException ignored) {
-            }
-            CONFIGURABLE_CLASSLOADER_CONSTRUCTOR = null;
-            CONFIGURABLE_ACCESS_FLAGS = temp != null;
-        }
-    }
 
     static {
         Set<ProxiedMethodFilter> filters = new HashSet<>();
@@ -501,13 +473,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
         try {
-            if (CONFIGURABLE_CLASSLOADER_CONSTRUCTOR != null) {
-                return CONFIGURABLE_CLASSLOADER_CONSTRUCTOR.newInstance(name, accessFlags, superclass, classLoader, interfaces);
-            } else if (CONFIGURABLE_ACCESS_FLAGS) {
-                return new ClassFile(name, accessFlags, superclass, interfaces);
-            } else {
-                return new ClassFile(name, superclass, interfaces);
-            }
+            return new ClassFile(name, accessFlags, superclass, classLoader, interfaces);
         } catch (Exception e) {
             throw BeanLogger.LOG.unableToCreateClassFile(name, e.getCause());
         }

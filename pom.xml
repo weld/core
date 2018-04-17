@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>38</version>
+        <version>39</version>
     </parent>
 
     <prerequisites>
@@ -26,8 +26,6 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <!--TODO - update in Weld Parent-->
-        <compiler.version>3.7.0</compiler.version>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <!-- Travis CI build workaround -->
         <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
@@ -43,7 +41,7 @@
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
-        <apache.bcel>6.2</apache.bcel>
+        <apache.bcel.version>6.2</apache.bcel.version>
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.4.0.Final</arquillian.version>
         <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
@@ -59,7 +57,6 @@
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.4.Final</cdi.tck-2-0.version>
-        <!--1.2.2.Final is absolute minimum to eliminate IllegalAccess warning in JDK9+-->
         <classfilewriter.version>1.2.2.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <spotbugs-maven-plugin.version>3.1.1</spotbugs-maven-plugin.version>
@@ -113,7 +110,7 @@
             <dependency>
                 <groupId>org.apache.bcel</groupId>
                 <artifactId>bcel</artifactId>
-                <version>${apache.bcel}</version>
+                <version>${apache.bcel.version}</version>
                 <optional>true</optional>
             </dependency>
 
