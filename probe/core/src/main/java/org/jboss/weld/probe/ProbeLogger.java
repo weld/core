@@ -120,4 +120,8 @@ public interface ProbeLogger extends BasicLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 21, value = "\n=====================================\n Weld - Deployment Validation: FAILED \n ------------------------------------\n HTML report generated to: \n\n {0} \n=====================================", format = Format.MESSAGE_FORMAT)
     void validationReportExported(Object path);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 22, value = "Probe was not allowed to use customized Annotation toString(), falling back to JDK's default Annotation.toString(). The exception was: {0}", format = Format.MESSAGE_FORMAT)
+    void cannotUseUnifiedAnnotationToStringConversion(Object path);
 }

@@ -19,6 +19,10 @@ package org.jboss.weld.probe;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -41,6 +45,7 @@ import org.junit.Test;
 /**
  *
  * @author Martin Kouba
+ * @author Matej Novotny
  */
 public class JsonObjectsTest {
 
@@ -50,6 +55,14 @@ public class JsonObjectsTest {
         assertEquals("public <T> T hello(T, Integer)", JsonObjects.annotatedMethodToString(getFooAnnotatedMethod("hello"), Foo.class).trim());
         assertEquals("int getAge(String)", JsonObjects.annotatedMethodToString(getFooAnnotatedMethod("getAge"), Foo.class).trim());
         assertEquals("static String[] getArray()", JsonObjects.annotatedMethodToString(getFooAnnotatedMethod("getArray"), Foo.class).trim());
+    }
+
+    @Test
+    public void testAnnotatationToStringConversion() throws NoSuchMethodException {
+        String expectedOutcome = "@org.jboss.weld.probe.JsonObjectsTest$SomeAnnotation(someInt=1, someString=\"bar\", someStringArray={\"charlie\", \"delta\"})";
+        assertEquals(expectedOutcome, JsonObjects.annotationToString(getBarTypeAnnotation()));
+        assertEquals(expectedOutcome, JsonObjects.annotationToString(getBarMethodParamAnnotation()));
+        assertEquals(expectedOutcome, JsonObjects.annotationToString(getBarMethodAnnotation()));
     }
 
     private static AnnotatedMethod<Foo> getFooAnnotatedMethod(String name) {
@@ -224,4 +237,42 @@ public class JsonObjectsTest {
 
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+    private static @interface SomeAnnotation {
+
+        String someString();
+
+        int someInt();
+
+        String[] someStringArray();
+    }
+
+    @SuppressWarnings("unused")
+    @SomeAnnotation(
+        someString = "bar", someInt = 1, someStringArray = { "charlie", "delta" })
+    private static class Bar {
+
+        @SomeAnnotation(
+            someString = "bar", someInt = 1, someStringArray = { "charlie", "delta" })
+        public void hello() {
+
+        }
+
+        public void hello2(@SomeAnnotation(someString = "bar", someInt = 1, someStringArray = { "charlie", "delta" }) String s) {
+
+        }
+    }
+
+    private static Annotation getBarTypeAnnotation() {
+        return Bar.class.getAnnotation(SomeAnnotation.class);
+    }
+
+    private static Annotation getBarMethodAnnotation() throws NoSuchMethodException {
+        return Bar.class.getDeclaredMethod("hello").getAnnotation(SomeAnnotation.class);
+    }
+
+    private static Annotation getBarMethodParamAnnotation() throws NoSuchMethodException {
+        return Bar.class.getDeclaredMethod("hello2", String.class).getParameters()[0].getAnnotation(SomeAnnotation.class);
+    }
 }
