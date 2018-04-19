@@ -87,8 +87,8 @@ public class ProbeObserversTest extends ProbeIntegrationTest {
 
         //check observers
         assertTrue(beanClasses.contains(ApplicationScopedObserver.class.getName()));
-        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=A)")));
-        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=B)")));
+        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=\"A\")")));
+        assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=\"B\")")));
         assertTrue(txPhases.contains(TransactionPhase.BEFORE_COMPLETION.name()));
 
         JsonArray observersData = observers.getJsonArray(DATA);
@@ -98,7 +98,7 @@ public class ProbeObserversTest extends ProbeIntegrationTest {
         // find observer only with Collector qualifier with value "B"
         Optional<JsonObject> observerWithQualifier = jsonObservers.stream()
                 .filter((JsonObject o) -> o.getJsonArray(QUALIFIERS) != null && o.getJsonArray(QUALIFIERS).size() == 1 && o.getJsonArray(QUALIFIERS)
-                        .getString(0).equals("@" + Collector.class.getName().concat("(value=B)"))).findAny();
+                        .getString(0).equals("@" + Collector.class.getName().concat("(value=\"B\")"))).findAny();
 
         assertEquals(Reception.ALWAYS.name(), observerWithQualifier.get().getString(RECEPTION));
         assertEquals(String.class.getName(), observerWithQualifier.get().getString(OBSERVED_TYPE));

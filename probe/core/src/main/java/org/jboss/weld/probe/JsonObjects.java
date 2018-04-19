@@ -127,6 +127,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -370,7 +371,7 @@ final class JsonObjects {
                 continue;
             }
             configBuilder.add(
-                    Json.objectBuilder().add(NAME, key.get()).add(DEFAULT_VALUE, defaultValue.toString()).add(VALUE, value.toString()).add(DESCRIPTION, desc));
+                Json.objectBuilder().add(NAME, key.get()).add(DEFAULT_VALUE, defaultValue.toString()).add(VALUE, value.toString()).add(DESCRIPTION, desc));
         }
         deploymentBuilder.add(CONFIGURATION, configBuilder);
 
@@ -578,9 +579,9 @@ final class JsonObjects {
                 int priorityValue = annotationApi.getPriority(priority);
                 enablementBuilder.add(PRIORITY, priorityValue);
                 enablementBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priorityValue).toString());
-                if(!probe.getLocalEnablementOfBean(bean.getBeanClass()).isEmpty()){
+                if (!probe.getLocalEnablementOfBean(bean.getBeanClass()).isEmpty()) {
                     enablementBuilder.add(WARNING, WARNING_CONFLICTING_ENABLEMENT);
-                    JsonArrayBuilder conflictingBdas =  Json.arrayBuilder();
+                    JsonArrayBuilder conflictingBdas = Json.arrayBuilder();
                     for (String bdaId : probe.getLocalEnablementOfBean(bean.getBeanClass())) {
                         conflictingBdas.add(createSimpleBdaJson(bdaId));
                     }
@@ -592,8 +593,8 @@ final class JsonObjects {
                 for (BeanManagerImpl manager : beanManagers) {
                     ModuleEnablement enablement = manager.getEnabled();
                     if ((BeanKind.INTERCEPTOR.equals(kind) && enablement.isInterceptorEnabled(bean.getBeanClass()))
-                            || (BeanKind.DECORATOR.equals(kind) && enablement.isDecoratorEnabled(bean.getBeanClass()))
-                            || isSelectedAlternative(enablement, bean)) {
+                        || (BeanKind.DECORATOR.equals(kind) && enablement.isDecoratorEnabled(bean.getBeanClass()))
+                        || isSelectedAlternative(enablement, bean)) {
                         bdasBuilder.add(createSimpleBdaJson(manager.getId()));
                     }
                 }
@@ -607,7 +608,7 @@ final class JsonObjects {
             Interceptor<?> interceptor = (Interceptor<?>) bean;
             JsonArrayBuilder bindings = Json.arrayBuilder(true);
             for (Annotation binding : interceptor.getInterceptorBindings()) {
-                bindings.add(binding.toString());
+                bindings.add(annotationToString(binding));
             }
             beanBuilder.add(BINDINGS, bindings);
         }
@@ -642,7 +643,7 @@ final class JsonObjects {
                 if (!classInterceptorBindings.isEmpty()) {
                     JsonArrayBuilder bindingsBuilder = Json.arrayBuilder();
                     for (Annotation binding : Components.getSortedProbeComponetAnnotationCandidates(classInterceptorBindings)) {
-                        bindingsBuilder.add(Json.objectBuilder().add(VALUE, binding.toString()).add(PROBE_COMPONENT, Components.isProbeAnnotation(binding)));
+                        bindingsBuilder.add(Json.objectBuilder().add(VALUE, annotationToString(binding)).add(PROBE_COMPONENT, Components.isProbeAnnotation(binding)));
                     }
                     beanBuilder.add(CLASS_INTERCEPTOR_BINDINGS, bindingsBuilder);
                 }
@@ -692,8 +693,8 @@ final class JsonObjects {
     }
 
     /**
-     * The simple representation consists of the generated id, {@link Components.BeanKind}, {@link Bean#getBeanClass()} and bean archive id (if not a built-in
-     * bean).
+     * The simple representation consists of the generated id, {@link Components.BeanKind}, {@link Bean#getBeanClass()} and bean
+     * archive id (if not a built-in bean).
      *
      * @param bean
      * @param probe
@@ -730,7 +731,7 @@ final class JsonObjects {
         if (filter.getClassAvailableActivations() != null && !filter.getClassAvailableActivations().isEmpty()) {
             for (Metadata<ClassAvailableActivation> metadata : filter.getClassAvailableActivations()) {
                 activationsBuilder.add(Json.objectBuilder().add(INVERTED, metadata.getValue().isInverted()).add(CLASS_AVAILABILITY,
-                        metadata.getValue().getClassName()));
+                    metadata.getValue().getClassName()));
             }
         }
         if (filter.getSystemPropertyActivations() != null && !filter.getSystemPropertyActivations().isEmpty()) {
@@ -849,7 +850,7 @@ final class JsonObjects {
             if (lazilyFetched != null && !Components.isBuiltinBeanButNotExtension(lazilyFetched)) {
                 JsonObjectBuilder lazilyFetchedDependency = createDependency(lazilyFetched, null, probe);
                 lazilyFetchedDependency.add(REQUIRED_TYPE, Formats.formatType(Components.getFacadeType(dependency.getInjectionPoint()), false)).add(QUALIFIERS,
-                        createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
+                    createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
                 lazilyFetchedDependency.add(INFO, INFO_FETCHING_LAZILY);
                 lazilyFetchedDependency.add(IS_POTENTIAL, true);
                 builtInDependency.add(type, Json.arrayBuilder().add(lazilyFetchedDependency));
@@ -874,7 +875,7 @@ final class JsonObjects {
             // Workaround for built-in beans - these are identified by the set of types
             if (Components.isBuiltinBeanButNotExtension(dependent.getBean())) {
                 dependentsBuilder
-                        .add(createDependency(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependent.getBean())), dependent, probe));
+                    .add(createDependency(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependent.getBean())), dependent, probe));
                 continue;
             }
             // Handle circular dependencies
@@ -1034,9 +1035,7 @@ final class JsonObjects {
         if (!observerMethod.getObservedQualifiers().isEmpty()) {
             JsonArrayBuilder qualifiersBuilder = Json.arrayBuilder();
             for (Annotation qualifier : observerMethod.getObservedQualifiers()) {
-                // JDK 8 -> Collector(value=A)
-                // JDK 9+ -> Collector(value="A")
-                qualifiersBuilder.add(qualifier.toString().replace("\"", ""));
+                qualifiersBuilder.add(annotationToString(qualifier));
             }
             observerBuilder.add(QUALIFIERS, qualifiersBuilder);
         }
@@ -1044,7 +1043,7 @@ final class JsonObjects {
             ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
             observerBuilder.add(DECLARING_BEAN, createSimpleBeanJson(observerMethodImpl.getDeclaringBean(), probe));
         }
-        if(isUnrestrictedProcessAnnotatedTypeObserver(observerMethod)) {
+        if (isUnrestrictedProcessAnnotatedTypeObserver(observerMethod)) {
             observerBuilder.add(DESCRIPTION, WARNING_UNRESTRICTED_PAT_OBSERVER);
         }
         // WELD-2452 to be removed once WFLY is EE 8 certified
@@ -1063,7 +1062,7 @@ final class JsonObjects {
             ContainerLifecycleEventObserverMethod<?> containerLifecycleObserverMethod = (ContainerLifecycleEventObserverMethod<?>) observerMethod;
             Class<?> rawObserverType = Reflections.getRawType(containerLifecycleObserverMethod.getObservedType());
             if ((rawObserverType.equals(ProcessAnnotatedType.class) || rawObserverType.equals(ProcessSyntheticAnnotatedType.class))
-                    && containerLifecycleObserverMethod.getRequiredAnnotations().isEmpty()) {
+                && containerLifecycleObserverMethod.getRequiredAnnotations().isEmpty()) {
                 Type eventType = containerLifecycleObserverMethod.getObservedType();
                 Type[] typeArguments;
                 if (eventType instanceof ParameterizedType) {
@@ -1120,7 +1119,7 @@ final class JsonObjects {
                     value = toString(e);
                 }
                 propertiesBuilder.add(Json.objectBuilder().add(NAME, propertyDescriptor.getDisplayName()).add(VALUE,
-                        value != null ? Strings.abbreviate(value.toString(), CONTEXTUAL_INSTANCE_PROPERTY_VALUE_LIMIT) : "null"));
+                    value != null ? Strings.abbreviate(value.toString(), CONTEXTUAL_INSTANCE_PROPERTY_VALUE_LIMIT) : "null"));
             }
             builder.add(PROPERTIES, propertiesBuilder);
             return builder.build();
@@ -1208,7 +1207,7 @@ final class JsonObjects {
                 builder = Json.objectBuilder(true);
             }
             builder.add(REQUIRED_TYPE, Formats.formatType(dependency.getInjectionPoint().getType(), false)).add(QUALIFIERS,
-                    createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
+                createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
         }
         return builder;
     }
@@ -1236,7 +1235,7 @@ final class JsonObjects {
             } else if (Default.class.equals(qualifier.annotationType())) {
                 builder.add(simplifiedAnnotation(qualifier));
             } else {
-                builder.add(qualifier.toString());
+                builder.add(annotationToString(qualifier));
             }
         }
         return builder;
@@ -1347,7 +1346,6 @@ final class JsonObjects {
         return builder;
     }
 
-
     static String simplifiedScope(Class<? extends Annotation> scope) {
         return "@" + (Components.isBuiltinScope(scope) ? scope.getSimpleName() : scope.getName());
     }
@@ -1360,4 +1358,86 @@ final class JsonObjects {
         return Components.isProbeComponent(clazz) ? builder.add(PROBE_COMPONENT, true) : builder;
     }
 
+    /**
+     * JDK version-agnostic Annotation -> String convertor. Used because of slight differences between JDK 8 and 9+ toString()
+     * implementations. We are trying to achieve something like this:
+     *
+     * <pre>
+     *   &#064;my.own.ann.NameAndInfo(first="Alfred", middle="E.", last="Neuman", age=5)
+     * </pre>
+     *
+     * In case of any exception (Security, IllegalAccess,...) this method uses default Annotation.toString()
+     */
+    static String annotationToString(Annotation annotation) {
+        StringBuilder string = new StringBuilder();
+        string.append('@').append(annotation.annotationType().getName()).append('(');
+
+        String classAffix = ".class";
+        String quotationMark = "\"";
+        try {
+            List<Method> methods = Arrays.asList(annotation.annotationType().getDeclaredMethods());
+            methods.sort(new Comparator<Method>() {
+
+                @Override
+                public int compare(Method o1, Method o2) {
+                    return o1.toGenericString().compareTo(o2.toGenericString());
+                }
+            });
+            for (int i = 0; i < methods.size(); i++) {
+                string.append(methods.get(i).getName()).append('=');
+                Object value = methods.get(i).invoke(annotation);
+                if (value instanceof boolean[]) {
+                    appendInBraces(string, Arrays.toString((boolean[]) value));
+                } else if (value instanceof byte[]) {
+                    appendInBraces(string, Arrays.toString((byte[]) value));
+                } else if (value instanceof short[]) {
+                    appendInBraces(string, Arrays.toString((short[]) value));
+                } else if (value instanceof int[]) {
+                    appendInBraces(string, Arrays.toString((int[]) value));
+                } else if (value instanceof long[]) {
+                    appendInBraces(string, Arrays.toString((long[]) value));
+                } else if (value instanceof float[]) {
+                    appendInBraces(string, Arrays.toString((float[]) value));
+                } else if (value instanceof double[]) {
+                    appendInBraces(string, Arrays.toString((double[]) value));
+                } else if (value instanceof char[]) {
+                    appendInBraces(string, Arrays.toString((char[]) value));
+                } else if (value instanceof String[]) {
+                    String[] strings = (String[]) value;
+                    String[] quoted = new String[strings.length];
+                    for (int j = 0; j < strings.length; j++) {
+                        quoted[j] = quotationMark + strings[j] + quotationMark;
+                    }
+                    appendInBraces(string, Arrays.toString(quoted));
+                } else if (value instanceof Class<?>[]) {
+                    Class<?>[] classes = (Class<?>[]) value;
+                    String[] names = new String[classes.length];
+                    for (int j = 0; j < classes.length; j++) {
+                        names[j] = classes[j].getName() + classAffix;
+                    }
+                    appendInBraces(string, Arrays.toString(names));
+                } else if (value instanceof Object[]) {
+                    appendInBraces(string, Arrays.toString((Object[]) value));
+                } else if (value instanceof String) {
+                    string.append('"').append(value).append('"');
+                } else if (value instanceof Class<?>) {
+                    string.append(((Class<?>) value).getName()).append(classAffix);
+                } else {
+                    string.append(value);
+                }
+                if (i < methods.size() - 1) {
+                    string.append(", ");
+                }
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException ex) {
+            // we cannot do it our way, revert to default Annotation.toString()
+            ProbeLogger.LOG.cannotUseUnifiedAnnotationToStringConversion(ex);
+            return annotation.toString();
+        }
+        return string.append(')').toString();
+    }
+
+    private static void appendInBraces(StringBuilder buf, String s) {
+        buf.append('{').append(s.substring(1, s.length() - 1)).append('}');
+    }
 }
