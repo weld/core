@@ -854,6 +854,25 @@ NOTE: Probe classes reside in a separate module with the following coordinates: 
 
 NOTE: Probe REST API is implemented using a servlet filter. However, not all servlet containers trigger filters when recieving a request to a path which is not mapped to any servlet (although most of them define a "default" servlet for each application). In this case, an integrator should register a "dummy" servlet (its methods will never be invoked) mapped to the URL pattern `/weld-probe/*`.
 
+[[allow-optimized-cleanup]]
+==== Optimized cleanup after bootstrap
+
+Weld can perfom additional cleanup operations after bootstrap, in order to conserve resources.
+See for example <<remove-unused-beans>>.
+However, this feature is disabled by default.
+An integrator may enable this feature provided the following requirements are met:
+
+* `org.jboss.weld.bootstrap.api.Bootstrap#endInitialization()` *must* be called after all EE components which support injection are installed (that means all relevant `ProcessInjectionTarget` events were already fired)
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.bootstrap.allowOptimizedCleanup` |`false`| If set to `true` Weld is allowed to perform efficient cleanup and further optimizations after bootstrap
+|=======================================================================
+
+NOTE: This property can only be set by integrators through <<external_config>>.
+
 === Migration notes
 
 This part of the appendix documents the changes in Weld across major and
