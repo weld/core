@@ -48,7 +48,7 @@ public class HttpSessionDestructionContext extends AbstractBoundContext<HttpSess
     public boolean associate(HttpSession session) {
         if (getBeanStore() == null) {
             // Don't reassociate
-            setBeanStore(new EagerSessionBeanStore(namingScheme, session));
+            setBeanStore(new EagerSessionBeanStore(namingScheme, session, getServiceRegistry()));
             return true;
         } else {
             return false;

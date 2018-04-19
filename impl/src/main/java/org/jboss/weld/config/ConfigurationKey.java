@@ -273,6 +273,13 @@ public enum ConfigurationKey {
     @Description("Allows the alternatives defined in beans.xml to be vetoed.")
     ALLOW_VETOED_ALTERNATIVES("org.jboss.weld.bootstrap.allowExcludedAlternatives", false),
 
+    /**
+     * If set to true then when a contextual reference for a @SessionScoped or @ConversationScoped bean is obtained from a context backed by an HTTP session
+     * the instance is set again using HttpSession.setAttribute(). This allows to trigger session replication in some application servers.
+     */
+    @Description("If set to true then when a contextual reference for a @SessionScoped or @ConversationScoped bean is obtained from a context backed by an HTTP session the instance is set again using HttpSession.setAttribute(). This allows to trigger session replication in some application servers.")
+    RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS("org.jboss.weld.context.resetHttpSessionAttributeOnBeanAccess", false),
+
     ;
 
     /**

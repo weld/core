@@ -56,12 +56,12 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
 
     @Override
     protected BoundBeanStore createRequestBeanStore(NamingScheme namingScheme, HttpServletRequest request) {
-        return new LazySessionBeanStore(request, namingScheme, false);
+        return new LazySessionBeanStore(request, namingScheme, false, getServiceRegistry());
     }
 
     @Override
     protected BoundBeanStore createSessionBeanStore(NamingScheme namingScheme, HttpSession session) {
-        return new EagerSessionBeanStore(namingScheme, session);
+        return new EagerSessionBeanStore(namingScheme, session, getServiceRegistry());
     }
 
     @Override
