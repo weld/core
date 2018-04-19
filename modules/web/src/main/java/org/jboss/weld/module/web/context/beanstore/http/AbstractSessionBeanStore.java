@@ -7,6 +7,9 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpSession;
 
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.contexts.beanstore.AttributeBeanStore;
 import org.jboss.weld.contexts.beanstore.LockStore;
@@ -34,13 +37,16 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
 
     protected abstract HttpSession getSession(boolean create);
 
+    private final boolean resetHttpSessionAttributeOnBeanAccess;
+
     /**
      *
      * @param namingScheme
      * @param attributeLazyFetchingEnabled
      */
-    public AbstractSessionBeanStore(NamingScheme namingScheme, boolean attributeLazyFetchingEnabled) {
+    public AbstractSessionBeanStore(NamingScheme namingScheme, boolean attributeLazyFetchingEnabled, ServiceRegistry serviceRegistry) {
         super(namingScheme, attributeLazyFetchingEnabled);
+        this.resetHttpSessionAttributeOnBeanAccess = serviceRegistry.get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS);
     }
 
     protected Iterator<String> getAttributeNames() {
@@ -80,6 +86,9 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         if (instance == null && isAttached()) {
             String prefixedId = getNamingScheme().prefix(id);
             instance = cast(getAttribute(prefixedId));
+        }
+        if (resetHttpSessionAttributeOnBeanAccess){
+            put(id, instance);
         }
         return instance;
     }
