@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -171,9 +170,8 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private Map<Class<?>, Integer> getGlobalAlternativeMap() {
         if (cachedAlternativeMap == null || dirty) {
             Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
-            for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext(); ) {
-                Item item = iterator.next();
-                map.put(item.getJavaClass(), iterator.previousIndex());
+            for (Item item : alternatives) {
+                map.put(item.getJavaClass(), item.getPriority());
             }
             cachedAlternativeMap = ImmutableMap.copyOf(map);
         }
