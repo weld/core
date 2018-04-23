@@ -330,6 +330,14 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
            return true;
        }
 
-   }
+       @Override
+       public String toString() {
+           return "Configurator observer method [Bean class = " + getBeanClass()
+               + ", type = " + getObservedType()
+               + ", qualifiers =" + Formats.formatAnnotations(getObservedQualifiers())
+               + ", priority =" + getPriority() + ", async =" + isAsync()
+               + ", reception =" + getReception() + ", transaction phase =" + getTransactionPhase() + "]";
+       }
 
+   }
 }

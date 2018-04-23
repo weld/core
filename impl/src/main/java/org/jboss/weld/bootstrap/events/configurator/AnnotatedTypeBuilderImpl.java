@@ -37,6 +37,7 @@ import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  *
@@ -125,6 +126,11 @@ class AnnotatedTypeBuilderImpl<T> {
             return constructors;
         }
 
+        @Override
+        public String toString() {
+            return Formats.formatAnnotatedType(delegate);
+        }
+
     }
 
     static class AnnotatedMethodImpl<X> extends ForwardingAnnotatedMethod<X> {
@@ -166,6 +172,11 @@ class AnnotatedTypeBuilderImpl<T> {
             return annotations.isAnnotationPresent(annotationType);
         }
 
+        @Override
+        public String toString() {
+            return Formats.formatAnnotatedMethod(delegate);
+        }
+
     }
 
     static class AnnotatedFieldImpl<X> extends ForwardingAnnotatedField<X> {
@@ -199,6 +210,10 @@ class AnnotatedTypeBuilderImpl<T> {
             return annotations.isAnnotationPresent(annotationType);
         }
 
+        @Override
+        public String toString() {
+            return Formats.formatAnnotatedField(delegate);
+        }
     }
 
     static class AnnotatedConstructorImpl<X> extends ForwardingAnnotatedConstructor<X> {
@@ -240,6 +255,10 @@ class AnnotatedTypeBuilderImpl<T> {
             return annotations.isAnnotationPresent(annotationType);
         }
 
+        @Override
+        public String toString() {
+            return Formats.formatAnnotatedConstructor(delegate);
+        }
     }
 
     static class AnnotatedParameterImpl<X> extends ForwardingAnnotatedParameter<X> {
@@ -271,6 +290,11 @@ class AnnotatedTypeBuilderImpl<T> {
         @Override
         public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
             return annotations.isAnnotationPresent(annotationType);
+        }
+
+        @Override
+        public String toString() {
+            return Formats.formatAnnotatedParameter(delegate);
         }
 
     }
