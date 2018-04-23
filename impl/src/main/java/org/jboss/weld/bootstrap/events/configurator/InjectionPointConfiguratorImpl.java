@@ -210,6 +210,10 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
            return isTransient;
        }
 
+       @Override
+       public String toString() {
+           return "InjectionPoint with type=" + requiredType + ", qualifiers=" + qualifiers +
+               ", delegate=" + isDelegate + ", transient=" + isTransient + ".";
+       }
    }
-
 }
