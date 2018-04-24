@@ -34,8 +34,10 @@
         <surefire.plugin.jdk9.args />
         <jax.artifacts.version>2.3.0</jax.artifacts.version>
 
-        <!-- A property which is handed over to WFLY container through Arquillian, allows for easy container configuration -->
+        <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
+        <!-- A property which is handed over to WFLY container through Arquillian, allows to configure server-specific options -->
+        <additional.jboss.args></additional.jboss.args>
 
         <manifest.specification.title>JSR-365 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>

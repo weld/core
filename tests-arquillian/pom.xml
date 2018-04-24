@@ -282,6 +282,7 @@
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
                                 <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <additional.jboss.args>${additional.jboss.args}</additional.jboss.args>
                                 <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
                                 <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
