@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.4-SNAPSHOT</version>
+    <version>3.0.4.Final</version>
 
     <name>Weld Parent</name>
 
@@ -31,11 +31,11 @@
         <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
-        <surefire.plugin.jdk9.args/>
+        <surefire.plugin.jdk9.args />
         <jax.artifacts.version>2.3.0</jax.artifacts.version>
 
         <!-- A property which is handed over to WFLY container through Arquillian, allows for easy container configuration -->
-        <additional.vm.args/>
+        <additional.vm.args />
 
         <manifest.specification.title>JSR-365 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
@@ -598,7 +598,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>3.0.0-SNAPSHOT</tag>
+        <tag>3.0.4.Final</tag>
     </scm>
 
 
