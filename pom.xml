@@ -478,12 +478,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.cdi.tck</groupId>
-                <artifactId>cdi-tck-ext-lib</artifactId>
-                <version>${cdi.tck-1-2.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
                 <version>${jstl.api.version}</version>
