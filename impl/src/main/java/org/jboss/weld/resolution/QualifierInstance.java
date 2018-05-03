@@ -18,6 +18,7 @@ package org.jboss.weld.resolution;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.Collections;
 import java.util.Map;
@@ -28,12 +29,14 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.util.Nonbinding;
 import javax.inject.Named;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.logging.ResolutionLogger;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -122,7 +125,7 @@ public class QualifierInstance {
             return Collections.emptyMap();
         }
 
-        final ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
 
         for (final AnnotatedMethod<?> method : model.getAnnotatedAnnotation().getMethods()) {
             if (!model.getNonBindingMembers().contains(method)) {
@@ -133,7 +136,26 @@ public class QualifierInstance {
                         method.getJavaMember().setAccessible(true);
                     }
                     builder.put(method.getJavaMember().getName(), method.getJavaMember().invoke(instance));
-                } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
+                    // it may happen that we are in EAR and have stored the annotation's method from different WAR class loader
+                    // an invocation will then lead to IAE, we can re-try with reflection
+                    Method[] methods;
+                    builder = ImmutableMap.builder();
+                    if (System.getSecurityManager() != null) {
+                        methods = AccessController.doPrivileged(new GetDeclaredMethodsAction(annotationClass));
+                    } else {
+                        methods = annotationClass.getDeclaredMethods();
+                    }
+                    for (Method m : methods) {
+                        if (m.getAnnotation(Nonbinding.class) == null) {
+                            try {
+                                builder.put(m.getName(), m.invoke(instance));
+                            } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException ex) {
+                                throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), ex);
+                            }
+                        }
+                    }
+                } catch (InvocationTargetException | IllegalAccessException e) {
                     throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), e);
                 }
             }
