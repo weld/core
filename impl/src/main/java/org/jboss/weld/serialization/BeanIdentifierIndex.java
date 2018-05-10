@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -52,6 +53,8 @@ public class BeanIdentifierIndex implements Service {
     private volatile Map<BeanIdentifier, Integer> reverseIndex;
 
     private volatile Integer indexHash;
+
+    private final AtomicBoolean indexBuilt = new AtomicBoolean(false);
 
     /**
      *
@@ -104,6 +107,7 @@ public class BeanIdentifierIndex implements Service {
             index = new BeanIdentifier[0];
             reverseIndex = Collections.emptyMap();
             indexHash = 0;
+            indexBuilt.set(true);
             return;
         }
 
@@ -137,6 +141,7 @@ public class BeanIdentifierIndex implements Service {
         if(BootstrapLogger.LOG.isDebugEnabled()) {
             BootstrapLogger.LOG.beanIdentifierIndexBuilt(getDebugInfo());
         }
+        indexBuilt.set(true);
     }
 
     /**
@@ -144,7 +149,7 @@ public class BeanIdentifierIndex implements Service {
      * @return <code>true</code> if the index is built, <code>false</code> otherwise
      */
     public boolean isBuilt() {
-        return index != null;
+        return indexBuilt.get();
     }
 
     /**
