@@ -23,14 +23,13 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-// We have to ignore this test until we have a solution to set/unset system properties for the JVM of the managed container
-@Ignore("WELD-1789")
 @RunWith(Arquillian.class)
 public class CircularDependencyTest {
 
@@ -40,11 +39,14 @@ public class CircularDependencyTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CircularDependencyTest.class))
-                .addPackage(CircularDependencyTest.class.getPackage());
+            .addPackage(CircularDependencyTest.class.getPackage())
+            .addAsResource(PropertiesBuilder.newBuilder()
+                .set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true")
+                .build(), "weld.properties");
     }
 
     @Test
-    public void testCircularInjectionOnTwoSimpleDependentBeans() throws Exception {
+    public void testCircularInjectionBetweenAppScopedAndDependentBeans() throws Exception {
         foo.getName();
         Assert.assertTrue(Foo.success);
         Assert.assertTrue(Bar.success);
