@@ -55,7 +55,8 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
     @Override
     public <T> List<Future<T>> invokeAllAndCheckForExceptions(Collection<? extends Callable<T>> tasks) {
         try {
-            return checkForExceptions(getTaskExecutor().invokeAll(tasks));
+            // the cast is needed to compile this expression in JDK 8, works without it on JDK 10+
+            return checkForExceptions(getTaskExecutor().invokeAll((Collection<? extends Callable<T>>)wrap(tasks)));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new DeploymentException(e);
@@ -131,5 +132,16 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }
+    }
+
+    /**
+     * This method is invoked with the body of {@link AbstractExecutorServices#invokeAllAndCheckForExceptions(java.util.Collection)}
+     *
+     * It allows to wrap the tasks with some additional logic. For instance, Weld's {@link CommonForkJoinPoolExecutorServices}
+     * overrides this in order to set TCCL to null prior to execution.
+     */
+    public <T> Collection<? extends Callable<T>> wrap(Collection<? extends Callable<T>> tasks) {
+        //no-op by default
+        return tasks;
     }
 }

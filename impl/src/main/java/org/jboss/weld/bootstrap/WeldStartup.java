@@ -227,7 +227,7 @@ public class WeldStartup {
 
         this.deploymentManager = BeanManagerImpl.newRootManager(finalContextId, "deployment", registry);
 
-        Container.initialize(finalContextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
+        Container.initialize(finalContextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()), environment);
         getContainer().setState(ContainerState.STARTING);
 
         tracker.start(Tracker.OP_CONTEXTS);
