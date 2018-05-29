@@ -40,7 +40,8 @@ public class BeanConfiguratorWithNoCallbackTest {
     @ShouldThrowException(DeploymentException.class)
     public static WebArchive createTestArchive() {
         return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanConfiguratorWithNoCallbackTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addPackage(BeanConfiguratorFailureTest.class.getPackage()).addAsServiceProvider(Extension.class, IncorrectCustomBeanExtension.class)
+            .addClasses(BeanConfiguratorWithNoCallbackTest.class, IncorrectCustomBeanExtension.class, Charlie.class)
+            .addAsServiceProvider(Extension.class, IncorrectCustomBeanExtension.class)
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
     
