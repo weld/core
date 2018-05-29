@@ -36,31 +36,29 @@ Now you should have patched WildFly in `JBOSS_HOME`.
 Creating a patch file for WildFly
 ---------------------------------
 
-Apart from just patching a WildFly, there is a semi-automated way to create reusable patch-file too.
+Apart from just patching a WildFly, there is an automated way to create reusable patch-file too.
 To do that, three things are needed:
 * Clean WildFly
   * A basis which you want the patch for
-  * If you use following profile, WildFly 10.1.0.Final will be automatically donwloaded `-Pdownload-wfly`
-  * If you already have one, or wish to use a different version, set the path to it throught property `-DwildflyOriginal=/path/to/clean/wfly`
+  * If you use `-Pdownload-wfly` profile, WildFly 12.0.0.Final will be automatically downloaded into `core/jboss-as/target` folder
+  * If you already have WildFly, set the path to it throught property `-DwildflyOriginal=/path/to/clean/wfly`
 * Patched WildFly with Weld 3 version you want
-  * Needs to prepared in advance and placed in `-DwildflyPatched=/path/to/patched/wfly`
   * `-Pupdate-jboss-as` can be used to create patched WildFly, see the paragraph above
+  * If you have this in advance, just set the path to it via `-DwildflyPatched=/path/to/patched/wfly`
 * Patch XML descriptor
-  * By default, this is automatically grabbed from our [repository](https://github.com/weld/build/tree/master/wildfly) for WildFly 10.1.0.Final
-  * You can set different version via `-Dpatch.file.name="patch-config-wildfly-10-weld-3.0.xml"`
+  * By default, this is automatically grabbed from our [repository](https://github.com/weld/build/tree/master/wildfly) for WildFly 12.0.0.Final
+  * You can set different version via `-Dpatch.file.name="patch-config-wildfly-12-weld-3.0.xml"`
 
-So, here are the commands:
-* `export JBOSS_HOME=/path/to/wfly; mvn clean install -Pupdate-jboss-as,download-wfly,wfly-patch-gen -f jboss-as/pom.xml`
-  * In your target folder you get pristine WildFly, patch file (XML) and a complete patch.zip
-  * Your `JBOSS_HOME` will be patched
-* `export JBOSS_HOME=/path/to/wfly; mvn clean install -Pupdate-jboss-as,download-wfly -f jboss-as/pom.xml`
-  * You will end up with pristine WildFly in your target folder
-  * Your `JBOSS_HOME` will be patched
-  * No patch will be generated
-* `export JBOSS_HOME=/path/to/wfly; mvn clean install -Pwfly-patch-gen -DwildflyOriginal=/opt/myCleanWfly11 -DwildflyPatched=/opt/myPatchedWfly11 -Dpatch.file.name=patch-config-wildfly-11-weld-3.0.xml -f jboss-as/pom.xml`
-  * This is a manual way where all variables are specified, here we patch Wildfly 11 to latest Weld 3
+So, here are some commands:
+* `mvn clean package -Pdownload-wfly,update-jboss-as,wfly-patch-gen`
+  * Fully automated way of downloading pristine WildFly 12, patching it and creating a patch file, all in `jboss-as/target` folder
+* `mvn clean install -Pupdate-jboss-as,download-wfly -f jboss-as/pom.xml`
+  * This will download pristine WildFly, make a copy of it and patch it right away
+  * No patch file will be generated
+* `export JBOSS_HOME=/path/to/wfly; mvn clean install -Pwfly-patch-gen -DwildflyOriginal=/opt/myCleanWfly -DwildflyPatched=/opt/myPatchedWfly -Dpatch.file.name=patch-config-wildfly-12-weld-3.0.xml -f jboss-as/pom.xml`
+  * This is a manual way where all variables are specified; here we generate patch file for Wildfly 12
   * Need to specify both WildFly instances - clean one and already patched one
-  * Also need to give provide specific patch XML descriptor as the default one targets WildFly 10, but we need 11 - hence `patch-config-wildfly-11-weld-3.0.xml`
+  * You can also provide specific patch XML descriptor if the default one doesn't suit through `-DpatchConfig=patch-config-wildfly-12-weld-3.0.xml`
 
 Running integration tests and the TCK on WildFly
 ----------------------------------------------------

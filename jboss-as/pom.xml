@@ -39,13 +39,13 @@
         <!--Path to patch file; only change if you have your own, else Maven downloads it-->
         <patchConfigFile>${project.build.directory}/patch.xml</patchConfigFile>
         <!--These patches are automatically downloaded from github.com/weld/build/tree/master/wildfly; specify the file name here to determine which one to use-->
-        <patch.file.name>patch-config-wildfly-11-weld-3.0.xml</patch.file.name>
+        <patch.file.name>patch-config-wildfly-12-weld-3.0.xml</patch.file.name>
         <!--Use this property to set the path to and the name of the resulting patch zip file-->
         <patchOutputFile>${project.build.directory}/patch.zip</patchOutputFile>
         <!--Path to original (pristine) WFLY-->
         <!--Running with -Pdownload-wfly will make Maven download the version specified below-->
         <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
-        <wildfly.download.version>11.0.0.Final</wildfly.download.version>
+        <wildfly.download.version>12.0.0.Final</wildfly.download.version>
         <cdi.tck.version>${cdi.tck-2-0.version}</cdi.tck.version>
 
         <!--Plugin versions-->
@@ -96,6 +96,10 @@
             <id>download-wfly</id>
             <properties>
                 <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
+                <!--Set jboss.home property to the location of the copy of WFLY we download-->
+                <jboss.home>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</jboss.home>
+                <!--Set wildflyPatched property for patch creation, this assumes you patch the WFLY by running -Pupdate-jboss-as as well-->
+                <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</wildflyPatched>
             </properties>
             <build>
                 <plugins>
@@ -123,15 +127,32 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <!-- Execute this after we've downloaded WFLY -->
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/wildfly-patched</outputDirectory>
+                                    <resources>          
+                                        <resource>
+                                            <directory>${project.build.directory}/wildfly-original</directory>
+                                        </resource>
+                                    </resources>              
+                                </configuration>            
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
         <profile>
             <id>update-jboss-as</id>
-            <properties>
-                <!--For patch creation purposes, set the env variable as a path to patched WFLY-->
-                <wildflyPatched>${env.JBOSS_HOME}</wildflyPatched>
-            </properties>
             <build>
                 <defaultGoal>package</defaultGoal>
                 <plugins>
