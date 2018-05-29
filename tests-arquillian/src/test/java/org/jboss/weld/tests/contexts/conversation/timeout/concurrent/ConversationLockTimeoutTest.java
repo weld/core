@@ -85,12 +85,7 @@ public class ConversationLockTimeoutTest {
         final Future<String> longTaskFuture = executorService.submit(longTask);
         Timer timer = Timer.startNew(1000l);
         final Future<String> busyRequestFuture = executorService.submit(busyRequest);
-        timer.setSleepInterval(100l).setDelay(2, TimeUnit.SECONDS).addStopCondition(new Timer.StopCondition() {
-            @Override
-            public boolean isSatisfied() {
-                return longTaskFuture.isDone() || busyRequestFuture.isDone();
-            }
-        }).start();
+        timer.setSleepInterval(100l).setDelay(2, TimeUnit.SECONDS).addStopCondition(() -> longTaskFuture.isDone() || busyRequestFuture.isDone()).start();
 
         Assert.assertEquals("OK", longTaskFuture.get());
         Assert.assertEquals("Conversation locked", busyRequestFuture.get());
