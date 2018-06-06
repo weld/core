@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 public interface ExceptionHandler {
 
     Class<? extends Throwable>[] getExceptionTypes();
-    
+
     void handle(Throwable t);
 
     default boolean supports(Throwable t) {

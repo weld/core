@@ -24,8 +24,9 @@ import javax.enterprise.inject.Vetoed;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 
 /**
- * This is the main class that can be called from the command line for a WeldContainer SE app which makes use of the ContainerInitialized event. Something like:
- * <code>
+ * This is the main class that can be called from the command line for a
+ * WeldContainer SE app which makes use of the ContainerInitialized event.
+ * Something like: <code>
  * java -cp weld-se-shaded.jar:my-app.jar org.jboss.weld.environment.se.StartMain arg1 arg2
  * </code>
  *
@@ -60,7 +61,7 @@ public class StartMain {
         try {
             new StartMain(args).go();
             System.exit(0);
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             StreamSupport.stream(exceptionHandlerLoader.spliterator(), false)
                     .filter(eh -> eh.supports(t))
                     .findFirst()

@@ -6,14 +6,14 @@ public class DefaultExceptionHandler implements ExceptionHandler {
 
     private static final Logger logger = Logger.getLogger(DefaultExceptionHandler.class);
 
-	@Override
-	public Class<? extends Throwable>[] getExceptionTypes() {
-		return null;
-	}
+    @Override
+    public Class<? extends Throwable>[] getExceptionTypes() {
+        return null;
+    }
 
-	@Override
-	public void handle(Throwable t) {
+    @Override
+    public void handle(Throwable t) {
         logger.error("Weld-SE application exited with an exception", t);
-	}
+    }
 
 }
