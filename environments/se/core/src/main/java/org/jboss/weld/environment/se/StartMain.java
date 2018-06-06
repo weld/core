@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.util.ServiceLoader;
+import java.util.stream.StreamSupport;
+
 import javax.enterprise.inject.Vetoed;
 
-import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 
 /**
@@ -34,7 +36,7 @@ import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 @Vetoed
 public class StartMain {
 
-    private static final Logger logger = Logger.getLogger(StartMain.class);
+    private static ServiceLoader<ExceptionHandler> exceptionHandlerLoader = ServiceLoader.load(ExceptionHandler.class);
 
     public static String[] PARAMETERS;
 
@@ -59,7 +61,11 @@ public class StartMain {
             new StartMain(args).go();
             System.exit(0);
         } catch(Throwable t) {
-            logger.error("Application exited with an exception", t);
+            StreamSupport.stream(exceptionHandlerLoader.spliterator(), false)
+                    .filter(eh -> eh.supports(t))
+                    .findFirst()
+                    .orElse(new DefaultExceptionHandler())
+                    .handle(t);
             System.exit(1);
         }
     }
