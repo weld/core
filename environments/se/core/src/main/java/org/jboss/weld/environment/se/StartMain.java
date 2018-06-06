@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.environment.se;
 
-import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
-
 import javax.enterprise.inject.Vetoed;
+
+import org.jboss.logging.Logger;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 
 /**
  * This is the main class that can be called from the command line for a WeldContainer SE app which makes use of the ContainerInitialized event. Something like:
@@ -32,6 +33,8 @@ import javax.enterprise.inject.Vetoed;
  */
 @Vetoed
 public class StartMain {
+
+    private static final Logger logger = Logger.getLogger(StartMain.class);
 
     public static String[] PARAMETERS;
 
@@ -52,7 +55,13 @@ public class StartMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new StartMain(args).go();
+        try {
+            new StartMain(args).go();
+            System.exit(0);
+        } catch(Throwable t) {
+            logger.error("Application exited with an exception", t);
+            System.exit(1);
+        }
     }
 
     public static String[] getParameters() {
