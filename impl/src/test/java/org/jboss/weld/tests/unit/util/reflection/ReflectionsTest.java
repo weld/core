@@ -31,5 +31,6 @@ public class ReflectionsTest {
         assertEquals("foo", Reflections.decapitalize("foo"));
         assertEquals("foo", Reflections.decapitalize("Foo"));
         assertEquals("FOO", Reflections.decapitalize("FOO"));
+        assertEquals("fooBar", Reflections.decapitalize("FooBar"));
     }
 }
