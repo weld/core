@@ -1,5 +1,7 @@
 package org.jboss.weld.environment.se;
 
+import java.util.stream.Stream;
+
 import org.jboss.logging.Logger;
 
 public class DefaultExceptionHandler implements ExceptionHandler {
@@ -7,7 +9,7 @@ public class DefaultExceptionHandler implements ExceptionHandler {
     private static final Logger logger = Logger.getLogger(DefaultExceptionHandler.class);
 
     @Override
-    public Class<? extends Throwable>[] getExceptionTypes() {
+    public Stream<Class<? extends Throwable>> getExceptionTypes() {
         return null;
     }
 
