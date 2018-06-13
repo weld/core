@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.decorators.defaultmethod;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -33,8 +32,8 @@ public class DecoratedInteraceWithDefaultMethodTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratedInteraceWithDefaultMethodTest.class))
-                .decorate(BeanDecorator.class)
-                .addPackage(DecoratedInteraceWithDefaultMethodTest.class.getPackage());
+            .decorate(BeanDecorator.class, DecoratorWhichOnlyOverridesMethodWithDefaultImpl.class)
+            .addPackage(DecoratedInteraceWithDefaultMethodTest.class.getPackage());
     }
 
     @Test
@@ -48,5 +47,12 @@ public class DecoratedInteraceWithDefaultMethodTest {
         BeanDecorator.reset();
         bean.doUndecorated();
         Assert.assertEquals(0, BeanDecorator.decoratedInvocationCount);
+    }
+
+    @Test
+    public void testDefaultMethodGetsIntercepted(DecoratedBean bean) {
+        DecoratorWhichOnlyOverridesMethodWithDefaultImpl.reset();
+        bean.defaultDecorated();
+        Assert.assertEquals("A method with default implementation in an interface should be decorated even when the bean does not override it and it is the *only* decorated method", 1, DecoratorWhichOnlyOverridesMethodWithDefaultImpl.decoratedInvocationCount);
     }
 }
