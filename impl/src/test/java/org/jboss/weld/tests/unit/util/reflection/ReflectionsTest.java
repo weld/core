@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2017, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,27 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.decorators.defaultmethod;
+package org.jboss.weld.tests.unit.util.reflection;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-@Decorator
-public class BeanDecorator implements Decorated {
+import org.jboss.weld.util.reflection.Reflections;
+import org.junit.Test;
 
-    @Inject
-    @Delegate
-    Decorated delegate;
+public class ReflectionsTest {
 
-    static int decoratedInvocationCount = 0;
-
-    public static void reset() {
-        decoratedInvocationCount = 0;
-    }
-
-    public void doDecorated() {
-        decoratedInvocationCount++;
-        delegate.doDecorated();
+    @Test
+    public void decaptalizeTest() {
+        assertNull(Reflections.decapitalize(null));
+        assertEquals("", Reflections.decapitalize(""));
+        assertEquals("foo", Reflections.decapitalize("foo"));
+        assertEquals("foo", Reflections.decapitalize("Foo"));
+        assertEquals("FOO", Reflections.decapitalize("FOO"));
+        assertEquals("fooBar", Reflections.decapitalize("FooBar"));
     }
 }
