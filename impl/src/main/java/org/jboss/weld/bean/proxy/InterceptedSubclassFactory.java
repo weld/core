@@ -193,7 +193,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                         if (Modifier.isFinal(method.getModifiers())) {
                             finalMethods.add(methodSignature);
                         }
-                        if (method.isBridge()) {
+                        if (method.isBridge() && !superClassAbstractAndPackagePrivate(cls)) {
                             declaredBridgeMethods.add(new BridgeMethod(methodSignature, method.getGenericReturnType()));
                         }
                     }
@@ -237,6 +237,22 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         } catch (Exception e) {
             throw new WeldException(e);
         }
+    }
+
+    /**
+     * Returns true if super class of the parameter exists and is abstract and package private. In such case we want to omit
+     * such method.
+     * See WELD-2507 and Oracle issue - https://bugs.java.com/view_bug.do?bug_id=6342411
+     *
+     * @return true if the super class exists and is abstract and package private
+     */
+    private boolean superClassAbstractAndPackagePrivate(Class<?> clazz) {
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass == null) {
+            return false;
+        }
+        int modifiers = superClass.getModifiers();
+        return Modifier.isAbstract(modifiers) && !Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers) && !Modifier.isPublic(modifiers);
     }
 
     private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType, boolean isMethodAbstract) {
