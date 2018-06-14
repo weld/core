@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se;
 
 import javax.enterprise.inject.Vetoed;
 
-import org.jboss.logging.Logger;
+import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 
 /**
@@ -33,8 +33,6 @@ import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
  */
 @Vetoed
 public class StartMain {
-
-    private static final Logger logger = Logger.getLogger(StartMain.class);
 
     public static String[] PARAMETERS;
 
@@ -59,7 +57,7 @@ public class StartMain {
             new StartMain(args).go();
             System.exit(0);
         } catch(Throwable t) {
-            logger.error("Application exited with an exception", t);
+            WeldSELogger.LOG.error("Application exited with an exception", t);
             System.exit(1);
         }
     }
