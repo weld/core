@@ -87,7 +87,7 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
             String prefixedId = getNamingScheme().prefix(id);
             instance = cast(getAttribute(prefixedId));
         }
-        if (resetHttpSessionAttributeOnBeanAccess){
+        if (resetHttpSessionAttributeOnBeanAccess && instance != null){
             put(id, instance);
         }
         return instance;
