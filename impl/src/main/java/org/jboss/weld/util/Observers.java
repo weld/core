@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
@@ -31,7 +32,6 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.EventContext;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.Prioritized;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
@@ -53,7 +53,6 @@ import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.event.SyntheticObserverMethod;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
@@ -99,7 +98,7 @@ public class Observers {
             }
 
             // public void observe (@Observes @Any Object ob){...} - this IS container event observer
-            if (method.getObservedQualifiers().size() == 1 && method.getObservedQualifiers().contains(AnyLiteral.INSTANCE)) {
+            if (method.getObservedQualifiers().size() == 1 && method.getObservedQualifiers().contains(Any.Literal.INSTANCE)) {
                 return true;
             }
         }
@@ -164,13 +163,7 @@ public class Observers {
      * @param metadata May be null
      */
     public static <T> void notify(ObserverMethod<? super T> observerMethod, T event, EventMetadata metadata) {
-        //WELD-2452, remove once WFLY is fully EE 8 compatible
-        // temporary hack to determine what version of CDI library are we running against
-        if (Prioritized.class.isAssignableFrom(ObserverMethod.class)) {
-            observerMethod.notify(new EventContextImpl<>(event, metadata));
-        } else {
-            observerMethod.notify(event);
-        }
+        observerMethod.notify(new EventContextImpl<>(event, metadata));
     }
 
     private static boolean hasNotifyOverriden(Class<?> clazz, ObserverMethod<?> observerMethod) {

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.Prioritized;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.config.WeldConfiguration;
@@ -104,11 +103,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     @Override
     protected List<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched) {
         List<ObserverMethod<?>> observers = new ArrayList<>(matched);
-        //WELD-2452, remove once WFLY is fully EE 8 compatible
-        // temporary hack to determine what version of CDI library are we running against
-        if(Prioritized.class.isAssignableFrom(ObserverMethod.class)) {
-            Collections.sort(observers, ObserverMethodComparator.INSTANCE);
-        }
+        Collections.sort(observers, ObserverMethodComparator.INSTANCE);
         return observers;
     }
 

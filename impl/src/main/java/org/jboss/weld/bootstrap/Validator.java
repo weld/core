@@ -42,6 +42,7 @@ import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Decorated;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Intercepted;
@@ -95,7 +96,6 @@ import org.jboss.weld.interceptor.reader.PlainInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.literal.DecoratedLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.MessageCallback;
@@ -361,7 +361,7 @@ public class Validator implements Service {
     }
 
     public void validateEventMetadataInjectionPoint(InjectionPoint ip) {
-        if (EventMetadata.class.equals(ip.getType()) && ip.getQualifiers().contains(DefaultLiteral.INSTANCE)) {
+        if (EventMetadata.class.equals(ip.getType()) && ip.getQualifiers().contains(Default.Literal.INSTANCE)) {
             throw ValidatorLogger.LOG.eventMetadataInjectedOutsideOfObserver(ip, Formats.formatAsStackTraceElement(ip));
         }
     }
@@ -887,7 +887,7 @@ public class Validator implements Service {
                 throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip, Formats.formatAsStackTraceElement(ip));
             }
         }
-        if (qualifiers.contains(DefaultLiteral.INSTANCE)) {
+        if (qualifiers.contains(Default.Literal.INSTANCE)) {
             /*
              * If the injection point is a field, an initializer method parameter or a bean constructor, with qualifier
              * @Default, then the type parameter of the injected Bean, Interceptor or Decorator must be the same as the type
