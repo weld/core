@@ -25,7 +25,6 @@ import java.util.List;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.Prioritized;
 
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.collections.ImmutableList;
@@ -55,9 +54,7 @@ public class ResolvedObservers<T> {
         List<ObserverMethod<? super T>> transactionObservers = new ArrayList<ObserverMethod<? super T>>();
         List<ObserverMethod<? super T>> asyncObservers = new ArrayList<ObserverMethod<? super T>>();
         for (ObserverMethod<? super T> observer : observers) {
-            //WELD-2452, remove once WFLY is fully EE 8 compatible
-            // temporary hack to determine what version of CDI library are we running against
-            if(Prioritized.class.isAssignableFrom(ObserverMethod.class) && observer.isAsync()) {
+            if(observer.isAsync()) {
                 asyncObservers.add(observer);
             } else if (TransactionPhase.IN_PROGRESS == observer.getTransactionPhase()) {
                 immediateSyncObservers.add(observer);

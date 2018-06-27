@@ -20,6 +20,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.enterprise.context.BeforeDestroyed;
+import javax.enterprise.context.Destroyed;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
@@ -27,8 +30,6 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.SingletonContext;
 import org.jboss.weld.event.ContextEvent;
-import org.jboss.weld.literal.BeforeDestroyedLiteral;
-import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -56,13 +57,13 @@ public class WeldRuntime {
         try {
             // The container must destroy all contexts.
             // For non-web modules, fire @BeforeDestroyed event
-            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_BEFORE_DESTROYED, BeforeDestroyedLiteral.APPLICATION);
+            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_BEFORE_DESTROYED, BeforeDestroyed.Literal.APPLICATION);
             deploymentManager.instance().select(ApplicationContext.class).get().invalidate();
             deploymentManager.instance().select(SingletonContext.class).get().invalidate();
 
         } finally {
             // fire @Destroyed(ApplicationScope.class) for non-web modules
-            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_DESTROYED, DestroyedLiteral.APPLICATION);
+            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_DESTROYED, Destroyed.Literal.APPLICATION);
             try {
                 // Finally, the container must fire an event of type BeforeShutdown.
                 BeforeShutdownImpl.fire(deploymentManager);

@@ -30,13 +30,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
@@ -63,7 +63,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotated<T, S> {
 
     // The set of default binding types
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(Default.Literal.INSTANCE);
 
     /**
      * Builds the annotation map (annotation type -> annotation)

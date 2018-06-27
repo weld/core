@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
@@ -100,7 +101,6 @@ import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.injection.producer.InjectionTargetService;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.VersionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -567,7 +567,7 @@ public class WeldStartup {
             // web modules are handled by HttpContextLifecycle
             for (BeanDeploymentModule module : modules) {
                 if (!module.isWebModule()) {
-                    module.fireEvent(Object.class, ContextEvent.APPLICATION_INITIALIZED, InitializedLiteral.APPLICATION);
+                    module.fireEvent(Object.class, ContextEvent.APPLICATION_INITIALIZED, Initialized.Literal.APPLICATION);
                 }
             }
         }
