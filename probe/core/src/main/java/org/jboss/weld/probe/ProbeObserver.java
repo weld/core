@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.BeforeDestroyed;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Reception;
@@ -132,7 +133,8 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
     private boolean isContainerEvent(Set<Annotation> qualifiers) {
         for (Annotation annotation : qualifiers) {
-            if (annotation.annotationType() == Initialized.class || annotation.annotationType() == Destroyed.class) {
+            if (annotation.annotationType() == Initialized.class || annotation.annotationType() == Destroyed.class
+                    || annotation.annotationType() == BeforeDestroyed.class) {
                 return true;
             }
         }
