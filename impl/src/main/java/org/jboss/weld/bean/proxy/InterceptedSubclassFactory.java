@@ -334,8 +334,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             // this is a self invocation optimisation
             // test to see if this is a self invocation, and if so invokespecial the
             // superclass method directly
-            // do not optimize in the case of default methods
-            if (!Reflections.isDefault(methodInfo.getMethod())) {
+            // Do not optimize in case of private and default methods
+            if (!Reflections.isDefault(methodInfo.getMethod()) && !Modifier.isPrivate(method.getAccessFlags())) {
                 b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
                 b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "(" + DescriptorUtils.makeDescriptor(Stack.class) + ")" + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
 
