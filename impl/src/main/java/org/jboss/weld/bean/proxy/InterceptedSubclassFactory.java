@@ -73,6 +73,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     private final Set<MethodSignature> enhancedMethodSignatures;
     private final Set<MethodSignature> interceptedMethodSignatures;
+    private Set<Class<?>> interfacesToInspect;
 
     private final Class<?> proxiedBeanType;
 
@@ -98,9 +99,24 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     @Override
     public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        // these interfaces we want to scan for method and our proxies will implement them
         for (Class<?> c : proxiedBeanType.getInterfaces()) {
             addInterface(c);
         }
+        // now we need to go deeper in hierarchy and scan those interfaces for additional interfaces with default impls
+        for (Type type : typeClosure) {
+            Class<?> c = Reflections.getRawType(type);
+            if (c.isInterface()) {
+                addInterfaceToInspect(c);
+            }
+        }
+    }
+
+    private void addInterfaceToInspect(Class<?> iface) {
+        if (interfacesToInspect == null) {
+            interfacesToInspect = new HashSet<>();
+        }
+        this.interfacesToInspect.add(iface);
     }
 
     /**
@@ -204,7 +220,12 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                 processedBridgeMethods.addAll(declaredBridgeMethods);
                 cls = cls.getSuperclass();
             }
-            for (Class<?> c : getAdditionalInterfaces()) {
+            // We want to iterate over pre-defined interfaces (getAdditionalInterfaces()) and also over those we discovered earlier (interfacesToInspect)
+            Set<Class<?>> allInterfaces = new HashSet<>(getAdditionalInterfaces());
+            if (interfacesToInspect != null) {
+                allInterfaces.addAll(interfacesToInspect);
+            }
+            for (Class<?> c : allInterfaces) {
                 for (Method method : c.getMethods()) {
                     MethodSignature signature = new MethodSignatureImpl(method);
                     // For interfaces we do not consider return types when going through processed bridge methods
