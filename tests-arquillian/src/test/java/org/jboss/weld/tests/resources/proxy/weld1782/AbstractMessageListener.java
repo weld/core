@@ -32,12 +32,16 @@ public class AbstractMessageListener implements MessageListener {
     @Inject
     private RequestScopedObserver observer;
 
+    @Inject
+    private Controller controller;
+
     @Override
     public void onMessage(Message message) {
 
         if (message instanceof TextMessage) {
             processedMessages.incrementAndGet();
             initializedEventObserver.set(observer.isInitializedObserved());
+            controller.getMsgDeliveredLatch().countDown();
         } else {
             throw new IllegalArgumentException("Unsupported message type");
         }

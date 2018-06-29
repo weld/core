@@ -27,7 +27,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.test.util.Timer;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
@@ -44,8 +43,7 @@ public class RequestScopeEventMessageDeliveryTest {
     @Deployment
     public static WebArchive createTestArchive() {
 
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RequestScopeEventMessageDeliveryTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(RequestScopeEventMessageDeliveryTest.class.getPackage()).addClass(
-                Timer.class);
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RequestScopeEventMessageDeliveryTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(RequestScopeEventMessageDeliveryTest.class.getPackage());
     }
 
     @Inject
@@ -53,6 +51,9 @@ public class RequestScopeEventMessageDeliveryTest {
 
     @Inject
     private ApplicationScopedObserver observer;
+
+    @Inject
+    private Controller controller;
 
     @Test
     public void testEventsFired() throws Exception {
@@ -62,13 +63,14 @@ public class RequestScopeEventMessageDeliveryTest {
 
         producer.sendTopicMessage();
 
-        new Timer().setDelay(5, TimeUnit.SECONDS).addStopCondition(() -> AbstractMessageListener.getProcessedMessages() >= 1).start();
+        // wait for msg to be delivered
+        controller.getMsgDeliveredLatch().await(10, TimeUnit.SECONDS);
 
         assertEquals(1, AbstractMessageListener.getProcessedMessages());
         assertTrue(AbstractMessageListener.isInitializedEventObserver());
 
         // wait for the request scope for the message delivery to be destroyed and verify that the event was delivered
-        new Timer().setDelay(5, TimeUnit.SECONDS).addStopCondition(observer::isDestroyedCalled).start();
+        controller.getContextDestroyedLatch().await(10, TimeUnit.SECONDS);
         assertTrue(observer.isDestroyedCalled());
     }
 }
