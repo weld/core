@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <parent>
+    <parent>
         <artifactId>weld-examples-parent</artifactId>
         <groupId>org.jboss.weld.examples</groupId>
         <version>3.0.5-SNAPSHOT</version>
@@ -22,63 +22,71 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <groovy.version>2.3.9</groovy.version>         
-        <groovy-eclipse-compiler.version>2.9.1-01</groovy-eclipse-compiler.version>
-        <groovy-eclipse-batch.version>2.3.7-01</groovy-eclipse-batch.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-core</artifactId>
+            <artifactId>weld-se-shaded</artifactId>
         </dependency>
         
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>${groovy.version}</version>
         </dependency>
     </dependencies>
 
     <build>
-         <pluginManagement>
-             <plugins>
+        <pluginManagement>
+            <plugins>
                 <plugin>
-                   <artifactId>maven-compiler-plugin</artifactId>
-                   <version>${maven-compiler-plugin.version}</version>
-                   <configuration>
-                    <compilerId>groovy-eclipse-compiler</compilerId>
-                   </configuration>
-                   <dependencies>
-                    <dependency>
-                      <groupId>org.codehaus.groovy</groupId>
-                      <artifactId>groovy-eclipse-compiler</artifactId>
-                      <version>${groovy-eclipse-compiler.version}</version>
-                    </dependency>
-     
-                    <dependency>
-                      <groupId>org.codehaus.groovy</groupId>
-                      <artifactId>groovy-eclipse-batch</artifactId>
-                      <version>${groovy-eclipse-batch.version}</version>
-                    </dependency>
-                   </dependencies>
-                 </plugin>
-        
-        
-                <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-jar-plugin</artifactId>
-                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
-                        </manifest>
-                    </archive>
-                 </configuration>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
                 </plugin>
-             </plugins>
+            </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>addSources</goal>
+                            <goal>addTestSources</goal>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>compileTests</goal>
+                            <goal>removeStubs</goal>
+                            <goal>removeTestStubs</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sources>
+                        <source>
+                            <directory>${project.basedir}/src/main/java</directory>
+                            <includes>
+                                <include>**/*.groovy</include>
+                            </includes>
+                        </source>
+                    </sources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -103,6 +111,7 @@
                         </executions>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
                         <configuration>
                             <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                         </configuration>
@@ -110,6 +119,6 @@
                 </plugins>
             </build>
         </profile>
-     </profiles>
+    </profiles>
 
 </project>
