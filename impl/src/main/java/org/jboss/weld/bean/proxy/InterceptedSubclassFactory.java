@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.security.AccessController;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -249,8 +250,14 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                         // both cases are a match
                         return true;
                     } else {
-                        // in all other cases we compare return types
-                        return bridgeMethod.returnType.equals(returnType);
+                        if (bridgeMethod.returnType instanceof Class && returnType instanceof TypeVariable) {
+                            // in this case we have encountered a bridge method with specific return type in subclass
+                            // and we are observing a TypeVariable return type in superclass, this is a match
+                            return true;
+                        } else {
+                            // as a last resort, we simply check equality of return Type
+                            return bridgeMethod.returnType.equals(returnType);
+                        }
                     }
                 }
                 return true;
