@@ -1,6 +1,7 @@
 package org.jboss.weld.environment.deployment.discovery.jandex;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,6 +108,33 @@ public class JandexClassFileInfo implements ClassFileInfo {
     @Override
     public boolean isTopLevelClass() {
         return classInfo.nestingType().equals(ClassInfo.NestingType.TOP_LEVEL);
+    }
+
+    @Override
+    public ClassFileInfo.NestingType getNestingType() {
+        NestingType result = null;
+        switch (classInfo.nestingType()) {
+            case ANONYMOUS:
+                result = NestingType.NESTED_ANONYMOUS;
+                break;
+            case TOP_LEVEL:
+                result = NestingType.TOP_LEVEL;
+                break;
+            case LOCAL:
+                result = NestingType.NESTED_LOCAL;
+                break;
+            case INNER:
+                if (Modifier.isStatic(classInfo.flags())) {
+                    result = NestingType.NESTED_STATIC;
+                } else {
+                    result = NestingType.NESTED_INNER;
+                }
+                break;
+            default:
+                // should never happer
+                break;
+        }
+        return result;
     }
 
     @Override
