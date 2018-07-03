@@ -1,4 +1,0 @@
-Export-Package org.jboss.weld.osgi.examples.paint.square;version=${pom.version}
-Require-Capability org.ops4j.pax.cdi.extension; filter:="(&(extension=pax-cdi-extension)(version>=${version;==;${pax.cdi.version}})(!(version>=${version;=+;${pax.cdi.version}})))", osgi.extender; filter:="(osgi.extender=pax.cdi)"
-Import-Package javax.enterprise.*; version="1.0", *;,
-
