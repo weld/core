@@ -533,6 +533,7 @@ public interface ClassFileInfo {
     boolean isAssignableTo(Class<?> javaClass);
     boolean isVetoed();
     boolean isTopLevelClass();
+    NestingType getNestingType();
 -----------------------------------------------------------------------------
 
 See the JavaDoc for more details.

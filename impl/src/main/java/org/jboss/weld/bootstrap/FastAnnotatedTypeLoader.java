@@ -32,6 +32,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ClassFileInfo;
+import org.jboss.weld.resources.spi.ClassFileInfo.NestingType;
 import org.jboss.weld.resources.spi.ClassFileInfoException;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
@@ -77,6 +78,9 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
                 return null;
             }
             if (classFileInfo.isVetoed()) {
+                return null;
+            }
+            if (classFileInfo.getNestingType().equals(NestingType.NESTED_LOCAL) || classFileInfo.getNestingType().equals(NestingType.NESTED_ANONYMOUS)) {
                 return null;
             }
 
