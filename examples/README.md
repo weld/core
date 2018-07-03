@@ -7,14 +7,12 @@ Weld currently comes with a number of examples:
 * `jsf/login` (a simple war example for JSF)
 * `jsf/translator` (a simple EJB example for JSF)
 * `jsf/pastecode` (a more complex EJB example for JSF)
-* `jsf/permalink` (a more complex war example for JSF)
 * `se/numberguess` (the numberguess example for Java SE using Swing)
-* `se/helloworld` (a simple example for Java SE)
-* `osgi/paint` (a simple OSGi example)
+* `se/groovy-numberguess` (the numberguess in Groovy leveraging Swing)
 
-Before running the examples, you'll need to ensure your server supports CDI (WildFly 8 and
-GlassFish v4 both have built in support, and Weld provides support for Tomcat, Jetty and
-Google App Engine). Weld also supports Java SE and OSGi. 
+Before running the examples, you'll need to ensure your server supports CDI (WildFly and
+GlassFish both have built in support, and Weld provides support for Tomcat and Jetty servlets).
+Weld also supports Java SE and OSGi. 
 
 The examples and Weld are explained in detail in the reference guide, including
 how to deploy the examples to WildFly, and how to deploy the examples to Tomcat. Most

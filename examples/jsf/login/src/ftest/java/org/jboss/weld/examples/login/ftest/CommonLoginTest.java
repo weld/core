@@ -21,7 +21,6 @@ import static org.jboss.arquillian.graphene.Graphene.waitModel;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;

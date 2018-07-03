@@ -780,9 +780,6 @@ Adding `Weld` instance as event listener with usage of `org.jboss.weld.environme
 
 === OSGi
 
-Weld supports OSGi environment through Pax CDI. For more information on
-using Weld in OSGi environment check
-https://ops4j1.jira.com/wiki/display/PAXCDI/Pax+CDI[Pax CDI
-documentation] . In addition, Weld comes with a sample application
-called Paint which demonstrates how to use CDI with OSGi. Check
-`examples/osgi/README.md` for more information.
+Weld supports OSGi environment through Pax CDI.
+For more information on using Weld in OSGi environment check https://ops4j1.jira.com/wiki/spaces/PAXCDI/overview[Pax CDI documentation].
+If you wish to see some examples, there is plenty of them in https://github.com/ops4j/org.ops4j.pax.cdi/tree/master/pax-cdi-samples[Pax CDI repository].

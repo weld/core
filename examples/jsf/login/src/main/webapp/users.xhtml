@@ -8,7 +8,7 @@
 	<ui:define name="content">
 		<h:messages />
 		<h1>Users</h1>
-		<h:dataTable value="#{users}" var="u">
+        <h:dataTable value="#{users}" var="u" border="1">
 			<h:column>
 				<f:facet name="header">
                Username
@@ -30,9 +30,9 @@
 		</h:dataTable>
 		<h1>Add user</h1>
 		<h:form>
-			<table>
-				<tr>
-					<td>Username</td>
+            <table align="left">
+                <tr>
+                    <td>Username</td>
 					<td><h:inputText value="#{userManager.newUser.username}"/></td>
 				</tr>
 				<tr>
@@ -44,11 +44,16 @@
 					<td><h:inputText value="#{userManager.newUser.password}"/></td>
 				</tr>
 				<tr>
-					<td></td>
 					<td><h:commandButton action="#{userManager.addUser}" value="Add User" /></td>
 				</tr>
+				<tr>
+					<td><h:link outcome="/home.xhtml">View login page</h:link></td>
+				</tr>
 			</table>
+            <!--TODO FIX THE LOOKS HERE-->
+            
 		</h:form>
+        
 	</ui:define>
 </ui:composition>
 </html>
