@@ -18,15 +18,15 @@ package org.jboss.weld.module.ejb;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.BeforeDestroyed;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.context.RequestScoped;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.event.ContextEvent;
 import org.jboss.weld.event.FastEvent;
-import org.jboss.weld.literal.BeforeDestroyedLiteral;
-import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
 
@@ -48,21 +48,21 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
         private static final long serialVersionUID = 1L;
         @Override
         protected FastEvent<Object> computeValue() {
-            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), InitializedLiteral.REQUEST);
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), Initialized.Literal.REQUEST);
         }
     };
     private final LazyValueHolder<FastEvent<Object>> requestBeforeDestroyedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
         private static final long serialVersionUID = 1L;
         @Override
         protected FastEvent<Object> computeValue() {
-            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), BeforeDestroyedLiteral.REQUEST);
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), BeforeDestroyed.Literal.REQUEST);
         }
     };
     private final LazyValueHolder<FastEvent<Object>> requestDestroyedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
         private static final long serialVersionUID = 1L;
         @Override
         protected FastEvent<Object> computeValue() {
-            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), DestroyedLiteral.REQUEST);
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), Destroyed.Literal.REQUEST);
         }
     };
 

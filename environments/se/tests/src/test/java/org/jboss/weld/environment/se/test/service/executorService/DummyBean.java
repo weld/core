@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2017, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,27 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.decorators.defaultmethod;
+package org.jboss.weld.environment.se.test.service.executorService;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
-@Decorator
-public class BeanDecorator implements Decorated {
+/**
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ */
+@ApplicationScoped
+public class DummyBean {
 
-    @Inject
-    @Delegate
-    Decorated delegate;
-
-    static int decoratedInvocationCount = 0;
-
-    public static void reset() {
-        decoratedInvocationCount = 0;
-    }
-
-    public void doDecorated() {
-        decoratedInvocationCount++;
-        delegate.doDecorated();
+    public String ping() {
+        return DummyBean.class.getSimpleName();
     }
 }

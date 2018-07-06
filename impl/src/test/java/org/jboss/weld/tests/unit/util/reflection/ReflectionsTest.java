@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,24 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.literal;
+package org.jboss.weld.tests.unit.util.reflection;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.util.AnnotationLiteral;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-/**
- * Annotation literal for {@link Default}
- *
- * @author Pete Muir
- */
-@SuppressWarnings("all")
-public class DefaultLiteral extends AnnotationLiteral<Default> implements Default {
+import org.jboss.weld.util.reflection.Reflections;
+import org.junit.Test;
 
-    private static final long serialVersionUID = 5464062523108931731L;
+public class ReflectionsTest {
 
-    public static final Default INSTANCE = new DefaultLiteral();
-
-    private DefaultLiteral() {
+    @Test
+    public void decaptalizeTest() {
+        assertNull(Reflections.decapitalize(null));
+        assertEquals("", Reflections.decapitalize(""));
+        assertEquals("foo", Reflections.decapitalize("foo"));
+        assertEquals("foo", Reflections.decapitalize("Foo"));
+        assertEquals("FOO", Reflections.decapitalize("FOO"));
+        assertEquals("fooBar", Reflections.decapitalize("FooBar"));
     }
-
 }

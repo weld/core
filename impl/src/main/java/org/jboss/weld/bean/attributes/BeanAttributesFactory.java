@@ -24,6 +24,9 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.inject.Named;
 import javax.inject.Qualifier;
@@ -34,10 +37,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
-import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
@@ -53,7 +53,7 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public class BeanAttributesFactory {
 
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
 
     private BeanAttributesFactory() {
     }
@@ -66,7 +66,7 @@ public class BeanAttributesFactory {
     }
 
     public static <T> BeanAttributes<T> forNewBean(Set<Type> types, final Class<?> javaClass) {
-        Set<Annotation> qualifiers = Collections.<Annotation>singleton(new NewLiteral(javaClass));
+        Set<Annotation> qualifiers = Collections.<Annotation>singleton(New.Literal.of(javaClass));
         return new ImmutableBeanAttributes<T>(Collections.<Class<? extends Annotation>> emptySet(), false, null, qualifiers, types, Dependent.class);
     }
 
@@ -153,21 +153,21 @@ public class BeanAttributesFactory {
                 Set<Annotation> normalizedQualifiers = new HashSet<Annotation>(qualifiers.size() + 2);
                 if (qualifiers.size() == 1) {
                     Annotation qualifier = qualifiers.iterator().next();
-                    if (qualifier.annotationType().equals(Named.class) || qualifier.equals(AnyLiteral.INSTANCE)) {
+                    if (qualifier.annotationType().equals(Named.class) || qualifier.equals(Any.Literal.INSTANCE)) {
                         // Single qualifier - @Named or @Any
-                        normalizedQualifiers.add(DefaultLiteral.INSTANCE);
+                        normalizedQualifiers.add(Default.Literal.INSTANCE);
                     }
-                } else if (qualifiers.size() == 2 && qualifiers.contains(AnyLiteral.INSTANCE)) {
+                } else if (qualifiers.size() == 2 && qualifiers.contains(Any.Literal.INSTANCE)) {
                     for (Annotation qualifier : qualifiers) {
                         if (qualifier.annotationType().equals(Named.class)) {
                             // Two qualifiers - @Named and @Any
-                            normalizedQualifiers.add(DefaultLiteral.INSTANCE);
+                            normalizedQualifiers.add(Default.Literal.INSTANCE);
                             break;
                         }
                     }
                 }
                 normalizedQualifiers.addAll(qualifiers);
-                normalizedQualifiers.add(AnyLiteral.INSTANCE);
+                normalizedQualifiers.add(Any.Literal.INSTANCE);
                 if (name != null && normalizedQualifiers.remove(NamedLiteral.DEFAULT)) {
                     normalizedQualifiers.add(new NamedLiteral(name));
                 }

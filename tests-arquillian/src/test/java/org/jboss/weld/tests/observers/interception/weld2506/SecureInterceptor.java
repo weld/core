@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,30 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.literal;
 
-import javax.enterprise.inject.New;
-import javax.enterprise.util.AnnotationLiteral;
+package org.jboss.weld.tests.observers.interception.weld2506;
 
-/**
- * Annotation literal for {@link New}
- *
- * @author Pete Muir
- */
-@SuppressWarnings("all")
-public class NewLiteral extends AnnotationLiteral<New> implements New {
+import javax.annotation.Priority;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
-    private static final long serialVersionUID = 5740797331347409678L;
+import org.jboss.weld.test.util.ActionSequence;
 
-    public static final NewLiteral DEFAULT_INSTANCE = new NewLiteral(New.class);
+@Priority(1)
+@Secure
+@Interceptor
+public class SecureInterceptor {
 
-    private Class<?> value;
-
-    public NewLiteral(Class<?> value) {
-        this.value = value;
-    }
-
-    public Class<?> value() {
-        return value;
+    @AroundInvoke
+    public Object aroundInvoke(InvocationContext context) throws Exception {
+        ActionSequence.addAction(SecureInterceptor.class.getName());
+        return context.proceed();
     }
 }

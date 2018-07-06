@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,24 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.literal;
+package org.jboss.weld.tests.observers.interception.weld2506;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.util.AnnotationLiteral;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-/**
- * Annotation literal for {@link Any}
- *
- * @author Pete Muir
- */
-@SuppressWarnings("all")
-public class AnyLiteral extends AnnotationLiteral<Any> implements Any {
+import org.jboss.weld.test.util.ActionSequence;
 
-    private static final long serialVersionUID = 1L;
+@Secure
+@ApplicationScoped
+public class SelfNotify {
 
-    public static final Any INSTANCE = new AnyLiteral();
+    @Inject
+    Event<Payload> event;
 
-    private AnyLiteral() {
+    @SuppressWarnings("unused")
+    private void shouldNotThrowIAE(@Observes Payload payload) {
+        ActionSequence.addAction(SelfNotify.class.getName());
+    }
+
+    public void fireEvent() {
+        event.fire(new Payload());
+    }
+
+    static class Payload {
     }
 
 }

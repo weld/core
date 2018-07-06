@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
-import static org.junit.Assert.assertTrue;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.EVENT_INFO;
 import static org.jboss.weld.probe.Strings.QUALIFIERS;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONObject;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,9 +28,6 @@ import java.util.List;
 
 import javax.json.JsonObject;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.ReadContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -43,6 +40,10 @@ import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
 import org.jboss.weld.probe.tests.integration.deployment.beans.SessionScopedBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 
 /**
  * @author Tomas Remes
@@ -84,6 +85,21 @@ public class ProbeEventsTest extends ProbeIntegrationTest {
         //check event qualifiers
         assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=\"B\")")));
         assertTrue(qualifiers.contains("@" + Collector.class.getName().concat("(value=\"A\")")));
+    }
+
+    @Test
+    public void testContainerEventsEndpoint() throws IOException {
+        WebClient client = invokeSimpleAction(url);
+        JsonObject events = getPageAsJSONObject(JSONTestUtil.EVENTS_PATH + "?filters=kind:\"CONTAINER\"", url, client);
+
+        ReadContext ctx = JsonPath.parse(events.toString());
+        List<String> qualifiers = ctx.read("$." + DATA + "[*]." + QUALIFIERS + "[*]", List.class);
+        assertTrue("No events found !", qualifiers.size() > 0);
+
+        //check event qualifiers
+        assertTrue(qualifiers.contains("@javax.enterprise.context.Initialized(value=javax.enterprise.context.RequestScoped.class)"));
+        assertTrue(qualifiers.contains("@javax.enterprise.context.Destroyed(value=javax.enterprise.context.RequestScoped.class)"));
+        assertTrue(qualifiers.contains("@javax.enterprise.context.BeforeDestroyed(value=javax.enterprise.context.RequestScoped.class)"));
     }
 
 }

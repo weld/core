@@ -243,10 +243,6 @@
                             <suiteXmlFiles>
                                 <suiteXmlFile>src/test/tck12/tck-tests.xml</suiteXmlFile>
                             </suiteXmlFiles>
-                            <systemPropertyVariables>
-                                <!--Temporary for WFLY 12 and EE 8 mode, automatically disabled for TCK 1.2-->
-                                <ee8.preview.mode>false</ee8.preview.mode>
-                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -273,10 +269,6 @@
                             <suiteXmlFiles>
                                 <suiteXmlFile>src/test/tck20/tck-tests.xml</suiteXmlFile>
                             </suiteXmlFiles>
-                            <systemPropertyVariables>
-                                <!--Temporary for WFLY 12 and EE 8 mode, automatically enabled for TCK 2.0-->
-                                <ee8.preview.mode>true</ee8.preview.mode>
-                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>

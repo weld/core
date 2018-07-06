@@ -1,6 +1,8 @@
 .project
 .classpath
 .settings
+.factorypath
+.vscode/
 *.ipr
 .idea
 *.iws

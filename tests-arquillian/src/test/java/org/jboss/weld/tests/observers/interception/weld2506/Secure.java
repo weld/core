@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2017, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,27 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.decorators.defaultmethod;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+package org.jboss.weld.tests.observers.interception.weld2506;
 
-@Decorator
-public class BeanDecorator implements Decorated {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    @Inject
-    @Delegate
-    Decorated delegate;
+import javax.interceptor.InterceptorBinding;
 
-    static int decoratedInvocationCount = 0;
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface Secure {
 
-    public static void reset() {
-        decoratedInvocationCount = 0;
-    }
-
-    public void doDecorated() {
-        decoratedInvocationCount++;
-        delegate.doDecorated();
-    }
 }

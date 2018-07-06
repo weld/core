@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2017, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,8 +20,13 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
+/**
+ * Note: this class should not override *any* other method than the one with a default implementation.
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ */
 @Decorator
-public class BeanDecorator implements Decorated {
+public abstract class DecoratorWhichOnlyOverridesMethodWithDefaultImpl implements Decorated {
 
     @Inject
     @Delegate
@@ -33,8 +38,9 @@ public class BeanDecorator implements Decorated {
         decoratedInvocationCount = 0;
     }
 
-    public void doDecorated() {
+    @Override
+    public void defaultDecorated() {
         decoratedInvocationCount++;
-        delegate.doDecorated();
+        delegate.defaultDecorated();
     }
 }
