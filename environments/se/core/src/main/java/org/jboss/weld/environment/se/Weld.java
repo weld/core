@@ -68,6 +68,7 @@ import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.bootstrap.spi.Scanning;
 import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
@@ -1060,7 +1061,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     protected BeansXml buildSyntheticBeansXml() {
         return new BeansXmlImpl(ImmutableList.copyOf(selectedAlternatives), ImmutableList.copyOf(selectedAlternativeStereotypes),
-                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), null, null, beanDiscoveryMode, null, false);
+                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), Scanning.EMPTY_SCANNING, null, beanDiscoveryMode, null, false);
     }
 
     private MetadataImpl<String> syntheticMetadata(Class<?> clazz) {
