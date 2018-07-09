@@ -55,7 +55,6 @@ public class StartMain {
     public static void main(String[] args) {
         try {
             new StartMain(args).go();
-            System.exit(0);
         } catch(Throwable t) {
             WeldSELogger.LOG.error("Application exited with an exception", t);
             System.exit(1);
