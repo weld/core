@@ -287,11 +287,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-managed-8</id>
+            <id>arquillian-wildfly-managed</id>
             <activation>
                 <property>
                     <name>arquillian</name>
-                    <value>wildfly-managed-8</value>
+                    <value>wildfly-managed</value>
                 </property>
             </activation>
             <dependencies>
@@ -304,11 +304,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-remote-8</id>
+            <id>arquillian-wildfly-remote</id>
             <activation>
                 <property>
                     <name>arquillian</name>
-                    <value>wildfly-remote-8</value>
+                    <value>wildfly-remote</value>
                 </property>
             </activation>
             <dependencies>
@@ -321,11 +321,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-cluster-8</id>
+            <id>arquillian-wildfly-cluster</id>
             <activation>
                 <property>
                     <name>arquillian</name>
-                    <value>wildfly-cluster-8</value>
+                    <value>wildfly-cluster</value>
                 </property>
             </activation>
             <dependencies>
