@@ -192,11 +192,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-managed-8</id>
+            <id>arquillian-wildfly-managed</id>
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-remote-8</id>
+            <id>arquillian-wildfly-remote</id>
         </profile>
 
         <profile>
