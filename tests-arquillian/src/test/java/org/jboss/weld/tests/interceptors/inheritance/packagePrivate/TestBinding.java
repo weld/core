@@ -14,27 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptor.inheritance.packagePrivate;
+package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
 
-import javax.annotation.Priority;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.interceptor.InterceptorBinding;
 
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-@Interceptor
-@Priority(1)
-@TestBinding
-public class SomeInterceptor {
-
-    public static int invocationCount = 0;
-
-    @AroundInvoke
-    public Object interceptService(InvocationContext invocationContext) throws Exception {
-        invocationCount++;
-        return invocationContext.proceed();
-    }
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface TestBinding {
+    
 }
