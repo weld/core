@@ -23,11 +23,16 @@ import javax.enterprise.context.ApplicationScoped;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
-public class ActualImpl extends AbstractPackagePrivateClass{
+public class ActualImpl extends AbstractPackagePrivateClass<Integer>{
 
     @Override
     public String abstractMethod() {
         return ActualImpl.class.getSimpleName();
+    }
+
+    @Override
+    @TestBinding
+    public void foo(Integer param) {
     }
     
 }
