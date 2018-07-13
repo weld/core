@@ -22,7 +22,7 @@ package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @TestBinding
-abstract class AbstractPackagePrivateClass {
+abstract class AbstractPackagePrivateClass<S extends Number> {
 
     @TestBinding
     public String implementedMethod() {
@@ -31,4 +31,6 @@ abstract class AbstractPackagePrivateClass {
     
     @TestBinding
     public abstract String abstractMethod();
+    
+    public abstract void foo(S param);
 }
