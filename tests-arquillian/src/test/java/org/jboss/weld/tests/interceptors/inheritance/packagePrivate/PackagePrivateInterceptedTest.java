@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptor.inheritance.packagePrivate;
+package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
 
 import javax.inject.Inject;
 

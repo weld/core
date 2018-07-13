@@ -14,20 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptor.inheritance.packagePrivate;
-
-import javax.enterprise.context.ApplicationScoped;
+package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
 
 /**
+ * Class is intentionally kept as package private
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-@ApplicationScoped
-public class ActualImpl extends AbstractPackagePrivateClass{
+@TestBinding
+abstract class AbstractPackagePrivateClass {
 
-    @Override
-    public String abstractMethod() {
-        return ActualImpl.class.getSimpleName();
+    @TestBinding
+    public String implementedMethod() {
+        return AbstractPackagePrivateClass.class.getSimpleName();
     }
     
+    @TestBinding
+    public abstract String abstractMethod();
 }
