@@ -192,7 +192,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                         if (Modifier.isFinal(method.getModifiers())) {
                             finalMethods.add(methodSignature);
                         }
-                        if (method.isBridge() && !superClassAbstractAndPackagePrivate(cls)) {
+                        if (method.isBridge() && !superClassAbstractAndPackagePrivate(cls, method)) {
                             declaredBridgeMethods.add(new BridgeMethod(methodSignature, method.getGenericReturnType()));
                         }
                     }
@@ -245,13 +245,26 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      *
      * @return true if the super class exists and is abstract and package private
      */
-    private boolean superClassAbstractAndPackagePrivate(Class<?> clazz) {
+    private boolean superClassAbstractAndPackagePrivate(Class<?> clazz, Method methodFromClazz) {
         Class<?> superClass = clazz.getSuperclass();
         if (superClass == null) {
             return false;
         }
         int modifiers = superClass.getModifiers();
-        return Modifier.isAbstract(modifiers) && Reflections.isPackagePrivate(modifiers);
+        if (Modifier.isAbstract(modifiers) && Reflections.isPackagePrivate(modifiers)) {
+            // if superclass is abstract, we need to dig deeper
+            for (Method m : superClass.getDeclaredMethods()) {
+                if (m.getReturnType().equals(methodFromClazz.getReturnType())
+                    && m.getName().equals(methodFromClazz.getName())
+                    && !Reflections.isAbstract(m)) {
+                    // this is the case we are after -> methods have same signature and the one in super class has actual implementation
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+        return false;
     }
 
     private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType, boolean isMethodAbstract) {
