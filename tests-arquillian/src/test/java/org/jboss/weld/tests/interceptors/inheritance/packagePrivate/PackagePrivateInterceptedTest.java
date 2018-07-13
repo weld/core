@@ -43,11 +43,12 @@ public class PackagePrivateInterceptedTest {
     }
     
     @Inject
-    AbstractPackagePrivateClass bean;
+    AbstractPackagePrivateClass<Integer> bean;
     
     @Test
     public void testInvocationIntercepted() {
         bean.implementedMethod();
-        Assert.assertEquals(1, SomeInterceptor.invocationCount);
+        bean.foo(null);
+        Assert.assertEquals(2, SomeInterceptor.invocationCount);
     }
 }
