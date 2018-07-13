@@ -14,22 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptor.inheritance.packagePrivate;
+package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import javax.interceptor.InterceptorBinding;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-@InterceptorBinding
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface TestBinding {
+@ApplicationScoped
+public class ActualImpl extends AbstractPackagePrivateClass{
+
+    @Override
+    public String abstractMethod() {
+        return ActualImpl.class.getSimpleName();
+    }
     
 }

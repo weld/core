@@ -251,7 +251,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             return false;
         }
         int modifiers = superClass.getModifiers();
-        return Modifier.isAbstract(modifiers) && !Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers) && !Modifier.isPublic(modifiers);
+        return Modifier.isAbstract(modifiers) && Reflections.isPackagePrivate(modifiers);
     }
 
     private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType, boolean isMethodAbstract) {
