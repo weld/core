@@ -22,15 +22,19 @@ package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @TestBinding
-abstract class AbstractPackagePrivateClass<S extends Number> {
+abstract class AbstractPackagePrivateClass<S extends Number> extends SuperAbstractPackagePrivateClass<Number> {
 
     @TestBinding
     public String implementedMethod() {
         return AbstractPackagePrivateClass.class.getSimpleName();
     }
-    
-    @TestBinding
+
     public abstract String abstractMethod();
-    
+
+    // For this method a bridge method that needs to be processed is generated
     public abstract void foo(S param);
+
+    // This method has intentionally the same name as foo(S) but different signature
+    public void foo() {
+    }
 }
