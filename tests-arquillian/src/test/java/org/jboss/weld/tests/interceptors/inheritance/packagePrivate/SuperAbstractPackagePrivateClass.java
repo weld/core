@@ -16,27 +16,15 @@
  */
 package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Priority;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-
 /**
+ * Class is intentionally kept as package private.
  *
- * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ * @author Martin Kouba
  */
-@Interceptor
-@Priority(1)
-@TestBinding
-public class SomeInterceptor {
+abstract class SuperAbstractPackagePrivateClass<S extends Number> {
 
-    static final AtomicInteger INVOCATION_COUNT = new AtomicInteger(0);
-
-    @AroundInvoke
-    public Object interceptService(InvocationContext invocationContext) throws Exception {
-        INVOCATION_COUNT.incrementAndGet();
-        return invocationContext.proceed();
+    @TestBinding
+    public String implementedMethod(String param) {
+        return "ping";
     }
 }

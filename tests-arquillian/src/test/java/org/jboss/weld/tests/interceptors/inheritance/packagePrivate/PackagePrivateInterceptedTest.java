@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -24,7 +26,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,18 +38,33 @@ public class PackagePrivateInterceptedTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PackagePrivateInterceptedTest.class))
-            .intercept(SomeInterceptor.class)
-            .addPackage(PackagePrivateInterceptedTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(PackagePrivateInterceptedTest.class))
+                .intercept(SomeInterceptor.class)
+                .addPackage(PackagePrivateInterceptedTest.class.getPackage());
     }
-    
+
     @Inject
     AbstractPackagePrivateClass<Integer> bean;
-    
+
+    @Inject
+    ActualImpl actualImpl;
+
     @Test
     public void testInvocationIntercepted() {
+        SomeInterceptor.INVOCATION_COUNT.set(0);
         bean.implementedMethod();
-        bean.foo(null);
-        Assert.assertEquals(2, SomeInterceptor.invocationCount);
+        bean.implementedMethod("foo");
+        bean.abstractMethod();
+        bean.foo(2);
+        assertEquals(4, SomeInterceptor.INVOCATION_COUNT.get());
+
+        SomeInterceptor.INVOCATION_COUNT.set(0);
+        actualImpl.implementedMethod();
+        actualImpl.implementedMethod("foo");
+        actualImpl.abstractMethod();
+        actualImpl.foo(1);
+        assertEquals(4, SomeInterceptor.INVOCATION_COUNT.get());
     }
 }

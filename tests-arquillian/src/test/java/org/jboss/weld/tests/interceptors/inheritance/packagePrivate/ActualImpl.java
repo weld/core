@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ActualImpl extends AbstractPackagePrivateClass<Integer>{
 
+    @TestBinding
     @Override
     public String abstractMethod() {
         return ActualImpl.class.getSimpleName();
@@ -34,5 +35,5 @@ public class ActualImpl extends AbstractPackagePrivateClass<Integer>{
     @TestBinding
     public void foo(Integer param) {
     }
-    
+
 }
