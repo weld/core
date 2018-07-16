@@ -60,7 +60,6 @@ public class StartMain {
     public static void main(String[] args) {
         try {
             new StartMain(args).go();
-            System.exit(0);
         } catch (Throwable t) {
             StreamSupport.stream(exceptionHandlerLoader.spliterator(), false)
                     .filter(eh -> eh.supports(t))
