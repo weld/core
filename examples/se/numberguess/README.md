@@ -3,9 +3,10 @@ Weld SE Numberguess example (Swing)
 
 Running the Example
 -------------------
-As with all Weld SE applications, this example is executed
-by starting Java with `org.jboss.weld.environment.se.StartMain`
-as the main class. Of course you will need all of the relevant jar dependencies
+To start this Weld SE application you can either choose to start it with `org.jboss.weld.environment.se.StartMain` or `org.jboss.weld.environment.se.example.numberguess.Main`.
+The former is a well known defualt which attempts to discover beans on classpath and then boots the application.
+The latter is a synthetic archive which has defined components and disables discovery leading to a minimal, quickly booting application.
+Of course you will need all of the relevant jar dependencies
 on your classpath, which is most easily done by loading the project into your
 favourite Maven-capable IDE and running it from there.
 
@@ -39,9 +40,10 @@ ready-made index and uses it to discover classes even faster.
 To run the example in this configuration, run:
 
         mvn clean package -Pjandex,jandex-index dependency:copy-dependencies -Dmdep.stripVersion
-        java -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar:target/dependency/jandex.jar org.jboss.weld.environment.se.example.numberguess.Main
+        java -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar:target/dependency/jandex.jar org.jboss.weld.environment.se.StartMain
 
 In the log, you should see a confirmation that existing Jandex index was found and used.
+Note that in order for Jandex to be leveraged, you need to start your application with bean discovery enabled (e.g. via `org.jboss.weld.environment.se.StartMain`).
 
 Running the Example with SecurityManager enabled
 ------------------------------------------------
