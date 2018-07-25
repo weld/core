@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.0.5.Final</version>
 
     <name>Weld Parent</name>
 
@@ -37,7 +37,7 @@
         <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
         <!-- A property which is handed over to WFLY container through Arquillian, allows to configure server-specific options -->
-        <additional.jboss.args></additional.jboss.args>
+        <additional.jboss.args />
 
         <manifest.specification.title>JSR-365 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
@@ -601,7 +601,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>3.0.0-SNAPSHOT</tag>
+        <tag>3.0.5.Final</tag>
     </scm>
 
 
