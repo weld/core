@@ -198,7 +198,7 @@ public class Beans {
     public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings,
             Set<QualifierInstance> existingBindings, BeanManagerImpl manager) {
         final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(QualifierInstance.of(expectedBindings, manager.getServices().get(MetaAnnotationStore.class)));
-        return manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
+        return expected.isEmpty() ? false : manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
     }
 
     /**
