@@ -723,6 +723,14 @@ Another approach is to use `Weld.property()` and `SeContainerInitializer.addProp
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
+==== Extending Bean Defining Annotations
+
+If you are running with discovery mode `annotated`, then only classes with bean defining annotations will be picked up as beans.
+The set of these annotations is given by CDI but Weld SE allows you to expand it via `Weld.addBeanDefiningAnnotations(Class<? extends Annotation>... annotations)`.
+Any annotation added this way will be considered a bean defining annotation when performing discovery.
+
+Just note that added annotations are ignored if you are also using `<trim/>` option or Weld configuration key `org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation`.
+
 === Weld SE and Weld Servlet cooperation
 
 Sometimes it could be convenient to start Servlet container programmatically.
