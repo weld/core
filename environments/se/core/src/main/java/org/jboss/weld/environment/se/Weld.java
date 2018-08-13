@@ -237,6 +237,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     protected final Set<Class<?>> beanClasses;
 
+    protected final Set<Class<? extends Annotation>> extendedBeanDefiningAnnotations;
+
     protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
 
     private final List<Metadata<String>> selectedAlternatives;
@@ -282,6 +284,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         this.containerLifecycleObservers = new LinkedList<>();
         this.resourceLoader = new WeldResourceLoader();
         this.additionalServices = new HashMap<>();
+        this.extendedBeanDefiningAnnotations = new HashSet();
     }
 
     /**
@@ -888,6 +891,22 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
+     * Registers annotations which will be considered as bean defining annotations.
+     *
+     * NOTE - If used along with {@code <trim/>} bean archives and/or with Weld configuration key
+     * {@code org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation}, these annotations will be ignored.
+     *
+     * @param annotations annotations which will be considered as Bean Defining Annotations.
+     * @return self
+     */
+    public Weld addBeanDefiningAnnotations(Class<? extends Annotation>... annotations) {
+        for (Class<? extends Annotation> annotation : annotations) {
+            this.extendedBeanDefiningAnnotations.add(annotation);
+        }
+        return this;
+    }
+
+    /**
      * <p>
      * Extensions to Weld SE can subclass and override this method to customize the deployment before weld boots up. For example, to add a custom
      * ResourceLoader, you would subclass Weld like so:
@@ -923,6 +942,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             .addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
             // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
             .add(ThreadScoped.class)
+            // Add all custom bean defining annotations user registered via Weld.addBeanDefiningAnnotations()
+            .addAll(extendedBeanDefiningAnnotations)
             .build();
 
         if (discoveryEnabled) {
