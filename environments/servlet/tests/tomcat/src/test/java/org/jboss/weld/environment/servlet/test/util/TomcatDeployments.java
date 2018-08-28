@@ -14,6 +14,7 @@ public final class TomcatDeployments {
             "<Manager pathname=\"\" />" +
             "<Resource name=\"BeanManager\" auth=\"Container\" type=\"javax.inject.manager.BeanManager\" factory=\"org.jboss.weld.resources.ManagerObjectFactory\"/>" +
             "<Environment name=\"foo\" value=\"bar\" type=\"java.lang.String\"/>" +
+            "<JarScanner scanManifest=\"false\"/>" +
         "</Context>");
 
     public static <W extends WebArchive> W apply(W archive) {
