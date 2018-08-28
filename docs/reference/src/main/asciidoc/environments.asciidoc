@@ -92,13 +92,11 @@ Setting the identifier is as simple as adding one context parameter into `web.xm
 
 ==== Tomcat
 
-Tomcat 7 and 8 are supported. Context activation/deactivation and dependency
-injection into Servlets and Filters works out of the box. Injection into Servlet listeners works on
-Tomcat 7.0.50 and newer.
+Tomcat 9, which implements Servlet 4.0 specification, is supported.
 
 ===== Binding BeanManager to JNDI
 
-What does not work out of the box is binding BeanManager to JNDI.
+Binding BeanManager to JNDI does not work out of the box.
 Tomcat has a read-only JNDI, so Weld can't automatically bind the
 BeanManager extension SPI. To bind the BeanManager into JNDI, you should
 populate `META-INF/context.xml` in the web root with the following
