@@ -414,3 +414,28 @@ public class AroundConstructInterceptor {
     }
 }
 -------------------------------------------------------------------------------------------------
+
+=== Loosening the limitations of `InterceptionFactory`
+
+CDI 2.0 introduced the `InterceptionFactory` which can be used to intercept a bean created via producer methods.
+The specification is a bit vague when it comes to boundaries of this feature - can interfaces be used or are we limited to implementation classes only?
+While it is safe to assume only the later, Weld supports both.
+
+E.g. given `SomeImpl` is an implementation of interface `SomeInterface` and `InterceptThis` is an `InterceptorBinding`, both producers work:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------
+    @Produces
+    @ApplicationScoped
+    public SomeImpl produceBeanBasedOnImplClass(InterceptionFactory<SomeImpl> interceptionFactory) {
+        interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeImpl());
+    }
+
+    @Produces
+    @ApplicationScoped
+    public SomeInterface produceBeanBasedOnInterface(InterceptionFactory<SomeInterface> interceptionFactory) {
+        interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeImpl());
+    }
+-------------------------------------------------------------------------------------------------
