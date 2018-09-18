@@ -112,10 +112,6 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
         }
         used = true;
 
-        if (annotatedType.getJavaClass().isInterface()) {
-            throw InterceptorLogger.LOG.interceptionFactoryNotOnInstance(annotatedType.getJavaClass().getCanonicalName());
-        }
-
         Optional<InterceptionFactoryData<T>> cached = beanManager.getServices().get(InterceptionFactoryDataCache.class)
                 .getInterceptionFactoryData(configurator != null ? configurator.complete() : annotatedType);
 

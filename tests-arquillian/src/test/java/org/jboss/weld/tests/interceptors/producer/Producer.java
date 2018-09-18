@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.interceptors.producer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +100,7 @@ public class Producer {
             }
             return false;
         }).findFirst().get().add(Monitor.Literal.INSTANCE);
-        return interceptionFactory.createInterceptedInstance(new ArrayList<>());
+        return interceptionFactory.createInterceptedInstance(new ArrayList<>(Arrays.asList("ping", "pong")));
     }
 
 

@@ -903,6 +903,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         return true;
     }
 
+    protected Class<?> getProxiedBeanType() {
+        return proxiedBeanType;
+    }
+
     /**
      * @return {@code true} if {@link #CONSTRUCTED_FLAG_NAME} should be used
      */

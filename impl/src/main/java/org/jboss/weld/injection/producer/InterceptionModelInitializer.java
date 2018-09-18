@@ -113,7 +113,7 @@ public class InterceptionModelInitializer<T> {
             if (annotatedType.isFinal()) {
                 throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(annotatedType.getJavaClass());
             }
-            if (Reflections.isPrivate(constructor.getJavaMember())) {
+            if (constructor != null && Reflections.isPrivate(constructor.getJavaMember())) {
                 throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass().getName(), constructor, annotatedType.getJavaClass()));
             }
             manager.getInterceptorModelRegistry().put(annotatedType.slim(), interceptionModel);
@@ -167,7 +167,7 @@ public class InterceptionModelInitializer<T> {
     private void initLifeCycleInterceptor(InterceptionType interceptionType, AnnotatedConstructor<?> constructor, Set<Annotation> annotations) {
         List<Interceptor<?>> resolvedInterceptors = manager.resolveInterceptors(interceptionType, annotations);
         if (!resolvedInterceptors.isEmpty()) {
-            if(constructor != null) {
+            if (constructor != null) {
                 builder.interceptGlobal(interceptionType, constructor.getJavaMember(),  asInterceptorMetadata(resolvedInterceptors), annotations);
             } else {
                 builder.interceptGlobal(interceptionType, null, asInterceptorMetadata(resolvedInterceptors), null);
@@ -214,6 +214,9 @@ public class InterceptionModelInitializer<T> {
      */
 
     private void initCdiConstructorInterceptors(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+        if (constructor == null) {
+            return;
+        }
         Set<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations, constructor.getMetaAnnotations(InterceptorBinding.class));
         if (constructorBindings.isEmpty()) {
             return;
@@ -243,7 +246,7 @@ public class InterceptionModelInitializer<T> {
      */
     private void initClassDeclaredEjbInterceptors() {
         Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
-        boolean excludeClassLevelAroundConstructInterceptors = constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
+        boolean excludeClassLevelAroundConstructInterceptors = constructor != null && constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {
@@ -267,6 +270,9 @@ public class InterceptionModelInitializer<T> {
      * Constructor-level EJB-style interceptors
      */
     public void initConstructorDeclaredEjbInterceptors() {
+        if (constructor == null) {
+            return;
+        }
         Class<?>[] constructorDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
         if (constructorDeclaredInterceptors != null) {
             for (Class<?> clazz : constructorDeclaredInterceptors) {
