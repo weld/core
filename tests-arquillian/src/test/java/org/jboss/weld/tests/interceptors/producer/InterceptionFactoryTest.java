@@ -31,7 +31,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.interceptors.producer.Producer.Bar;
 import org.jboss.weld.tests.interceptors.producer.Producer.Foo;
@@ -93,17 +92,13 @@ public class InterceptionFactoryTest {
     }
 
     @Test
-    public void testListAdd(@Produced Instance<List<Object>> lists) {
-        // resolving via Instance just to make the NPE exception human-readable (direct method injection will blow up with Arq. stack)
-        // Invalid producer using an InterceptionFactory for List (interface) and applying it to ArrayList
-        try {
-            lists.get();
-            fail();
-        } catch (IllegalStateException e) {
-            //Expected
-        }
+    public void testListAdd(@Produced List<Object> list) {
+    	list.add("pang");
+        assertEquals(1, Producer.INVOCATIONS.size());
+        assertEquals(Arrays.toString(new String[] { "pang" }), Producer.INVOCATIONS.get(0));
+        assertEquals(3, list.size());
+        assertEquals(1, Producer.INVOCATIONS.size()); // list.size() should not be intercepted
     }
-
 
     @Test
     public void testParent(@Produced Producer.FooParent foo) {

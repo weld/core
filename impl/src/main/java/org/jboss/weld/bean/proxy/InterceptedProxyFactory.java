@@ -24,6 +24,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jboss.classfilewriter.ClassFile;
@@ -82,9 +83,14 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
             final Set<MethodSignature> finalMethods = new HashSet<MethodSignature>();
             final Set<MethodSignature> processedBridgeMethods = new HashSet<MethodSignature>();
 
-            // Add all methods from the class hierarchy
-            Class<?> cls = getBeanType();
-            while (cls != null) {
+            // Add all methods from the class hierarchy + proxied type
+            Set<Class<?>> classes = new LinkedHashSet<>();
+            for (Class<?> cls = getBeanType(); cls != null; cls = cls.getSuperclass()) {
+                classes.add(cls);
+            }
+            classes.add(getProxiedBeanType());
+
+            for (Class<?> cls : classes) {
                 Set<MethodSignature> declaredBridgeMethods = new HashSet<MethodSignature>();
                 for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
 
@@ -207,7 +213,6 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
                     }
                 }
                 processedBridgeMethods.addAll(declaredBridgeMethods);
-                cls = cls.getSuperclass();
             }
         } catch (Exception e) {
             throw new WeldException(e);
