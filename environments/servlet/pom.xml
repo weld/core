@@ -27,7 +27,7 @@
 
     <properties>
         <jsf.version>2.3</jsf.version>
-        <tomcat.version>9.0.11</tomcat.version>
+        <tomcat.version>9.0.12</tomcat.version>
         <jetty.version>9.3.6.v20151106</jetty.version>
         <jetty9.asm.version>5.0.3</jetty9.asm.version>
         <!-- Jetty 6 API is used for GWT support only -->
