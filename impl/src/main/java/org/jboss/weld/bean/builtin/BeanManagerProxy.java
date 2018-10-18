@@ -21,6 +21,7 @@ import static org.jboss.weld.ContainerState.SHUTDOWN;
 import java.io.ObjectStreamException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -272,4 +273,13 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
         delegate().disposeAnnotatedType(type, id);
     }
 
+    @Override
+    public boolean isContextActive(Class<? extends Annotation> scopeType) {
+        return delegate().isContextActive(scopeType);
+    }
+
+    @Override
+    public Collection<Class<? extends Annotation>> getScopes() {
+        return delegate().getScopes();
+    }
 }

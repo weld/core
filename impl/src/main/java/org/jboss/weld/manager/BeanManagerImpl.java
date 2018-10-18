@@ -653,13 +653,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return PassivatingContextWrapper.unwrap(getContext(scopeType));
     }
 
-    /**
-     * Indicates whether there is an active context for a given scope.
-     *
-     * @throws IllegalStateException if there are multiple active scopes for a given context
-     * @param scopeType
-     * @return true if there is an active context for a given scope, false otherwise
-     */
+    @Override
     public boolean isContextActive(Class<? extends Annotation> scopeType) {
         return internalGetContext(scopeType) != null;
     }
@@ -1577,6 +1571,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 BootstrapLogger.LOG.catchingDebug(ignored);
             }
         }
+    }
+
+    @Override
+    public Collection<Class<? extends Annotation>> getScopes() {
+        return Collections.unmodifiableCollection(contexts.keySet());
     }
 
     private void removeUnusedBeans() {
