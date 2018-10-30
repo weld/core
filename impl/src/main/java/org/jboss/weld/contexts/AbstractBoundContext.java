@@ -16,8 +16,16 @@
  */
 package org.jboss.weld.contexts;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.weld.context.BoundContext;
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.contexts.beanstore.BeanStore;
 import org.jboss.weld.contexts.beanstore.BoundBeanStore;
+import org.jboss.weld.contexts.beanstore.LockedBean;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
  * Base class for contexts using a thread local to store a bound bean context
@@ -83,6 +91,40 @@ public abstract class AbstractBoundContext<S> extends AbstractManagedContext imp
             }
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public Collection<ContextualInstance<?>> getAllContextualInstances() {
+        Set<ContextualInstance<?>> result = new HashSet<>();
+        // for instance lazily initialized conversation scope may be active but have null here
+        BeanStore beanStore = getBeanStore();
+        if (beanStore != null) {
+            getBeanStore().iterator().forEachRemaining((BeanIdentifier beanId) -> {
+                result.add(getBeanStore().get(beanId));
+            });
+        }
+        return result;
+    }
+
+    @Override
+    public void clearAndSet(Collection<ContextualInstance<?>> setOfInstances) {
+        // bound context can be multithreaded, in such case we perform locking
+        BoundBeanStore boundBeanStore = getBeanStore();
+        boundBeanStore.clear();
+        for (ContextualInstance<?> contextualInstance : setOfInstances) {
+            BeanIdentifier id = getId(contextualInstance.getContextual());
+            LockedBean lock = null;
+            try {
+                if (isMultithreaded()) {
+                    lock = boundBeanStore.lock(id);
+                }
+                getBeanStore().put(getId(contextualInstance.getContextual()), contextualInstance);
+            } finally {
+                if (lock != null) {
+                lock.unlock();
+                }
+            }
         }
     }
 }

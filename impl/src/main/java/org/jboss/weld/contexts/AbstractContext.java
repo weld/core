@@ -195,4 +195,8 @@ public abstract class AbstractContext implements AlterableContext {
     protected void checkContextInitialized() {
     }
 
+    protected boolean isMultithreaded() {
+        return multithreaded;
+    }
+
 }
