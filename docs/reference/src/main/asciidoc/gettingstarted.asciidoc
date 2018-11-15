@@ -7,10 +7,10 @@ a web (war) example containing only non-transactional managed beans.
 This example can be run on a wide range of servers, including WildFly ,
 GlassFish, Apache Tomcat, Jetty, and any compliant
 Java EE 7 container. Translator is an enterprise (ear) example that
-contains session beans. This example must be run on WildFly 8 or better,
-GlassFish 4 or better, or any compliant Java EE 7 container.
+contains session beans. This example must be run on WildFly 14 or better,
+GlassFish 5 or better, or any compliant Java EE 8 container.
 
-Both examples use JSF 2.2 as the web framework and, as such, can be
+Both examples use JSF 2.3 as the web framework and, as such, can be
 found in the `examples/jsf` directory of the Weld distribution.
 
 === Prerequisites
@@ -21,8 +21,8 @@ following:
 * the latest release of Weld, which contains the examples
 * Maven 3, to build and deploy the examples
 * optionally, a supported runtime environment (minimum versions shown)
-** WildFly 8.0.0.Final (10.1.0.Final recommended),
-** GlassFish 4.0,
+** WildFly 14.0.1.Final (14.0.1.Final recommended),
+** GlassFish 5.0,
 ** Apache Tomcat 9 or better (war example only), or
 ** Jetty 9 or better (war example only)
 
@@ -30,7 +30,7 @@ In the next few sections, you'll be using the Maven command (`mvn`) to
 invoke the Maven project file in each example to compile, assemble and
 deploy the example to WildFly and, for the war example, Apache Tomcat.
 You can also deploy the generated artifact (war or ear) to any other
-container that supports Java EE 7, such as GlassFish 4.
+container that supports Java EE 8, such as GlassFish 5.
 
 The sections below cover the steps for deploying with Maven in detail.
 
@@ -62,8 +62,8 @@ installation directory, or `JBOSS_HOME`.
 
 [source, console]
 --------------------------------
-$> unzip wildfly-10.1.0.Final.zip
-$> mv wildfly-10.*/ wildfly-10
+$> unzip wildfly-14.0.0.Final.zip
+$> mv wildfly-14.*/ wildfly-14
 --------------------------------
 
 In order for the build scripts to know where to deploy the example, you
@@ -119,7 +119,7 @@ expected. Run:
 
 [source, console]
 --------------------------------------------
-$> mvn verify -Darquillian=wildfly-managed-8
+$> mvn verify -Darquillian=wildfly-managed
 --------------------------------------------
 
 You should see the following output:
@@ -137,11 +137,11 @@ example directory and execute the deploy target:
 [source, console]
 ---------------------------------
 $> cd examples/jsf/translator/ear
-$> mvn jboss-as:run
+$> mvn wildfly:deploy
 ---------------------------------
 
 NOTE: The translator uses session beans, which are packaged in an EJB module
-within an ear. Java EE 7 allows session beans to be deployed in war
+within an ear. Java EE 8 allows session beans to be deployed in war
 modules, but that's a topic for a later chapter.
 
 Again, wait a few seconds for the application to deploy (if you're
@@ -153,18 +153,18 @@ Again, functional tests can be running by executing:
 [source, console]
 --------------------------------------------
 $> cd examples/jsf/translator/ftest
-$> mvn verify -Darquillian=wildfly-managed-8
+$> mvn verify -Darquillian=wildfly-managed
 --------------------------------------------
 
 === Deploying to GlassFish
 
 Deploying to GlassFish should be easy and familiar, right? After all,
-it's the Java EE 7 reference implementation and Weld is the CDI
+it's the Java EE 8 reference implementation and Weld is the CDI
 reference implementation, meaning Weld gets bundled with GlassFish. So
 yes, it's all quite easy and familiar.
 
 To deploy the examples to GlassFish, you'll need a
-https://glassfish.java.net/download.html[GlassFish 4.0] release. Select
+https://javaee.github.io/glassfish/download[GlassFish 5.0] release. Select
 the release that ends in either `-unix.sh` or `-windows.exe` depending
 on your platform. After the download is complete, execute the installer.
 On Linux/Unix, you'll need to first make the script executable.
