@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2018, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,28 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.interceptors.producer;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.enterprise.inject.Vetoed;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.interceptor.InterceptorBinding;
+/**
+ *
+ * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ */
+@Vetoed
+public interface SomeInterface {
 
-@InterceptorBinding
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
-public @interface Hello {
+    String ping(Long l, String s);
 
-    @SuppressWarnings("all")
-    public static class Literal extends AnnotationLiteral<Hello> implements Hello {
+    String ping(Double d, String s);
 
-        private Literal() {
-        }
-
-        public static final Literal INSTANCE = new Literal();
-    }
+    String pong();
 }
