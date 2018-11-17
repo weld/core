@@ -1,0 +1,36 @@
+[[weldmanager]]
+== `WeldManager` interface
+
+`WeldManager` is an enhanced version of `BeanManager` which contains several additional methods.
+While some of them are designed to be used by integrators such as WildFly, others can be handy for users writing their CDI applications.
+Beginning with 3.1.0.Final, there is a built-in bean provided so that you can easily obtain it via `@Inject WeldManager`.
+
+Here is a list of methods that this interface offers on top of what you can find in `BeanManager`:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------------------------------------------------------
+public interface WeldManager extends BeanManager {
+
+    <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor);
+    <T> Bean<T> getBean(EjbDescriptor<T> descriptor);
+    <T> EjbDescriptor<T> getEjbDescriptor(String ejbName);
+    ServiceRegistry getServices();
+    <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> type);
+    <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget);
+    String getId();
+    Instance<Object> instance();
+    <T> WeldInjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> type);
+    <T> WeldCreationalContext<T> createCreationalContext(Contextual<T> contextual);
+    Bean<?> getPassivationCapableBean(BeanIdentifier identifier);
+    <T> WeldInjectionTargetBuilder<T> createInjectionTargetBuilder(AnnotatedType<T> type);
+    WeldManager unwrap();
+    <T> AnnotatedType<T> createAnnotatedType(Class<T> type, String id);
+    <T> void disposeAnnotatedType(Class<T> type, String id);
+    boolean isContextActive(Class<? extends Annotation> scopeType);
+    Collection<Class<? extends Annotation>> getScopes();
+    Collection<Context> getActiveContexts();
+    Collection<WeldAlterableContext> getActiveWeldAlterableContexts();
+}
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Please refer to the link:https://github.com/weld/api/blob/master/weld-spi/src/main/java/org/jboss/weld/manager/api/WeldManager.java[JavaDoc in the API] to see what each method does.
