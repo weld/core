@@ -81,7 +81,7 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> extends Forwardin
     }
 
     protected void registerOuterDecorator(ProxyObject instance, T outerDelegate) {
-        CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) instance.getHandler();
+        CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) instance.weld_getHandler();
         wrapperMethodHandler.setOuterDecorator(outerDelegate);
     }
 

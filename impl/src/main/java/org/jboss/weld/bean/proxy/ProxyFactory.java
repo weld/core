@@ -314,7 +314,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      */
     public T create(BeanInstance beanInstance) {
         final T proxy = (System.getSecurityManager() == null) ? run() : AccessController.doPrivileged(this);
-        ((ProxyObject) proxy).setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
+        ((ProxyObject) proxy).weld_setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
         return proxy;
     }
 
@@ -392,7 +392,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     public static <T> void setBeanInstance(String contextId, T proxy, BeanInstance beanInstance, Bean<?> bean) {
         if (proxy instanceof ProxyObject) {
             ProxyObject proxyView = (ProxyObject) proxy;
-            proxyView.setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
+            proxyView.weld_setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
         }
     }
 
@@ -796,8 +796,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 final ClassMethod classMethod = proxyClassType.addMethod(method);
                 createInterceptorBody(classMethod, methodInfo, staticConstructor);
             }
-            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("getTargetInstance");
-            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("getTargetClass");
+            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("weld_getTargetInstance");
+            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("weld_getTargetClass");
 
             MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
             createInterceptorBody(proxyClassType.addMethod(getInstanceMethod), getInstanceMethodInfo, staticConstructor);
@@ -806,10 +806,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
             createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo, staticConstructor);
 
-            Method setMethodHandlerMethod = ProxyObject.class.getMethod("setHandler", MethodHandler.class);
+            Method setMethodHandlerMethod = ProxyObject.class.getMethod("weld_setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
 
-            Method getMethodHandlerMethod = ProxyObject.class.getMethod("getHandler");
+            Method getMethodHandlerMethod = ProxyObject.class.getMethod("weld_getHandler");
             generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
         } catch (Exception e) {
             throw new WeldException(e);

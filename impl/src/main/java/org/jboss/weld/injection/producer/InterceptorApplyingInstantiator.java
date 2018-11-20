@@ -67,7 +67,7 @@ public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T
     protected T applyInterceptors(T instance, InterceptionContext interceptionContext) {
         try {
             InterceptorMethodHandler methodHandler = new InterceptorMethodHandler(interceptionContext);
-            CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
+            CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).weld_getHandler();
             wrapperMethodHandler.setInterceptorMethodHandler(methodHandler);
         } catch (Exception e) {
             throw new DeploymentException(e);
