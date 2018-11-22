@@ -109,7 +109,7 @@ public class ConcurrentValidator extends Validator {
 
     @Override
     public void validateBeanNames(final BeanManagerImpl beanManager) {
-        final SetMultimap<String, Bean<?>> namedAccessibleBeans = SetMultimap.newSetMultimap();
+        final SetMultimap<String, Bean<?>> namedAccessibleBeans = SetMultimap.newConcurrentSetMultimap();
         for (Bean<?> bean : beanManager.getAccessibleBeans()) {
             if (bean.getName() != null) {
                 namedAccessibleBeans.put(bean.getName(), bean);
