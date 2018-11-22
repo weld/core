@@ -173,7 +173,7 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
 
         T proxy = (System.getSecurityManager() == null) ? data.getInterceptedProxyFactory().run()
             : AccessController.doPrivileged(data.getInterceptedProxyFactory());
-        ((ProxyObject) proxy).setHandler(methodHandler);
+        ((ProxyObject) proxy).weld_setHandler(methodHandler);
 
         return proxy;
     }

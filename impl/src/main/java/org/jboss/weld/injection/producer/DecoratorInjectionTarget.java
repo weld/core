@@ -109,7 +109,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
                 throw UtilLogger.LOG.accessErrorOnField(accessibleField.getName(), accessibleField.getDeclaringClass(), e);
             }
             final ProxyMethodHandler handler = new ProxyMethodHandler(beanManager.getContextId(), new TargetBeanInstance(delegate), getBean());
-            ((ProxyObject) instance).setHandler(handler);
+            ((ProxyObject) instance).weld_setHandler(handler);
         }
     }
 
