@@ -217,7 +217,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
      */
-    public static final String ALLOW_OPTIMIZED_CLEANUP = "org.jboss.weld.se.allowOptimizedCleanup";
+    public static final String ALLOW_OPTIMIZED_CLEANUP = "org.jboss.weld.bootstrap.allowOptimizedCleanup";
 
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
