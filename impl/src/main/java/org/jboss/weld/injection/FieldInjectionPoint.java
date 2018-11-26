@@ -79,7 +79,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
             if (!(instanceToInject instanceof DecoratorProxy)) {
                 // if declaringInstance is a proxy, unwrap it
                 if (declaringInstance instanceof TargetInstanceProxy) {
-                    instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
+                    instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).weld_getTargetInstance();
                 }
             }
             Object objectToInject;

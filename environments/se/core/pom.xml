@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-se-parent</artifactId>
         <groupId>org.jboss.weld.se</groupId>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,12 +13,6 @@
     <name>Weld SE (Core)</name>
 
     <description>Weld support for Java SE</description>
-
-    <properties>
-        <groovy.version>2.4.7</groovy.version>
-        <groovy.eclipse.compiler.version>2.9.2-01</groovy.eclipse.compiler.version>
-        <groovy.eclipse.batch.version>2.4.3-01</groovy.eclipse.batch.version>
-    </properties>
 
     <url>http://weld.cdi-spec.org</url>
     <licenses>
@@ -106,13 +100,11 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>${groovy.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.jboss.classfilewriter</groupId>
             <artifactId>jboss-classfilewriter</artifactId>
-            <version>${classfilewriter.version}</version>
         </dependency>
 
     </dependencies>
@@ -130,10 +122,35 @@
                     </archive>
                 </configuration>
             </plugin>
+            <!--This plugin adds Groovy test sources to Maven and makes sure it compiles and runs as tests-->
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>addTestSources</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>compileTests</goal>
+                            <goal>removeTestStubs</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <testSources>
+                        <testSource>
+                            <directory>${project.basedir}/src/test/groovy</directory>
+                            <includes>
+                                <include>**/*.groovy</include>
+                            </includes>
+                        </testSource>
+                    </testSources>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -159,51 +176,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <!--Groovy compilation is disabled for JDK 1.9+-->
-            <id>weld-groovy-compilation</id>
-            <activation>
-                <jdk>(,9)</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <!-- There is a problem compiling WeldSELogger with a groovy compiler and there also can't be
-                        2 compilers specified for one pom.xml, so the compilation is splitted: javac for main,groovyc for tests. -->
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.1</version>
-                        <executions>
-                            <execution>
-                                <id>test-compile</id>
-                                <phase>process-test-sources</phase>
-                                <goals>
-                                    <goal>testCompile</goal>
-                                </goals>
-                                <configuration>
-                                    <compilerId>groovy-eclipse-compiler</compilerId>
-                                    <source>${maven.compiler.source}</source>
-                                    <target>${maven.compiler.target}</target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.codehaus.groovy</groupId>
-                                <artifactId>groovy-eclipse-compiler</artifactId>
-                                <version>${groovy.eclipse.compiler.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.codehaus.groovy</groupId>
-                                <artifactId>groovy-eclipse-batch</artifactId>
-                                <version>${groovy.eclipse.batch.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <profile>
             <id>jacoco</id>
             <activation>

@@ -22,14 +22,20 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class ApplicationScopedObserver {
 
     private final AtomicBoolean destroyedCalled = new AtomicBoolean();
 
+    @Inject
+    private Controller controller;
+
     void observeRequestDestroyed(@Observes @Destroyed(RequestScoped.class) Object event) {
         destroyedCalled.set(true);
+        controller.getContextDestroyedLatch().countDown();
+
     }
 
     boolean isDestroyedCalled() {

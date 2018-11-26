@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.annotation.Priority;
 import javax.decorator.Decorator;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.UnproxyableResolutionException;
@@ -159,7 +160,9 @@ public class ProbeExtension implements Extension {
         addContainerLifecycleEvent(event, null, beanManager);
     }
 
-    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
+    // we deliberately use @Priority(1) to make sure Probe goes first so that it is ready to intercept
+    // any possible bean invocations from other ADV observers
+    public void afterDeploymentValidation(@Observes @Priority(1) AfterDeploymentValidation event, BeanManager beanManager) {
         BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
         probe.init(manager);
         if (isJMXSupportEnabled(manager)) {

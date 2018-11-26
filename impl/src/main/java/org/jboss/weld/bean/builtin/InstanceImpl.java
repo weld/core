@@ -172,8 +172,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         // Attempt to destroy instance which is either a client proxy or a dependent session bean proxy
         if (instance instanceof ProxyObject) {
             ProxyObject proxy = (ProxyObject) instance;
-            if (proxy.getHandler() instanceof ProxyMethodHandler) {
-                ProxyMethodHandler handler = (ProxyMethodHandler) proxy.getHandler();
+            if (proxy.weld_getHandler() instanceof ProxyMethodHandler) {
+                ProxyMethodHandler handler = (ProxyMethodHandler) proxy.weld_getHandler();
                 Bean<?> bean = handler.getBean();
                 if (isSessionBeanProxy(instance) && Dependent.class.equals(bean.getScope())) {
                     // Destroy internal reference to a dependent session bean

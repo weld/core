@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.weld.examples</groupId>
         <artifactId>weld-examples-parent</artifactId>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.1.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -15,8 +15,8 @@
     <name>Weld Examples: PasteCode</name>
 
     <properties>
-        <urlrewritefilter.version>3.1.0</urlrewritefilter.version>
-        <jpamodelgen.version>4.3.7.Final</jpamodelgen.version>
+        <urlrewritefilter.version>4.0.4</urlrewritefilter.version>
+        <jpamodelgen.version>5.3.2.Final</jpamodelgen.version>
     </properties>
 
     <dependencies>
@@ -55,7 +55,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
-            <!-- TODO Get this into Weld Parent! -->
             <version>${jpamodelgen.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -107,18 +106,8 @@
     <build>
         <finalName>weld-pastecode</finalName>
         <plugins>
-            <!--
-                   Compiler plugin enforces Java 1.6 compatibility and controls
-                   execution of annotation processors
-               -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <compilerArgument>-proc:none</compilerArgument>
-                </configuration>
                 <executions>
                     <execution>
                         <id>run-annotation-processors-only</id>
@@ -159,7 +148,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.5</version>
                 <executions>
                     <execution>
                         <phase>process-sources</phase>
@@ -204,20 +192,43 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-managed-8</id>
+            <id>arquillian-wildfly-managed</id>
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-remote-8</id>
+            <id>arquillian-wildfly-remote</id>
+        </profile>
+
+        <profile>
+            <!-- auto-activated profile for any JDK 9+ -->
+            <id>jdk9+</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>javax.xml.ws</groupId>
+                    <artifactId>jaxws-api</artifactId>
+                    <version>${jax.artifacts.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.ws</groupId>
+                    <artifactId>jaxws-ri</artifactId>
+                    <version>${jax.artifacts.version}</version>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-ri</artifactId>
+                    <version>${jax.artifacts.version}</version>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
-
-    <scm>
-        <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/pastecode</connection>
-        <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/pastecode</developerConnection>
-        <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/pastecode</url>
-      <tag>3.0.0-SNAPSHOT</tag>
-  </scm>
-
 </project>
 

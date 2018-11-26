@@ -82,7 +82,7 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
     public T produce(Object receiver, CreationalContext<T> creationalContext) {
         // unwrap if we have a proxy
         if (receiver instanceof TargetInstanceProxy) {
-            receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
+            receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).weld_getTargetInstance();
         }
         try {
             return cast(accessibleField.get(receiver));

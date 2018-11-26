@@ -466,12 +466,10 @@ public class Reflections {
     }
 
     public static Set<Class<?>> getInterfaceClosure(Class<?> clazz) {
-        Class<?>[] interfaces = clazz.getInterfaces();
-        if (interfaces.length == 0) {
-            return Collections.emptySet();
-        }
         Set<Class<?>> result = new HashSet<>();
-        addInterfaces(clazz, result);
+        for (Class<?> classToDiscover = clazz; classToDiscover != null; classToDiscover = classToDiscover.getSuperclass()) {
+            addInterfaces(classToDiscover, result);
+        }
         return result;
     }
 

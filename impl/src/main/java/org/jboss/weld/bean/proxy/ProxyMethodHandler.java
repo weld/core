@@ -88,9 +88,9 @@ public class ProxyMethodHandler implements MethodHandler, Serializable, Metadata
             if (beanInstance == null) {
                 throw BeanLogger.LOG.beanInstanceNotSetOnProxy(getBean());
             }
-            if (thisMethod.getName().equals("getTargetInstance")) {
+            if (thisMethod.getName().equals("weld_getTargetInstance")) {
                 return beanInstance.getInstance();
-            } else if (thisMethod.getName().equals("getTargetClass")) {
+            } else if (thisMethod.getName().equals("weld_getTargetClass")) {
                 return beanInstance.getInstanceType();
             } else {
                 return null;

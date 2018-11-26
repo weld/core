@@ -19,7 +19,17 @@ package org.jboss.weld.tests.unit.util.reflection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.Set;
+
+import org.jboss.weld.tests.unit.util.reflection.interfaceClosure.ActualBar;
+import org.jboss.weld.tests.unit.util.reflection.interfaceClosure.AnotherBarInterface;
+import org.jboss.weld.tests.unit.util.reflection.interfaceClosure.BarInterface;
+import org.jboss.weld.tests.unit.util.reflection.interfaceClosure.BaseInterface;
+import org.jboss.weld.tests.unit.util.reflection.interfaceClosure.Foo;
+import org.jboss.weld.tests.unit.util.reflection.interfaceClosure.FooInterface;
+import org.jboss.weld.tests.unit.util.reflection.interfaceClosure.SecondaryFooInterface;
 import org.jboss.weld.util.reflection.Reflections;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ReflectionsTest {
@@ -32,5 +42,21 @@ public class ReflectionsTest {
         assertEquals("foo", Reflections.decapitalize("Foo"));
         assertEquals("FOO", Reflections.decapitalize("FOO"));
         assertEquals("fooBar", Reflections.decapitalize("FooBar"));
+    }
+    
+    @Test
+    public void getInterfaceClosureTest() {
+        Set<Class<?>> fooInterfaceClosure = Reflections.getInterfaceClosure(Foo.class);
+        Assert.assertTrue(fooInterfaceClosure.contains(FooInterface.class));
+        Assert.assertTrue(fooInterfaceClosure.contains(SecondaryFooInterface.class));
+        Assert.assertTrue(fooInterfaceClosure.contains(BaseInterface.class));
+        Assert.assertEquals(3, fooInterfaceClosure.size());
+        
+        Set<Class<?>> barInterfaceClosure = Reflections.getInterfaceClosure(ActualBar.class);
+        Assert.assertTrue(barInterfaceClosure.contains(BarInterface.class));
+        Assert.assertTrue(barInterfaceClosure.contains(AnotherBarInterface.class));
+        Assert.assertTrue(barInterfaceClosure.contains(BaseInterface.class));
+        assertEquals(3, barInterfaceClosure.size());
+        
     }
 }

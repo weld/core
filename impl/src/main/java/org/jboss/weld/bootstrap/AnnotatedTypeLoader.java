@@ -87,7 +87,8 @@ class AnnotatedTypeLoader {
     }
 
     protected <T> SlimAnnotatedType<T> internalLoadAnnotatedType(Class<T> clazz, String bdaId) {
-        if (clazz != null && !clazz.isAnnotation()) {
+        // do not load if clazz is null, an annotation or anonymous/local class
+        if (clazz != null && !clazz.isAnnotation() && !clazz.isAnonymousClass() && !clazz.isLocalClass()) {
             try {
                 if (!Beans.isVetoed(clazz)) { // may throw ArrayStoreException - see bug http://bugs.sun.com/view_bug.do?bug_id=7183985
                     containerLifecycleEvents.preloadProcessAnnotatedType(clazz);

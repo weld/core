@@ -23,7 +23,7 @@ following:
 * optionally, a supported runtime environment (minimum versions shown)
 ** WildFly 8.0.0.Final (10.1.0.Final recommended),
 ** GlassFish 4.0,
-** Apache Tomcat 7 or better (war example only), or
+** Apache Tomcat 9 or better (war example only), or
 ** Jetty 9 or better (war example only)
 
 In the next few sections, you'll be using the Maven command (`mvn`) to
@@ -217,13 +217,13 @@ your application might require some additional configuration as well
 (see <<_tomcat>> and <<_jetty>> for more info).
 
 Let's give the Weld servlet extension a spin on Apache Tomcat. First,
-you'll need to download Tomcat 8.0.42 or later from
-http://tomcat.apache.org/download-80.cgi[tomcat.apache.org] and extract
+you'll need to download Tomcat 9.0.11 or later from
+http://tomcat.apache.org/download-90.cgi[tomcat.apache.org] and extract
 it.
 
 [source, console]
 ---------------------------------
-$> unzip apache-tomcat-8.0.42.zip
+$> unzip apache-tomcat-9.0.11.zip
 ---------------------------------
 
 The Maven plugin communicates with Tomcat over HTTP, so it doesn't care
@@ -237,15 +237,15 @@ You can either start Tomcat from a Linux shell:
 
 [source, console]
 ------------------------------
-$> cd /path/to/apache-tomcat-7
-$> ./bin/start.sh
+$> cd /path/to/apache-tomcat-9
+$> ./bin/startup.sh
 ------------------------------
 
 a Windows command window:
 
 [source, console]
 ------------------------------------
-$> cd c:\path\to\apache-tomcat-7\bin
+$> cd c:\path\to\apache-tomcat-9\bin
 $> start
 ------------------------------------
 

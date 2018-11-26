@@ -27,7 +27,7 @@ public class BeansXmlImpl implements BeansXml {
         this.enabledAlternativeStereotypes = enabledAlternativeStereotypes;
         this.enabledDecorators = enabledDecorators;
         this.enabledInterceptors = enabledInterceptors;
-        this.scanning = scanning;
+        this.scanning = scanning == null ? Scanning.EMPTY_SCANNING : scanning;
         this.url = url;
         this.discoveryMode = discoveryMode;
         this.version = version;
