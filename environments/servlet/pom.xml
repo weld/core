@@ -10,7 +10,7 @@
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.1.0-SNAPSHOT</version>
     </parent>
 
     <modules>
@@ -26,9 +26,8 @@
     </description>
 
     <properties>
-        <jsf.version>2.1</jsf.version>
-        <tomcat.version>7.0.62</tomcat.version>
-        <tomcat8.version>8.0.22</tomcat8.version>
+        <jsf.version>2.3</jsf.version>
+        <tomcat.version>9.0.12</tomcat.version>
         <jetty.version>9.3.6.v20151106</jetty.version>
         <jetty9.asm.version>5.0.3</jetty9.asm.version>
         <!-- Jetty 6 API is used for GWT support only -->
@@ -46,19 +45,13 @@
 
             <dependency>
                 <groupId>javax.faces</groupId>
-                <artifactId>jsf-api</artifactId>
+                <artifactId>javax.faces-api</artifactId>
                 <version>${jsf.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-logging-juli</artifactId>
                 <version>${tomcat.version}</version>
             </dependency>
 

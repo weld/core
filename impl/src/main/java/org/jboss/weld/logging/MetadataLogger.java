@@ -42,7 +42,7 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1100, value = "{0} can only be applied to an annotation.  It was applied to {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException metaAnnotationOnWrongType(Object param1, Object param2);
 
-    @LogMessage(level = Level.DEBUG)
+    @LogMessage(level = Level.WARN)
     @Message(id = 1101, value = "Member of array type or annotation type must be annotated @NonBinding:  {0}", format = Format.MESSAGE_FORMAT)
     void nonBindingMemberType(Object param1);
 

@@ -33,6 +33,9 @@ public class EJBUserManager implements UserManager {
     }
 
     public String addUser() throws Exception {
+        if(newUser.getName().isEmpty() || newUser.getUsername().isEmpty() || newUser.getPassword().isEmpty()){
+            return "/users.xhtml?faces-redirect=true";
+        }
         userDatabase.persist(newUser);
         logger.info("Added " + newUser);
         return "/users.xhtml?faces-redirect=true";

@@ -126,7 +126,7 @@ class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         if (result instanceof ProxyObject) {
             // if decorators are applied, use SessionBeanViewMethodHandler
             ProxyObject proxy = (ProxyObject) result;
-            proxy.setHandler(new SessionBeanViewMethodHandler(bean.getTypes(), (CombinedInterceptorAndDecoratorStackMethodHandler) proxy.getHandler()));
+            proxy.weld_setHandler(new SessionBeanViewMethodHandler(bean.getTypes(), (CombinedInterceptorAndDecoratorStackMethodHandler) proxy.weld_getHandler()));
         }
         return result;
     }

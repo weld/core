@@ -68,6 +68,7 @@ import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.bootstrap.spi.Scanning;
 import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
@@ -216,7 +217,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
      */
-    public static final String ALLOW_OPTIMIZED_CLEANUP = "org.jboss.weld.se.allowOptimizedCleanup";
+    public static final String ALLOW_OPTIMIZED_CLEANUP = "org.jboss.weld.bootstrap.allowOptimizedCleanup";
 
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
@@ -235,6 +236,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     private boolean discoveryEnabled = true;
 
     protected final Set<Class<?>> beanClasses;
+
+    protected final Set<Class<? extends Annotation>> extendedBeanDefiningAnnotations;
 
     protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
 
@@ -281,6 +284,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         this.containerLifecycleObservers = new LinkedList<>();
         this.resourceLoader = new WeldResourceLoader();
         this.additionalServices = new HashMap<>();
+        this.extendedBeanDefiningAnnotations = new HashSet();
     }
 
     /**
@@ -887,6 +891,22 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
+     * Registers annotations which will be considered as bean defining annotations.
+     *
+     * NOTE - If used along with {@code <trim/>} bean archives and/or with Weld configuration key
+     * {@code org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation}, these annotations will be ignored.
+     *
+     * @param annotations annotations which will be considered as Bean Defining Annotations.
+     * @return self
+     */
+    public Weld addBeanDefiningAnnotations(Class<? extends Annotation>... annotations) {
+        for (Class<? extends Annotation> annotation : annotations) {
+            this.extendedBeanDefiningAnnotations.add(annotation);
+        }
+        return this;
+    }
+
+    /**
      * <p>
      * Extensions to Weld SE can subclass and override this method to customize the deployment before weld boots up. For example, to add a custom
      * ResourceLoader, you would subclass Weld like so:
@@ -922,6 +942,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             .addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
             // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
             .add(ThreadScoped.class)
+            // Add all custom bean defining annotations user registered via Weld.addBeanDefiningAnnotations()
+            .addAll(extendedBeanDefiningAnnotations)
             .build();
 
         if (discoveryEnabled) {
@@ -1060,7 +1082,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     protected BeansXml buildSyntheticBeansXml() {
         return new BeansXmlImpl(ImmutableList.copyOf(selectedAlternatives), ImmutableList.copyOf(selectedAlternativeStereotypes),
-                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), null, null, beanDiscoveryMode, null, false);
+                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), Scanning.EMPTY_SCANNING, null, beanDiscoveryMode, null, false);
     }
 
     private MetadataImpl<String> syntheticMetadata(Class<?> clazz) {

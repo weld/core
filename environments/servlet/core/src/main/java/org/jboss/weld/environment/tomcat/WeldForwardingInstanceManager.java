@@ -59,7 +59,7 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
 
     @Override
     public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException, NamingException,
-            InstantiationException, ClassNotFoundException {
+            InstantiationException, ClassNotFoundException, NoSuchMethodException {
         Object a = super.newInstance(fqcn, classLoader);
         secondProcessor.newInstance(a);
         return a;
@@ -67,14 +67,14 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
 
     @Override
     public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException,
-            ClassNotFoundException {
+            ClassNotFoundException, NoSuchMethodException {
         Object a = super.newInstance(fqcn);
         secondProcessor.newInstance(a);
         return a;
     }
 
     @Override
-    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException {
+    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, NoSuchMethodException {
         Object a = super.newInstance(clazz);
         secondProcessor.newInstance(a);
         return a;

@@ -16,12 +16,19 @@
  */
 package org.jboss.weld.executor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.Environments;
+
 /**
- * Wrapper for {@link ForkJoinPool#commonPool()}. This {@link ExecutorService} implementation ignores threadPoolSize and threadPoolKeepAliveTime configuration
- * options.
+ * Wrapper for {@link ForkJoinPool#commonPool()}. This {@link ExecutorService} implementation ignores threadPoolSize and
+ * threadPoolKeepAliveTime configuration options.
  *
  * @author Jozef Hartinger
  *
@@ -41,5 +48,34 @@ public class CommonForkJoinPoolExecutorServices extends AbstractExecutorServices
     @Override
     protected int getThreadPoolSize() {
         return ForkJoinPool.getCommonPoolParallelism();
+    }
+
+    /**
+     * If in SE environment, this method wraps the collection of tasks in such a way that it sets the TCCL to null before
+     * executing them and re-sets it to previous value once done. This affect the CL Weld will pick up when invoking
+     * {@link org.jboss.weld.environment.deployment.WeldResourceLoader#getClassLoader()}.
+     *
+     * @see WELD-2494
+     */
+    @Override
+    public <T> Collection<? extends Callable<T>> wrap(Collection<? extends Callable<T>> tasks) {
+        // try to detect environment, if it's SE, we want to null TCCL, otherwise leave it as it is
+        if (Container.getEnvironment().equals(Environments.SE)) {
+            List<Callable<T>> wrapped = new ArrayList<>(tasks.size());
+            for (Callable<T> task : tasks) {
+                wrapped.add(() -> {
+                    ClassLoader oldTccl = Thread.currentThread().getContextClassLoader();
+                    Thread.currentThread().setContextClassLoader(null);
+                    try {
+                        return task.call();
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(oldTccl);
+                    }
+                });
+            }
+            return wrapped;
+        } else {
+            return tasks;
+        }
     }
 }

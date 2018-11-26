@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.weld.examples</groupId>
         <artifactId>weld-examples-parent</artifactId>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.1.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -114,11 +114,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-managed-8</id>
+            <id>arquillian-wildfly-managed</id>
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-remote-8</id>
+            <id>arquillian-wildfly-remote</id>
         </profile>
     </profiles>
 

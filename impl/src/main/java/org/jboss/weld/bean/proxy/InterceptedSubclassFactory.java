@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.security.AccessController;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -72,6 +73,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     private final Set<MethodSignature> enhancedMethodSignatures;
     private final Set<MethodSignature> interceptedMethodSignatures;
+    private Set<Class<?>> interfacesToInspect;
 
     private final Class<?> proxiedBeanType;
 
@@ -97,9 +99,24 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     @Override
     public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        // these interfaces we want to scan for method and our proxies will implement them
         for (Class<?> c : proxiedBeanType.getInterfaces()) {
             addInterface(c);
         }
+        // now we need to go deeper in hierarchy and scan those interfaces for additional interfaces with default impls
+        for (Type type : typeClosure) {
+            Class<?> c = Reflections.getRawType(type);
+            if (c.isInterface()) {
+                addInterfaceToInspect(c);
+            }
+        }
+    }
+
+    private void addInterfaceToInspect(Class<?> iface) {
+        if (interfacesToInspect == null) {
+            interfacesToInspect = new HashSet<>();
+        }
+        this.interfacesToInspect.add(iface);
     }
 
     /**
@@ -193,14 +210,22 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             finalMethods.add(methodSignature);
                         }
                         if (method.isBridge()) {
-                            declaredBridgeMethods.add(new BridgeMethod(methodSignature, method.getGenericReturnType()));
+                            BridgeMethod bridgeMethod = new BridgeMethod(methodSignature, method.getGenericReturnType());
+                            if (!hasAbstractPackagePrivateSuperClassWithImplementation(cls, bridgeMethod)) {
+                                declaredBridgeMethods.add(bridgeMethod);
+                            }
                         }
                     }
                 }
                 processedBridgeMethods.addAll(declaredBridgeMethods);
                 cls = cls.getSuperclass();
             }
-            for (Class<?> c : getAdditionalInterfaces()) {
+            // We want to iterate over pre-defined interfaces (getAdditionalInterfaces()) and also over those we discovered earlier (interfacesToInspect)
+            Set<Class<?>> allInterfaces = new HashSet<>(getAdditionalInterfaces());
+            if (interfacesToInspect != null) {
+                allInterfaces.addAll(interfacesToInspect);
+            }
+            for (Class<?> c : allInterfaces) {
                 for (Method method : c.getMethods()) {
                     MethodSignature signature = new MethodSignatureImpl(method);
                     // For interfaces we do not consider return types when going through processed bridge methods
@@ -238,6 +263,31 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
     }
 
+    /**
+     * Returns true if super class of the parameter exists and is abstract and package private. In such case we want to omit such method.
+     *
+     * See WELD-2507 and Oracle issue - https://bugs.java.com/view_bug.do?bug_id=6342411
+     *
+     * @return true if the super class exists and is abstract and package private
+     */
+    private boolean hasAbstractPackagePrivateSuperClassWithImplementation(Class<?> clazz, BridgeMethod bridgeMethod) {
+        Class<?> superClass = clazz.getSuperclass();
+        while (superClass != null) {
+            if (Modifier.isAbstract(superClass.getModifiers()) && Reflections.isPackagePrivate(superClass.getModifiers())) {
+                // if superclass is abstract, we need to dig deeper
+                for (Method method : superClass.getDeclaredMethods()) {
+                    if (bridgeMethod.signature.matches(method) && method.getGenericReturnType().equals(bridgeMethod.returnType)
+                            && !Reflections.isAbstract(method)) {
+                        // this is the case we are after -> methods have same signature and the one in super class has actual implementation
+                        return true;
+                    }
+                }
+            }
+            superClass = superClass.getSuperclass();
+        }
+        return false;
+    }
+
     private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature, Type returnType, boolean isMethodAbstract) {
         for (BridgeMethod bridgeMethod : processedBridgeMethods) {
             if (bridgeMethod.signature.equals(signature)) {
@@ -249,8 +299,14 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                         // both cases are a match
                         return true;
                     } else {
-                        // in all other cases we compare return types
-                        return bridgeMethod.returnType.equals(returnType);
+                        if (bridgeMethod.returnType instanceof Class && returnType instanceof TypeVariable) {
+                            // in this case we have encountered a bridge method with specific return type in subclass
+                            // and we are observing a TypeVariable return type in superclass, this is a match
+                            return true;
+                        } else {
+                            // as a last resort, we simply check equality of return Type
+                            return bridgeMethod.returnType.equals(returnType);
+                        }
                     }
                 }
                 return true;
@@ -333,8 +389,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             // this is a self invocation optimisation
             // test to see if this is a self invocation, and if so invokespecial the
             // superclass method directly
-            // do not optimize in the case of default methods
-            if (!Reflections.isDefault(methodInfo.getMethod())) {
+            // Do not optimize in case of private and default methods
+            if (!Reflections.isDefault(methodInfo.getMethod()) && !Modifier.isPrivate(method.getAccessFlags())) {
                 b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
                 b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler",
                         "(" + DescriptorUtils.makeDescriptor(Stack.class) + ")" + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
@@ -421,15 +477,15 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false, staticConstructor);
             }
-            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("getTargetInstance");
-            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("getTargetClass");
+            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("weld_getTargetInstance");
+            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("weld_getTargetClass");
             generateGetTargetInstanceBody(proxyClassType.addMethod(getInstanceMethod));
             generateGetTargetClassBody(proxyClassType.addMethod(getInstanceClassMethod));
 
-            Method setMethodHandlerMethod = ProxyObject.class.getMethod("setHandler", MethodHandler.class);
+            Method setMethodHandlerMethod = ProxyObject.class.getMethod("weld_setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
 
-            Method getMethodHandlerMethod = ProxyObject.class.getMethod("getHandler");
+            Method getMethodHandlerMethod = ProxyObject.class.getMethod("weld_getHandler");
             generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
        } catch (Exception e) {
             throw new WeldException(e);

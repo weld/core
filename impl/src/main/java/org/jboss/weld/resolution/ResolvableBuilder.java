@@ -43,7 +43,6 @@ import javax.inject.Provider;
 import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.literal.NamedLiteral;
-import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.ResolutionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -159,7 +158,7 @@ public class ResolvableBuilder {
             if (newQualifier.value().equals(New.class) && rawType == null) {
                 throw new IllegalStateException("Cannot transform @New when there is no known raw type");
             } else if (newQualifier.value().equals(New.class)) {
-                qualifier = new NewLiteral(rawType);
+                qualifier = New.Literal.of(rawType);
                 qualifierInstance = QualifierInstance.of(qualifier, store);
             }
         } else if (injectionPoint != null && annotationType.equals(Named.class)) {

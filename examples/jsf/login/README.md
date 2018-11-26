@@ -20,4 +20,4 @@ Make sure you have assigned the absolute path of your installation to the
 
 To run functional tests execute:
 
-        mvn verify -Darquillian=wildfly-managed-8
+        mvn verify -Darquillian=wildfly-managed

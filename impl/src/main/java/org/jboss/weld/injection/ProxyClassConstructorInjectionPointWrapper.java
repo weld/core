@@ -90,7 +90,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
             ProxyFactory.setBeanInstance(contextId, instance, beanInstance, bean);
         } else {
             if (instance instanceof ProxyObject) {
-                ((ProxyObject) instance).setHandler(new CombinedInterceptorAndDecoratorStackMethodHandler());
+                ((ProxyObject) instance).weld_setHandler(new CombinedInterceptorAndDecoratorStackMethodHandler());
                 // Set method handler for private methods if necessary
                 InterceptedSubclassFactory.setPrivateMethodHandler(instance);
             }

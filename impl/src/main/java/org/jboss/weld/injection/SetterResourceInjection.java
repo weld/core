@@ -60,7 +60,7 @@ class SetterResourceInjection<T, X> extends AbstractResourceInjection<T> {
             if (!(instanceToInject instanceof DecoratorProxy)) {
                 // if declaringInstance is a proxy, unwrap it
                 if (instanceToInject instanceof TargetInstanceProxy) {
-                    instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
+                    instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).weld_getTargetInstance();
                 }
             }
             accessibleMethod.invoke(instanceToInject, reference);

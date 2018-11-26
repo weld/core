@@ -10,12 +10,12 @@ public interface ProxyObject {
      * Sets a handler.  It can be used for changing handlers
      * during runtime.
      */
-    void setHandler(MethodHandler mi);
+    void weld_setHandler(MethodHandler mi);
 
     /**
      * Get the handler.
      * This can be used to access values of the underlying MethodHandler
      * or to serialize it properly.
      */
-    MethodHandler getHandler();
+    MethodHandler weld_getHandler();
 }

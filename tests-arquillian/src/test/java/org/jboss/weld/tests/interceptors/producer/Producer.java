@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.interceptors.producer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,6 +122,53 @@ public class Producer {
         return interceptionFactory.createInterceptedInstance(new BarImpl());
     }
 
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public SomeInterface produceBeanBasedOnInterface(InterceptionFactory<SomeInterface> interceptionFactory) {
+        interceptionFactory.configure().add(Monitor.Literal.INSTANCE).filterMethods((m) ->
+            m.getJavaMember().getName().equals("ping") && Arrays.asList(m.getJavaMember().getParameterTypes()).contains(Double.class)
+        ).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeImpl());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public InterfaceWithDefaultMethod produceBeanBasedOnInterfaceWithDefaultMethod(InterceptionFactory<InterfaceWithDefaultMethod> interceptionFactory) {
+        interceptionFactory.configure().add(Monitor.Literal.INSTANCE).filterMethods((m) ->
+            m.getJavaMember().getName().equals("ping")
+        ).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new ImplOfInterfaceWithDefaultMethod());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public SomeGenericInterface<List<String>> produceBeanBasedOnGenericInterface(InterceptionFactory<SomeGenericInterface<List<String>>> interceptionFactory) {
+        interceptionFactory.configure().add(Monitor.Literal.INSTANCE).filterMethods((m) ->
+            m.getJavaMember().getName().equals("ping") && Arrays.asList(m.getJavaMember().getParameterTypes()).contains(Double.class)
+        ).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeGenericImpl());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public UninterestingInterface1 produceBeanBasedOnImplWithMethodAnnotation(InterceptionFactory<UninterestingInterface1> interceptionFactory) {
+        interceptionFactory.configure().filterMethods((m) ->
+            m.getJavaMember().getName().equals("ping")
+        ).findFirst().get().add(Hello.Literal.INSTANCE); // annotation is already present on the impl type
+        return interceptionFactory.createInterceptedInstance(new ImplWhichAlreadyHasMethodAnnotation());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public UninterestingInterface2 produceBeanBasedOnImplWithClassAnnotation(InterceptionFactory<UninterestingInterface2> interceptionFactory) {
+        interceptionFactory.configure().add(Monitor.Literal.INSTANCE); // annotation is already present on the impl type
+        return interceptionFactory.createInterceptedInstance(new ImplWhichAlreadyHasTypeAnnotation("kokot"));
+    }
 
     static class Foo {
 

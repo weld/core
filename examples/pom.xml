@@ -4,11 +4,12 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.jboss.weld.examples</groupId>
     <artifactId>weld-examples-parent</artifactId>
+  <version>3.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Weld Examples</name>
 
@@ -94,19 +95,15 @@
         <module>jsf/numberguess</module>
         <module>jsf/translator</module>
         <module>jsf/login</module>
-        <module>jsf/permalink</module>
         <module>jsf/pastecode</module>
         <module>se/numberguess</module>
-        <module>se/hello-world</module>
         <module>se/groovy-numberguess</module>
-        <module>osgi</module>
-        <module>webstart</module>
     </modules>
 
     <properties>
         <jsf.version>2.1</jsf.version>
         <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>1.1.0.Final</wildfly.plugin.version>
+        <wildfly.plugin.version>1.2.1.Final</wildfly.plugin.version>
         <uel.version>2.2</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
@@ -176,6 +173,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ejb-plugin</artifactId>
+                    <version>3.0.0</version>
                     <configuration>
                         <ejbVersion>3.2</ejbVersion>
                     </configuration>
@@ -183,13 +181,14 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ear-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <!-- Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187
                     during release -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
+                    <version>3.2.0</version>
                     <configuration>
                         <useCache>false</useCache>
                     </configuration>
@@ -289,11 +288,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-managed-8</id>
+            <id>arquillian-wildfly-managed</id>
             <activation>
                 <property>
                     <name>arquillian</name>
-                    <value>wildfly-managed-8</value>
+                    <value>wildfly-managed</value>
                 </property>
             </activation>
             <dependencies>
@@ -306,11 +305,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-remote-8</id>
+            <id>arquillian-wildfly-remote</id>
             <activation>
                 <property>
                     <name>arquillian</name>
-                    <value>wildfly-remote-8</value>
+                    <value>wildfly-remote</value>
                 </property>
             </activation>
             <dependencies>
@@ -323,11 +322,11 @@
         </profile>
 
         <profile>
-            <id>arquillian-wildfly-cluster-8</id>
+            <id>arquillian-wildfly-cluster</id>
             <activation>
                 <property>
                     <name>arquillian</name>
-                    <value>wildfly-cluster-8</value>
+                    <value>wildfly-cluster</value>
                 </property>
             </activation>
             <dependencies>

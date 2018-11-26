@@ -1,1 +1,0 @@
-Export-Package org.jboss.weld.examples.osgi.paint.api;version=${pom.version}

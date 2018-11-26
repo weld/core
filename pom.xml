@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.1.0-SNAPSHOT</version>
 
     <name>Weld Parent</name>
 
@@ -37,7 +37,7 @@
         <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
         <!-- A property which is handed over to WFLY container through Arquillian, allows to configure server-specific options -->
-        <additional.jboss.args></additional.jboss.args>
+        <additional.jboss.args />
 
         <manifest.specification.title>JSR-365 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
@@ -50,7 +50,7 @@
         <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
         <arquillian.weld.version>2.0.0.Beta4</arquillian.weld.version>
         <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
-        <arquillian.tomcat.version>1.0.0.CR8</arquillian.tomcat.version>
+        <arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>
@@ -59,11 +59,12 @@
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.5.SP1</cdi.tck-2-0.version>
-        <classfilewriter.version>1.2.2.Final</classfilewriter.version>
+        <classfilewriter.version>1.2.3.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
-        <spotbugs-maven-plugin.version>3.1.1</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>3.1.1</spotbugs-annotations-version>
+        <spotbugs-maven-plugin.version>3.1.8</spotbugs-maven-plugin.version>
+        <spotbugs-annotations-version>3.1.8</spotbugs-annotations-version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
+        <groovy.version>2.4.15</groovy.version>
         <htmlunit.version>2.20</htmlunit.version>
         <jacoco.version>0.7.9</jacoco.version>
         <jandex.version>2.0.3.Final</jandex.version>
@@ -87,9 +88,9 @@
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
         <testng.version>6.14.3</testng.version>
         <testng.jcommander.version>1.74</testng.jcommander.version>
-        <weld.api.version>3.0.SP3</weld.api.version>
+        <weld.api.version>3.1.Alpha1</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
-        <wildfly.arquillian.version>2.1.0.Final</wildfly.arquillian.version>
+        <wildfly.arquillian.version>2.1.1.Final</wildfly.arquillian.version>
         <!--Temportary version override, once alligned in WFLY-Arq adapter, we can remove this-->
         <jboss.marshalling.override>2.0.5.Final</jboss.marshalling.override>
     </properties>
@@ -114,6 +115,12 @@
                 <artifactId>bcel</artifactId>
                 <version>${apache.bcel.version}</version>
                 <optional>true</optional>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy.version}</version>
             </dependency>
 
             <dependency>
@@ -268,13 +275,7 @@
 
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-tomcat-embedded-7</artifactId>
-                <version>${arquillian.tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-tomcat-embedded-8</artifactId>
+                <artifactId>arquillian-tomcat-embedded-9</artifactId>
                 <version>${arquillian.tomcat.version}</version>
             </dependency>
 

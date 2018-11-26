@@ -45,6 +45,9 @@ public class ManagedBeanUserManager implements UserManager {
 
     @Override
     public String addUser() throws Exception {
+        if(newUser.getName().isEmpty() || newUser.getUsername().isEmpty() || newUser.getPassword().isEmpty()){
+            return "/users.xhtml?faces-redirect=true";
+        }
         try {
             try {
                 utx.begin();

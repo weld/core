@@ -19,9 +19,11 @@ package org.jboss.weld;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
@@ -39,6 +41,8 @@ public class Container {
     public static final String CONTEXT_ID_KEY = "WELD_CONTEXT_ID_KEY";
 
     private static Singleton<Container> instance;
+
+    private static final AtomicReference<Environment> ENV_REFERENCE = new AtomicReference<>(null);
 
     static {
         instance = SingletonProvider.instance().create(Container.class);
@@ -89,7 +93,11 @@ public class Container {
     }
 
     public static void initialize(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
-        Container instance = new Container(contextId, deploymentManager, deploymentServices);
+        initialize(contextId, deploymentManager, deploymentServices, null);
+    }
+
+    public static void initialize(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Environment environment) {
+        Container instance = new Container(contextId, deploymentManager, deploymentServices, environment);
         Container.instance.set(contextId, instance);
     }
 
@@ -109,21 +117,21 @@ public class Container {
     private ContainerState state = ContainerState.STOPPED;
 
     public Container(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
+        this(contextId, deploymentManager, deploymentServices, null);
+    }
+
+    public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
+        this(RegistrySingletonProvider.STATIC_INSTANCE, deploymentManager, deploymentServices);
+    }
+
+    public Container(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Environment environment) {
         this.deploymentManager = deploymentManager;
         this.managers = new ConcurrentHashMap<String, BeanManagerImpl>();
         this.managers.put(deploymentManager.getId(), deploymentManager);
         this.beanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
         this.deploymentServices = deploymentServices;
         this.contextId = contextId;
-    }
-
-    public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
-        this.deploymentManager = deploymentManager;
-        this.managers = new ConcurrentHashMap<String, BeanManagerImpl>();
-        this.managers.put(deploymentManager.getId(), deploymentManager);
-        this.beanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
-        this.deploymentServices = deploymentServices;
-        this.contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+        Container.ENV_REFERENCE.compareAndSet(null, environment);
     }
 
     /**
@@ -206,6 +214,19 @@ public class Container {
 
     public void setState(ContainerState state) {
         this.state = state;
+    }
+
+    /**
+     * Returns {@link Environment} that this container was booted in, or null if not set or invoked too
+     * early in the bootstrapping process.
+     *
+     * Note that should there be multiple containers active, this will return the {@link Environment} that the first container
+     * was bootstrapped in, unless it was null.
+     *
+     * @return {@link Environment} or null
+     */
+    public static Environment getEnvironment() {
+        return ENV_REFERENCE.get();
     }
 
 }
