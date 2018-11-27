@@ -16,11 +16,15 @@
  */
 package org.jboss.weld.contexts;
 
+import java.util.Collection;
+
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.context.WeldAlterableContext;
+import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.ForwardingContext;
@@ -38,10 +42,14 @@ public class PassivatingContextWrapper {
     }
 
     public static Context wrap(Context context, ContextualStore store) {
-        if (context instanceof AlterableContext) {
-            return new AlterableContextWrapper((AlterableContext) context, store);
+        if (context instanceof WeldAlterableContext) {
+            return new WeldAlterableContextWrapper((WeldAlterableContext) context, store);
         } else {
-            return new ContextWrapper(context, store);
+            if (context instanceof AlterableContext) {
+                return new AlterableContextWrapper((AlterableContext) context, store);
+            } else {
+                return new ContextWrapper(context, store);
+            }
         }
     }
 
@@ -99,6 +107,29 @@ public class PassivatingContextWrapper {
         public void destroy(Contextual<?> contextual) {
             contextual = store.getSerializableContextual(contextual);
             delegate().destroy(contextual);
+        }
+    }
+
+    private static class WeldAlterableContextWrapper extends AbstractPassivatingContextWrapper<WeldAlterableContext> implements WeldAlterableContext {
+
+        public WeldAlterableContextWrapper(WeldAlterableContext context, ContextualStore store) {
+            super(context, store);
+        }
+
+        @Override
+        public void destroy(Contextual<?> contextual) {
+            contextual = store.getSerializableContextual(contextual);
+            delegate().destroy(contextual);
+        }
+
+        @Override
+        public Collection<ContextualInstance<?>> getAllContextualInstances() {
+            return delegate().getAllContextualInstances();
+        }
+
+        @Override
+        public void clearAndSet(Collection<ContextualInstance<?>> setOfInstances) {
+            delegate().clearAndSet(setOfInstances);
         }
     }
 }
