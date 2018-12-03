@@ -5,6 +5,8 @@ Weld
 [![Travis CI Build Status](https://img.shields.io/travis/weld/core/master.svg)](https://travis-ci.org/weld/core)
 [![Maven Central](http://img.shields.io/maven-central/v/org.jboss.weld.se/weld-se-shaded.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22weld-core-impl%22)
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/weld/core.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/weld/core/context:java)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/weld/core.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/weld/core/alerts)
 
 Weld is the reference implementation of CDI: Contexts and Dependency Injection for the Java EE Platform which is the Java standard for dependency injection and contextual lifecycle management and one of the most important and popular parts of the Java EE platform.
 
