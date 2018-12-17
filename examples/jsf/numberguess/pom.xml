@@ -45,7 +45,7 @@
 
         <dependency>
             <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+            <artifactId>jboss-jsf-api_2.3_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -75,7 +75,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.spec.javax.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+                    <artifactId>jboss-jsf-api_2.3_spec</artifactId>
                     <scope>compile</scope>
                 </dependency>
                 <dependency>
@@ -118,7 +118,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.spec.javax.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+                    <artifactId>jboss-jsf-api_2.3_spec</artifactId>
                 </dependency>
 
                 <dependency>
@@ -161,7 +161,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.spec.javax.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+                    <artifactId>jboss-jsf-api_2.3_spec</artifactId>
                 </dependency>
 
                 <dependency>

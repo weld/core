@@ -45,7 +45,7 @@ Make sure you have assigned the absolute path of your installation to the
 
 3. Now you can view the application at <http://localhost:8080/weld-numberguess>.
 
-Deploying to standalone Tomcat 9
+Deploying to standalone Tomcat
 --------------------------------
 
 If you want to run the application on a standalone Tomcat, first download and

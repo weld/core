@@ -3,12 +3,12 @@
 
 === Using Weld with WildFly
 
-WildFly 8 and newer come with pre-configured Weld. There is no configuration needed to use Weld (or CDI for that matter).
+WildFly comes with pre-configured Weld. There is no configuration needed to use Weld (or CDI for that matter).
 You may still want to fine-tune Weld with <<configure,additional configuration settings>>.
 
 === GlassFish
 
-Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is
+Weld is also built into GlassFish from V3 onwards. Since GlassFish is
 the Java EE reference implementation, it supports all features of
 CDI. What better way for GlassFish to support these features than to use
 Weld, the CDI reference implementation? Just package up your CDI
