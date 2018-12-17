@@ -101,10 +101,12 @@
     </modules>
 
     <properties>
-        <jsf.version>2.1</jsf.version>
+        <jboss.jsf.api.2.3.version>2.3.5.SP1</jboss.jsf.api.2.3.version>
+        <jboss.servlet.api.4.0.version>1.0.0.Final</jboss.servlet.api.4.0.version>
+        <jsf.version>2.3</jsf.version>
         <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>1.2.1.Final</wildfly.plugin.version>
-        <uel.version>2.2</uel.version>
+        <wildfly.plugin.version>2.0.0.Final</wildfly.plugin.version>
+        <uel.version>3.0.1-b11</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
     </properties>
@@ -114,13 +116,25 @@
 
             <dependency>
                 <groupId>javax.faces</groupId>
-                <artifactId>jsf-api</artifactId>
+                <artifactId>javax.faces-api</artifactId>
                 <version>${jsf.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.glassfish.web</groupId>
-                <artifactId>el-impl</artifactId>
+                <groupId>org.jboss.spec.javax.faces</groupId>
+                <artifactId>jboss-jsf-api_2.3_spec</artifactId>
+                <version>${jboss.jsf.api.2.3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax</groupId>
+                <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+                <version>${jboss.servlet.api.4.0.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el</artifactId>
                 <version>${uel.version}</version>
             </dependency>
 
@@ -193,7 +207,7 @@
                         <useCache>false</useCache>
                     </configuration>
                 </plugin>
-                <!-- JBoss AS plugin to deploy war -->
+                <!-- WildFly plugin to deploy war -->
                 <plugin>
                     <groupId>org.wildfly.plugins</groupId>
                     <artifactId>wildfly-maven-plugin</artifactId>

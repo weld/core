@@ -4,13 +4,13 @@
 Weld comes with a number of examples. We recommend you start with
 `examples/jsf/numberguess` and `examples/jsf/translator`. Numberguess is
 a web (war) example containing only non-transactional managed beans.
-This example can be run on a wide range of servers, including WildFly ,
+This example can be run on a wide range of servers, including WildFly,
 GlassFish, Apache Tomcat, Jetty, and any compliant
-Java EE 7 container. Translator is an enterprise (ear) example that
-contains session beans. This example must be run on WildFly 8 or better,
-GlassFish 4 or better, or any compliant Java EE 7 container.
+Java EE 8 container. Translator is an enterprise (ear) example that
+contains session beans. This example must be run on WildFly 14 or better,
+GlassFish 5.1 or better, or any compliant Java EE 8 container.
 
-Both examples use JSF 2.2 as the web framework and, as such, can be
+Both examples use JSF 2.3 as the web framework and, as such, can be
 found in the `examples/jsf` directory of the Weld distribution.
 
 === Prerequisites
@@ -21,8 +21,8 @@ following:
 * the latest release of Weld, which contains the examples
 * Maven 3, to build and deploy the examples
 * optionally, a supported runtime environment (minimum versions shown)
-** WildFly 8.0.0.Final (10.1.0.Final recommended),
-** GlassFish 4.0,
+** WildFly 14 (14.0.1.Final recommended),
+** GlassFish 5.1.0 or better,
 ** Apache Tomcat 9 or better (war example only), or
 ** Jetty 9 or better (war example only)
 
@@ -30,7 +30,7 @@ In the next few sections, you'll be using the Maven command (`mvn`) to
 invoke the Maven project file in each example to compile, assemble and
 deploy the example to WildFly and, for the war example, Apache Tomcat.
 You can also deploy the generated artifact (war or ear) to any other
-container that supports Java EE 7, such as GlassFish 4.
+container that supports Java EE 8, such as GlassFish 5.
 
 The sections below cover the steps for deploying with Maven in detail.
 
@@ -54,16 +54,14 @@ http://wildfly.org/downloads/[WildFly] first. The good
 news is that there are no additional modifications you have to make to
 the server. It's ready to go!
 
-After you have downloaded WildFly, extract it. (We recommended renaming
-the folder to include the `as` qualifier so it's clear that it's the
-application server). You can move the extracted folder anywhere you
+After you have downloaded WildFly, extract it. You can move the extracted folder anywhere you
 like. Wherever it lays to rest, that's what we'll call the WildFly
 installation directory, or `JBOSS_HOME`.
 
 [source, console]
 --------------------------------
-$> unzip wildfly-10.1.0.Final.zip
-$> mv wildfly-10.*/ wildfly-10
+$> unzip wildfly-14.0.1.Final.zip
+$> mv wildfly-14.*/ wildfly-14
 --------------------------------
 
 In order for the build scripts to know where to deploy the example, you
@@ -73,7 +71,7 @@ e.g.:
 
 [source, console]
 -------------------------------------
-$> export JBOSS_HOME=/path/to/wildfly
+$> export JBOSS_HOME=/path/to/wildfly-14
 -------------------------------------
 
 You're now ready to run your first example!
@@ -88,7 +86,7 @@ $> mvn wildfly:deploy
 ------------------------------
 
 NOTE: If you are using Eclipse, you should seriously consider installing the
-http://www.jboss.org/tools[JBoss Tools] add-ons, which include a wide
+http://tools.jboss.org[JBoss Tools] add-ons, which include a wide
 variety of tooling for CDI and Java EE development, as well as an
 enhanced WildFly server view.
 
@@ -119,7 +117,7 @@ expected. Run:
 
 [source, console]
 --------------------------------------------
-$> mvn verify -Darquillian=wildfly-managed-8
+$> mvn verify -Darquillian=wildfly-managed
 --------------------------------------------
 
 You should see the following output:
@@ -137,11 +135,11 @@ example directory and execute the deploy target:
 [source, console]
 ---------------------------------
 $> cd examples/jsf/translator/ear
-$> mvn jboss-as:run
+$> mvn wildfly:run
 ---------------------------------
 
 NOTE: The translator uses session beans, which are packaged in an EJB module
-within an ear. Java EE 7 allows session beans to be deployed in war
+within an ear. Java EE 8 allows session beans to be deployed in war
 modules, but that's a topic for a later chapter.
 
 Again, wait a few seconds for the application to deploy (if you're
@@ -153,47 +151,34 @@ Again, functional tests can be running by executing:
 [source, console]
 --------------------------------------------
 $> cd examples/jsf/translator/ftest
-$> mvn verify -Darquillian=wildfly-managed-8
+$> mvn verify -Darquillian=wildfly-managed
 --------------------------------------------
 
 === Deploying to GlassFish
 
 Deploying to GlassFish should be easy and familiar, right? After all,
-it's the Java EE 7 reference implementation and Weld is the CDI
+it's the Java EE 8 reference implementation and Weld is the CDI
 reference implementation, meaning Weld gets bundled with GlassFish. So
 yes, it's all quite easy and familiar.
 
-To deploy the examples to GlassFish, you'll need a
-https://glassfish.java.net/download.html[GlassFish 4.0] release. Select
-the release that ends in either `-unix.sh` or `-windows.exe` depending
-on your platform. After the download is complete, execute the installer.
-On Linux/Unix, you'll need to first make the script executable.
+To deploy the examples to GlassFish, you'll need a GlassFish 5.1.0 release. Extract
+the zip to a directory of your choice and set the `GLASSFISH_HOME` environment
+variable. Switch to the `GLASSFISH_HOME` directory and start the server:
 
 [source, console]
 ----------------------------------
-$> chmod 755 glassfish-4.0-unix.sh
-$> ./glassfish-4.0-unix.sh
+$> ./bin/asadmin start-domain
 ----------------------------------
 
-On Windows you can just click on the executable. Follow the instructions
-in the installer. It will create a single domain named `domain1`. You'll
-use that domain to deploy the example. We recommend that you choose
-`7070` as the main HTTP port to avoid conflicts with a running instance
-of WildFly (or Apache Tomcat).
-
-Next, make sure the `GLASSFISH_HOME` environment variable is set to
-point to the GlassFish installation.
-
-Now switch to the `GLASSFISH_HOME` directory and deploy the example.
+Now you can deploy the example.
 
 [source, console]
 ------------------------------
-$> ./bin/asadmin
-asadmin> deploy /path/examples/jsf/numberguess/target/weld-numberguess.war
+$> ./bin/asadmin deploy /path/examples/jsf/numberguess/target/weld-numberguess.war
 ------------------------------
 
 Once the command completes the application is available at
-http://localhost:7070/weld-numberguess
+http://localhost:8080/weld-numberguess
 
 The reason the same artifact can be deployed to both WildFly and
 GlassFish, without any modifications, is because all of the features

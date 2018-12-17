@@ -23,7 +23,7 @@
 
         <dependency>
             <groupId>javax.faces</groupId>
-            <artifactId>jsf-api</artifactId>
+            <artifactId>javax.faces-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -36,7 +36,8 @@
 
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+            <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+            <version>${jboss.servlet.api.4.0.version}</version>
             <scope>provided</scope>
         </dependency>
 
