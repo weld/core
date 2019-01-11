@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.builtinBeans;
 
 import java.io.Serializable;
+import java.security.Principal;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -32,8 +33,8 @@ import org.junit.Assert;
 @SuppressWarnings("serial")
 public class Consumer implements Serializable {
 
-    // Not working incontainer as there is no principal
-    //@Inject Principal principal;
+    @Inject
+    Principal principal;
     @Inject
     UserTransaction userTransaction;
     @Inject
@@ -60,9 +61,7 @@ public class Consumer implements Serializable {
 
     public void check() {
         Assert.assertTrue(Checker.checkBeanManager(beanManager));
-
-        // Not working incontainer as there is no principal
-        //assert Checker.checkPrincipal(principal);
+        Assert.assertTrue(Checker.checkPrincipal(principal));
         Assert.assertTrue(Checker.checkUserTransaction(userTransaction));
         Assert.assertTrue(Checker.checkInstance(cow));
         Assert.assertTrue(Checker.checkEvent(event, observer));
