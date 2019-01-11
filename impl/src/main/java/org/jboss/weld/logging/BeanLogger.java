@@ -360,8 +360,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1523, value = "Unable to restore InjectionPoint. Multiple matching InjectionPoints found on {0}:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToRestoreInjectionPointMultiple(Object param1, Object param2, Object param3);
 
-    @Message(id = 1524, value = "Unable to load proxy class for bean {0} with class {1} using classloader {2}", format = Format.MESSAGE_FORMAT)
-    WeldException unableToLoadProxyClass(Object param1, Object param2, Object param3, @Cause Throwable cause);
+    @Message(id = 1524, value = "Unable to load proxy class for bean {0} with class {1}", format = Format.MESSAGE_FORMAT)
+    WeldException unableToLoadProxyClass(Object param1, Object param2, @Cause Throwable cause);
 
     @Message(id = 1525, value = "Instance.destroy() is not supported. The underlying context {0} does not support destroying of contextual instances", format = Format.MESSAGE_FORMAT)
     UnsupportedOperationException destroyUnsupported(Object param1);
