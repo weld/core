@@ -129,6 +129,7 @@ import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Permissions;
+import org.jboss.weld.util.bytecode.ClassFileUtils;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Formats;
@@ -212,6 +213,11 @@ public class WeldStartup {
 
         if (!registry.contains(ProxyServices.class)) {
             registry.add(ProxyServices.class, new SimpleProxyServices());
+        }
+        // check if ProxyServices implementation supports class defining on integrator side
+        if (!registry.get(ProxyServices.class).supportsClassDefining()) {
+            // we will need to invoke CL.defineClass() ourselves, crack open those methods eagerly
+            ClassFileUtils.makeClassLoaderMethodsAccessible();
         }
         if (!registry.contains(SecurityServices.class)) {
             registry.add(SecurityServices.class, NoopSecurityServices.INSTANCE);

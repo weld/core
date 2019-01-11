@@ -48,7 +48,7 @@ public class ReentrantComputingCacheTest {
 
     @Test
     public void testReentrantComputingCache() {
-        Assert.assertEquals(2, countInterfaces(Integer.class));
+        Assert.assertEquals(2, countInterfaces(Baz.class));
     }
 
     @Test

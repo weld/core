@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.util.bytecode;
 
+import org.jboss.classfilewriter.ClassFile;
+import org.jboss.weld.serialization.spi.ProxyServices;
+import sun.misc.Unsafe;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,15 +27,17 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
-
-import org.jboss.classfilewriter.ClassFile;
-
-import sun.misc.Unsafe;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Utility class for loading a ClassFile into a classloader. This borrows heavily from javassist
+ * Utility class for loading a ClassFile into a classloader. Allows to use either old approach directly via CL
+ * methods, or delegation to integrator through {@code ProxyServices}.
+ *
+ * Also contains logic needed to crack open CL methods should that approach be used - this is invoked from WeldStartup.
  *
  * In oder to support JDK 9+, this class now uses Unsafe as we need to be able to define classes with different ProtectionDomain
+ * In JDK 12+, even Unsafe fails (no "override" field) hence we fallback to setAccessible() but in this case
+ * integrators should already go through new SPI hence avoiding this problem.
  *
  * @author Stuart Douglas
  * @author Matej Novotny
@@ -39,36 +45,55 @@ import sun.misc.Unsafe;
 public class ClassFileUtils {
 
     private static java.lang.reflect.Method defineClass1, defineClass2;
+    private static AtomicBoolean classLoaderMethodsMadeAccessible = new AtomicBoolean(false);
 
     private ClassFileUtils() {
     }
 
-    static {
-        try {
-            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                public Object run() throws Exception {
-                    Class<?> cl = Class.forName("java.lang.ClassLoader");
-                    final String name = "defineClass";
+    /**
+     * This method cracks open {@code ClassLoader#defineClass()} methods using {@code Unsafe}.
+     * It is invoked during {@code WeldStartup#startContainer()} and only in case the integrator does not
+     * fully implement {@link ProxyServices}.
+     *
+     * Method first attempts to use {@code Unsafe} and if that fails then reverts to {@code setAccessible}
+     */
+    public static void makeClassLoaderMethodsAccessible() {
+        // the AtomicBoolean make sure this gets invoked only once as WeldStartup is triggered per deployment
+        if (classLoaderMethodsMadeAccessible.compareAndSet(false, true)) {
+            try {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    public Object run() throws Exception {
+                        Class<?> cl = Class.forName("java.lang.ClassLoader");
+                        final String name = "defineClass";
 
-                    // get Unsafe singleton instance
-                    Field singleoneInstanceField = Unsafe.class.getDeclaredField("theUnsafe");
-                    singleoneInstanceField.setAccessible(true);
-                    Unsafe theUnsafe = (Unsafe) singleoneInstanceField.get(null);
+                        defineClass1 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class);
+                        defineClass2 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
 
-                    // get the offset of the override field in AccessibleObject
-                    long overrideOffset = theUnsafe.objectFieldOffset(AccessibleObject.class.getDeclaredField("override"));
+                        // First try with Unsafe to avoid illegal access
+                        try {
+                            // get Unsafe singleton instance
+                            Field singleoneInstanceField = Unsafe.class.getDeclaredField("theUnsafe");
+                            singleoneInstanceField.setAccessible(true);
+                            Unsafe theUnsafe = (Unsafe) singleoneInstanceField.get(null);
 
-                    defineClass1 = cl.getDeclaredMethod(name, new Class[] { String.class, byte[].class, int.class, int.class });
-                    defineClass2 = cl.getDeclaredMethod(name, new Class[] { String.class, byte[].class, int.class, int.class, ProtectionDomain.class });
+                            // get the offset of the override field in AccessibleObject
+                            long overrideOffset = theUnsafe.objectFieldOffset(AccessibleObject.class.getDeclaredField("override"));
 
-                    // make both accessible
-                    theUnsafe.putBoolean(defineClass1, overrideOffset, true);
-                    theUnsafe.putBoolean(defineClass2, overrideOffset, true);
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException pae) {
-            throw new RuntimeException("cannot initialize ClassPool", pae.getException());
+                            // make both accessible
+                            theUnsafe.putBoolean(defineClass1, overrideOffset, true);
+                            theUnsafe.putBoolean(defineClass2, overrideOffset, true);
+                            return null;
+                        } catch (NoSuchFieldException e) {
+                            // This is JDK 12+, the "override" field isn't there anymore, fallback to setAccessible()
+                            defineClass1.setAccessible(true);
+                            defineClass2.setAccessible(true);
+                            return null;
+                        }
+                    }
+                });
+            } catch (PrivilegedActionException pae) {
+                throw new RuntimeException("cannot initialize ClassPool", pae.getException());
+            }
         }
     }
 
@@ -111,6 +136,26 @@ public class ClassFileUtils {
             throw e;
         } catch (java.lang.reflect.InvocationTargetException e) {
             throw new RuntimeException(e.getTargetException());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Delegates proxy creation via {@link ProxyServices} to the integrator.
+     */
+    public static Class<?> toClass(ClassFile ct, Class<?> originalClass, ProxyServices proxyServices, ProtectionDomain domain) {
+        try {
+            byte[] bytecode = ct.toBytecode();
+            Class<?> result;
+            if (domain == null) {
+                result = proxyServices.defineClass(originalClass, ct.getName(), bytecode, 0, bytecode.length);
+            } else {
+                result = proxyServices.defineClass(originalClass, ct.getName(), bytecode, 0, bytecode.length, domain);
+            }
+            return result;
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
