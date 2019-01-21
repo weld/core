@@ -1131,7 +1131,7 @@ public class Weld implements ContainerInstanceFactory {
                     if (!entry.getName().endsWith(Files.CLASS_FILE_EXTENSION)) {
                         continue;
                     }
-                    if (entry.getName().startsWith(packNamePath)) {
+                    if (entry.getName().startsWith(packNamePath + '/')) {
                         if (scanRecursively) {
                             foundClasses.add(Files.filenameToClassname(entry.getName()));
                         } else {
