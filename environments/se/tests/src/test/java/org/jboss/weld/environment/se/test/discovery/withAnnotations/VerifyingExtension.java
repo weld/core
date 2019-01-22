@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2019, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
+package org.jboss.weld.environment.se.test.discovery.withAnnotations;
 
 import static org.junit.Assert.assertNull;
 
@@ -24,42 +24,18 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.inject.Named;
-import javax.validation.Constraint;
-import java.beans.ConstructorProperties;
 
 public class VerifyingExtension implements Extension {
 
-    private AnnotatedType<Person> personType;
-
-    private AnnotatedType<Group> groupType;
-
     private AnnotatedType<MyBean> myBeanType;
 
-    void processPerson(@Observes @WithAnnotations(Constraint.class) ProcessAnnotatedType<Person> event) {
-        assertNull(personType);
-        this.personType = event.getAnnotatedType();
-    }
-
-    void processGroup(@Observes @WithAnnotations(ConstructorProperties.class) ProcessAnnotatedType<Group> event) {
-        assertNull(groupType);
-        this.groupType = event.getAnnotatedType();
-    }
-    
     void processMyBean(@Observes @WithAnnotations(Named.class) ProcessAnnotatedType<MyBean> event) {
         assertNull(myBeanType);
         this.myBeanType = event.getAnnotatedType();
     }
 
-    AnnotatedType<Person> getPersonType() {
-        return personType;
-    }
-
-    AnnotatedType<Group> getGroupType() {
-        return groupType;
-    }
-
     AnnotatedType<MyBean> getMyBeanType() {
         return myBeanType;
     }
-    
+
 }
