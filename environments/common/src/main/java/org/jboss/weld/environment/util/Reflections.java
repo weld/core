@@ -151,7 +151,7 @@ public final class Reflections {
         return false;
     }
 
-    private static boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
+    public static boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
         return containsAnnotation(annotations, requiredAnnotation, true);
     }
 

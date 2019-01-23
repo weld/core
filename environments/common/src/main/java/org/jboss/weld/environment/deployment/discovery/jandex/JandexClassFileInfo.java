@@ -300,15 +300,23 @@ public class JandexClassFileInfo implements ClassFileInfo {
                 // fallback to using reflection
                 Class<?> interfaceClass = loadClass(interfaceName.toString());
                 for (Method method : interfaceClass.getDeclaredMethods()) {
-                    if (method.isDefault() && method.isAnnotationPresent(requiredAnnotation)) {
+                    if (method.isDefault() && Reflections.containsAnnotations(method.getAnnotations(), requiredAnnotation)) {
                         return true;
                     }
                 }
                 continue;
             }
             for (MethodInfo method : interfaceInfo.methods()) {
-                if (isDefault(method) && method.hasAnnotation(requiredAnnotationName)) {
-                    return true;
+                if (isDefault(method)) {
+                    if (method.hasAnnotation(requiredAnnotationName)) {
+                        return true;
+                    }
+                    // Meta-annotations
+                    for (AnnotationInstance annotation : method.annotations()) {
+                        if (annotationClassAnnotationsCache.getValue(annotation.name()).contains(requiredAnnotationName.toString())) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
