@@ -66,5 +66,8 @@ public class WithAnnotationsTest {
     public void testWithAnnotationsOnDefaultMethod() {
         assertNotNull(extension.getMyBeanType());
         assertEquals(MyBean.class, extension.getMyBeanType().getJavaClass()); 
+        
+        assertNotNull(extension.getMyBeanMetaType());
+        assertEquals(MyBeanMeta.class, extension.getMyBeanMetaType().getJavaClass()); 
     }
 }

@@ -307,7 +307,8 @@ public class JandexClassFileInfo implements ClassFileInfo {
                 continue;
             }
             for (MethodInfo method : interfaceInfo.methods()) {
-                if (isDefault(method)) {
+                // Default methods are public non-abstract instance methods declared in an interface
+                if (isNonAbstractPublicInstanceMethod(method)) {
                     if (method.hasAnnotation(requiredAnnotationName)) {
                         return true;
                     }
@@ -323,8 +324,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
         return false;
     }
 
-    private boolean isDefault(MethodInfo method) {
-        // Default methods are public non-abstract instance methods declared in an interface
+    private boolean isNonAbstractPublicInstanceMethod(MethodInfo method) {
         return (method.flags() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC;
     }
 

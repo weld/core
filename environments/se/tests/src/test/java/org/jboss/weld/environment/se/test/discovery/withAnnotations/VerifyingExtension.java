@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.test.discovery.withAnnotations;
 import static org.junit.Assert.assertNull;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
@@ -29,13 +30,24 @@ public class VerifyingExtension implements Extension {
 
     private AnnotatedType<MyBean> myBeanType;
 
+    private AnnotatedType<MyBeanMeta> myBeanMetaType;
+
     void processMyBean(@Observes @WithAnnotations(Named.class) ProcessAnnotatedType<MyBean> event) {
         assertNull(myBeanType);
         this.myBeanType = event.getAnnotatedType();
     }
 
+    void processMyBeanMeta(@Observes @WithAnnotations(Stereotype.class) ProcessAnnotatedType<MyBeanMeta> event) {
+        assertNull(myBeanMetaType);
+        this.myBeanMetaType = event.getAnnotatedType();
+    }
+
     AnnotatedType<MyBean> getMyBeanType() {
         return myBeanType;
+    }
+
+    AnnotatedType<MyBeanMeta> getMyBeanMetaType() {
+        return myBeanMetaType;
     }
 
 }

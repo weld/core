@@ -49,6 +49,10 @@ public class WithAnnotationsTest {
             assertNotNull(extension.getMyBeanType());
             assertEquals(MyBean.class, extension.getMyBeanType().getJavaClass());
             assertEquals("ok", container.select(MyInterface.class).get().ping());
+
+            assertNotNull(extension.getMyBeanMetaType());
+            assertEquals(MyBeanMeta.class, extension.getMyBeanMetaType().getJavaClass());
+            assertEquals("ko", container.select(MyInterfaceMeta.class).get().pong("ko"));
         }
 
     }
