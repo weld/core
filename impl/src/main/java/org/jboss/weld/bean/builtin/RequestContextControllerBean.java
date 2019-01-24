@@ -92,7 +92,7 @@ public class RequestContextControllerBean extends AbstractStaticallyDecorableBui
             if (!isRequestContextActive()) {
                 throw BeanManagerLogger.LOG.contextNotActive(RequestScoped.class);
             }
-            if (isActivator.get()) {
+            if (isActivator.compareAndSet(true, false)) {
                 try {
                     requestBeforeDestroyedEvent.fire(toString());
                     requestContext.invalidate();
