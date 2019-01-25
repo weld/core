@@ -16,15 +16,10 @@
  */
 package org.jboss.weld.injection;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.security.AccessController;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InterceptionFactory;
 import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
@@ -111,57 +106,17 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
         }
 
         UnproxyableResolutionException exception = Proxies.getUnproxyableTypeException(annotatedType.getBaseType(), null, beanManager.getServices(),
-            ignoreFinalMethods);
+                ignoreFinalMethods);
         if (exception != null) {
             throw exception;
         }
         used = true;
 
-        AnnotatedType<T> originalAT = configurator != null ? configurator.complete() : annotatedType;
-        // this is the resulting AT we want to work with
-        AnnotatedType<T> resultingAnnotatedType = null;
-        // if it is an interface, we will have to 'merge' the AT with the AT of whatever user supplied as an instance
-        if (originalAT.getJavaClass().isInterface()) {
-            AnnotatedType<?> instanceAnnotatedType = beanManager.createAnnotatedType(instance.getClass());
-            AnnotatedTypeConfiguratorImpl<?> newAtConfigurator = new AnnotatedTypeConfiguratorImpl<>(instanceAnnotatedType);
-
-            // first check class-level annotation
-            for (Annotation annotation : originalAT.getAnnotations()) {
-                if (beanManager.isInterceptorBinding(annotation.annotationType())) {
-                    if (newAtConfigurator.getAnnotated().isAnnotationPresent(annotation.annotationType())) {
-                        // same annotation is already present on the type, throw an exception
-                        throw InterceptorLogger.LOG.interceptionFactoryAnnotationClash(originalAT, newAtConfigurator.getAnnotated(), annotation);
-                    }
-                    newAtConfigurator.add(annotation);
-                }
-            }
-            // then we go over methods
-            for (AnnotatedMethod<? super T> annMethod : originalAT.getMethods()) {
-                for (Annotation annotation : annMethod.getAnnotations()) {
-                    if (beanManager.isInterceptorBinding(annotation.annotationType())) {
-                        newAtConfigurator.filterMethods((m) ->
-                            // cannot use equals on Method since they are not declared on the same class
-                            isMatchingMethod(annMethod.getJavaMember(), m.getJavaMember(), instance.getClass()))
-                            .findFirst().ifPresent(result -> {
-                                if (result.getAnnotated().isAnnotationPresent(annotation.annotationType())) {
-                                    // same annotation is already present on the type, throw an exception
-                                    throw InterceptorLogger.LOG.interceptionFactoryAnnotationClash(originalAT, newAtConfigurator.getAnnotated(), annotation);
-                                }
-                                result.add(annotation);
-                            });
-                    }
-                }
-            }
-            // cast should be safe as provided instance was a subclass of the interface
-            resultingAnnotatedType = (AnnotatedType<T>) newAtConfigurator.complete();
-        } else {
-            resultingAnnotatedType = originalAT;
-        }
         Optional<InterceptionFactoryData<T>> cached = beanManager.getServices().get(InterceptionFactoryDataCache.class)
-            .getInterceptionFactoryData(resultingAnnotatedType);
+                .getInterceptionFactoryData(configurator != null ? configurator.complete() : annotatedType);
 
         if (!cached.isPresent()) {
-            InterceptorLogger.LOG.interceptionFactoryNotRequired(resultingAnnotatedType.getJavaClass().getSimpleName());
+            InterceptorLogger.LOG.interceptionFactoryNotRequired(annotatedType.getJavaClass().getSimpleName());
             return instance;
         }
 
@@ -169,42 +124,12 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
 
         InterceptedProxyMethodHandler methodHandler = new InterceptedProxyMethodHandler(instance);
         methodHandler.setInterceptorMethodHandler(new InterceptorMethodHandler(
-            InterceptionContext.forNonConstructorInterception(data.getInterceptionModel(), creationalContext, beanManager, data.getSlimAnnotatedType())));
+                InterceptionContext.forNonConstructorInterception(data.getInterceptionModel(), creationalContext, beanManager, data.getSlimAnnotatedType())));
 
         T proxy = (System.getSecurityManager() == null) ? data.getInterceptedProxyFactory().run()
             : AccessController.doPrivileged(data.getInterceptedProxyFactory());
         ((ProxyObject) proxy).weld_setHandler(methodHandler);
-
         return proxy;
     }
 
-    private boolean isMatchingMethod(Method originalAt, Method newAt, Class<?> instanceClass) {
-        if (originalAt == null || newAt == null) {
-            return false;
-        }
-        // declaring class check with exception for default methods
-        if (!originalAt.isDefault() && !newAt.getDeclaringClass().equals(instanceClass)) {
-            return false;
-        }
-        // with generics in place, we might bump into bridge methods
-        // interfaces (original AT) cannot have then, hence return false
-        if (newAt.isBridge()) {
-            return false;
-        }
-        if (!originalAt.getName().equals(newAt.getName())
-            || !originalAt.getReturnType().equals(newAt.getReturnType())
-            || !(originalAt.getParameterCount() == newAt.getParameterCount())) {
-            return false;
-        }
-        List<Class<?>> originalMethodParams = Arrays.asList(originalAt.getParameterTypes());
-        List<Class<?>> newMethodParams = Arrays.asList(newAt.getParameterTypes());
-        for (int i = 0; i < originalMethodParams.size(); i++) {
-            // there is a possible generics hell when comparing method params
-            // best-effort approach is to check assignability
-            if (!originalMethodParams.get(i).isAssignableFrom(newMethodParams.get(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

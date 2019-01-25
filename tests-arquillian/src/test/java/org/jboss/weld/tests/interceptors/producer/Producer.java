@@ -155,19 +155,57 @@ public class Producer {
     @Produced
     @Produces
     @ApplicationScoped
-    public UninterestingInterface1 produceBeanBasedOnImplWithMethodAnnotation(InterceptionFactory<UninterestingInterface1> interceptionFactory) {
-        interceptionFactory.configure().filterMethods((m) ->
-            m.getJavaMember().getName().equals("ping")
-        ).findFirst().get().add(Hello.Literal.INSTANCE); // annotation is already present on the impl type
-        return interceptionFactory.createInterceptedInstance(new ImplWhichAlreadyHasMethodAnnotation());
+    public ProxyableInterface produceBeanFromUnproxyableType (InterceptionFactory<ProxyableInterface> interceptionFactory) {
+        interceptionFactory.configure().add(Monitor.Literal.INSTANCE).filterMethods((m) ->
+            m.getJavaMember().getName().equals("ping")).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new UnproxyableImpl());
     }
 
     @Produced
     @Produces
     @ApplicationScoped
-    public UninterestingInterface2 produceBeanBasedOnImplWithClassAnnotation(InterceptionFactory<UninterestingInterface2> interceptionFactory) {
-        interceptionFactory.configure().add(Monitor.Literal.INSTANCE); // annotation is already present on the impl type
-        return interceptionFactory.createInterceptedInstance(new ImplWhichAlreadyHasTypeAnnotation("kokot"));
+    public ProxyableInterfaceWithMethodAnnotation produceBeanFromUnproxyableTypeWithMethodAnnotationInInterface (InterceptionFactory<ProxyableInterfaceWithMethodAnnotation> interceptionFactory) {
+        // already has method level annotation, add class level annotation as well
+        interceptionFactory.configure().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new UnproxyableInterfaceWithMethodAnnotationImpl());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public ProxyableInterfaceWithClassAnnotation produceBeanFromUnproxyableTypeWithClassAnnotationInInterface (InterceptionFactory<ProxyableInterfaceWithClassAnnotation> interceptionFactory) {
+        // already has class level annotation, add method level annotation as well
+        interceptionFactory.configure().filterMethods((m) ->
+                m.getJavaMember().getName().equals("ping")).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new UnproxyableInterfaceWithClassAnnotationImpl());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public InterfaceWithGenericsB<String, Integer> produceBeanFromUnproxyableTypeWithGenericHierarchy (InterceptionFactory<InterfaceWithGenericsB<String, Integer>> interceptionFactory) {
+        interceptionFactory.configure().add(Monitor.Literal.INSTANCE).filterMethods((m) ->
+                m.getJavaMember().getName().equals("pong")).findFirst().get().add(Hello.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new UnproxyableInterfaceWithGenericsChainImpl());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public InterfaceWithAnnotation produceBeanFromUnproxyableTypeAndAddAlreadyPresentAnnotation (InterceptionFactory<InterfaceWithAnnotation> interceptionFactory) {
+        // Hello is already present on class level, Monitor is on `pong` method
+        interceptionFactory.configure().add(Hello.Literal.INSTANCE).filterMethods(m ->
+                m.getJavaMember().getName().equals("pong")).findFirst().get().add(Monitor.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new InterfaceWithAnnotationImpl());
+    }
+
+    @Produced
+    @Produces
+    @ApplicationScoped
+    public InterfaceB produceBeanWithInterfaceHierarchy (InterceptionFactory<InterfaceB> interceptionFactory) {
+        interceptionFactory.configure().add(Hello.Literal.INSTANCE).filterMethods(m ->
+                m.getJavaMember().getName().equals("pingB")).findFirst().get().add(Monitor.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new NonGenericInterfaceChainImpl());
     }
 
     static class Foo {

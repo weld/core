@@ -113,7 +113,7 @@ public class InterceptionModelInitializer<T> {
             if (annotatedType.isFinal()) {
                 throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(annotatedType.getJavaClass());
             }
-            if (Reflections.isPrivate(constructor.getJavaMember())) {
+            if (constructor != null && Reflections.isPrivate(constructor.getJavaMember())) {
                 throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass().getName(), constructor, annotatedType.getJavaClass()));
             }
             manager.getInterceptorModelRegistry().put(annotatedType.slim(), interceptionModel);
@@ -142,7 +142,9 @@ public class InterceptionModelInitializer<T> {
         Set<Annotation> bindings = classBindingAnnotations.uniqueValues();
         builder.setClassInterceptorBindings(bindings);
         initCdiLifecycleInterceptors(bindings);
-        initCdiConstructorInterceptors(classBindingAnnotations);
+        if (constructor != null) {
+            initCdiConstructorInterceptors(classBindingAnnotations);
+        }
         initCdiBusinessMethodInterceptors(classBindingAnnotations);
     }
 
@@ -232,7 +234,9 @@ public class InterceptionModelInitializer<T> {
 
     private void initEjbInterceptors() {
         initClassDeclaredEjbInterceptors();
-        initConstructorDeclaredEjbInterceptors();
+        if (constructor != null) {
+            initConstructorDeclaredEjbInterceptors();
+        }
         for (AnnotatedMethod<?> method : businessMethods) {
             initMethodDeclaredEjbInterceptors(method);
         }
@@ -243,7 +247,7 @@ public class InterceptionModelInitializer<T> {
      */
     private void initClassDeclaredEjbInterceptors() {
         Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
-        boolean excludeClassLevelAroundConstructInterceptors = constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
+        boolean excludeClassLevelAroundConstructInterceptors = constructor != null && constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2018, Red Hat, Inc., and individual contributors
+ * Copyright 2019, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,24 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.tests.interceptors.producer;
 
-import javax.enterprise.inject.Vetoed;
-
-/**
- *
- * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
- */
-@Monitor
-@Vetoed
-public class ImplWhichAlreadyHasTypeAnnotation implements UninterestingInterface2 {
-
-    public ImplWhichAlreadyHasTypeAnnotation(String foo) {
-        System.err.println("");
-    }
-    @Override
-    public String ping() {
-        return ImplWhichAlreadyHasTypeAnnotation.class.getSimpleName();
-    }
-
+public interface InterfaceB extends InterfaceA {
+    String pingB();
 }

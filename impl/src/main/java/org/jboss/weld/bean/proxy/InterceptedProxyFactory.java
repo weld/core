@@ -16,16 +16,6 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
-import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.DuplicateMemberException;
@@ -44,10 +34,22 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.reflection.Reflections;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
+import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
+
 /**
  * Generates proxies used to apply interceptors to custom bean instances and return values of producer methods.
  *
  * @author Martin Kouba
+ * @author Matej Novotny
  *
  * @param <T>
  * @see InterceptionFactoryImpl
@@ -62,42 +64,23 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
 
     private final Set<MethodSignature> interceptedMethodSignatures;
 
-    private Set<Class<?>> interfacesToInspect;
-
     private final String suffix;
 
+    private final boolean builtFromInterface;
+    private Set<Class<?>> interfacesToInspect;
+
     public InterceptedProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Set<MethodSignature> enhancedMethodSignatures,
-        Set<MethodSignature> interceptedMethodSignatures, String suffix) {
+            Set<MethodSignature> interceptedMethodSignatures, String suffix) {
         super(contextId, proxiedBeanType, typeClosure, null);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
         this.interceptedMethodSignatures = interceptedMethodSignatures;
         this.suffix = suffix;
+        // it can happen that we are building the proxy from an interface, in such case we'll need to add more methods
+        builtFromInterface = proxiedBeanType.isInterface();
     }
 
     protected String getProxyNameSuffix() {
         return PROXY_SUFFIX + suffix;
-    }
-
-    @Override
-    public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
-        // these interfaces we want to scan for method and our proxies will implement them
-        for (Class<?> c : proxiedBeanType.getInterfaces()) {
-            addInterface(c);
-        }
-        // now we need to go deeper in hierarchy and scan those interfaces for additional interfaces with default impls
-        for (Type type : typeClosure) {
-            Class<?> c = Reflections.getRawType(type);
-            if (c.isInterface()) {
-                addInterfaceToInspect(c);
-            }
-        }
-    }
-
-    private void addInterfaceToInspect(Class<?> iface) {
-        if (interfacesToInspect == null) {
-            interfacesToInspect = new HashSet<>();
-        }
-        this.interfacesToInspect.add(iface);
     }
 
     @Override
@@ -107,16 +90,21 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
             final Set<MethodSignature> finalMethods = new HashSet<MethodSignature>();
             final Set<MethodSignature> processedBridgeMethods = new HashSet<MethodSignature>();
 
-            // Add all methods from the class hierarchy
-            Class<?> cls = getBeanType();
-            while (cls != null) {
+            // Add all methods from the class hierarchy + proxied type
+            Set<Class<?>> classes = new LinkedHashSet<>();
+            for (Class<?> cls = getBeanType(); cls != null; cls = cls.getSuperclass()) {
+                classes.add(cls);
+            }
+            classes.add(getProxiedBeanType());
+
+            for (Class<?> cls : classes) {
                 Set<MethodSignature> declaredBridgeMethods = new HashSet<MethodSignature>();
                 for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
 
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
 
                     if (isMethodAccepted(method, getProxySuperclass()) && enhancedMethodSignatures.contains(methodSignature)
-                        && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
+                            && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
                         try {
                             final MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
@@ -128,6 +116,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
                             } else {
                                 createNotInterceptedMethod(classMethod, methodInfo, method, staticConstructor);
                             }
+
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
                             // been overridden
@@ -142,41 +131,49 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
                     }
                 }
                 processedBridgeMethods.addAll(declaredBridgeMethods);
-                cls = cls.getSuperclass();
             }
-            // We want to iterate over pre-defined interfaces (getAdditionalInterfaces()) and also over those we discovered earlier (interfacesToInspect)
-            Set<Class<?>> allInterfaces = new HashSet<>(getAdditionalInterfaces());
-            if (interfacesToInspect != null) {
-                allInterfaces.addAll(interfacesToInspect);
-            }
-            for (Class<?> c : allInterfaces) {
-                for (Method method : c.getMethods()) {
-                    MethodSignature signature = new MethodSignatureImpl(method);
-                    // For interfaces we do not consider return types when going through processed bridge methods
-                    try {
-                        if (isMethodAccepted(method, getProxySuperclass()) && enhancedMethodSignatures.contains(signature)
-                            && !finalMethods.contains(signature) && !processedBridgeMethods.contains(signature)) {
+            if (builtFromInterface) {
+                // since we are just on top of an interface, we will need to add all the methods from interface
+                // hierarchy so that there are no AbstractMethodError exception popping up
+                for (Class<?> c : interfacesToInspect) {
+                    for (Method method : c.getMethods()) {
+                        MethodSignature signature = new MethodSignatureImpl(method);
+                        try {
+                            if (isMethodAccepted(method, getProxySuperclass())
+                                    && !processedBridgeMethods.contains(signature)) {
 
-                            final MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            ClassMethod classMethod = proxyClassType.addMethod(method);
-                            if (interceptedMethodSignatures.contains(signature) && Reflections.isDefault(method)) {
-                                // this method is intercepted and is default
-                                createInterceptedMethod(classMethod, methodInfo, method, staticConstructor);
-                                BeanLogger.LOG.addingMethodToProxy(method);
-                            } else {
+                                final MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                                ClassMethod classMethod = proxyClassType.addMethod(method);
                                 createNotInterceptedMethod(classMethod, methodInfo, method, staticConstructor);
+                                BeanLogger.LOG.addingMethodToProxy(method);
                             }
+                        } catch (DuplicateMemberException e) {
                         }
-                    } catch (DuplicateMemberException e) {
-                    }
-                    if (method.isBridge()) {
-                        processedBridgeMethods.add(signature);
+                        if (method.isBridge()) {
+                            processedBridgeMethods.add(signature);
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             throw new WeldException(e);
         }
+    }
+
+    @Override
+    public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        // store all interfaces we want to look into later, only usable if we make this proxy on top of an interface
+        for (Type type : typeClosure) {
+            Class<?> c = Reflections.getRawType(type);
+            if (c.isInterface()) {
+                addInterfaceToInspect(c);
+            }
+        }
+    }
+
+    @Override
+    protected boolean isMethodAccepted(Method method, Class<?> proxySuperclass) {
+        return super.isMethodAccepted(method, proxySuperclass) && CommonProxiedMethodFilters.NON_PRIVATE.accept(method, proxySuperclass) && !method.isBridge();
     }
 
     private void createNotInterceptedMethod(ClassMethod classMethod, final MethodInformation methodInfo, Method method, ClassMethod staticConstructor) {
@@ -188,7 +185,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
 
         b.aload(0);
         DEFAULT_METHOD_RESOLVER.getDeclaredMethod(classMethod, methodInfo.getDeclaringClass(), method.getName(),
-            methodInfo.getParameterTypes(), staticConstructor);
+                methodInfo.getParameterTypes(), staticConstructor);
         b.aconstNull();
 
         b.iconst(method.getParameterTypes().length);
@@ -214,7 +211,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
         }
 
         b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
-            new String[] { LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
+                new String[] { LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
 
         if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
             b.returnInstruction();
@@ -238,7 +235,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
 
         b.aload(0);
         DEFAULT_METHOD_RESOLVER.getDeclaredMethod(classMethod, methodInfo.getDeclaringClass(), method.getName(),
-            methodInfo.getParameterTypes(), staticConstructor);
+                methodInfo.getParameterTypes(), staticConstructor);
         b.dup();
         // Params
         b.iconst(method.getParameterTypes().length);
@@ -262,7 +259,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
         }
 
         b.invokeinterface(StackAwareMethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
-            InterceptedSubclassFactory.INVOKE_METHOD_PARAMETERS);
+                InterceptedSubclassFactory.INVOKE_METHOD_PARAMETERS);
 
         if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
             b.returnInstruction();
@@ -275,9 +272,10 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
         }
     }
 
-    @Override
-    protected boolean isMethodAccepted(Method method, Class<?> proxySuperclass) {
-        return super.isMethodAccepted(method, proxySuperclass) && CommonProxiedMethodFilters.NON_PRIVATE.accept(method, proxySuperclass) && !method.isBridge();
+    private void addInterfaceToInspect(Class<?> iface) {
+        if (interfacesToInspect == null) {
+            interfacesToInspect = new HashSet<>();
+        }
+        this.interfacesToInspect.add(iface);
     }
-
 }
