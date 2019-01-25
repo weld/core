@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2019, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,60 +14,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
+package org.jboss.weld.environment.se.test.discovery.withAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
 
+import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-/**
- * @author Jozef Hartinger
- *
- * @see https://issues.jboss.org/browse/WFLY-1573
- *
- */
 @RunWith(Arquillian.class)
 public class WithAnnotationsTest {
 
-    @Inject
-    private VerifyingExtension extension;
-
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WithAnnotationsTest.class)).addPackage(WithAnnotationsTest.class.getPackage())
-                .addAsServiceProvider(Extension.class, VerifyingExtension.class);
+        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WithAnnotationsTest.class))
+                .addPackage(WithAnnotationsTest.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class)).build();
     }
 
-    @Test
-    public void test() {
-        assertNotNull(extension.getPersonType());
-        assertEquals(Person.class, extension.getPersonType().getJavaClass());
-
-        assertNotNull(extension.getGroupType());
-        assertEquals(Group.class, extension.getGroupType().getJavaClass());
-    }
-    
-    // We need to update WildFly ClassFileInfo first
-    @Category(EmbeddedContainer.class)
     @Test
     public void testWithAnnotationsOnDefaultMethod() {
-        assertNotNull(extension.getMyBeanType());
-        assertEquals(MyBean.class, extension.getMyBeanType().getJavaClass()); 
-        
-        assertNotNull(extension.getMyBeanMetaType());
-        assertEquals(MyBeanMeta.class, extension.getMyBeanMetaType().getJavaClass()); 
+        try (WeldContainer container = new Weld().scanClasspathEntries().initialize()) {
+            VerifyingExtension extension = container.getBeanManager().getExtension(VerifyingExtension.class);
+            assertNotNull(extension.getMyBeanType());
+            assertEquals(MyBean.class, extension.getMyBeanType().getJavaClass());
+            assertEquals("ok", container.select(MyInterface.class).get().ping());
+
+            assertNotNull(extension.getMyBeanMetaType());
+            assertEquals(MyBeanMeta.class, extension.getMyBeanMetaType().getJavaClass());
+            assertEquals("ko", container.select(MyInterfaceMeta.class).get().pong("ko"));
+        }
+
     }
 }

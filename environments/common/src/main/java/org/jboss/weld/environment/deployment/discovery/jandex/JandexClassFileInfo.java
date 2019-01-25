@@ -1,6 +1,7 @@
 package org.jboss.weld.environment.deployment.discovery.jandex;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
@@ -291,7 +292,40 @@ public class JandexClassFileInfo implements ClassFileInfo {
                 return true;
             }
         }
+        // Also check default methods on interfaces
+        for (DotName interfaceName : classInfo.interfaceNames()) {
+            final ClassInfo interfaceInfo = index.getClassByName(interfaceName);
+            if (interfaceInfo == null) {
+                // we are accessing a class that is outside of the jandex index
+                // fallback to using reflection
+                Class<?> interfaceClass = loadClass(interfaceName.toString());
+                for (Method method : interfaceClass.getDeclaredMethods()) {
+                    if (method.isDefault() && Reflections.containsAnnotations(method.getAnnotations(), requiredAnnotation)) {
+                        return true;
+                    }
+                }
+                continue;
+            }
+            for (MethodInfo method : interfaceInfo.methods()) {
+                // Default methods are public non-abstract instance methods declared in an interface
+                if (isNonAbstractPublicInstanceMethod(method)) {
+                    if (method.hasAnnotation(requiredAnnotationName)) {
+                        return true;
+                    }
+                    // Meta-annotations
+                    for (AnnotationInstance annotation : method.annotations()) {
+                        if (annotationClassAnnotationsCache.getValue(annotation.name()).contains(requiredAnnotationName.toString())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         return false;
+    }
+
+    private boolean isNonAbstractPublicInstanceMethod(MethodInfo method) {
+        return (method.flags() & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC;
     }
 
     private Class<?> loadClass(String className) {
