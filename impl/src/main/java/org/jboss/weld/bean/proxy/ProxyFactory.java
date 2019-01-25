@@ -892,6 +892,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         return contextId;
     }
 
+    protected Class<?> getProxiedBeanType() {
+        return proxiedBeanType;
+    }
+
     /**
      * Figures out the correct class loader to use for a proxy for a given bean
      */

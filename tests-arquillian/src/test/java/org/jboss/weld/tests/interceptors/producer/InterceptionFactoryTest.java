@@ -23,9 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,7 +33,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.interceptors.producer.Producer.Bar;
 import org.jboss.weld.tests.interceptors.producer.Producer.Foo;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -138,27 +135,54 @@ public class InterceptionFactoryTest {
         assertEquals(2, Producer.INVOCATIONS.size());
     }
 
-    @Inject
-    @Any
-    Instance<Object> beanInstance;
-
     @Test
-    public void testFactoryFromInterfaceWithMethodAnnotation() {
-        try {
-            beanInstance.select(UninterestingInterface1.class, Produced.Literal.INSTANCE).get().ping();
-            Assert.fail();
-        } catch (IllegalStateException e) {
-            // expected
-        }
+    public void testFactoryBackedByUnproxyableImpl(@Produced ProxyableInterface bean) {
+        // this test adds class level Monitor and method level Hello bindings
+        Producer.reset();
+        assertEquals("Hello " + UnproxyableImpl.class.getSimpleName(), bean.ping());
+        assertEquals(1, Producer.INVOCATIONS.size());
     }
 
     @Test
-    public void testFactoryFromInterfaceWithTypeAnnotation() {
-        try {
-            beanInstance.select(UninterestingInterface2.class, Produced.Literal.INSTANCE).get().ping();
-            Assert.fail();
-        } catch (IllegalStateException e) {
-            // expected
-        }
+    public void testFactoryFromInterfaceWithMethodAnnotation(@Produced ProxyableInterfaceWithMethodAnnotation bean) {
+        // this test adds class level Monitor and method level Hello bindings
+        Producer.reset();
+        assertEquals("Hello " + UnproxyableInterfaceWithMethodAnnotationImpl.class.getSimpleName(), bean.ping());
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromInterfaceWithClassAnnotation(@Produced ProxyableInterfaceWithClassAnnotation bean) {
+        // this test adds class level Monitor and method level Hello bindings
+        Producer.reset();
+        assertEquals("Hello " + UnproxyableInterfaceWithClassAnnotationImpl.class.getSimpleName(), bean.ping());
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromGenericInterfaceStructure(@Produced InterfaceWithGenericsB<String, Integer> bean) {
+        Producer.reset();
+        bean.ping(); // this doesn't trigger anything as we don't inherit annotations ATM
+        assertEquals("Hello " + UnproxyableInterfaceWithGenericsChainImpl.class.getSimpleName(), bean.pong());
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryWhenInterfaceHasEqualAnnotationsToThoseWeAreAdding(@Produced InterfaceWithAnnotation bean) {
+        // Currently, we do not verify this shouldn't happen, checking it would require comparison between
+        // added annotation and the AT we create from interface
+        // hence this test should just "silently succeed"
+        Producer.reset();
+        assertEquals("Hello " + InterfaceWithAnnotationImpl.class.getSimpleName(), bean.ping());
+        bean.pong();
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromNonGenericInterfaceChain(@Produced InterfaceB bean) {
+        Producer.reset();
+        assertEquals("Hello pingB", bean.pingB());
+        assertEquals("pingA", bean.pingA());
+        assertEquals(1, Producer.INVOCATIONS.size());
     }
 }

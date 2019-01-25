@@ -78,11 +78,8 @@ public interface InterceptorLogger extends WeldLogger {
     @Message(id = 1710, value = "InterceptionFactory skipped wrapper creation for an internal container construct of type {0}", format = Format.MESSAGE_FORMAT)
     void interceptionFactoryInternalContainerConstruct(Object type);
 
-    // not used any more, we now support this, see WELD-2533
+    // not used anymore, we support this now, see WELD-2533 and WELD-2550
     @Message(id = 1711, value = "InterceptionFactory is not supported on interfaces. Check InterceptionFactory<{0}>", format= Format.MESSAGE_FORMAT)
     IllegalStateException interceptionFactoryNotOnInstance(Object param1);
-
-    @Message(id = 1712, value = "InterceptionFactory could not create a wrapper for AnnotatedType {0} because the provided implementing class {1} already contains interceptor binding {2}.", format= Format.MESSAGE_FORMAT)
-    IllegalStateException interceptionFactoryAnnotationClash(Object param1, Object param2, Object param3);
 
 }
