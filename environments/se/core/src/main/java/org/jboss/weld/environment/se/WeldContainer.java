@@ -181,7 +181,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
             synchronized (LOCK) {
                 if (shutdownHook == null) {
                     shutdownHook = new ShutdownHook();
-                    Runtime.getRuntime().addShutdownHook(shutdownHook);
+                    SecurityActions.addShutdownHook(shutdownHook);
                 }
             }
         }

@@ -81,7 +81,7 @@ public enum ConfigurationKey {
     EXECUTOR_THREAD_POOL_DEBUG("org.jboss.weld.executor.threadPoolDebug", false),
 
     /**
-     * The type of the thread pool. Possible values are: FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD.
+     * The type of the thread pool. Possible values are: FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD, COMMON.
      */
     @Description("The type of the Weld thread pool. Possible values are: <ul><li><code>FIXED</code> - Uses a fixed number of threads. The number of threads remains the same throughout the application.</li><li><code>FIXED_TIMEOUT</code> - Uses a fixed number of threads. A thread will be stopped after a configured period of inactivity.</li><li><code>NONE</code> - No dedicated thread pool used.</li><li><code>SINGLE_THREAD</code> - A single-threaded thread pool.</li><li><code>COMMON</code> - The default ForkJoinPool.commonPool() is used.</li>")
     EXECUTOR_THREAD_POOL_TYPE("org.jboss.weld.executor.threadPoolType", ""),

@@ -284,7 +284,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         this.containerLifecycleObservers = new LinkedList<>();
         this.resourceLoader = new WeldResourceLoader();
         this.additionalServices = new HashMap<>();
-        this.extendedBeanDefiningAnnotations = new HashSet();
+        this.extendedBeanDefiningAnnotations = new HashSet<>();
     }
 
     /**
