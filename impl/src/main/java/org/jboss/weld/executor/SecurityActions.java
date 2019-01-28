@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015, Red Hat, Inc., and individual contributors
+ * Copyright 2019, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,14 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se;
+package org.jboss.weld.executor;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.security.NewInstanceAction;
+import java.util.concurrent.ExecutorService;
 
 /**
  *
@@ -34,39 +31,38 @@ final class SecurityActions {
 
     /**
      *
-     * @param javaClass
-     * @return a new instance of the given class
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @param executorService
      */
-    static <T> T newInstance(Class<T> javaClass) throws InstantiationException, IllegalAccessException {
-        if (System.getSecurityManager() != null) {
-            try {
-                return AccessController.doPrivileged(NewInstanceAction.of(javaClass));
-            } catch (PrivilegedActionException e) {
-                throw new WeldException(e.getCause());
-            }
-        } else {
-            return javaClass.newInstance();
-        }
-    }
-
-    /**
-     *
-     * @param hook
-     */
-    static void addShutdownHook(Thread hook) {
+    static void shutdown(ExecutorService executorService) {
         if (System.getSecurityManager() != null) {
             AccessController.doPrivileged(new PrivilegedAction<Void>() {
                 @Override
                 public Void run() {
-                    Runtime.getRuntime().addShutdownHook(hook);
+                    executorService.shutdown();
                     return null;
                 }
             });
         } else {
-            Runtime.getRuntime().addShutdownHook(hook);
+            executorService.shutdown();
         }
     }
+
+    /**
+    *
+    * @param executorService
+    */
+   static void shutdownNow(ExecutorService executorService) {
+       if (System.getSecurityManager() != null) {
+           AccessController.doPrivileged(new PrivilegedAction<Void>() {
+               @Override
+               public Void run() {
+                   executorService.shutdownNow();
+                   return null;
+               }
+           });
+       } else {
+           executorService.shutdownNow();
+       }
+   }
 
 }

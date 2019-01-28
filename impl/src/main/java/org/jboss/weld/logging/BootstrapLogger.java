@@ -334,4 +334,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 180, value = "Drop unused bean metadata: {0}", format = Format.MESSAGE_FORMAT)
     void dropUnusedBeanMetadata(Object bean);
 
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 181, value = "org.jboss.weld.executor.threadPoolType=COMMON detected but ForkJoinPool.commonPool() does not work with SecurityManager enabled, switching to {0} thread pool", format = Format.MESSAGE_FORMAT)
+    void commonThreadPoolWithSecurityManagerEnabled(Object threadPoolType);
+
 }
