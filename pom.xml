@@ -61,8 +61,8 @@
         <cdi.tck-2-0.version>2.0.5.SP1</cdi.tck-2-0.version>
         <classfilewriter.version>1.2.3.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
-        <spotbugs-maven-plugin.version>3.1.8</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>3.1.8</spotbugs-annotations-version>
+        <spotbugs-maven-plugin.version>3.1.10</spotbugs-maven-plugin.version>
+        <spotbugs-annotations-version>3.1.11</spotbugs-annotations-version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <groovy.version>2.4.15</groovy.version>
         <htmlunit.version>2.20</htmlunit.version>
