@@ -34,6 +34,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jboss.weld.logging.XmlLogger;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -61,6 +62,8 @@ public class BeansXmlValidator implements ErrorHandler {
         cdi20Schema = initSchema(factory, XmlSchema.CDI20_SCHEMAS);
     }
 
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+            justification = "False positive, see https://github.com/spotbugs/spotbugs/issues/259")
     public void validate(URL beansXml, ErrorHandler errorHandler) {
         if (beansXml == null) {
             throw XmlLogger.LOG.loadError("unknown", null);

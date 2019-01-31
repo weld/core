@@ -39,6 +39,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
@@ -121,6 +122,8 @@ public class BeansXmlStreamParser {
         this.interpolator = interpolator;
     }
 
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+            justification = "False positive, see https://github.com/spotbugs/spotbugs/issues/259")
     public BeansXml parse() {
         if (beansXml == null) {
             throw XmlLogger.LOG.loadError("unknown", null);

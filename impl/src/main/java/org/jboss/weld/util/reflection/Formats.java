@@ -668,6 +668,8 @@ public class Formats {
         return typeVariable.getName() + UPPER_BOUND + formatType(bounds[0], simpleNames);
     }
 
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
+            justification = "False positive, getBuildPropertiesResource() can return null in various situations")
     private static Properties getBuildProperties() {
         Properties buildProperties = null;
         try (InputStream in = getBuildPropertiesResource()) {
