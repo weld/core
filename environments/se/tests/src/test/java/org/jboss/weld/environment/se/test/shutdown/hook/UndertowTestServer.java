@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.environment.se.test.shutdown.hook;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import org.apache.commons.lang.exception.ExceptionUtils;
+
+import java.net.BindException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class UndertowTestServer {
 
@@ -40,16 +42,26 @@ class UndertowTestServer {
         }).build();
     }
 
-    static void start() {
+    static void start() throws InterruptedException {
         if (STARTED.get()) {
-            stop();
+            INSTANCE.server.stop();
         }
-        STARTED.set(true);
-        INSTANCE.server.start();
+        try {
+            INSTANCE.server.start();
+        } catch (Exception e) {
+            // we might have started the server too early, it's stop() action was still in progress, wait a bit and retry
+            // this was happening with JDK 11 in Jenkins only
+            if (ExceptionUtils.indexOfType(e, BindException.class) != -1) {
+                Thread.sleep(2000l);
+                INSTANCE.server.start();
+            }
+        } finally {
+            STARTED.set(true);
+        }
     }
 
     static void stop() {
-        STARTED.set(false);
         INSTANCE.server.stop();
+        STARTED.set(false);
     }
 }
