@@ -43,7 +43,7 @@
 
         <dependency>
             <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+            <artifactId>jboss-jsf-api_2.3_spec</artifactId>
         </dependency>
 
         <dependency>
@@ -183,7 +183,7 @@
 
                 <dependency>
                     <groupId>javax.servlet.jsp</groupId>
-                    <artifactId>jsp-api</artifactId>
+                    <artifactId>javax.servlet.jsp-api</artifactId>
                     <scope>test</scope>
                 </dependency>
 
@@ -266,7 +266,7 @@
 
                 <dependency>
                     <groupId>javax.servlet.jsp</groupId>
-                    <artifactId>jsp-api</artifactId>
+                    <artifactId>javax.servlet.jsp-api</artifactId>
                     <scope>test</scope>
                 </dependency>
 

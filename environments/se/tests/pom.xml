@@ -77,8 +77,8 @@
       </dependency>
 
       <dependency>
-         <groupId>org.hibernate.javax.persistence</groupId>
-         <artifactId>hibernate-jpa-2.1-api</artifactId>
+         <groupId>javax.persistence</groupId>
+         <artifactId>javax.persistence-api</artifactId>
          <scope>test</scope>
       </dependency>
 
@@ -106,7 +106,7 @@
                      <stripVersion>true</stripVersion>
                      <overWriteReleases>true</overWriteReleases>
                      <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                     <includeGroupIds>org.jboss.weld.se,org.glassfish,org.hibernate.javax.persistence</includeGroupIds>
+                     <includeGroupIds>org.jboss.weld.se,org.glassfish,javax.persistence</includeGroupIds>
                   </configuration>
                </execution>
             </executions>

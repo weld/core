@@ -70,14 +70,14 @@
         <jandex.version>2.0.3.Final</jandex.version>
         <javax.activation.version>1.1</javax.activation.version>
         <javax.el.version>3.0.0</javax.el.version>
-        <jboss.jms.api.version>1.0.0.Final</jboss.jms.api.version>
-        <jboss.jsf.api.version>2.2.4</jboss.jsf.api.version>
+        <jboss.jms.api.version>1.0.2.Final</jboss.jms.api.version>
+        <jboss.jsf.api.version>2.3.5.SP1</jboss.jsf.api.version>
         <jboss.logging.version>3.2.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.0.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <jboss.spec.el-api.version>1.0.7.Final</jboss.spec.el-api.version>
+        <jboss.spec.el-api.version>1.0.13.Final</jboss.spec.el-api.version>
         <jsf.impl.version>2.2.10</jsf.impl.version>
-        <jsp.api.version>2.2</jsp.api.version>
+        <jsp.api.version>2.3.3</jsp.api.version>
         <jstl.api.version>1.2</jstl.api.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
@@ -88,7 +88,7 @@
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
         <testng.version>6.14.3</testng.version>
         <testng.jcommander.version>1.74</testng.jcommander.version>
-        <weld.api.version>3.1.Beta2</weld.api.version>
+        <weld.api.version>3.1.Final</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>2.1.1.Final</wildfly.arquillian.version>
         <!--Temportary version override, once alligned in WFLY-Arq adapter, we can remove this-->
@@ -157,13 +157,13 @@
 
             <dependency>
                 <groupId>org.jboss.spec.javax.faces</groupId>
-                <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+                <artifactId>jboss-jsf-api_2.3_spec</artifactId>
                 <version>${jboss.jsf.api.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.spec.javax.jms</groupId>
-                <artifactId>jboss-jms-api_1.1_spec</artifactId>
+                <artifactId>jboss-jms-api_2.0_spec</artifactId>
                 <version>${jboss.jms.api.version}</version>
             </dependency>
 
@@ -488,7 +488,7 @@
 
             <dependency>
                 <groupId>javax.servlet.jsp</groupId>
-                <artifactId>jsp-api</artifactId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
                 <version>${jsp.api.version}</version>
             </dependency>
 
