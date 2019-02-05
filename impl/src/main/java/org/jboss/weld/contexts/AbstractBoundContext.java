@@ -109,20 +109,23 @@ public abstract class AbstractBoundContext<S> extends AbstractManagedContext imp
 
     @Override
     public void clearAndSet(Collection<ContextualInstance<?>> setOfInstances) {
-        // bound context can be multithreaded, in such case we perform locking
         BoundBeanStore boundBeanStore = getBeanStore();
-        boundBeanStore.clear();
-        for (ContextualInstance<?> contextualInstance : setOfInstances) {
-            BeanIdentifier id = getId(contextualInstance.getContextual());
-            LockedBean lock = null;
-            try {
-                if (isMultithreaded()) {
-                    lock = boundBeanStore.lock(id);
-                }
-                getBeanStore().put(getId(contextualInstance.getContextual()), contextualInstance);
-            } finally {
-                if (lock != null) {
-                lock.unlock();
+        // for instance lazily initialized conversation scope may be active but have null here
+        if (boundBeanStore != null) {
+            boundBeanStore.clear();
+            for (ContextualInstance<?> contextualInstance : setOfInstances) {
+                // bound context can be multithreaded, in such case we perform locking
+                BeanIdentifier id = getId(contextualInstance.getContextual());
+                LockedBean lock = null;
+                try {
+                    if (isMultithreaded()) {
+                        lock = boundBeanStore.lock(id);
+                    }
+                    getBeanStore().put(getId(contextualInstance.getContextual()), contextualInstance);
+                } finally {
+                    if (lock != null) {
+                        lock.unlock();
+                    }
                 }
             }
         }
