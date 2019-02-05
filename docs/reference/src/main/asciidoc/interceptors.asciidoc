@@ -417,16 +417,22 @@ public class AroundConstructInterceptor {
 
 === Loosening the limitations of `InterceptionFactory`
 
-CDI 2.0 introduced the `InterceptionFactory` which can be used to intercept a bean created via producer methods.
-The specification is a bit vague when it comes to boundaries of this feature - can interfaces be used or are we limited to implementation classes only?
-While it is safe to assume only the later, Weld supports both.
+NOTE: This is an experimental feature which goes beyond the scope of what CDI specification requires. While we aim to support this, the behaviour may slightly shift over time.
 
-E.g. given `SomeImpl` is an implementation of interface `SomeInterface` and `InterceptThis` is an `InterceptorBinding`, both producers work:
+CDI 2.0 introduced the `InterceptionFactory` which can be used to intercept a bean created via producer method.
+The specification only allows users to operate on Java classes and when it comes to interfaces, it states that unportable behaviour results.
+Weld supports both ways as operating on interfaces effectively allows to bypass proxyability rules of implementation class.
+This however comes with a price - only annotations added programatically through `InterceptionFactory.configure()` will be taken into consideration.
+
+Let's have `SomeImpl` class that is an implementation of interface `SomeInterface` and `InterceptThis` is an `InterceptorBinding`.
+Let us also assume that we have secondary implementation of `SomeInterface` named `SomeUnproxyableImpl` that has a final method in it.
+All of the following producer methods will work:
 
 [source.JAVA, java]
 -------------------------------------------------------------------------------------------------
     @Produces
     @ApplicationScoped
+    // proxyable implementation which is also the InterceptionFactory paramater
     public SomeImpl produceBeanBasedOnImplClass(InterceptionFactory<SomeImpl> interceptionFactory) {
         interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
         return interceptionFactory.createInterceptedInstance(new SomeImpl());
@@ -434,8 +440,17 @@ E.g. given `SomeImpl` is an implementation of interface `SomeInterface` and `Int
 
     @Produces
     @ApplicationScoped
+    // proxyable implementation but operating on an interface type as InterceptionFactory parameter
     public SomeInterface produceBeanBasedOnInterface(InterceptionFactory<SomeInterface> interceptionFactory) {
         interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
         return interceptionFactory.createInterceptedInstance(new SomeImpl());
+    }
+
+    @Produces
+    @ApplicationScoped
+    // unproxyable implementation and operating on an interface type as InterceptionFactory parameter
+    public SomeInterface produceBeanBasedOnInterfaceWithUnproxyableImpl(InterceptionFactory<SomeInterface> interceptionFactory) {
+        interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeUnproxyableImpl());
     }
 -------------------------------------------------------------------------------------------------
