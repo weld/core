@@ -275,6 +275,7 @@
                                 <systemProperties>
                                     <arquillian.launch>${arquillian}</arquillian.launch>
                                     <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                                    <additional.vm.args>${additional.vm.args}</additional.vm.args>
                                 </systemProperties>
                             </configuration>
                             <executions>
