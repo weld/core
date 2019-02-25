@@ -19,7 +19,9 @@ package org.jboss.weld.bootstrap.events;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -171,7 +173,7 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
             fireProcessAnnotatedType(event, beanManager);
         } else {
             BootstrapLogger.LOG.patFastResolver(annotatedType);
-            fireProcessAnnotatedType(event, annotatedTypeContext.getResolvedProcessAnnotatedTypeObservers(), beanManager);
+            fireProcessAnnotatedType(event, observers, beanManager);
         }
         return event;
     }
@@ -196,7 +198,9 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ContainerLifecycleEventObserverMethod<?>> observers,
             BeanManagerImpl beanManager) {
         List<Throwable> errors = new LinkedList<Throwable>();
-        for (ContainerLifecycleEventObserverMethod observer : observers) {
+        List<ContainerLifecycleEventObserverMethod<?>> sortedObserverMethods = new ArrayList<>(observers);
+        sortedObserverMethods.sort(Comparator.comparingInt(ObserverMethod::getPriority));
+        for (ContainerLifecycleEventObserverMethod observer : sortedObserverMethods) {
             // FastProcessAnnotatedTypeResolver does not consider special scope inheritance rules (see CDI - section 4.1)
             if (checkScopeInheritanceRules(event.getOriginalAnnotatedType(), observer, beanManager)) {
                 try {
