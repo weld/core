@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 
@@ -30,6 +31,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.contexts.session.availability.RequestScopedBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,6 +81,11 @@ public class ContextPropagationTest {
         pingBeanAndOffloadTask(manager, ConversationScopedBean.class);
     }
 
+    @Test
+    public void testSettingEmptyContextualStoreOnCurrentThread() {
+        pingBeanAndRunImmediately(manager, ReqScopedBean.class);
+    }
+
     private void pingBeanAndOffloadTask(WeldManager manager, Class<? extends AbstractBeanWithState> beanClazz) {
         // use the bean in this thread first - set counter to one
         AbstractBeanWithState bean = manager.instance().select(beanClazz).get();
@@ -103,5 +110,23 @@ public class ContextPropagationTest {
         } catch (ExecutionException e) {
             Assert.fail(e.toString());
         }
+    }
+
+    private void pingBeanAndRunImmediately(WeldManager manager, Class<? extends AbstractBeanWithState> beanClazz) {
+        // use the bean in this thread first - set counter to two
+        AbstractBeanWithState bean = manager.instance().select(beanClazz).get();
+        Assert.assertEquals(0, bean.getValue());
+        bean.incrementCounter();
+        bean.incrementCounter();
+        Assert.assertEquals(2, bean.getValue());
+
+        // prepare a callable which will further increase the counter and return the value we found there
+        Callable<Integer> callableTask = () -> {
+            AbstractBeanWithState beanInCallable = CDI.current().select(beanClazz).get();
+            beanInCallable.incrementCounter();
+            return beanInCallable.getValue();
+        };
+        Integer result = ContextPropagationService.wrapAndRunOnTheSameThread(callableTask);
+        Assert.assertEquals(1, result.intValue());
     }
 }
