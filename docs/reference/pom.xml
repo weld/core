@@ -27,29 +27,14 @@
     <description>The Weld reference guide</description>
 
     <properties>
-        <asciidoctor.version>0.1.4</asciidoctor.version>
+        <asciidoctor.version>1.5.7.1</asciidoctor.version>
         <pdf.name>weld-reference.pdf</pdf.name>
         <weld.version>${project.version}</weld.version>
         <jdocbook.source.directory>target/docbook</jdocbook.source.directory>
-        <jdocbook.plugin.version>2.3.9</jdocbook.plugin.version>
+        <jdocbook.plugin.version>2.3.10</jdocbook.plugin.version>
         <pressgang.version>2.0.2</pressgang.version>
         <documentation.url>http://docs.jboss.org/weld/reference/latest-master/en-US/html</documentation.url>
     </properties>
-
-    <dependencyManagement>
-
-        <dependencies>
-            <!-- wrong version defined transitively, so the correct is hardcoded
-                here -->
-            <dependency>
-                <groupId>org.eclipse.equinox</groupId>
-                <artifactId>app</artifactId>
-                <version>1.3.100-v20130327-1442</version>
-                <optional>false</optional>
-            </dependency>
-        </dependencies>
-
-    </dependencyManagement>
 
     <build>
         <defaultGoal>clean process-classes</defaultGoal>
@@ -125,7 +110,7 @@
                     <options>
                         <xincludeSupported>true</xincludeSupported>
                         <xmlTransformerType>saxon</xmlTransformerType>
-                        <docbookVersion>1.72.0</docbookVersion>
+                        <docbookVersion>1.77.1</docbookVersion>
                         <localeSeparator>-</localeSeparator>
                         <injectionDateFormat>dd/MM/yyyy</injectionDateFormat>
                     </options>
