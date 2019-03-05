@@ -25,6 +25,7 @@ import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.contexts.beanstore.BeanStore;
 import org.jboss.weld.contexts.beanstore.BoundBeanStore;
 import org.jboss.weld.contexts.beanstore.LockedBean;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
@@ -113,6 +114,9 @@ public abstract class AbstractBoundContext<S> extends AbstractManagedContext imp
         // for instance lazily initialized conversation scope may be active but have null here
         if (boundBeanStore != null) {
             boundBeanStore.clear();
+            // invalidate caches for req., session, conv. scopes
+            // this might be needed for propagation on the thread where there are existing contexts
+            RequestScopedCache.invalidate();
             for (ContextualInstance<?> contextualInstance : setOfInstances) {
                 // bound context can be multithreaded, in such case we perform locking
                 BeanIdentifier id = getId(contextualInstance.getContextual());

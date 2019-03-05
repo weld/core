@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 public class RequestContextImpl extends AbstractUnboundContext implements RequestContext {
@@ -50,6 +51,9 @@ public class RequestContextImpl extends AbstractUnboundContext implements Reques
     @Override
     public void clearAndSet(Collection<ContextualInstance<?>> setOfInstances) {
         getBeanStore().clear();
+        // invalidate caches for req., session, conv. scopes
+        // this might be needed for propagation on the thread where there are existing contexts
+        RequestScopedCache.invalidate();
         for (ContextualInstance<?> contextualInstance : setOfInstances) {
             getBeanStore().put(getId(contextualInstance.getContextual()), contextualInstance);
         }

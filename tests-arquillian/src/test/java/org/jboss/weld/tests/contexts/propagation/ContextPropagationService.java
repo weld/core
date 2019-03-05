@@ -16,17 +16,6 @@
  */
 package org.jboss.weld.tests.contexts.propagation;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.enterprise.inject.spi.CDI;
-
 import org.jboss.weld.context.WeldAlterableContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.bound.BoundConversationContext;
@@ -36,6 +25,18 @@ import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.context.bound.MutableBoundRequest;
 import org.jboss.weld.manager.api.WeldManager;
+
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.CDI;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Util class allowing to offload tasks to another thread. Takes care of context activation/propagation.
@@ -102,5 +103,45 @@ public class ContextPropagationService {
             }
         };
         return executor.submit(wrappedTask);
+    }
+
+    public static <T> Integer wrapAndRunOnTheSameThread(Callable<T> task) {
+        // gather all the contexts we want to propagate and the instances in them
+        Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances = new HashMap<>();
+        for (WeldAlterableContext context : CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()) {
+            scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances());
+        }
+        // We create a task wrapper which will make sure we have contexts propagated
+        Callable<T> wrappedTask = new Callable<T>() {
+
+            @Override
+            public T call() throws Exception {
+                WeldManager weldManager = CDI.current().select(WeldManager.class).get();
+
+                //verify we have req context active already, in arq. this will be BoundRequestContext
+                Collection<WeldAlterableContext> activeContexts = weldManager.getActiveWeldAlterableContexts();
+                WeldAlterableContext requestContext = null;
+                for (WeldAlterableContext activeContext : activeContexts) {
+                    if (activeContext.getScope().equals(RequestScoped.class)) {
+                        requestContext = activeContext;
+                    }
+                }
+                if (requestContext == null) {
+                    throw new IllegalStateException("RequestContext is expected to be active on current thread.");
+                }
+                // clear up the context
+                requestContext.clearAndSet(Collections.emptySet());
+
+                // now execute the actual original task, bean should be recreated, return result
+                return task.call();
+            }
+        };
+        Integer result = -1;
+        try {
+            result = (Integer) wrappedTask.call();
+        } catch (Exception e) {
+            throw new IllegalStateException("An exception occurred when executing the task on current thread: " + e);
+        }
+        return result;
     }
 }
