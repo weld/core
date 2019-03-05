@@ -204,9 +204,9 @@ The abbreviation proceeds as follows:
 
 Note that the delimiter is used for all bean archives forming the application.
 
-An example: Given an application with two versions going by the names `test__1-1.war` and `test__1-2.war`.
+An example: Given an application with two versions going by the names `testpass:[_]pass:[_]1-1.war` and `testpass:[_]pass:[_]1-2.war`.
 Weld normally cannot support replication of `@SessionScoped` beans between these two deployments.
-Using this configuration option with delimiter "__" will allow Weld to see both applications simply as `test.war`, hence allowing for session replication.
+Using this configuration option with delimiter "pass:[_]pass:[_]" will allow Weld to see both applications simply as `test.war`, hence allowing for session replication.
 
 .Supported configuration properties
 [cols=",,",options="header",]
