@@ -17,6 +17,7 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -26,9 +27,10 @@ import java.lang.reflect.Method;
  * @author Martin Kouba
  * @see InterceptedSubclassFactory
  */
-class PrivateMethodHandler implements MethodHandler {
+class PrivateMethodHandler implements MethodHandler, Serializable {
 
     static final PrivateMethodHandler INSTANCE = new PrivateMethodHandler();
+    private static final long serialVersionUID = -1785189321581448377L;
 
     @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
