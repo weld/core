@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2014-2019, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -47,18 +47,23 @@ import org.jboss.weld.util.ServiceLoader;
  * @author Matej Briškár
  * @author Martin Kouba
  * @author Jozef Hartinger
+ * @author <a href="https://about.me/lairdnelson" target="_parent">Laird Nelson</a>
  */
 public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
-    protected final ResourceLoader resourceLoader;
+    protected ResourceLoader resourceLoader;
 
-    protected final Bootstrap bootstrap;
+    protected Bootstrap bootstrap;
 
-    protected final Set<Class<? extends Annotation>> initialBeanDefiningAnnotations;
+    protected Set<Class<? extends Annotation>> initialBeanDefiningAnnotations;
 
     protected BeanArchiveScanner scanner;
 
     private final List<BeanArchiveHandler> handlers;
+
+    protected AbstractDiscoveryStrategy() {
+        this.handlers = new LinkedList<BeanArchiveHandler>();
+    }
 
     /**
      *
@@ -67,15 +72,33 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
      * @param initialBeanDefiningAnnotations
      */
     public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        this();
+        this.setResourceLoader(resourceLoader);
+        this.setBootstrap(bootstrap);
+        this.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
+    }
+
+    public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
+    }
+
+    public void setBootstrap(Bootstrap bootstrap) {
         this.bootstrap = bootstrap;
-        this.handlers = new LinkedList<BeanArchiveHandler>();
-        this.initialBeanDefiningAnnotations = initialBeanDefiningAnnotations;
     }
 
     @Override
     public void setScanner(BeanArchiveScanner scanner) {
         this.scanner = scanner;
+    }
+
+    public void setInitialBeanDefiningAnnotations(Set<? extends Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        if (initialBeanDefiningAnnotations == null) {
+            this.initialBeanDefiningAnnotations = null;
+        } else if (initialBeanDefiningAnnotations.isEmpty()) {
+            this.initialBeanDefiningAnnotations = Collections.emptySet();
+        } else {
+            this.initialBeanDefiningAnnotations = Collections.unmodifiableSet(new HashSet<>(initialBeanDefiningAnnotations));
+        }
     }
 
     @Override

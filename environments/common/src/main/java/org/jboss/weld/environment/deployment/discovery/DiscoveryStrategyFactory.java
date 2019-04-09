@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2014-2019, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,15 +18,19 @@ package org.jboss.weld.environment.deployment.discovery;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.ServiceLoader;
 
 /**
  * @author Martin Kouba
+ * @author <a href="https://about.me/lairdnelson" target="_parent">Laird Nelson</a>
  */
 public final class DiscoveryStrategyFactory {
 
@@ -42,20 +46,36 @@ public final class DiscoveryStrategyFactory {
      */
     public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap,
         Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, boolean jandexStrategyDisabled) {
-        if (Jandex.isJandexAvailable(resourceLoader)) {
+        DiscoveryStrategy returnValue = null;
+        final Iterator<Metadata<DiscoveryStrategy>> iterator = ServiceLoader.load(DiscoveryStrategy.class, resourceLoader).iterator();
+        if (iterator != null && iterator.hasNext()) {
+            final DiscoveryStrategy candidate = iterator.next().getValue();
+            if (candidate != null) {
+                if (candidate instanceof AbstractDiscoveryStrategy) {
+                    final AbstractDiscoveryStrategy strategy = (AbstractDiscoveryStrategy) candidate;
+                    strategy.setResourceLoader(resourceLoader);
+                    strategy.setBootstrap(bootstrap);
+                    strategy.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
+                }
+                returnValue = candidate;
+            }
+        } else if (Jandex.isJandexAvailable(resourceLoader)) {
             if (jandexStrategyDisabled) {
                 CommonLogger.LOG.jandexDiscoveryStrategyDisabled();
             } else {
                 CommonLogger.LOG.usingJandex();
                 try {
-                    return Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+                    returnValue = Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
                 } catch (Exception e) {
                     throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
                         Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
                 }
             }
         }
-        return new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+        if (returnValue == null) {
+            returnValue = new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+        }
+        return returnValue;
     }
 
 }
