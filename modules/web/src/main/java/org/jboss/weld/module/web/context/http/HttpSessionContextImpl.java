@@ -103,7 +103,10 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
                         throw ContextLogger.LOG.beanIdentifierIndexInconsistencyDetected(hash.toString(), index.getDebugInfo());
                     }
                 } else {
-                    session.setAttribute(KEY_BEAN_ID_INDEX_HASH, index.getIndexHash());
+                    // Skip if bean index is empty
+                    if (!index.isEmpty()) {
+                        session.setAttribute(KEY_BEAN_ID_INDEX_HASH, index.getIndexHash());
+                    }
                 }
             }
         }
