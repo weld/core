@@ -4,7 +4,7 @@
 
     <groupId>org.jboss.weld.reference-guide</groupId>
     <artifactId>weld-reference-guide</artifactId>
-    <version>3.0.6.Final</version>
+    <version>3.0.7-SNAPSHOT</version>
     <packaging>jdocbook</packaging>
     <name>Weld Reference Guide</name>
     <url>http://weld.cdi-spec.org</url>
@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>3.0.6.Final</version>
+        <version>3.0.7-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
