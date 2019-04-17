@@ -47,7 +47,8 @@ import org.jboss.weld.util.ServiceLoader;
  * @author Matej Briškár
  * @author Martin Kouba
  * @author Jozef Hartinger
- * @author <a href="https://about.me/lairdnelson" target="_parent">Laird Nelson</a>
+ * @author <a href="https://about.me/lairdnelson"
+ * target="_parent">Laird Nelson</a>
  */
 public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
@@ -78,10 +79,12 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         this.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
     }
 
+    @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
+    @Override
     public void setBootstrap(Bootstrap bootstrap) {
         this.bootstrap = bootstrap;
     }

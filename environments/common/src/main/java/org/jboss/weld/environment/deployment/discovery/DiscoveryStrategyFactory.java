@@ -30,7 +30,8 @@ import org.jboss.weld.util.ServiceLoader;
 
 /**
  * @author Martin Kouba
- * @author <a href="https://about.me/lairdnelson" target="_parent">Laird Nelson</a>
+ * @author <a href="https://about.me/lairdnelson"
+ * target="_parent">Laird Nelson</a>
  */
 public final class DiscoveryStrategyFactory {
 
@@ -51,25 +52,20 @@ public final class DiscoveryStrategyFactory {
         if (iterator != null && iterator.hasNext()) {
             final DiscoveryStrategy candidate = iterator.next().getValue();
             if (candidate != null) {
-                if (candidate instanceof AbstractDiscoveryStrategy) {
-                    final AbstractDiscoveryStrategy strategy = (AbstractDiscoveryStrategy) candidate;
-                    strategy.setResourceLoader(resourceLoader);
-                    strategy.setBootstrap(bootstrap);
-                    strategy.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
-                }
+                candidate.setResourceLoader(resourceLoader);
+                candidate.setBootstrap(bootstrap);
+                candidate.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
                 returnValue = candidate;
             }
+        } else if (jandexStrategyDisabled) {
+            CommonLogger.LOG.jandexDiscoveryStrategyDisabled();
         } else if (Jandex.isJandexAvailable(resourceLoader)) {
-            if (jandexStrategyDisabled) {
-                CommonLogger.LOG.jandexDiscoveryStrategyDisabled();
-            } else {
-                CommonLogger.LOG.usingJandex();
-                try {
-                    returnValue = Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
-                } catch (Exception e) {
-                    throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
-                        Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
-                }
+            CommonLogger.LOG.usingJandex();
+            try {
+                returnValue = Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+            } catch (Exception e) {
+                throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
+                    Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
             }
         }
         if (returnValue == null) {
