@@ -57,15 +57,17 @@ public final class DiscoveryStrategyFactory {
                 candidate.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
                 returnValue = candidate;
             }
-        } else if (jandexStrategyDisabled) {
-            CommonLogger.LOG.jandexDiscoveryStrategyDisabled();
         } else if (Jandex.isJandexAvailable(resourceLoader)) {
-            CommonLogger.LOG.usingJandex();
-            try {
-                returnValue = Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
-            } catch (Exception e) {
-                throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
-                    Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
+            if (jandexStrategyDisabled) {
+                CommonLogger.LOG.jandexDiscoveryStrategyDisabled();
+            } else {
+                CommonLogger.LOG.usingJandex();
+                try {
+                    returnValue = Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+                } catch (Exception e) {
+                    throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
+                        Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
+                }
             }
         }
         if (returnValue == null) {
