@@ -55,8 +55,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
 /**
@@ -131,7 +133,15 @@ public class ProbeFunctionalTest {
         waitAjax().until().element(By.xpath("//h1[text()='Observer Methods']")).is().visible();
         WebElement observerLink = driver.findElement(By.partialLinkText(ApplicationScopedObserver.class.getSimpleName()));
         assertTrue("Cannot find element for " + ApplicationScopedObserver.class.getSimpleName(), observerLink.isDisplayed());
-        guardAjax(observerLink).click();
+        // workaround for FF driver bug making us unable to click elem. in table - https://bugzilla.mozilla.org/show_bug.cgi?id=1448825
+        Point linkLoc = new Point(observerLink.getLocation().getX() + (observerLink.getRect().getWidth()/2), observerLink.getLocation().getY() + (observerLink.getRect().getHeight()/2));
+        WebElement tdElem = driver.findElement(By.xpath("/html/body/div/div[2]/table/tbody/tr[3]/td[4]"));
+        Point tdElemLoc = new Point(tdElem.getLocation().getX() + (tdElem.getRect().getWidth()/2), tdElem.getLocation().getY() + (tdElem.getRect().getHeight()/2));
+        Actions ac = new Actions(driver);
+        ac.moveToElement(tdElem, linkLoc.getX() - tdElemLoc.getX(), linkLoc.getY() - tdElemLoc.getY()).click().build().perform();
+
+        // wait till we land on the bean details page
+        waitAjax(driver).until().element(By.xpath("//h1[text()='Bean Detail']")).is().visible();
         assertTrue(listOfTargetElements.stream().anyMatch(webElement -> webElement.getText().equals(ApplicationScopedObserver.class.getName())));
         assertTrue(listOfTargetElements.stream().anyMatch(webElement -> webElement.getText().equals("@" + ApplicationScoped.class.getSimpleName())));
         assertTrue(listOfTargetElements.stream().anyMatch(webElement -> webElement.getText().equals(JSONTestUtil.BeanType.MANAGED.name())));
