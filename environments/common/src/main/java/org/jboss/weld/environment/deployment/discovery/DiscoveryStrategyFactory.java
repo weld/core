@@ -55,6 +55,7 @@ public final class DiscoveryStrategyFactory {
                 candidate.setResourceLoader(resourceLoader);
                 candidate.setBootstrap(bootstrap);
                 candidate.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
+                CommonLogger.LOG.usingServiceLoaderSourcedDiscoveryStrategy(candidate);
                 returnValue = candidate;
             }
         } else if (Jandex.isJandexAvailable(resourceLoader)) {

@@ -63,7 +63,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
     private final List<BeanArchiveHandler> handlers;
 
     protected AbstractDiscoveryStrategy() {
-        this.handlers = new LinkedList<BeanArchiveHandler>();
+        handlers = new LinkedList<BeanArchiveHandler>();
     }
 
     /**
@@ -73,10 +73,10 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
      * @param initialBeanDefiningAnnotations
      */
     public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
-        this();
-        this.setResourceLoader(resourceLoader);
-        this.setBootstrap(bootstrap);
-        this.setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
+        handlers = new LinkedList<BeanArchiveHandler>();
+        setResourceLoader(resourceLoader);
+        setBootstrap(bootstrap);
+        setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
     }
 
     @Override
@@ -94,14 +94,8 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         this.scanner = scanner;
     }
 
-    public void setInitialBeanDefiningAnnotations(Set<? extends Class<? extends Annotation>> initialBeanDefiningAnnotations) {
-        if (initialBeanDefiningAnnotations == null) {
-            this.initialBeanDefiningAnnotations = null;
-        } else if (initialBeanDefiningAnnotations.isEmpty()) {
-            this.initialBeanDefiningAnnotations = Collections.emptySet();
-        } else {
-            this.initialBeanDefiningAnnotations = Collections.unmodifiableSet(new HashSet<>(initialBeanDefiningAnnotations));
-        }
+    public void setInitialBeanDefiningAnnotations(Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        this.initialBeanDefiningAnnotations = initialBeanDefiningAnnotations;
     }
 
     @Override

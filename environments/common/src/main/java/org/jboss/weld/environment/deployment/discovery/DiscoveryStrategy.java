@@ -58,7 +58,7 @@ public interface DiscoveryStrategy {
      * @param initialBeanDefiningAnnotations the initial {@link Set}
      * of bean defining annotations
      */
-    void setInitialBeanDefiningAnnotations(Set<? extends Class<? extends Annotation>> initialBeanDefiningAnnotations);
+    void setInitialBeanDefiningAnnotations(Set<Class<? extends Annotation>> initialBeanDefiningAnnotations);
 
     /**
      * Optionally, a client may set a custom scanner implementation. If not set, the impl is allowed to use anything it considers appropriate.
