@@ -34,15 +34,27 @@ import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.Services;
 
 /**
- * Loads {@link Service} implementations using {@link ServiceLoader}. This can be used e.g. by a JTA library
- * in weld-servlet environment to provide {@link TransactionServices} implementation which would not otherwise
- * be provided by weld-servlet. Deployment classloaders, TCCL and Weld's classloader are used to discover service
- * implementations. Service implementation may specify their priority using {@link Priority}. Services with higher
- * priority have precedence. Services that do not specify priority have the default priority of 4500.
- * See https://issues.jboss.org/browse/WELD-1495 for details.
+ * Loads {@link Service} implementations using {@link ServiceLoader}.
+ *
+ * <p>
+ * This can be used e.g. by a JTA library in weld-servlet environment to provide {@link TransactionServices} implementation which would not otherwise be
+ * provided by weld-servlet. Deployment classloaders, TCCL and Weld's classloader are used to discover service implementations.
+ * </p>
+ *
+ * <p>
+ * Service implementation may specify their priority using {@link Priority}. Services with higher priority have precedence. Services that do not specify
+ * priority have the default priority of 4500.
+ * </p>
+ *
+ * <p>
+ * Note that the loaded services are registered globally, i.e. are accessible from each bean manager in the application.
+ * </p>
+ *
+ * <p>
+ * See <a href="https://issues.jboss.org/browse/WELD-1495">WELD-1495</a> for details.
+ * </p>
  *
  * @author Jozef Hartinger
- *
  */
 class AdditionalServiceLoader {
 
