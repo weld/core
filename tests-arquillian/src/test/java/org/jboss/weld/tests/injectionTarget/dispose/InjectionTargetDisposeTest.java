@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.injectionTarget.dispose;
 
-import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Extension;
 
 import javax.inject.Inject;
@@ -31,9 +31,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 
 import org.jboss.weld.test.util.Utils;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
@@ -57,21 +55,13 @@ public class InjectionTargetDisposeTest {
     }
 
     @Inject
-    private Widget widget;
+    Instance<Widget> instanceWidget;
 
     @Test
     public void runOrdinaryContainerLifecycle() {
-
-    }
-
-    @BeforeClass
-    public static void ensureDisposeHasNotYetBeenCalled() {
-        Assert.assertFalse(DisposingExtension.disposeCalled);
-    }
-
-    // WELD-2580
-    @AfterClass
-    public static void ensureDisposeWasCalled() {
+        Widget widget = instanceWidget.get();
+        widget.ping();
+        instanceWidget.destroy(widget);
         Assert.assertTrue(DisposingExtension.disposeCalled);
     }
 

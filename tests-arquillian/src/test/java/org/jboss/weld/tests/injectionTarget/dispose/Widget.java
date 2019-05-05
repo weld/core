@@ -32,4 +32,5 @@ final class Widget {
         super();
     }
 
+    public void ping(){}
 }
