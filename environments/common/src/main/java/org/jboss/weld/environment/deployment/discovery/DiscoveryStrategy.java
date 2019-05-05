@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2014-2019 Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -16,18 +16,49 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import java.lang.annotation.Annotation;
+
 import java.util.Set;
 
+import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ClassFileServices;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * This construct is not thread-safe.
  *
  * @author Matej Briškár
  * @author Martin Kouba
+ * @author <a href="https://about.me/lairdnelson"
+ * target="_parent">Laird Nelson</a>
  */
 public interface DiscoveryStrategy {
+
+    /**
+     * Installs a {@link ResourceLoader} for use by the
+     * implementation.
+     *
+     * @param resourceLoader the {@link ResourceLoader} to install
+     */
+    void setResourceLoader(ResourceLoader resourceLoader);
+
+    /**
+     * Installs a {@link Bootstrap} for use by the
+     * implementation.
+     *
+     * @param bootstrap the {@link Bootstrap} to install
+     */
+    void setBootstrap(Bootstrap bootstrap);
+
+    /**
+     * Installs the {@link Set} of bean defining annotations that the
+     * implementation may use when discovering beans.
+     *
+     * @param initialBeanDefiningAnnotations the initial {@link Set}
+     * of bean defining annotations
+     */
+    void setInitialBeanDefiningAnnotations(Set<Class<? extends Annotation>> initialBeanDefiningAnnotations);
 
     /**
      * Optionally, a client may set a custom scanner implementation. If not set, the impl is allowed to use anything it considers appropriate.

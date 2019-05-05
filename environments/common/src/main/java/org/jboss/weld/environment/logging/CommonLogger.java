@@ -159,4 +159,8 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 40, value = "Jandex discovery strategy was disabled.", format = Format.MESSAGE_FORMAT)
     void jandexDiscoveryStrategyDisabled();
 
+    @LogMessage(level = Level.INFO)
+    @Message(id = 41, value = "Using {0} for bean discovery", format = Format.MESSAGE_FORMAT)
+    void usingServiceLoaderSourcedDiscoveryStrategy(Object discoveryStrategy);
+
 }
