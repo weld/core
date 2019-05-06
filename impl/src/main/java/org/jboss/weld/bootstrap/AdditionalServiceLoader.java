@@ -29,7 +29,6 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.Services;
 
@@ -37,8 +36,10 @@ import org.jboss.weld.util.Services;
  * Loads {@link Service} implementations using {@link ServiceLoader}.
  *
  * <p>
- * This can be used e.g. by a JTA library in weld-servlet environment to provide {@link TransactionServices} implementation which would not otherwise be
- * provided by weld-servlet. Deployment classloaders, TCCL and Weld's classloader are used to discover service implementations.
+ * This can be used e.g. by a JTA library in weld-servlet environment to provide {@link org.jboss.weld.transaction.spi.TransactionServices} implementation which
+ * would not otherwise be provided by weld-servlet. Deployment classloaders, TCCL and Weld's classloader are used to discover service implementations. If a
+ * service provider is loadable from multiple classloaders (most likely in a Java SE application) the service class will be instantiated multiple times but only
+ * the first instance will be used (see {@link Services#put(ServiceRegistry, Class, Service)}).
  * </p>
  *
  * <p>
