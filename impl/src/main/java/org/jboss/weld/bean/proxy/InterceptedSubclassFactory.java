@@ -156,7 +156,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
 
                     if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
-                            && !finalMethods.contains(methodSignature)
+                            && !finalMethods.contains(methodSignature) && CommonProxiedMethodFilters.NON_PRIVATE_WITHOUT_PACK_PRIVATE_PARAMS.accept(method, getProxySuperclass())
                             && !bridgeMethodsContainsMethod(processedBridgeMethods, methodSignature, method.getGenericReturnType(), Modifier.isAbstract(method.getModifiers()))) {
                         try {
                             final MethodInformation methodInfo = new RuntimeMethodInformation(method);
