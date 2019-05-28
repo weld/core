@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2014, 2019 Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.environment.deployment.discovery.jandex;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -40,6 +43,8 @@ import org.jboss.weld.util.Preconditions;
  * </p>
  *
  * @author Stefan Großmann
+ * @author <a href="https://about.me/lairdnelson"
+ * target="_parent">Laird Nelson</a>
  */
 public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
 
@@ -50,8 +55,7 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
     @Override
     public BeanArchiveBuilder handle(String path) {
         File beanArchiveFile = new File(path);
-        if (!beanArchiveFile.canRead() || beanArchiveFile.isDirectory()) {
-            // Currently only JAR files are supported
+        if (!beanArchiveFile.canRead()) {
             return null;
         }
         Index index = getIndex(beanArchiveFile);
@@ -67,16 +71,24 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
         Preconditions.checkArgumentNotNull(beanArchiveFile, "beanArchiveFile");
         logger.debugv("Try to get Jandex index for: {0}", beanArchiveFile);
         Index index = null;
-        try (ZipFile zip = new ZipFile(beanArchiveFile)) {
-            // Open the bean archive and try to find the index file
-            ZipEntry entry = zip.getEntry(JANDEX_INDEX_NAME);
-            if (entry != null) {
-                index = new IndexReader(zip.getInputStream(entry)).read();
+        try {
+            if (beanArchiveFile.isDirectory()) {
+                try (InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(beanArchiveFile, JANDEX_INDEX_NAME)))) {
+                    index = new IndexReader(inputStream).read();
+                }
+            } else {
+                try (ZipFile zip = new ZipFile(beanArchiveFile)) {
+                    // Open the bean archive and try to find the index file
+                    ZipEntry entry = zip.getEntry(JANDEX_INDEX_NAME);
+                    if (entry != null) {
+                        index = new IndexReader(zip.getInputStream(entry)).read();
+                    }
+                } catch (IllegalArgumentException e) {
+                    CommonLogger.LOG.warnv("Jandex index is not valid: {0}", beanArchiveFile);
+                } catch (UnsupportedVersion e) {
+                    CommonLogger.LOG.warnv("Version of Jandex index is not supported: {0}", beanArchiveFile);
+                }
             }
-        } catch (IllegalArgumentException e) {
-            CommonLogger.LOG.warnv("Jandex index is not valid: {0}", beanArchiveFile);
-        } catch (UnsupportedVersion e) {
-            CommonLogger.LOG.warnv("Version of Jandex index is not supported: {0}", beanArchiveFile);
         } catch (IOException e) {
             CommonLogger.LOG.warnv("Cannot get Jandex index from: {0}", beanArchiveFile);
             CommonLogger.LOG.catchingDebug(e);
