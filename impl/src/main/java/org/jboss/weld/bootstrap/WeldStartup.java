@@ -503,17 +503,26 @@ public class WeldStartup {
         getContainer().setState(ContainerState.VALIDATED);
         tracker.start(Tracker.OP_ADV);
         AfterDeploymentValidationImpl.fire(deploymentManager);
+
+        final BeanIdentifierIndex index = deploymentManager.getServices().get(BeanIdentifierIndex.class);
+        if (index != null) {
+            // Build a special index of bean identifiers
+            index.build(getBeansForBeanIdentifierIndex());
+        }
+
+        // feed BeanDeploymentModule registry
+        final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
+        if (modules != null) {
+            modules.processBeanDeployments(getBeanDeployments());
+            BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
+        }
+
         tracker.end();
         tracker.end();
     }
 
     public void endInitialization() {
         tracker.start(Tracker.OP_END_INIT);
-        final BeanIdentifierIndex index = deploymentManager.getServices().get(BeanIdentifierIndex.class);
-        if (index != null) {
-            // Build a special index of bean identifiers
-            index.build(getBeansForBeanIdentifierIndex());
-        }
 
         // Register the managers so external requests can handle them
         // clear the TypeSafeResolvers, so data that is only used at startup
@@ -549,12 +558,6 @@ public class WeldStartup {
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.getBeanDeployer().cleanup();
         }
-        // feed BeanDeploymentModule registry
-        final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
-        if (modules != null) {
-            modules.processBeanDeployments(getBeanDeployments());
-            BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
-        }
 
         // Perform additional cleanup if removing unused beans
         if (UnusedBeans.isEnabled(deploymentManager.getServices().get(WeldConfiguration.class))) {
@@ -568,6 +571,7 @@ public class WeldStartup {
 
         getContainer().setState(ContainerState.INITIALIZED);
 
+        final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
         if (modules != null) {
             // fire @Initialized(ApplicationScoped.class) for non-web modules
             // web modules are handled by HttpContextLifecycle
