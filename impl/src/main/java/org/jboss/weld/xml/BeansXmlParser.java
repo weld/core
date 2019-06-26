@@ -80,17 +80,20 @@ public class BeansXmlParser {
         URL beansXmlUrl = null;
         for (T item : items) {
             BeansXml beansXml = function.apply(item);
-            addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
-            addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
-            addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
-            addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
-            includes.addAll(beansXml.getScanning().getIncludes());
-            excludes.addAll(beansXml.getScanning().getExcludes());
-            isTrimmed = beansXml.isTrimmed();
-            /*
-             * provided we are merging the content of multiple XML files, getBeansXml() returns an InputStream representing the last one
-             */
-            beansXmlUrl = beansXml.getUrl();
+            // if Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT is true, there doesn't need to be beans.xml
+            if (beansXml != null) {
+                addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
+                addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
+                addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
+                addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
+                includes.addAll(beansXml.getScanning().getIncludes());
+                excludes.addAll(beansXml.getScanning().getExcludes());
+                isTrimmed = beansXml.isTrimmed();
+                /*
+                 * provided we are merging the content of multiple XML files, getBeansXml() returns an InputStream representing the last one
+                 */
+                beansXmlUrl = beansXml.getUrl();
+            }
         }
         return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl,
                 BeanDiscoveryMode.ALL, null, isTrimmed);
