@@ -39,8 +39,6 @@ public class JettyLegacyContainer extends AbstractJettyContainer {
 
     @Override
     public void initialize(ContainerContext context) {
-        System.err.println("XXXXXXXXX LEGACY INIT " + context);
-
         // Try pushing a Jetty Injector into the servlet context
         try {
             context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));

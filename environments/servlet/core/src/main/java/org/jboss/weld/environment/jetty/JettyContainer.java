@@ -40,14 +40,12 @@ public class JettyContainer extends AbstractJettyContainer {
 
     @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
-        System.err.println("XXXXXXXXX CHECKING " + context);
         ServletContext sc = context.getServletContext();
         return "DecoratingListener".equals(sc.getAttribute("org.eclipse.jetty.cdi"));
     }
 
     @Override
     public void initialize(ContainerContext context) {
-        System.err.println("XXXXXXXXXX INIT " + context);
         // Try pushing a Jetty Injector into the servlet context
         try {
             context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
