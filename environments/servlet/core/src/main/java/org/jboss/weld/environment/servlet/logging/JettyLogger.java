@@ -78,4 +78,9 @@ public interface JettyLogger extends WeldEnvironmentLogger {
 
     @Message(id = 1210, value = "No such Jetty injector found in servlet context attributes.")
     IllegalStateException noSuchJettyInjectorFound();
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 1211, value = "Jetty CDI support detected, CDI injection will be available in Listeners, Servlets and Filters.")
+    void jettyCDIDetectedInjectionIsSupported();
+
 }

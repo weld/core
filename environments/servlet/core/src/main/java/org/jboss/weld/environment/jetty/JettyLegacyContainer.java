@@ -17,42 +17,40 @@
 
 package org.jboss.weld.environment.jetty;
 
-import javax.servlet.ServletContext;
-
 import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.ContainerContext;
+import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
-import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * Jetty 7.2+, 8.x and 9.x container.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class JettyContainer extends AbstractJettyContainer {
+public class JettyLegacyContainer extends AbstractJettyContainer {
 
-    public static final Container INSTANCE = new JettyContainer();
+    public static final Container INSTANCE = new JettyLegacyContainer();
+
+    private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.util.Decorator";
 
     protected String classToCheck() {
-        // Never called because touch is overridden below.
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
-        System.err.println("XXXXXXXXX CHECKING " + context);
-        ServletContext sc = context.getServletContext();
-        return "DecoratingListener".equals(sc.getAttribute("org.eclipse.jetty.cdi"));
+        return JETTY_REQUIRED_CLASS_NAME;
     }
 
     @Override
     public void initialize(ContainerContext context) {
-        System.err.println("XXXXXXXXXX INIT " + context);
+        System.err.println("XXXXXXXXX LEGACY INIT " + context);
+
         // Try pushing a Jetty Injector into the servlet context
         try {
             context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
-            WeldDecorator.process(context.getServletContext());
-            JettyLogger.LOG.jettyCDIDetectedInjectionIsSupported();
+            LegacyWeldDecorator.process(context.getServletContext());
+            if (Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
+                // ServletContainerInitializer works on versions prior to 9.1.1 but the listener injection doesn't
+                JettyLogger.LOG.jettyDetectedListenersInjectionIsSupported();
+            } else {
+                JettyLogger.LOG.jettyDetectedListenersInjectionIsNotSupported();
+            }
         } catch (Exception e) {
             JettyLogger.LOG.unableToCreateJettyWeldInjector(e);
         }

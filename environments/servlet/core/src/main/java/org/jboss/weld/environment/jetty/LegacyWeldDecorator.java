@@ -19,38 +19,31 @@ package org.jboss.weld.environment.jetty;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.environment.servlet.logging.JettyLogger;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.DecoratedObjectFactory;
+import org.eclipse.jetty.util.Decorator;
 
 /**
  * Jetty Eclipse Weld support.
- * Uses the DecoratedListener integration available from jetty 9.4.20
+ *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class WeldDecorator  {
+public class LegacyWeldDecorator extends WeldDecorator implements Decorator {
 
-    private ServletContext servletContext;
-    private JettyWeldInjector injector;
-
-    protected WeldDecorator(ServletContext servletContext) {
-        this.servletContext = servletContext;
-        injector = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
-        if (injector == null) {
-            throw JettyLogger.LOG.noSuchJettyInjectorFound();
-        }
+    protected LegacyWeldDecorator(ServletContext servletContext) {
+        super(servletContext);
     }
 
     public static void process(ServletContext context) {
-        context.setAttribute("org.eclipse.jetty.cdi.decorator", new WeldDecorator(context));
+        if (context instanceof ContextHandler.Context) {
+            ContextHandler.Context cc = (ContextHandler.Context) context;
+            ContextHandler handler = cc.getContextHandler();
+            if (handler instanceof ServletContextHandler) {
+                ServletContextHandler sch = (ServletContextHandler) handler;
+                DecoratedObjectFactory decObjFact = sch.getObjectFactory();
+                decObjFact.addDecorator(new LegacyWeldDecorator(context));
+            }
+        }
     }
-
-    // DecoratedListener in Jetty 9.4 introspects the following methods
-    public <T> T decorate(T o) {
-        injector.inject(o);
-        return o;
-    }
-
-    public void destroy(Object o) {
-        injector.destroy(o);
-    }
-
 }
