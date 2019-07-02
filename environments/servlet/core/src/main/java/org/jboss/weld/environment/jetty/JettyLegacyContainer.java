@@ -23,8 +23,16 @@ import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
 /**
- * Jetty 7.2+, 8.x and 9.x container.
- *
+ * Jetty 9.x&lt;9.4.20 container.
+ * <p>This container relies on the the following Jetty APIs to be exposed
+ * to the webapp:<ul>
+ *     <li>org.eclipse.jetty.server.handler.ContextHandler</li>
+ *     <li>org.eclipse.jetty.servlet.ServletContextHandler</li>
+ *     <li>org.eclipse.jetty.util.DecoratedObjectFactory</li>
+ *     <li>org.eclipse.jetty.util.Decorator</li>
+ * </ul>
+ * </p>
+ * @see JettyContainer
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class JettyLegacyContainer extends AbstractJettyContainer {
@@ -41,7 +49,7 @@ public class JettyLegacyContainer extends AbstractJettyContainer {
     public void initialize(ContainerContext context) {
         // Try pushing a Jetty Injector into the servlet context
         try {
-            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
+            super.initialize(context);
             LegacyWeldDecorator.process(context.getServletContext());
             if (Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
                 // ServletContainerInitializer works on versions prior to 9.1.1 but the listener injection doesn't

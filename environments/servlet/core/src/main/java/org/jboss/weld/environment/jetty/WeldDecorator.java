@@ -22,17 +22,18 @@ import javax.servlet.ServletContext;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
 /**
- * Jetty Eclipse Weld support.
- * Uses the DecoratedListener integration available from jetty 9.4.20
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * Jetty Eclipse Weld support for jetty &gt;=9.4.20
+ * <p>This Decorator has no hard dependencies on Jetty APIs, rather it relies on
+ * the server to be configured so that an object set as the "org.eclipse.jetty.cdi.decorator"
+ * is introspected for methods that match the {@link #decorate(Object)} and {@link #destroy(Object)}
+ * signatures, which are then invoked dynamically.</p>
+ * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */
 public class WeldDecorator  {
 
-    private ServletContext servletContext;
     private JettyWeldInjector injector;
 
     protected WeldDecorator(ServletContext servletContext) {
-        this.servletContext = servletContext;
         injector = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
         if (injector == null) {
             throw JettyLogger.LOG.noSuchJettyInjectorFound();
@@ -40,17 +41,30 @@ public class WeldDecorator  {
     }
 
     public static void process(ServletContext context) {
+        // The jetty cdi module from 9.4.20 listens for this attribute for a decorator.
         context.setAttribute("org.eclipse.jetty.cdi.decorator", new WeldDecorator(context));
     }
 
-    // DecoratedListener in Jetty 9.4 introspects the following methods
+    /**
+     * Decorate an object.
+     * <p>The signature of this method must match what is introspected for by the
+     * Jetty DecoratingListener class.  It is invoked dynamically.</p>
+     * @param o The object to be decorated
+     * @param <T> The type of the object to be decorated
+     * @return The decorated object
+     */
     public <T> T decorate(T o) {
         injector.inject(o);
         return o;
     }
 
+    /**
+     * Destroy a decorated object.
+     * <p>The signature of this method must match what is introspected for by the
+     * Jetty DecoratingListener class.  It is invoked dynamically.</p>
+     * @param o The object to be destroyed
+     */
     public void destroy(Object o) {
         injector.destroy(o);
     }
-
 }

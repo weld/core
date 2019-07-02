@@ -25,9 +25,15 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * Jetty 7.2+, 8.x and 9.x container.
+ * Jetty &gt;= 9.4.20 container.
+ * <p>This container requires that the jetty server register DecoratingListener
+ * to dynamically register a decorator instance that wraps the {@link WeldDecorator}
+ * added as an attribute.   The jetty 'cdi' module does this and indicates it's
+ * availability by setting the "org.eclipse.jetty.cdi" attribute to "DecoratingListener"
+ * </p>
  *
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * @see JettyLegacyContainer
+ * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */
 public class JettyContainer extends AbstractJettyContainer {
 
@@ -41,6 +47,7 @@ public class JettyContainer extends AbstractJettyContainer {
     @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
         ServletContext sc = context.getServletContext();
+        // The jetty cdi module from 9.4.20 sets this attribute to indicate that a DecoratingListener is registered.
         return "DecoratingListener".equals(sc.getAttribute("org.eclipse.jetty.cdi"));
     }
 
@@ -48,7 +55,7 @@ public class JettyContainer extends AbstractJettyContainer {
     public void initialize(ContainerContext context) {
         // Try pushing a Jetty Injector into the servlet context
         try {
-            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
+            super.initialize(context);
             WeldDecorator.process(context.getServletContext());
             JettyLogger.LOG.jettyCDIDetectedInjectionIsSupported();
         } catch (Exception e) {
