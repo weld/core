@@ -274,7 +274,7 @@ public class BeansXmlStreamParser {
         includes = new LinkedList<>();
         while (reader.hasNext()) {
             event = reader.nextEvent();
-            if (isEnd(event, SCAN)) {
+            if (isEnd(event, SCAN, SCANNING_URIS)) {
                 return;
             } else if (event.isStartElement()) {
                 StartElement element = (StartElement) event;
