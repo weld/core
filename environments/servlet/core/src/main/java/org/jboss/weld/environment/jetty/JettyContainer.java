@@ -38,17 +38,19 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 public class JettyContainer extends AbstractJettyContainer {
 
     public static final Container INSTANCE = new JettyContainer();
+    public static final String JETTY_CDI_ATTRIBUTE = "org.eclipse.jetty.cdi";
+    public static final String JETTY_CDI_ATTRIBUTE_VALUE = "DecoratingListener";
 
     protected String classToCheck() {
         // Never called because touch is overridden below.
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("touch method reimplemented in JettyContainer");
     }
 
     @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
         ServletContext sc = context.getServletContext();
         // The jetty cdi module from 9.4.20 sets this attribute to indicate that a DecoratingListener is registered.
-        return "DecoratingListener".equals(sc.getAttribute("org.eclipse.jetty.cdi"));
+        return JETTY_CDI_ATTRIBUTE_VALUE.equals(sc.getAttribute(JETTY_CDI_ATTRIBUTE));
     }
 
     @Override
