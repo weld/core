@@ -23,6 +23,7 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.DecoratedObjectFactory;
 import org.eclipse.jetty.util.Decorator;
+import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
 /**
  * Jetty Eclipse Weld support for jetty &gt;=9 and &lt;= 9.4.20
@@ -37,10 +38,14 @@ import org.eclipse.jetty.util.Decorator;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class LegacyWeldDecorator extends WeldDecorator implements Decorator {
+public class LegacyWeldDecorator  implements Decorator {
+    private JettyWeldInjector injector;
 
     protected LegacyWeldDecorator(ServletContext servletContext) {
-        super(servletContext);
+        injector = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
+        if (injector == null) {
+            throw JettyLogger.LOG.noSuchJettyInjectorFound();
+        }
     }
 
     public static void process(ServletContext context) {
@@ -53,5 +58,29 @@ public class LegacyWeldDecorator extends WeldDecorator implements Decorator {
                 decObjFact.addDecorator(new LegacyWeldDecorator(context));
             }
         }
+    }
+
+
+    /**
+     * Decorate an object.
+     * <p>The signature of this method must match what is introspected for by the
+     * Jetty DecoratingListener class.  It is invoked dynamically.</p>
+     * @param o The object to be decorated
+     * @param <T> The type of the object to be decorated
+     * @return The decorated object
+     */
+    public <T> T decorate(T o) {
+        injector.inject(o);
+        return o;
+    }
+
+    /**
+     * Destroy a decorated object.
+     * <p>The signature of this method must match what is introspected for by the
+     * Jetty DecoratingListener class.  It is invoked dynamically.</p>
+     * @param o The object to be destroyed
+     */
+    public void destroy(Object o) {
+        injector.destroy(o);
     }
 }
