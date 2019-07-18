@@ -41,8 +41,11 @@ public class WeldDecorator  {
     }
 
     public static void process(ServletContext context) {
-        // The jetty cdi module from 9.4.20 listens for this attribute for a decorator.
-        context.setAttribute("org.eclipse.jetty.cdi.decorator", new WeldDecorator(context));
+        // The jetty decorate module from 9.4.20 listens for attributes as decorators.
+        String attribute = (String) context.getAttribute(JettyContainer.JETTY_DECORATING_ATTRIBUTE);
+        if (attribute != null) {
+            context.setAttribute(attribute, new WeldDecorator(context));
+        }
     }
 
     /**
