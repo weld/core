@@ -26,9 +26,10 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * Jetty &gt;= 9.4.20 container.
- * <p>This container requires that the jetty server register a CdiDecorator
- * that uses standard CDI SPIs to decorate Listeners, Filters and Servlets. The jetty 'cdi' module does this
- * since jetty 9.4.20 and indicates it's availability by setting the "org.eclipse.jetty.cdi" attribute to "CdiDecorator"
+ * <p>This container requires that the jetty server register DecoratingListener
+ * to dynamically register a decorator instance that wraps the {@link WeldDecorator}
+ * added as an attribute.   The jetty 'cdi' module does this and indicates it's
+ * availability by setting the "org.eclipse.jetty.cdi" attribute to "DecoratingListener"
  * </p>
  *
  * @see JettyLegacyContainer
@@ -38,7 +39,7 @@ public class JettyContainer extends AbstractJettyContainer {
 
     public static final Container INSTANCE = new JettyContainer();
     public static final String JETTY_CDI_ATTRIBUTE = "org.eclipse.jetty.cdi";
-    public static final String JETTY_CDI_ATTRIBUTE_VALUE = "CdiDecorator";
+    public static final String JETTY_CDI_ATTRIBUTE_VALUE = "DecoratingListener";
 
     protected String classToCheck() {
         // Never called because touch is overridden below.
@@ -57,6 +58,7 @@ public class JettyContainer extends AbstractJettyContainer {
         // Try pushing a Jetty Injector into the servlet context
         try {
             super.initialize(context);
+            WeldDecorator.process(context.getServletContext());
             JettyLogger.LOG.jettyCDIDetectedInjectionIsSupported();
         } catch (Exception e) {
             JettyLogger.LOG.unableToCreateJettyWeldInjector(e);
