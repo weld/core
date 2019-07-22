@@ -418,7 +418,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         return generator.call();
     }
 
-    protected ConversationIdGenerator getConversationIdGenerator() {
+    // method is synchronized so that creation of conversation generator isn't a subject to race condition
+    protected synchronized ConversationIdGenerator getConversationIdGenerator() {
         final R request = associated.get();
         if (request == null) {
             throw ConversationLogger.LOG.mustCallAssociateBeforeGeneratingId();
@@ -464,7 +465,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    private Map<String, ManagedConversation> getConversationMap() {
+    private synchronized Map<String, ManagedConversation> getConversationMap() {
         checkIsAssociated();
         checkContextInitialized();
         final R request = getRequest();
