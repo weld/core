@@ -39,6 +39,8 @@ public class JettyContainer extends AbstractJettyContainer {
 
     public static final Container INSTANCE = new JettyContainer();
     public static final String JETTY_DECORATING_ATTRIBUTE = "org.eclipse.jetty.webapp.DecoratingListener";
+    public static final String JETTY_CDI_ATTRIBUTE = "org.eclipse.jetty.cdi";
+    public static final String JETTY_CDI_VALUE = "CdiDecorator";
 
     protected String classToCheck() {
         // Never called because touch is overridden below.
@@ -49,7 +51,8 @@ public class JettyContainer extends AbstractJettyContainer {
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
         ServletContext sc = context.getServletContext();
         // The jetty decorate module from 9.4.20 sets this attribute to indicate that a DecoratingListener is registered.
-        return sc.getAttribute(JETTY_DECORATING_ATTRIBUTE) instanceof String;
+        return sc.getAttribute(JETTY_DECORATING_ATTRIBUTE) instanceof String ||
+            JETTY_CDI_VALUE.equals(sc.getAttribute(JETTY_CDI_ATTRIBUTE));
     }
 
     @Override
@@ -58,7 +61,6 @@ public class JettyContainer extends AbstractJettyContainer {
         try {
             super.initialize(context);
             WeldDecorator.process(context.getServletContext());
-            JettyLogger.LOG.jettyDecorationIsSupported();
         } catch (Exception e) {
             JettyLogger.LOG.unableToCreateJettyWeldInjector(e);
         }
