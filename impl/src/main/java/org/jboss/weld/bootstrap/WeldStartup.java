@@ -520,6 +520,8 @@ public class WeldStartup {
             beanManager.getInterceptorMetadataReader().cleanAfterBoot();
             beanManager.getServices().cleanupAfterBoot();
             beanManager.cleanupAfterBoot();
+            // for safety sake perform after boot cleanup on all services in BDA
+            beanDeployment.getBeanDeploymentArchive().getServices().cleanupAfterBoot();
             // clean up beans
             for (Bean<?> bean : beanManager.getBeans()) {
                 if (bean instanceof RIBean<?>) {
