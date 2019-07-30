@@ -42,15 +42,12 @@ public class WeldDecorator  {
 
     public static void process(ServletContext context) {
         String attribute = (String)context.getAttribute(JettyContainer.JETTY_DECORATING_ATTRIBUTE);
-        if (JettyContainer.JETTY_CDI_VALUE.equals(context.getAttribute(JettyContainer.JETTY_CDI_ATTRIBUTE))) {
-            // Jetty will call the CDI SPIs itself, no further integration required
-            JettyLogger.LOG.jettyCdiSpiIsSupported();
-        } else if (attribute != null) {
+        if (attribute != null) {
             // The jetty decorate module from 9.4.20 listens for attributes as decorators.
             context.setAttribute(attribute, new WeldDecorator(context));
             JettyLogger.LOG.jettyDecorationIsSupported();
         } else {
-            throw new IllegalStateException("No Jetty integration detected");
+            throw new IllegalStateException("No Jetty Decorating Listener integration detected");
         }
     }
 

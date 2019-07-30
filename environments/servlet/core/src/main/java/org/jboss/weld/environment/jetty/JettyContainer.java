@@ -57,10 +57,17 @@ public class JettyContainer extends AbstractJettyContainer {
 
     @Override
     public void initialize(ContainerContext context) {
-        // Try pushing a Jetty Injector into the servlet context
         try {
-            super.initialize(context);
-            WeldDecorator.process(context.getServletContext());
+            ServletContext servletContext = context.getServletContext();
+            // Is the Jetty server doing its own CDI SPI integration?
+            if (JettyContainer.JETTY_CDI_VALUE.equals(servletContext.getAttribute(JettyContainer.JETTY_CDI_ATTRIBUTE))) {
+                // Yes, no further integration required
+                JettyLogger.LOG.jettyCdiSpiIsSupported();
+            } else {
+                // No, we need to initialize a JettyWeldInjector and WeldDecorator for it
+                super.initialize(context);
+                WeldDecorator.process(servletContext);
+            }
         } catch (Exception e) {
             JettyLogger.LOG.unableToCreateJettyWeldInjector(e);
         }
