@@ -25,13 +25,19 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * Jetty &gt;= 9.4.20 container.
+ * Jetty Container.
  * <p>This container requires that the jetty server register DecoratingListener
  * to dynamically register a decorator instance that wraps the {@link WeldDecorator}
- * added as an attribute.   The jetty 'cdi' module does this and indicates it's
- * availability by setting the "org.eclipse.jetty.cdi" attribute to "DecoratingListener"
- * </p>
+ * added as an attribute.   The jetty <code>decorate</code> module does this and indicates it's
+ * availability by setting the "org.eclipse.jetty.webapp.DecoratingListener" to the
+ * name of the watched attribute.</p>
  *
+ * <p>Jetty also provides the <code>cdi-spi</code> module that may directly invoke the
+ * CDI SPI.  This module indicates it's availability by setting the "org.eclipse.jetty.cdi"
+ * context attribute to "CdiDecorator".  If this module is used, then this JettyContainer
+ * only logs a message and does no further integration.
+ * </p>
+ * @since Jetty 9.4.20
  * @see JettyLegacyContainer
  * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */

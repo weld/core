@@ -23,7 +23,7 @@ import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
 /**
- * Jetty 9.x&lt;9.4.20 container.
+ * Legacy Jetty container.
  * <p>This container relies on the the following Jetty APIs to be exposed
  * to the webapp:<ul>
  *     <li>org.eclipse.jetty.server.handler.ContextHandler</li>
@@ -31,10 +31,13 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
  *     <li>org.eclipse.jetty.util.DecoratedObjectFactory</li>
  *     <li>org.eclipse.jetty.util.Decorator</li>
  * </ul>
+ * These APIs are exposed by the deprecated jetty <code>cdi2</code> module.
  * </p>
+ * @deprecated
  * @see JettyContainer
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Deprecated
 public class JettyLegacyContainer extends AbstractJettyContainer {
 
     public static final Container INSTANCE = new JettyLegacyContainer();
