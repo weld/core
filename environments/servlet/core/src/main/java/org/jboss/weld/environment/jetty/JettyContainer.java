@@ -21,75 +21,61 @@ import javax.servlet.ServletContext;
 
 import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.ContainerContext;
-import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * Jetty 7.2+, 8.x and 9.x container.
+ * Jetty Container.
+ * <p>This container requires that the jetty server register DecoratingListener
+ * to dynamically register a decorator instance that wraps the {@link WeldDecorator}
+ * added as an attribute.   The jetty <code>decorate</code> module does this and indicates it's
+ * availability by setting the "org.eclipse.jetty.webapp.DecoratingListener" to the
+ * name of the watched attribute.</p>
  *
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * <p>Jetty also provides the <code>cdi-spi</code> module that may directly invoke the
+ * CDI SPI.  This module indicates it's availability by setting the "org.eclipse.jetty.cdi"
+ * context attribute to "CdiDecorator".  If this module is used, then this JettyContainer
+ * only logs a message and does no further integration.
+ * </p>
+ * @since Jetty 9.4.20
+ * @see JettyLegacyContainer
+ * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */
 public class JettyContainer extends AbstractJettyContainer {
 
     public static final Container INSTANCE = new JettyContainer();
-
-    private static final String JETTY_SERVERNAME = "jetty";
-
-    private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
-
-    private static final int MAJOR_VERSION = 7;
-    private static final int MINOR_VERSION = 2;
+    public static final String JETTY_DECORATING_ATTRIBUTE = "org.eclipse.jetty.webapp.DecoratingListener";
+    public static final String JETTY_CDI_ATTRIBUTE = "org.eclipse.jetty.cdi";
+    public static final String JETTY_CDI_VALUE = "CdiDecorator";
 
     protected String classToCheck() {
-        // This is not used anyway - server implementation classes are hidden from the web application in Jetty by default
-        // Instead ServletContext.getServerInfo() is parsed
-        return JETTY_REQUIRED_CLASS_NAME;
+        // Never called because touch is overridden below.
+        throw new UnsupportedOperationException("touch method reimplemented in JettyContainer");
     }
 
     @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
         ServletContext sc = context.getServletContext();
-        String si = sc.getServerInfo();
-        JettyLogger.LOG.debugv("Parsing server info: {0}", si);
-        if(!si.contains(JETTY_SERVERNAME)) {
-            return false;
-        }
-        int p = si.indexOf("/");
-        if (p < 0) {
-            return false;
-        }
-        String version = si.substring(p + 1);
-        String[] split = version.split("\\.");
-        int major = parseVersion(split[0]);
-        int minor = parseVersion(split[1]);
-        return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
+        // The jetty decorate module from 9.4.20 sets this attribute to indicate that a DecoratingListener is registered.
+        return sc.getAttribute(JETTY_DECORATING_ATTRIBUTE) instanceof String ||
+            JETTY_CDI_VALUE.equals(sc.getAttribute(JETTY_CDI_ATTRIBUTE));
     }
 
     @Override
     public void initialize(ContainerContext context) {
-        // Try pushing a Jetty Injector into the servlet context
         try {
-            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
-            WeldDecorator.process(context.getServletContext());
-            if(Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
-                // ServletContainerInitializer works on versions prior to 9.1.1 but the listener injection doesn't
-                JettyLogger.LOG.jettyDetectedListenersInjectionIsSupported();
+            ServletContext servletContext = context.getServletContext();
+            // Is the Jetty server doing its own CDI SPI integration?
+            if (JettyContainer.JETTY_CDI_VALUE.equals(servletContext.getAttribute(JettyContainer.JETTY_CDI_ATTRIBUTE))) {
+                // Yes, no further integration required
+                JettyLogger.LOG.jettyCdiSpiIsSupported();
             } else {
-                JettyLogger.LOG.jettyDetectedListenersInjectionIsNotSupported();
+                // No, we need to initialize a JettyWeldInjector and WeldDecorator for it
+                super.initialize(context);
+                WeldDecorator.process(servletContext);
             }
         } catch (Exception e) {
             JettyLogger.LOG.unableToCreateJettyWeldInjector(e);
         }
     }
-
-    private int parseVersion(String version) {
-        try {
-            return Integer.parseInt(version);
-        } catch (NumberFormatException e) {
-            JettyLogger.LOG.debugv("Unable to parse version string: {0}", version);
-            return -1;
-        }
-    }
-
 }

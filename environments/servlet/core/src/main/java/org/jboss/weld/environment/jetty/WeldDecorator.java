@@ -19,58 +19,58 @@ package org.jboss.weld.environment.jetty;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.DecoratedObjectFactory;
-import org.eclipse.jetty.util.Decorator;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
 /**
- * Jetty Eclipse Weld support.
- *
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * Jetty Eclipse Weld support for jetty &gt;=9.4.20
+ * <p>This Decorator has no hard dependencies on Jetty APIs, rather it relies on
+ * the server to be configured so that an object set as the "org.eclipse.jetty.cdi.decorator"
+ * is introspected for methods that match the {@link #decorate(Object)} and {@link #destroy(Object)}
+ * signatures, which are then invoked dynamically.</p>
+ * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */
-public class WeldDecorator implements Decorator {
+public class WeldDecorator  {
 
-    private ServletContext servletContext;
     private JettyWeldInjector injector;
 
     protected WeldDecorator(ServletContext servletContext) {
-        this.servletContext = servletContext;
+        injector = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
+        if (injector == null) {
+            throw JettyLogger.LOG.noSuchJettyInjectorFound();
+        }
     }
 
     public static void process(ServletContext context) {
-        if (context instanceof ContextHandler.Context) {
-            ContextHandler.Context cc = (ContextHandler.Context) context;
-            ContextHandler handler = cc.getContextHandler();
-            if (handler instanceof ServletContextHandler) {
-                ServletContextHandler sch = (ServletContextHandler) handler;
-                DecoratedObjectFactory decObjFact = sch.getObjectFactory();
-                decObjFact.addDecorator(new WeldDecorator(context));
-            }
+        String attribute = (String)context.getAttribute(JettyContainer.JETTY_DECORATING_ATTRIBUTE);
+        if (attribute != null) {
+            // The jetty decorate module from 9.4.20 listens for attributes as decorators.
+            context.setAttribute(attribute, new WeldDecorator(context));
+            JettyLogger.LOG.jettyDecorationIsSupported();
+        } else {
+            throw new IllegalStateException("No Jetty Decorating Listener integration detected");
         }
     }
 
-    protected JettyWeldInjector getInjector() {
-        if (injector == null) {
-            JettyWeldInjector jwi = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
-            if (jwi == null) {
-                throw JettyLogger.LOG.noSuchJettyInjectorFound();
-            }
-            injector = jwi;
-        }
-        return injector;
-    }
-
-    // ServletContextHandler.Decorator in Jetty 9.1 defines following methods
-
+    /**
+     * Decorate an object.
+     * <p>The signature of this method must match what is introspected for by the
+     * Jetty DecoratingListener class.  It is invoked dynamically.</p>
+     * @param o The object to be decorated
+     * @param <T> The type of the object to be decorated
+     * @return The decorated object
+     */
     public <T> T decorate(T o) {
-        getInjector().inject(o);
+        injector.inject(o);
         return o;
     }
 
+    /**
+     * Destroy a decorated object.
+     * <p>The signature of this method must match what is introspected for by the
+     * Jetty DecoratingListener class.  It is invoked dynamically.</p>
+     * @param o The object to be destroyed
+     */
     public void destroy(Object o) {
-        getInjector().destroy(o);
+        injector.destroy(o);
     }
-
 }
