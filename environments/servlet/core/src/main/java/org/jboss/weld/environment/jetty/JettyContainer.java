@@ -46,6 +46,7 @@ public class JettyContainer extends AbstractJettyContainer {
     public static final String JETTY_CDI_ATTRIBUTE = "org.eclipse.jetty.cdi";
     public static final String CDI_SPI_DECORATOR_MODE = "CdiSpiDecorator";
     public static final String CDI_DECORATING_LISTENER_MODE = "CdiDecoratingListener";
+    public static final String CDI_DECORATING_LISTENER_ATTRIBUTE = "org.eclipse.jetty.cdi.decorator";
     public static final String DECORATING_LISTENER_MODE = "DecoratingListener";
     public static final String DECORATING_LISTENER_ATTRIBUTE = "org.eclipse.jetty.webapp.DecoratingListener";
 
@@ -83,7 +84,7 @@ public class JettyContainer extends AbstractJettyContainer {
                     // For use with the cdi-decorate module
                     // Initialize a JettyWeldInjector and create WeldDecorator for it
                     super.initialize(context);
-                    servletContext.setAttribute(WeldDecorator.JETTY_LISTENING_ATTRIBUTE, new WeldDecorator(servletContext));
+                    servletContext.setAttribute(CDI_DECORATING_LISTENER_ATTRIBUTE, new WeldDecorator(servletContext));
                     JettyLogger.LOG.jettyDecorationIsSupported();
                     break;
 

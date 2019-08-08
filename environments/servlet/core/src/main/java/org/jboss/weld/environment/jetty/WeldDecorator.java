@@ -30,8 +30,6 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
  * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */
 public class WeldDecorator  {
-    public static final String JETTY_LISTENING_ATTRIBUTE = "org.eclipse.jetty.cdi.decorator";
-
     private JettyWeldInjector injector;
 
     protected WeldDecorator(ServletContext servletContext) {
