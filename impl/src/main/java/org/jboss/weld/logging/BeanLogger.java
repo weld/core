@@ -542,4 +542,8 @@ public interface BeanLogger extends WeldLogger {
     @LogMessage(level = Level.DEBUG)
     @Message(id = 1576, value = "Using {1} to instantiate a shared proxy class {0}; the deployment implementation [{2}] does not match the instantiator the proxy was created with", format = Format.MESSAGE_FORMAT)
     void creatingProxyInstanceUsingDifferentInstantiator(Object proxyClass, Object newInstantiator, Object oldInstantiator);
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 1577, value = "Detected private final method: {1}\non an intercepted bean: {0}\nWeld will ignore this method during interception.", format = Format.MESSAGE_FORMAT)
+    void privateFinalMethodOnInterceptedBean(Object beanClass, Object method);
 }
