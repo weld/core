@@ -66,14 +66,23 @@ public class JSONTestUtil {
     public static JsonObject getDeploymentByName(String path, String name, URL url) throws IOException {
         JsonObject deploymentJSON = getPageAsJSONObject(path, url);
         JsonArray deployments = deploymentJSON.getJsonArray(BDAS);
-        JsonObject result = null;
+        List<JsonObject> results = new ArrayList<>();
         for (int i = 0; i < deployments.size(); i++) {
             String bdaId = deployments.getJsonObject(i).get(BDA_ID).toString();
-            if (bdaId.contains(name)) {
-                result = deployments.getJsonObject(i);
+            if (bdaId.contains(name) && !bdaId.contains("beans.xml")) {
+                results.add(deployments.getJsonObject(i));
             }
         }
-        return result;
+        if (results.size() > 1) {
+            throw new IllegalStateException("Trying to resolve deployment by name, but for name: " + name
+                    + " multiple deployments were found: " + results);
+        } else {
+            if (results.size() == 0) {
+                return null;
+            } else {
+                return results.get(0);
+            }
+        }
     }
 
     private static String getBeanDetailUrl(String path, Class clazz, URL url) throws IOException {
