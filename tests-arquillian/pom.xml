@@ -254,17 +254,6 @@
                     <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
                     <scope>test</scope>
                 </dependency>
-                <!--Even latest wildfly-arquillian-container-managed uses old marshalling, we want to override that-->
-                <dependency>
-                    <groupId>org.jboss.marshalling</groupId>
-                    <artifactId>jboss-marshalling-river</artifactId>
-                    <version>${jboss.marshalling.override}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.marshalling</groupId>
-                    <artifactId>jboss-marshalling</artifactId>
-                    <version>${jboss.marshalling.override}</version>
-                </dependency>
             </dependencies>
 
             <build>
