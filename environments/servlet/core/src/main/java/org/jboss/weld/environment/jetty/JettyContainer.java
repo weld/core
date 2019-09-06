@@ -99,7 +99,7 @@ public class JettyContainer extends AbstractJettyContainer {
                     break;
 
                 default:
-                    throw new IllegalStateException("unknown mode: " + mode);
+                    throw JettyLogger.LOG.unknownIntegrationMode(mode);
             }
         } catch (Exception e) {
             JettyLogger.LOG.unableToCreateJettyWeldInjector(e);

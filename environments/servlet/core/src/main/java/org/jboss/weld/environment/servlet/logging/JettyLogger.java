@@ -86,4 +86,7 @@ public interface JettyLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 1212, value = "Jetty CDI SPI support detected, CDI injection will be available in Listeners, Servlets and Filters.")
     void jettyCdiSpiIsSupported();
+
+    @Message(id = 1213, value = "Unknown Jetty integration mode: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unknownIntegrationMode(String mode);
 }
