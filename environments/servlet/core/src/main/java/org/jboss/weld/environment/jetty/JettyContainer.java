@@ -85,7 +85,7 @@ public class JettyContainer extends AbstractJettyContainer {
                     // Initialize a JettyWeldInjector and create WeldDecorator for it
                     super.initialize(context);
                     servletContext.setAttribute(CDI_DECORATING_LISTENER_ATTRIBUTE, new WeldDecorator(servletContext));
-                    JettyLogger.LOG.jettyDecorationIsSupported();
+                    JettyLogger.LOG.jettyCdiDecorationIsSupported();
                     break;
 
                 case DECORATING_LISTENER_MODE:

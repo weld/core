@@ -79,14 +79,18 @@ public interface JettyLogger extends WeldEnvironmentLogger {
     @Message(id = 1210, value = "No such Jetty injector found in servlet context attributes.")
     IllegalStateException noSuchJettyInjectorFound();
 
-    @LogMessage(level = Level.INFO)
-    @Message(id = 1211, value = "Jetty Decorate support detected, CDI injection will be available in Listeners, Servlets and Filters.")
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1211, value = "Deprecated Jetty DecoratingListener support detected, CDI injection will be available in Listeners, Servlets and Filters.")
     void jettyDecorationIsSupported();
 
     @LogMessage(level = Level.INFO)
-    @Message(id = 1212, value = "Jetty CDI SPI support detected, CDI injection will be available in Listeners, Servlets and Filters.")
+    @Message(id = 1212, value = "Jetty CdiDecoratingListener support detected, CDI injection will be available in Listeners, Servlets and Filters.")
+    void jettyCdiDecorationIsSupported();
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 1213, value = "Jetty CDI SPI support detected, CDI injection will be available in Listeners, Servlets and Filters.")
     void jettyCdiSpiIsSupported();
 
-    @Message(id = 1213, value = "Unknown Jetty integration mode: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1214, value = "Unknown Jetty integration mode: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unknownIntegrationMode(String mode);
 }
