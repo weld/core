@@ -203,7 +203,12 @@ public class InterceptionModelInitializer<T> {
                 if (configuration.isFinalMethodIgnored(javaMethod.getDeclaringClass().getName())) {
                     BeanLogger.LOG.finalMethodNotIntercepted(javaMethod, methodBoundInterceptors.get(0).getBeanClass().getName());
                 } else {
-                    throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                    if (Reflections.isPrivate(javaMethod)) {
+                        // private final methods are OK, we just ignore them and log a warning
+                        BeanLogger.LOG.privateFinalMethodOnInterceptedBean(method.getDeclaringType(), method);
+                    } else {
+                        throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                    }
                 }
             } else {
                 builder.interceptMethod(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors), methodBindingAnnotations);
