@@ -30,24 +30,12 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
  * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */
 public class WeldDecorator  {
-
     private JettyWeldInjector injector;
 
     protected WeldDecorator(ServletContext servletContext) {
         injector = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
         if (injector == null) {
             throw JettyLogger.LOG.noSuchJettyInjectorFound();
-        }
-    }
-
-    public static void process(ServletContext context) {
-        String attribute = (String)context.getAttribute(JettyContainer.JETTY_DECORATING_ATTRIBUTE);
-        if (attribute != null) {
-            // The jetty decorate module from 9.4.20 listens for attributes as decorators.
-            context.setAttribute(attribute, new WeldDecorator(context));
-            JettyLogger.LOG.jettyDecorationIsSupported();
-        } else {
-            throw new IllegalStateException("No Jetty Decorating Listener integration detected");
         }
     }
 
