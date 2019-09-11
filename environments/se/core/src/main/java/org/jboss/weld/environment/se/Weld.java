@@ -177,6 +177,14 @@ import org.jboss.weld.util.collections.WeldCollections;
 public class Weld extends SeContainerInitializer implements ContainerInstanceFactory {
 
     /**
+     * By default, the set of bean-defining annotations is fixed. If set to a {@link Set} of annotation classes, the set of bean-defining annotations is
+     * augmented with the contents of the {@link Set}.
+     * <p>
+     * This key can be used through {@link #property(String, Object}.
+     */
+    public static final String ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY = "org.jboss.weld.se.additionalBeanDefiningAnnotations";
+
+    /**
      * By default, bean archive isolation is enabled. If set to false, Weld will use a "flat" deployment structure - all bean classes share the same bean
      * archive and all beans.xml descriptors are automatically merged into one.
      * <p>
@@ -621,10 +629,20 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * @see #ARCHIVE_ISOLATION_SYSTEM_PROPERTY
      * @see #SHUTDOWN_HOOK_SYSTEM_PROPERTY
      * @see #DEV_MODE_SYSTEM_PROPERTY
+     * @see #ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY
      * @see ConfigurationKey
      */
     public Weld property(String key, Object value) {
         properties.put(key, value);
+        if (ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY.equals(key) && value instanceof Collection) {
+            for (Object element : ((Collection<?>)value)) {
+                if (element instanceof Class && Annotation.class.isAssignableFrom((Class<?>) element)) {
+                    @SuppressWarnings("unchecked")
+                    final Class<? extends Annotation> annotation = (Class<? extends Annotation>) element;
+                    extendedBeanDefiningAnnotations.add(annotation);
+                }
+            }
+        }
         return this;
     }
 
