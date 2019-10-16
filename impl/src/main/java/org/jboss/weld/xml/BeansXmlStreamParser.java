@@ -388,7 +388,7 @@ public class BeansXmlStreamParser {
     }
 
     private String getTrimmedElementText(XMLEventReader reader) throws XMLStreamException {
-        return reader.getElementText().trim();
+        return interpolate(reader.getElementText().trim());
     }
 
     protected String interpolate(String value) {
