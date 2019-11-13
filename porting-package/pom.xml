@@ -22,8 +22,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
         </dependency>
 
         <dependency>
@@ -47,8 +47,8 @@
             <version>${cdi.tck-1-2.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.el</groupId>
-                    <artifactId>el-api</artifactId>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

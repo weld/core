@@ -32,7 +32,7 @@
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
         <surefire.plugin.jdk9.args />
-        <jax.artifacts.version>2.3.0</jax.artifacts.version>
+        <jax.artifacts.version>2.3.2</jax.artifacts.version>
 
         <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
@@ -58,6 +58,8 @@
         <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
+        <!-- TODO latest TCK is 2.0.6 but that one is not in Maven Central-->
+        <!-- see https://github.com/eclipse-ee4j/cdi-tck/issues/195-->
         <cdi.tck-2-0.version>2.0.5.SP1</cdi.tck-2-0.version>
         <classfilewriter.version>1.2.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
@@ -68,17 +70,17 @@
         <htmlunit.version>2.20</htmlunit.version>
         <jacoco.version>0.7.9</jacoco.version>
         <jandex.version>2.0.3.Final</jandex.version>
-        <javax.activation.version>1.1</javax.activation.version>
-        <javax.el.version>3.0.0</javax.el.version>
-        <jboss.jms.api.version>1.0.2.Final</jboss.jms.api.version>
-        <jboss.jsf.api.version>2.3.5.SP1</jboss.jsf.api.version>
+        <javax.activation.version>1.2.1</javax.activation.version>
+        <javax.el.version>3.0.2</javax.el.version>
+        <jboss.jms.api.version>2.0.0.Final</jboss.jms.api.version>
+        <jboss.jsf.api.version>3.0.0.Final</jboss.jsf.api.version>
         <jboss.logging.version>3.2.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.0.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <jboss.spec.el-api.version>1.0.13.Final</jboss.spec.el-api.version>
-        <jsf.impl.version>2.2.10</jsf.impl.version>
-        <jsp.api.version>2.3.3</jsp.api.version>
-        <jstl.api.version>1.2</jstl.api.version>
+        <jboss.spec.el-api.version>2.0.0.Final</jboss.spec.el-api.version>
+        <jsf.impl.version>2.3.14</jsf.impl.version>
+        <jsp.api.version>2.3.6</jsp.api.version>
+        <jstl.api.version>1.2.7</jstl.api.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
@@ -88,7 +90,7 @@
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
         <testng.version>6.14.3</testng.version>
         <testng.jcommander.version>1.78</testng.jcommander.version>
-        <weld.api.version>3.1.SP1</weld.api.version>
+        <weld.api.version>3.1.SP2</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>2.2.0.Final</wildfly.arquillian.version>
     </properties>
@@ -128,22 +130,22 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
                 <version>${javax.activation.version}</version>
             </dependency>
 
             <!-- This version of EL 3.0 API is not JDK 6 compatible -->
             <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
+                <groupId>jakarta.el</groupId>
+                <artifactId>jakarta.el-api</artifactId>
                 <version>${javax.el.version}</version>
             </dependency>
 
             <!-- This artifact bundles EL API and impl and is not JDK 6 compatible -->
             <dependency>
                 <groupId>org.glassfish</groupId>
-                <artifactId>javax.el</artifactId>
+                <artifactId>jakarta.el</artifactId>
                 <version>${javax.el.version}</version>
             </dependency>
 
@@ -196,6 +198,7 @@
                 <version>${htmlunit.version}</version>
             </dependency>
 
+            <!-- TODO Jakarta EE version of the TCKs wasn't yet released, see https://github.com/eclipse-ee4j/injection-tck-->
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject-tck</artifactId>
@@ -479,14 +482,14 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
+                <groupId>jakarta.servlet.jsp.jstl</groupId>
+                <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
                 <version>${jstl.api.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>javax.servlet.jsp-api</artifactId>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
                 <version>${jsp.api.version}</version>
             </dependency>
 
@@ -503,8 +506,8 @@
             </dependency>
 
             <dependency>
-                <groupId>com.sun.faces</groupId>
-                <artifactId>jsf-impl</artifactId>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.faces</artifactId>
                 <version>${jsf.impl.version}</version>
             </dependency>
 
