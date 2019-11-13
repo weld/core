@@ -54,14 +54,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-impl</artifactId>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -75,6 +75,12 @@
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-api</artifactId>
             <scope>test</scope>
         </dependency>
 

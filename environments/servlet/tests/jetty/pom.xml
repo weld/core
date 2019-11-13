@@ -47,14 +47,20 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-impl</artifactId>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -182,8 +188,8 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>javax.servlet.jsp</groupId>
-                    <artifactId>javax.servlet.jsp-api</artifactId>
+                    <groupId>jakarta.servlet.jsp</groupId>
+                    <artifactId>jakarta.servlet.jsp-api</artifactId>
                     <scope>test</scope>
                 </dependency>
 
@@ -265,8 +271,8 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>javax.servlet.jsp</groupId>
-                    <artifactId>javax.servlet.jsp-api</artifactId>
+                    <groupId>jakarta.servlet.jsp</groupId>
+                    <artifactId>jakarta.servlet.jsp-api</artifactId>
                     <scope>test</scope>
                 </dependency>
 

@@ -28,8 +28,8 @@
    <dependencies>
 
       <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
+         <groupId>jakarta.enterprise</groupId>
+         <artifactId>jakarta.enterprise.cdi-api</artifactId>
          <scope>test</scope>
       </dependency>
 
@@ -77,8 +77,8 @@
       </dependency>
 
       <dependency>
-         <groupId>javax.persistence</groupId>
-         <artifactId>javax.persistence-api</artifactId>
+         <groupId>jakarta.persistence</groupId>
+         <artifactId>jakarta.persistence-api</artifactId>
          <scope>test</scope>
       </dependency>
 
@@ -106,7 +106,7 @@
                      <stripVersion>true</stripVersion>
                      <overWriteReleases>true</overWriteReleases>
                      <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                     <includeGroupIds>org.jboss.weld.se,org.glassfish,javax.persistence</includeGroupIds>
+                     <includeGroupIds>org.jboss.weld.se,org.glassfish,jakarta.persistence</includeGroupIds>
                   </configuration>
                </execution>
             </executions>
