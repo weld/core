@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2008, 2019 Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -169,6 +169,7 @@ import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -197,6 +198,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Marius Bogoevici
  * @author Ales Justin
  * @author Jozef Hartinger
+ * @author <a href="https://about.me/lairdnelson"
+ * target="_parent">Laird Nelson</a>
  */
 public class BeanManagerImpl implements WeldManager, Serializable {
 
@@ -320,7 +323,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         return new BeanManagerImpl(serviceRegistry, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(),
                 new CopyOnWriteArrayList<Decorator<?>>(), new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(),
-                new CopyOnWriteArrayList<String>(), new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(), new ClientProxyProvider(contextId), contexts,
+                new CopyOnWriteArrayList<String>(), new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(), createClientProxyProvider(serviceRegistry, contextId), contexts,
                 ModuleEnablement.EMPTY_ENABLEMENT, id, new AtomicInteger(), new HashSet<BeanManagerImpl>(), contextId);
     }
 
@@ -329,6 +332,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(), new CopyOnWriteArrayList<String>(),
                 rootManager.getEnterpriseBeans(), rootManager.getClientProxyProvider(), rootManager.getContexts(), ModuleEnablement.EMPTY_ENABLEMENT, id,
                 new AtomicInteger(), rootManager.managers, rootManager.contextId);
+    }
+
+    private static ClientProxyProvider createClientProxyProvider(ServiceRegistry services, String contextId) {
+        return ClientProxyProvider.newInstance(services.get(ResourceLoader.class), contextId);
     }
 
     private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<Bean<?>> transitiveBeans, List<Decorator<?>> decorators,

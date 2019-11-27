@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Type;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -25,11 +26,14 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -39,6 +43,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * A proxy pool for holding scope adaptors (client proxies)
  *
  * @author Nicklas Karlsson
+ * @author <a href="https://about.me/lairdnelson"
+ * target="_parent">Laird Nelson</a>
  * @see org.jboss.weld.bean.proxy.ProxyMethodHandler
  */
 public class ClientProxyProvider {
@@ -153,29 +159,65 @@ public class ClientProxyProvider {
     private final ComputingCache<Bean<Object>, Object> beanTypeClosureProxyPool;
     private final ComputingCache<RequestedTypeHolder, Object> requestedTypeClosureProxyPool;
 
-    private final String contextId;
+    private String containerId;
     private volatile ServiceRegistry services;
 
     /**
+     * Creates a new {@link ClientProxyProvider}.
      *
-     * @param contextId
+     * <p>This constructor should be invoked only by subclasses and
+     * (indirectly) the {@link #newInstance(ResourceLoader, String)}
+     * method, which will ensure that a proper {@linkplain
+     * #getContainerId() container identifier} has been set.</p>
+     *
+     * @see #newInstance(ResourceLoader, String)
+     *
+     * @see #ClientProxyProvider(String)
      */
-    public ClientProxyProvider(String contextId) {
+    protected ClientProxyProvider() {
+        this(null);
+    }
+
+    /**
+     * Creates a new {@link ClientProxyProvider}.
+     *
+     * <p>Consider using the {@link #newInstance(ResourceLoader,
+     * String)} method instead.</p>
+     *
+     * @param containerId the identifier of the {@link Container} on
+     * behalf of which this {@link ClientProxyProvider} is being
+     * created
+     */
+    public ClientProxyProvider(String containerId) {
         ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
         this.beanTypeClosureProxyPool = cacheBuilder.build(new CreateClientProxy());
         this.requestedTypeClosureProxyPool = cacheBuilder.build(new CreateClientProxyForType());
-        this.contextId = contextId;
+        this.setContainerId(containerId);
     }
 
     private ServiceRegistry services() {
         if (services == null) {
             synchronized (this) {
                 if (services == null) {
-                    this.services = Container.instance(contextId).services();
+                    this.services = Container.instance(this.getContainerId()).services();
                 }
             }
         }
         return this.services;
+    }
+
+    private void setContainerId(String containerId) {
+        this.containerId = containerId;
+    }
+
+    /**
+     * Returns the identifier of the {@link Container} on behalf of
+     * which this {@link ClientProxyProvider} is being created.
+     *
+     * @return the container identifier
+     */
+    protected final String getContainerId() {
+        return this.containerId;
     }
 
     /**
@@ -196,13 +238,14 @@ public class ClientProxyProvider {
     }
 
     private <T> T createClientProxy(Bean<T> bean, Set<Type> types) {
-        BeanIdentifier id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
+        final String containerId = this.getContainerId();
+        BeanIdentifier id = this.services().get(ContextualStore.class).putIfAbsent(bean);
         if (id == null) {
             throw BeanLogger.LOG.beanIdCreationFailed(bean);
         }
-        BeanInstance beanInstance = new ContextBeanInstance<T>(bean, id, contextId);
+        BeanInstance beanInstance = new ContextBeanInstance<T>(bean, id, containerId);
         TypeInfo typeInfo = TypeInfo.of(types);
-        T proxy = new ClientProxyFactory<T>(contextId, typeInfo.getSuperClass(), types, bean).create(beanInstance);
+        T proxy = new ClientProxyFactory<T>(containerId, typeInfo.getSuperClass(), types, bean).create(beanInstance);
         BeanLogger.LOG.createdNewClientProxyType(proxy.getClass(), bean, id);
         return proxy;
     }
@@ -256,6 +299,51 @@ public class ClientProxyProvider {
     public void clear() {
         this.beanTypeClosureProxyPool.clear();
         this.requestedTypeClosureProxyPool.clear();
+    }
+
+    /**
+     * Creates and returns a new {@link ClientProxyProvider} instance.
+     *
+     * <p>This method never returns {@code null}.</p>
+     *
+     * <p>This method uses the {@link ServiceLoader#load(Class,
+     * ResourceLoader)} method internally to find the appropriate
+     * subclass to instantiate.  If there is a problem instantiating
+     * such a subclass, or if no service provider has been designated
+     * at all, a {@linkplain #ClientProxyProvider(String) new
+     * <code>ClientProxyProvider</code>} is returned instead (the most
+     * common case).</p>
+     *
+     * <p>It is guaranteed that an invocation of the {@link
+     * #getContainerId()} method on the returned {@link
+     * ClientProxyProvider} will return a {@link String} {@linkplain
+     * String#equals(Object) equal to} the supplied {@code
+     * containerId}.</p>
+     *
+     * @param resourceLoader a {@link ResourceLoader} that will be
+     * used by a {@link ServiceLoader}; may be {@code null}
+     *
+     * @param containerId the identifier of the {@link Container} on
+     * behalf of which the new {@link ClientProxyProvider} is being
+     * built; may be {@code null} but behavior of the returned {@link
+     * ClientProxyProvider} is undefined in this case
+     *
+     * @return a new, non-{@code null} {@link ClientProxyProvider}
+     *
+     * @see #getContainerId()
+     *
+     * @see ServiceLoader#load(Class, ResourceLoader)
+     */
+    public static ClientProxyProvider newInstance(final ResourceLoader resourceLoader, final String containerId) {
+        final ClientProxyProvider returnValue;
+        final Iterator<Metadata<ClientProxyProvider>> iterator = ServiceLoader.load(ClientProxyProvider.class, resourceLoader).iterator();
+        if (iterator != null && iterator.hasNext()) {
+            returnValue = iterator.next().getValue();
+            returnValue.setContainerId(containerId);
+        } else {
+            returnValue = new ClientProxyProvider(containerId);
+        }
+        return returnValue;
     }
 
 }
