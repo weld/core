@@ -134,10 +134,14 @@ public class ProbeFunctionalTest {
         WebElement observerLink = driver.findElement(By.partialLinkText(ApplicationScopedObserver.class.getSimpleName()));
         assertTrue("Cannot find element for " + ApplicationScopedObserver.class.getSimpleName(), observerLink.isDisplayed());
         // workaround for FF driver bug making us unable to click elem. in table - https://bugzilla.mozilla.org/show_bug.cgi?id=1448825
-        Point linkLoc = new Point(observerLink.getLocation().getX() + (observerLink.getRect().getWidth()/2), observerLink.getLocation().getY() + (observerLink.getRect().getHeight()/2));
+        // we take the observer link upper left corner and add +1 to its coordinated to make sure we are inside the link
+        Point linkLoc = new Point(observerLink.getLocation().getX() + 1, observerLink.getLocation().getY() + 1);
+        // now we grab the cell in which the observer link resides
         WebElement tdElem = driver.findElement(By.xpath("/html/body/div/div[2]/table/tbody/tr[3]/td[4]"));
+        // following point captures the middle of the cell
         Point tdElemLoc = new Point(tdElem.getLocation().getX() + (tdElem.getRect().getWidth()/2), tdElem.getLocation().getY() + (tdElem.getRect().getHeight()/2));
         Actions ac = new Actions(driver);
+        // moveToElement javadoc is WRONG, the offset is actually calculated from the the middle of the element
         ac.moveToElement(tdElem, linkLoc.getX() - tdElemLoc.getX(), linkLoc.getY() - tdElemLoc.getY()).click().build().perform();
 
         // wait till we land on the bean details page
