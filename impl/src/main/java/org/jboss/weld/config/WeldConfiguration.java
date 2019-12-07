@@ -17,6 +17,7 @@
 package org.jboss.weld.config;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
@@ -486,7 +487,12 @@ public class WeldConfiguration implements Service {
     private Properties loadProperties(URL url) {
         Properties properties = new Properties();
         try {
-            properties.load(url.openStream());
+            InputStream propertiesStream = url.openStream();
+            try {
+                properties.load(propertiesStream);
+            } finally {
+                propertiesStream.close();
+            }
         } catch (IOException e) {
             throw new ResourceLoadingException(e);
         }
@@ -494,3 +500,4 @@ public class WeldConfiguration implements Service {
     }
 
 }
+
