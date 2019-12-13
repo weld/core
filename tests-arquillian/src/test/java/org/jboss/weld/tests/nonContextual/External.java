@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.nonContextual;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>

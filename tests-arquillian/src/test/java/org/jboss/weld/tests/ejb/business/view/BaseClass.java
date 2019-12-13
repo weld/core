@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.ejb.business.view;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 public class BaseClass {
 

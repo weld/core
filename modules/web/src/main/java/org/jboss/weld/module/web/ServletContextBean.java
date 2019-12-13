@@ -19,9 +19,9 @@ package org.jboss.weld.module.web;
 import java.lang.annotation.Annotation;
 import java.security.AccessController;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 import javax.servlet.ServletContext;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;

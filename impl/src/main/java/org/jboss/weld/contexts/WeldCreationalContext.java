@@ -18,8 +18,8 @@ package org.jboss.weld.contexts;
 
 import java.util.List;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;

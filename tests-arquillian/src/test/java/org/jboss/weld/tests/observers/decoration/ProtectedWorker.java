@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.observers.decoration;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
 import org.jboss.weld.test.util.ActionSequence;
 

@@ -20,7 +20,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 /**
  * This implementation never invokes {@link PostConstruct} / {@link PreDestroy} callbacks. Useful for {@link Interceptor}

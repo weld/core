@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.groovy.collision;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 public class CollisionProducer {
 

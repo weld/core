@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 /**
  * General marker interface for a running Weld container.

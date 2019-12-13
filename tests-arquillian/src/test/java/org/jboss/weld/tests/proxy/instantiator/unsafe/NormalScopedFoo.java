@@ -17,9 +17,9 @@
 package org.jboss.weld.tests.proxy.instantiator.unsafe;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 @RequestScoped
 public class NormalScopedFoo implements NormalScopedFooInterface {

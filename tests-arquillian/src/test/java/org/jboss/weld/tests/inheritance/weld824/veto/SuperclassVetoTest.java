@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import static org.junit.Assert.assertTrue;
 
@@ -58,7 +58,7 @@ public class SuperclassVetoTest {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
         jar.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         jar.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-        jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/veto/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
+        jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/veto/SimpleExtension", "services/jakarta.enterprise.inject.spi.Extension");
         return jar;
     }
 

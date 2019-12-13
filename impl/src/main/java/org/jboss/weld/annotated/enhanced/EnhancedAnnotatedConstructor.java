@@ -17,7 +17,7 @@
 package org.jboss.weld.annotated.enhanced;
 
 import java.lang.reflect.Constructor;
-import javax.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
  * Represents a Class Constructor

@@ -18,9 +18,9 @@ package org.jboss.weld.probe.tests.integration.deployment.beans;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
 import org.jboss.weld.probe.tests.integration.deployment.interceptors.TestInterceptorBinding;

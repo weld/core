@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 

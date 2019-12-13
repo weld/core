@@ -18,7 +18,7 @@ package org.jboss.weld.bean.interceptor;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.interceptor.proxy.CustomInterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
@@ -53,13 +53,13 @@ public class CustomInterceptorMetadata<T> implements InterceptorClassMetadata<T>
 
     @Override
     public boolean isEligible(InterceptionType interceptionType) {
-        return factory.getInterceptor().intercepts(javax.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
+        return factory.getInterceptor().intercepts(jakarta.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptionType interceptionType) {
-        return new CustomInterceptorInvocation<T>(factory.getInterceptor(), (T) interceptorInstance, javax.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
+        return new CustomInterceptorInvocation<T>(factory.getInterceptor(), (T) interceptorInstance, jakarta.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
     }
 
     @Override

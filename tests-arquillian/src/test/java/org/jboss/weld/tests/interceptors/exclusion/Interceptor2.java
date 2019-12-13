@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.exclusion;
 
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.test.util.ActionSequence;
 

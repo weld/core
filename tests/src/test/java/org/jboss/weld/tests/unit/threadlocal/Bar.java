@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.unit.threadlocal;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 public class Bar {
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.async;
 
-import javax.enterprise.event.ObservesAsync;
+import jakarta.enterprise.event.ObservesAsync;
 
 class Recipient {
 

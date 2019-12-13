@@ -18,10 +18,10 @@ package org.jboss.weld.tests.contexts.passivating.injection.broken;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.TransientReference;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.TransientReference;
+import jakarta.inject.Inject;
 
 @SuppressWarnings("serial")
 @SessionScoped

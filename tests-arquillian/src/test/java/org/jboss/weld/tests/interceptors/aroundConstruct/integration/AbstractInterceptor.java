@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Constructor;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 public abstract class AbstractInterceptor {
 

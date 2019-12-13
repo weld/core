@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.delegation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.interceptor.InvocationContext;
 
 @ApplicationScoped
 public class Bravo {

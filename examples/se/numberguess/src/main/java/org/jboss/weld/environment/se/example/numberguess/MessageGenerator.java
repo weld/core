@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.example.numberguess;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 /**
  * This class generates on demand appropriate messages depending on the current

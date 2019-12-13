@@ -21,7 +21,7 @@ public class Deployments {
             + "      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd\">";
 
     public static final String DEFAULT_WEB_XML_BODY = toListener("org.jboss.weld.environment.servlet.Listener")
-            + "<resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
+            + "<resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>jakarta.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
     public static final String DEFAULT_WEB_XML_PREFIX = DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY;
     public static final String DEFAULT_WEB_XML_SUFFIX = "</web-app>";
 

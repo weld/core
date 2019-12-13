@@ -23,12 +23,12 @@ import org.jboss.weld.exceptions.WeldExceptionStringMessage;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * A localized message version of the {@link javax.enterprise.context.ContextNotActiveException}.
+ * A localized message version of the {@link jakarta.enterprise.context.ContextNotActiveException}.
  *
  * @author David Allen
  */
 @SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
-public class ContextNotActiveException extends javax.enterprise.context.ContextNotActiveException {
+public class ContextNotActiveException extends jakarta.enterprise.context.ContextNotActiveException {
 
     private static final long serialVersionUID = 2L;
 

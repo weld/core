@@ -19,7 +19,7 @@ package org.jboss.weld.module.jta;
 
 import static javax.transaction.Status.STATUS_COMMITTED;
 
-import javax.enterprise.event.TransactionPhase;
+import jakarta.enterprise.event.TransactionPhase;
 import javax.transaction.Synchronization;
 
 /**

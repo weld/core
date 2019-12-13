@@ -20,9 +20,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterTypeDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
 
 public class DecoratorRegisteringExtension implements Extension {
 

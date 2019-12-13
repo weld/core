@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.nonContextual;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.logging.Logger;

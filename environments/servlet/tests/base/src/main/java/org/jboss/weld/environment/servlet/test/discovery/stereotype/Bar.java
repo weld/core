@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.servlet.test.discovery.stereotype;
 
-import javax.enterprise.inject.Model;
+import jakarta.enterprise.inject.Model;
 
 @Model
 public class Bar {

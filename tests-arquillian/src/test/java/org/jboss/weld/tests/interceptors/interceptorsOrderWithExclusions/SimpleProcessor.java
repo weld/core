@@ -18,8 +18,8 @@
 package org.jboss.weld.tests.interceptors.interceptorsOrderWithExclusions;
 
 import javax.ejb.Stateless;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.Interceptors;
+import jakarta.interceptor.ExcludeClassInterceptors;
+import jakarta.interceptor.Interceptors;
 
 /**
  * @author Marius Bogoevici

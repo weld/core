@@ -1,6 +1,6 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;

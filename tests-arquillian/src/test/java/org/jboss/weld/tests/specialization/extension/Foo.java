@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.extension;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 public class Foo {
 

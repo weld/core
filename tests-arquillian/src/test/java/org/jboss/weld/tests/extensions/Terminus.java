@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.extensions;
 
 import javax.ejb.Stateless;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 @Stateless

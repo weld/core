@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.transientReference.metadata;
 
-import javax.enterprise.inject.TransientReference;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.TransientReference;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
 
 public class Foo {
 

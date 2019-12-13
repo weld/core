@@ -27,20 +27,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Model;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.Model;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
@@ -661,7 +661,7 @@ public class WeldStartup {
         final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.of(
                 // built-in scopes
                 Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class,
-                javax.interceptor.Interceptor.class, javax.decorator.Decorator.class,
+                jakarta.interceptor.Interceptor.class, jakarta.decorator.Decorator.class,
                 // built-in stereotype
                 Model.class,
                 // meta-annotations

@@ -3,10 +3,10 @@ package org.jboss.weld.tests.contexts.conversation;
 import org.jboss.weld.context.http.HttpConversationContext;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.inject.Model;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 
 @Model

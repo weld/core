@@ -19,9 +19,9 @@ package org.jboss.weld.examples.pastecode.session;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 import javax.ejb.EJBException;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * PasteWindow holds the code fragment and other selections when a code fragment

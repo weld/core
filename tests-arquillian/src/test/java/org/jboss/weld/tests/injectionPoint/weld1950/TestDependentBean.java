@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1950;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 public class TestDependentBean {
 

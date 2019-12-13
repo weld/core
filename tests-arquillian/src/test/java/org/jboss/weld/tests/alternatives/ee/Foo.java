@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.alternatives.ee;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.ejb.stateful.exception;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Stateful
 @ApplicationScoped

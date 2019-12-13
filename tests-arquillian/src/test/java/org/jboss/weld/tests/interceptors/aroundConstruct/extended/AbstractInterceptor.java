@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.test.util.ActionSequence;
 

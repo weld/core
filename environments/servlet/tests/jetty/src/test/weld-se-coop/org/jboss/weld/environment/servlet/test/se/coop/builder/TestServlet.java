@@ -18,8 +18,8 @@ package org.jboss.weld.environment.servlet.test.se.coop.builder;
 
 import java.io.IOException;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

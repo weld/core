@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.injection.producer;
 
-import javax.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 

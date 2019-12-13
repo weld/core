@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.decorators.weld1001;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

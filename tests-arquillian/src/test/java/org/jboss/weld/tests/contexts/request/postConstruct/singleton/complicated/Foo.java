@@ -19,7 +19,7 @@ package org.jboss.weld.tests.contexts.request.postConstruct.singleton.complicate
 import static org.junit.Assert.assertEquals;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Foo {
 

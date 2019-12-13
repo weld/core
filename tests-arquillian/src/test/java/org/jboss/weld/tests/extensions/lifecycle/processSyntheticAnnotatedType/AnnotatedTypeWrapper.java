@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 import org.jboss.weld.util.reflection.Reflections;

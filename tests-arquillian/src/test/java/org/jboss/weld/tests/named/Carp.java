@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.named;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

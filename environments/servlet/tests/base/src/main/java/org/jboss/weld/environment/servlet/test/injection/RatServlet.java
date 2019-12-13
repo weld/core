@@ -1,6 +1,6 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

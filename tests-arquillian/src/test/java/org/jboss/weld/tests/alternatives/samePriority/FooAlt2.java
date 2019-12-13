@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.alternatives.samePriority;
 
 import javax.annotation.Priority;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 /**
  *

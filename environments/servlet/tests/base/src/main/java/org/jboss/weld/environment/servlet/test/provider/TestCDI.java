@@ -19,11 +19,11 @@ package org.jboss.weld.environment.servlet.test.provider;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.util.TypeLiteral;
 
 /**
  *
@@ -33,7 +33,7 @@ import javax.enterprise.util.TypeLiteral;
 public class TestCDI extends CDI<Object> {
 
     /**
-     * WORKAROUND - it's not possible to unset the CDIProvider via {@link CDI#setCDIProvider(javax.enterprise.inject.spi.CDIProvider)} but it's possible to set the field
+     * WORKAROUND - it's not possible to unset the CDIProvider via {@link CDI#setCDIProvider(jakarta.enterprise.inject.spi.CDIProvider)} but it's possible to set the field
      * value directly in a subclass. However, it was probably not intended for the subclass to be able to do this.
      */
     public static void unsetCDIProvider() {

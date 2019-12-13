@@ -19,7 +19,7 @@ package org.jboss.weld.tests.event.async.context.request;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.event.Event;
+import jakarta.enterprise.event.Event;
 
 import org.junit.Assert;
 

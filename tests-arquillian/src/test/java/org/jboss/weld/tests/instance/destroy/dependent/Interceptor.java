@@ -17,10 +17,10 @@
 package org.jboss.weld.tests.instance.destroy.dependent;
 
 import javax.annotation.PreDestroy;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 
-@javax.interceptor.Interceptor
+@jakarta.interceptor.Interceptor
 @Intercept
 public class Interceptor {
 

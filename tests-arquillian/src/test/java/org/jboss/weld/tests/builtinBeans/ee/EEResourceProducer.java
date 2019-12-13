@@ -18,7 +18,7 @@ package org.jboss.weld.tests.builtinBeans.ee;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;

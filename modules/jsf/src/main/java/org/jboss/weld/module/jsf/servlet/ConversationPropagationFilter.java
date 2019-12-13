@@ -18,9 +18,9 @@ package org.jboss.weld.module.jsf.servlet;
 
 import java.io.IOException;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

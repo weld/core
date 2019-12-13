@@ -18,7 +18,7 @@ package org.jboss.weld.annotated.slim;
 
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.resources.spi.ClassFileInfo;

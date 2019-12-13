@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.resolution.weld911;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

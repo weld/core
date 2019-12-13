@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.ejb.business.view;
 
 import javax.ejb.Stateless;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Stateless
 @Named

@@ -18,9 +18,9 @@
 package org.jboss.weld.tests.interceptors.injectionWithMethodExclusions;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.Interceptors;
+import jakarta.inject.Inject;
+import jakarta.interceptor.ExcludeClassInterceptors;
+import jakarta.interceptor.Interceptors;
 
 /**
  * @author Marius Bogoevici

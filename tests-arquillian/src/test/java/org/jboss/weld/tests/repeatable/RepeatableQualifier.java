@@ -20,9 +20,9 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Qualifier;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Qualifier;
+import jakarta.interceptor.InterceptorBinding;
 
 import org.jboss.weld.tests.repeatable.RepeatableQualifier.Container;
 

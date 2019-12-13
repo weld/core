@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.event.lifecycle;
 
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 public class Foo {
 

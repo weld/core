@@ -18,7 +18,7 @@ package org.jboss.weld.tests.event.async.context.security;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
-import javax.enterprise.event.ObservesAsync;
+import jakarta.enterprise.event.ObservesAsync;
 
 @Stateless
 public class Printer {

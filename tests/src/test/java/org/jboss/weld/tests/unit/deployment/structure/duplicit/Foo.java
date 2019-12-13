@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.duplicit;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 public class Foo {
 

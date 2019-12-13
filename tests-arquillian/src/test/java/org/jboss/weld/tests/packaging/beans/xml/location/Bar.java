@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.packaging.beans.xml.location;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 public class Bar extends Foo {

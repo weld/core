@@ -24,15 +24,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.util.Beans;
 import org.testng.annotations.Test;
 
 public class BeansTest {
 
-    private static final String SIGNATURE = "[java.lang.Object,java.lang.Object,java.util.List<java.lang.String>,java.util.Map<java.lang.Integer,java.lang.String>,java.util.Map<java.lang.Integer,java.lang.String>,javax.enterprise.inject.Instance<java.lang.Integer>]";
+    private static final String SIGNATURE = "[java.lang.Object,java.lang.Object,java.util.List<java.lang.String>,java.util.Map<java.lang.Integer,java.lang.String>,java.util.Map<java.lang.Integer,java.lang.String>,jakarta.enterprise.inject.Instance<java.lang.Integer>]";
 
     @SuppressWarnings("serial")
     @Test

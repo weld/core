@@ -19,7 +19,7 @@ package org.jboss.weld.module.ejb;
 import java.io.ObjectStreamException;
 import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;

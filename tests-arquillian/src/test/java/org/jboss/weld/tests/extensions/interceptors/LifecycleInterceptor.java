@@ -18,7 +18,7 @@ package org.jboss.weld.tests.extensions.interceptors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * @author Stuart Douglas <stuart@baileyroberts.com.au>

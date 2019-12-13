@@ -17,9 +17,9 @@
 package org.jboss.weld.contexts.activator;
 
 import javax.annotation.Priority;
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
-import javax.interceptor.Interceptor;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.activator.ActivateRequestContext;

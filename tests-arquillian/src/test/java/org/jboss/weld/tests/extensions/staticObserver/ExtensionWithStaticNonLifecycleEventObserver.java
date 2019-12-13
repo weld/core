@@ -19,8 +19,8 @@ package org.jboss.weld.tests.extensions.staticObserver;
 
 import java.util.Set;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * @author Antoine Sabot-Durand

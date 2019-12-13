@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.builtinBeans.decorator.broken;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 @Decorator
 public abstract class EventDecorator implements Event<String> {

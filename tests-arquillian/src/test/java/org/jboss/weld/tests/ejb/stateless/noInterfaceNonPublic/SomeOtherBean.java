@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.ejb.stateless.noInterfaceNonPublic;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 
 /**

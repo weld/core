@@ -18,8 +18,8 @@
 package org.jboss.weld.tests.observers.inheritance;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

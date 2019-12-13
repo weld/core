@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ForkJoinPool;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.qualifier.ear;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *

@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.event.observer.validation.enterprise;
 
 import javax.ejb.Stateful;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 public @Stateful class Farmer implements FarmerLocal
 {

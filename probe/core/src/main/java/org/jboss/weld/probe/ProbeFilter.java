@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.regex.Pattern;
 
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -72,7 +72,7 @@ public class ProbeFilter implements Filter {
 
     static final String REST_URL_PATTERN_BASE = "/weld-probe";
 
-    static final String WELD_SERVLET_BEAN_MANAGER_KEY = "org.jboss.weld.environment.servlet.javax.enterprise.inject.spi.BeanManager";
+    static final String WELD_SERVLET_BEAN_MANAGER_KEY = "org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager";
 
     @Inject
     private BeanManagerImpl beanManager;

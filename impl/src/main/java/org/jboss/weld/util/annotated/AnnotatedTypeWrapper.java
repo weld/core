@@ -19,7 +19,7 @@ package org.jboss.weld.util.annotated;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;

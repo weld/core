@@ -18,7 +18,7 @@ package org.jboss.weld.tests.container.instance;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

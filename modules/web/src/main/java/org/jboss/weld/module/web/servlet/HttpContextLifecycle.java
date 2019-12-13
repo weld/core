@@ -19,10 +19,10 @@ package org.jboss.weld.module.web.servlet;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.inject.spi.EventMetadata;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;

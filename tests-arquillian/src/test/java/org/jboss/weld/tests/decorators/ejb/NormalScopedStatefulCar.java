@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.decorators.ejb;
 
 import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 import org.jboss.weld.test.util.ActionSequence;
 

@@ -1,6 +1,6 @@
 package org.jboss.weld.environment.se.test.instance;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * @author Mark Proctor

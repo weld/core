@@ -17,8 +17,8 @@
 
 package org.jboss.weld.environment.servlet.test.lifecycle;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 /**

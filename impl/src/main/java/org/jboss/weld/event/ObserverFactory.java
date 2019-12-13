@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.event;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.TransactionPhase;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;

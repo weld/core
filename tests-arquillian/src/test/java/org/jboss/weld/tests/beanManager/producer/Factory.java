@@ -18,9 +18,9 @@ package org.jboss.weld.tests.beanManager.producer;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 @Vetoed
 public class Factory {

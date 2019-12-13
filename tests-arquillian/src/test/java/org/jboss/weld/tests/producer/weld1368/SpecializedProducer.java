@@ -1,8 +1,8 @@
 package org.jboss.weld.tests.producer.weld1368;
 
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.Typed;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Typed;
 
 /**
  * See http://issues.jboss.org/browse/WELD-1368

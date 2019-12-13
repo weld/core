@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.annotatedType.superclass;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author Gert Palok

@@ -18,8 +18,8 @@ package org.jboss.weld.tests.alternatives.weld1438;
 
 import java.io.File;
 
-import javax.enterprise.inject.Alternative;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.inject.Inject;
 
 @Alternative
 public class FilePrinter {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * Allows a container lifecycle event to be notified before and after the event is delivered to an {@link Extension}.

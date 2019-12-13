@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.genericobserver;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 /**
  * ServiceImpl

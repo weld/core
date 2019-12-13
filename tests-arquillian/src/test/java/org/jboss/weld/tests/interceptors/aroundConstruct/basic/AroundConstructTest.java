@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 import org.junit.Assert;
 

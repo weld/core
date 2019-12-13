@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.service.additional;
 
 import javax.annotation.Priority;
-import javax.interceptor.Interceptor;
+import jakarta.interceptor.Interceptor;
 import javax.transaction.Synchronization;
 import javax.transaction.UserTransaction;
 

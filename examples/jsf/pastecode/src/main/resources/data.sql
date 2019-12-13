@@ -419,9 +419,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.*;
 import org.jboss.weld.examples.pastie.model.code;
-import javax.inject.*;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.inject.*;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
 
 /**
  * Session Bean implementation class HistoryBean

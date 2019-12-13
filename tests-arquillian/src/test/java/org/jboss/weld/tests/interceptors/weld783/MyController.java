@@ -18,8 +18,8 @@
 package org.jboss.weld.tests.interceptors.weld783;
 
 import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.interceptor.Interceptors;
+import jakarta.inject.Named;
+import jakarta.interceptor.Interceptors;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

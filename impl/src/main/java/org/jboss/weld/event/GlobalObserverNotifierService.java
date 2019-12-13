@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;

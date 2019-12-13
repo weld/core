@@ -18,8 +18,8 @@ package org.jboss.weld.module.web.el;
 
 import org.jboss.weld.module.web.util.el.ForwardingValueExpression;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
 
 import static org.jboss.weld.module.web.el.ELCreationalContextStack.getCreationalContextStore;
 

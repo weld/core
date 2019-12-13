@@ -19,7 +19,7 @@ package org.jboss.weld.tests.contexts.conversation.weld1559;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;

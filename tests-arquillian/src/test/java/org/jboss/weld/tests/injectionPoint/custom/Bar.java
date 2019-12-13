@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint.custom;
 
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 @Vetoed
 public class Bar {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 public interface MyInterface {
 

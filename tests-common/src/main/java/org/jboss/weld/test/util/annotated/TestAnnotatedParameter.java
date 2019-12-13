@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 /**
  * @author Stuart Douglas

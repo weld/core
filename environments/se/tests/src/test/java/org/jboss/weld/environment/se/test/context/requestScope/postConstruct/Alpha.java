@@ -17,8 +17,8 @@
 package org.jboss.weld.environment.se.test.context.requestScope.postConstruct;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class Alpha {

@@ -19,7 +19,7 @@ package org.jboss.weld.tests.contexts.passivating.injection.broken;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Truck {

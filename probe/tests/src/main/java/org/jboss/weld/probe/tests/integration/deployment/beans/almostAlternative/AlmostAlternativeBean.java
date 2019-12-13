@@ -17,7 +17,7 @@
 package org.jboss.weld.probe.tests.integration.deployment.beans.almostAlternative;
 
 import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * WELD-2432 this bean was wrongly picked up by Probe as an alternative

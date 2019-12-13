@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.enterprise.context.NormalScope;
-import javax.inject.Scope;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.inject.Scope;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.metadata.TypeStore;

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.disposer.weld1894;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;

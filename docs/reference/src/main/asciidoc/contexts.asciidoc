@@ -280,7 +280,7 @@ In order to achieve context propagation you generally need the following steps:
 ==== New API methods supporting context propagation
 
 There are several new things in Weld API allowing for this.
-Firstly, all contexts supporting propagation now implement `org.jboss.weld.context.WeldAlterableContext`, an interface extending `javax.enterprise.context.spi.AlterableContext`.
+Firstly, all contexts supporting propagation now implement `org.jboss.weld.context.WeldAlterableContext`, an interface extending `jakarta.enterprise.context.spi.AlterableContext`.
 Methods on `WeldAlterableContext` allow to capture current context state, returning a collection of all contextual instances, as well as clear and set the context state by feeding it a collection of contextual instances.
 
 [source.JAVA, java]

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.resource;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 

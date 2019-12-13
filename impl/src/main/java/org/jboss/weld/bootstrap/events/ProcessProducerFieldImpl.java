@@ -20,8 +20,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.ProcessProducerField;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.ProcessProducerField;
 
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.manager.BeanManagerImpl;

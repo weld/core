@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.bean;
 
-import javax.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.Contextual;
 
 /**
  * Marker interface indicating that this Contextual wraps another contextual.

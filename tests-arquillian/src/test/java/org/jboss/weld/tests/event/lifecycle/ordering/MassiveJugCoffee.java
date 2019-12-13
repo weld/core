@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.lifecycle.ordering;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *

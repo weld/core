@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 @SuppressWarnings("serial")
 @SessionScoped

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.interceptors.producer;
 
 import java.util.List;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 /**
  *

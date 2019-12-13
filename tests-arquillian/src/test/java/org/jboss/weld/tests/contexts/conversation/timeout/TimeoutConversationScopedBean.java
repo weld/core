@@ -19,7 +19,7 @@ package org.jboss.weld.tests.contexts.conversation.timeout;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.ConversationScoped;
 
 @SuppressWarnings("serial")
 @ConversationScoped

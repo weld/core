@@ -18,7 +18,7 @@ package org.jboss.weld.tests.interceptors.extension;
 
 import java.io.Serializable;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * This is not an interceptor (it misses required annotations). The CustomInterceptor delegates to instances of this class.

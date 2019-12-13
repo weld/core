@@ -18,9 +18,9 @@ package org.jboss.weld.contexts;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ForwardingBean;

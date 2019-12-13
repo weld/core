@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.contexts.request.rmi;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Stateless
 public class BridgeBean implements Bridge {

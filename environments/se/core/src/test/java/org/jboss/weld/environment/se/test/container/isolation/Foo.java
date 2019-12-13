@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.container.isolation;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Foo {

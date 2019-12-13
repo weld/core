@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.event.observer.validation;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Singleton;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;

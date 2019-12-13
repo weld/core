@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.specialization.modular;
 
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Specializes;
 
 @Specializes
 @Alternative

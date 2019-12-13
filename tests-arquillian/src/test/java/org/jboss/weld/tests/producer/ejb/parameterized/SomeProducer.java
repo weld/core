@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.producer.ejb.parameterized;
 
 import javax.ejb.Singleton;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 /**
  * @author Kirill Gaevskii

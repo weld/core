@@ -18,9 +18,9 @@ package org.jboss.weld.tests.interceptors.extension;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-import javax.interceptor.Interceptor;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

@@ -17,9 +17,9 @@
 package org.jboss.weld.tests.beanManager.beanAttributes;
 
 import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Typed;
+import jakarta.inject.Named;
 
 @Stateless
 @TundraStereotype

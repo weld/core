@@ -39,9 +39,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.Nonbinding;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.Nonbinding;
 
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;

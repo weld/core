@@ -2,7 +2,7 @@ package org.jboss.weld.probe.tests.integration.deployment.sessions;
 
 import javax.annotation.Priority;
 import javax.ejb.Stateful;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 @Priority(StatefulEjbSession.PRIORITY)

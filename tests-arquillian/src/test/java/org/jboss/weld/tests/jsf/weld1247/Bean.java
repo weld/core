@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.jsf.weld1247;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

@@ -18,9 +18,9 @@ package org.jboss.weld.tests.observers.extension;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Any;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;

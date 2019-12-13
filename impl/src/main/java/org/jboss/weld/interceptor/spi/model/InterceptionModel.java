@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
-import javax.interceptor.AroundConstruct;
+import jakarta.interceptor.AroundConstruct;
 
 import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;

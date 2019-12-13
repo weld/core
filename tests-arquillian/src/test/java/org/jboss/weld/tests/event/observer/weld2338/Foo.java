@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.observer.weld2338;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Dummy bean used as additional injection point within observer

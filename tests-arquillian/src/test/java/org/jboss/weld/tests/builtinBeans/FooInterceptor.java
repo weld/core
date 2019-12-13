@@ -18,12 +18,12 @@ package org.jboss.weld.tests.builtinBeans;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.Intercepted;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.Intercepted;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @Interceptor
 @Foo
@@ -32,7 +32,7 @@ public class FooInterceptor implements Serializable {
 
     @Inject
     @SuppressWarnings("unused")
-    private javax.enterprise.inject.spi.Interceptor<FooInterceptor> interceptor;
+    private jakarta.enterprise.inject.spi.Interceptor<FooInterceptor> interceptor;
 
     @Inject
     @Intercepted

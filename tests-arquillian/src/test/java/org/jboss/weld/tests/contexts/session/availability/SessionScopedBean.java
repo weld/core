@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.contexts.session.availability;
 
 import java.io.Serializable;
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
 public class SessionScopedBean implements Serializable {

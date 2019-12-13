@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.annotatedType.observers;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 public class Room
 {

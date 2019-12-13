@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.interceptors.circularInvocation.ejb;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  *@author Kirill Gaevskii

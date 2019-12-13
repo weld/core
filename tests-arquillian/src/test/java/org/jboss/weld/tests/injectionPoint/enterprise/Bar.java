@@ -20,9 +20,9 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
 import javax.ejb.Stateless;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 @Stateless
 public class Bar {

@@ -1,7 +1,7 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
 import javax.annotation.Resource;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 public class Vole {
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.modular;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;

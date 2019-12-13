@@ -21,7 +21,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;

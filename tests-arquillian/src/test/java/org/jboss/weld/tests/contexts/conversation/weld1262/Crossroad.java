@@ -2,11 +2,11 @@ package org.jboss.weld.tests.contexts.conversation.weld1262;
 
 import java.io.IOException;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.Model;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.inject.Model;
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Model
 public class Crossroad {

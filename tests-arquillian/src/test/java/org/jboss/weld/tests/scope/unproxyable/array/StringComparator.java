@@ -18,7 +18,7 @@ package org.jboss.weld.tests.scope.unproxyable.array;
 
 import java.util.Comparator;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
 public class StringComparator implements Comparator<String> {

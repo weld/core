@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.beanManager.injectionTarget;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 public class ClassWithNoBeanConstructor {
 

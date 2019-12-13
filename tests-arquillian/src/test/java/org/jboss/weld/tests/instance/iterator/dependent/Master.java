@@ -21,8 +21,8 @@ import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 

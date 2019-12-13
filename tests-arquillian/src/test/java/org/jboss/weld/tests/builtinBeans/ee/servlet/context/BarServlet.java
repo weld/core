@@ -18,7 +18,7 @@ package org.jboss.weld.tests.builtinBeans.ee.servlet.context;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

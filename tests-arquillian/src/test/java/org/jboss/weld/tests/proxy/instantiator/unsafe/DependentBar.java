@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.instantiator.unsafe;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class DependentBar {
 

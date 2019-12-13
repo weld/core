@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.tb;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

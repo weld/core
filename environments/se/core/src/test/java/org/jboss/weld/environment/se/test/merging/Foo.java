@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.se.test.merging;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Foo {

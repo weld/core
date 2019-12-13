@@ -17,8 +17,8 @@
 package org.jboss.weld.tests.interceptors.aroundConstruct.extended.ejb;
 
 import javax.ejb.Stateful;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.test.util.ActionSequence;
 

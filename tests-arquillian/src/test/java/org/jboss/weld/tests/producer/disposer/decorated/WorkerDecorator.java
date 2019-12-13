@@ -17,9 +17,9 @@
 package org.jboss.weld.tests.producer.disposer.decorated;
 
 import javax.annotation.Priority;
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.test.util.ActionSequence;
 

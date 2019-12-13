@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.interceptor.reader;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.interceptor.Interceptors;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.interceptor.Interceptors;
 
 import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;

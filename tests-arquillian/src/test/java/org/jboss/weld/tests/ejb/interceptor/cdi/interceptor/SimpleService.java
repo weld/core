@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.ejb.interceptor.cdi.interceptor;
 
 import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
+import jakarta.interceptor.Interceptors;
 
 /**
  *

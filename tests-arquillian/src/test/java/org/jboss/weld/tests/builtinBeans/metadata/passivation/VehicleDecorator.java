@@ -18,13 +18,13 @@ package org.jboss.weld.tests.builtinBeans.metadata.passivation;
 
 import java.io.Serializable;
 
-import javax.decorator.Delegate;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Decorated;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.inject.Inject;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Decorated;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.inject.Inject;
 
 @Vetoed
 public abstract class VehicleDecorator implements Vehicle, Serializable {

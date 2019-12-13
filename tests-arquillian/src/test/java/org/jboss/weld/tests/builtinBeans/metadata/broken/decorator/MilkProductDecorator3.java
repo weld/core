@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata.broken.decorator;
 
-import javax.decorator.Delegate;
-import javax.enterprise.inject.Decorated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.inject.Inject;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.Decorated;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.inject.Inject;
 
-@javax.decorator.Decorator
+@jakarta.decorator.Decorator
 @SuppressWarnings("unused")
 public class MilkProductDecorator3 implements MilkProduct {
 

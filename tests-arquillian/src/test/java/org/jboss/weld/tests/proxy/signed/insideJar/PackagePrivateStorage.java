@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.signed.insideJar;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Just plain package private class and method.

@@ -19,7 +19,7 @@ package org.jboss.weld.environment.se.test.event.options.timeout;
 import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.Priority;
-import javax.enterprise.event.ObservesAsync;
+import jakarta.enterprise.event.ObservesAsync;
 
 /**
  *

@@ -20,9 +20,9 @@ package org.jboss.weld.tests.inheritance.generic;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
 
 /**
  * @author Martin Kouba

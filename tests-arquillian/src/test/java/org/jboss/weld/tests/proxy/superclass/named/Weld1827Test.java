@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.proxy.superclass.named;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 

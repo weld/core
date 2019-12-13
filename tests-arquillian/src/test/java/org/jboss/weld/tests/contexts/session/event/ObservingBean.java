@@ -18,11 +18,11 @@ package org.jboss.weld.tests.contexts.session.event;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
 import javax.servlet.http.HttpSession;
 
 @ApplicationScoped

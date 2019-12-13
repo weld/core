@@ -18,8 +18,8 @@ package org.jboss.weld.tests.contexts.conversation.timeout.concurrent;
 
 import java.io.IOException;
 
-import javax.enterprise.context.BusyConversationException;
-import javax.inject.Inject;
+import jakarta.enterprise.context.BusyConversationException;
+import jakarta.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;

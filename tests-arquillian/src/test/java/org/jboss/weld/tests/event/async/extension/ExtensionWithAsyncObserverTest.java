@@ -19,8 +19,8 @@ package org.jboss.weld.tests.event.async.extension;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.junit.Assert;
 

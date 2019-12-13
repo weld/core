@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.serialization.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;

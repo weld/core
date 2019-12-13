@@ -2,7 +2,7 @@ package org.jboss.weld.module.ejb.context.beanstore;
 
 import java.util.Iterator;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.contexts.beanstore.AttributeBeanStore;
 import org.jboss.weld.contexts.beanstore.LockStore;

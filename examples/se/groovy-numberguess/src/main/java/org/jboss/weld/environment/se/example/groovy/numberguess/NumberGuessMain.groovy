@@ -23,9 +23,9 @@ import java.awt.BorderLayout
 import java.awt.CardLayout
 import java.awt.GridLayout
 
-import javax.enterprise.event.Event
-import javax.enterprise.event.Observes
-import javax.inject.Inject
+import jakarta.enterprise.event.Event
+import jakarta.enterprise.event.Observes
+import jakarta.inject.Inject
 import javax.swing.WindowConstants as WC
 
 import org.jboss.weld.environment.se.events.ContainerInitialized

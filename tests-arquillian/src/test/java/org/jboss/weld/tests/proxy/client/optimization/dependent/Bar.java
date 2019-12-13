@@ -19,7 +19,7 @@ package org.jboss.weld.tests.proxy.client.optimization.dependent;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Bar {

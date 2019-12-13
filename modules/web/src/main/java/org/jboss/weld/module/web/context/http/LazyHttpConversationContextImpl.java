@@ -18,9 +18,9 @@ package org.jboss.weld.module.web.context.http;
 
 import java.util.function.Consumer;
 
-import javax.enterprise.context.BusyConversationException;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.NonexistentConversationException;
+import jakarta.enterprise.context.BusyConversationException;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.NonexistentConversationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 

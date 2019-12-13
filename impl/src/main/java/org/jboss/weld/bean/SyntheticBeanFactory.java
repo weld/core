@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.bean;
 
-import javax.decorator.Decorator;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.InjectionTargetFactory;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.Producer;
-import javax.enterprise.inject.spi.ProducerFactory;
+import jakarta.decorator.Decorator;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.InjectionTargetFactory;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.inject.spi.Producer;
+import jakarta.enterprise.inject.spi.ProducerFactory;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;

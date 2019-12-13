@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.alternatives.ee;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.instance.enhanced.selectType;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 /**
  *

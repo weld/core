@@ -18,7 +18,7 @@ package org.jboss.weld.tests.ejb.proxy.privateMethods;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Singleton
 @LocalBean

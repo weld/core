@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.extensions;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 public class Woodland {
 

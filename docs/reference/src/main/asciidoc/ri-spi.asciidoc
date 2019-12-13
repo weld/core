@@ -699,7 +699,7 @@ application strategy, via the `TCCLSingletonProvider`.
 
 You should bind the bean manager for the bean deployment archive into
 JNDI at `java:comp/BeanManager`. The type should be
-`javax.enterprise.inject.spi.BeanManager`. To obtain the correct bean
+`jakarta.enterprise.inject.spi.BeanManager`. To obtain the correct bean
 manager for the bean deployment archive, you may call
 `bootstrap.getBeanManager(beanDeploymentArchive)`
 
@@ -710,7 +710,7 @@ CDI container from components that do not support injection. This is
 done by the CDI class API. The integrating part can either use
 `org.jboss.weld.AbstractCDI` or `org.jboss.weld.SimpleCDI` provided by
 Weld core and register it using
-`javax.enterprise.inject.spi.CDIProvider` file that is visible to the
+`jakarta.enterprise.inject.spi.CDIProvider` file that is visible to the
 CDI API classes or use the `CDI.setCDIProvider(CDIProvider provider)`
 method method early in the deployment.
 

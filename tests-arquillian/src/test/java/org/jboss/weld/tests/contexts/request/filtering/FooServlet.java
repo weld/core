@@ -2,8 +2,8 @@ package org.jboss.weld.tests.contexts.request.filtering;
 
 import java.io.IOException;
 
-import javax.enterprise.context.ContextNotActiveException;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

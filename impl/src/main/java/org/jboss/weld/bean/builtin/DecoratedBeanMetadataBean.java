@@ -20,10 +20,10 @@ import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.Decorated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Decorated;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
@@ -57,6 +57,6 @@ public class DecoratedBeanMetadataBean extends InterceptedBeanMetadataBean {
 
     @Override
     public String toString() {
-        return "Implicit Bean [javax.enterprise.inject.spi.Bean] with qualifiers [@Decorated]";
+        return "Implicit Bean [jakarta.enterprise.inject.spi.Bean] with qualifiers [@Decorated]";
     }
 }

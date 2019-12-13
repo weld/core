@@ -18,7 +18,7 @@ package org.jboss.weld.module.web.el;
 
 import org.jboss.weld.contexts.CreationalContextImpl;
 
-import javax.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.Contextual;
 import java.util.HashMap;
 import java.util.Map;
 

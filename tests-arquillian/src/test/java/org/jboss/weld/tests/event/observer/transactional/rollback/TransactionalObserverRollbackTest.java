@@ -24,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import javax.enterprise.event.TransactionPhase;
-import javax.inject.Inject;
+import jakarta.enterprise.event.TransactionPhase;
+import jakarta.inject.Inject;
 import javax.transaction.SystemException;
 
 import org.jboss.arquillian.container.test.api.Deployment;

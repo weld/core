@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.unit.threadlocal;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Baz {
 

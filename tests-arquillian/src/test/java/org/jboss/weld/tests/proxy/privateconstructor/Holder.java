@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.privateconstructor;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 
 public class Holder {

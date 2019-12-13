@@ -17,8 +17,8 @@
 package org.jboss.weld.tests.resources.proxy.weld1782;
 
 import javax.annotation.Resource;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
 import javax.jms.ConnectionFactory;
 import javax.jms.Topic;
 

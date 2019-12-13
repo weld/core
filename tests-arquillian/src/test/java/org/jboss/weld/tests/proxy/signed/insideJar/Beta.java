@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.signed.insideJar;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * This bean uses package private variables - creating proxy in other package will mean it blows up.

@@ -21,7 +21,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Objects;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.reflection.DeclaredMemberIndexer;

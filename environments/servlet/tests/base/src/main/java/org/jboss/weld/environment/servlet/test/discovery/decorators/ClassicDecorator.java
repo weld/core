@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.environment.servlet.test.discovery.decorators;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.inject.Any;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.Any;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.environment.servlet.test.discovery.Decorable;
 

@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.extensions.lifecycle.atd;
 
 import javax.annotation.Priority;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 @Priority(2500)
 @Alternative

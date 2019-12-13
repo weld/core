@@ -20,8 +20,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.ProcessProducerMethod;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.ProcessProducerMethod;
 
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.manager.BeanManagerImpl;

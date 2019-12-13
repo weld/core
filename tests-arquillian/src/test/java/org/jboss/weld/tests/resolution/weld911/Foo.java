@@ -18,7 +18,7 @@
 package org.jboss.weld.tests.resolution.weld911;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author Christian Bauer

@@ -27,11 +27,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Reception;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Model;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Reception;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Model;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;

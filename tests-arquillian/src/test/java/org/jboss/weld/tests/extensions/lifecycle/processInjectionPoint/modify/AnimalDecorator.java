@@ -18,9 +18,9 @@ package org.jboss.weld.tests.extensions.lifecycle.processInjectionPoint.modify;
 
 import java.io.Serializable;
 
-import javax.decorator.Decorator;
-import javax.enterprise.inject.Any;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.enterprise.inject.Any;
+import jakarta.inject.Inject;
 
 @Decorator
 @SuppressWarnings("serial")

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.util.reflection;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Bean extends Superbean {
 

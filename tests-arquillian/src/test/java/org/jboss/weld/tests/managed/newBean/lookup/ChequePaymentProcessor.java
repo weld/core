@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.managed.newBean.lookup;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ChequePaymentProcessor extends PaymentProcessor {

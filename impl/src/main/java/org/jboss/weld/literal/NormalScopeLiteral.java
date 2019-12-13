@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.literal;
 
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link NormalScope}

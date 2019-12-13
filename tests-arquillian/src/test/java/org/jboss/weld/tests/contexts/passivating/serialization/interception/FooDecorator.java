@@ -19,13 +19,13 @@ package org.jboss.weld.tests.contexts.passivating.serialization.interception;
 
 import java.io.Serializable;
 
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 /**
  *
  */
-@javax.decorator.Decorator
+@jakarta.decorator.Decorator
 public class FooDecorator implements Foo, Serializable {
 
     @Inject

@@ -2,7 +2,7 @@ package org.jboss.weld.interceptor.reader;
 
 import java.util.function.Function;
 
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.InterceptorImpl;

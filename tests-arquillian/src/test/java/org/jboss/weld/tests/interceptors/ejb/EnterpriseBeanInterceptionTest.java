@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Timer;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 
@@ -56,8 +56,8 @@ public class EnterpriseBeanInterceptionTest {
     public void testInterceptors() throws Exception {
         SessionBean<Ball> ballSessionBean = (SessionBean<Ball>) beanManager.getBeans(Ball.class).iterator().next();
         InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(beanManager.getInterceptorModelRegistry().get(ballSessionBean.getAnnotated()));
-        List<javax.enterprise.inject.spi.Interceptor> interceptors =
-                new ArrayList<javax.enterprise.inject.spi.Interceptor>(interceptorBindings.getAllInterceptors());
+        List<jakarta.enterprise.inject.spi.Interceptor> interceptors =
+                new ArrayList<jakarta.enterprise.inject.spi.Interceptor>(interceptorBindings.getAllInterceptors());
 
         Assert.assertEquals(3, interceptors.size());
         List<Class<?>> expectedInterceptors = Arrays.<Class<?>>asList(Goalkeeper.class, Defender.class, Referee.class);

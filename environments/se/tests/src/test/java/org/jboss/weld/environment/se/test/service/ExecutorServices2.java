@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.annotation.Priority;
-import javax.interceptor.Interceptor;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.weld.manager.api.ExecutorServices;
 

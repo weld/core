@@ -19,7 +19,7 @@ package org.jboss.weld.probe;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 import org.jboss.weld.util.collections.ImmutableMap;
 

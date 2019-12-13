@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.proxy.weld477;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * @author Marius Bogoevici

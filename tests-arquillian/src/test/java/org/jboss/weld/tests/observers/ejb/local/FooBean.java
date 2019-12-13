@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 @Stateless
 public class FooBean implements FooLocal {

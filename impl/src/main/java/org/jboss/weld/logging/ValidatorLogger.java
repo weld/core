@@ -245,7 +245,7 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException eventMetadataInjectedOutsideOfObserver(Object param1, Object stackElement);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1473, value = "javax.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implement javax.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with a passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1473, value = "jakarta.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implement jakarta.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with a passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)
     void beanNotPassivationCapable(Object param1);
 
     @Message(id = 1474, value = "Class {0} is on the classpath, but was ignored because a class it references was not found: {1}.\n", format = Format.MESSAGE_FORMAT)

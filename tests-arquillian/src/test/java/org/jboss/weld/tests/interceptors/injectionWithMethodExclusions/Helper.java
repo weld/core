@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.injectionWithMethodExclusions;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 /**
  * @author Marius Bogoevici

@@ -18,8 +18,8 @@ package org.jboss.weld.tests.beanManager.access;
 
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.CDI;
 
 public class MarkerObtainer3 {
 

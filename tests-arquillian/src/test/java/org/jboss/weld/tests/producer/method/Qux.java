@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.producer.method;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Qux {

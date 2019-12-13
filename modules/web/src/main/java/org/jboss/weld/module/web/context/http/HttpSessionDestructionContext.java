@@ -18,7 +18,7 @@ package org.jboss.weld.module.web.context.http;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.contexts.AbstractBoundContext;

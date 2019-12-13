@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.integration.multideployment;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * @author Stuart Douglas

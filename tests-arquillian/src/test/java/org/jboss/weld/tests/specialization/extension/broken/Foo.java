@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.extension.broken;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("foo")
 public class Foo {

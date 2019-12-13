@@ -18,8 +18,8 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.serialization.spi.BeanIdentifier.BEAN_ID_SEPARATOR;
 
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;

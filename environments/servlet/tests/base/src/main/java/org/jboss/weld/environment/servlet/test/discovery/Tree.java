@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.servlet.test.discovery;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Tree {

@@ -18,11 +18,11 @@ package org.jboss.weld.module.ejb;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.RequestScoped;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.event.ContextEvent;

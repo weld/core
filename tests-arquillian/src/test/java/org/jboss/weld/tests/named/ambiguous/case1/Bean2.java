@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.named.ambiguous.case1;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("foo.bar")
 public class Bean2 {

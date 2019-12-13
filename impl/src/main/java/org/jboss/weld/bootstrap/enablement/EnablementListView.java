@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.logging.BootstrapLogger;
@@ -46,7 +46,7 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
     private static final String RETAIN_OPERATION = "retains";
 
     @SuppressWarnings("checkstyle:magicnumber")
-    private static final int DEFAULT_PRIORITY = javax.interceptor.Interceptor.Priority.APPLICATION + 500;
+    private static final int DEFAULT_PRIORITY = jakarta.interceptor.Interceptor.Priority.APPLICATION + 500;
 
     @Override
     public boolean add(Class<?> element) {

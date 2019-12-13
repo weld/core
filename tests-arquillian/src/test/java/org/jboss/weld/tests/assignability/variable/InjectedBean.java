@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.assignability.variable;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class InjectedBean<T extends RuntimeException> {
 

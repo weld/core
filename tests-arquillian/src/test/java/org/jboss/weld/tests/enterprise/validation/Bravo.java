@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise.validation;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("Bean")
 public class Bravo {

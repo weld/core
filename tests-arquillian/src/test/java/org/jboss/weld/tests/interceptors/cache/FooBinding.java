@@ -19,7 +19,7 @@ package org.jboss.weld.tests.interceptors.cache;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.interceptor.InterceptorBinding;
+import jakarta.interceptor.InterceptorBinding;
 
 @Retention(RetentionPolicy.RUNTIME)
 @InterceptorBinding

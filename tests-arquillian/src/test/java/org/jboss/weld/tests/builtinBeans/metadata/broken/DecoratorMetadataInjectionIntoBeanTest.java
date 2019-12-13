@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata.broken;
 
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.DefinitionException;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;

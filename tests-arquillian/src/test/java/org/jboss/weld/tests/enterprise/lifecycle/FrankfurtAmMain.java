@@ -18,7 +18,7 @@ package org.jboss.weld.tests.enterprise.lifecycle;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @Stateful
 @RequestScoped

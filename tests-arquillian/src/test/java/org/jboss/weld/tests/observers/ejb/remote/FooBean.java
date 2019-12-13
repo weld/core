@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.observers.ejb.remote;
 
 import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 @Stateless
 public class FooBean implements FooRemote {

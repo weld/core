@@ -19,8 +19,8 @@ package org.jboss.weld.tests.enterprise.lifecycle;
 import javax.annotation.PreDestroy;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 @Stateful
 @Dependent

@@ -18,8 +18,8 @@ package org.jboss.weld.environment.se.test.implicit.discovery.none;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Alternative;
 
 @Priority(1000)
 @Alternative

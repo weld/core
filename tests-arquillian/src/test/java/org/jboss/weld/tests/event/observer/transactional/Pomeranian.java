@@ -17,19 +17,19 @@
 package org.jboss.weld.tests.event.observer.transactional;
 
 import static javax.ejb.TransactionManagementType.BEAN;
-import static javax.enterprise.event.TransactionPhase.AFTER_COMPLETION;
-import static javax.enterprise.event.TransactionPhase.AFTER_FAILURE;
-import static javax.enterprise.event.TransactionPhase.AFTER_SUCCESS;
-import static javax.enterprise.event.TransactionPhase.BEFORE_COMPLETION;
-import static javax.enterprise.event.TransactionPhase.IN_PROGRESS;
+import static jakarta.enterprise.event.TransactionPhase.AFTER_COMPLETION;
+import static jakarta.enterprise.event.TransactionPhase.AFTER_FAILURE;
+import static jakarta.enterprise.event.TransactionPhase.AFTER_SUCCESS;
+import static jakarta.enterprise.event.TransactionPhase.BEFORE_COMPLETION;
+import static jakarta.enterprise.event.TransactionPhase.IN_PROGRESS;
 
 import java.io.Serializable;
 
 import javax.annotation.Priority;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Observes;
 
 @Stateful
 @TransactionManagement(BEAN)

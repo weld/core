@@ -18,7 +18,7 @@ package org.jboss.weld.annotated.enhanced;
 
 import java.lang.reflect.Member;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
 
 /**
  * AnnotatedMember provides enhanced access to an annotated member

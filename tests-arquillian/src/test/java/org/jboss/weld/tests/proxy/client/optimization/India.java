@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.client.optimization;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 @Dependent
 public class India {

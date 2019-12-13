@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.sealed;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.tests.proxy.sealed.library.SealedBean;
 

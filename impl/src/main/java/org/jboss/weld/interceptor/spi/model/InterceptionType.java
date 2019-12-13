@@ -22,13 +22,13 @@ package org.jboss.weld.interceptor.spi.model;
  */
 public enum InterceptionType {
 
-    AROUND_INVOKE(false, "javax.interceptor.AroundInvoke"),
-    AROUND_TIMEOUT(false, "javax.interceptor.AroundTimeout"),
+    AROUND_INVOKE(false, "jakarta.interceptor.AroundInvoke"),
+    AROUND_TIMEOUT(false, "jakarta.interceptor.AroundTimeout"),
     POST_CONSTRUCT(true, "javax.annotation.PostConstruct"),
     PRE_DESTROY(true, "javax.annotation.PreDestroy"),
     POST_ACTIVATE(true, "javax.ejb.PostActivate"),
     PRE_PASSIVATE(true, "javax.ejb.PrePassivate"),
-    AROUND_CONSTRUCT(true, "javax.interceptor.AroundConstruct");
+    AROUND_CONSTRUCT(true, "jakarta.interceptor.AroundConstruct");
 
     private final boolean lifecycleCallback;
 
@@ -47,7 +47,7 @@ public enum InterceptionType {
         return annotationClassName;
     }
 
-    public static InterceptionType valueOf(javax.enterprise.inject.spi.InterceptionType interceptionType) {
+    public static InterceptionType valueOf(jakarta.enterprise.inject.spi.InterceptionType interceptionType) {
         return valueOf(interceptionType.name());
     }
 }

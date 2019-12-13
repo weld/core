@@ -20,7 +20,7 @@ package org.jboss.weld.bean.proxy;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.logging.BeanLogger;
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.context.bindings;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @BazBinding(secret = "bye")
 @FooBinding(secret = "hello")

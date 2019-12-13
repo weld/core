@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.enterprise.proxyability;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 
 @SessionScoped

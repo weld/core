@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se.test.context.requestScope;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Bar {

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.transientReference.metadata;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
 
 public class Bar {
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 public class Stable {
 

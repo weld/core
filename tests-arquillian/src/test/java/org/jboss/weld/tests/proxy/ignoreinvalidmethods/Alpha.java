@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.proxy.ignoreinvalidmethods;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Secure
 @ApplicationScoped

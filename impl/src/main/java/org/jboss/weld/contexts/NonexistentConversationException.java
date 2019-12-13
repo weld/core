@@ -24,12 +24,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A localized message version of the
- * {@link javax.enterprise.context.NonexistentConversationException}.
+ * {@link jakarta.enterprise.context.NonexistentConversationException}.
  *
  * @author David Allen
  */
 @SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
-public class NonexistentConversationException extends javax.enterprise.context.NonexistentConversationException {
+public class NonexistentConversationException extends jakarta.enterprise.context.NonexistentConversationException {
 
     private static final long serialVersionUID = 2L;
 

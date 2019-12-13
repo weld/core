@@ -18,12 +18,12 @@ package org.jboss.weld.tests.builtinBeans;
 
 import java.io.Serializable;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Decorated;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Decorated;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
 
 @Decorator
 @SuppressWarnings("serial")
@@ -37,7 +37,7 @@ public abstract class AnimalDecorator implements Animal, Serializable {
 
     @Inject
     @SuppressWarnings("unused")
-    private javax.enterprise.inject.spi.Decorator<AnimalDecorator> decorator;
+    private jakarta.enterprise.inject.spi.Decorator<AnimalDecorator> decorator;
 
     @Inject
     @Decorated

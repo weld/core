@@ -18,10 +18,10 @@ package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.broken;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
 
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 

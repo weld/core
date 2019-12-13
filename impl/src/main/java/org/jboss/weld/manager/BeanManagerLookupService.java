@@ -18,7 +18,7 @@ package org.jboss.weld.manager;
 
 import java.util.concurrent.ConcurrentMap;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;

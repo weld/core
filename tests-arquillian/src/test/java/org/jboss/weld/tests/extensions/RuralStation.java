@@ -1,8 +1,8 @@
 package org.jboss.weld.tests.extensions;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Produces;
 
 @Alternative
 public class RuralStation implements Station {

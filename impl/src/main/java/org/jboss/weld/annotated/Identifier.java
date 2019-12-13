@@ -18,7 +18,7 @@ package org.jboss.weld.annotated;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.inject.spi.PassivationCapable;
 
 /**
  * Marker interface for an identifier. The identifier has to be mutable and serializable.

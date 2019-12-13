@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
-import javax.enterprise.inject.CreationException;
+import jakarta.enterprise.inject.CreationException;
 
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.NewInstanceAction;

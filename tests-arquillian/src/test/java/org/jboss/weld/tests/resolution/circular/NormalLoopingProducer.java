@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.resolution.circular;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped
 class NormalLoopingProducer {

@@ -18,7 +18,7 @@
 package org.jboss.weld.tests.interceptors.signature;
 
 import javax.annotation.PostConstruct;
-import javax.interceptor.Interceptor;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;

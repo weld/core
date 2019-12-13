@@ -24,13 +24,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
-import javax.enterprise.util.TypeLiteral;
-import javax.inject.Named;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
+import jakarta.enterprise.util.TypeLiteral;
+import jakarta.inject.Named;
 
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.logging.BeanLogger;

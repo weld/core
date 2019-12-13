@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.builtinBeans.decorator.broken;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 @Decorator
 public abstract class InstanceDecorator implements Instance<Integer> {

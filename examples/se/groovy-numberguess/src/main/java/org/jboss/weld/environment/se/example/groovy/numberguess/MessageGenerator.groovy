@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.example.groovy.numberguess
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 
 

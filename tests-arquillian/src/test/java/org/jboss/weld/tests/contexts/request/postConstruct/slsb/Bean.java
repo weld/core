@@ -18,7 +18,7 @@ package org.jboss.weld.tests.contexts.request.postConstruct.slsb;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Stateless
 public class Bean {

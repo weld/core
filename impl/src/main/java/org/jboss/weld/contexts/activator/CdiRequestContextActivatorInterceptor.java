@@ -17,16 +17,16 @@
 package org.jboss.weld.contexts.activator;
 
 import javax.annotation.Priority;
-import javax.enterprise.context.control.ActivateRequestContext;
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
-import javax.interceptor.Interceptor;
+import jakarta.enterprise.context.control.ActivateRequestContext;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.Unbound;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-/** Uses CDI API binding - @javax.enterprise.context.control.ActivateRequestContext.
+/** Uses CDI API binding - @jakarta.enterprise.context.control.ActivateRequestContext.
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */

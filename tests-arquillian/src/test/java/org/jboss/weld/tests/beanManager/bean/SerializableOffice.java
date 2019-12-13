@@ -18,8 +18,8 @@ package org.jboss.weld.tests.beanManager.bean;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
 
 @Vetoed
 public class SerializableOffice extends Office implements Serializable {

@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import javax.enterprise.event.Reception;
-import javax.enterprise.event.TransactionPhase;
+import jakarta.enterprise.event.Reception;
+import jakarta.enterprise.event.TransactionPhase;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 

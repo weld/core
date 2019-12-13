@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
-        <version>3.1.4-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -96,9 +96,9 @@
                         <Import-Package>
                             javax.annotation; version="1.1",
                             javax.ejb; resolution:=optional,
-                            javax.el; version=1.0; resolution:=optional,
+                            jakarta.el; version=1.0; resolution:=optional,
                             javax.faces.*; resolution:=optional,
-                            javax.interceptor.*; version="1.0",
+                            jakarta.interceptor.*; version="1.0",
                             javax.persistence; resolution:=optional,
                             javax.servlet.*; resolution:=optional,
                             javax.transaction; version="1.1"; resolution:=optional,
@@ -110,7 +110,7 @@
                         </Import-Package>
 
                         <Private-Package>
-                            !javax.interceptor.*
+                            !jakarta.interceptor.*
                         </Private-Package>
 
                     </instructions>

@@ -20,7 +20,7 @@ package org.jboss.weld.environment.servlet.test.bootstrap.enhanced.shutdown;
 import java.io.IOException;
 import java.net.URLDecoder;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

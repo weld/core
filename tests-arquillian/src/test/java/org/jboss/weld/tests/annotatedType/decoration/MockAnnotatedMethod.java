@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import java.lang.reflect.Method;
 
 /**

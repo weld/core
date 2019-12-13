@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.injectionTarget;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class FooTarget {
 

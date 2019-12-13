@@ -19,7 +19,7 @@ package org.jboss.weld.tests.proxy.signed;
 import java.io.File;
 import java.nio.file.Paths;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

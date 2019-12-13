@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.module.web.el;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 import java.util.Stack;
 
 class ELCreationalContextStack extends Stack<CreationalContextCallable> {

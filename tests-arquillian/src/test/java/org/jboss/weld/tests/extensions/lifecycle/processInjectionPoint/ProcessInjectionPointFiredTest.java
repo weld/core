@@ -25,10 +25,10 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
