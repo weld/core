@@ -83,13 +83,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private final LazyValueHolder<FastEvent<String>> conversationBeforeDestroyedEvent = new LazyValueHolder<FastEvent<String>>() {
         @Override
         protected FastEvent<String> computeValue() {
-            return FastEvent.of(String.class, manager, manager.getGlobalLenientObserverNotifier(), BeforeDestroyed.Literal.CONVERSATION);
+            return FastEvent.of(String.class, manager, BeforeDestroyed.Literal.CONVERSATION);
         }
     };
     private final LazyValueHolder<FastEvent<String>> conversationDestroyedEvent = new LazyValueHolder<FastEvent<String>>() {
         @Override
         protected FastEvent<String> computeValue() {
-            return FastEvent.of(String.class, manager, manager.getGlobalLenientObserverNotifier(), Destroyed.Literal.CONVERSATION);
+            return FastEvent.of(String.class, manager, Destroyed.Literal.CONVERSATION);
         }
     };
 
@@ -295,6 +295,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     private void cleanUpConversationMap() {
+        ManagedConversation currentConversation = getCurrentConversation();
         Map<String, ManagedConversation> conversations = getConversationMap();
         synchronized (conversations) {
             Iterator<Entry<String, ManagedConversation>> entryIterator = conversations.entrySet().iterator();
@@ -302,7 +303,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             while (entryIterator.hasNext()) {
                 Entry<String, ManagedConversation> entry = entryIterator.next();
                 if (entry.getValue().isTransient()) {
-                    destroyConversation(session, entry.getKey());
+                    destroyConversation(session, entry.getKey(), !currentConversation.equals(entry.getValue()));
                     entryIterator.remove();
                 }
             }
@@ -350,7 +351,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                         if (beanStore == null) {
                             // There is no request associated - destroy conversation contexts immediately
                             for (Entry<String, ManagedConversation> entry : conversations.entrySet()) {
-                                destroyConversation(session, entry.getKey());
+                                destroyConversation(session, entry.getKey(), true);
                             }
                         } else {
                             // All conversation contexts created during the current session should be destroyed after the servlet service() completes
@@ -393,15 +394,19 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         setRequestAttribute(getRequest(), DESTRUCTION_QUEUE_ATTRIBUTE_NAME, Collections.synchronizedMap(contexts));
     }
 
-    protected void destroyConversation(S session, String id) {
+    protected void destroyConversation(S session, String id, boolean fireEvents) {
         if (session != null) {
-            conversationBeforeDestroyedEvent.get().fire(id);
+            if (fireEvents) {
+                conversationBeforeDestroyedEvent.get().fire(id);
+            }
             setBeanStore(createSessionBeanStore(new ConversationNamingScheme(getNamingSchemePrefix(), id, beanIdentifierIndex), session));
             getBeanStore().attach();
             destroy();
             getBeanStore().detach();
             setBeanStore(null);
-            conversationDestroyedEvent.get().fire(id);
+            if (fireEvents) {
+                conversationDestroyedEvent.get().fire(id);
+            }
         }
     }
 
