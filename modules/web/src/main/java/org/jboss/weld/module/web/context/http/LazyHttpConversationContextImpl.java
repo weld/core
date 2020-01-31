@@ -117,13 +117,24 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
         if (!isInitialized()) {
             HttpServletRequest request = getRequest();
             String cid = ConversationContextActivator.determineConversationId(request, getParameterName());
-            initialize(cid);
-            if (cid == null) { // transient conversation
-                Consumer<HttpServletRequest> callback = transientConversationInitializationCallback.get();
-                if (callback != null) {
-                    callback.accept(request);
-                }
+            try {
+                initialize(cid);
+            } catch (NonexistentConversationException e) {
+                // new conversation is associated in this case, but we need to fire init event and rethrow exception
+                fireInitEvent(request);
+                throw e;
             }
+            // new conversation, fire init event
+            if (cid == null) { // transient conversation
+                fireInitEvent(request);
+            }
+        }
+    }
+
+    private void fireInitEvent(HttpServletRequest request) {
+        Consumer<HttpServletRequest> callback = transientConversationInitializationCallback.get();
+        if (callback != null) {
+            callback.accept(request);
         }
     }
 }
