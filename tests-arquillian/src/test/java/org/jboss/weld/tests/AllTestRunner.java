@@ -1,5 +1,6 @@
 package org.jboss.weld.tests;
 
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
@@ -22,7 +23,8 @@ public class AllTestRunner extends Suite {
                 true,
                 classLoader,
                 new URLPackageScanner.Callback() {
-                    public void classFound(String className) {
+                    @Override
+                    public void classFound(String className, Asset asset) {
                         if (!className.endsWith("Test")) {
                             return;
                         }
