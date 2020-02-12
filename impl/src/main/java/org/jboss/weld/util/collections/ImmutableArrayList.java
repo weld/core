@@ -138,6 +138,11 @@ class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Se
     }
 
     @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
     public Object[] toArray() {
         return Arrays.copyOf(elements, size());
     }
