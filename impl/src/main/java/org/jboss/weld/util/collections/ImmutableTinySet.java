@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.util.collections;
 
+import org.jboss.weld.util.Preconditions;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-import org.jboss.weld.util.Preconditions;
 
 /**
  * Contains {@link Set} implementations optimized for tiny number of elements. These implementations do not use hashing. {@link Set#contains(Object)} is o(n)
@@ -76,6 +76,11 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
         }
 
         @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
+        }
+
+        @Override
         public Iterator<T> iterator() {
             return new Iterators.IndexIterator<T>(this.size()) {
                 @Override
@@ -123,6 +128,11 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
         @Override
         public int hashCode() {
             return element1.hashCode() + element2.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
         }
 
         @Override
@@ -182,6 +192,11 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
         @Override
         public int hashCode() {
             return element1.hashCode() + element2.hashCode() + element3.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return super.equals(obj);
         }
 
         @Override

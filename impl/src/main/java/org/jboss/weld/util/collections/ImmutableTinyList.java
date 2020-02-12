@@ -95,6 +95,11 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
         }
 
         @Override
+        public boolean equals(Object o) {
+            return super.equals(o);
+        }
+
+        @Override
         public E get(int index) {
             if (index == 0) {
                 return element;
