@@ -129,7 +129,7 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
                 throw e;
             }
             // new conversation, fire init event
-            if (cid == null) { // transient conversation
+            if (cid == null || cid.isEmpty()) { // transient conversation
                 fireInitEvent(request);
             }
         }
