@@ -79,6 +79,12 @@ public class NonExistentConversationTest {
         destroyedPage = client.getPage(url + "destroyed");
         assertTrue(initPage.getContent().contains("init: 2"));
         assertTrue(destroyedPage.getContent().contains("destroyed: 2"));
+
+        // get non-existing conversation wtih empty cid
+        client.getPage(url + "begin?cid=");
+        initPage = client.getPage(url + "init");
+        destroyedPage = client.getPage(url + "destroyed");
+        assertTrue(initPage.getContent().contains("init: 3"));
+        assertTrue(destroyedPage.getContent().contains("destroyed: 3"));
     }
 }
-
