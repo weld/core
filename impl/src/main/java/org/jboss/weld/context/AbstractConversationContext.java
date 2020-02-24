@@ -295,15 +295,25 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     private void cleanUpConversationMap() {
         Map<String, ManagedConversation> conversations = getConversationMap();
+        Map<String, ManagedConversation> toClear = new HashMap<>();
+        S session = getSessionFromRequest(getRequest(), false);
+        // while synced, extract a map of conversations that we'll need to clean up, already removing them from map
         synchronized (conversations) {
             Iterator<Entry<String, ManagedConversation>> entryIterator = conversations.entrySet().iterator();
-            S session = getSessionFromRequest(getRequest(), false);
             while (entryIterator.hasNext()) {
                 Entry<String, ManagedConversation> entry = entryIterator.next();
                 if (entry.getValue().isTransient()) {
-                    destroyConversation(session, entry.getKey());
+                    toClear.put(entry.getKey(), entry.getValue());
                     entryIterator.remove();
                 }
+            }
+        }
+        // let the lock go, now clean up the conversations, this triggers locking on the session
+        Iterator<Entry<String, ManagedConversation>> toClearIterator = toClear.entrySet().iterator();
+        while (toClearIterator.hasNext()) {
+            Entry<String, ManagedConversation> entry = toClearIterator.next();
+            if (entry.getValue().isTransient()) {
+                destroyConversation(session, entry.getKey());
             }
         }
     }
