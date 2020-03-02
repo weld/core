@@ -68,7 +68,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.cdi.tck</groupId>
+            <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-api</artifactId>
             <version>${cdi.tck.version}</version>
             <exclusions>
@@ -80,7 +80,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.cdi.tck</groupId>
+            <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-impl</artifactId>
             <version>${cdi.tck.version}</version>
             <type>xml</type>
@@ -99,25 +99,11 @@
                     <artifactId>container-se-api</artifactId>
                     <groupId>org.jboss.arquillian.container</groupId>
                 </exclusion>
-                <!-- TODO remove these exclusions once we run on TCK 2.0.6+, e.g. version with Jakarta EE GAVs-->
-                <!-- see https://github.com/eclipse-ee4j/cdi-tck/issues/195-->
-                <exclusion>
-                    <artifactId>jsf-api</artifactId>
-                    <groupId>javax.faces</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>el-api</artifactId>
-                    <groupId>javax.el</groupId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.xml.soap</groupId>
-                    <artifactId>javax.xml.soap-api</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.cdi.tck</groupId>
+            <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-impl</artifactId>
             <version>${cdi.tck.version}</version>
             <scope>test</scope>
@@ -133,20 +119,6 @@
                 <exclusion>
                     <artifactId>container-se-api</artifactId>
                     <groupId>org.jboss.arquillian.container</groupId>
-                </exclusion>
-                <!-- TODO remove these exclusions once we run on TCK 2.0.6+, e.g. version with Jakarta EE GAVs-->
-                <!-- see https://github.com/eclipse-ee4j/cdi-tck/issues/195-->
-                <exclusion>
-                    <artifactId>jsf-api</artifactId>
-                    <groupId>javax.faces</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>el-api</artifactId>
-                    <groupId>javax.el</groupId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.xml.soap</groupId>
-                    <artifactId>javax.xml.soap-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -200,7 +172,7 @@
                     </properties>
                     <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
                     <dependenciesToScan>
-                        <dependency>org.jboss.cdi.tck:cdi-tck-impl</dependency>
+                        <dependency>jakarta.enterprise:cdi-tck-impl</dependency>
                     </dependenciesToScan>
                 </configuration>
             </plugin>
@@ -551,7 +523,7 @@
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <configuration>
                             <excludes>
-                                <exclude>org.jboss.cdi.tck.*</exclude>
+                                <exclude>jakarta.enterprise.*</exclude>
                             </excludes>
                             <propertyName>jacoco.agent</propertyName>
                         </configuration>

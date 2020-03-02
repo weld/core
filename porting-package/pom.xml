@@ -42,9 +42,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.cdi.tck</groupId>
+            <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck-1-2.version}</version>
+            <version>${cdi.tck-2-0.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.el</groupId>

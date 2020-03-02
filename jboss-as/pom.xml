@@ -85,7 +85,7 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.cdi.tck</groupId>
+            <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-ext-lib</artifactId>
             <version>${cdi.tck.version}</version>
         </dependency>
