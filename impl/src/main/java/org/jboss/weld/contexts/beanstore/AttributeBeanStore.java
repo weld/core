@@ -156,9 +156,14 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     @Override
     public <T> ContextualInstance<T> remove(BeanIdentifier id) {
         ContextualInstance<T> instance = beanStore.remove(id);
+        String prefixedId = namingScheme.prefix(id);
+        if (instance == null && isAttached() && isAttributeLazyFetchingEnabled()) {
+            // If no instance is found and the bean store is attached then attempt to get the attribute from the backing store
+            instance = cast(getAttribute(prefixedId));
+        }
         if (instance != null) {
             if (isAttached()) {
-                removeAttribute(namingScheme.prefix(id));
+                removeAttribute(prefixedId);
             }
             ContextLogger.LOG.contextualInstanceRemoved(id, this);
         }
