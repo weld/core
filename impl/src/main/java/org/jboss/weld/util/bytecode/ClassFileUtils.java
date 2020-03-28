@@ -18,10 +18,7 @@ package org.jboss.weld.util.bytecode;
 
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.weld.serialization.spi.ProxyServices;
-import sun.misc.Unsafe;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -35,9 +32,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * Also contains logic needed to crack open CL methods should that approach be used - this is invoked from WeldStartup.
  *
- * In oder to support JDK 9+, this class now uses Unsafe as we need to be able to define classes with different ProtectionDomain
- * In JDK 12+, even Unsafe fails (no "override" field) hence we fallback to setAccessible() but in this case
- * integrators should already go through new SPI hence avoiding this problem.
+ * As we need to be able to define classes with different ProtectionDomain, we still have to crack open CL methods
+ * via setAccessible() which means there will be IllegalAccess warnings. Unsafe is no longer an option on JDK 12+..
+ * This mostly concerns Weld SE, EE integrators should already go through new SPI hence avoiding this problem.
  *
  * @author Stuart Douglas
  * @author Matej Novotny
@@ -51,12 +48,11 @@ public class ClassFileUtils {
     }
 
     /**
-     * This method cracks open {@code ClassLoader#defineClass()} methods using {@code Unsafe}.
+     * This method cracks open {@code ClassLoader#defineClass()} methods by calling {@code setAccessible()}.
+     *
      * It is invoked during {@code WeldStartup#startContainer()} and only in case the integrator does not
      * fully implement {@link ProxyServices}.
-     *
-     * Method first attempts to use {@code Unsafe} and if that fails then reverts to {@code setAccessible}
-     */
+     **/
     public static void makeClassLoaderMethodsAccessible() {
         // the AtomicBoolean make sure this gets invoked only once as WeldStartup is triggered per deployment
         if (classLoaderMethodsMadeAccessible.compareAndSet(false, true)) {
@@ -68,27 +64,9 @@ public class ClassFileUtils {
 
                         defineClass1 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class);
                         defineClass2 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
-
-                        // First try with Unsafe to avoid illegal access
-                        try {
-                            // get Unsafe singleton instance
-                            Field singleoneInstanceField = Unsafe.class.getDeclaredField("theUnsafe");
-                            singleoneInstanceField.setAccessible(true);
-                            Unsafe theUnsafe = (Unsafe) singleoneInstanceField.get(null);
-
-                            // get the offset of the override field in AccessibleObject
-                            long overrideOffset = theUnsafe.objectFieldOffset(AccessibleObject.class.getDeclaredField("override"));
-
-                            // make both accessible
-                            theUnsafe.putBoolean(defineClass1, overrideOffset, true);
-                            theUnsafe.putBoolean(defineClass2, overrideOffset, true);
-                            return null;
-                        } catch (NoSuchFieldException e) {
-                            // This is JDK 12+, the "override" field isn't there anymore, fallback to setAccessible()
-                            defineClass1.setAccessible(true);
-                            defineClass2.setAccessible(true);
-                            return null;
-                        }
+                        defineClass1.setAccessible(true);
+                        defineClass2.setAccessible(true);
+                        return null;
                     }
                 });
             } catch (PrivilegedActionException pae) {
