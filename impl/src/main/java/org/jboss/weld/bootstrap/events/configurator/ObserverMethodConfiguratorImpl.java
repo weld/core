@@ -119,8 +119,10 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         if (observesAnnotation != null) {
             reception(observesAnnotation.notifyObserver());
             transactionPhase(observesAnnotation.during());
+            async(false);
         } else {
             reception(eventParameter.getAnnotation(ObservesAsync.class).notifyObserver());
+            async(true);
         }
         Priority priority = method.getAnnotation(Priority.class);
         if (priority != null) {
