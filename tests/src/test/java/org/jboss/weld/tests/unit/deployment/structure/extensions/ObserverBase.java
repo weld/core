@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.extensions;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 public class ObserverBase {
 

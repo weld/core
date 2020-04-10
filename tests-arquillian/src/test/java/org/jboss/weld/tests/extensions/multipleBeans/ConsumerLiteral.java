@@ -3,7 +3,7 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 class ConsumerLiteral extends AnnotationLiteral<Consumer> implements Consumer {
 

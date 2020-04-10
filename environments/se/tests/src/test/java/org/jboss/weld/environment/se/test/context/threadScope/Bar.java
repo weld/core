@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.se.test.context.threadScope;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope;
 

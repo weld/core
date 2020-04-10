@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 import java.io.Serializable;
 
 @RequestScoped

@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.proxy.weld477;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.literal;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Qualifier;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Qualifier;
 
 /**
  * Annotation literal for {@link Qualifier}?

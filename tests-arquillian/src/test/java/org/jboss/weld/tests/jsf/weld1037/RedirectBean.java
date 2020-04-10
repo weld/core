@@ -19,9 +19,9 @@ package org.jboss.weld.tests.jsf.weld1037;
 
 import java.io.IOException;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Named;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>3.0.7-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -30,7 +30,7 @@
     <properties>
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
         as the release plugin won't deal with double evaluation -->
-        <weld.update.version>3.0.7-SNAPSHOT</weld.update.version>
+        <weld.update.version>4.0.0-SNAPSHOT</weld.update.version>
 
         <!-- Following section is dedicated to WFLY download and patch creation -->
         <!-- Path to the patched WFLY server, if you chose to let Maven download it, this default will be used-->
@@ -39,18 +39,18 @@
         <!--Path to patch file; only change if you have your own, else Maven downloads it-->
         <patchConfigFile>${project.build.directory}/patch.xml</patchConfigFile>
         <!--These patches are automatically downloaded from github.com/weld/build/tree/master/wildfly; specify the file name here to determine which one to use-->
-        <patch.file.name>patch-config-wildfly-12-weld-3.0.xml</patch.file.name>
+        <patch.file.name>patch-config-wildfly-14-weld-3.1.xml</patch.file.name>
         <!--Use this property to set the path to and the name of the resulting patch zip file-->
         <patchOutputFile>${project.build.directory}/patch.zip</patchOutputFile>
         <!--Path to original (pristine) WFLY-->
         <!--Running with -Pdownload-wfly will make Maven download the version specified below-->
         <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
-        <wildfly.download.version>12.0.0.Final</wildfly.download.version>
+        <wildfly.download.version>18.0.1.Final</wildfly.download.version>
         <cdi.tck.version>${cdi.tck-2-0.version}</cdi.tck.version>
 
         <!--Plugin versions-->
         <download.maven.plugin>1.3.0</download.maven.plugin>
-        <patch.gen.plugin>2.0.1.Alpha5</patch.gen.plugin>
+        <patch.gen.plugin>2.0.1.Final</patch.gen.plugin>
     </properties>
 
     <dependencies>

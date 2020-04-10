@@ -19,16 +19,17 @@ package org.jboss.weld.bean.builtin;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.collections.Arrays2;
 
 public class BeanManagerImplBean extends AbstractBuiltInBean<BeanManagerImpl> {
 
-    private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class);
+    private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class, WeldManager.class);
 
     public BeanManagerImplBean(BeanManagerImpl manager) {
         super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(manager, BeanManagerImpl.class, null)), manager, BeanManagerImpl.class);

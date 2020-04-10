@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.inject.Qualifier;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.inject.Qualifier;
 
 import org.jboss.weld.util.collections.ImmutableSet;
 

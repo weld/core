@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resolution.named;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

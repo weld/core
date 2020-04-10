@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery.interceptors;
 
-import javax.enterprise.context.Dependent;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.Dependent;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @InterceptorBindingAnnotation
 @Interceptor

@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;

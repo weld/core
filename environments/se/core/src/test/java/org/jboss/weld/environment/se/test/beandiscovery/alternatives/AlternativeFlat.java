@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery.alternatives;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 import org.jboss.weld.environment.se.test.beandiscovery.Flat;
 

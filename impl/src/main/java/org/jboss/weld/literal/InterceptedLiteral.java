@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.literal;
 
-import javax.enterprise.inject.Intercepted;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.Intercepted;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link Intercepted}.

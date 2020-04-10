@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.injectionWithExclusions;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 /**
  * @author Marius Bogoevici

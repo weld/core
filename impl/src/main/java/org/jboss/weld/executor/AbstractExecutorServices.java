@@ -98,12 +98,12 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
     }
 
     protected void shutdown() {
-        getTaskExecutor().shutdown();
-        getTimerExecutor().shutdown();
+        SecurityActions.shutdown(getTaskExecutor());
+        SecurityActions.shutdown(getTimerExecutor());
         try {
             // Wait a while for existing tasks to terminate
             if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
-                getTaskExecutor().shutdownNow(); // Cancel currently executing tasks
+                SecurityActions.shutdownNow(getTaskExecutor()); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
                     // Log the error here
@@ -112,15 +112,15 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted
-            getTaskExecutor().shutdownNow();
+            SecurityActions.shutdownNow(getTaskExecutor());
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }
 
         // Do the same for timer executor
         try {
-            if (!getTimerExecutor().isShutdown()) { //no need to do the full wait, one already elapsed
-                getTimerExecutor().shutdownNow();
+            if (!getTimerExecutor().isShutdown()) { // no need to do the full wait, one already elapsed
+                SecurityActions.shutdownNow(getTimerExecutor());
                 if (!getTimerExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
                     // Log the error here
                     BootstrapLogger.LOG.timeoutShuttingDownThreadPool(getTimerExecutor(), this);
@@ -128,7 +128,7 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted
-            getTimerExecutor().shutdownNow();
+            SecurityActions.shutdownNow(getTimerExecutor());
             // Preserve interrupt status
             Thread.currentThread().interrupt();
         }

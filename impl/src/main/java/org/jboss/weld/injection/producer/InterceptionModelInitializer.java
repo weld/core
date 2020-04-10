@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.interceptor.ExcludeClassInterceptors;
+import jakarta.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -113,7 +113,7 @@ public class InterceptionModelInitializer<T> {
             if (annotatedType.isFinal()) {
                 throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(annotatedType.getJavaClass());
             }
-            if (Reflections.isPrivate(constructor.getJavaMember())) {
+            if (constructor != null && Reflections.isPrivate(constructor.getJavaMember())) {
                 throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass().getName(), constructor, annotatedType.getJavaClass()));
             }
             manager.getInterceptorModelRegistry().put(annotatedType.slim(), interceptionModel);
@@ -142,7 +142,9 @@ public class InterceptionModelInitializer<T> {
         Set<Annotation> bindings = classBindingAnnotations.uniqueValues();
         builder.setClassInterceptorBindings(bindings);
         initCdiLifecycleInterceptors(bindings);
-        initCdiConstructorInterceptors(classBindingAnnotations);
+        if (constructor != null) {
+            initCdiConstructorInterceptors(classBindingAnnotations);
+        }
         initCdiBusinessMethodInterceptors(classBindingAnnotations);
     }
 
@@ -201,7 +203,12 @@ public class InterceptionModelInitializer<T> {
                 if (configuration.isFinalMethodIgnored(javaMethod.getDeclaringClass().getName())) {
                     BeanLogger.LOG.finalMethodNotIntercepted(javaMethod, methodBoundInterceptors.get(0).getBeanClass().getName());
                 } else {
-                    throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                    if (Reflections.isPrivate(javaMethod)) {
+                        // private final methods are OK, we just ignore them and log a warning
+                        BeanLogger.LOG.privateFinalMethodOnInterceptedBean(method.getDeclaringType(), method);
+                    } else {
+                        throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                    }
                 }
             } else {
                 builder.interceptMethod(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors), methodBindingAnnotations);
@@ -232,7 +239,9 @@ public class InterceptionModelInitializer<T> {
 
     private void initEjbInterceptors() {
         initClassDeclaredEjbInterceptors();
-        initConstructorDeclaredEjbInterceptors();
+        if (constructor != null) {
+            initConstructorDeclaredEjbInterceptors();
+        }
         for (AnnotatedMethod<?> method : businessMethods) {
             initMethodDeclaredEjbInterceptors(method);
         }
@@ -243,7 +252,7 @@ public class InterceptionModelInitializer<T> {
      */
     private void initClassDeclaredEjbInterceptors() {
         Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
-        boolean excludeClassLevelAroundConstructInterceptors = constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
+        boolean excludeClassLevelAroundConstructInterceptors = constructor != null && constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {

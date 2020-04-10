@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.sessionbean;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 /**
  * @author Stuart Douglas

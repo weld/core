@@ -49,7 +49,7 @@ public interface InterceptorLogger extends WeldLogger {
     @Message(id = 1702, value = "Interceptor.getInterceptorBindings() returned null for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException nullInterceptorBindings(Object param1);
 
-    @LogMessage(level = Level.WARN)
+    @LogMessage(level = Level.INFO)
     @Message(id = 1703, value = "Unable to determine the @Intercepted Bean<?> for {0}", format= Format.MESSAGE_FORMAT)
     void unableToDetermineInterceptedBean(Object injectionPoint);
 
@@ -78,6 +78,7 @@ public interface InterceptorLogger extends WeldLogger {
     @Message(id = 1710, value = "InterceptionFactory skipped wrapper creation for an internal container construct of type {0}", format = Format.MESSAGE_FORMAT)
     void interceptionFactoryInternalContainerConstruct(Object type);
 
+    // not used anymore, we support this now, see WELD-2533 and WELD-2550
     @Message(id = 1711, value = "InterceptionFactory is not supported on interfaces. Check InterceptionFactory<{0}>", format= Format.MESSAGE_FORMAT)
     IllegalStateException interceptionFactoryNotOnInstance(Object param1);
 

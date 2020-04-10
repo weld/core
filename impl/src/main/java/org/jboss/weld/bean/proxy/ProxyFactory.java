@@ -41,7 +41,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.classfilewriter.AccessFlag;
 import org.jboss.classfilewriter.ClassFile;
@@ -101,6 +101,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     private final Bean<?> bean;
     private final Class<?> proxiedBeanType;
     private final String contextId;
+    private final ProxyServices proxyServices;
 
     private final WeldConfiguration configuration;
 
@@ -181,14 +182,20 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
         addDefaultAdditionalInterfaces();
         baseProxyName = proxyName;
-        if (bean != null) {
-            /*
-             * this may happen when creating an InjectionTarget for a decorator using BeanManager#createInjectionTarget()
-             * which does not allow the bean to be specified
-             */
-            this.classLoader = resolveClassLoaderForBeanProxy(contextId, bean.getBeanClass(), typeInfo);
+        proxyServices = Container.instance(contextId).services().get(ProxyServices.class);
+        if (!proxyServices.supportsClassDefining()) {
+            if (bean != null) {
+                /*
+                * this may happen when creating an InjectionTarget for a decorator using BeanManager#createInjectionTarget()
+                * which does not allow the bean to be specified
+                 */
+                this.classLoader = resolveClassLoaderForBeanProxy(contextId, bean.getBeanClass(), typeInfo, proxyServices);
+            } else {
+                this.classLoader = resolveClassLoaderForBeanProxy(contextId, proxiedBeanType, typeInfo, proxyServices);
+            }
         } else {
-            this.classLoader = resolveClassLoaderForBeanProxy(contextId, proxiedBeanType, typeInfo);
+            // integrator defines new proxies and looks them up, we don't need CL information
+            this.classLoader = null;
         }
         // hierarchy order
         if (additionalInterfaces.size() > 1) {
@@ -314,7 +321,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      */
     public T create(BeanInstance beanInstance) {
         final T proxy = (System.getSecurityManager() == null) ? run() : AccessController.doPrivileged(this);
-        ((ProxyObject) proxy).setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
+        ((ProxyObject) proxy).weld_setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
         return proxy;
     }
 
@@ -352,22 +359,23 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             proxyClassName = proxyClassName.replaceFirst(JAVA, "org.jboss.weld");
         }
         Class<T> proxyClass = null;
+        Class<?> originalClass = bean != null ? bean.getBeanClass() : proxiedBeanType;
         BeanLogger.LOG.generatingProxyClass(proxyClassName);
         try {
             // First check to see if we already have this proxy class
-            proxyClass = cast(classLoader.loadClass(proxyClassName));
+            proxyClass = cast(classLoader == null? proxyServices.loadClass(originalClass, proxyClassName) : classLoader.loadClass(proxyClassName));
         } catch (ClassNotFoundException e) {
             // Create the proxy class for this instance
             try {
-                proxyClass = createProxyClass(proxyClassName);
+                proxyClass = createProxyClass(originalClass, proxyClassName);
             } catch (Throwable e1) {
                 //attempt to load the class again, just in case another thread
                 //defined it between the check and the create method
                 try {
-                    proxyClass = cast(classLoader.loadClass(proxyClassName));
+                    proxyClass = cast(classLoader == null? proxyServices.loadClass(originalClass, proxyClassName) : classLoader.loadClass(proxyClassName));
                 } catch (ClassNotFoundException e2) {
                     BeanLogger.LOG.catchingDebug(e1);
-                    throw BeanLogger.LOG.unableToLoadProxyClass(bean, proxiedBeanType, classLoader, e1);
+                    throw BeanLogger.LOG.unableToLoadProxyClass(bean, proxiedBeanType, e1);
                 }
             }
         }
@@ -392,7 +400,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     public static <T> void setBeanInstance(String contextId, T proxy, BeanInstance beanInstance, Bean<?> bean) {
         if (proxy instanceof ProxyObject) {
             ProxyObject proxyView = (ProxyObject) proxy;
-            proxyView.setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
+            proxyView.weld_setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
         }
     }
 
@@ -421,7 +429,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     }
 
-    private Class<T> createProxyClass(String proxyClassName) throws Exception {
+    private Class<T> createProxyClass(Class<?> originalClass, String proxyClassName) throws Exception {
         Set<Class<?>> specialInterfaces = Sets.newHashSet(LifecycleMixin.class, TargetInstanceProxy.class, ProxyObject.class);
         addAdditionalInterfaces(specialInterfaces);
         // Remove special interfaces from main set (deserialization scenario)
@@ -466,14 +474,25 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             ProtectionDomainCache cache = Container.instance(contextId).services().get(ProtectionDomainCache.class);
             domain = cache.getProtectionDomainForProxy(domain);
         }
-        Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
+        Class<T> proxyClass;
+        if (classLoader == null) {
+            proxyClass = cast(ClassFileUtils.toClass(proxyClassType, originalClass, proxyServices, domain));
+        } else {
+            proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
+        }
         BeanLogger.LOG.createdProxyClass(proxyClass, Arrays.toString(proxyClass.getInterfaces()));
         return proxyClass;
     }
 
     private ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
         try {
-            return new ClassFile(name, accessFlags, superclass, classLoader, interfaces);
+            if (classLoader == null) {
+                // initiate without the CL information as CL is null
+                return new ClassFile(name, accessFlags, superclass, interfaces);
+            } else {
+                // initiate with the CL information
+                return new ClassFile(name, accessFlags, superclass, classLoader, interfaces);
+            }
         } catch (Exception e) {
             throw BeanLogger.LOG.unableToCreateClassFile(name, e.getCause());
         }
@@ -796,8 +815,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 final ClassMethod classMethod = proxyClassType.addMethod(method);
                 createInterceptorBody(classMethod, methodInfo, staticConstructor);
             }
-            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("getTargetInstance");
-            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("getTargetClass");
+            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("weld_getTargetInstance");
+            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("weld_getTargetClass");
 
             MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
             createInterceptorBody(proxyClassType.addMethod(getInstanceMethod), getInstanceMethodInfo, staticConstructor);
@@ -806,10 +825,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
             createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo, staticConstructor);
 
-            Method setMethodHandlerMethod = ProxyObject.class.getMethod("setHandler", MethodHandler.class);
+            Method setMethodHandlerMethod = ProxyObject.class.getMethod("weld_setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
 
-            Method getMethodHandlerMethod = ProxyObject.class.getMethod("getHandler");
+            Method getMethodHandlerMethod = ProxyObject.class.getMethod("weld_getHandler");
             generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
         } catch (Exception e) {
             throw new WeldException(e);
@@ -873,13 +892,17 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         return contextId;
     }
 
+    protected Class<?> getProxiedBeanType() {
+        return proxiedBeanType;
+    }
+
     /**
      * Figures out the correct class loader to use for a proxy for a given bean
      */
-    public static ClassLoader resolveClassLoaderForBeanProxy(String contextId, Class<?> proxiedType, TypeInfo typeInfo) {
+    public static ClassLoader resolveClassLoaderForBeanProxy(String contextId, Class<?> proxiedType, TypeInfo typeInfo, ProxyServices proxyServices) {
         Class<?> superClass = typeInfo.getSuperClass();
         if (superClass.getName().startsWith(JAVA)) {
-            ClassLoader cl = Container.instance(contextId).services().get(ProxyServices.class).getClassLoader(proxiedType);
+            ClassLoader cl = proxyServices.getClassLoader(proxiedType);
             if (cl == null) {
                 cl = Thread.currentThread().getContextClassLoader();
             }

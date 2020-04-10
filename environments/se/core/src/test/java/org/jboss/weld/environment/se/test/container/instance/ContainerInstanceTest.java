@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se.test.container.instance;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;

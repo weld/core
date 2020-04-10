@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.SessionScoped;
 import javax.json.JsonObject;
 
 import com.gargoylesoftware.htmlunit.WebClient;

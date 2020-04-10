@@ -20,7 +20,7 @@ import static org.jboss.weld.environment.se.test.util.ProbeJMXUtil.invokeMBeanOp
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
@@ -77,7 +77,7 @@ public class ProbeJmxIntegrationTest {
             assertEquals(omegaObserverJson.getJsonString(Strings.OBSERVED_TYPE).getString(), Omega.class.getName());
             assertEquals(omegaObserverJson.getJsonString(Strings.RECEPTION).getString(), "ALWAYS");
             assertEquals(omegaObserverJson.getJsonString(Strings.PRIORITY_RANGE).getString(), Strings.APPLICATION.toUpperCase());
-            assertEquals(omegaObserverJson.getInt(Strings.PRIORITY), javax.interceptor.Interceptor.Priority.APPLICATION + 500);
+            assertEquals(omegaObserverJson.getInt(Strings.PRIORITY), jakarta.interceptor.Interceptor.Priority.APPLICATION + 500);
         }
     }
 

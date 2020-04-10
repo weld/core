@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint.named;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Named;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Named;
 
 public class Foo {
 

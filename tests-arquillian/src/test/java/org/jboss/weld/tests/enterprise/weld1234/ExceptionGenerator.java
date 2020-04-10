@@ -19,8 +19,8 @@ package org.jboss.weld.tests.enterprise.weld1234;
 
 import java.io.Serializable;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  *

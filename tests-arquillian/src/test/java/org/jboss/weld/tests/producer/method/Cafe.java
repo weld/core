@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.producer.method;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 public class Cafe {
 

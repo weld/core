@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanDeployment.circular;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 class Fish {
 

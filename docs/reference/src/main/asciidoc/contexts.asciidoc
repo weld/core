@@ -250,3 +250,165 @@ conversation context, as can the current conversation.
 
 NOTE: Weld's conversations are not assigned ids until they become
 non-transient.
+
+=== Propagating built-in contexts
+
+By context propagation we understand a scenario in which you want to capture a collection of contextual instances bound to certain context in one thread and provide them as context state in another thread.
+Starting with Weld 3.1.0.Final, this kind of context propagation is possible.
+
+NOTE: Context propagation comes with some additional requirements on user code and may not work for every scenario!
+
+First of all, what contexts are affected and how:
+
+* Application context
+** Works out of the box, no propagation needed
+* Singleton context
+** Works out of the box, no propagation needed
+* Dependent context
+** By nature of this context, this cannot be propagated
+* Request, session, conversation contexts
+** These can be manually propagated if desired
+
+In order to achieve context propagation you generally need the following steps:
+
+* Obtain collection of contextual instances from current thread
+* In another thread, obtain a reference to given context and activate it
+* Feed this newly activated context the instances you previously obtained
+* Perform your tasks
+* Clean up the context by deactivating it
+
+==== New API methods supporting context propagation
+
+There are several new things in Weld API allowing for this.
+Firstly, all contexts supporting propagation now implement `org.jboss.weld.context.WeldAlterableContext`, an interface extending `jakarta.enterprise.context.spi.AlterableContext`.
+Methods on `WeldAlterableContext` allow to capture current context state, returning a collection of all contextual instances, as well as clear and set the context state by feeding it a collection of contextual instances.
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------------------
+public interface WeldAlterableContext extends AlterableContext {
+    default <T> Collection<ContextualInstance<T>> getAllContextualInstances();
+    default <T> void clearAndSet(Collection<ContextualInstance<T>> setOfInstances);
+}
+-------------------------------------------------------------------------------------------------------------
+
+In order to get hold of these contexts, the best approach is to use `WeldManager`, an injectable bean providing some capabilities on top of what `BeanManager` has.
+Following `WeldManager` methods are useful for context propagation:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------------------
+public interface WeldManager extends BeanManager {
+
+    // excerpt of interface methods is shortened here
+    boolean isContextActive(Class<? extends Annotation> scopeType);
+    Collection<Class<? extends Annotation>> getScopes();
+    default Collection<Context> getActiveContexts() {
+        return getScopes().stream()
+            .filter(this::isContextActive)
+            .map(this::getContext)
+            .collect(Collectors.toSet());
+    }
+    default Collection<WeldAlterableContext> getActiveWeldAlterableContexts() {
+        return getScopes().stream()
+            .filter(this::isContextActive)
+            .map(this::getContext)
+            .filter(t -> t instanceof WeldAlterableContext)
+            .map(t -> (WeldAlterableContext) t)
+            .collect(Collectors.toSet());
+    }
+}
+-------------------------------------------------------------------------------------------------------------
+
+==== Example of context propagation
+
+There is a concise example in a form of a test in our code showing how to propagate all built-in contexts.
+This doc only contains an excerpt from it, you can look link:https://github.com/weld/core/blob/master/tests-arquillian/src/test/java/org/jboss/weld/tests/contexts/propagation[here] to get the full picture.
+
+Following code shows a service that provides an extra thread onto which you offload a `Callable<T>` that uses beans from currently active context.
+The service activates contexts, propagates state from original thread, executes task and cleans up.
+Bound versions of Weld context implementations are used as on this new thread there is no actual HTTP request or session existing.
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+public class ContextPropagationService {
+
+    private static final ExecutorService executor = Executors.newFixedThreadPool(1);
+
+    public static <T> Future<T> propagateContextsAndSubmitTask(Callable<T> task) {
+        // gather all the contexts we want to propagate and the instances in them
+        Map<Class<? extends Annotation>, Collection<ContextualInstance<Object>>> scopeToContextualInstances = new HashMap<>();
+        WeldManager get = CDI.current().select(WeldManager.class).get();
+        for (WeldAlterableContext context : CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()) {
+            scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances());
+        }
+        // We create a task wrapper which will make sure we have contexts propagated
+        Callable<T> wrappedTask = new Callable<T>() {
+
+            @Override
+            public T call() throws Exception {
+                // Get WeldManager,get instances of @Bound contexts for request, session and conversation scopes
+                WeldManager weldManager = CDI.current().select(WeldManager.class).get();
+                BoundRequestContext requestContext = weldManager.instance().select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
+                BoundSessionContext sessionContext = weldManager.instance().select(BoundSessionContext.class, BoundLiteral.INSTANCE).get();
+                BoundConversationContext conversationContext = weldManager.instance().select(BoundConversationContext.class, BoundLiteral.INSTANCE).get();
+
+                // We will be using bound contexts, prepare backing structures for contexts
+                Map<String, Object> sessionMap = new HashMap<>();
+                Map<String, Object> requestMap = new HashMap<>();
+                BoundRequest boundRequest = new MutableBoundRequest(requestMap, sessionMap);
+
+                // activate contexts
+                requestContext.associate(requestMap);
+                requestContext.activate();
+                sessionContext.associate(sessionMap);
+                sessionContext.activate();
+                conversationContext.associate(boundRequest);
+                conversationContext.activate();
+
+                // propagate all contexts that have some bean in them
+                if (scopeToContextualInstances.get(requestContext.getScope()) != null) {
+                    requestContext.clearAndSet(scopeToContextualInstances.get(requestContext.getScope()));
+                }
+                if (scopeToContextualInstances.get(sessionContext.getScope()) != null) {
+                    sessionContext.clearAndSet(scopeToContextualInstances.get(sessionContext.getScope()));
+                }
+                if (scopeToContextualInstances.get(conversationContext.getScope()) != null) {
+                    conversationContext.clearAndSet(scopeToContextualInstances.get(conversationContext.getScope()));
+                }
+
+                // now execute the actual original task
+                T result = task.call();
+
+                // cleanup, context deactivation, do not trigger @PreDestroy/@Disposes
+                requestContext.deactivate();
+                conversationContext.deactivate();
+                sessionContext.deactivate();
+
+                // all done, return
+                return result;
+            }
+        };
+        return executor.submit(wrappedTask);
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+==== Pitfalls and drawbacks
+
+There are several things that can possibly go wrong when propagating contexts.
+User code needs to be aware that propagation can happen and prepare their beans accordingly.
+For instance request scoped beans could now theoretically be accessed concurrently which wasn't the case before.
+
+`@PreDestroy` and `@Disposes` on your beans could cause inconsistent state based on how you perform the propagation.
+Since the same bean is now used in several threads, all of them can, in invalidating and deactivating contexts, trigger these methods but the bean will still exist in yet another thread.
+The example given above avoids calling `context.invalidate()` and only performs `context.deactivate()` - this avoids invoking `@PreDestroy`/`@Disposes` methods but could possibly lead to never invoking them if no thread does it.
+Note that this problem only concerns request, session and conversation beans where you manually need to activate/deactivate contexts.
+Application/singleton scoped bean would still work and their cleanup callbacks will only be invoked once during container shutdown.
+
+There is currently no way to propagate any other contexts than those mentioned here.
+Custom scopes as well as scopes from other EE specifications have no support for this feature.
+The reason is that while technically any context implementing `WeldAlterableContext` can be used to obtain/set collection of contextual instances, there is no way of knowing how to activate custom contexts in different threads.
+
+Last but not least, context propagator needs to be aware of context implementations existing in Weld, see <<_available_contexts_in_weld>>.
+However, in a new thread some extra knowledge is required to activate the contexts.
+Bound versions (backed by a provided storage; a map in our case) were used, and those need to have a storage associated before activating them, hence the code such as `requestContext.associate(requestMap)`.
+There is no need to use bound version though; propagators are free to choose from other context implementations.

@@ -21,10 +21,10 @@ import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -109,7 +109,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
                 throw UtilLogger.LOG.accessErrorOnField(accessibleField.getName(), accessibleField.getDeclaringClass(), e);
             }
             final ProxyMethodHandler handler = new ProxyMethodHandler(beanManager.getContextId(), new TargetBeanInstance(delegate), getBean());
-            ((ProxyObject) instance).setHandler(handler);
+            ((ProxyObject) instance).weld_setHandler(handler);
         }
     }
 

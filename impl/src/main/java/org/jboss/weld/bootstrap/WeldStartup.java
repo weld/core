@@ -27,20 +27,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Model;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.Model;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
@@ -129,6 +129,7 @@ import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Permissions;
+import org.jboss.weld.util.bytecode.ClassFileUtils;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Formats;
@@ -212,6 +213,11 @@ public class WeldStartup {
 
         if (!registry.contains(ProxyServices.class)) {
             registry.add(ProxyServices.class, new SimpleProxyServices());
+        }
+        // check if ProxyServices implementation supports class defining on integrator side
+        if (!registry.get(ProxyServices.class).supportsClassDefining()) {
+            // we will need to invoke CL.defineClass() ourselves, crack open those methods eagerly
+            ClassFileUtils.makeClassLoaderMethodsAccessible();
         }
         if (!registry.contains(SecurityServices.class)) {
             registry.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
@@ -497,17 +503,26 @@ public class WeldStartup {
         getContainer().setState(ContainerState.VALIDATED);
         tracker.start(Tracker.OP_ADV);
         AfterDeploymentValidationImpl.fire(deploymentManager);
+
+        final BeanIdentifierIndex index = deploymentManager.getServices().get(BeanIdentifierIndex.class);
+        if (index != null) {
+            // Build a special index of bean identifiers
+            index.build(getBeansForBeanIdentifierIndex());
+        }
+
+        // feed BeanDeploymentModule registry
+        final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
+        if (modules != null) {
+            modules.processBeanDeployments(getBeanDeployments());
+            BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
+        }
+
         tracker.end();
         tracker.end();
     }
 
     public void endInitialization() {
         tracker.start(Tracker.OP_END_INIT);
-        final BeanIdentifierIndex index = deploymentManager.getServices().get(BeanIdentifierIndex.class);
-        if (index != null) {
-            // Build a special index of bean identifiers
-            index.build(getBeansForBeanIdentifierIndex());
-        }
 
         // Register the managers so external requests can handle them
         // clear the TypeSafeResolvers, so data that is only used at startup
@@ -520,6 +535,8 @@ public class WeldStartup {
             beanManager.getInterceptorMetadataReader().cleanAfterBoot();
             beanManager.getServices().cleanupAfterBoot();
             beanManager.cleanupAfterBoot();
+            // for safety sake perform after boot cleanup on all services in BDA
+            beanDeployment.getBeanDeploymentArchive().getServices().cleanupAfterBoot();
             // clean up beans
             for (Bean<?> bean : beanManager.getBeans()) {
                 if (bean instanceof RIBean<?>) {
@@ -543,12 +560,6 @@ public class WeldStartup {
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.getBeanDeployer().cleanup();
         }
-        // feed BeanDeploymentModule registry
-        final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
-        if (modules != null) {
-            modules.processBeanDeployments(getBeanDeployments());
-            BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
-        }
 
         // Perform additional cleanup if removing unused beans
         if (UnusedBeans.isEnabled(deploymentManager.getServices().get(WeldConfiguration.class))) {
@@ -562,6 +573,7 @@ public class WeldStartup {
 
         getContainer().setState(ContainerState.INITIALIZED);
 
+        final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
         if (modules != null) {
             // fire @Initialized(ApplicationScoped.class) for non-web modules
             // web modules are handled by HttpContextLifecycle
@@ -649,7 +661,7 @@ public class WeldStartup {
         final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.of(
                 // built-in scopes
                 Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class,
-                javax.interceptor.Interceptor.class, javax.decorator.Decorator.class,
+                jakarta.interceptor.Interceptor.class, jakarta.decorator.Decorator.class,
                 // built-in stereotype
                 Model.class,
                 // meta-annotations

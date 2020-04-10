@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.singleInstance;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.interceptor.Interceptors;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.interceptor.Interceptors;
 
 @ApplicationScoped
 @Interceptors(LionInterceptor.class)

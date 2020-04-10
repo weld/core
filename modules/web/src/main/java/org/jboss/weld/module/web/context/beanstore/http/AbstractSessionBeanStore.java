@@ -5,7 +5,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Iterator;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.config.ConfigurationKey;

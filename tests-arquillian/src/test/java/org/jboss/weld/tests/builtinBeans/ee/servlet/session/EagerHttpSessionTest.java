@@ -20,7 +20,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

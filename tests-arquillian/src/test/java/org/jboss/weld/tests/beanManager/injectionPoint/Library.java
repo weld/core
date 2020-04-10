@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanManager.injectionPoint;
 
-import javax.decorator.Delegate;
+import jakarta.decorator.Delegate;
 
 @SuppressWarnings("unused")
 class Library {

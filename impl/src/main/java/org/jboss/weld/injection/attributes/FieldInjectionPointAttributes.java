@@ -18,7 +18,7 @@ package org.jboss.weld.injection.attributes;
 
 import java.lang.reflect.Field;
 
-import javax.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 
 public interface FieldInjectionPointAttributes<T, X> extends WeldInjectionPointAttributes<T, Field> {
 

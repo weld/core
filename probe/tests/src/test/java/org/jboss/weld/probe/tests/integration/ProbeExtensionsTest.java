@@ -34,8 +34,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 

@@ -18,10 +18,10 @@ package org.jboss.weld.tests.interceptors.injection.ejb;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.interceptor.Interceptors;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.interceptor.Interceptors;
 
 @Interceptors(BravoInterceptor.class)
 @CharlieBinding

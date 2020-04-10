@@ -19,7 +19,7 @@ package org.jboss.weld.tests.contexts.conversation.weld1418;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.ConversationScoped;
 
 /**
  *

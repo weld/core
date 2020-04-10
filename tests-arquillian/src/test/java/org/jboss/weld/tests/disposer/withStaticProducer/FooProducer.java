@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.disposer.withStaticProducer;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
 
 public class FooProducer {
 

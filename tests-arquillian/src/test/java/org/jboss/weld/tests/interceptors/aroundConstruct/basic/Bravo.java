@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @BravoBinding
 @ApplicationScoped

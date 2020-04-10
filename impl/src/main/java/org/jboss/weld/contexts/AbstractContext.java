@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.contexts;
 
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.AlterableContext;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.spi.AlterableContext;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.WrappedContextual;
@@ -63,7 +63,7 @@ public abstract class AbstractContext implements AlterableContext {
      *
      * @return An instance of the bean
      * @throws ContextNotActiveException if the context is not active
-     * @see javax.enterprise.context.spi.Context#get(BaseBean, boolean)
+     * @see jakarta.enterprise.context.spi.Context#get(BaseBean, boolean)
      */
     @Override
     @SuppressFBWarnings(value = "UL_UNRELEASED_LOCK", justification = "False positive from FindBugs")
@@ -193,6 +193,10 @@ public abstract class AbstractContext implements AlterableContext {
      * Allows contexts that are initialized lazily to plug in additional logic.
      */
     protected void checkContextInitialized() {
+    }
+
+    protected boolean isMultithreaded() {
+        return multithreaded;
     }
 
 }

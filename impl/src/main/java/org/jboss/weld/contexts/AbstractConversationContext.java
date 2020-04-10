@@ -1,12 +1,6 @@
 /*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
- *
- * Use is subject to license terms.
- *
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2019, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -38,9 +32,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Destroyed;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Destroyed;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -418,7 +412,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         return generator.call();
     }
 
-    protected ConversationIdGenerator getConversationIdGenerator() {
+    // method is synchronized so that creation of conversation generator isn't a subject to race condition
+    protected synchronized ConversationIdGenerator getConversationIdGenerator() {
         final R request = associated.get();
         if (request == null) {
             throw ConversationLogger.LOG.mustCallAssociateBeforeGeneratingId();
@@ -464,7 +459,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    private Map<String, ManagedConversation> getConversationMap() {
+    private synchronized Map<String, ManagedConversation> getConversationMap() {
         checkIsAssociated();
         checkContextInitialized();
         final R request = getRequest();

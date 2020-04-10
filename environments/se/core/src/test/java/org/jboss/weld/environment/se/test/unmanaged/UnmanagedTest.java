@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.unmanaged;
 
-import javax.enterprise.inject.spi.Unmanaged;
-import javax.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
+import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
 
 import org.junit.Assert;
 

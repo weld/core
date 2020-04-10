@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.servlet;
 
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletRequestListener;
 
 public class Corge implements ServletRequestListener {
 

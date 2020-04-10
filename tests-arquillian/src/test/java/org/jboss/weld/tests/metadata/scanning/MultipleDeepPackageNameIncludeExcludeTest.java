@@ -20,7 +20,7 @@ import org.jboss.weld.tests.metadata.scanning.redhat.Waldo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
 

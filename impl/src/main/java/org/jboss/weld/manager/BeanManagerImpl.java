@@ -43,43 +43,43 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeShutdown;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InjectionTargetFactory;
-import javax.enterprise.inject.spi.InterceptionFactory;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.Prioritized;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.ProducerFactory;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeShutdown;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.InjectionTargetFactory;
+import jakarta.enterprise.inject.spi.InterceptionFactory;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.inject.spi.Prioritized;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.spi.ProducerFactory;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
@@ -622,7 +622,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      *
      * @param event The event object to pass along
      * @param qualifiers The binding types to match
-     * @see javax.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
+     * @see jakarta.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
      */
     @Override
     public void fireEvent(Object event, Annotation... qualifiers) {
@@ -638,7 +638,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @throws IllegalStateException if there are multiple active scopes for a given context
      * @param scopeType The scope to match
      * @return A single active context of the given scope
-     * @see javax.enterprise.inject.spi.BeanManager#getContext(java.lang.Class)
+     * @see jakarta.enterprise.inject.spi.BeanManager#getContext(java.lang.Class)
      */
     @Override
     public Context getContext(Class<? extends Annotation> scopeType) {
@@ -653,13 +653,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return PassivatingContextWrapper.unwrap(getContext(scopeType));
     }
 
-    /**
-     * Indicates whether there is an active context for a given scope.
-     *
-     * @throws IllegalStateException if there are multiple active scopes for a given context
-     * @param scopeType
-     * @return true if there is an active context for a given scope, false otherwise
-     */
+    @Override
     public boolean isContextActive(Class<? extends Annotation> scopeType) {
         return internalGetContext(scopeType) != null;
     }
@@ -852,7 +846,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @param type The interception type to resolve
      * @param interceptorBindings The binding types to match
      * @return A list of matching interceptors
-     * @see javax.enterprise.inject.spi.BeanManager#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType, java.lang.annotation.Annotation[])
+     * @see jakarta.enterprise.inject.spi.BeanManager#resolveInterceptors(jakarta.enterprise.inject.spi.InterceptionType, java.lang.annotation.Annotation[])
      */
     @Override
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
@@ -1577,6 +1571,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 BootstrapLogger.LOG.catchingDebug(ignored);
             }
         }
+    }
+
+    @Override
+    public Collection<Class<? extends Annotation>> getScopes() {
+        return Collections.unmodifiableCollection(contexts.keySet());
     }
 
     private void removeUnusedBeans() {

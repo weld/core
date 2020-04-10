@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionTarget;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 public abstract class AbstractClass {
 

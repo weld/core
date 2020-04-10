@@ -17,9 +17,9 @@
 
 package org.jboss.weld.tests.observers.inheritance;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Specializes;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

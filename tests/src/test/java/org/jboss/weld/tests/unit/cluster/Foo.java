@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
 @SessionScoped

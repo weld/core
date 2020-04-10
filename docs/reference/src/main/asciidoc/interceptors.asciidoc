@@ -332,9 +332,9 @@ in which interceptors are listed at the class level.
 
 Therefore, we recommend the use of CDI-style interceptor bindings.
 
-=== Enhanced version of `javax.interceptor.InvocationContext`
+=== Enhanced version of `jakarta.interceptor.InvocationContext`
 
-For even more control over interceptors, Weld offers enhanced version of `javax.interceptor.InvocationContext` - `org.jboss.weld.interceptor.WeldInvocationContext`.
+For even more control over interceptors, Weld offers enhanced version of `jakarta.interceptor.InvocationContext` - `org.jboss.weld.interceptor.WeldInvocationContext`.
 It comes with two additional methods - `getInterceptorBindings` and `getInterceptorBindingsByType(Class<T> annotationType)`.
 You shouldn't need this in most cases, but it comes handy when working with `@Nonbinding` values in interceptor binding annotations.
 
@@ -413,4 +413,44 @@ public class AroundConstructInterceptor {
         ctx.proceed();
     }
 }
+-------------------------------------------------------------------------------------------------
+
+=== Loosening the limitations of `InterceptionFactory`
+
+NOTE: This is an experimental feature which goes beyond the scope of what CDI specification requires. While we aim to support this, the behaviour may slightly shift over time.
+
+CDI 2.0 introduced the `InterceptionFactory` which can be used to intercept a bean created via producer method.
+The specification only allows users to operate on Java classes and when it comes to interfaces, it states that unportable behaviour results.
+Weld supports both ways as operating on interfaces effectively allows to bypass proxyability rules of implementation class.
+This however comes with a price - only annotations added programatically through `InterceptionFactory.configure()` will be taken into consideration.
+
+Let's have `SomeImpl` class that is an implementation of interface `SomeInterface` and `InterceptThis` is an `InterceptorBinding`.
+Let us also assume that we have secondary implementation of `SomeInterface` named `SomeUnproxyableImpl` that has a final method in it.
+All of the following producer methods will work:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------
+    @Produces
+    @ApplicationScoped
+    // proxyable implementation which is also the InterceptionFactory paramater
+    public SomeImpl produceBeanBasedOnImplClass(InterceptionFactory<SomeImpl> interceptionFactory) {
+        interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeImpl());
+    }
+
+    @Produces
+    @ApplicationScoped
+    // proxyable implementation but operating on an interface type as InterceptionFactory parameter
+    public SomeInterface produceBeanBasedOnInterface(InterceptionFactory<SomeInterface> interceptionFactory) {
+        interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeImpl());
+    }
+
+    @Produces
+    @ApplicationScoped
+    // unproxyable implementation and operating on an interface type as InterceptionFactory parameter
+    public SomeInterface produceBeanBasedOnInterfaceWithUnproxyableImpl(InterceptionFactory<SomeInterface> interceptionFactory) {
+        interceptionFactory.configure().add(InterceptThis.Literal.INSTANCE);
+        return interceptionFactory.createInterceptedInstance(new SomeUnproxyableImpl());
+    }
 -------------------------------------------------------------------------------------------------

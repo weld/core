@@ -20,8 +20,8 @@ import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.util.Nonbinding;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.util.Nonbinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;

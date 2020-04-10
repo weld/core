@@ -18,8 +18,8 @@ package org.jboss.weld.tests.producer.field;
 
 import java.util.List;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 public class ListInstance {
     @Inject

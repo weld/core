@@ -19,7 +19,7 @@ package org.jboss.weld.tests.unit.deployment.structure.resolution;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;

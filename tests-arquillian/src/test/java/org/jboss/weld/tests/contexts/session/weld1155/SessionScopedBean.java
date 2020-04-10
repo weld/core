@@ -19,8 +19,8 @@ package org.jboss.weld.tests.contexts.session.weld1155;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
 public class SessionScopedBean implements Serializable {

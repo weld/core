@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.module.jta;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;

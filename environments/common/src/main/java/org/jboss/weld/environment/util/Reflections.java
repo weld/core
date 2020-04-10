@@ -24,8 +24,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.Stereotype;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.inject.Stereotype;
 
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -151,7 +151,7 @@ public final class Reflections {
         return false;
     }
 
-    private static boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
+    public static boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
         return containsAnnotation(annotations, requiredAnnotation, true);
     }
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.invalidContract;
 
-import javax.interceptor.InterceptorBinding;
+import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

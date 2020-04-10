@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.simple;
 
-import javax.enterprise.inject.Stereotype;
+import jakarta.enterprise.inject.Stereotype;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

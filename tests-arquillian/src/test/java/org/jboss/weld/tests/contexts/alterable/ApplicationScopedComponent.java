@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.contexts.alterable;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ApplicationScopedComponent extends AbstractComponent {

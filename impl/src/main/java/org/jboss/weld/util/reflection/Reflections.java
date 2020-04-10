@@ -170,7 +170,7 @@ public class Reflections {
     public static Method getNonPrivateNonStaticFinalMethod(Class<?> type) {
         for (Class<?> clazz = type; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
-                if (isFinal(method) && !isPrivate(method) && !isStatic(method)) {
+                if (isFinal(method) && !isPrivate(method) && !isStatic(method) && !method.isSynthetic()) {
                     return method;
                 }
             }

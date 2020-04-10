@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.environment.se.example.numberguess;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * This class contains the pure logic of the Number Guess game. On

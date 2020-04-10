@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.enterprise.weld1234;
 
-import javax.ejb.NoSuchEJBException;
-import javax.inject.Inject;
+import jakarta.ejb.NoSuchEJBException;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

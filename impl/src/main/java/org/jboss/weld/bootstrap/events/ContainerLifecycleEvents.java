@@ -19,28 +19,30 @@ package org.jboss.weld.bootstrap.events;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.ProcessObserverMethod;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessProducer;
+import jakarta.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
@@ -171,7 +173,7 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
             fireProcessAnnotatedType(event, beanManager);
         } else {
             BootstrapLogger.LOG.patFastResolver(annotatedType);
-            fireProcessAnnotatedType(event, annotatedTypeContext.getResolvedProcessAnnotatedTypeObservers(), beanManager);
+            fireProcessAnnotatedType(event, observers, beanManager);
         }
         return event;
     }
@@ -196,7 +198,9 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ContainerLifecycleEventObserverMethod<?>> observers,
             BeanManagerImpl beanManager) {
         List<Throwable> errors = new LinkedList<Throwable>();
-        for (ContainerLifecycleEventObserverMethod observer : observers) {
+        List<ContainerLifecycleEventObserverMethod<?>> sortedObserverMethods = new ArrayList<>(observers);
+        sortedObserverMethods.sort(Comparator.comparingInt(ObserverMethod::getPriority));
+        for (ContainerLifecycleEventObserverMethod observer : sortedObserverMethods) {
             // FastProcessAnnotatedTypeResolver does not consider special scope inheritance rules (see CDI - section 4.1)
             if (checkScopeInheritanceRules(event.getOriginalAnnotatedType(), observer, beanManager)) {
                 try {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface PomeranianInterface {

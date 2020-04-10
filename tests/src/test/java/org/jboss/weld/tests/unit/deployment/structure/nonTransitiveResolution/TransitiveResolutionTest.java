@@ -18,8 +18,8 @@ package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
 import java.util.Collections;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;

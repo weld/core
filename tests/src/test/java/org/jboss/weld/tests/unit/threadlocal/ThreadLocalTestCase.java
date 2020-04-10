@@ -7,9 +7,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.testng.Assert;
@@ -145,16 +145,21 @@ public class ThreadLocalTestCase {
      * JDK 9+ doesn't allow us to call setAccessible() directly, hence we hack it with Unsafe 
      */
     private void makeAccessible(AccessibleObject ao) throws NoSuchFieldException, IllegalAccessException {
-        // get Unsafe singleton instance
-        Field singleoneInstanceField = Unsafe.class.getDeclaredField("theUnsafe");
-        singleoneInstanceField.setAccessible(true);
-        Unsafe theUnsafe = (Unsafe) singleoneInstanceField.get(null);
+        try {
+            // get Unsafe singleton instance
+            Field singleoneInstanceField = Unsafe.class.getDeclaredField("theUnsafe");
+            singleoneInstanceField.setAccessible(true);
+            Unsafe theUnsafe = (Unsafe) singleoneInstanceField.get(null);
 
-        // get the offset of the override field in AccessibleObject
-        long overrideOffset = theUnsafe.objectFieldOffset(AccessibleObject.class.getDeclaredField("override"));
+            // get the offset of the override field in AccessibleObject
+            long overrideOffset = theUnsafe.objectFieldOffset(AccessibleObject.class.getDeclaredField("override"));
 
-        // make both accessible
-        theUnsafe.putBoolean(ao, overrideOffset, true);
-        theUnsafe.putBoolean(ao, overrideOffset, true);
+            // make both accessible
+            theUnsafe.putBoolean(ao, overrideOffset, true);
+            theUnsafe.putBoolean(ao, overrideOffset, true);
+        } catch (NoSuchFieldException e) {
+            // JDK 12, Unsafe won't work, use setAccessible
+            ao.setAccessible(true);
+        }
     }
 }

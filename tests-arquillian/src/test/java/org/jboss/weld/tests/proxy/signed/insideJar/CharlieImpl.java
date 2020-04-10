@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.signed.insideJar;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Typed;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Typed;
 
 /**
  * This bean has restricted type to ONLY interface - this means that inside ProxyFactory it will be treated as a speacial case.

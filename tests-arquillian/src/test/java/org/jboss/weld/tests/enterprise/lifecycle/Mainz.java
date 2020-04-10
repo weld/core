@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 @Stateless
 public class Mainz implements AlteStadt {

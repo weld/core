@@ -1,8 +1,8 @@
 package org.jboss.weld.environment.se.test.isolation;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 @Decorator
 public class CameraDecorator implements Camera {

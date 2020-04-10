@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 @Remote
 public interface HorseRemote {

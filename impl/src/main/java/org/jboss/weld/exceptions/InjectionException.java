@@ -21,12 +21,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Provides message localization service for the
- * {@link javax.enterprise.inject.InjectionException}.
+ * {@link jakarta.enterprise.inject.InjectionException}.
  *
  * @author David Allen
  */
 @SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
-public class InjectionException extends javax.enterprise.inject.InjectionException {
+public class InjectionException extends jakarta.enterprise.inject.InjectionException {
     private static final long serialVersionUID = 2L;
 
     private final WeldExceptionMessage message;

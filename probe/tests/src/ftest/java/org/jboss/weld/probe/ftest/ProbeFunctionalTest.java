@@ -27,11 +27,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Reception;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Model;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Reception;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Model;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -55,8 +55,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
 /**
@@ -131,7 +133,19 @@ public class ProbeFunctionalTest {
         waitAjax().until().element(By.xpath("//h1[text()='Observer Methods']")).is().visible();
         WebElement observerLink = driver.findElement(By.partialLinkText(ApplicationScopedObserver.class.getSimpleName()));
         assertTrue("Cannot find element for " + ApplicationScopedObserver.class.getSimpleName(), observerLink.isDisplayed());
-        guardAjax(observerLink).click();
+        // workaround for FF driver bug making us unable to click elem. in table - https://bugzilla.mozilla.org/show_bug.cgi?id=1448825
+        // we take the observer link upper left corner and add +1 to its coordinated to make sure we are inside the link
+        Point linkLoc = new Point(observerLink.getLocation().getX() + 1, observerLink.getLocation().getY() + 1);
+        // now we grab the cell in which the observer link resides
+        WebElement tdElem = driver.findElement(By.xpath("/html/body/div/div[2]/table/tbody/tr[3]/td[4]"));
+        // following point captures the middle of the cell
+        Point tdElemLoc = new Point(tdElem.getLocation().getX() + (tdElem.getRect().getWidth()/2), tdElem.getLocation().getY() + (tdElem.getRect().getHeight()/2));
+        Actions ac = new Actions(driver);
+        // moveToElement javadoc is WRONG, the offset is actually calculated from the the middle of the element
+        ac.moveToElement(tdElem, linkLoc.getX() - tdElemLoc.getX(), linkLoc.getY() - tdElemLoc.getY()).click().build().perform();
+
+        // wait till we land on the bean details page
+        waitAjax(driver).until().element(By.xpath("//h1[text()='Bean Detail']")).is().visible();
         assertTrue(listOfTargetElements.stream().anyMatch(webElement -> webElement.getText().equals(ApplicationScopedObserver.class.getName())));
         assertTrue(listOfTargetElements.stream().anyMatch(webElement -> webElement.getText().equals("@" + ApplicationScoped.class.getSimpleName())));
         assertTrue(listOfTargetElements.stream().anyMatch(webElement -> webElement.getText().equals(JSONTestUtil.BeanType.MANAGED.name())));

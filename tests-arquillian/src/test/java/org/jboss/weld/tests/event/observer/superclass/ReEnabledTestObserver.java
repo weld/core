@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.event.observer.superclass;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 @ReEnabled
 public class ReEnabledTestObserver extends DisabledTestObserver {

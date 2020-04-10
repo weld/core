@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.producer;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.interceptor.Interceptors;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.interceptor.Interceptors;
 
 @SuppressWarnings("serial")
 public class InterceptorsLiteral extends AnnotationLiteral<Interceptors> implements Interceptors {

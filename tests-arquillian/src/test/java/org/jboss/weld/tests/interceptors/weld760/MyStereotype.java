@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.interceptors.weld760;
 
-import javax.enterprise.inject.Stereotype;
-import javax.inject.Named;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.inject.Named;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

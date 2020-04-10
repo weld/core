@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint.beanConfigurator;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class Consumer {

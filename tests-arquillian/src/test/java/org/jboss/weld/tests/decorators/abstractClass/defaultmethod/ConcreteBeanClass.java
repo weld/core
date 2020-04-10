@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.abstractClass.defaultmethod;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @BeanQualifier
 @Dependent

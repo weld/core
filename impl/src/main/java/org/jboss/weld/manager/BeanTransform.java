@@ -18,7 +18,7 @@ package org.jboss.weld.manager;
 
 import java.util.function.Function;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 final class BeanTransform implements Function<BeanManagerImpl, Iterable<Bean<?>>> {
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.servlet.test.injection.resource;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 public class Dolphin {
 

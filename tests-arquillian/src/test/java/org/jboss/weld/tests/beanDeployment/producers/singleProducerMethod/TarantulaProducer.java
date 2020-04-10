@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanDeployment.producers.singleProducerMethod;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 public class TarantulaProducer {
 

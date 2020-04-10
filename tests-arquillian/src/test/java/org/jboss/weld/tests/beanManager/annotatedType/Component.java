@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanManager.annotatedType;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Component {

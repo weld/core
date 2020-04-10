@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.ejb.proxy.privateMethods;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.Testable;

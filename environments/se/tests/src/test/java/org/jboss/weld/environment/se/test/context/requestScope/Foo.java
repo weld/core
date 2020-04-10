@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.environment.se.test.context.requestScope;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.context.activator.ActivateRequestContext;
 import org.junit.Assert;

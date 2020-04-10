@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.synthetic;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 
 public class BarInterceptor {
 

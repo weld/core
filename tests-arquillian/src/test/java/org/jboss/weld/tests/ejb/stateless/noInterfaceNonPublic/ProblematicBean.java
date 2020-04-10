@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.ejb.stateless.noInterfaceNonPublic;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 /**
  * This is no interface view EJB bean. Only public methods are allowed to be invoked (by spec).

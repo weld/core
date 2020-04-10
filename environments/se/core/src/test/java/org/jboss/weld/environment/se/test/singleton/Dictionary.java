@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.singleton;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Dictionary {

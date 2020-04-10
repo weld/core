@@ -21,7 +21,7 @@ import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;

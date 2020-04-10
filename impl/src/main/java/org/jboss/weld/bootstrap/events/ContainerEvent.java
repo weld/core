@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BootstrapLogger;

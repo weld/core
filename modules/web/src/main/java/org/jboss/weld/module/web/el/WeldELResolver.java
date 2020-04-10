@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.module.web.el;
 
-import javax.el.ELContext;
+import jakarta.el.ELContext;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;

@@ -18,9 +18,9 @@ package org.jboss.weld.tests.session.newBean;
 
 import java.io.Serializable;
 
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.SessionScoped;
 
 @SuppressWarnings("serial")
 @SessionScoped

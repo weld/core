@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
-        <version>3.0.7-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -27,8 +27,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
         </dependency>
 
         <dependency>
@@ -40,8 +40,8 @@
                     <artifactId>testng</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.jboss.spec.javax.el</groupId>
-                    <artifactId>jboss-el-api_3.0_spec</artifactId>
+                    <groupId>org.jboss.spec.jakarta.el</groupId>
+                    <artifactId>jboss-el-api_4.0_spec</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -73,8 +73,8 @@
             <version>${cdi.tck.version}</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>el-api</artifactId>
-                    <groupId>javax.el</groupId>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -88,16 +88,30 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>el-api</artifactId>
-                    <groupId>javax.el</groupId>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>jsf-api</artifactId>
-                    <groupId>javax.faces</groupId>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
                 </exclusion>
                 <exclusion>
                     <artifactId>container-se-api</artifactId>
                     <groupId>org.jboss.arquillian.container</groupId>
+                </exclusion>
+                <!-- TODO remove these exclusions once we run on TCK 2.0.6+, e.g. version with Jakarta EE GAVs-->
+                <!-- see https://github.com/eclipse-ee4j/cdi-tck/issues/195-->
+                <exclusion>
+                    <artifactId>jsf-api</artifactId>
+                    <groupId>jakarta.faces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>el-api</artifactId>
+                    <groupId>jakarta.el</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.xml.soap</groupId>
+                    <artifactId>javax.xml.soap-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -109,28 +123,42 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>el-api</artifactId>
-                    <groupId>javax.el</groupId>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>jsf-api</artifactId>
-                    <groupId>javax.faces</groupId>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
                 </exclusion>
                 <exclusion>
                     <artifactId>container-se-api</artifactId>
                     <groupId>org.jboss.arquillian.container</groupId>
+                </exclusion>
+                <!-- TODO remove these exclusions once we run on TCK 2.0.6+, e.g. version with Jakarta EE GAVs-->
+                <!-- see https://github.com/eclipse-ee4j/cdi-tck/issues/195-->
+                <exclusion>
+                    <artifactId>jsf-api</artifactId>
+                    <groupId>jakarta.faces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>el-api</artifactId>
+                    <groupId>jakarta.el</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.xml.soap</groupId>
+                    <artifactId>javax.xml.soap-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
+            <artifactId>jakarta.el</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+            <groupId>jakarta.faces</groupId>
+            <artifactId>jakarta.faces-api</artifactId>
         </dependency>
 
     </dependencies>
@@ -305,8 +333,8 @@
                     </exclusions>
                 </dependency>
                 <dependency>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
+                    <groupId>jakarta.validation</groupId>
+                    <artifactId>jakarta.validation-api</artifactId>
                 </dependency>
                 <!-- Because we need this to compile the exception transformer and resource manager -->
                 <dependency>
@@ -547,8 +575,8 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>javax.xml.ws</groupId>
-                    <artifactId>jaxws-api</artifactId>
+                    <groupId>jakarta.xml.ws</groupId>
+                    <artifactId>jakarta.xml.ws-api</artifactId>
                     <version>${jax.artifacts.version}</version>
                     <scope>test</scope>
                 </dependency>
@@ -567,8 +595,8 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
+                    <groupId>jakarta.activation</groupId>
+                    <artifactId>jakarta.activation-api</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

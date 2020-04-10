@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.inheritance.weld824.veto;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 public class SimpleExtension implements Extension {
     public void registerBar(@Observes ProcessAnnotatedType<Foo> event) {

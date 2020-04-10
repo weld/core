@@ -4,11 +4,12 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>3.0.7-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.jboss.weld.examples</groupId>
     <artifactId>weld-examples-parent</artifactId>
+  <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Weld Examples</name>
 
@@ -100,10 +101,12 @@
     </modules>
 
     <properties>
-        <jsf.version>2.1</jsf.version>
+        <jboss.jsf.api.2.3.version>3.0.0.Final</jboss.jsf.api.2.3.version>
+        <jboss.servlet.api.4.0.version>2.0.0.Final</jboss.servlet.api.4.0.version>
+        <jsf.version>2.3.2</jsf.version>
         <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>1.2.1.Final</wildfly.plugin.version>
-        <uel.version>2.2</uel.version>
+        <wildfly.plugin.version>2.0.0.Final</wildfly.plugin.version>
+        <uel.version>3.0.2</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
     </properties>
@@ -112,15 +115,26 @@
         <dependencies>
 
             <dependency>
-                <groupId>javax.faces</groupId>
-                <artifactId>jsf-api</artifactId>
-                <version>${jsf.version}</version>
+                <groupId>jakarta.faces</groupId>
+                <artifactId>jakarta.faces-api</artifactId>
+                <version>${jsf.api.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.glassfish.web</groupId>
-                <artifactId>el-impl</artifactId>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${servlet.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.el</artifactId>
                 <version>${uel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sourceforge.htmlunit</groupId>
+                <artifactId>htmlunit</artifactId>
             </dependency>
 
             <dependency>
@@ -192,7 +206,7 @@
                         <useCache>false</useCache>
                     </configuration>
                 </plugin>
-                <!-- JBoss AS plugin to deploy war -->
+                <!-- WildFly plugin to deploy war -->
                 <plugin>
                     <groupId>org.wildfly.plugins</groupId>
                     <artifactId>wildfly-maven-plugin</artifactId>
@@ -260,6 +274,7 @@
                                 <systemProperties>
                                     <arquillian.launch>${arquillian}</arquillian.launch>
                                     <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                                    <additional.vm.args>${additional.vm.args}</additional.vm.args>
                                 </systemProperties>
                             </configuration>
                             <executions>

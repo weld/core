@@ -22,14 +22,14 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.Producer;
-import javax.inject.Named;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.Producer;
+import jakarta.inject.Named;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
@@ -161,7 +161,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         // Override qualifiers and the bean name
         Set<Annotation> qualifiers = new HashSet<Annotation>();
         for (Annotation qualifier : attributes().getQualifiers()) {
-            // Don't include implicit javax.enterprise.inject.Default qualifier
+            // Don't include implicit jakarta.enterprise.inject.Default qualifier
             if (!qualifier.equals(Default.Literal.INSTANCE) || getAnnotated().isAnnotationPresent(Default.class)) {
                 qualifiers.add(qualifier);
             }

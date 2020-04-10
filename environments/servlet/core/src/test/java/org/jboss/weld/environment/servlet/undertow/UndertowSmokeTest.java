@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.Listener;

@@ -23,9 +23,9 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

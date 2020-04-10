@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.inheritance.packagePrivate;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *

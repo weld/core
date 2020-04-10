@@ -392,7 +392,7 @@ following conditions as a managed bean:
 * It is a concrete class, or is annotated `@Decorator`.
 * It is not annotated with an EJB component-defining annotation or
 declared as an EJB bean class in `ejb-jar.xml`.
-* It does not implement `javax.enterprise.inject.spi.Extension`.
+* It does not implement `jakarta.enterprise.inject.spi.Extension`.
 * It has an appropriate constructor—either:
 ** the class has a constructor with no parameters, or
 ** the class declares a constructor annotated `@Inject`.
@@ -521,7 +521,7 @@ with the `@Produces` annotation.
 
 [source.JAVA, java]
 --------------------------------------------------------------------------------------
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class RandomNumberGenerator {
@@ -601,7 +601,7 @@ methods.
 
 [source.JAVA, java]
 ------------------------------------------------------
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 public class Shop {
    @Produces PaymentProcessor paymentProcessor = ....;

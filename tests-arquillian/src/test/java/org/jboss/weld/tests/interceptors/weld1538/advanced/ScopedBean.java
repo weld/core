@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.weld1538.advanced;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.interceptor.InvocationContext;
 
 @ApplicationScoped
 public class ScopedBean {

@@ -19,8 +19,8 @@ package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -28,7 +28,9 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -56,5 +58,16 @@ public class WithAnnotationsTest {
 
         assertNotNull(extension.getGroupType());
         assertEquals(Group.class, extension.getGroupType().getJavaClass());
+    }
+    
+    // We need to update WildFly ClassFileInfo first
+    @Category(EmbeddedContainer.class)
+    @Test
+    public void testWithAnnotationsOnDefaultMethod() {
+        assertNotNull(extension.getMyBeanType());
+        assertEquals(MyBean.class, extension.getMyBeanType().getJavaClass()); 
+        
+        assertNotNull(extension.getMyBeanMetaType());
+        assertEquals(MyBeanMeta.class, extension.getMyBeanMetaType().getJavaClass()); 
     }
 }

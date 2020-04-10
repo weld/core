@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.scope;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 class Foo {

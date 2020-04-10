@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.servlet.test.bootstrap.enhanced.shutdown;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Foo {

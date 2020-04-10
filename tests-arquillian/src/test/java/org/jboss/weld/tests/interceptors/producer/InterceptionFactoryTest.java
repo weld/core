@@ -14,24 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.interceptors.producer;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.interceptors.producer.Producer.Bar;
 import org.jboss.weld.tests.interceptors.producer.Producer.Foo;
@@ -41,6 +39,7 @@ import org.junit.runner.RunWith;
 /**
  *
  * @author Martin Kouba
+ * @author Matej Novotny
  */
 @RunWith(Arquillian.class)
 public class InterceptionFactoryTest {
@@ -48,7 +47,7 @@ public class InterceptionFactoryTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptionFactoryTest.class))
-                .addPackage(InterceptionFactoryTest.class.getPackage());
+            .addPackage(InterceptionFactoryTest.class.getPackage());
     }
 
     @Test
@@ -93,17 +92,12 @@ public class InterceptionFactoryTest {
     }
 
     @Test
-    public void testListAdd(@Produced Instance<List<Object>> lists) {
-        // resolving via Instance just to make the NPE exception human-readable (direct method injection will blow up with Arq. stack)
-        // Invalid producer using an InterceptionFactory for List (interface) and applying it to ArrayList
-        try {
-            lists.get();
-            fail();
-        } catch (IllegalStateException e) {
-            //Expected
-        }
+    public void testListAdd(@Produced List<Object> list) {
+        Producer.reset();
+        list.add("foo");
+        list.size(); // this won't trigger interception
+        assertEquals(1, Producer.INVOCATIONS.size());
     }
-
 
     @Test
     public void testParent(@Produced Producer.FooParent foo) {
@@ -113,5 +107,82 @@ public class InterceptionFactoryTest {
     @Test
     public void testAbstractBar(@Produced Producer.AbstractBar bar) {
         assertEquals("Hello BarImpl pong", bar.ping());
+    }
+
+    @Test
+    public void testFactoryFromInterface(@Produced SomeInterface bean) {
+        Producer.reset();
+        assertEquals("Hello " + SomeImpl.class.getSimpleName(), bean.ping(2.50, "foo"));
+        assertEquals(SomeImpl.class.getSimpleName(), bean.pong());
+        assertEquals(2, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromInterfacewithDefaultMethod(@Produced InterfaceWithDefaultMethod bean) {
+        Producer.reset();
+        assertEquals("Hello " + InterfaceWithDefaultMethod.class.getSimpleName(), bean.ping());
+        assertEquals(ImplOfInterfaceWithDefaultMethod.class.getSimpleName(), bean.pong());
+        assertEquals(2, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromGenericInterface(@Produced SomeGenericInterface<List<String>> bean) {
+        Producer.reset();
+        ArrayList<String> testList = new ArrayList<String>();
+        testList.add("foo");
+        assertEquals("Hello " + SomeGenericImpl.class.getSimpleName(), bean.ping(testList, 2.5));
+        assertEquals(SomeGenericImpl.class.getSimpleName(), bean.ping(testList, "bar"));
+        assertEquals(2, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryBackedByUnproxyableImpl(@Produced ProxyableInterface bean) {
+        // this test adds class level Monitor and method level Hello bindings
+        Producer.reset();
+        assertEquals("Hello " + UnproxyableImpl.class.getSimpleName(), bean.ping());
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromInterfaceWithMethodAnnotation(@Produced ProxyableInterfaceWithMethodAnnotation bean) {
+        // this test adds class level Monitor and method level Hello bindings
+        Producer.reset();
+        assertEquals("Hello " + UnproxyableInterfaceWithMethodAnnotationImpl.class.getSimpleName(), bean.ping());
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromInterfaceWithClassAnnotation(@Produced ProxyableInterfaceWithClassAnnotation bean) {
+        // this test adds class level Monitor and method level Hello bindings
+        Producer.reset();
+        assertEquals("Hello " + UnproxyableInterfaceWithClassAnnotationImpl.class.getSimpleName(), bean.ping());
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromGenericInterfaceStructure(@Produced InterfaceWithGenericsB<String, Integer> bean) {
+        Producer.reset();
+        bean.ping(); // this doesn't trigger anything as we don't inherit annotations ATM
+        assertEquals("Hello " + UnproxyableInterfaceWithGenericsChainImpl.class.getSimpleName(), bean.pong());
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryWhenInterfaceHasEqualAnnotationsToThoseWeAreAdding(@Produced InterfaceWithAnnotation bean) {
+        // Currently, we do not verify this shouldn't happen, checking it would require comparison between
+        // added annotation and the AT we create from interface
+        // hence this test should just "silently succeed"
+        Producer.reset();
+        assertEquals("Hello " + InterfaceWithAnnotationImpl.class.getSimpleName(), bean.ping());
+        bean.pong();
+        assertEquals(1, Producer.INVOCATIONS.size());
+    }
+
+    @Test
+    public void testFactoryFromNonGenericInterfaceChain(@Produced InterfaceB bean) {
+        Producer.reset();
+        assertEquals("Hello pingB", bean.pingB());
+        assertEquals("pingA", bean.pingA());
+        assertEquals(1, Producer.INVOCATIONS.size());
     }
 }

@@ -20,14 +20,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.se.SeContainer;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.se.SeContainer;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.AbstractCDI;
 import org.jboss.weld.Container;
@@ -80,7 +80,7 @@ import org.jboss.weld.util.collections.ImmutableList;
  * </pre>
  *
  * <p>
- * The container is also registered as a {@link javax.inject.Singleton} bean.
+ * The container is also registered as a {@link jakarta.inject.Singleton} bean.
  * </p>
  *
  * <p>
@@ -181,7 +181,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
             synchronized (LOCK) {
                 if (shutdownHook == null) {
                     shutdownHook = new ShutdownHook();
-                    Runtime.getRuntime().addShutdownHook(shutdownHook);
+                    SecurityActions.addShutdownHook(shutdownHook);
                 }
             }
         }
@@ -238,7 +238,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     /**
      * Provides access to all beans within the application. Retained for backward compatibility - WeldContainer implements
-     * {@link javax.enterprise.inject.Instance}.
+     * {@link jakarta.enterprise.inject.Instance}.
      *
      * @return the instance
      * @deprecated Applications are encouraged to use methods for programmatic lookup directly.

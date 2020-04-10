@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.ejb;
 
-import javax.ejb.Singleton;
+import jakarta.ejb.Singleton;
 
 import org.jboss.weld.test.util.ActionSequence;
 

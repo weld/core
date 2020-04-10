@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.producer.method.circular.weld1513;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
 public class Alpha {

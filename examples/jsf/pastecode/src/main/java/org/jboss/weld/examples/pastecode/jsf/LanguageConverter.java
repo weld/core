@@ -2,8 +2,8 @@ package org.jboss.weld.examples.pastecode.jsf;
 
 import org.jboss.weld.examples.pastecode.model.Language;
 
-import javax.faces.convert.EnumConverter;
-import javax.faces.convert.FacesConverter;
+import jakarta.faces.convert.EnumConverter;
+import jakarta.faces.convert.FacesConverter;
 
 /**
  * JSF converter responsible for converting the {@link Language} enum to and from Strings

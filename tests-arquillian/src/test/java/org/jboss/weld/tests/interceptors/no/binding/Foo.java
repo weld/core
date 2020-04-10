@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.no.binding;
 
-import javax.interceptor.Interceptors;
+import jakarta.interceptor.Interceptors;
 
 public class Foo {
 

@@ -18,8 +18,8 @@ package org.jboss.weld.tests.observers.ejb.remote;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.event.Observes;
 
 import org.junit.Assert;
 

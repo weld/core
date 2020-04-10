@@ -1,0 +1,58 @@
+= Notes on Jakarta EE 9 javax to jakarta namespace changes
+
+These are notes on the changes that have been made in pepartation for migrating the
+packages from javax to jakarta as needed for the Jakarta EE 9 release.
+
+== Status as of Apr 10 2020
+An initial update was done just to allow the dependency-injection TCK to be run against
+Weld so that an initial candidate release of that dependency can be done.
+
+The following Jakarta EE 9 dependencies have been updated:
+
+* https://github.com/starksm64/api.git Scott Stark fork of https://github.com/weld/api,
+(version is 4.0.0-SNAPSHOT) to update the javax.enterprise package to jakarta.enterprise and Jakarta depednencies to:
+** inject-api version 2.0.0.RC3
+** cdi-api version to 3.0.0-M2
+** ejb-api version to 4.0.0-RC1
+** jpa-api version to 4.0.0-RC2
+** validation-api version to 3.0.0-M1
+** interceptor-api version to 2.0.0-RC2
+** jta-api version to 2.0.0-RC1
+* https://github.com/starksm64/jboss-el-api_spec/tree/jboss-el-api_4.0-1.0.x for jarkarta-el. This is a fork of the existing jboss-el-api_spec fork by Scott Stark that updates the packages in a jboss-el-api_4.0-1.0.x branch. A PR is https://github.com/jboss/jboss-el-api_spec/pull/26
+  * version is 1.0.0-SNAPSHOT
+* https://github.com/starksm64/arquillian-container-weld/tree/jakartaee9 Scott Stark fork of arquillian-container-weld to
+update the javax package to jakarta.
+  * version is 3.0.0.Final-SNAPSHOT
+
+=== TODOs:
+
+* The dependency on the https://github.com/weld/api project needs to be replaced with https://github.com/eclipse-ee4j/cdi
+* The arquillian weld container build has many test failures:
+[source,bash]
+----
+[ERROR] Failures: 
+[ERROR]   WeldEmbeddedBeforeAfterTestCase.shouldExecutreBefore:66 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedBeforeAfterTestCase.shouldExecutreBefore:66 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldBeAbleToReadAgeAfterConversationWasStarted:96 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldBeAbleToSetAgeAndStartAConversation:85 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldBeAbleToSetAgeWithoutStartingAConversation:64 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldNotBeAbleToReadAgeConversationNotStarted:75 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationEARTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:72 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationEARTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:62 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationJARTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:68 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationJARTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:58 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationSessionScopeTestCase.shouldBeAbleToReadAge:69 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationSessionScopeTestCase.shouldBeAbleToSetAge:59 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:66 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:56 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationWARTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:74 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationWARTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:64 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationWARTestCase.testExtensionIsLoaded:84
+[ERROR] Errors: 
+[ERROR]   ExcludedBeansTest.testExcludedBeanIsNotAvailable:50 NullPointer
+[ERROR]   RemoveDuplicateBeanXmlTestCase.shouldBeAbleTo:37 NullPointer
+[ERROR]   WeldEmbeddedCDIProviderTest.testCDIProvider:49 » IllegalState Unable to locate...
+[INFO] 
+[ERROR] Tests run: 30, Failures: 17, Errors: 3, Skipped: 0
+----
+* The weld/core project still has many test failures that I have not looked into.

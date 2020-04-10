@@ -18,9 +18,9 @@ package org.jboss.weld.tests.interceptors.bridgemethods.hierarchy;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @Fast
 @Interceptor

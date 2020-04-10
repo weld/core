@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.observer.conditional;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
 public class Miracle {

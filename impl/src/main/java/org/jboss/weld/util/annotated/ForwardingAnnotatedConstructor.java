@@ -18,7 +18,7 @@ package org.jboss.weld.util.annotated;
 
 import java.lang.reflect.Constructor;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
  * Forwarding implementation of {@link AnnotatedConstructor}.

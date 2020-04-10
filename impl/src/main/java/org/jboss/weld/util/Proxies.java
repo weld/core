@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -234,7 +234,7 @@ public class Proxies {
     }
 
     public static Object getDeclaringBeanInfo(Bean<?> bean) {
-        return (bean != null) ? bean : "<unknown javax.enterprise.inject.spi.Bean instance>";
+        return (bean != null) ? bean : "<unknown jakarta.enterprise.inject.spi.Bean instance>";
     }
 
     /**

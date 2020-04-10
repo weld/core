@@ -1,6 +1,6 @@
 package org.jboss.weld.examples.translator;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface Translator {

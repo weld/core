@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.events;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

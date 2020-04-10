@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.producer.receiver;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 public class Dependency {
 

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.extensions.lifecycle.weld1884;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class BeanWithAnonymousClasses {

@@ -24,8 +24,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.inject.Vetoed;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.interceptor.InterceptorBinding;
 
 /**
  * Any bean that declares this interceptor binding is monitored.

@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se.test.instance.enhanced;
 
 import java.math.BigDecimal;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.inject.WeldInstance;
 

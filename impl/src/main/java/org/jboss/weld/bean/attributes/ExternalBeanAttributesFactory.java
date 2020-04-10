@@ -25,9 +25,9 @@ import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.util.Bindings;

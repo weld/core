@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.observers.pseudoscope;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.Reception;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Reception;
 
 /**
  * @author Kirill Gaevskii

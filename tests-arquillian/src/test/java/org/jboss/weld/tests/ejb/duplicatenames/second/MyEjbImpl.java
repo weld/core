@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.ejb.duplicatenames.second;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class MyEjbImpl {

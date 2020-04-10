@@ -19,7 +19,7 @@ package org.jboss.weld.tests.contexts.passivating.serialization.interception;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  *

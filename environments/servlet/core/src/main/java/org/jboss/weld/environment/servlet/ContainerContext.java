@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.servlet;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.Preconditions;

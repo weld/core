@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.event.lifecycle.concurrent;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
 
 public class VerifyingExtension implements Extension {
 

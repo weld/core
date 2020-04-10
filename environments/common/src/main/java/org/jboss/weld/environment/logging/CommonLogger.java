@@ -17,7 +17,7 @@
 package org.jboss.weld.environment.logging;
 
 
-import javax.enterprise.inject.UnsatisfiedResolutionException;
+import jakarta.enterprise.inject.UnsatisfiedResolutionException;
 
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
@@ -158,5 +158,9 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 40, value = "Jandex discovery strategy was disabled.", format = Format.MESSAGE_FORMAT)
     void jandexDiscoveryStrategyDisabled();
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 41, value = "Using {0} for bean discovery", format = Format.MESSAGE_FORMAT)
+    void usingServiceLoaderSourcedDiscoveryStrategy(Object discoveryStrategy);
 
 }

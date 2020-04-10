@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.classfilewriter.AccessFlag;
 import org.jboss.classfilewriter.ClassFile;
@@ -263,7 +263,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
 
         public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor) {
             // get the correct class type to use to resolve the method
-            MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", new String[0], LJAVA_LANG_CLASS, TargetInstanceProxy.class.getName());
+            MethodInformation methodInfo = new StaticMethodInformation("weld_getTargetClass", new String[0], LJAVA_LANG_CLASS, TargetInstanceProxy.class.getName());
             invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
             CodeAttribute code = classMethod.getCodeAttribute();
             code.checkcast("java/lang/Class");

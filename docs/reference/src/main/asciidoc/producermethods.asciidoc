@@ -34,7 +34,7 @@ implementation is fixed. A producer method has no such limitation:
 
 [source.JAVA, java]
 --------------------------------------------------------------------
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 @SessionScoped
 public class Preferences implements Serializable {

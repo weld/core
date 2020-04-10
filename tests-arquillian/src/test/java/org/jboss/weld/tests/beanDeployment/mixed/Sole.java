@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanDeployment.mixed;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Whitefish
 @Named("whitefish")

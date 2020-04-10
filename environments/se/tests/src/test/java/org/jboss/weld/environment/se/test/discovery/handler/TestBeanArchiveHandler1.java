@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.discovery.handler;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveHandler;

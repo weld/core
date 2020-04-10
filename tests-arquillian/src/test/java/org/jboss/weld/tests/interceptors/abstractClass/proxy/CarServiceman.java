@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.abstractClass.proxy;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *

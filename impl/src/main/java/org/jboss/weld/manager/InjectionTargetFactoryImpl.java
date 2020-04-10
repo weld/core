@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.manager;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
@@ -120,7 +120,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
     }
 
     private BasicInjectionTarget<T> chooseInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, boolean interceptor) {
-        if (bean instanceof Decorator<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
+        if (bean instanceof Decorator<?> || type.isAnnotationPresent(jakarta.decorator.Decorator.class)) {
             return new DecoratorInjectionTarget<T>(type, bean, manager);
         }
         NonProducibleInjectionTarget<T> nonProducible = InjectionTargets.createNonProducibleInjectionTarget(type, bean, manager);
@@ -130,7 +130,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
         if (bean instanceof SessionBean<?>) {
             return manager.getServices().get(EjbSupport.class).createSessionBeanInjectionTarget(type, (SessionBean<T>) bean, manager);
         }
-        if (bean instanceof Interceptor<?> || type.isAnnotationPresent(javax.interceptor.Interceptor.class)) {
+        if (bean instanceof Interceptor<?> || type.isAnnotationPresent(jakarta.interceptor.Interceptor.class)) {
             return BeanInjectionTarget.forCdiInterceptor(type, bean, manager);
         }
         if (interceptor) {

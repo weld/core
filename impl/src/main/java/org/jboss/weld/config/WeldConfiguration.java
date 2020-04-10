@@ -17,6 +17,7 @@
 package org.jboss.weld.config;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
@@ -33,7 +34,6 @@ import java.util.regex.Pattern;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -86,7 +86,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * </p>
  *
  * @author Martin Kouba
- * @see BootstrapConfiguration
+ * @see ExternalConfiguration
  * @see ConfigurationKey
  */
 @SuppressWarnings("deprecation")
@@ -269,7 +269,6 @@ public class WeldConfiguration implements Service {
         // 3. Integrator SPI
         // ExternalConfiguration.getConfigurationProperties() map has precedence
         merge(properties, processExternalConfiguration(getExternalConfigurationOptions(services)), "ExternalConfiguration");
-        merge(properties, processBootstrapConfiguration(services.get(BootstrapConfiguration.class)), BootstrapConfiguration.class.getSimpleName());
 
         return properties;
     }
@@ -399,17 +398,6 @@ public class WeldConfiguration implements Service {
         return found;
     }
 
-    private Map<ConfigurationKey, Object> processBootstrapConfiguration(BootstrapConfiguration bootstrapConfiguration) {
-        if (bootstrapConfiguration != null) {
-            Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
-            processKeyValue(found, ConfigurationKey.CONCURRENT_DEPLOYMENT, bootstrapConfiguration.isConcurrentDeploymentEnabled());
-            processKeyValue(found, ConfigurationKey.PRELOADER_THREAD_POOL_SIZE, bootstrapConfiguration.getPreloaderThreadPoolSize());
-            processKeyValue(found, ConfigurationKey.NON_PORTABLE_MODE, bootstrapConfiguration.isNonPortableModeEnabled());
-            return found;
-        }
-        return Collections.emptyMap();
-    }
-
     private Map<ConfigurationKey, Object> processExternalConfiguration(Map<String, Object> externalConfiguration) {
         Map<ConfigurationKey, Object> found =  new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         for (Entry<String, Object> entry : externalConfiguration.entrySet()) {
@@ -486,11 +474,15 @@ public class WeldConfiguration implements Service {
     private Properties loadProperties(URL url) {
         Properties properties = new Properties();
         try {
-            properties.load(url.openStream());
+            InputStream propertiesStream = url.openStream();
+            try {
+                properties.load(propertiesStream);
+            } finally {
+                propertiesStream.close();
+            }
         } catch (IOException e) {
             throw new ResourceLoadingException(e);
         }
         return properties;
     }
-
 }

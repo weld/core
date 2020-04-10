@@ -18,11 +18,13 @@ package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 
 import static org.junit.Assert.assertNull;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.WithAnnotations;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.WithAnnotations;
+import jakarta.inject.Named;
 import javax.validation.Constraint;
 import java.beans.ConstructorProperties;
 
@@ -31,6 +33,10 @@ public class VerifyingExtension implements Extension {
     private AnnotatedType<Person> personType;
 
     private AnnotatedType<Group> groupType;
+
+    private AnnotatedType<MyBean> myBeanType;
+
+    private AnnotatedType<MyBeanMeta> myBeanMetaType;
 
     void processPerson(@Observes @WithAnnotations(Constraint.class) ProcessAnnotatedType<Person> event) {
         assertNull(personType);
@@ -41,13 +47,31 @@ public class VerifyingExtension implements Extension {
         assertNull(groupType);
         this.groupType = event.getAnnotatedType();
     }
-
-    public AnnotatedType<Person> getPersonType() {
-        return personType;
-
+    
+    void processMyBean(@Observes @WithAnnotations(Named.class) ProcessAnnotatedType<MyBean> event) {
+        assertNull(myBeanType);
+        this.myBeanType = event.getAnnotatedType();
+    }
+    
+    void processMyBeanMeta(@Observes @WithAnnotations(Stereotype.class) ProcessAnnotatedType<MyBeanMeta> event) {
+        assertNull(myBeanMetaType);
+        this.myBeanMetaType = event.getAnnotatedType();
     }
 
-    public AnnotatedType<Group> getGroupType() {
+    AnnotatedType<Person> getPersonType() {
+        return personType;
+    }
+
+    AnnotatedType<Group> getGroupType() {
         return groupType;
     }
+
+    AnnotatedType<MyBean> getMyBeanType() {
+        return myBeanType;
+    }
+
+    AnnotatedType<MyBeanMeta> getMyBeanMetaType() {
+        return myBeanMetaType;
+    }
+    
 }

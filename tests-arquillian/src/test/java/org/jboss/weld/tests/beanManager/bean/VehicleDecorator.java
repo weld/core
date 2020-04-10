@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.beanManager.bean;
 
-import javax.decorator.Delegate;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
 
 @Vetoed
 public class VehicleDecorator implements Vehicle {

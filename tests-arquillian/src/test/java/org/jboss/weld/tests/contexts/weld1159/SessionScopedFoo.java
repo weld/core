@@ -18,8 +18,8 @@ package org.jboss.weld.tests.contexts.weld1159;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 
 @SessionScoped
 public class SessionScopedFoo extends AbstractBean {

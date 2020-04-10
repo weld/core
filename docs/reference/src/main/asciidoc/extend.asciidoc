@@ -34,14 +34,14 @@ service provider architecture.
 
 [source.JAVA, java]
 ----------------------------------------------
- import javax.enterprise.inject.spi.Extension;
+ import jakarta.enterprise.inject.spi.Extension;
 
 class MyExtension implements Extension { ... }
 ----------------------------------------------
 
 Next, we need to register our extension as a service provider by
 creating a file named
-`META-INF/services/javax.enterprise.inject.spi.Extension`, which
+`META-INF/services/jakarta.enterprise.inject.spi.Extension`, which
 contains the name of our extension class:
 
 [source.JAVA, java]
@@ -88,7 +88,7 @@ Extensions may observe these events:
 
 [source.JAVA, java]
 -----------------------------------------------------------------------------------------------
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 class MyExtension implements Extension {
 
@@ -113,7 +113,7 @@ Here's a very simple example:
 
 [source.JAVA, java]
 ----------------------------------------------------------------------------------------------------------
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 class MyExtension implements Extension {
 
@@ -149,7 +149,7 @@ See also chapter http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#configurators[
 ==== Weld-enriched container lifecycle events
 
 Apart from CDI-defined lifecycle events, Weld also offers enriched observable container lifecycle event - `WeldAfterBeanDiscovery`.
-Compared to `javax.enterprise.inject.spi.AfterBeanDiscovery`, it adds one extra method - `addInterceptor()`.
+Compared to `jakarta.enterprise.inject.spi.AfterBeanDiscovery`, it adds one extra method - `addInterceptor()`.
 This method works in the same way as the aforementioned <<_configurators>>; you get back an `InterceptorConfigurator` instance, where you can set all the desired data.
 The interceptor is created automatically, once the methods exits and the configurator instance is not reusable.
 But if you need to create several interceptors, you can simply request several configurator instances.
@@ -218,7 +218,7 @@ Let's study some of the interfaces exposed by the `BeanManager`.
 
 Application components which cannot obtain a `BeanManager` reference via
 injection nor JNDI lookup can get the reference from the
-`javax.enterprise.inject.spi.CDI` class via a static method call:
+`jakarta.enterprise.inject.spi.CDI` class via a static method call:
 
 [source.JAVA, java]
 -----------------------------------------------------
@@ -249,7 +249,7 @@ itself, and so only method and field injection will be supported.
 
 [source.JAVA, java]
 -----------------------------------------------------------------------------------------------------------
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 ...
 
@@ -337,11 +337,11 @@ instantiation and injection upon the `SecurityManager` instance.
 
 [source.JAVA, java]
 -------------------------------------------------------------------------------------------
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Observes;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 ...
 
 public class SecurityManagerExtension implements Extension {
@@ -376,7 +376,7 @@ annotation.
 [source.JAVA, java]
 -------------------------------------------------------------------------------------------------------
 import java.lang.reflect.Type;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 import java.lang.annotation.Annotation;
 ...
 
@@ -414,8 +414,8 @@ class which implements a certain `Service` interface.
 
 [source.JAVA, java]
 ---------------------------------------------------------------------------------------------------------------
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.Alternative;
 ...
 
 class ServiceAlternativeExtension implements Extension {
@@ -518,9 +518,9 @@ The portable extension works by wrapping the containers
 
 [source.JAVA, java]
 ---------------------------------------------------------------------------------------------
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 public class ConfigExtension implements Extension {
 
@@ -629,7 +629,7 @@ works similarly to how metadata of a bean may be overridden using
 
 For every injection point of each component supporting injection Weld
 fires an event of type
-`javax.enterprise.inject.spi.ProcessInjectionPoint`
+`jakarta.enterprise.inject.spi.ProcessInjectionPoint`
 
 [source.JAVA, java]
 -----------------------------------------------------------------
@@ -651,7 +651,7 @@ For now, we'll just mention one more extension point.
 
 === Manipulating interceptors, decorators and alternatives enabled for an application
 
-An event of type `javax.enterprise.inject.spi.AfterTypeDiscovery` is
+An event of type `jakarta.enterprise.inject.spi.AfterTypeDiscovery` is
 fired when the container has fully completed the type discovery process
 and before it begins the bean discovery process.
 
@@ -694,7 +694,7 @@ application that uses Wicket.
 
 [source.JAVA, java]
 ---------------------------------------------------
-import javax.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Context;
 
 public interface AlterableContext extends Context {
     public void destroy(Contextual<?> contextual);

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.contexts.request.startup.ejb;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Chicken {

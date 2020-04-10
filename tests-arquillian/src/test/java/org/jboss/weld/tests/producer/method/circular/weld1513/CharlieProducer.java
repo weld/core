@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.producer.method.circular.weld1513;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 @SuppressWarnings("unused")
 public class CharlieProducer {

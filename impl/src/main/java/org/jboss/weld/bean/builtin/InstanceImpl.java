@@ -31,14 +31,14 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.AlterableContext;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.AlterableContext;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
@@ -172,8 +172,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         // Attempt to destroy instance which is either a client proxy or a dependent session bean proxy
         if (instance instanceof ProxyObject) {
             ProxyObject proxy = (ProxyObject) instance;
-            if (proxy.getHandler() instanceof ProxyMethodHandler) {
-                ProxyMethodHandler handler = (ProxyMethodHandler) proxy.getHandler();
+            if (proxy.weld_getHandler() instanceof ProxyMethodHandler) {
+                ProxyMethodHandler handler = (ProxyMethodHandler) proxy.weld_getHandler();
                 Bean<?> bean = handler.getBean();
                 if (isSessionBeanProxy(instance) && Dependent.class.equals(bean.getScope())) {
                     // Destroy internal reference to a dependent session bean

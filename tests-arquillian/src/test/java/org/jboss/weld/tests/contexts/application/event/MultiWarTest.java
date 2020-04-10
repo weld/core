@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.contexts.application.event;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.junit.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;

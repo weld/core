@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.event.observer.validation.enterprise;
 
-import javax.ejb.Local;
-import javax.enterprise.event.Observes;
+import jakarta.ejb.Local;
+import jakarta.enterprise.event.Observes;
 
 public @Local interface FarmerLocal
 {

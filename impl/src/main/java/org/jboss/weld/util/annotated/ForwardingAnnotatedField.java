@@ -18,7 +18,7 @@ package org.jboss.weld.util.annotated;
 
 import java.lang.reflect.Field;
 
-import javax.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 
 /**
  * Forwarding implementation of {@link AnnotatedField}.

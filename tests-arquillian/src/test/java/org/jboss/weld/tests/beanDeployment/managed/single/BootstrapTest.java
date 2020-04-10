@@ -19,8 +19,8 @@ package org.jboss.weld.tests.beanDeployment.managed.single;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

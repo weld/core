@@ -1,8 +1,8 @@
 package org.jboss.weld.tests.beanManager;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
 public class ProducesUtil {
 

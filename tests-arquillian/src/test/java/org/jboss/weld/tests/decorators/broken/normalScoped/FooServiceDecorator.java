@@ -17,10 +17,10 @@
 
 package org.jboss.weld.tests.decorators.broken.normalScoped;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 @Decorator
 @RequestScoped

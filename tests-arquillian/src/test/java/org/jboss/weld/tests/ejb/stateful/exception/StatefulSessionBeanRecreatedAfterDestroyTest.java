@@ -18,14 +18,14 @@ package org.jboss.weld.tests.ejb.stateful.exception;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.ejb.EJBException;
-import javax.ejb.NoSuchEJBException;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.AlterableContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.NoSuchEJBException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.spi.AlterableContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

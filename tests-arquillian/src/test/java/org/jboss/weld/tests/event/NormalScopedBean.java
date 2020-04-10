@@ -17,9 +17,9 @@
 
 package org.jboss.weld.tests.event;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Any;
 import java.io.Serializable;
 
 @SessionScoped

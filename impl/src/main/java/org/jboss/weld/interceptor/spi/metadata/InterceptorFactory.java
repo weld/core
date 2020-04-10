@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.interceptor.spi.metadata;
 
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 

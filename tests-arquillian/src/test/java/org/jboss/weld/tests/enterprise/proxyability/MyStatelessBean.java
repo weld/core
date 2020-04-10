@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise.proxyability;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 import java.io.Serializable;
 
 /**

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.weld1391;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 import org.jboss.weld.test.util.ActionSequence;
 

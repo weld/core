@@ -18,10 +18,10 @@ package org.jboss.weld.tests.contexts.passivating.validation;
 
 import java.io.Serializable;
 
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * This interceptor class is passivation capable but it has non-passivation capable dependencies. This is allowed provided it

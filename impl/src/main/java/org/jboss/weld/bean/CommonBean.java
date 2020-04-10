@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bean;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;

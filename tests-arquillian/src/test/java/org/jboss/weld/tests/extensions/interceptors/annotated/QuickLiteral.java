@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.interceptors.annotated;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 @SuppressWarnings("all")
 public abstract class QuickLiteral extends AnnotationLiteral<Quick> implements Quick {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 public class MockCreationalContext<T> implements CreationalContext<T> {
 

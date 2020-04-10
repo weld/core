@@ -16,15 +16,20 @@
  */
 package org.jboss.weld.injection;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.ObserverException;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.ObserverException;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.EventMetadata;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
+import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
+import org.jboss.weld.bean.proxy.MethodHandler;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -91,6 +96,35 @@ public abstract class MethodInvocationStrategy {
             CreationalContext<?> creationalContext);
 
     /**
+     * This method ensures that final observers on proxied beans cannot trigger interception when referencing otherwise
+     * intercepted method in observer body - e.g. so that they recognize self-invocation. This is similar to what we do
+     * in {@code InterceptedSubclassFactory#invokeMethodHandler()} but requires special handling here since observers
+     * can be private and final and we cannot override them on proxies.
+     *
+     * All implementations of {@link MethodInvocationStrategy#invoke(Object, MethodInjectionPoint, Object, BeanManagerImpl, CreationalContext)}
+     * should call this method prior to invoking observer itself in order to start the interception context and
+     * if this method returns true, {@link #endInterceptionContext()} should be invoked right after observer method
+     * invocation to tear down the context from stack.
+     *
+     * @return true if this method started interception context, false otherwise
+     */
+    protected boolean startInterceptionContextIfNeeded(Object receiver, MethodInjectionPoint<?, ?> method) {
+        if (Modifier.isFinal(method.getMember().getModifiers()) && receiver instanceof ProxyObject) {
+            ProxyObject proxy = (ProxyObject) receiver;
+            MethodHandler methodHandler = proxy.weld_getHandler();
+            if (methodHandler instanceof CombinedInterceptorAndDecoratorStackMethodHandler) {
+                InterceptionDecorationContext.startIfNotOnTop((CombinedInterceptorAndDecoratorStackMethodHandler)methodHandler);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected void endInterceptionContext() {
+        InterceptionDecorationContext.endInterceptorContext();
+    }
+
+    /**
      * The default general-purpose invocation strategy.
      */
     private static class DefaultMethodInvocationStrategy extends MethodInvocationStrategy {
@@ -106,7 +140,11 @@ public abstract class MethodInvocationStrategy {
                 creationalContext = manager.createCreationalContext(null);
             }
             try {
+                boolean interceptionContextStarted = startInterceptionContextIfNeeded(receiver, method);
                 method.invoke(receiver, instance, manager, creationalContext, exceptionTypeToThrow);
+                if (interceptionContextStarted) {
+                    endInterceptionContext();
+                }
             } finally {
                 if (release) {
                     creationalContext.release();
@@ -126,7 +164,11 @@ public abstract class MethodInvocationStrategy {
 
         @Override
         public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+            boolean interceptionContextStarted = startInterceptionContextIfNeeded(receiver, method);
             method.invoke(receiver, instance, manager, creationalContext, exceptionTypeToThrow);
+            if (interceptionContextStarted) {
+                endInterceptionContext();
+            }
         }
     }
 
@@ -141,7 +183,11 @@ public abstract class MethodInvocationStrategy {
 
         @Override
         public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+            boolean interceptionContextStarted = startInterceptionContextIfNeeded(receiver, method);
             method.invoke(receiver, new Object[] { instance, new BeanManagerProxy(manager) }, exceptionTypeToThrow);
+            if (interceptionContextStarted) {
+                endInterceptionContext();
+            }
         }
     }
 
@@ -158,8 +204,11 @@ public abstract class MethodInvocationStrategy {
 
         @Override
         public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+            boolean interceptionContextStarted = startInterceptionContextIfNeeded(receiver, method);
             method.invoke(receiver, new Object[] { instance, metadata.peek() }, ObserverException.class);
+            if (interceptionContextStarted) {
+                endInterceptionContext();
+            }
         }
     }
-
 }

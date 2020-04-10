@@ -17,8 +17,8 @@
 
 package org.jboss.weld.environment.servlet.test.provider;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
 
 public final class KarateClubLocator {
 

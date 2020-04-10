@@ -22,8 +22,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.decorator.Delegate;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.serialization.BeanHolder;

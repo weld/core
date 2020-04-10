@@ -19,7 +19,7 @@ package org.jboss.weld.module.web.servlet;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.module.web.logging.ServletLogger;
@@ -29,9 +29,9 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class ServletApiAbstraction extends ApiAbstraction implements Service {
 
-    public static final String SERVLET_CONTEXT_CLASS_NAME = "javax.servlet.ServletContext";
-    private static final String ASYNC_LISTENER_CONTEXT_CLASS_NAME = "javax.servlet.AsyncListener";
-    private static final String SERVLET_REQUEST_CLASS_NAME = "javax.servlet.ServletRequest";
+    public static final String SERVLET_CONTEXT_CLASS_NAME = "jakarta.servlet.ServletContext";
+    private static final String ASYNC_LISTENER_CONTEXT_CLASS_NAME = "jakarta.servlet.AsyncListener";
+    private static final String SERVLET_REQUEST_CLASS_NAME = "jakarta.servlet.ServletRequest";
     private static final String IS_ASYNC_STARTED_METHOD_NAME = "isAsyncStarted";
 
     private final boolean asyncSupported;
@@ -64,7 +64,7 @@ public class ServletApiAbstraction extends ApiAbstraction implements Service {
     }
 
     /**
-     * Evaluates javax.servlet.ServletRequest#isAsyncStarted() method on given ServletRequest instance via reflection api.
+     * Evaluates jakarta.servlet.ServletRequest#isAsyncStarted() method on given ServletRequest instance via reflection api.
      *
      * @param request
      * @return true if servletRequest started asynchronously, otherwise returns false.

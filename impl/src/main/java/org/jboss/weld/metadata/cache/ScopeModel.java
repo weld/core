@@ -24,8 +24,8 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
 import java.util.Set;
 
-import javax.enterprise.context.NormalScope;
-import javax.inject.Scope;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.inject.Scope;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.logging.ReflectionLogger;

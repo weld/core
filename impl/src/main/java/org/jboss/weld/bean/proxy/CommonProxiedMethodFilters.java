@@ -18,6 +18,7 @@ package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -54,6 +55,26 @@ public final class CommonProxiedMethodFilters {
                         if (Reflections.isPackagePrivate(parameterType.getModifiers())) {
                             return false;
                         }
+                    }
+                }
+            }
+            return true;
+        }
+    };
+
+    /**
+     * Filter used to exclude private methods that have parameters which are package private types
+     */
+    public static final ProxiedMethodFilter NON_PRIVATE_WITHOUT_PACK_PRIVATE_PARAMS = new ProxiedMethodFilter() {
+        @Override
+        public boolean accept(Method method, Class<?> proxySuperclass) {
+            if (Modifier.isPrivate(method.getModifiers())) {
+                for (Parameter param : method.getParameters()) {
+                    Class<?> paramClass = param.getType();
+                    if (!Modifier.isProtected(paramClass.getModifiers())
+                            && !Modifier.isPublic(paramClass.getModifiers())
+                            && !Modifier.isPrivate(paramClass.getModifiers())) {
+                        return false;
                     }
                 }
             }

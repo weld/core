@@ -18,7 +18,7 @@ package org.jboss.weld.examples.pastecode.session;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.producer.field.nonPublicInterface;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
 
 public class Producer {
 

@@ -30,7 +30,7 @@ public class AnnotationApiAbstraction extends ApiAbstraction implements Service 
 
     public AnnotationApiAbstraction(ResourceLoader resourceLoader) {
         super(resourceLoader);
-        this.PRIORITY_ANNOTATION_CLASS = annotationTypeForName("javax.annotation.Priority");
+        this.PRIORITY_ANNOTATION_CLASS = annotationTypeForName("jakarta.annotation.Priority");
         Method method = null;
         if (!PRIORITY_ANNOTATION_CLASS.equals(DummyAnnotation.class)) {
             try {

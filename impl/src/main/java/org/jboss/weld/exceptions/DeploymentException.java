@@ -27,7 +27,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Jozef Hartinger
  */
 @SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Renaming the class would break backwards compatibility.")
-public class DeploymentException extends javax.enterprise.inject.spi.DeploymentException {
+public class DeploymentException extends jakarta.enterprise.inject.spi.DeploymentException {
     private static final long serialVersionUID = 8014646336322875707L;
 
     private final WeldExceptionMessage message;

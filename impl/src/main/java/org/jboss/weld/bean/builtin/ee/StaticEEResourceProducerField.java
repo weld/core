@@ -21,8 +21,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.reflect.Field;
 import java.security.AccessController;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.AbstractClassBean;

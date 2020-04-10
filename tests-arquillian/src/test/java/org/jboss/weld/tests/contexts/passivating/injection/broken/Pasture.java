@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.contexts.passivating.injection.broken;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Pasture {

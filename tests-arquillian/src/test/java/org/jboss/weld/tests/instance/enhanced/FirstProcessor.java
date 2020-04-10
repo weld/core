@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.instance.enhanced;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 import org.jboss.weld.test.util.ActionSequence;
 

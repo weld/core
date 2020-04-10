@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.disposer.weld1894;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 public class TestObserver {
 

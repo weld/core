@@ -18,7 +18,7 @@ package org.jboss.weld.tests.contexts.passivating.custom;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
 @ClusterScoped

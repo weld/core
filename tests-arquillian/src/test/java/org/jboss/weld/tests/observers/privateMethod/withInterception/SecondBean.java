@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.observers.privateMethod.withInterception;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
 /**
  * Having an intercepted method in this bean will cause it to be "subclass proxy" and the invocation will slightly differ

@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se.test.injectionPoint;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;

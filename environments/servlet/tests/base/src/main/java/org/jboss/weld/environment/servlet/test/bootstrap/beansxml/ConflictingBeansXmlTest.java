@@ -22,9 +22,9 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

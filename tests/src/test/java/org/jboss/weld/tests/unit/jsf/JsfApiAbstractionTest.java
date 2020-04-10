@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.unit.jsf;
 
-import javax.faces.component.behavior.Behavior;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.behavior.Behavior;
+import jakarta.faces.context.FacesContext;
 
 import org.jboss.weld.module.jsf.JsfApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
@@ -69,7 +69,7 @@ public class JsfApiAbstractionTest {
 
             @Override
             public Class<?> classForName(String name) {
-                if ("javax.faces.component.behavior.Behavior".equals(name)) {
+                if ("jakarta.faces.component.behavior.Behavior".equals(name)) {
                     throw new ResourceLoadingException("Hidden class");
                 }
                 return super.classForName(name);

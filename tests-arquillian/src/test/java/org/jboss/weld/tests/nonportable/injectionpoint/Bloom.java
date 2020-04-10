@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.nonportable.injectionpoint;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 @Dependent
 public class Bloom {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.observers.ejb.local;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface FooLocal extends FooSuperLocal {

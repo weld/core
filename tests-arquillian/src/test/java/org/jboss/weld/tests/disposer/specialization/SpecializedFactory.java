@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.disposer.specialization;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Specializes;
 
 public class SpecializedFactory extends Factory {
 

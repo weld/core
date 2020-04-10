@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.ReflectionCache;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Wrapper over {@link ReflectionCache} capable of determining whether a given class
@@ -62,6 +63,8 @@ public class RequiredAnnotationDiscovery implements Service {
      * direct or indirect superclass of the given class</li>
      * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a method declared by the given class or
      * any direct or indirect superclass of the given class</li>
+     * <li>The annotation or an annotation annotated with the required annotation is present on a default method or a parameter of a default method declared by an interface directly or
+     * indirectly implemented by the given class</li>
      * <li>The required annotation or an annotation annotated with the required annotation is present on a constructor declared by the given class</li>
      * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a constructor declared by the given
      * class</li>
@@ -102,6 +105,22 @@ public class RequiredAnnotationDiscovery implements Service {
                 for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
                     if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
                         return true;
+                    }
+                }
+            }
+        }
+
+        // Also check default methods on interfaces
+        for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(annotatedType.getJavaClass())) {
+            for (Method method : interfaceClazz.getDeclaredMethods()) {
+                if (Reflections.isDefault(method)) {
+                    if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation)) {
+                        return true;
+                    }
+                    for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
+                        if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
+                            return true;
+                        }
                     }
                 }
             }

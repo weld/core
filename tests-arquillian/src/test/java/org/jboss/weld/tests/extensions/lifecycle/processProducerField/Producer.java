@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processProducerField;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
 
 public class Producer {
 

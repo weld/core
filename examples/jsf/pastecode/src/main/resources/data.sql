@@ -309,8 +309,8 @@ public class Address {
 insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (23, '2009-02-18 01:01:01', 'JAVA', ' ', 'graham',
 'import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 public class ProfessorService {
   protected EntityManager em;
@@ -409,19 +409,19 @@ insert into CodeFragment (ID, DATETIME, LANGUAGE, NOTE, USER, TEXT) values (26, 
 
 import java.util.List;
 
-import javax.ejb.Stateful;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.ejb.Stateful;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import java.io.Serializable;
-import javax.ejb.EJBContext;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.*;
+import jakarta.ejb.EJBContext;
+import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.persistence.*;
 import org.jboss.weld.examples.pastie.model.code;
-import javax.inject.*;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.inject.*;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
 
 /**
  * Session Bean implementation class HistoryBean

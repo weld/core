@@ -19,7 +19,7 @@ package org.jboss.weld.interceptor.builder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.Annotated;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.logging.UtilLogger;
@@ -35,8 +35,8 @@ public class InterceptorsApiAbstraction extends ApiAbstraction implements Servic
 
     public InterceptorsApiAbstraction(ResourceLoader resourceLoader) {
         super(resourceLoader);
-        this.INTERCEPTORS_ANNOTATION_CLASS = annotationTypeForName("javax.interceptor.Interceptors");
-        this.EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS = annotationTypeForName("javax.interceptor.ExcludeClassInterceptors");
+        this.INTERCEPTORS_ANNOTATION_CLASS = annotationTypeForName("jakarta.interceptor.Interceptors");
+        this.EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS = annotationTypeForName("jakarta.interceptor.ExcludeClassInterceptors");
         if (DummyAnnotation.class.isAssignableFrom(INTERCEPTORS_ANNOTATION_CLASS)) {
             this.interceptorsValueMethod = null;
         } else {

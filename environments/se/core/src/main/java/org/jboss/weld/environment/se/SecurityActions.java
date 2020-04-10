@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
@@ -47,6 +48,24 @@ final class SecurityActions {
             }
         } else {
             return javaClass.newInstance();
+        }
+    }
+
+    /**
+     *
+     * @param hook
+     */
+    static void addShutdownHook(Thread hook) {
+        if (System.getSecurityManager() != null) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    Runtime.getRuntime().addShutdownHook(hook);
+                    return null;
+                }
+            });
+        } else {
+            Runtime.getRuntime().addShutdownHook(hook);
         }
     }
 

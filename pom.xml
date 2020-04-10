@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.7-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
 
     <name>Weld Parent</name>
 
@@ -32,53 +32,54 @@
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
         <surefire.plugin.jdk9.args />
-        <jax.artifacts.version>2.3.0</jax.artifacts.version>
+        <jax.artifacts.version>2.3.2</jax.artifacts.version>
 
         <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
         <!-- A property which is handed over to WFLY container through Arquillian, allows to configure server-specific options -->
         <additional.jboss.args />
 
-        <manifest.specification.title>JSR-365 Contexts and Dependency Injection for Java</manifest.specification.title>
+        <manifest.specification.title>Jakarta EE 9 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.2</apache.bcel.version>
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.4.0.Final</arquillian.version>
-        <arquillian.drone.version>2.0.0.Final</arquillian.drone.version>
-        <arquillian.graphene.version>2.1.0.CR1</arquillian.graphene.version>
-        <arquillian.weld.version>2.0.0.Beta4</arquillian.weld.version>
+        <arquillian.drone.version>2.5.1</arquillian.drone.version>
+        <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
+        <arquillian.weld.version>3.0.0.Final-SNAPSHOT</arquillian.weld.version>
         <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
-        <atinject.tck.version>1</atinject.tck.version>
+        <atinject.tck.version>2.0.0.RC3</atinject.tck.version>
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
-        <cdi.tck-2-0.version>2.0.5.SP1</cdi.tck-2-0.version>
-        <classfilewriter.version>1.2.3.Final</classfilewriter.version>
+        <cdi.tck-2-0.version>2.0.6.SP1</cdi.tck-2-0.version>
+        <classfilewriter.version>1.2.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
-        <spotbugs-maven-plugin.version>3.1.1</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>3.1.1</spotbugs-annotations-version>
+        <spotbugs-maven-plugin.version>3.1.10</spotbugs-maven-plugin.version>
+        <spotbugs-annotations-version>3.1.11</spotbugs-annotations-version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <groovy.version>2.4.15</groovy.version>
         <htmlunit.version>2.20</htmlunit.version>
         <jacoco.version>0.7.9</jacoco.version>
         <jandex.version>2.0.3.Final</jandex.version>
-        <javax.activation.version>1.1</javax.activation.version>
-        <javax.el.version>3.0.0</javax.el.version>
-        <jboss.jms.api.version>1.0.0.Final</jboss.jms.api.version>
-        <jboss.jsf.api.version>2.2.4</jboss.jsf.api.version>
+        <javax.activation.version>1.2.1</javax.activation.version>
+        <!-- -->
+        <jakarta.el.version>4.0.0-RC1</jakarta.el.version>
+        <jboss.jms.api.version>2.0.0.Final</jboss.jms.api.version>
+        <jsf.api.version>3.0.0-RC1</jsf.api.version>
         <jboss.logging.version>3.2.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.0.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <jboss.spec.el-api.version>1.0.7.Final</jboss.spec.el-api.version>
-        <jsf.impl.version>2.2.10</jsf.impl.version>
-        <jsp.api.version>2.2</jsp.api.version>
-        <jstl.api.version>1.2</jstl.api.version>
+        <jboss.spec.el-api.version>1.0.0-SNAPSHOT</jboss.spec.el-api.version>
+        <jsf.impl.version>2.3.14</jsf.impl.version>
+        <jsp.api.version>3.0.0-M1</jsp.api.version>
+        <jstl.api.version>2.0.0-RC1</jstl.api.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
@@ -87,12 +88,10 @@
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>2.2.6</shrinkwrap.resolver.version>
         <testng.version>6.14.3</testng.version>
-        <testng.jcommander.version>1.74</testng.jcommander.version>
-        <weld.api.version>3.0.SP4</weld.api.version>
+        <testng.jcommander.version>1.78</testng.jcommander.version>
+        <weld.api.version>4.0.0-SNAPSHOT</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
-        <wildfly.arquillian.version>2.1.0.Final</wildfly.arquillian.version>
-        <!--Temportary version override, once alligned in WFLY-Arq adapter, we can remove this-->
-        <jboss.marshalling.override>2.0.5.Final</jboss.marshalling.override>
+        <wildfly.arquillian.version>2.2.0.Final</wildfly.arquillian.version>
     </properties>
 
     <modules>
@@ -130,40 +129,41 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
                 <version>${javax.activation.version}</version>
             </dependency>
 
             <!-- This version of EL 3.0 API is not JDK 6 compatible -->
             <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
-                <version>${javax.el.version}</version>
+                <groupId>jakarta.el</groupId>
+                <artifactId>jakarta.el-api</artifactId>
+                <version>${jakarta.el.version}</version>
             </dependency>
 
             <!-- This artifact bundles EL API and impl and is not JDK 6 compatible -->
             <dependency>
                 <groupId>org.glassfish</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>${javax.el.version}</version>
+                <artifactId>jakarta.el</artifactId>
+                <!-- Needs updating to jakarta.el.version when available -->
+                <version>3.0.2</version>
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.spec.javax.el</groupId>
-                <artifactId>jboss-el-api_3.0_spec</artifactId>
+                <groupId>org.jboss.spec.jakarta.el</groupId>
+                <artifactId>jboss-el-api_4.0_spec</artifactId>
                 <version>${jboss.spec.el-api.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.spec.javax.faces</groupId>
-                <artifactId>jboss-jsf-api_2.2_spec</artifactId>
-                <version>${jboss.jsf.api.version}</version>
+                <groupId>jakarta.faces</groupId>
+                <artifactId>jakarta.faces-api</artifactId>
+                <version>${jsf.api.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.spec.javax.jms</groupId>
-                <artifactId>jboss-jms-api_1.1_spec</artifactId>
+                <artifactId>jboss-jms-api_2.0_spec</artifactId>
                 <version>${jboss.jms.api.version}</version>
             </dependency>
 
@@ -198,9 +198,10 @@
                 <version>${htmlunit.version}</version>
             </dependency>
 
+            <!-- TODO Jakarta EE version of the TCKs wasn't yet released, see https://github.com/eclipse-ee4j/injection-tck-->
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject-tck</artifactId>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-tck</artifactId>
                 <version>${atinject.tck.version}</version>
             </dependency>
 
@@ -481,14 +482,14 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
+                <groupId>jakarta.servlet.jsp.jstl</groupId>
+                <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
                 <version>${jstl.api.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>jsp-api</artifactId>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
                 <version>${jsp.api.version}</version>
             </dependency>
 
@@ -505,8 +506,8 @@
             </dependency>
 
             <dependency>
-                <groupId>com.sun.faces</groupId>
-                <artifactId>jsf-impl</artifactId>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.faces</artifactId>
                 <version>${jsf.impl.version}</version>
             </dependency>
 
@@ -595,7 +596,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>3.0.0-SNAPSHOT</tag>
+        <tag>4.0.0-SNAPSHOT</tag>
     </scm>
 
 
@@ -620,10 +621,10 @@
                 </property>
             </activation>
             <modules>
-                <module>porting-package</module>
+                <!--module>porting-package</module-->
                 <module>tests-common</module>
                 <module>tests</module>
-                <module>tests-arquillian</module>
+                <!--module>tests-arquillian</module-->
                 <module>inject-tck-runner</module>
             </modules>
         </profile>
@@ -714,7 +715,9 @@
             <modules>
                 <module>environments/common</module>
                 <module>environments/se</module>
+                <!-- Skipped for now as servlet containers need updating
                 <module>environments/servlet</module>
+                -->
             </modules>
         </profile>
         <profile>
@@ -798,14 +801,4 @@
             </properties>
         </profile>
     </profiles>
-
-    <!--This repository can be removed once TestNG 6.14.3 or newer and JCommander 1.74 or newer appear in Maven Central-->
-    <!--For some reason they keep most releases on bintray and we need these versions for JDK 10-->
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <name>jcenter</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
 </project>

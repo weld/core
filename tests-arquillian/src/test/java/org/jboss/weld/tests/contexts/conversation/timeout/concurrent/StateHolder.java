@@ -19,7 +19,7 @@ package org.jboss.weld.tests.contexts.conversation.timeout.concurrent;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class StateHolder {

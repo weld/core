@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanDeployment.circular;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 class DependentLoopingProducer {
 

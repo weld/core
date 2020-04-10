@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.event;
 
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 /**
  * Marker interface for observer methods which are able to decide whether an access to {@link EventMetadata} is required or not.

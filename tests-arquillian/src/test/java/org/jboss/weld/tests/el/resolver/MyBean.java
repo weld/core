@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("com.acme.settings")
 public class MyBean {

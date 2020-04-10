@@ -20,10 +20,10 @@ package org.jboss.weld.tests.util;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 import org.jboss.weld.config.ConfigurationKey;
 
 /**

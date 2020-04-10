@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class IntInjection {
 

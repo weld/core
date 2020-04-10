@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.contexts;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
 @SessionScoped

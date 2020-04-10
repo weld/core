@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se.test.events;
 
 import static org.junit.Assert.assertFalse;
 
-import javax.enterprise.event.Event;
+import jakarta.enterprise.event.Event;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

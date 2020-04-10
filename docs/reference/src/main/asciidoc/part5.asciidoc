@@ -27,6 +27,8 @@ include::configure.asciidoc[]
 
 include::logging.asciidoc[]
 
+include::weldmanager.asciidoc[]
+
 include::developmentmode.asciidoc[]
 
 include::contexts.asciidoc[]

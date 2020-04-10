@@ -18,7 +18,7 @@ package org.jboss.weld.bootstrap.events.configurator;
 
 import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
 
 import org.jboss.weld.util.collections.ImmutableList;
 

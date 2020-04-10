@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.ejb;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 import org.jboss.weld.test.util.ActionSequence;
 

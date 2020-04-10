@@ -18,7 +18,7 @@ package org.jboss.weld.examples.pastecode.session;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 import java.util.List;
 
 /**

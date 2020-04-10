@@ -18,7 +18,7 @@ package org.jboss.weld.tests.resources.proxy.weld1782;
 
 import java.util.concurrent.CountDownLatch;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *

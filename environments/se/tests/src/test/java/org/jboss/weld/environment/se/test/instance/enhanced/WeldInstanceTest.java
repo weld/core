@@ -26,8 +26,8 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;

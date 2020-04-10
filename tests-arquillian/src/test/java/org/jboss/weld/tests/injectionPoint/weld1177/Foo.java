@@ -3,9 +3,9 @@ package org.jboss.weld.tests.injectionPoint.weld1177;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
-import javax.ejb.Stateless;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

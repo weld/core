@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.container.current;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *

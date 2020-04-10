@@ -20,10 +20,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Type;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.test.util.ActionSequence;
 

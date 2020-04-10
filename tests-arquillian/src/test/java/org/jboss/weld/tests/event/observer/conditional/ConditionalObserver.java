@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.event.observer.conditional;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.Reception;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Reception;
 
 import org.jboss.weld.test.util.ActionSequence;
 

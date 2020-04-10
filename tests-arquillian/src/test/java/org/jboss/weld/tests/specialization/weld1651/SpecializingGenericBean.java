@@ -18,7 +18,7 @@ package org.jboss.weld.tests.specialization.weld1651;
 
 import java.util.List;
 
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Specializes;
 
 /**
  * @author Matus Abaffy

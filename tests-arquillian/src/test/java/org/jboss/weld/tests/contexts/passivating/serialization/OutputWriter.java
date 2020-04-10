@@ -18,7 +18,7 @@ package org.jboss.weld.tests.contexts.passivating.serialization;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 public class OutputWriter {
 

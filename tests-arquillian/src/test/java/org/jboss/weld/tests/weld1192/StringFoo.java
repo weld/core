@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.weld1192;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Typed;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Typed;
 
 @RequestScoped
 @Typed(value = StringFoo.class)

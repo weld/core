@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.instance.destroy.normal;
 
-import javax.annotation.PreDestroy;
-import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
+import jakarta.annotation.PreDestroy;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.RequestScoped;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Stateful

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.ejb.mdb.dummy;
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
+import jakarta.ejb.ActivationConfigProperty;
+import jakarta.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 

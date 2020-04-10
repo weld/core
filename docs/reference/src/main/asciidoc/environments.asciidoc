@@ -3,12 +3,12 @@
 
 === Using Weld with WildFly
 
-WildFly 8 and newer come with pre-configured Weld. There is no configuration needed to use Weld (or CDI for that matter).
+WildFly comes with pre-configured Weld. There is no configuration needed to use Weld (or CDI for that matter).
 You may still want to fine-tune Weld with <<configure,additional configuration settings>>.
 
 === GlassFish
 
-Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is
+Weld is also built into GlassFish from V3 onwards. Since GlassFish is
 the Java EE reference implementation, it supports all features of
 CDI. What better way for GlassFish to support these features than to use
 Weld, the CDI reference implementation? Just package up your CDI
@@ -107,7 +107,7 @@ contents:
 <Context>
    <Resource name="BeanManager"
       auth="Container"
-      type="javax.enterprise.inject.spi.BeanManager"
+      type="jakarta.enterprise.inject.spi.BeanManager"
       factory="org.jboss.weld.resources.ManagerObjectFactory"/>
 </Context>
 ---------------------------------------------------------------
@@ -120,7 +120,7 @@ of `web.xml`:
 <resource-env-ref>
    <resource-env-ref-name>BeanManager</resource-env-ref-name>
    <resource-env-ref-type>
-      javax.enterprise.inject.spi.BeanManager
+      jakarta.enterprise.inject.spi.BeanManager
    </resource-env-ref-type>
 </resource-env-ref>
 -------------------------------------------------------------
@@ -166,19 +166,38 @@ public class Main {
 
 ==== Jetty
 
-Jetty 9.3.6 and newer are supported. Context activation/deactivation and dependency
+Jetty 9.4.14 and newer are supported. Context activation/deactivation and dependency
 injection into Servlets and Filters works out of the box. Injection into Servlet listeners works on
 Jetty 9.1.1 and newer.
 
-===== Class Loading
-
 No further configuration is needed when starting Jetty as an embedded webapp server from within another Java program.
-However, if you’re using a Jetty standalone instance one more configuration step is required.
+However, if you’re using a Jetty standalone instance one more configuration step is required, one of the
+jetty modules listed below needs to be enabled.
 
-The reason is that since Jetty 8 some internal classes are not visible from the web application.
-See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Setting Server Classes].
-Therefore, we have to tell Jetty not to hide the system classes which Weld integration code is using.
-We can use the `jetty-web.xml` descriptor (see also https://www.eclipse.org/jetty/documentation/current/jetty-web-xml-config.html[Jetty XML Reference]):
+===== Jetty `cdi-decorate` Module
+
+Since Jetty-9.4.20 and Weld 3.1.2.Final, the Weld/Jetty integration uses the jetty `cdi-decorate` module.
+To activate this module in jetty the argument `--module=cdi-decorate` needs to be added to the
+command line, which can be done for a standard distribution by running the commands:
+
+-------------------------
+cd $JETTY_BASE
+java -jar $JETTY_HOME/start.jar --add-to-start=cdi-decorate
+-------------------------
+
+===== Jetty `cdi2` Module
+
+Prior to Jetty-9.4.20 and Weld 3.1.2, the Weld/Jetty integration required some internal jetty APIs
+to be made visible to the web application.  This can be done using the deprecated `cdi2` module
+either by including `--module=cdi2` on the command line or by running the commands:
+
+-------------------------
+cd $JETTY_BASE
+java -jar $JETTY_HOME/start.jar --add-to-start=cdi2
+-------------------------
+
+If this module is not available in the jetty distribution you are using, then equivalent behaviour can
+be achieved by creating a `jetty-web.xml` descriptor (see also https://www.eclipse.org/jetty/documentation/current/jetty-web-xml-config.html[Jetty XML Reference]):
 
 [source.XML, xml]
 -------------------------------------------------------------
@@ -203,9 +222,14 @@ We can use the `jetty-web.xml` descriptor (see also https://www.eclipse.org/jett
 </Configure>
 -------------------------------------------------------------
 
-TIP: Jetty distributions (from version *9.2.4*) contain a *dedicated http://www.eclipse.org/jetty/documentation/current/framework-weld.html[CDI/Weld module]* which allows to deploy a CDI application without bundling the Weld Servlet integration code.
+TIP: Directly modifying the web application classpath via `jetty-web.xml` will not work for Jetty-10.0.0 and later.
 
-===== Binding BeanManager to JNDI
+===== Jetty `cdi-spi` Module
+Since Jetty-9.4.20 the Jetty `cdi-spi` module has been available that integrates any compliant CDI implementation
+by directly calling the CDI SPI.  Since Weld support specific Jetty integration, it is not recommended to use
+this module with Weld.
+
+===== Binding BeanManager to Jetty JNDI
 
 To bind the BeanManager into JNDI, you should either populate
 `WEB-INF/jetty-env.xml` with the following contents:
@@ -221,7 +245,7 @@ To bind the BeanManager into JNDI, you should either populate
         <Arg>BeanManager</Arg>
         <Arg>
             <New class="javax.naming.Reference">
-                <Arg>javax.enterprise.inject.spi.BeanManager</Arg>
+                <Arg>jakarta.enterprise.inject.spi.BeanManager</Arg>
                 <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
                 <Arg/>
             </New>
@@ -241,7 +265,7 @@ automatically:
 
 ---------------------------------------------------------------------------------------------------------
 
-Just like in Tomcat, you need to make the BeanManager available to your
+You also need to make the BeanManager available to your
 deployment by adding this to the bottom of `web.xml`:
 
 [source.XML, xml]
@@ -249,7 +273,7 @@ deployment by adding this to the bottom of `web.xml`:
 <resource-env-ref>
    <resource-env-ref-name>BeanManager</resource-env-ref-name>
    <resource-env-ref-type>
-      javax.enterprise.inject.spi.BeanManager
+      jakarta.enterprise.inject.spi.BeanManager
    </resource-env-ref-type>
 </resource-env-ref>
 -------------------------------------------------------------
@@ -274,7 +298,8 @@ public class Main {
         jetty.setHandler(context);
         context.addServlet(HelloWorldServlet.class, "/*");
 
-        context.addEventListener(new Listener()); # <1>
+        context.addEventListener(new DecoratingListener()); # <1>
+        context.addEventListener(new Listener()); # <2>
 
         jetty.start();
         jetty.join();
@@ -291,7 +316,8 @@ public class Main {
     }
 }
 -------------------------------------------------------------
-<1> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically:
+<1> Jetty's `org.eclipse.jetty.webapp.DecoratingListener` registered programmatically (since Jetty-9.4.20)
+<2> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically
 
 ==== Undertow
 
@@ -427,7 +453,7 @@ Here's an example of a simple CDI SE application:
 
 [source.JAVA, java]
 ------------------------------------------------------------------------------------------------------
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class HelloWorld
@@ -716,7 +742,7 @@ If Jandex is not found on the classpath Weld will use the Java Reflection as a f
 
 By default, an implicit bean archive that does not contain a beans.xml descriptor is excluded from discovery.
 However, it is possible to instruct Weld to scan all class path entries and discover such archive.
-You can do so by setting Weld system property `org.jboss.weld.se.scan.classpath.entries` or CDI 2.0 system property `javax.enterprise.inject.scan.implicit` to `true`.
+You can do so by setting Weld system property `org.jboss.weld.se.scan.classpath.entries` or CDI 2.0 system property `jakarta.enterprise.inject.scan.implicit` to `true`.
 Another approach is to use `Weld.property()` and `SeContainerInitializer.addProperty()` methods.
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.

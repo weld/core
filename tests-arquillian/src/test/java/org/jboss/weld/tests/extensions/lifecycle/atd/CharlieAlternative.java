@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.atd;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 public class CharlieAlternative {

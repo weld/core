@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.serialization;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.logging.Logger;
 

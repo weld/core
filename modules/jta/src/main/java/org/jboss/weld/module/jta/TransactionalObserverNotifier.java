@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.event.TransactionPhase;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.transaction.RollbackException;
+import jakarta.enterprise.event.TransactionPhase;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.transaction.RollbackException;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.event.ObserverNotifier;

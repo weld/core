@@ -19,5 +19,5 @@
 @Vetoed
 package org.jboss.weld.tests.veto.package1;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 

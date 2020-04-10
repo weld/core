@@ -17,79 +17,92 @@
 
 package org.jboss.weld.environment.jetty;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.ContainerContext;
-import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * Jetty 7.2+, 8.x and 9.x container.
+ * Jetty Container.
+ * <p>This container requires that the jetty server register DecoratingListener
+ * to dynamically register a decorator instance that wraps the {@link WeldDecorator}
+ * added as an attribute.   The jetty <code>decorate</code> module does this and indicates it's
+ * availability by setting the "org.eclipse.jetty.webapp.DecoratingListener" to the
+ * name of the watched attribute.</p>
  *
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * <p>Jetty also provides the <code>cdi-spi</code> module that may directly invoke the
+ * CDI SPI.  This module indicates it's availability by setting the "org.eclipse.jetty.cdi"
+ * context attribute to "CdiDecorator".  If this module is used, then this JettyContainer
+ * only logs a message and does no further integration.
+ * </p>
+ * @since Jetty 9.4.20
+ * @see JettyLegacyContainer
+ * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
  */
 public class JettyContainer extends AbstractJettyContainer {
-
     public static final Container INSTANCE = new JettyContainer();
-
-    private static final String JETTY_SERVERNAME = "jetty";
-
-    private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
-
-    private static final int MAJOR_VERSION = 7;
-    private static final int MINOR_VERSION = 2;
+    public static final String JETTY_CDI_ATTRIBUTE = "org.eclipse.jetty.cdi";
+    public static final String CDI_SPI_DECORATOR_MODE = "CdiSpiDecorator";
+    public static final String CDI_DECORATING_LISTENER_MODE = "CdiDecoratingListener";
+    public static final String CDI_DECORATING_LISTENER_ATTRIBUTE = "org.eclipse.jetty.cdi.decorator";
+    public static final String DECORATING_LISTENER_MODE = "DecoratingListener";
+    public static final String DECORATING_LISTENER_ATTRIBUTE = "org.eclipse.jetty.webapp.DecoratingListener";
 
     protected String classToCheck() {
-        // This is not used anyway - server implementation classes are hidden from the web application in Jetty by default
-        // Instead ServletContext.getServerInfo() is parsed
-        return JETTY_REQUIRED_CLASS_NAME;
+        // Never called because touch is overridden below.
+        throw new UnsupportedOperationException("touch method reimplemented in JettyContainer");
     }
 
     @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
-        ServletContext sc = context.getServletContext();
-        String si = sc.getServerInfo();
-        JettyLogger.LOG.debugv("Parsing server info: {0}", si);
-        if(!si.contains(JETTY_SERVERNAME)) {
-            return false;
-        }
-        int p = si.indexOf("/");
-        if (p < 0) {
-            return false;
-        }
-        String version = si.substring(p + 1);
-        String[] split = version.split("\\.");
-        int major = parseVersion(split[0]);
-        int minor = parseVersion(split[1]);
-        return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
+        ServletContext servletContext = context.getServletContext();
+        // The jetty cdi modules from 9.4.20 sets JETTY_CDI_ATTRIBUTE to indicate that a
+        // DecoratingListener is registered. Weld-3.1.2.Final documented that the decorate module
+        // could be used directly, which sets DECORATING_LISTENER_ATTRIBUTE
+        return servletContext.getAttribute(JETTY_CDI_ATTRIBUTE) instanceof String ||
+            servletContext.getAttribute(DECORATING_LISTENER_ATTRIBUTE) instanceof String;
     }
 
     @Override
     public void initialize(ContainerContext context) {
-        // Try pushing a Jetty Injector into the servlet context
         try {
-            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
-            WeldDecorator.process(context.getServletContext());
-            if(Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
-                // ServletContainerInitializer works on versions prior to 9.1.1 but the listener injection doesn't
-                JettyLogger.LOG.jettyDetectedListenersInjectionIsSupported();
-            } else {
-                JettyLogger.LOG.jettyDetectedListenersInjectionIsNotSupported();
+            ServletContext servletContext = context.getServletContext();
+            String mode = (String)servletContext.getAttribute(JETTY_CDI_ATTRIBUTE);
+            if (mode == null) {
+                mode = DECORATING_LISTENER_MODE;
+            }
+            switch (mode) {
+                case CDI_SPI_DECORATOR_MODE:
+                    // For use with the cdi-spi module
+                    // No further integration required
+                    JettyLogger.LOG.jettyCdiSpiIsSupported();
+                    break;
+
+                case CDI_DECORATING_LISTENER_MODE:
+                    // For use with the cdi-decorate module
+                    // Initialize a JettyWeldInjector and create WeldDecorator for it
+                    super.initialize(context);
+                    servletContext.setAttribute(CDI_DECORATING_LISTENER_ATTRIBUTE, new WeldDecorator(servletContext));
+                    JettyLogger.LOG.jettyCdiDecorationIsSupported();
+                    break;
+
+                case DECORATING_LISTENER_MODE:
+                    // For use with the decorate module
+                    // This mode is only needed to match the Weld-3.1.2 documentation.
+                    // Initialize a JettyWeldInjector and create WeldDecorator for it
+                    super.initialize(context);
+                    String attribute = (String) servletContext.getAttribute(DECORATING_LISTENER_ATTRIBUTE);
+                    servletContext.setAttribute(attribute, new WeldDecorator(servletContext));
+                    JettyLogger.LOG.jettyDecorationIsSupported();
+                    break;
+
+                default:
+                    throw JettyLogger.LOG.unknownIntegrationMode(mode);
             }
         } catch (Exception e) {
             JettyLogger.LOG.unableToCreateJettyWeldInjector(e);
         }
     }
-
-    private int parseVersion(String version) {
-        try {
-            return Integer.parseInt(version);
-        } catch (NumberFormatException e) {
-            JettyLogger.LOG.debugv("Unable to parse version string: {0}", version);
-            return -1;
-        }
-    }
-
 }

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.unit.resource;
 
-import javax.annotation.Resource;
-import javax.enterprise.inject.Produces;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.inject.Produces;
 
 class InjectedClass {
 

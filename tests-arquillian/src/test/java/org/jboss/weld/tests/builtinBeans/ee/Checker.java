@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.UserTransaction;
 
 public class Checker {
 

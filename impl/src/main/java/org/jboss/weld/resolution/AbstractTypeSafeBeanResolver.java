@@ -31,11 +31,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InterceptionFactory;
-import javax.inject.Provider;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InterceptionFactory;
+import jakarta.inject.Provider;
 
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.config.WeldConfiguration;

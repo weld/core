@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2008-2019, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,14 +20,14 @@ import static org.jboss.weld.bean.BeanIdentifiers.forManagedBean;
 
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -55,6 +55,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Marius Bogoevici
  * @author Ales Justin
  * @author Marko Luksa
+ * @author <a href="https://about.me/lairdnelson"
+ * target="_parent">Laird Nelson</a>
  */
 public class ManagedBean<T> extends AbstractClassBean<T> {
 
@@ -189,7 +191,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         super.destroy(instance, creationalContext);
         try {
-            getProducer().preDestroy(instance);
+            InjectionTarget<T> injectionTarget = getProducer();
+            injectionTarget.preDestroy(instance);
+            injectionTarget.dispose(instance);
             // WELD-1010 hack?
             if (creationalContext instanceof CreationalContextImpl) {
                 ((CreationalContextImpl<T>) creationalContext).release(this, instance);

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
 
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.ReflectionCache;

@@ -19,7 +19,7 @@ package org.jboss.weld.annotated.slim;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.Identified;

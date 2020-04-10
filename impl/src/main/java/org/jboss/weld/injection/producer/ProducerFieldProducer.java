@@ -23,12 +23,12 @@ import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import javax.inject.Inject;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Producer;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.DisposalMethod;
@@ -82,7 +82,7 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
     public T produce(Object receiver, CreationalContext<T> creationalContext) {
         // unwrap if we have a proxy
         if (receiver instanceof TargetInstanceProxy) {
-            receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
+            receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).weld_getTargetInstance();
         }
         try {
             return cast(accessibleField.get(receiver));

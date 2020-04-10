@@ -1,7 +1,7 @@
 package org.jboss.weld.examples.pastecode.session;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.SessionScoped;
 import java.util.Date;
 import java.util.LinkedList;
 

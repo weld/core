@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.circularInvocation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import javax.annotation.PreDestroy;
-import javax.ejb.Stateful;
+import jakarta.annotation.PreDestroy;
+import jakarta.ejb.Stateful;
 
 @Stateful
 public class StandardChickenHutch implements ChickenHutch {

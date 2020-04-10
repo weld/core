@@ -19,9 +19,9 @@ package org.jboss.weld.tests.bootstrap.unusedbeans;
 import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class UnusedWithProducer {

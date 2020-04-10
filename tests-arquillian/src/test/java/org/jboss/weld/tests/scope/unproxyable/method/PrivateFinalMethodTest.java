@@ -18,8 +18,8 @@ package org.jboss.weld.tests.scope.unproxyable.method;
 
 import static org.junit.Assert.assertFalse;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

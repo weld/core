@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.weld.examples.jsf.translator</groupId>
         <artifactId>weld-jsf-translator-parent</artifactId>
-        <version>3.0.7-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jboss.weld.examples.jsf.translator</groupId>
@@ -24,13 +24,13 @@
     <dependencies>
 
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <groupId>org.jboss.spec.jakarta.ejb</groupId>
             <artifactId>jboss-ejb-api_3.2_spec</artifactId>
             <scope>provided</scope>
         </dependency>

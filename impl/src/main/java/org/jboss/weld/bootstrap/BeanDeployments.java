@@ -24,6 +24,8 @@ import org.jboss.weld.config.ConfigurationKey;
  */
 class BeanDeployments {
 
+    // see org.jboss.as.weld.deployment.processors.ExternalBeanArchiveProcessor
+    private static final String EXTERNAL_ARCHIVE_DENOMINATOR = ".external.";
     /**
      *
      * @param beanArchiveId
@@ -32,7 +34,9 @@ class BeanDeployments {
      * @see ConfigurationKey#ROLLING_UPGRADES_ID_DELIMITER
      */
     static String getFinalId(String beanArchiveId, String delimiter) {
-        if (delimiter.isEmpty()) {
+        // if delimiter is empty or if the archive is an external archive, return original ID
+        // NOTE: the way we recognize external archive is WFLY-specific
+        if (delimiter.isEmpty() || beanArchiveId.contains(EXTERNAL_ARCHIVE_DENOMINATOR)) {
             return beanArchiveId;
         }
         int idx = beanArchiveId.indexOf(delimiter);

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.injection.attributes;
 
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 public interface ParameterInjectionPointAttributes<T, X> extends WeldInjectionPointAttributes<T, Object> {
 

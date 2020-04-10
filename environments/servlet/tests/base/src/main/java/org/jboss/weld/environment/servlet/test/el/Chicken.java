@@ -1,6 +1,6 @@
 package org.jboss.weld.environment.servlet.test.el;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named
 public class Chicken {

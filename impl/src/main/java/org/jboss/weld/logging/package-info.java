@@ -43,5 +43,5 @@
  */
 @Vetoed
 package org.jboss.weld.logging;
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 

@@ -18,9 +18,9 @@ package org.jboss.weld.tests.contexts.conversation.servlet;
 
 import java.io.Serializable;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ConversationScoped;
-import javax.inject.Inject;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.inject.Inject;
 
 @ConversationScoped
 @SuppressWarnings("serial")

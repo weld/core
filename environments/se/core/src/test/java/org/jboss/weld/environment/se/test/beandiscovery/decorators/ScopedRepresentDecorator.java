@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery.decorators;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Any;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.environment.se.test.beandiscovery.interceptors.Decorable;
 

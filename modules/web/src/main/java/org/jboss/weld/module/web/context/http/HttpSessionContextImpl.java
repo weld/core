@@ -2,10 +2,10 @@ package org.jboss.weld.module.web.context.http;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.SessionScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.config.ConfigurationKey;
@@ -103,7 +103,10 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
                         throw ContextLogger.LOG.beanIdentifierIndexInconsistencyDetected(hash.toString(), index.getDebugInfo());
                     }
                 } else {
-                    session.setAttribute(KEY_BEAN_ID_INDEX_HASH, index.getIndexHash());
+                    // Skip if bean index is empty
+                    if (!index.isEmpty()) {
+                        session.setAttribute(KEY_BEAN_ID_INDEX_HASH, index.getIndexHash());
+                    }
                 }
             }
         }

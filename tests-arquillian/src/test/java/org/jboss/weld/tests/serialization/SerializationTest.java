@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.inject.IllegalProductException;
+import jakarta.enterprise.inject.IllegalProductException;
 import java.io.Serializable;
 
 @RunWith(Arquillian.class)

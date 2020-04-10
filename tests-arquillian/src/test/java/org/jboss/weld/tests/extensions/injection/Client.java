@@ -2,7 +2,7 @@ package org.jboss.weld.tests.extensions.injection;
 
 import java.io.Serializable;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  *

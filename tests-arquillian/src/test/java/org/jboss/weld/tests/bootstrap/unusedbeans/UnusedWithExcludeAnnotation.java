@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.bootstrap.unusedbeans;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class UnusedWithExcludeAnnotation {

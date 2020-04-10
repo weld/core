@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.stereotypes.alternative.enablement;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 /**
  *

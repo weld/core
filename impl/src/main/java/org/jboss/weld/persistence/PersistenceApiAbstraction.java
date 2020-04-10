@@ -41,19 +41,19 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
      */
     public PersistenceApiAbstraction(ResourceLoader resourceLoader) {
         super(resourceLoader);
-        PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceContext");
-        PERSISTENCE_UNIT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceUnit");
-        PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("javax.persistence.PersistenceContextType");
+        PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("jakarta.persistence.PersistenceContext");
+        PERSISTENCE_UNIT_ANNOTATION_CLASS = annotationTypeForName("jakarta.persistence.PersistenceUnit");
+        PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("jakarta.persistence.PersistenceContextType");
         if (PERSISTENCE_CONTEXT_TYPE_CLASS.getClass().equals(Dummy.class)) {
             EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = enumValue(PERSISTENCE_CONTEXT_TYPE_CLASS, "EXTENDED");
         } else {
             EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
         }
-        ENTITY_CLASS = annotationTypeForName("javax.persistence.Entity");
-        MAPPED_SUPERCLASS_CLASS = annotationTypeForName("javax.persistence.MappedSuperclass");
-        EMBEDDABLE_CLASS = annotationTypeForName("javax.persistence.Embeddable");
-        ENTITY_MANAGER_CLASS = classForName("javax.persistence.EntityManager");
-        ENTITY_MANAGER_FACTORY_CLASS = classForName("javax.persistence.EntityManagerFactory");
+        ENTITY_CLASS = annotationTypeForName("jakarta.persistence.Entity");
+        MAPPED_SUPERCLASS_CLASS = annotationTypeForName("jakarta.persistence.MappedSuperclass");
+        EMBEDDABLE_CLASS = annotationTypeForName("jakarta.persistence.Embeddable");
+        ENTITY_MANAGER_CLASS = classForName("jakarta.persistence.EntityManager");
+        ENTITY_MANAGER_FACTORY_CLASS = classForName("jakarta.persistence.EntityManagerFactory");
     }
 
     public void cleanup() {

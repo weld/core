@@ -18,8 +18,8 @@ package org.jboss.weld.tests.builtinBeans;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
 
 @Foo
 @SuppressWarnings("serial")

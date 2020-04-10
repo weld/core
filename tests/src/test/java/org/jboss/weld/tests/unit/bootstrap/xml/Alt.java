@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 public class Alt {

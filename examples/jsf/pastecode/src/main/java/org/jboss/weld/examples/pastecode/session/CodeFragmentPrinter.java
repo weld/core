@@ -2,9 +2,9 @@ package org.jboss.weld.examples.pastecode.session;
 
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 

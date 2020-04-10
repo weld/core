@@ -38,10 +38,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.event.NotificationOptions;
-import javax.enterprise.event.ObserverException;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.event.NotificationOptions;
+import jakarta.enterprise.event.ObserverException;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -332,6 +332,8 @@ public class ObserverNotifier {
         final NotificationMode mode = initModeOption(options.get(WeldNotificationOptions.MODE));
         final Long timeout = initTimeoutOption(options.get(WeldNotificationOptions.TIMEOUT));
         final Consumer<Runnable> securityContextActionConsumer = securityServices.getSecurityContextAssociator();
+        // grab current TCCL
+        ClassLoader tccl = SecurityActions.getContextClassLoader();
         final ObserverExceptionHandler exceptionHandler;
         CompletableFuture<U> completableFuture;
 
@@ -340,7 +342,7 @@ public class ObserverNotifier {
             exceptionHandler = new CollectingExceptionHandler(new CopyOnWriteArrayList<>());
             List<CompletableFuture<T>> completableFutures = new ArrayList<>(observers.size());
             for (ObserverMethod<? super T> observer : observers) {
-                completableFutures.add(CompletableFuture.supplyAsync(createSupplier(securityContextActionConsumer, event, metadata, exceptionHandler, false, () -> {
+                completableFutures.add(CompletableFuture.supplyAsync(createSupplier(tccl, securityContextActionConsumer, event, metadata, exceptionHandler, false, () -> {
                     notifyAsyncObserver(observer, event, metadata, exceptionHandler);
                 }), executor));
             }
@@ -351,7 +353,7 @@ public class ObserverNotifier {
         } else {
             // Async observers are notified serially in a single worker thread
             exceptionHandler = new CollectingExceptionHandler();
-            completableFuture = CompletableFuture.supplyAsync(createSupplier(securityContextActionConsumer, event, metadata, exceptionHandler, true, () -> {
+            completableFuture = CompletableFuture.supplyAsync(createSupplier(tccl, securityContextActionConsumer, event, metadata, exceptionHandler, true, () -> {
                 for (ObserverMethod<? super T> observer : observers) {
                     notifyAsyncObserver(observer, event, metadata, exceptionHandler);
                 }
@@ -427,19 +429,22 @@ public class ObserverNotifier {
      * @param notifyAction
      * @return a new supplier
      */
-    private <T, U extends T> Supplier<T> createSupplier(Consumer<Runnable> securityContextActionConsumer, U event, EventMetadata metadata, ObserverExceptionHandler exceptionHandler,
+    private <T, U extends T> Supplier<T> createSupplier(ClassLoader threadContextClassLoader, Consumer<Runnable> securityContextActionConsumer, U event, EventMetadata metadata, ObserverExceptionHandler exceptionHandler,
             boolean handleExceptions, Runnable notifyAction) {
         return () -> {
+            ClassLoader originalCl = SecurityActions.getContextClassLoader();
             final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
             final RequestContext requestContext = requestContextHolder.get();
             securityContextActionConsumer.accept(() -> {
                 try {
+                    SecurityActions.setContextClassLoader(threadContextClassLoader);
                     requestContext.activate();
                     notifyAction.run();
                 } finally {
                     stack.pop();
                     requestContext.invalidate();
                     requestContext.deactivate();
+                    SecurityActions.setContextClassLoader(originalCl);
                 }
             });
             if (handleExceptions) {

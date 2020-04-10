@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.annotatedType.weld1144;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class CdiTest2 extends CdiTest1 {
 

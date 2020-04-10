@@ -134,9 +134,9 @@ conversation with which it is associated:
 
 [source.JAVA, java]
 -----------------------------------------------------------------
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.persistence.PersistenceContextType.EXTENDED;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceContextType.EXTENDED;
 
 @ConversationScoped @Stateful
 public class OrderBuilder {
@@ -183,13 +183,13 @@ including the unique identifier of the conversation as a request
 parameter. The CDI specification reserves the request parameter named
 `cid` for this use. The unique identifier of the conversation may be
 obtained from the `Conversation` object, which has the EL bean name
-`javax.enterprise.context.conversation`.
+`jakarta.enterprise.context.conversation`.
 
 Therefore, the following link propagates the conversation:
 
 [source.XML, xml]
 -----------------------------------------------------------------------------------------
-<a href="/addProduct.jsp?cid=#{javax.enterprise.context.conversation.id}">Add Product</a>
+<a href="/addProduct.jsp?cid=#{jakarta.enterprise.context.conversation.id}">Add Product</a>
 -----------------------------------------------------------------------------------------
 
 It's probably better to use one of the link components in JSF 2:
@@ -197,7 +197,7 @@ It's probably better to use one of the link components in JSF 2:
 [source.XML, xml]
 ----------------------------------------------------------------------------
 <h:link outcome="/addProduct.xhtml" value="Add Product">
-   <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+   <f:param name="cid" value="#{jakarta.enterprise.context.conversation.id}"/>
 </h:link>
 ----------------------------------------------------------------------------
 
@@ -241,9 +241,9 @@ HTTP session invalidation or timeout occurs.
 
 The conversation management is not always smooth. For example, if the
 propagated conversation cannot be restored, the
-`javax.enterprise.context.NonexistentConversationException` is thrown.
+`jakarta.enterprise.context.NonexistentConversationException` is thrown.
 Or if there are concurrent requests for a one long-running conversation,
-`javax.enterprise.context.BusyConversationException ` is thrown. For
+`jakarta.enterprise.context.BusyConversationException ` is thrown. For
 such cases, developer has no opportunity to deal with the exception by
 default, as the conversation associated with a Servlet request is
 determined at the beginning of the request before calling any service()
@@ -354,8 +354,8 @@ _pseudo-scopes_. The first is the _singleton pseudo-scope_, which we
 specify using the annotation `@Singleton`.
 
 NOTE: Unlike the other scopes, which belong to the package
-`javax.enterprise.context`, the `@Singleton` annotation is defined in
-the package `javax.inject`.
+`jakarta.enterprise.context`, the `@Singleton` annotation is defined in
+the package `jakarta.inject`.
 
 You can guess what "singleton" means here. It means a bean that is
 instantiated once. Unfortunately, there's a little problem with this

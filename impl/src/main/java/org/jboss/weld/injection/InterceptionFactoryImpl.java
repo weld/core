@@ -19,10 +19,10 @@ package org.jboss.weld.injection;
 import java.security.AccessController;
 import java.util.Optional;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InterceptionFactory;
-import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.InterceptionFactory;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.bean.proxy.InterceptedProxyMethodHandler;
 import org.jboss.weld.bean.proxy.InterceptionFactoryDataCache;
@@ -112,10 +112,6 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
         }
         used = true;
 
-        if (annotatedType.getJavaClass().isInterface()) {
-            throw InterceptorLogger.LOG.interceptionFactoryNotOnInstance(annotatedType.getJavaClass().getCanonicalName());
-        }
-
         Optional<InterceptionFactoryData<T>> cached = beanManager.getServices().get(InterceptionFactoryDataCache.class)
                 .getInterceptionFactoryData(configurator != null ? configurator.complete() : annotatedType);
 
@@ -131,9 +127,8 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
                 InterceptionContext.forNonConstructorInterception(data.getInterceptionModel(), creationalContext, beanManager, data.getSlimAnnotatedType())));
 
         T proxy = (System.getSecurityManager() == null) ? data.getInterceptedProxyFactory().run()
-                : AccessController.doPrivileged(data.getInterceptedProxyFactory());
-        ((ProxyObject) proxy).setHandler(methodHandler);
-
+            : AccessController.doPrivileged(data.getInterceptedProxyFactory());
+        ((ProxyObject) proxy).weld_setHandler(methodHandler);
         return proxy;
     }
 

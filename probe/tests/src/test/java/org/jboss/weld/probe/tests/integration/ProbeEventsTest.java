@@ -97,9 +97,9 @@ public class ProbeEventsTest extends ProbeIntegrationTest {
         assertTrue("No events found !", qualifiers.size() > 0);
 
         //check event qualifiers
-        assertTrue(qualifiers.contains("@javax.enterprise.context.Initialized(value=javax.enterprise.context.RequestScoped.class)"));
-        assertTrue(qualifiers.contains("@javax.enterprise.context.Destroyed(value=javax.enterprise.context.RequestScoped.class)"));
-        assertTrue(qualifiers.contains("@javax.enterprise.context.BeforeDestroyed(value=javax.enterprise.context.RequestScoped.class)"));
+        assertTrue(qualifiers.contains("@jakarta.enterprise.context.Initialized(value=jakarta.enterprise.context.RequestScoped.class)"));
+        assertTrue(qualifiers.contains("@jakarta.enterprise.context.Destroyed(value=jakarta.enterprise.context.RequestScoped.class)"));
+        assertTrue(qualifiers.contains("@jakarta.enterprise.context.BeforeDestroyed(value=jakarta.enterprise.context.RequestScoped.class)"));
     }
 
 }

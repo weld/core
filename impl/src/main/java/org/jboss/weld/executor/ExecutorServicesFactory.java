@@ -73,7 +73,12 @@ public class ExecutorServicesFactory {
             return Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP) ? ThreadPoolType.FIXED : ThreadPoolType.NONE;
         } else {
             try {
-                return ThreadPoolType.valueOf(threadPoolTypeString);
+                ThreadPoolType threadPoolType = ThreadPoolType.valueOf(threadPoolTypeString);
+                if (System.getSecurityManager() != null && ThreadPoolType.COMMON == threadPoolType) {
+                    threadPoolType = ThreadPoolType.FIXED;
+                    BootstrapLogger.LOG.commonThreadPoolWithSecurityManagerEnabled(threadPoolType);
+                }
+                return threadPoolType;
             } catch (Exception e) {
                 throw BootstrapLogger.LOG.invalidThreadPoolType(threadPoolTypeString);
             }

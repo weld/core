@@ -18,11 +18,11 @@ package org.jboss.weld.tests.builtinBeans.metadata.passivation;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Intercepted;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Intercepted;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.inject.Inject;
 
 @Vetoed
 public class FastInterceptor implements Serializable {

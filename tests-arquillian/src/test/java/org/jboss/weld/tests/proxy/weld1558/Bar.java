@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.proxy.weld1558;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 public class Bar {
 

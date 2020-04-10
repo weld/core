@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.module.web.context.beanstore.http;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
