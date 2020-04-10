@@ -150,12 +150,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.spec.jakarta.el</groupId>
-                <artifactId>jboss-el-api_4.0_spec</artifactId>
-                <version>${jboss.spec.el-api.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>jakarta.faces</groupId>
                 <artifactId>jakarta.faces-api</artifactId>
                 <version>${jsf.api.version}</version>

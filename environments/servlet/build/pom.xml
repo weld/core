@@ -75,7 +75,6 @@
                                     <exclude>jakarta.faces:jsf-api</exclude>
                                     <exclude>org.mortbay.jetty:jetty</exclude>
                                     <exclude>jakarta.el:el-api</exclude>
-                                    <exclude>org.jboss.spec.jakarta.el:jboss-el-api_4.0_spec</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>

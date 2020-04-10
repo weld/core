@@ -11,7 +11,7 @@ The following Jakarta EE 9 dependencies have been updated:
 
 * https://github.com/starksm64/api.git Scott Stark fork of https://github.com/weld/api,
 (version is 4.0.0-SNAPSHOT) to update the javax.enterprise package to jakarta.enterprise and Jakarta depednencies to:
-** inject-api version 2.0.0.RC3
+** inject-api version 2.0.0-RC3
 ** cdi-api version to 3.0.0-M2
 ** ejb-api version to 4.0.0-RC1
 ** jpa-api version to 3.0.0-RC2
