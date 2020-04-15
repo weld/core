@@ -89,7 +89,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-cdi</artifactId>
+            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

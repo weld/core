@@ -45,7 +45,7 @@
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.2</apache.bcel.version>
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.4.0.Final</arquillian.version>
+        <arquillian.version>1.7.0.Final-SNAPSHOT</arquillian.version>
         <arquillian.drone.version>2.5.1</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
         <arquillian.weld.version>3.0.0.Final-SNAPSHOT</arquillian.weld.version>
@@ -258,7 +258,7 @@
 
             <dependency>
                 <groupId>org.jboss.arquillian.testenricher</groupId>
-                <artifactId>arquillian-testenricher-cdi</artifactId>
+                <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
                 <version>${arquillian.version}</version>
             </dependency>
 
