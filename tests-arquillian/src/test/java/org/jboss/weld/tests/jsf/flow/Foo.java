@@ -18,7 +18,7 @@ package org.jboss.weld.tests.jsf.flow;
 
 import java.io.Serializable;
 
-import javax.faces.flow.FlowScoped;
+import jakarta.faces.flow.FlowScoped;
 
 @SuppressWarnings("serial")
 @FlowScoped("simple-flow")

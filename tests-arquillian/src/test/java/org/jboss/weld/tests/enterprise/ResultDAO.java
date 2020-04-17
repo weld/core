@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface ResultDAO extends AbstractDAO<Result> {

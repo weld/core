@@ -27,7 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * Tests that for classes which have private final methods an interceptor subclass can be created.

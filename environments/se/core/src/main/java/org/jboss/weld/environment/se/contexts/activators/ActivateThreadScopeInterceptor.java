@@ -16,12 +16,12 @@
 */
 package org.jboss.weld.environment.se.contexts.activators;
 
-import javax.annotation.Priority;
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.environment.se.WeldSEBeanRegistrant;
 import org.jboss.weld.environment.se.contexts.ThreadContext;

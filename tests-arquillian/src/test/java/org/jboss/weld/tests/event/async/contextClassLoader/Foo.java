@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.event.async.contextClassLoader;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Foo {

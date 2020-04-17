@@ -19,7 +19,7 @@ package org.jboss.weld.module.ejb;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.Marker;
 
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 /**
  * Interface implemented by all enterprise bean proxies to query/control the proxy

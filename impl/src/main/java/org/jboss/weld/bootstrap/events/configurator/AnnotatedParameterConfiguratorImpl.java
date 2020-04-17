@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events.configurator;
 
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator;
 
 /**
  * Configurator for {@link AnnotatedParameter}.

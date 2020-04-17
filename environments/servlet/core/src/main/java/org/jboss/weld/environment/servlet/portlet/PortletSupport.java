@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.servlet.portlet;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 

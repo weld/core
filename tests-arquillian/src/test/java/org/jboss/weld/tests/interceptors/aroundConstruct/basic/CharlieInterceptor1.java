@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 import org.junit.Assert;
 

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.injectionTarget;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 public abstract class Baz {
 

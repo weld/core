@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.ordering.global;
 
-import javax.decorator.Decorator;
+import jakarta.decorator.Decorator;
 
 @Decorator
 public class LegacyDecorator3 extends AbstractDecorator {

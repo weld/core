@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.jetty;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 

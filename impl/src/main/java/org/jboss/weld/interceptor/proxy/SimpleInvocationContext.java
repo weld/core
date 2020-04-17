@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * Simple {@link InvocationContext} implementation whose {@link #proceed()} invokes the target method directly without calling any interceptors. If this is not

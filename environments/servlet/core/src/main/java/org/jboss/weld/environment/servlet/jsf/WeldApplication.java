@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationWrapper;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationWrapper;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.module.web.el.WeldELContextListener;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;

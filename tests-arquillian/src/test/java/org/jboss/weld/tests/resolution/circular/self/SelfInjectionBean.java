@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.resolution.circular.self;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 /**
  * @author Kirill Gaevskii

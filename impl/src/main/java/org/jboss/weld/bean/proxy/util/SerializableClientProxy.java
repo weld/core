@@ -20,7 +20,7 @@ package org.jboss.weld.bean.proxy.util;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.logging.BeanLogger;

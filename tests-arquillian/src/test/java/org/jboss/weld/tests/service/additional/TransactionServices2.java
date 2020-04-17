@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.service.additional;
 
-import javax.annotation.Priority;
-import javax.interceptor.Interceptor;
-import javax.transaction.Synchronization;
-import javax.transaction.UserTransaction;
+import jakarta.annotation.Priority;
+import jakarta.interceptor.Interceptor;
+import jakarta.transaction.Synchronization;
+import jakarta.transaction.UserTransaction;
 
 import org.jboss.weld.transaction.spi.TransactionServices;
 

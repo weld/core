@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.synthetic;
 
-import javax.interceptor.Interceptors;
+import jakarta.interceptor.Interceptors;
 
 @Interceptors(BarInterceptor.class)
 public class Bar {

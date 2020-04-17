@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.relaxed.construction;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class UnproxyableBean {

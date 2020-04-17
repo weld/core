@@ -18,10 +18,10 @@ package org.jboss.weld.probe.tests.integration.deployment.beans;
 
 import java.util.Properties;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.Reception;
-import javax.enterprise.event.TransactionPhase;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Reception;
+import jakarta.enterprise.event.TransactionPhase;
 
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
 

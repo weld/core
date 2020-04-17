@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.examples;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class TextTranslator {
     private SentenceParser sentenceParser;

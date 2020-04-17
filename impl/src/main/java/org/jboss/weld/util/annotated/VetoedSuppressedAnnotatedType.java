@@ -20,9 +20,9 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 /**
  * Allows a type annotated with {@link Vetoed} to be registered, i.e. {@link Vetoed} annotation is ignored.

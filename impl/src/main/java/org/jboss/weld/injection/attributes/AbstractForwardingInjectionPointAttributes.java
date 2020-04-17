@@ -19,7 +19,7 @@ package org.jboss.weld.injection.attributes;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 

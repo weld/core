@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.injection.producer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 /**
  * Implementations of this interface are capable of performing {@link PostConstruct} / {@link PreDestroy} lifecycle callback

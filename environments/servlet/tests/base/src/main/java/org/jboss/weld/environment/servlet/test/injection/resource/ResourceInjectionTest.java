@@ -18,7 +18,7 @@ package org.jboss.weld.environment.servlet.test.injection.resource;
 
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 

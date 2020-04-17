@@ -23,7 +23,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -57,7 +57,7 @@ public class ExplicitResourceLoaderExtensionScanningTest {
         ClassLoader classLoader = new URLClassLoader(new URL[] {}, Alpha.class.getClassLoader()) {
             @Override
             public Enumeration<URL> getResources(String name) throws IOException {
-                if ("META-INF/services/javax.enterprise.inject.spi.Extension".equals(name)) {
+                if ("META-INF/services/jakarta.enterprise.inject.spi.Extension".equals(name)) {
                     // Load only AlphaExtension
                     return super.getResources("META-INF/services/" + MyExtension.class.getName());
                 }

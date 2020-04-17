@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.security.members;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 public class Bar {
 

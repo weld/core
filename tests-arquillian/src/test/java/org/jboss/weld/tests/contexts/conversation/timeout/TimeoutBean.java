@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.contexts.conversation.timeout;
 
-import javax.enterprise.context.Conversation;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Conversation;
+import jakarta.inject.Inject;
 
 public class TimeoutBean {
 

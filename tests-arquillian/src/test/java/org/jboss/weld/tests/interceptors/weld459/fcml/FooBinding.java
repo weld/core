@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.weld459.fcml;
 
-import javax.interceptor.InterceptorBinding;
+import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

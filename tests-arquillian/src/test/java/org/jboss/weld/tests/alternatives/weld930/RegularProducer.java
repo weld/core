@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.alternatives.weld930;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
 /**
  * @author Marko Luksa

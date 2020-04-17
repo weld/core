@@ -20,9 +20,9 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator;
-import javax.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator;
 
 /**
  * Configurator for {@link AnnotatedMethod}.

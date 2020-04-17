@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.weld.examples</groupId>
         <artifactId>weld-examples-parent</artifactId>
-        <version>3.1.5-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -38,13 +38,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <groupId>org.jboss.spec.jakarta.annotation</groupId>
             <artifactId>jboss-annotations-api_1.3_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.spec.javax.faces</groupId>
+            <groupId>org.jboss.spec.jakarta.faces</groupId>
             <artifactId>jboss-jsf-api_2.3_spec</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -74,7 +74,7 @@
                     <scope>compile</scope>
                 </dependency>
                 <dependency>
-                    <groupId>org.jboss.spec.javax.faces</groupId>
+                    <groupId>org.jboss.spec.jakarta.faces</groupId>
                     <artifactId>jboss-jsf-api_2.3_spec</artifactId>
                     <scope>compile</scope>
                 </dependency>
@@ -117,7 +117,7 @@
             <id>tomcat</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.spec.javax.faces</groupId>
+                    <groupId>org.jboss.spec.jakarta.faces</groupId>
                     <artifactId>jboss-jsf-api_2.3_spec</artifactId>
                 </dependency>
 
@@ -160,7 +160,7 @@
             <id>jetty</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.spec.javax.faces</groupId>
+                    <groupId>org.jboss.spec.jakarta.faces</groupId>
                     <artifactId>jboss-jsf-api_2.3_spec</artifactId>
                 </dependency>
 

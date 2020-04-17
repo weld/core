@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.invalidContract;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
 
 /**
  * By Contract this method should take InvocationContext as a argument, no arguments should result in DefinitionException

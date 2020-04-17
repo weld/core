@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;

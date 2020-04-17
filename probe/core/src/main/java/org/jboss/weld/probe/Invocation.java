@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.Bean;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * Information about a single business method invocation.

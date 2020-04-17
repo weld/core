@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.event.ordering;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 public class NoPriority {
 

@@ -21,8 +21,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.ejb.Timeout;
-import javax.enterprise.inject.spi.BeanAttributes;
+import jakarta.ejb.Timeout;
+import jakarta.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;

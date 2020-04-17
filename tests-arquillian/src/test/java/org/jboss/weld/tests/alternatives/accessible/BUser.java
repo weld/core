@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.alternatives.accessible;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

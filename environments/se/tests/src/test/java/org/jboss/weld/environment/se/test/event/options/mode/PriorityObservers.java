@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.event.options.mode;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.ObservesAsync;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.ObservesAsync;
 
 @ApplicationScoped
 public class PriorityObservers {

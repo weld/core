@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.arrays;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 /**
  *

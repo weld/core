@@ -24,7 +24,7 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.UUID;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 
 @Stateless

@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.interceptor.Interceptor;
+import jakarta.interceptor.Interceptor;
 
 /**
  * Registers an extension-provided implementation of the {@link Interceptor} interface. This causes deployment error on Weld if

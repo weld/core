@@ -18,7 +18,7 @@ package org.jboss.weld.util;
 
 import java.util.Set;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.bootstrap.api.Service;

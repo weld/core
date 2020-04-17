@@ -12,7 +12,7 @@ public final class TomcatDeployments {
     public static final Asset CONTEXT_XML = new StringAsset(
         "<Context crossContext=\"true\">" +
             "<Manager pathname=\"\" />" +
-            "<Resource name=\"BeanManager\" auth=\"Container\" type=\"javax.inject.manager.BeanManager\" factory=\"org.jboss.weld.resources.ManagerObjectFactory\"/>" +
+            "<Resource name=\"BeanManager\" auth=\"Container\" type=\"jakarta.inject.manager.BeanManager\" factory=\"org.jboss.weld.resources.ManagerObjectFactory\"/>" +
             "<Environment name=\"foo\" value=\"bar\" type=\"java.lang.String\"/>" +
             "<JarScanner scanManifest=\"false\"/>" +
         "</Context>");

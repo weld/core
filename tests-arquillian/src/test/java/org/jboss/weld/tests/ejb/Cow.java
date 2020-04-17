@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.ejb;
 
-import javax.ejb.Stateful;
+import jakarta.ejb.Stateful;
 
 @Stateful
 public class Cow {

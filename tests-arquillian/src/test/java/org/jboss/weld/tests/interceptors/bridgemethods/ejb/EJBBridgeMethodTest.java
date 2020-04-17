@@ -3,8 +3,8 @@ package org.jboss.weld.tests.interceptors.bridgemethods.ejb;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import javax.ejb.EJBException;
-import javax.inject.Inject;
+import jakarta.ejb.EJBException;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

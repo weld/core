@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;

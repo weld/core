@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.signed.insideJar;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Standard bean with no special setup - creating proxy of this anywhere should work.

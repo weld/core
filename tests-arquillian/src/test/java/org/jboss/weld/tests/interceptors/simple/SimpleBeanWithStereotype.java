@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.simple;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>

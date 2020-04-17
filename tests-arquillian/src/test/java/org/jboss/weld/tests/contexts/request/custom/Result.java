@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.contexts.request.custom;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
 public class Result {

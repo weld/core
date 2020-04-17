@@ -18,9 +18,9 @@ package org.jboss.weld.event;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.manager.BeanManagerImpl;

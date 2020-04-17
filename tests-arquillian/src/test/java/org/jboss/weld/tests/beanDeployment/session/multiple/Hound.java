@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.beanDeployment.session.multiple;
 
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.inject.Named;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateful;
+import jakarta.inject.Named;
 
 @Stateful
 @Tame

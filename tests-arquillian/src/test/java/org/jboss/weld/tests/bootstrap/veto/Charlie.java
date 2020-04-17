@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.bootstrap.veto;
 
-import javax.enterprise.inject.Model;
+import jakarta.enterprise.inject.Model;
 
 @Model
 public class Charlie {

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.builder;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 @ApplicationScoped

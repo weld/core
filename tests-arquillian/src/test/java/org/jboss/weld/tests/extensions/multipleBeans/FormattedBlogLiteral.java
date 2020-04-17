@@ -3,7 +3,7 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 class FormattedBlogLiteral extends AnnotationLiteral<FormattedBlog> implements FormattedBlog {
 

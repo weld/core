@@ -23,7 +23,7 @@ import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.mock.cluster.SwitchableSingletonProvider;
 import org.testng.annotations.Test;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 public class SwitchableContainerTest extends AbstractClusterTest {
 

@@ -1,7 +1,7 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletRequestListener;
 
 public class BatRequestListener extends BatListener implements ServletRequestListener {
 

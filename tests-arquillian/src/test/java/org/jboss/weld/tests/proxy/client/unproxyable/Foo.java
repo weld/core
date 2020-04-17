@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.client.unproxyable;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Foo extends Bar {

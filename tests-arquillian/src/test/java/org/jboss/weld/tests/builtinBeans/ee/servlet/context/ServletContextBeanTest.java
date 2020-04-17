@@ -18,7 +18,7 @@ package org.jboss.weld.tests.builtinBeans.ee.servlet.context;
 
 import java.net.URL;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.junit.Assert;
 

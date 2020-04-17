@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.builder.alphas;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Alpha2 {

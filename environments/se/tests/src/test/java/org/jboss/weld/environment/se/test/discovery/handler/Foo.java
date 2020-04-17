@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.discovery.handler;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Foo {

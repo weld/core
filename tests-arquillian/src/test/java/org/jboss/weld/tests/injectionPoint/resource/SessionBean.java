@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.injectionPoint.resource;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class SessionBean {

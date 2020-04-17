@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.annotated.enhanced;
 
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 /**
  * AnnotatedParameter provides a uniform access to a method parameter defined

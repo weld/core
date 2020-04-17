@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.producer.method.circular;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 class FooProducer {
 

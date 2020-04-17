@@ -2,7 +2,7 @@ package org.jboss.weld.annotated.slim;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.Annotated;
 
 public abstract class BaseAnnotated implements Annotated {
 

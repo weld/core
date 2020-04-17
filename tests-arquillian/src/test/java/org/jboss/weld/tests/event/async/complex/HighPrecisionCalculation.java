@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.event.async.complex;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed // remove this to run a more precise calculation and see the result
 public class HighPrecisionCalculation {

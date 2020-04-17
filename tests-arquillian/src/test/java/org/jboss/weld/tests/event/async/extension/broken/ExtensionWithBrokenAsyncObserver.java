@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.event.async.extension.broken;
 
-import javax.enterprise.event.ObservesAsync;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.event.ObservesAsync;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 public class ExtensionWithBrokenAsyncObserver implements Extension {
 

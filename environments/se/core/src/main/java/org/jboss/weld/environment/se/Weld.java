@@ -47,14 +47,14 @@ import java.util.UUID;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.se.SeContainerInitializer;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.UnsatisfiedResolutionException;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.se.SeContainerInitializer;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
@@ -209,7 +209,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * See also the CDI specification, section <b>15.1 Bean archive in Java SE</b>.
      */
-    public static final String JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT = "javax.enterprise.inject.scan.implicit";
+    public static final String JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT = "jakarta.enterprise.inject.scan.implicit";
 
     /**
      * By default, Weld is allowed to perform efficient cleanup and further optimizations after bootstrap. This feature is normally controlled by integrator

@@ -18,9 +18,9 @@ package org.jboss.weld.tests.instance.enhanced;
 
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.jboss.weld.test.util.ActionSequence;
 

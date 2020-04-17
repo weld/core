@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.stereotypes;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Stereotype;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Stereotype;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

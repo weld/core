@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.ejb.proxy.privateMethods;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 
 @Stateless
 @LocalBean

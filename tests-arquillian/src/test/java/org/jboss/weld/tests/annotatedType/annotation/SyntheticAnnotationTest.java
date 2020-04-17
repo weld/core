@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.tests.annotatedType.annotation;
 
-import javax.enterprise.inject.spi.AfterTypeDiscovery;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 
@@ -35,8 +35,8 @@ import org.junit.runner.RunWith;
 
 /**
  * Verifies that {@link ProcessAnnotatedType} is not fired for an annotation registered using
- * {@link BeforeBeanDiscovery#addAnnotatedType(javax.enterprise.inject.spi.AnnotatedType)} or
- * {@link AfterTypeDiscovery#addAnnotatedType(javax.enterprise.inject.spi.AnnotatedType, String)}
+ * {@link BeforeBeanDiscovery#addAnnotatedType(jakarta.enterprise.inject.spi.AnnotatedType)} or
+ * {@link AfterTypeDiscovery#addAnnotatedType(jakarta.enterprise.inject.spi.AnnotatedType, String)}
  * 
  * @author Jozef Hartinger
  * 

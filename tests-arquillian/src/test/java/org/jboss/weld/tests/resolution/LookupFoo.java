@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resolution;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class LookupFoo {
 

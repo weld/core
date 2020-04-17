@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.producer.receiver;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.inject.Produces;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.inject.Produces;
 
 public class Producer {
 

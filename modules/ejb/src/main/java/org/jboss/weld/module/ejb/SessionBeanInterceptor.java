@@ -19,7 +19,7 @@ package org.jboss.weld.module.ejb;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;

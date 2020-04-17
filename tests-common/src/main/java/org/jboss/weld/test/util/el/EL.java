@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.test.util.el;
 
-import javax.el.ELContext;
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
-import javax.el.ExpressionFactory;
-import javax.el.StandardELContext;
+import jakarta.el.ELContext;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.StandardELContext;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.web.el.WeldELContextListener;

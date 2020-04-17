@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Specializes;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.inject.Specializes;
 
 @Stateless
 @Specializes

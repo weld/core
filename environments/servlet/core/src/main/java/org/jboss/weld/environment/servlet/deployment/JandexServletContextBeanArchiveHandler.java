@@ -19,7 +19,7 @@ package org.jboss.weld.environment.servlet.deployment;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;

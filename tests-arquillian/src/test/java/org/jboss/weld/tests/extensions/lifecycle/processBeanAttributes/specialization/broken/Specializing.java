@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.specialization.broken;
 
-import javax.enterprise.inject.Specializes;
-import javax.inject.Named;
+import jakarta.enterprise.inject.Specializes;
+import jakarta.inject.Named;
 
 @Specializes
 @Named("specializing")

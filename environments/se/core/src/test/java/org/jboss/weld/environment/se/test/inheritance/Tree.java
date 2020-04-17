@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.inheritance;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class Tree extends Plant {

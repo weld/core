@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.disposer.weld1894;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class SecondBean {

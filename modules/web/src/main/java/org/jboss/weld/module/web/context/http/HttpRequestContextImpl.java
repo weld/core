@@ -18,8 +18,8 @@ package org.jboss.weld.module.web.context.http;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.RequestScoped;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.contexts.AbstractBoundContext;
 import org.jboss.weld.contexts.beanstore.BoundBeanStore;

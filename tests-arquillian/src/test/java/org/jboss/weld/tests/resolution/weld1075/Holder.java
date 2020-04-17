@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.resolution.weld1075;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.UUID;
 
 /**

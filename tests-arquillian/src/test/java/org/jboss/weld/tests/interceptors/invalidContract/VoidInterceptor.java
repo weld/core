@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.invalidContract;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * By Contract this method should return Object, void methods should result in DefinitionException

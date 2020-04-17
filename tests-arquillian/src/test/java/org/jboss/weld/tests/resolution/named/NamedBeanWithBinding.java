@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.resolution.named;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * @author Dan Allen

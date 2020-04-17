@@ -18,7 +18,7 @@ package org.jboss.weld.tests.scope.unproxyable.array;
 
 import java.util.Comparator;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Injected {
 

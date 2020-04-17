@@ -3,7 +3,7 @@ package org.jboss.weld.tests.unit.reflection.inheritance;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.testng.Assert;

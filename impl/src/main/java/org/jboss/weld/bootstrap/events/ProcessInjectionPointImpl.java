@@ -18,10 +18,10 @@ package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.inject.spi.configurator.InjectionPointConfigurator;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.enterprise.inject.spi.configurator.InjectionPointConfigurator;
 
 import org.jboss.weld.bootstrap.events.configurator.InjectionPointConfiguratorImpl;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;

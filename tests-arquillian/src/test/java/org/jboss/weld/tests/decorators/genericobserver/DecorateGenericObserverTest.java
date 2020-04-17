@@ -26,8 +26,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 /**
  * 5.5.6: "Invoke the observer method on the resulting instance, if any, as a business method invocation,

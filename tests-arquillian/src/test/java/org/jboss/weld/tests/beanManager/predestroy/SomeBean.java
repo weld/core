@@ -21,7 +21,7 @@
  */
 package org.jboss.weld.tests.beanManager.predestroy;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 public class SomeBean {
 

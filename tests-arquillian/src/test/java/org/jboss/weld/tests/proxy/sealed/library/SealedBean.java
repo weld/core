@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.sealed.library;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * This class is a part of the sealed JAR and is a CDI bean

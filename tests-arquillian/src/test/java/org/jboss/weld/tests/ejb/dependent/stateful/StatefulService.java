@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.ejb.dependent.stateful;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateful;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateful;
 
 /**
  *

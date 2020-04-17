@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.accessibility;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 public interface Animal {
 

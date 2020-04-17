@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.annotation.PostConstruct;
-import javax.interceptor.InvocationContext;
+import jakarta.annotation.PostConstruct;
+import jakarta.interceptor.InvocationContext;
 
 /**
 * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

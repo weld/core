@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.extensions.injection;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 /**
  *

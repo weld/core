@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.builder.containerlifecycle;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
 
 public class Bravo {
 

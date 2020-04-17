@@ -2,8 +2,8 @@ package org.jboss.weld.environment.servlet.test.context.async;
 
 import java.io.IOException;
 
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
 
 /**
  * @author Tomas Remes
@@ -18,7 +18,7 @@ public class SimpleAsyncListener implements AsyncListener {
     /*
      * (non-Javadoc)
      *
-     * @see javax.servlet.AsyncListener#onComplete(javax.servlet.AsyncEvent)
+     * @see jakarta.servlet.AsyncListener#onComplete(jakarta.servlet.AsyncEvent)
      */
     @Override
     public void onComplete(AsyncEvent event) throws IOException {
@@ -28,7 +28,7 @@ public class SimpleAsyncListener implements AsyncListener {
     /*
      * (non-Javadoc)
      *
-     * @see javax.servlet.AsyncListener#onTimeout(javax.servlet.AsyncEvent)
+     * @see jakarta.servlet.AsyncListener#onTimeout(jakarta.servlet.AsyncEvent)
      */
     @Override
     public void onTimeout(AsyncEvent event) throws IOException {
@@ -39,7 +39,7 @@ public class SimpleAsyncListener implements AsyncListener {
     /*
      * (non-Javadoc)
      *
-     * @see javax.servlet.AsyncListener#onError(javax.servlet.AsyncEvent)
+     * @see jakarta.servlet.AsyncListener#onError(jakarta.servlet.AsyncEvent)
      */
     @Override
     public void onError(AsyncEvent event) throws IOException {
@@ -50,7 +50,7 @@ public class SimpleAsyncListener implements AsyncListener {
     /*
      * (non-Javadoc)
      *
-     * @see javax.servlet.AsyncListener#onStartAsync(javax.servlet.AsyncEvent)
+     * @see jakarta.servlet.AsyncListener#onStartAsync(jakarta.servlet.AsyncEvent)
      */
     @Override
     public void onStartAsync(AsyncEvent event) throws IOException {

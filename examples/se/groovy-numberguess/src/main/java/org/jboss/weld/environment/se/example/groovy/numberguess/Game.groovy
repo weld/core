@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.environment.se.example.groovy.numberguess;
 
-import javax.annotation.PostConstruct
-import javax.annotation.PreDestroy
-import javax.enterprise.context.ApplicationScoped
-import javax.enterprise.event.Observes
-import javax.inject.Inject
+import jakarta.annotation.PostConstruct
+import jakarta.annotation.PreDestroy
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.enterprise.event.Observes
+import jakarta.inject.Inject
 
 /**
  * This class contains the pure logic of the Number Guess game. Redone to groovy from java version

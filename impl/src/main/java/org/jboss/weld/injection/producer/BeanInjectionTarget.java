@@ -19,11 +19,11 @@ package org.jboss.weld.injection.producer;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -69,11 +69,11 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected boolean isInterceptor() {
-        return (getBean() instanceof Interceptor<?>) || getType().isAnnotationPresent(javax.interceptor.Interceptor.class);
+        return (getBean() instanceof Interceptor<?>) || getType().isAnnotationPresent(jakarta.interceptor.Interceptor.class);
     }
 
     protected boolean isDecorator() {
-        return (getBean() instanceof Decorator<?>) || getType().isAnnotationPresent(javax.decorator.Decorator.class);
+        return (getBean() instanceof Decorator<?>) || getType().isAnnotationPresent(jakarta.decorator.Decorator.class);
     }
 
     protected boolean isInterceptionCandidate() {

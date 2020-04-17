@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.scope.unproxyable;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class InjectedBean {
 

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.contexts.conversation;
 
-import javax.enterprise.context.ConversationScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.inject.Named;
 import java.io.Serializable;
 
 @Named

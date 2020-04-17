@@ -2,7 +2,7 @@ package org.jboss.weld.environment.se.test.beandiscovery;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

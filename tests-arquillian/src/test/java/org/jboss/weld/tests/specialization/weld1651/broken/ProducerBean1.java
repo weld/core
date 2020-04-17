@@ -18,7 +18,7 @@ package org.jboss.weld.tests.specialization.weld1651.broken;
 
 import java.util.Collection;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 class ProducerBean1 {
 

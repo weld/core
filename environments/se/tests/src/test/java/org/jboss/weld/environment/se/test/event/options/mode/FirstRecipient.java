@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.event.options.mode;
 
-import javax.enterprise.event.ObservesAsync;
+import jakarta.enterprise.event.ObservesAsync;
 
 class FirstRecipient {
 

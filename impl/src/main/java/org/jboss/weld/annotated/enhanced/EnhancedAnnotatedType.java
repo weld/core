@@ -19,7 +19,7 @@ package org.jboss.weld.annotated.enhanced;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 

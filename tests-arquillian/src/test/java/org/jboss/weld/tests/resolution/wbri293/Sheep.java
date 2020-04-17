@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resolution.wbri293;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 class Sheep {

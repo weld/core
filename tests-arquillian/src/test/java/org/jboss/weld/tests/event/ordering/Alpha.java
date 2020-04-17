@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.event.ordering;
 
-import javax.annotation.Priority;
-import javax.enterprise.event.Observes;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.event.Observes;
 
 public class Alpha {
 

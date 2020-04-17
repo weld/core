@@ -3,7 +3,7 @@ package org.jboss.weld.contexts.bound;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 import org.jboss.weld.contexts.AbstractBoundContext;
 import org.jboss.weld.contexts.beanstore.MapBeanStore;

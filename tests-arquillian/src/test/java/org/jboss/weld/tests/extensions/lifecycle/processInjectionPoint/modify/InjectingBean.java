@@ -18,8 +18,8 @@ package org.jboss.weld.tests.extensions.lifecycle.processInjectionPoint.modify;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 
 @SessionScoped
 @SuppressWarnings("serial")

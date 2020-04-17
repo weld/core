@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.ejb;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface Vehicle {

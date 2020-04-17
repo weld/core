@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.unit.ejb.subclass;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
 
 /**
  * Simulates a message-driven bean

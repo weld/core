@@ -17,10 +17,10 @@
 
 package org.jboss.weld.tests.decorators.decoratedTypes;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.inject.Typed;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.inject.Typed;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

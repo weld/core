@@ -18,8 +18,8 @@ package org.jboss.weld.examples.pastecode.session;
 
 import org.jboss.weld.examples.pastecode.model.Language;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
 /**
  * Produces an array of supported languages

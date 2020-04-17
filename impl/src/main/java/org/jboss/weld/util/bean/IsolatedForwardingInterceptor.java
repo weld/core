@@ -19,11 +19,11 @@ package org.jboss.weld.util.bean;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * Delegating implementation of {@link Interceptor}. Separate delegate is used for {@link BeanAttributes} methods, allowing this

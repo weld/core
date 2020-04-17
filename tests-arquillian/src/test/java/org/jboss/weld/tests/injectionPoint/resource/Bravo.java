@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.injectionPoint.resource;
 
-import javax.ejb.EJB;
+import jakarta.ejb.EJB;
 
 import org.jboss.weld.test.util.ActionSequence;
 

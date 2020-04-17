@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.qualifiers;
 
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Specializes;
 
 public class StaticNestedClassesParent {
     @Admin

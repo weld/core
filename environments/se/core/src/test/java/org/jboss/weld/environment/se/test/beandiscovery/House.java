@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class House {

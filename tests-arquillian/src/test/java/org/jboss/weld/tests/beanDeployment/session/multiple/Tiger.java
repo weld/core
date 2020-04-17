@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.beanDeployment.session.multiple;
 
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateful;
 
 @Stateful
 @Synchronous

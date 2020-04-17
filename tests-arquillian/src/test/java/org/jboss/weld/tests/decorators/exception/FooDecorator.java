@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.decorators.exception;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 @Decorator
 public abstract class FooDecorator implements Foo {

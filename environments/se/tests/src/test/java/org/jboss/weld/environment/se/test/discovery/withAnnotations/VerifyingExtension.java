@@ -18,13 +18,13 @@ package org.jboss.weld.environment.se.test.discovery.withAnnotations;
 
 import static org.junit.Assert.assertNull;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.WithAnnotations;
-import javax.inject.Named;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.WithAnnotations;
+import jakarta.inject.Named;
 
 public class VerifyingExtension implements Extension {
 

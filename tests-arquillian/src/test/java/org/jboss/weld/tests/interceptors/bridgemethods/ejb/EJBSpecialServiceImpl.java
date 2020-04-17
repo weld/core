@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.interceptors.bridgemethods.ejb;
 
-import javax.ejb.Local;
-import javax.ejb.Stateless;
+import jakarta.ejb.Local;
+import jakarta.ejb.Stateless;
 
 import org.jboss.weld.tests.interceptors.bridgemethods.common.SomeInterceptorBinding;
 import org.jboss.weld.tests.interceptors.bridgemethods.common.SpecialService;

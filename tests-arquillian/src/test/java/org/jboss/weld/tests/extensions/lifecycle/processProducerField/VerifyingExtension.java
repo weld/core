@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processProducerField;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessProducerField;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessProducerField;
 
 public class VerifyingExtension implements Extension {
 

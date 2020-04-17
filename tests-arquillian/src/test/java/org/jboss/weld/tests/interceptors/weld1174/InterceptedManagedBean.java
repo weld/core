@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.weld1174;
 
-import javax.enterprise.context.RequestScoped;
-import javax.interceptor.Interceptors;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.interceptor.Interceptors;
 import java.io.Serializable;
 
 /**

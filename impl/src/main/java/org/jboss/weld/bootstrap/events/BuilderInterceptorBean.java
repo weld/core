@@ -23,16 +23,16 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.Prioritized;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.inject.spi.Prioritized;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.logging.BeanLogger;

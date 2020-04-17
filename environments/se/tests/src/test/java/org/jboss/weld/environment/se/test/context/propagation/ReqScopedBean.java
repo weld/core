@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.context.propagation;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 /**
  *

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.servlet.test.bootstrap.enhanced.shutdown;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /**
  *

@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.ejb;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

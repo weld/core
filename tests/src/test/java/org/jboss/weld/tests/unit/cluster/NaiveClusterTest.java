@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.config.ConfigurationKey;

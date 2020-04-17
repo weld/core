@@ -20,7 +20,7 @@ import java.security.AccessController;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.security.GetContextClassLoaderAction;

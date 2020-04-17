@@ -19,8 +19,8 @@ package org.jboss.weld.bean.proxy;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.Decorator;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.WeldDecorator;

@@ -23,18 +23,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.regex.Pattern;
 
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.config.ConfigurationKey;
@@ -72,12 +72,12 @@ public class ProbeFilter implements Filter {
 
     static final String REST_URL_PATTERN_BASE = "/weld-probe";
 
-    static final String WELD_SERVLET_BEAN_MANAGER_KEY = "org.jboss.weld.environment.servlet.javax.enterprise.inject.spi.BeanManager";
+    static final String WELD_SERVLET_BEAN_MANAGER_KEY = "org.jboss.weld.environment.servlet.jakarta.enterprise.inject.spi.BeanManager";
 
     @Inject
     private BeanManagerImpl beanManager;
 
-    // It shouldn't be necessary to make these fields volatile - see also javax.servlet.GenericServlet.config
+    // It shouldn't be necessary to make these fields volatile - see also jakarta.servlet.GenericServlet.config
     private String snippetBase;
 
     private Probe probe;

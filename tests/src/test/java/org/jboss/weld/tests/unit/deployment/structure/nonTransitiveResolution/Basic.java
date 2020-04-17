@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
-import javax.interceptor.InterceptorBinding;
+import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

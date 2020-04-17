@@ -18,10 +18,10 @@ package org.jboss.weld.tests.producer.method;
 
 import java.lang.reflect.Member;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 /**
  * Class with a producer method and disposal method both containing InjectionPoint

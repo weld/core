@@ -19,8 +19,8 @@ package org.jboss.weld.module.web;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
 
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.context.http.HttpConversationContext;

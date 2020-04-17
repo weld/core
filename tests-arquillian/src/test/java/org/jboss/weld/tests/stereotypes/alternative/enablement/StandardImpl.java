@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.stereotypes.alternative.enablement;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *

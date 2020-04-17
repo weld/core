@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.decorators.resolution;
 
-import javax.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.Decorator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

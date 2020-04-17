@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resolution.named;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("foo")
 public class FooBean {

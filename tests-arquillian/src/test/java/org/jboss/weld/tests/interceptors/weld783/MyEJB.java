@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.weld783;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.el.weld1280;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named
 public class HelloBean {

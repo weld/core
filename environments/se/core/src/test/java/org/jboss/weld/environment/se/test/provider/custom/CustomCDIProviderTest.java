@@ -19,7 +19,7 @@ package org.jboss.weld.environment.se.test.provider.custom;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.jboss.weld.environment.se.test.WeldSETest;
 import org.junit.Test;

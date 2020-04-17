@@ -18,11 +18,11 @@ package org.jboss.weld.tests.builtinBeans.ee;
 
 import org.junit.Assert;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.UserTransaction;
 import java.io.Serializable;
 
 import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManager;

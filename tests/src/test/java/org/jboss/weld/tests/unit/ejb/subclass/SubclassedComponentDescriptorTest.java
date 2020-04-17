@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.enterprise.inject.spi.SessionBeanType;
+import jakarta.enterprise.inject.spi.SessionBeanType;
 
 import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;

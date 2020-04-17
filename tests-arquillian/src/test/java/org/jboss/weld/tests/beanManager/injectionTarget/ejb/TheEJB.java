@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.beanManager.injectionTarget.ejb;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Stateless;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

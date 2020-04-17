@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collections;

@@ -4,7 +4,7 @@ import org.jboss.weld.contexts.AbstractUnboundContext;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.contexts.beanstore.HashMapBeanStore;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;

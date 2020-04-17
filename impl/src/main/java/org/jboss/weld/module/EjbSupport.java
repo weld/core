@@ -20,9 +20,9 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.New;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
@@ -92,7 +92,7 @@ public interface EjbSupport extends Service {
     void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager);
 
     /**
-     * Returns the class object for the {@link javax.ejb.Timeout} annotation.
+     * Returns the class object for the {@link jakarta.ejb.Timeout} annotation.
      *
      * @return the class object for the Timeout annotation or null if the annotation is not present
      */

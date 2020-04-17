@@ -18,7 +18,7 @@ package org.jboss.weld.module;
 
 import java.util.ServiceLoader;
 
-import javax.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Context;
 
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.BeanDeployment;

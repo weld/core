@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1823;
 
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 /*
  *@author Emily Jiang

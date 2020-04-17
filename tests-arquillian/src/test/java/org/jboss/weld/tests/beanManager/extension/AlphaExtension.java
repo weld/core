@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanManager.extension;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 public class AlphaExtension implements Extension {
 

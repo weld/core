@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
 
 /**
  * @author pmuir

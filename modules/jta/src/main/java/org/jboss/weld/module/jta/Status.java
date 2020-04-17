@@ -17,10 +17,10 @@
 
 package org.jboss.weld.module.jta;
 
-import static javax.transaction.Status.STATUS_COMMITTED;
+import static jakarta.transaction.Status.STATUS_COMMITTED;
 
-import javax.enterprise.event.TransactionPhase;
-import javax.transaction.Synchronization;
+import jakarta.enterprise.event.TransactionPhase;
+import jakarta.transaction.Synchronization;
 
 /**
  * An enumeration of the possible outcomes for a transaction.  This is used

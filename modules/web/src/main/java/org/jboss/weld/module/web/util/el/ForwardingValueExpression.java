@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.module.web.util.el;
 
-import javax.el.ELContext;
-import javax.el.ValueExpression;
-import javax.el.ValueReference;
+import jakarta.el.ELContext;
+import jakarta.el.ValueExpression;
+import jakarta.el.ValueReference;
 
 /**
  * @author pmuir

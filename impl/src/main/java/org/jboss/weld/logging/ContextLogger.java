@@ -20,7 +20,7 @@ import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Context;
 
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;

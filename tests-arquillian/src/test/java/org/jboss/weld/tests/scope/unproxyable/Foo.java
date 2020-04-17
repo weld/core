@@ -18,9 +18,9 @@ package org.jboss.weld.tests.scope.unproxyable;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
 
 @SuppressWarnings("serial")
 @SessionScoped

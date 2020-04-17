@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.proxy.WeldInvocationContextImpl;
 import org.jboss.weld.test.util.ActionSequence;

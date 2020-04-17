@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>

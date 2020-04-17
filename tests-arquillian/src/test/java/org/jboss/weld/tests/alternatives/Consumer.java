@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.alternatives;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Consumer {
 

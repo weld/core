@@ -1,6 +1,6 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public abstract class BatListener {
 

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.builder;
 
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
 
 @Vetoed
 public class Oof {

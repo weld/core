@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.decorators.defaultmethod;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 /**
  * Note: this class should not override *any* other method than the one with a default implementation.

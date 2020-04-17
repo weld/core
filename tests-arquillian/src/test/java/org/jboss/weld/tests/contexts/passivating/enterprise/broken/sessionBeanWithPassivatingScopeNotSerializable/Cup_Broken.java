@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.contexts.passivating.enterprise.broken.sessionBeanWithPassivatingScopeNotSerializable;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 
 @Stateful
 @SessionScoped

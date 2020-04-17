@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class BeanImpl implements BeanLocal {

@@ -1,6 +1,6 @@
 package org.jboss.weld.environment.servlet.test.context.async;
 
-import javax.servlet.AsyncContext;
+import jakarta.servlet.AsyncContext;
 
 import org.jboss.weld.test.util.Timer;
 

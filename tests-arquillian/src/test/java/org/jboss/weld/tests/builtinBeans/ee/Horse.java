@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee;
 
-import javax.ejb.Stateful;
+import jakarta.ejb.Stateful;
 
 
 @Stateful

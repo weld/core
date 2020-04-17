@@ -18,7 +18,7 @@ package org.jboss.weld.tests.bridge.methods;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.enterprise.event.Event;
+import jakarta.enterprise.event.Event;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

@@ -1,9 +1,9 @@
 package org.jboss.weld.tests.resources;
 
-import javax.ejb.Singleton;
-import javax.enterprise.inject.Produces;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import jakarta.ejb.Singleton;
+import jakarta.enterprise.inject.Produces;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 
 @Singleton
 public class JPAResourceProducerSingletonEJB_StaticField {

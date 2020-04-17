@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.producer.field;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 

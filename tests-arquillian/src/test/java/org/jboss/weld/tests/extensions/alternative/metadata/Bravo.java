@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.alternative.metadata;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class Bravo extends Charlie {

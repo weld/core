@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.bootstrap.unusedbeans;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
 @ApplicationScoped
 public class UnusedWithObserver {

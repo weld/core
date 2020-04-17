@@ -19,8 +19,8 @@ package org.jboss.weld.injection.producer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.manager.BeanManagerImpl;

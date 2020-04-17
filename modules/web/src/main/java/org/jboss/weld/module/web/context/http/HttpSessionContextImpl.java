@@ -2,10 +2,10 @@ package org.jboss.weld.module.web.context.http;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.SessionScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.config.ConfigurationKey;

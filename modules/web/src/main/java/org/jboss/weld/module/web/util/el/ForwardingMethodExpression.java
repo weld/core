@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.module.web.util.el;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.MethodInfo;
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
 
 /**
  * @author pmuir

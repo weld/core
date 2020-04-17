@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 @Special
 public class Clothes {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class Person {
 

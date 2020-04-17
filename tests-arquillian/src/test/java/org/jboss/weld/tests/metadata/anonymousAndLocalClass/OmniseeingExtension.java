@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.metadata.anonymousAndLocalClass;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 /**
  * Observes everything and everyone - this triggers creation of AT for all classes.

@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.se.test.provider;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class KarateClub {
 

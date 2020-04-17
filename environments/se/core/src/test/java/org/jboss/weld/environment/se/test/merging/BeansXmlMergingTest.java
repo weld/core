@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Simulates a situation where there is implicit discovery (javax.enterprise.inject.scan.implicit)
+ * Simulates a situation where there is implicit discovery (jakarta.enterprise.inject.scan.implicit)
  * and no org.jboss.weld.se.archive.isolation and there are multiple archives on the classpath.
  * This triggers beans.xml merging.
  *

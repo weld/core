@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
 import org.jboss.weld.util.collections.WeldCollections;

@@ -1,8 +1,8 @@
 package org.jboss.weld.environment.gwtdev;
 
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
+import jakarta.servlet.Filter;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.environment.jetty.AbstractJettyContainer;
 import org.jboss.weld.environment.jetty.JettyWeldInjector;

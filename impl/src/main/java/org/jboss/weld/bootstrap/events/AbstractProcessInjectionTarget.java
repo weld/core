@@ -19,9 +19,9 @@ package org.jboss.weld.bootstrap.events;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 import java.lang.reflect.Type;
 import java.util.List;
 

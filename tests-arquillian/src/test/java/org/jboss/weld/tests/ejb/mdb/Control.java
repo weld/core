@@ -18,8 +18,8 @@ package org.jboss.weld.tests.ejb.mdb;
 
 import java.util.concurrent.CountDownLatch;
 
-import javax.ejb.MessageDrivenContext;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.ejb.MessageDrivenContext;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Control {

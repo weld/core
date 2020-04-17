@@ -17,7 +17,7 @@
 package org.jboss.weld.environment.logging;
 
 
-import javax.enterprise.inject.UnsatisfiedResolutionException;
+import jakarta.enterprise.inject.UnsatisfiedResolutionException;
 
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;

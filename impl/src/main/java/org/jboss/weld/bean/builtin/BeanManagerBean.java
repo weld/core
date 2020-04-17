@@ -19,8 +19,8 @@ package org.jboss.weld.bean.builtin;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
@@ -50,6 +50,6 @@ public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerProxy> {
 
     @Override
     public String toString() {
-        return "Built-in Bean [javax.enterprise.inject.spi.BeanManager] with qualifiers [@Default]";
+        return "Built-in Bean [jakarta.enterprise.inject.spi.BeanManager] with qualifiers [@Default]";
     }
 }

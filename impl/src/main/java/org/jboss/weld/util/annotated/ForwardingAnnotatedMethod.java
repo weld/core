@@ -18,7 +18,7 @@ package org.jboss.weld.util.annotated;
 
 import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 /**
  * Forwarding implementation of {@link AnnotatedMethod}.

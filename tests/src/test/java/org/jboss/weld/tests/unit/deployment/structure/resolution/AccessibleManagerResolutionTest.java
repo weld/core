@@ -20,7 +20,7 @@ import static org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider.STA
 
 import java.util.Collections;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;

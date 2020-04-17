@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.observers.extension.ordering;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 // simple class that will trigger relevant PAT event we can observe
 @ApplicationScoped

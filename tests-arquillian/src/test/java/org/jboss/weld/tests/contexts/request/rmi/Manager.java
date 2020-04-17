@@ -1,8 +1,8 @@
 package org.jboss.weld.tests.contexts.request.rmi;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
 
 @Stateless
 public class Manager {

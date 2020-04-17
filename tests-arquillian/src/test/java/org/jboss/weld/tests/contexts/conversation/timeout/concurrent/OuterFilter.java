@@ -18,15 +18,15 @@ package org.jboss.weld.tests.contexts.conversation.timeout.concurrent;
 
 import java.io.IOException;
 
-import javax.enterprise.context.BusyConversationException;
-import javax.inject.Inject;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
+import jakarta.enterprise.context.BusyConversationException;
+import jakarta.inject.Inject;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
 
 @WebFilter(filterName = "Timeout Filter")
 public class OuterFilter implements Filter {

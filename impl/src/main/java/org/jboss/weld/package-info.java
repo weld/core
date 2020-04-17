@@ -16,5 +16,5 @@
  */
 @Vetoed
 package org.jboss.weld;
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 

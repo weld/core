@@ -18,8 +18,8 @@ package org.jboss.weld.tests.specialization.weld1651.broken;
 
 import java.util.Collection;
 
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Specializes;
 
 class SpecializingProducerBean2 extends ProducerBean2 {
 

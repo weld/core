@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.bootstrap.id.delimiter;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *

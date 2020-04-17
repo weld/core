@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
-import javax.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collections;

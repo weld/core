@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanDeployment.managed.multiple;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 class SeaBass implements Animal {

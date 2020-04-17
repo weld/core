@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.injectionPoint.named;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("bar1")
 public class Bar {

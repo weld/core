@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.discovery.synthetic.bdm.discoveredPackage;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *

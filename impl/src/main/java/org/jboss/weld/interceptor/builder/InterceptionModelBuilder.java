@@ -84,7 +84,7 @@ public class InterceptionModelBuilder {
         return new InterceptionModelImpl(this);
     }
 
-    public void interceptMethod(javax.enterprise.inject.spi.InterceptionType interceptionType, Method method, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
+    public void interceptMethod(jakarta.enterprise.inject.spi.InterceptionType interceptionType, Method method, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
         checkModelNotBuilt();
         InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
         if (weldInterceptionType.isLifecycleCallback()) {
@@ -107,7 +107,7 @@ public class InterceptionModelBuilder {
         }
     }
 
-    public void interceptGlobal(javax.enterprise.inject.spi.InterceptionType interceptionType, Constructor<?> constructor, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
+    public void interceptGlobal(jakarta.enterprise.inject.spi.InterceptionType interceptionType, Constructor<?> constructor, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
         checkModelNotBuilt();
         InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
 

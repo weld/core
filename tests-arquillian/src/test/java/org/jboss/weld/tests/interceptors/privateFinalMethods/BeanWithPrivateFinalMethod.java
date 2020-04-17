@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.privateFinalMethods;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Watches
 @ApplicationScoped

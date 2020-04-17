@@ -18,8 +18,8 @@ package org.jboss.weld.event;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
 
 /**
  * General event payload for {@link Initialized} / {@link Destroyed} events. A more specific payload is necessary

@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.interceptor.AroundInvoke;
+import jakarta.interceptor.AroundInvoke;
 
 /**
 * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

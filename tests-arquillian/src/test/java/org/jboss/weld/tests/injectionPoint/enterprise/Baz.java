@@ -19,10 +19,10 @@ package org.jboss.weld.tests.injectionPoint.enterprise;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
-import javax.ejb.Singleton;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.ejb.Singleton;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 @Singleton
 public class Baz {

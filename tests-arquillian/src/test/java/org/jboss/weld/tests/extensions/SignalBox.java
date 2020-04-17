@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.extensions;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
 
 @RailwayFurniture
 public class SignalBox {

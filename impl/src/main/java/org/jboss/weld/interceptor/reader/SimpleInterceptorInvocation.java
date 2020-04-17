@@ -20,7 +20,7 @@ package org.jboss.weld.interceptor.reader;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processSyntheticAnnotatedType;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 public class ModifyingExtension implements Extension {
 

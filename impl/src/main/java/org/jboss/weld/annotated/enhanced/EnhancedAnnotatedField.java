@@ -18,7 +18,7 @@ package org.jboss.weld.annotated.enhanced;
 
 import java.lang.reflect.Field;
 
-import javax.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 
 /**
  * AnnotatedField provides a uniform access to the annotations on an annotated

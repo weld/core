@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.alternative.metadata;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface AlphaInterface extends DeltaInterface {

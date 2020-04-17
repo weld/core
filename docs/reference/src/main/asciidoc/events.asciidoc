@@ -348,8 +348,8 @@ scope:
 
 [source.JAVA, java]
 -------------------------------------------------------------------------------------
-import javax.ejb.Singleton;
-import javax.enterprise.inject.Produces;
+import jakarta.ejb.Singleton;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped @Singleton
 public class Catalog {
@@ -380,7 +380,7 @@ example:
 
 [source.JAVA, java]
 ----------------------------------------------------------------------------
-import javax.enterprise.event.Event;
+import jakarta.enterprise.event.Event;
 
 @Stateless
 public class ProductManager {
@@ -405,7 +405,7 @@ the transaction:
 
 [source.JAVA, java]
 -----------------------------------------------------------------------------------
-import javax.ejb.Singleton;
+import jakarta.ejb.Singleton;
 
 @ApplicationScoped @Singleton
 public class Catalog {
@@ -420,9 +420,9 @@ public class Catalog {
 }
 -----------------------------------------------------------------------------------
 
-=== Enhanced version of `javax.enterprise.event.Event`
+=== Enhanced version of `jakarta.enterprise.event.Event`
 
-Weld API offers slight advantage when dealing with events - `org.jboss.weld.events.WeldEvent`, an augmented version of `javax.enterprise.event.Event`.
+Weld API offers slight advantage when dealing with events - `org.jboss.weld.events.WeldEvent`, an augmented version of `jakarta.enterprise.event.Event`.
 
 Currently there is only one additional method, `select(Type type, Annotation... qualifiers)`.
 This method allows to perform well-known selection with `java.lang.reflect.Type` as parameter which means things can get pretty generic.

@@ -18,11 +18,11 @@ package org.jboss.weld.tests.contexts.request.postConstruct.singleton.complicate
 
 import static org.junit.Assert.assertEquals;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 @Singleton
 @Startup

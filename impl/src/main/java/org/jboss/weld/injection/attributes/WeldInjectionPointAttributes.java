@@ -18,8 +18,8 @@ package org.jboss.weld.injection.attributes;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
 
 /**
  * Representation of properties of an {@link InjectionPoint}, which can be modified by an extension in the

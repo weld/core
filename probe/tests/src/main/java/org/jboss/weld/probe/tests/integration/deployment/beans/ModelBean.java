@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.probe.tests.integration.deployment.beans;
 
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Model;
+import jakarta.inject.Inject;
 
 @Model
 public class ModelBean {

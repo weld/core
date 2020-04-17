@@ -19,10 +19,10 @@ package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.speciali
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
 
 public class VerifyingExtension implements Extension {
 

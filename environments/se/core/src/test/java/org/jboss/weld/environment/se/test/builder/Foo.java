@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.builder;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Foo implements Decorable {

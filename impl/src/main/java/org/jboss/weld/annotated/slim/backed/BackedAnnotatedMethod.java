@@ -7,7 +7,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;

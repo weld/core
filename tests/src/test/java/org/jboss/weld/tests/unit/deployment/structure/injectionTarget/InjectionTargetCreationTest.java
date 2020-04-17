@@ -18,8 +18,8 @@ package org.jboss.weld.tests.unit.deployment.structure.injectionTarget;
 
 import static org.testng.Assert.assertNotNull;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;

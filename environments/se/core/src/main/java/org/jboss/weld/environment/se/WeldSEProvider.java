@@ -21,9 +21,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.CDIProvider;
-import javax.enterprise.inject.spi.Unmanaged;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDIProvider;
+import jakarta.enterprise.inject.spi.Unmanaged;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;

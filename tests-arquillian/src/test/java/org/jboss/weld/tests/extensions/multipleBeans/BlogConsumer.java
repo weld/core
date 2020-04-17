@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @Consumer(name = "Barry")
 public class BlogConsumer {

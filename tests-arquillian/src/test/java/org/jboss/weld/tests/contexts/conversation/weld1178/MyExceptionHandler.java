@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.tests.contexts.conversation.weld1178;
 
-import javax.faces.FacesException;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.ExceptionHandler;
-import javax.faces.context.ExceptionHandlerWrapper;
-import javax.faces.context.FacesContext;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerWrapper;
+import jakarta.faces.context.FacesContext;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

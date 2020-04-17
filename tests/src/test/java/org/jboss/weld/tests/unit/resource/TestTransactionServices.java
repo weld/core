@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.unit.resource;
 
-import javax.transaction.Synchronization;
-import javax.transaction.UserTransaction;
+import jakarta.transaction.Synchronization;
+import jakarta.transaction.UserTransaction;
 
 import org.jboss.weld.transaction.spi.TransactionServices;
 

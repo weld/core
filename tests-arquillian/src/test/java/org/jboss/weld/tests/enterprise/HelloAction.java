@@ -18,7 +18,7 @@ package org.jboss.weld.tests.enterprise;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.tests.util.BeanPassivator;
 

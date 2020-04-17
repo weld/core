@@ -22,9 +22,9 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.ProcessBean;
 import java.lang.reflect.Type;
 
 public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProducerBean<T, X, ?>> extends AbstractDefinitionContainerEvent implements ProcessBean<X> {

@@ -20,8 +20,8 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.WithAnnotations;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.WithAnnotations;
 
 /**
  * Marker interface for container lifecycle event observer methods.

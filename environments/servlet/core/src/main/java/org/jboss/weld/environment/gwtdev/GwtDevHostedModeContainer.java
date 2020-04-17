@@ -19,7 +19,7 @@ package org.jboss.weld.environment.gwtdev;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.ContainerContext;

@@ -18,8 +18,8 @@
 package org.jboss.weld.tests.observers.custom;
 
 import java.util.concurrent.CountDownLatch;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.ObservesAsync;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.ObservesAsync;
 
 @ApplicationScoped
 public class FooBean {

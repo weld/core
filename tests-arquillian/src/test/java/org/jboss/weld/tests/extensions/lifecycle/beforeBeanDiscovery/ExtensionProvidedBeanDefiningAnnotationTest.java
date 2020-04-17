@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.beforeBeanDiscovery;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 

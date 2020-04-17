@@ -243,7 +243,7 @@ certain bean type. For example:
 
 [source.JAVA, java]
 ----------------------------------------------------
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 ...
 
@@ -518,7 +518,7 @@ qualifier. (All beans have the qualifier `@Any` .)
 
 [source.JAVA, java]
 ---------------------------------------------------------------
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 ...
 
@@ -560,13 +560,13 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
 
 [NOTE]
 ====
-Since CDI 2.0, most annotations from `javax.enterprise` package have their `AnnotationLiteral` implementations.
+Since CDI 2.0, most annotations from `jakarta.enterprise` package have their `AnnotationLiteral` implementations.
 Therefore, in order to programmatically obtain (for instance) `@Any` annotation, you can simply do `Any.Literal.INSTANCE`.
 ====
 
-==== Enhanced version of `javax.enterprise.inject.Instance`
+==== Enhanced version of `jakarta.enterprise.inject.Instance`
 
-Weld also provides `org.jboss.weld.inject.WeldInstance` - an enhanced version of `javax.enterprise.inject.Instance`.
+Weld also provides `org.jboss.weld.inject.WeldInstance` - an enhanced version of `jakarta.enterprise.inject.Instance`.
 There are three additional methods.
 The first one - `getHandler()` - allows to obtain a contextual reference handler which not only holds the contextual reference but also allows to inspect the metadata of the relevant bean and to destroy the underlying contextual instance.
 Moreover, the handler implements `AutoCloseable`:
@@ -683,8 +683,8 @@ without explicitly specifying the log category:
 
 [source.JAVA, java]
 ----------------------------------------------------------------------------------------
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Produces;
 
 class LogFactory {
 
@@ -727,8 +727,8 @@ The following producer method does the work:
 
 [source.JAVA, java]
 --------------------------------------------------------------------------------------------------------------------
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 class HttpParams
 

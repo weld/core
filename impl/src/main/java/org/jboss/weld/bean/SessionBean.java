@@ -18,7 +18,7 @@ package org.jboss.weld.bean;
 
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.ejb.spi.EjbDescriptor;

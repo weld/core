@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 
 public class Dog implements Serializable {

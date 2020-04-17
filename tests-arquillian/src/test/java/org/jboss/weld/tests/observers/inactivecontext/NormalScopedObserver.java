@@ -19,7 +19,7 @@ package org.jboss.weld.tests.observers.inactivecontext;
 
 import java.io.Serializable;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 /**
  * @author Marko Luksa

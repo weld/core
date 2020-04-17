@@ -32,9 +32,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Destroyed;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Destroyed;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;

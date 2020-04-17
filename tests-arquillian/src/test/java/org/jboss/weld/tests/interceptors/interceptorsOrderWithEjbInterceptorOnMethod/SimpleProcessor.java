@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.interceptorsOrderWithEjbInterceptorOnMethod;
 
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
+import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 
 /**
  * @author Marius Bogoevici

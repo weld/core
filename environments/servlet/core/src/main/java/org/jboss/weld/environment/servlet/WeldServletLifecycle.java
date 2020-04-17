@@ -24,13 +24,13 @@ import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspFactory;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.WeldBootstrap;
@@ -99,7 +99,7 @@ public class WeldServletLifecycle {
     // This context param is used to activate the development mode
     private static final String CONTEXT_PARAM_DEV_MODE = "org.jboss.weld.development";
 
-    private static final String JSP_FACTORY_CLASS_NAME = "javax.servlet.jsp.JspFactory";
+    private static final String JSP_FACTORY_CLASS_NAME = "jakarta.servlet.jsp.JspFactory";
 
     private Runnable shutdownAction;
 

@@ -21,7 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.logging.MetadataLogger;

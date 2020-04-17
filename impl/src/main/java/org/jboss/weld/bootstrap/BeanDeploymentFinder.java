@@ -18,7 +18,7 @@ package org.jboss.weld.bootstrap;
 
 import java.util.Collection;
 
-import javax.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Context;
 
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;

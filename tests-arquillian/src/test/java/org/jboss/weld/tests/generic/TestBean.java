@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.generic;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

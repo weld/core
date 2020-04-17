@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.probe;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;

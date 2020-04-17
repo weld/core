@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Inject;
 
 public class InjectLiteral extends AnnotationLiteral<Inject> implements Inject {
 

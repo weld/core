@@ -19,7 +19,7 @@ package org.jboss.weld.tests.proxy.weld1141;
 
 import java.lang.reflect.Method;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;

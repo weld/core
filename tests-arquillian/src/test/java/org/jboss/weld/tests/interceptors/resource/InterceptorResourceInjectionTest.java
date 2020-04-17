@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.resource;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Unmanaged;
-import javax.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
 
 import org.junit.Assert;
 

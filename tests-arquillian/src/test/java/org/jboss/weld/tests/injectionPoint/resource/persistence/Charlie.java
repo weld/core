@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint.resource.persistence;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.jboss.weld.test.util.ActionSequence;
 

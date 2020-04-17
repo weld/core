@@ -17,9 +17,9 @@
 
 package org.jboss.weld.tests.decorators.generic;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

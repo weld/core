@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
 
 
 /**

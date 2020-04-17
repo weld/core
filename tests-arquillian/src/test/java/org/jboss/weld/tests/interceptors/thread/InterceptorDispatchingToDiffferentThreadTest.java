@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.thread;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Assert;
 

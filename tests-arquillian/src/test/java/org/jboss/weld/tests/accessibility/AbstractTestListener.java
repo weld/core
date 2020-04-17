@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.accessibility;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 public abstract class AbstractTestListener implements ServletContextListener {
 

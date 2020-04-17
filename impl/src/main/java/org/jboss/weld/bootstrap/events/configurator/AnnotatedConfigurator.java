@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import javax.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.Annotated;
 
 /**
  * An abstract configurator for all annotated elements.

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.alternatives.customBeanPriority;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 /**
  *

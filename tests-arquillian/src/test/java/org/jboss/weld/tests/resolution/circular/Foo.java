@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.resolution.circular;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 
 class Foo {
 

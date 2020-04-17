@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.decorators.stackoverflow;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

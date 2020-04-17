@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.probe.tests.integration.deployment.beans;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
 

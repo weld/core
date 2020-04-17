@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.1.5-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
 
     <name>Weld Parent</name>
 
@@ -39,26 +39,27 @@
         <!-- A property which is handed over to WFLY container through Arquillian, allows to configure server-specific options -->
         <additional.jboss.args />
 
-        <manifest.specification.title>JSR-365 Contexts and Dependency Injection for Java</manifest.specification.title>
+        <manifest.specification.title>Jakarta EE 9 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.2</apache.bcel.version>
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.4.0.Final</arquillian.version>
+        <arquillian.version>1.7.0.Final-SNAPSHOT</arquillian.version>
         <arquillian.drone.version>2.5.1</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
-        <arquillian.weld.version>2.0.1.Final</arquillian.weld.version>
+        <arquillian.weld.version>3.0.0.Final-SNAPSHOT</arquillian.weld.version>
         <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
-        <atinject.tck.version>1</atinject.tck.version>
+        <atinject.tck.version>2.0.0.RC3</atinject.tck.version>
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.6.SP1</cdi.tck-2-0.version>
+        <cdi.tck-3-0.version>3.0.0-M1</cdi.tck-3-0.version>
         <classfilewriter.version>1.2.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <spotbugs-maven-plugin.version>3.1.10</spotbugs-maven-plugin.version>
@@ -69,16 +70,17 @@
         <jacoco.version>0.7.9</jacoco.version>
         <jandex.version>2.0.3.Final</jandex.version>
         <javax.activation.version>1.2.1</javax.activation.version>
-        <javax.el.version>3.0.2</javax.el.version>
-        <jboss.jms.api.version>2.0.0.Final</jboss.jms.api.version>
-        <jboss.jsf.api.version>3.0.0.Final</jboss.jsf.api.version>
+        <!-- -->
+        <jakarta.el.version>4.0.0-RC1</jakarta.el.version>
+        <jakarta.jms.api.version>3.0.0-RC1</jakarta.jms.api.version>
+        <jsf.api.version>3.0.0-RC1</jsf.api.version>
         <jboss.logging.version>3.2.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.0.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <jboss.spec.el-api.version>2.0.0.Final</jboss.spec.el-api.version>
+        <jboss.spec.el-api.version>1.0.0-SNAPSHOT</jboss.spec.el-api.version>
         <jsf.impl.version>2.3.14</jsf.impl.version>
-        <jsp.api.version>2.3.6</jsp.api.version>
-        <jstl.api.version>1.2.7</jstl.api.version>
+        <jsp.api.version>3.0.0-M1</jsp.api.version>
+        <jstl.api.version>2.0.0-RC1</jstl.api.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
@@ -88,7 +90,7 @@
         <shrinkwrap.resolver.version>3.1.3</shrinkwrap.resolver.version>
         <testng.version>6.14.3</testng.version>
         <testng.jcommander.version>1.78</testng.jcommander.version>
-        <weld.api.version>3.1.SP2</weld.api.version>
+        <weld.api.version>4.0.0-SNAPSHOT</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>2.2.0.Final</wildfly.arquillian.version>
     </properties>
@@ -137,32 +139,26 @@
             <dependency>
                 <groupId>jakarta.el</groupId>
                 <artifactId>jakarta.el-api</artifactId>
-                <version>${javax.el.version}</version>
+                <version>${jakarta.el.version}</version>
             </dependency>
 
             <!-- This artifact bundles EL API and impl and is not JDK 6 compatible -->
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>jakarta.el</artifactId>
-                <version>${javax.el.version}</version>
+                <version>4.0.0-RC1</version>
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.spec.javax.el</groupId>
-                <artifactId>jboss-el-api_3.0_spec</artifactId>
-                <version>${jboss.spec.el-api.version}</version>
+                <groupId>jakarta.faces</groupId>
+                <artifactId>jakarta.faces-api</artifactId>
+                <version>${jsf.api.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.spec.javax.faces</groupId>
-                <artifactId>jboss-jsf-api_2.3_spec</artifactId>
-                <version>${jboss.jsf.api.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.spec.javax.jms</groupId>
-                <artifactId>jboss-jms-api_2.0_spec</artifactId>
-                <version>${jboss.jms.api.version}</version>
+                <groupId>jakarta.jms</groupId>
+                <artifactId>jakarta.jms-api</artifactId>
+                <version>${jakarta.jms.api.version}</version>
             </dependency>
 
             <dependency>
@@ -198,8 +194,8 @@
 
             <!-- TODO Jakarta EE version of the TCKs wasn't yet released, see https://github.com/eclipse-ee4j/injection-tck-->
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject-tck</artifactId>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-tck</artifactId>
                 <version>${atinject.tck.version}</version>
             </dependency>
 
@@ -262,7 +258,7 @@
 
             <dependency>
                 <groupId>org.jboss.arquillian.testenricher</groupId>
-                <artifactId>arquillian-testenricher-cdi</artifactId>
+                <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
                 <version>${arquillian.version}</version>
             </dependency>
 
@@ -331,7 +327,11 @@
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
-                </exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.testenricher</groupId>
+                            <artifactId>arquillian-testenricher-cdi</artifactId>
+                        </exclusion>
+                    </exclusions>
                 <scope>test</scope>
             </dependency>
 
@@ -465,11 +465,6 @@
                 <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
                 <version>${shrinkwrap.resolver.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                <artifactId>shrinkwrap-resolver-spi</artifactId>
-                <version>${shrinkwrap.resolver.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.testng</groupId>
@@ -599,7 +594,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>3.0.0-SNAPSHOT</tag>
+        <tag>4.0.0-SNAPSHOT</tag>
     </scm>
 
 
@@ -718,7 +713,9 @@
             <modules>
                 <module>environments/common</module>
                 <module>environments/se</module>
+                <!-- Skipped for now as servlet containers need updating
                 <module>environments/servlet</module>
+                -->
             </modules>
         </profile>
         <profile>

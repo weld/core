@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.inheritance.weld824.veto;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Bar extends Foo {
     private boolean subclassInitialized = false;

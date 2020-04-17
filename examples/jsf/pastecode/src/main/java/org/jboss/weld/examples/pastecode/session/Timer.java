@@ -1,13 +1,13 @@
 package org.jboss.weld.examples.pastecode.session;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.TimerService;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.ejb.Timeout;
+import jakarta.ejb.TimerService;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 /**
  * Responsible for starting the timer for printing recently added code fragments

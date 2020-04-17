@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.broken.passivation;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  * Dependent non passivation capable bean. The {@link ModifyingExtension1} turns it into a {@link SessionScoped} beans, which is

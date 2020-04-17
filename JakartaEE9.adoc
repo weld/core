@@ -1,0 +1,140 @@
+= Notes on Jakarta EE 9 javax to jakarta namespace changes
+
+These are notes on the changes that have been made in pepartation for migrating the
+packages from javax to jakarta as needed for the Jakarta EE 9 release.
+
+== Status as of Apr 10 2020
+An initial update was done just to allow the dependency-injection TCK to be run against
+Weld so that an initial candidate release of that dependency can be done.
+
+The following Jakarta EE 9 dependencies have been updated:
+
+* https://github.com/starksm64/api.git Scott Stark fork of https://github.com/weld/api,
+(version is 4.0.0-SNAPSHOT) to update the jakarta.enterprise package to jakarta.enterprise and Jakarta depednencies to:
+** inject-api version 2.0.0-RC3
+** cdi-api version to 3.0.0-M2
+** ejb-api version to 4.0.0-RC1
+** jpa-api version to 3.0.0-RC2
+** validation-api version to 3.0.0-M1
+** interceptor-api version to 2.0.0-RC2
+** jta-api version to 2.0.0-RC1
+** jaxrs-api version to 3.0.0-M1
+** servlet-ap version to 5.0.0-M1
+* https://github.com/jakartaredhat/arquillian-core fork of arquillian-core to add Jakarta EE testenrichers
+**  *** version is 1.7.0-SNAPSHOT
+* https://github.com/starksm64/arquillian-container-weld/tree/jakartaee9 Scott Stark fork of arquillian-container-weld to
+update the javax package to jakarta.
+** version is 3.0.0.Final-SNAPSHOT
+
+=== Building Weld
+To build a snapshot of the Weld project, set your JAVA_HOME to a JDK 8 install, then build the weld-api 4.0.0-SNAPSHOT:
+
+. git clone https://github.com/starksm64/api.git
+. cd api
+. mvn install
+
+Then build a snapshot of the arquillian-weld-container:
+
+. git clone https://github.com/starksm64/arquillian-container-weld.git
+. cd arquillian-container-weld
+. mvn install
+
+Then build the Weld 4.0.0-SNAPSHOT:
+
+. https://github.com/starksm64/core.git
+. cd core
+. git checkout 4.0
+. mvn clean install -Dweld.default.build.cditck=false -DskipTests=true
+
+=== TODOs:
+
+* The dependency on the https://github.com/weld/api project needs to be replaced with https://github.com/eclipse-ee4j/cdi
+* The Weld SE (Core)/arquillian weld container build has many test failures:
+[source,bash]
+----
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   WeldEmbeddedBeforeAfterTestCase.shouldExecutreBefore:66 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedBeforeAfterTestCase.shouldExecutreBefore:66 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldBeAbleToReadAgeAfterConversationWasStarted:96 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldBeAbleToSetAgeAndStartAConversation:85 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldBeAbleToSetAgeWithoutStartingAConversation:64 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationConversationScopeTestCase.shouldNotBeAbleToReadAgeConversationNotStarted:75 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationEARTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:72 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationEARTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:62 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationJARTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:68 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationJARTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:58 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationSessionScopeTestCase.shouldBeAbleToReadAge:69 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationSessionScopeTestCase.shouldBeAbleToSetAge:59 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:66 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:56 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationWARTestCase.shouldBeAbleToInjectBeanAsArgumentVariable:74 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationWARTestCase.shouldBeAbleToInjectBeanAsInstanceVariable:64 Verify that the Bean has been injected
+[ERROR]   WeldEmbeddedIntegrationWARTestCase.testExtensionIsLoaded:84
+[ERROR] Errors: 
+[ERROR]   ExcludedBeansTest.testExcludedBeanIsNotAvailable:50 NullPointer
+[ERROR]   RemoveDuplicateBeanXmlTestCase.shouldBeAbleTo:37 NullPointer
+[ERROR]   WeldEmbeddedCDIProviderTest.testCDIProvider:49 » IllegalState Unable to locate...
+[INFO] 
+[ERROR] Tests run: 30, Failures: 17, Errors: 3, Skipped: 0
+----
+
+* The weld/core project still has many test failures that look to be related to the
+arquillian weld container errors as the NPEs are due to null instances being
+passed into the test method parameters.
+[source,bash]
+----
+Results :
+
+Failed tests: 
+  BeanDiscoveryWithJandexIndexTest.testArchiveWithoutIndex:122
+  DecoratorsTest.testDecorators:56
+  InterceptorsTest.testInterceptors:49
+Tests in error: 
+  BeanDiscoveryEmtyBeansXmlTest.testArchive01:33 NullPointer
+  BeanDiscoveryEmtyBeansXmlTest.testArchive02:40 NullPointer
+  BeanDiscoveryEmtyBeansXmlTest.testArchive03:47 NullPointer
+  BeanDiscoveryInjectionTest.testAllBeanDiscovery:56 NullPointer
+  BeanDiscoveryInjectionTest.testAnnotatedBeanDiscovery:63 NullPointer
+  BeanDiscoveryInjectionTest.testNoneBeanDiscovery:76 NullPointer
+  BeanDiscoveryWithJandexIndexTest.testIndexedAllBeanDiscovery:115 NullPointer
+  BeanDiscoveryWithJandexIndexTest.testIndexedAllBeanDiscoveryForBrokenIndex:101 NullPointer
+  BeanDiscoveryWithJandexIndexTest.testIndexedAnnotatedBeanDiscovery:108 NullPointer
+  BeanDiscoveryWithoutIsolationTest.testBeanDiscovery:52 NullPointer
+  BeanDiscoveryAlternativeTest.testAllBeanDiscoveryAlternative:72 NullPointer
+  BeanDiscoveryAlternativeTest.testAnnotatedBeanDiscoveryAlternative:80 NullPointer
+  BeanDefiningAnnotationOutsideBeanArchiveTest.testBeanDiscovery:51 NullPointer
+  BeanDiscoveryDecorator02Test.testAllBeanDiscovery:61 NullPointer
+  BeanDiscoveryDecorator02Test.testAnnotatedBeanDiscovery:73 NullPointer
+  BeanDiscoveryDecoratorTest.testAllBeanDiscovery:71 NullPointer
+  BeanDiscoveryDecoratorTest.testAnnotatedBeanDiscovery:83 NullPointer
+  BeanDiscoveryInterceptor02Test.testAllBeanDiscovery:58 NullPointer
+  BeanDiscoveryInterceptor02Test.testAnnotatedBeanDiscovery:67 NullPointer
+  BeanDiscoveryInterceptorTest.testAllBeanDiscovery:69 NullPointer
+  BeanDiscoveryInterceptorTest.testAnnotatedBeanDiscovery:78 NullPointer
+  DisabledIsolationPriorityTest>PriorityTest.test:64 » NullPointer
+  PriorityTest.test:64 NullPointer
+  StereotypeDiscoveryTest.testBuiltInStereotype:47 NullPointer
+  StereotypeDiscoveryTest.testControlSample:63 NullPointer
+  StereotypeDiscoveryTest.testCustomStereotype:55 NullPointer
+  ThreadContextImplicitBeanArchiveTest>AbstractThreadContextTest.testThreadContext:39 » NullPointer
+  ThreadContextTest>AbstractThreadContextTest.testThreadContext:39 » NullPointer
+  BoundSessionContextTest.testConcurrentCalls:67 » Execution java.lang.NullPoint...
+  EventsTest.testEventQualifiersCorrect:47 NullPointer
+  DefaultExecutorTest.testCommonThreadPoolUsedByDefault:48 NullPointer
+  GroovyCollisionTest.testGroovyFilterNotAppliedToNonGroovyClass:47 NullPointer
+  GroovyCollisionTest.testGroovyFilterNotAppliedToNonGroovyInterface:53 NullPointer
+  GroovyInterceptorTest.testInterceptedInvocationOnApplicationScopedBean:71 » NullPointer
+  GroovyInterceptorTest.testInterceptedInvocationOnDependentBean:57 » NullPointer
+  GroovyInterceptorTest.testNonInterceptedInvocationOnApplicationScopedBean:78 » NullPointer
+  GroovyInterceptorTest.testNonInterceptedInvocationOnDependentBean:64 » NullPointer
+  IsolationDisabledTest.testAlternative:85->getBeanClasses:98 NullPointer
+  IsolationDisabledTest.testExcludeFilters:93->getBeanClasses:98 NullPointer
+  IsolationDisabledTest.testInterceptorAndDecorator01:71 NullPointer
+  IsolationDisabledTest.testInterceptorAndDecorator02:78 NullPointer
+  BeansXmlMergingTest.testArchivesCanBeDeployedAndDiscoveryWorks:100 » IllegalArgument
+  ScopesTest.testScopes:50 NullPointer
+
+Tests run: 94, Failures: 3, Errors: 43, Skipped: 0
+----

@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.injection.producer;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.reflection.Formats;

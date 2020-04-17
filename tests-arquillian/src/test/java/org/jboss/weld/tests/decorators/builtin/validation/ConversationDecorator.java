@@ -18,10 +18,10 @@ package org.jboss.weld.tests.decorators.builtin.validation;
 
 import java.io.Serializable;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.context.Conversation;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.enterprise.context.Conversation;
+import jakarta.inject.Inject;
 
 @SuppressWarnings("serial")
 @Decorator

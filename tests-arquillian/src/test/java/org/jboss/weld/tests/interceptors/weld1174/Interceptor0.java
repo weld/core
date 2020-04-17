@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.weld1174;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 import java.io.Serializable;
 
 public class Interceptor0  implements Serializable {

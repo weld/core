@@ -18,8 +18,8 @@ package org.jboss.weld.bean.builtin;
 
 import java.util.Comparator;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Prioritized;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Prioritized;
 
 import org.jboss.weld.bean.ClassBean;
 import org.jboss.weld.inject.WeldInstance;

@@ -17,9 +17,9 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.spi.DefinitionException;
-import javax.interceptor.Interceptor;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;

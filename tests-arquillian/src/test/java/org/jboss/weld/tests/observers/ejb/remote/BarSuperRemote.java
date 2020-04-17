@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.observers.ejb.remote;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 @Remote
 public interface BarSuperRemote {

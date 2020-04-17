@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.manager.BeanManagerImpl;

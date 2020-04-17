@@ -2,7 +2,7 @@ package org.jboss.weld.module.web.context.beanstore.http;
 
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.contexts.beanstore.AttributeBeanStore;
 import org.jboss.weld.contexts.beanstore.LockStore;

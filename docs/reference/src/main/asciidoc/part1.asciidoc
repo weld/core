@@ -46,7 +46,7 @@ following kinds of component may have beans injected:
 * interceptors,
 * servlets, servlet filters and servlet event listeners,
 * JAX-WS service endpoints and handlers,
-* JAX-RS resources, providers and `javax.ws.rs.core.Application`
+* JAX-RS resources, providers and `jakarta.ws.rs.core.Application`
 subclasses, and
 * JSP tag handlers and tag library event listeners.
 

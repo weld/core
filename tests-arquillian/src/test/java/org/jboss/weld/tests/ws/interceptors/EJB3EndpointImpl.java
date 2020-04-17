@@ -21,7 +21,7 @@
  */
 package org.jboss.weld.tests.ws.interceptors;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 import javax.jws.WebService;
 
 /**

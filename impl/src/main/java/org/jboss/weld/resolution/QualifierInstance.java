@@ -25,12 +25,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Named;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Named;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.logging.ResolutionLogger;
@@ -47,7 +47,7 @@ import org.jboss.weld.util.reflection.Formats;
  * correctly handle non binding attributes.
  * <p>
  * Note that Weld is using this representation for interceptor bindings as well. See also
- * {@link org.jboss.weld.manager.BeanManagerImpl#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType, java.util.Collection)}
+ * {@link org.jboss.weld.manager.BeanManagerImpl#resolveInterceptors(jakarta.enterprise.inject.spi.InterceptionType, java.util.Collection)}
  *
  * @author Stuart Douglas
  * @author Martin Kouba

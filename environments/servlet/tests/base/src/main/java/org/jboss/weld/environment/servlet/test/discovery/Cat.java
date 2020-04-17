@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.servlet.test.discovery;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 @InterceptorBindingAnnotation
 public class Cat implements Decorable {
