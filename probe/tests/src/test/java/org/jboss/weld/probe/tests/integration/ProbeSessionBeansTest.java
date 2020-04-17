@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
 
-import javax.decorator.Decorator;
+import jakarta.decorator.Decorator;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 

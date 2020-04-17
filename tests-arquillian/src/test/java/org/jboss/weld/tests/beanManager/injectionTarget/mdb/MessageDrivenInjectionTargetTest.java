@@ -25,9 +25,9 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.inject.Inject;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

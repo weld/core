@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.contexts.application.event;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
-import javax.servlet.ServletContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.servlet.ServletContext;
 
 public abstract class AbstractObserver {
 

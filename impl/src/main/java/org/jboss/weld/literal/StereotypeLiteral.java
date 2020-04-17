@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.literal;
 
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link Stereotype}?

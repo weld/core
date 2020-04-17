@@ -559,7 +559,7 @@ ${head}
                     </form>
                 </th>
                 <th>
-                    Qualifiers {{tip "The set does not contain javax.enterprise.inject.Any"}}
+                    Qualifiers {{tip "The set does not containjakarta.enterprise.inject.Any"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=qualifier class="form-control" placeholder="Any contains"}}
                     </form>
@@ -1453,7 +1453,7 @@ ${head}
                     </form>
                 </th>
                 <th>
-                    Event qualifiers {{tip "The set does not contain javax.enterprise.inject.Any"}}
+                    Event qualifiers {{tip "The set does not containjakarta.enterprise.inject.Any"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=qualifiers class="form-control" placeholder="Any contains"}}
                     </form>
@@ -1544,7 +1544,7 @@ ${head}
                 <div class="form-group">
                     <label class="control-label">With Qualifiers:</label>
                     <div class="input-group">
-                    {{input value=qualifiers class="form-control" placeholder="Comma-separated list of qualifiers, javax.enterprise.inject.Default if not specified"}}
+                    {{input value=qualifiers class="form-control" placeholder="Comma-separated list of qualifiers,jakarta.enterprise.inject.Default if not specified"}}
                     <span class="input-group-addon"><a class="centered" role="button" data-toggle="collapse" href="#helpQual" aria-expanded="false" aria-controls="helpQual"><i class="fa fa-lg fa-question-circle" title="Help"></i></a></span>
                     </div>
                     <div class="collapse" id="helpQual">
@@ -1555,7 +1555,7 @@ ${head}
                                 <li>Annotation-valued and array-valued members are NOT supported - these should be annotated <code>@Nonbinding</code> in a portable application</li>
                                 <li>Default members are optional - values are obtained automatically</li>
                             </ul>
-                            Examples: <code>@javax.inject.Named(value="controller")</code>, <code>javax.enterprise.inject.Any,com.foo.Bar(name="foo",age=10)</code>
+                            Examples: <code>@jakarta.inject.Named(value="controller")</code>, <code>jakarta.enterprise.inject.Any,com.foo.Bar(name="foo",age=10)</code>
                         </div>
                     </div>
                 </div>
@@ -1586,7 +1586,7 @@ ${head}
                 <th>Scope {{tip "Packages of built-in scopes are not displayed"}}</th>
                 <th>Bean class</th>
                 <th>Bean types {{tip "The set does not contain java.lang.Object"}}</th>
-                <th>Qualifiers {{tip "The set does not contain javax.enterprise.inject.Any"}}</th>
+                <th>Qualifiers {{tip "The set does not containjakarta.enterprise.inject.Any"}}</th>
             </tr>
             {{#each data}}
             <tr>

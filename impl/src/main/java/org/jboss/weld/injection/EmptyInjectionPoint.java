@@ -8,9 +8,9 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 public class EmptyInjectionPoint implements InjectionPoint, Serializable {
 

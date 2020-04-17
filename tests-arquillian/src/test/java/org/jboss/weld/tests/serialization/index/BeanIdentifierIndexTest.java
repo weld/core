@@ -21,8 +21,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

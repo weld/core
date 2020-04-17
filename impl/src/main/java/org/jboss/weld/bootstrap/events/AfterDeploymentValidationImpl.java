@@ -18,7 +18,7 @@ package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 

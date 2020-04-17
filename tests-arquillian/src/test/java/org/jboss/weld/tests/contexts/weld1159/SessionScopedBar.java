@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.contexts.weld1159;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
 public class SessionScopedBar extends AbstractBean {

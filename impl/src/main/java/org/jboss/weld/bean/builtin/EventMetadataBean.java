@@ -19,9 +19,9 @@ package org.jboss.weld.bean.builtin;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;

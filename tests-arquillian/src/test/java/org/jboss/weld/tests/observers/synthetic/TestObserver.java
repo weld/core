@@ -18,8 +18,8 @@ package org.jboss.weld.tests.observers.synthetic;
 
 import java.util.Arrays;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.event.Observes;
 
 @Dependent
 public class TestObserver {

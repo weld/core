@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.event.observer.transactional;
 
 import java.lang.annotation.Annotation;
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface Agent {

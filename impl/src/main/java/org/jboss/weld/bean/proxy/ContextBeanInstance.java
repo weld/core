@@ -22,8 +22,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ContextualInstance;

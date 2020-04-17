@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.lifecycle.predestroy;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

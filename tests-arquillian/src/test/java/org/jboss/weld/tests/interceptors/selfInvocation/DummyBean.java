@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.selfInvocation;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  * Only used to simulate observer with IP

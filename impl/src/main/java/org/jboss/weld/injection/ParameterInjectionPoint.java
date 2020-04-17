@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.injection;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;

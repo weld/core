@@ -1,7 +1,7 @@
 package org.jboss.weld.examples.translator;
 
-import javax.ejb.EJB;
-import javax.inject.Inject;
+import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 
 public class TextTranslator implements Serializable {

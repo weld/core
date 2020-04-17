@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.contexts.creational;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Alpha {
 

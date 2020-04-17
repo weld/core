@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.specialization;
 
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Specializes;
 
 @Bar
 @Specializes

@@ -20,8 +20,8 @@ import java.lang.annotation.Annotation;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.inject.WeldInstance;
 

@@ -19,7 +19,7 @@ package org.jboss.weld.resolution;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 /**
  * Something that is resolvable by the resolver. A resolvable is defined by it's

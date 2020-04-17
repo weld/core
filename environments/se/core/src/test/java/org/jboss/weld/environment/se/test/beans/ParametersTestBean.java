@@ -19,8 +19,8 @@ package org.jboss.weld.environment.se.test.beans;
 
 import org.jboss.weld.environment.se.bindings.Parameters;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
 

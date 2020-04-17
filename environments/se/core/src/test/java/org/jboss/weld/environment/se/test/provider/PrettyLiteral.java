@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.provider;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 @SuppressWarnings("all")
 public class PrettyLiteral extends AnnotationLiteral<Pretty> implements Pretty {

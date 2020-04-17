@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.construction.api.AroundConstructCallback;

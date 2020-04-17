@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.contexts;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
 import java.util.Arrays;
 import java.util.List;
 

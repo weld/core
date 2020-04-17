@@ -16,23 +16,23 @@
  */
 package org.jboss.weld.tests.security.members;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.enterprise.inject.spi.ProcessObserverMethod;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.ProcessProducerField;
-import javax.enterprise.inject.spi.ProcessProducerMethod;
-import javax.enterprise.inject.spi.Producer;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessProducer;
+import jakarta.enterprise.inject.spi.ProcessProducerField;
+import jakarta.enterprise.inject.spi.ProcessProducerMethod;
+import jakarta.enterprise.inject.spi.Producer;
 
 public class SimpleExtension implements Extension {
 

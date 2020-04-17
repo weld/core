@@ -18,9 +18,9 @@ package org.jboss.weld.tests.managed.newBean.lookup;
 
 import java.util.ArrayList;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.New;
+import jakarta.inject.Inject;
 
 public class InjectedBean1 {
 

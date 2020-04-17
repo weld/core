@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.unmanaged;
 
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
 
 @Vetoed
 public class Foo {

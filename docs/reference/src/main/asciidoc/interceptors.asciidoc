@@ -332,9 +332,9 @@ in which interceptors are listed at the class level.
 
 Therefore, we recommend the use of CDI-style interceptor bindings.
 
-=== Enhanced version of `javax.interceptor.InvocationContext`
+=== Enhanced version of `jakarta.interceptor.InvocationContext`
 
-For even more control over interceptors, Weld offers enhanced version of `javax.interceptor.InvocationContext` - `org.jboss.weld.interceptor.WeldInvocationContext`.
+For even more control over interceptors, Weld offers enhanced version of `jakarta.interceptor.InvocationContext` - `org.jboss.weld.interceptor.WeldInvocationContext`.
 It comes with two additional methods - `getInterceptorBindings` and `getInterceptorBindingsByType(Class<T> annotationType)`.
 You shouldn't need this in most cases, but it comes handy when working with `@Nonbinding` values in interceptor binding annotations.
 

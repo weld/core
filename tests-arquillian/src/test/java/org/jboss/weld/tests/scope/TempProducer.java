@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.scope;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 import java.io.Serializable;
 
 @Named

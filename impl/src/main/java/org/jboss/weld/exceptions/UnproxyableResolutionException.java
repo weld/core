@@ -21,12 +21,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Provides message localization service for the
- * {@link javax.enterprise.inject.UnproxyableResolutionException}.
+ * {@linkjakarta.enterprise.inject.UnproxyableResolutionException}.
  *
  * @author David Allen
  */
 @SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
-public class UnproxyableResolutionException extends javax.enterprise.inject.UnproxyableResolutionException {
+public class UnproxyableResolutionException extends jakarta.enterprise.inject.UnproxyableResolutionException {
     private static final long serialVersionUID = 2L;
 
     private final WeldExceptionMessage message;

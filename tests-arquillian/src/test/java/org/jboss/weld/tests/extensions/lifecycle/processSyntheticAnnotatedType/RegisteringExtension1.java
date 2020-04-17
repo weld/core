@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processSyntheticAnnotatedType;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
 
 public class RegisteringExtension1 implements Extension {
 

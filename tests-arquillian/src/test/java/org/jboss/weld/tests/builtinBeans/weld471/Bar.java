@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.builtinBeans.weld471;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.New;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class Bar {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.context.requestScope;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.context.activator.ActivateRequestContext;
 

@@ -1,12 +1,12 @@
 package org.jboss.weld.examples.login;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.persistence.EntityManager;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.logging.Logger;
 

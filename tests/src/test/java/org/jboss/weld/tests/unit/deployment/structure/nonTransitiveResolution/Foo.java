@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.New;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 public class Foo {
 

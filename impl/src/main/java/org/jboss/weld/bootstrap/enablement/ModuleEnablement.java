@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.util.collections.ImmutableMap;
 

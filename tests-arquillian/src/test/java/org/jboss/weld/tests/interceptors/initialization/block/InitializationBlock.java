@@ -18,7 +18,7 @@ package org.jboss.weld.tests.interceptors.initialization.block;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.transaction.UserTransaction;
+import jakarta.transaction.UserTransaction;
 
 /**
  *@author Emily Jiang

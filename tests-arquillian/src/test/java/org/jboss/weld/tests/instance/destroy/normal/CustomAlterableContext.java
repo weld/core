@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.instance.destroy.normal;
 
-import javax.enterprise.context.spi.AlterableContext;
-import javax.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.AlterableContext;
+import jakarta.enterprise.context.spi.Contextual;
 
 public class CustomAlterableContext extends CustomNonAlterableContext implements AlterableContext {
 

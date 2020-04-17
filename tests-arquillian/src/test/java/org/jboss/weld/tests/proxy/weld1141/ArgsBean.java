@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.proxy.weld1141;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

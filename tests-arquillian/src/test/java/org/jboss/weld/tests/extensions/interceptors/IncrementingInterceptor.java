@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.interceptors;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * Interceptor that adds one to the result of a method

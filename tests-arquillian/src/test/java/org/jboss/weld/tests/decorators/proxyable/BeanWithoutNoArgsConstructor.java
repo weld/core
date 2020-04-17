@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.decorators.proxyable;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * Not proxyable since no default constructor is present.

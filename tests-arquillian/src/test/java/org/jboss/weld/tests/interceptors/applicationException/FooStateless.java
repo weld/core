@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.applicationException;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 /**
  * @author Marius Bogoevici

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.resolution.circular.self;
 
-import javax.ejb.Singleton;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.ejb.Singleton;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 /**
  * @author Kirill Gaevskii

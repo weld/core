@@ -20,12 +20,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bootstrap.MissingDependenciesRegistry;
 import org.jboss.weld.injection.MethodInjectionPoint;

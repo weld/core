@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.event.lifecycle.ordering;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 /**
  *

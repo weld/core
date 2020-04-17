@@ -19,7 +19,7 @@ package org.jboss.weld.tests.jsf.weld1037;
 
 import java.net.URL;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;

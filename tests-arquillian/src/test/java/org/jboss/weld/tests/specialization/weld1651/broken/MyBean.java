@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.weld1651.broken;
 
-import javax.enterprise.inject.Typed;
+import jakarta.enterprise.inject.Typed;
 
 @Typed({ MyInterface.class, MySuperInterface.class })
 public class MyBean<T> implements MyInterface {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.probe;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 import javax.management.MXBean;
 
 import org.jboss.weld.probe.ProbeDynamicMBean.Description;

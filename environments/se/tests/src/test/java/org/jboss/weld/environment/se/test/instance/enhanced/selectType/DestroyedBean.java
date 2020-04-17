@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.instance.enhanced.selectType;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *

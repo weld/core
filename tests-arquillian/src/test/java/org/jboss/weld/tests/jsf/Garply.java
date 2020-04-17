@@ -5,13 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.FacesEvent;
-import javax.faces.event.FacesListener;
-import javax.faces.render.Renderer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.FacesEvent;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.render.Renderer;
 
 public class Garply extends UIComponent {
 

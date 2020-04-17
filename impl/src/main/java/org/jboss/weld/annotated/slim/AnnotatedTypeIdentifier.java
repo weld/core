@@ -19,9 +19,9 @@ package org.jboss.weld.annotated.slim;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.New;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.annotated.Identifier;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;

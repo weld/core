@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.transientReference;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.TransientReference;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.TransientReference;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class Foo {

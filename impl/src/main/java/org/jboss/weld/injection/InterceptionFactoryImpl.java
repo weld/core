@@ -19,10 +19,10 @@ package org.jboss.weld.injection;
 import java.security.AccessController;
 import java.util.Optional;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InterceptionFactory;
-import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.InterceptionFactory;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.bean.proxy.InterceptedProxyMethodHandler;
 import org.jboss.weld.bean.proxy.InterceptionFactoryDataCache;

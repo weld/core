@@ -18,13 +18,13 @@ package org.jboss.weld.environment.servlet;
 
 import java.util.Set;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.http.HttpSessionEvent;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.servlet.api.ServletListener;

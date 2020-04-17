@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.named.defaultname;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named
 public class URLAlpha {

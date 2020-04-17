@@ -19,7 +19,7 @@ package org.jboss.weld.tests.packaging.beans.xml.location;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;

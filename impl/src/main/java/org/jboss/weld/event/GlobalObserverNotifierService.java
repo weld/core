@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -34,7 +34,7 @@ import org.jboss.weld.util.collections.Iterators;
 /**
  * Hosts a {@link ObserverNotifier} that uses the global {@link TypeSafeObserverResolver} which has access to every enabled
  * observer method in the deployment. The underlying {@link ObserverNotifier} should be used every time an event is fired, except for
- * special cases such as {@link javax.servlet.ServletContextEvent}, where the event is only fired to BDAs accessible from the web archive.
+ * special cases such as {@link jakarta.servlet.ServletContextEvent}, where the event is only fired to BDAs accessible from the web archive.
  *
  * @author Jozef Hartinger
  *

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 /**
  *

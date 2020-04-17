@@ -18,9 +18,9 @@ package org.jboss.weld.tests.disposer.weld1894;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.TransientReference;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.TransientReference;
 
 public class ProducerBean {
 

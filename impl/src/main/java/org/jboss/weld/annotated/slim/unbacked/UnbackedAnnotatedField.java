@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;

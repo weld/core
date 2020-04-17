@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.enterprise;
 
-import javax.ejb.EnterpriseBean;
+import jakarta.ejb.EnterpriseBean;
 
 public class Grault implements EnterpriseBean {
 

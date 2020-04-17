@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.alternatives.customBeanPriority;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *

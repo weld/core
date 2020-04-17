@@ -19,14 +19,14 @@ package org.jboss.weld.probe;
 import java.util.EnumMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.ProcessObserverMethod;
-import javax.enterprise.inject.spi.ProcessProducer;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessProducer;
 
 /**
  *

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.module.jta;
 
-import javax.transaction.UserTransaction;
+import jakarta.transaction.UserTransaction;
 
 import org.jboss.weld.bean.builtin.ee.AbstractEEBean;
 import org.jboss.weld.bean.builtin.ee.AbstractEECallable;
@@ -54,7 +54,7 @@ class UserTransactionBean extends AbstractEEBean<UserTransaction> {
 
     @Override
     public String toString() {
-        return "Built-in Bean [javax.transaction.UserTransaction] with qualifiers [@Default]";
+        return "Built-in Bean [jakarta.transaction.UserTransaction] with qualifiers [@Default]";
     }
 
 }

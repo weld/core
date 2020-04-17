@@ -18,8 +18,8 @@ package org.jboss.weld.tests.interceptors.aroundConstruct.integration;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.inject.Inject;
-import javax.interceptor.Interceptors;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 
 @CharlieBinding
 @Interceptors(BravoInterceptor.class)

@@ -25,10 +25,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.event.ObserverException;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.spi.DefinitionException;
-import javax.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.event.ObserverException;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;

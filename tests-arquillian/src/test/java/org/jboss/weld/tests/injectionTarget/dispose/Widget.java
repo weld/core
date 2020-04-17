@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.injectionTarget.dispose;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  * Helps test fix for <a

@@ -1,15 +1,15 @@
 package org.jboss.weld.tests.extensions;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.enterprise.inject.spi.ProcessObserverMethod;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.ProcessProducerField;
-import javax.enterprise.inject.spi.ProcessProducerMethod;
-import javax.enterprise.inject.spi.ProcessSessionBean;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessProducer;
+import jakarta.enterprise.inject.spi.ProcessProducerField;
+import jakarta.enterprise.inject.spi.ProcessProducerMethod;
+import jakarta.enterprise.inject.spi.ProcessSessionBean;
 
 public class TrainlineExtension implements Extension {
 

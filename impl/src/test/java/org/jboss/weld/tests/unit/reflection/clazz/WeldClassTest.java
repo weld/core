@@ -21,9 +21,9 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.inject.Qualifier;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;

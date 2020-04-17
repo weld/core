@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.event.async.context.request;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Incrementor {

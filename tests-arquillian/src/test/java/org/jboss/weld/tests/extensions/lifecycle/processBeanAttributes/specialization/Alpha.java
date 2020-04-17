@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.specialization;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Foo
 @Named("alpha")

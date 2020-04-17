@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

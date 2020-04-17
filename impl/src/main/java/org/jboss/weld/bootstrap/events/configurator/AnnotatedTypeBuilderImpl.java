@@ -22,12 +22,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 import org.jboss.weld.util.annotated.ForwardingAnnotatedConstructor;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedField;

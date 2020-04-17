@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.catalina.core.ApplicationContext;
 import org.apache.catalina.core.ApplicationContextFacade;

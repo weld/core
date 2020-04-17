@@ -19,14 +19,14 @@ package org.jboss.weld.module.web.servlet;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 
-import javax.enterprise.context.BeforeDestroyed;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequestListener;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeploymentModule;
@@ -59,8 +59,8 @@ public class HttpContextLifecycle implements Service {
 
     private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
 
-    private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
-    private static final String FORWARD_HEADER = "javax.servlet.forward.request_uri";
+    private static final String INCLUDE_HEADER = "jakarta.servlet.include.request_uri";
+    private static final String FORWARD_HEADER = "jakarta.servlet.forward.request_uri";
     private static final String REQUEST_DESTROYED = HttpContextLifecycle.class.getName() + ".request.destroyed";
 
     private static final String GUARD_PARAMETER_NAME = "org.jboss.weld.context.ignore.guard.marker";
@@ -371,7 +371,7 @@ public class HttpContextLifecycle implements Service {
      * The way servlet containers react to an exception that occurs in a {@link ServletRequestListener} differs among servlet listeners. In certain containers
      * the destroyed callback may be invoked multiple times, causing the latter invocations to fail as thread locals have already been unset. We use the
      * {@link #REQUEST_DESTROYED} flag to indicate that all further invocations of the
-     * {@link ServletRequestListener#requestDestroyed(javax.servlet.ServletRequestEvent)} should be ignored by Weld.
+     * {@link ServletRequestListener#requestDestroyed(jakarta.servlet.ServletRequestEvent)} should be ignored by Weld.
      */
     private boolean isRequestDestroyed(HttpServletRequest request) {
         return request.getAttribute(REQUEST_DESTROYED) != null;

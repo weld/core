@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface LocalInterface {

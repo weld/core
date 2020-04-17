@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.extended.ejb;
 
-import javax.interceptor.Interceptor;
+import jakarta.interceptor.Interceptor;
 
 @Interceptor
 @AlphaBinding(2)

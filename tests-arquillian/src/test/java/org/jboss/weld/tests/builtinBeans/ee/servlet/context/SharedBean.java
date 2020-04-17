@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee.servlet.context;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 
 @Dependent
 public class SharedBean {

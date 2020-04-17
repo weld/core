@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

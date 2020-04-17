@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint.enterprise;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 @RequestScoped
 public class TestClient {

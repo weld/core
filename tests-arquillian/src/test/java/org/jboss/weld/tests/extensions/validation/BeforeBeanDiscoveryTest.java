@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.validation;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.DefinitionException;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;

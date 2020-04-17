@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.producer.field.named;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
 @RequestScoped
 @Named

@@ -19,7 +19,7 @@ package org.jboss.weld.contexts.unbound;
 import org.jboss.weld.contexts.AbstractSharedContext;
 import org.jboss.weld.context.SingletonContext;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import java.lang.annotation.Annotation;
 

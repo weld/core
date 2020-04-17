@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.scope.unproxyable.method;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Implements DuckInterface, contains non proxyable method.

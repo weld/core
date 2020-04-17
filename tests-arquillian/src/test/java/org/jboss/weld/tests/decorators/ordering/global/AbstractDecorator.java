@@ -18,8 +18,8 @@ package org.jboss.weld.tests.decorators.ordering.global;
 
 import java.util.List;
 
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 public abstract class AbstractDecorator implements Decorated {
 

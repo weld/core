@@ -30,7 +30,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.event.Event;
+import jakarta.enterprise.event.Event;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 

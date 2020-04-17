@@ -20,10 +20,10 @@ package org.jboss.weld.environment.servlet.test.bootstrap.beansxml;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 public class VerifyExtension implements Extension, Marker {
 

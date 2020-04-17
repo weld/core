@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.event;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Inject;
 
 @RequestScoped
 public class Bar {

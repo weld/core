@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class SLSB<T> implements LocalInterface {

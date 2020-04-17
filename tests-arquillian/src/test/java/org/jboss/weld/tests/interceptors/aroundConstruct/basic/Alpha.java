@@ -18,8 +18,8 @@ package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 @SuppressWarnings("serial")
 @AlphaBinding

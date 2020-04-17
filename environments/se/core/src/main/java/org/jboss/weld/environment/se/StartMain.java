@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;

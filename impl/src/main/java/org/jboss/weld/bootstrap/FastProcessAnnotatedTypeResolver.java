@@ -27,9 +27,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;

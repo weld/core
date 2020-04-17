@@ -18,8 +18,8 @@ package org.jboss.weld.environment.se.test.container.provider;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Baz {

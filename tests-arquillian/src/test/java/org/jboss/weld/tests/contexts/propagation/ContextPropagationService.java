@@ -26,8 +26,8 @@ import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.context.bound.MutableBoundRequest;
 import org.jboss.weld.manager.api.WeldManager;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.CDI;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.resources.proxy.weld1782;
 
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Observes;
 
 @RequestScoped
 public class RequestScopedObserver {

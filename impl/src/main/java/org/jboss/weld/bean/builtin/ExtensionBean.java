@@ -22,10 +22,10 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;

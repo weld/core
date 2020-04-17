@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.environment.se.test.beans;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 

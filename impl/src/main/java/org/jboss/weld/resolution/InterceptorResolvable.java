@@ -17,7 +17,7 @@
 
 package org.jboss.weld.resolution;
 
-import javax.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.InterceptionType;
 
 /**
  * @author Marius Bogoevici

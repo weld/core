@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.unit.bootstrap;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;

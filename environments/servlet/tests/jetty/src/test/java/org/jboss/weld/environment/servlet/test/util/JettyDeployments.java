@@ -37,7 +37,7 @@ public final class JettyDeployments {
                 "<Arg>BeanManager</Arg>" +
                 "<Arg>" +
                     "<New class=\"javax.naming.Reference\">" +
-                        "<Arg>javax.enterprise.inject.spi.BeanManager</Arg>" +
+                        "<Arg>jakarta.enterprise.inject.spi.BeanManager</Arg>" +
                         "<Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>" +
                         "<Arg/>" +
                     "</New>" +

@@ -328,7 +328,7 @@ Weld delegates JTA activities to the container. The SPI provides a
 couple hooks to easily achieve this with the `TransactionServices`
 interface.
 
-Any `javax.transaction.Synchronization` implementation may be passed to
+Any `jakarta.transaction.Synchronization` implementation may be passed to
 the `registerSynchronization()` method and the SPI implementation should
 immediately register the synchronization with the JTA transaction
 manager used for the EJBs.
@@ -550,7 +550,7 @@ which would not otherwise be provided by `weld-servlet`.
 A service implementation should be listed in a file named `META-INF/services/org.jboss.weld.bootstrap.api.Service`
 
 A service implementation can override another service implementation. The priority of a service
-implementation is determined from the `javax.annotation.Priority` annotation. Service implementations with
+implementation is determined from the `jakarta.annotation.Priority` annotation. Service implementations with
 higher priority have precedence. A service implementation that does not define priority explicitly
 is given implicit priority of 4500.
 
@@ -699,7 +699,7 @@ application strategy, via the `TCCLSingletonProvider`.
 
 You should bind the bean manager for the bean deployment archive into
 JNDI at `java:comp/BeanManager`. The type should be
-`javax.enterprise.inject.spi.BeanManager`. To obtain the correct bean
+`jakarta.enterprise.inject.spi.BeanManager`. To obtain the correct bean
 manager for the bean deployment archive, you may call
 `bootstrap.getBeanManager(beanDeploymentArchive)`
 
@@ -710,7 +710,7 @@ CDI container from components that do not support injection. This is
 done by the CDI class API. The integrating part can either use
 `org.jboss.weld.AbstractCDI` or `org.jboss.weld.SimpleCDI` provided by
 Weld core and register it using
-`javax.enterprise.inject.spi.CDIProvider` file that is visible to the
+`jakarta.enterprise.inject.spi.CDIProvider` file that is visible to the
 CDI API classes or use the `CDI.setCDIProvider(CDIProvider provider)`
 method method early in the deployment.
 
@@ -941,9 +941,9 @@ order to satisfy Weld's dependencies:
 |======================================================
 |group id |artifact id |version
 |org.jboss.logging |jboss-logging |3.1.3.GA
-|javax.enterprise |cdi-api |1.1-20130918
-|javax.annotation |javax.annotation-api |1.2
-|javax.interceptor |javax.interceptor-api |1.2
+|jakarta.enterprise |cdi-api |1.1-20130918
+|jakarta.annotation |jakarta.annotation-api |1.2
+|jakarta.interceptor |jakarta.interceptor-api |1.2
 |org.apache.geronimo.specs |geronimo-el_2.2_spec |1.0.3
 |======================================================
 

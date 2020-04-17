@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
-        <version>3.1.5-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -94,15 +94,15 @@
                         </_exportcontents>
 
                         <Import-Package>
-                            javax.annotation; version=!,
-                            javax.ejb; version=!; resolution:=optional,
-                            javax.el; version=!; resolution:=optional,
-                            javax.faces.*; version=!; resolution:=optional,
-                            javax.interceptor.*; version=!,
-                            javax.persistence; version=!; resolution:=optional,
-                            javax.servlet.*; version=!; resolution:=optional,
-                            javax.transaction; version=!; resolution:=optional,
-                            javax.validation.*; version=!; resolution:=optional,
+                            jakarta.annotation; version="2.0.0-RC1",
+                            jakarta.ejb; resolution:=optional,
+                            jakarta.el; version=1.0; resolution:=optional,
+                            jakarta.faces.*; resolution:=optional,
+                            jakarta.interceptor.*; version="1.0",
+                            jakarta.persistence; resolution:=optional,
+                            jakarta.servlet.*; resolution:=optional,
+                            jakarta.transaction; version="1.1"; resolution:=optional,
+                            jakarta.validation.*; resolution:=optional,
                             org.apache.bcel.*; resolution:=optional,
                             org.jboss.logging.annotations; resolution:=optional,
                             sun.*; resolution:=optional,
@@ -110,7 +110,7 @@
                         </Import-Package>
 
                         <Private-Package>
-                            !javax.interceptor.*
+                            !jakarta.interceptor.*
                         </Private-Package>
 
                     </instructions>

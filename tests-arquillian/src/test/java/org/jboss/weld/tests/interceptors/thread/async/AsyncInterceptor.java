@@ -18,12 +18,12 @@ package org.jboss.weld.tests.interceptors.thread.async;
 
 import java.util.concurrent.Future;
 
-import javax.annotation.Priority;
-import javax.enterprise.inject.spi.DefinitionException;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.tests.interceptors.thread.ThreadPool;
 

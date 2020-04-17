@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.resolution.InvariantTypes;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;

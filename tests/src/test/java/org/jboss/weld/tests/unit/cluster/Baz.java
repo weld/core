@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
-import javax.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.ConversationScoped;
 import java.io.Serializable;
 
 @ConversationScoped

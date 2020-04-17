@@ -18,7 +18,7 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;

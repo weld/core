@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.xml.namespaces.excluded;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 // this bean is excluded from scanning via beans.xml

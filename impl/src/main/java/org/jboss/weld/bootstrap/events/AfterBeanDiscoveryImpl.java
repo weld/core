@@ -25,21 +25,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.DefinitionException;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.Prioritized;
-import javax.enterprise.inject.spi.configurator.BeanConfigurator;
-import javax.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.inject.spi.Prioritized;
+import jakarta.enterprise.inject.spi.configurator.BeanConfigurator;
+import jakarta.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
@@ -194,7 +194,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             validateBean(bean);
         }
 
-        // Custom beans (alternatives, interceptors, decorators) may also implement javax.enterprise.inject.spi.Prioritized
+        // Custom beans (alternatives, interceptors, decorators) may also implementjakarta.enterprise.inject.spi.Prioritized
         Integer priority = (bean instanceof Prioritized) ? ((Prioritized) bean).getPriority() : null;
         // if added via WeldBeanConfigurator, there might be a priority specified as well
         if (priority == null && bean instanceof WeldBean) {

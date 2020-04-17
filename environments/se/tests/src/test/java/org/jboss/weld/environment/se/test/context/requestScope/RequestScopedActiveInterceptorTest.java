@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.context.requestScope;
 
-import javax.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.ContextNotActiveException;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;

@@ -171,8 +171,8 @@ with the bean type:
 
 [source.JAVA, java]
 --------------------------------------------------------
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 ....
 

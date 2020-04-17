@@ -18,8 +18,8 @@ package org.jboss.weld.tests.observers.extension;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;

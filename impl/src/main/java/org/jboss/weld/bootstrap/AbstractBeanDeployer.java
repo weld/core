@@ -20,12 +20,12 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.ProcessProducerField;
-import javax.enterprise.inject.spi.ProcessProducerMethod;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessProducerField;
+import jakarta.enterprise.inject.spi.ProcessProducerMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;

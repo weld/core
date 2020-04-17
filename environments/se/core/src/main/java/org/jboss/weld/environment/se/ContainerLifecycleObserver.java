@@ -28,32 +28,32 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.enterprise.event.Reception;
-import javax.enterprise.event.TransactionPhase;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.AfterTypeDiscovery;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.BeforeShutdown;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.enterprise.inject.spi.ProcessObserverMethod;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.ProcessProducerField;
-import javax.enterprise.inject.spi.ProcessProducerMethod;
-import javax.enterprise.inject.spi.ProcessSessionBean;
-import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
-import javax.enterprise.inject.spi.ProcessSyntheticBean;
-import javax.enterprise.inject.spi.ProcessSyntheticObserverMethod;
-import javax.enterprise.inject.spi.WithAnnotations;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.event.Reception;
+import jakarta.enterprise.event.TransactionPhase;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeforeShutdown;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessProducer;
+import jakarta.enterprise.inject.spi.ProcessProducerField;
+import jakarta.enterprise.inject.spi.ProcessProducerMethod;
+import jakarta.enterprise.inject.spi.ProcessSessionBean;
+import jakarta.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessSyntheticBean;
+import jakarta.enterprise.inject.spi.ProcessSyntheticObserverMethod;
+import jakarta.enterprise.inject.spi.WithAnnotations;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bootstrap.SyntheticExtension;
 import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
@@ -574,7 +574,7 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
      * A synthetic extension is basically a container for synthetic container lifecycle event observers.
      *
      * @return a builder for a synthetic extension
-     * @see Weld#addExtension(javax.enterprise.inject.spi.Extension)
+     * @see Weld#addExtension(jakarta.enterprise.inject.spi.Extension)
      */
     public static ExtensionBuilder extensionBuilder() {
         return new ExtensionBuilder();
@@ -606,7 +606,7 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
         private static final String CALLBACK = "callback";
 
         @SuppressWarnings("checkstyle:magicnumber")
-        private static final int DEFAULT_PRIORITY = javax.interceptor.Interceptor.Priority.APPLICATION + 500;
+        private static final int DEFAULT_PRIORITY = jakarta.interceptor.Interceptor.Priority.APPLICATION + 500;
 
         private int priority = DEFAULT_PRIORITY;
 

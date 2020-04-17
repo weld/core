@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.specialization.modular;
 
-import javax.inject.Inject;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
 
 @WebListener
 public class VerifyingListener implements ServletContextListener {

@@ -18,8 +18,8 @@ package org.jboss.weld.tests.contexts.weld1159;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ApplicationScopedBar extends AbstractBean {

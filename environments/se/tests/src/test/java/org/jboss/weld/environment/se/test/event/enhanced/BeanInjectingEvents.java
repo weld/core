@@ -18,9 +18,9 @@ package org.jboss.weld.environment.se.test.event.enhanced;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.events.WeldEvent;
 

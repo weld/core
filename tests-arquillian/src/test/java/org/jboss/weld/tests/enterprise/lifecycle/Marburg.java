@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.inject.Inject;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateful;
+import jakarta.inject.Inject;
 
 @Stateful
 public class Marburg implements UniStadt {

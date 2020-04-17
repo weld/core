@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.contexts.conversation.event.enterprise;
 
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.event.Observes;
 
 import org.jboss.weld.test.util.ActionSequence;
 

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.util.bean;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanAttributes;
 
 /**
  * Used within {@link IsolatedForwardingBean} and its subclasses as a value holder.

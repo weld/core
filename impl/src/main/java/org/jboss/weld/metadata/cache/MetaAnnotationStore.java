@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Named;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Named;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.Service;

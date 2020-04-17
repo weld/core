@@ -18,11 +18,11 @@ package org.jboss.weld.tests.accessibility;
 
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.annotation.WebListener;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.annotation.WebListener;
 
 @WebListener
 public class War1Listener extends AbstractTestListener {

@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.junit.Assert;
 

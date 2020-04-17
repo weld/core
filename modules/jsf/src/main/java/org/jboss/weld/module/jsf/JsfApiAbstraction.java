@@ -36,9 +36,9 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service {
 
     public final double MINIMUM_API_VERSION;
 
-    private static final String FACES_CONTEXT_CLASS_NAME = "javax.faces.context.FacesContext";
+    private static final String FACES_CONTEXT_CLASS_NAME = "jakarta.faces.context.FacesContext";
 
-    private static final String BEHAVIOR_CLASS_NAME = "javax.faces.component.behavior.Behavior";
+    private static final String BEHAVIOR_CLASS_NAME = "jakarta.faces.component.behavior.Behavior";
 
     private static final double COMMON_VERSION = 2.0;
     private static final double OLDER_VERSION = 1.2;

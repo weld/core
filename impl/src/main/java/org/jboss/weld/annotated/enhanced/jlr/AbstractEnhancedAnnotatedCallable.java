@@ -21,9 +21,9 @@ import java.lang.reflect.Member;
 import java.util.Arrays;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;

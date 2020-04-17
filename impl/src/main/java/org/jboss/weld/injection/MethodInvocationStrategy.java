@@ -19,11 +19,11 @@ package org.jboss.weld.injection;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.ObserverException;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.ObserverException;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.EventMetadata;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;

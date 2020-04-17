@@ -27,7 +27,7 @@ following producer method:
 
 [source.JAVA, java]
 ------------------------------------------------------------
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 class FacesContextProducer {
    @Produces @RequestScoped FacesContext getFacesContext() {
@@ -147,8 +147,8 @@ resources for injection into a bean:
 
 [source.JAVA, java]
 -----------------------------------------------------------------------------------
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Queue;
 
 public class OrderResources {
    @Resource(name="jms/ConnectionFactory")

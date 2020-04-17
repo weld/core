@@ -22,11 +22,11 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InjectionTargetFactory;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.InjectionTargetFactory;
 
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;

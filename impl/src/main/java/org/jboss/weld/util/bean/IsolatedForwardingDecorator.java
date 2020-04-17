@@ -20,9 +20,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
 
 /**
  * Delegating implementation of {@link Decorator}. Separate delegate is used for {@link BeanAttributes} methods, allowing this

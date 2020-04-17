@@ -44,11 +44,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.enterprise.event.Reception;
-import javax.enterprise.event.TransactionPhase;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.event.Reception;
+import jakarta.enterprise.event.TransactionPhase;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;

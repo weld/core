@@ -23,14 +23,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.decorator.Decorator;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.interceptor.Interceptor;
+import jakarta.decorator.Decorator;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;

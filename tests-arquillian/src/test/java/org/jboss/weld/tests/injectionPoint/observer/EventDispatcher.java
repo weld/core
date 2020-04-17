@@ -18,10 +18,10 @@ package org.jboss.weld.tests.injectionPoint.observer;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @ApplicationScoped
 @Named("dispatcher")

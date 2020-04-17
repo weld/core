@@ -23,9 +23,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 /**
  *

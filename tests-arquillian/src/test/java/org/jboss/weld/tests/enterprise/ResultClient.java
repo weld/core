@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ResultClient {
 

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.injectionPoint.enterprise;
 
-import javax.ejb.Stateful;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
 
 @Stateful
 public class Foo {

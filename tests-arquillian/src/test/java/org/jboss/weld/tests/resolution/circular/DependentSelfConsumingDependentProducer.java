@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resolution.circular;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 class DependentSelfConsumingDependentProducer {
     @SelfConsumingDependent

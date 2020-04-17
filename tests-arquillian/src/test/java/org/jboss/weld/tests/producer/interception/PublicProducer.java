@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.producer.interception;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Produces;
 
 import org.jboss.weld.test.util.ActionSequence;
 

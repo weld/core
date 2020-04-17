@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

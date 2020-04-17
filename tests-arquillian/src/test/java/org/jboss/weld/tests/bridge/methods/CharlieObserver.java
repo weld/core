@@ -18,7 +18,7 @@ package org.jboss.weld.tests.bridge.methods;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 public class CharlieObserver implements BasicObserver<Bar> {
 

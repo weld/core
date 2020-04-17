@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.producer.method.broken.invalidBeanType;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
 
 /**
 * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

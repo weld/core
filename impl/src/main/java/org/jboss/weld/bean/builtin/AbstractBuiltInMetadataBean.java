@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import javax.decorator.Decorator;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.decorator.Decorator;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;

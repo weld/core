@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.specialization.modular;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
 
 public class Factory {
 

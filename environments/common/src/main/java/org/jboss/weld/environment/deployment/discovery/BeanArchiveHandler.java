@@ -25,7 +25,7 @@ import java.util.ServiceLoader;
  * the {@link ServiceLoader} mechanism.
  * </p>
  * <p>
- * Additionaly, handlers could specify their priority using {@code javax.annotation.Priority}. Handlers with higher priority have precedence. The default
+ * Additionaly, handlers could specify their priority using {@code jakarta.annotation.Priority}. Handlers with higher priority have precedence. The default
  * priority is 0. Handlers registered programatically have the default priority {@code registeredHandlers.size - index}, i.e. derived from the order they were
  * inserted.
  * </p>

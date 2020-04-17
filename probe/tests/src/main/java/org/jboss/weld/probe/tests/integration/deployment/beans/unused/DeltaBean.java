@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.probe.tests.integration.deployment.beans.unused;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class DeltaBean {

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.ejb.business.view;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class InjectedBean {
 

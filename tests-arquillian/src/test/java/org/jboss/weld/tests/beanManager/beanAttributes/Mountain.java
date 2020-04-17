@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.beanManager.beanAttributes;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Typed;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Typed;
 
 @Natural
 @TundraStereotype

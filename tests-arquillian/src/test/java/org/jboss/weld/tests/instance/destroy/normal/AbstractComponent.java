@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.instance.destroy.normal;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 public abstract class AbstractComponent {
 

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.observers.ejb.local;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

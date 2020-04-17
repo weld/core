@@ -1,8 +1,8 @@
 package org.jboss.weld.examples.login;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Default;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Default;
+import jakarta.inject.Named;
 
 @RequestScoped
 @Named

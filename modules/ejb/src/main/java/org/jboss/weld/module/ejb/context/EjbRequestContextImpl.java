@@ -6,8 +6,8 @@ import org.jboss.weld.contexts.beanstore.SimpleNamingScheme;
 import org.jboss.weld.module.ejb.context.beanstore.InvocationContextBeanStore;
 import org.jboss.weld.contexts.cache.RequestScopedCache;
 
-import javax.enterprise.context.RequestScoped;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.interceptor.InvocationContext;
 
 import java.lang.annotation.Annotation;
 

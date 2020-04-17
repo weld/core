@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.config;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bootstrap.api.Bootstrap;
@@ -138,7 +138,7 @@ public enum ConfigurationKey {
 
     /**
      * For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup. The optimization is disabled by default as it
-     * does not match the {@link javax.enterprise.context.spi.AlterableContext} contract.
+     * does not match the {@linkjakarta.enterprise.context.spi.AlterableContext} contract.
      */
     @Description("For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup. The optimization is disabled by default.")
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
@@ -253,9 +253,9 @@ public enum ConfigurationKey {
     ROLLING_UPGRADES_ID_DELIMITER("org.jboss.weld.clustering.rollingUpgradesIdDelimiter", ""),
 
     /**
-     * A regular expression. If a non-empty string, then all annotated types whose {@code javax.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()} matches this pattern are vetoed if not annotated with a bean defining annotation.
+     * A regular expression. If a non-empty string, then all annotated types whose {@codejakarta.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()} matches this pattern are vetoed if not annotated with a bean defining annotation.
      */
-    @Description("A regular expression. If a non-empty string, then all annotated types whose <code>javax.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()</code> matches this pattern are vetoed if not annotated with a bean defining annotation.")
+    @Description("A regular expression. If a non-empty string, then all annotated types whose <code>jakarta.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()</code> matches this pattern are vetoed if not annotated with a bean defining annotation.")
     VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation", ""),
 
     /**

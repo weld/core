@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;

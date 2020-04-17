@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.junit.Assert;
 

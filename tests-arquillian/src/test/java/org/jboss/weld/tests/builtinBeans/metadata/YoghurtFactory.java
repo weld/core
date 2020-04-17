@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.Bean;
 
 @ApplicationScoped
 public class YoghurtFactory {

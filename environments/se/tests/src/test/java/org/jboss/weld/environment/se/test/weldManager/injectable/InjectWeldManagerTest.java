@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.weldManager.injectable;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;

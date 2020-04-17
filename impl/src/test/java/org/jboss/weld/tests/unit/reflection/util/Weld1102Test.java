@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.unit.reflection.util;
 
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.junit.Assert;
 

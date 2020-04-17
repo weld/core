@@ -21,7 +21,7 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-import javax.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Context;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;

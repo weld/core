@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.unit.bootstrap;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.injection.spi.InjectionContext;
 import org.jboss.weld.injection.spi.InjectionServices;

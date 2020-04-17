@@ -23,10 +23,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @SuppressWarnings("serial")
 @Interceptor

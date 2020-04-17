@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.module.ejb;
 
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.transaction.UserTransaction;
+import jakarta.ejb.TransactionManagement;
+import jakarta.ejb.TransactionManagementType;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.transaction.UserTransaction;
 
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.logging.ValidatorLogger;

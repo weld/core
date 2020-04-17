@@ -21,11 +21,11 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.New;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
 
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 

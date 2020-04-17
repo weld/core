@@ -19,8 +19,8 @@ package org.jboss.weld.annotated.enhanced.jlr;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;

@@ -2,7 +2,7 @@ package org.jboss.weld.tests.annotations.weld1131;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 /**
  *

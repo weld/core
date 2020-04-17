@@ -19,8 +19,8 @@ package org.jboss.weld.bootstrap;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerMethod;

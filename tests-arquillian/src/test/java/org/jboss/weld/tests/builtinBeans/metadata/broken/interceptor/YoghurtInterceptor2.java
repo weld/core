@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata.broken.interceptor;
 
-import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 
-@javax.interceptor.Interceptor
+@jakarta.interceptor.Interceptor
 @Frozen
 public class YoghurtInterceptor2 {
 

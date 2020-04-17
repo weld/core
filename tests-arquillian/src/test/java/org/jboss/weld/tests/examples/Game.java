@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.examples;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Game {
     private final int number;

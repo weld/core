@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;

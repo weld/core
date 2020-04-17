@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.contexts.conversation.sessiontimeout;
 
-import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
+import jakarta.servlet.annotation.WebListener;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 
 import org.jboss.weld.test.util.ActionSequence;
 

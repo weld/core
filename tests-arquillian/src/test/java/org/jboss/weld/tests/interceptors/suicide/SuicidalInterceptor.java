@@ -16,16 +16,16 @@
  */
 package org.jboss.weld.tests.interceptors.suicide;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.spi.AlterableContext;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Intercepted;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.spi.AlterableContext;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.Intercepted;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @Interceptor
 @Suicidal

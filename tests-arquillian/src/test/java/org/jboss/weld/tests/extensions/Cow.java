@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class Cow implements CowLocal {

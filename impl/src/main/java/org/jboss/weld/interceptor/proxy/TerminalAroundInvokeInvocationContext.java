@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 

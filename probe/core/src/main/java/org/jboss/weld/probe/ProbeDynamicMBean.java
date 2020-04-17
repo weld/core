@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 import javax.management.DynamicMBean;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;

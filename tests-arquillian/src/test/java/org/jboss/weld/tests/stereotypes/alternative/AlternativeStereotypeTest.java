@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.stereotypes.alternative;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.junit.Assert;
 

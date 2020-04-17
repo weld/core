@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 public class GnarlyLiteral extends AnnotationLiteral<Gnarly> implements Gnarly {
 }

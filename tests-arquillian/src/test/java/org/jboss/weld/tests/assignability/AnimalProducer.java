@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.assignability;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
 public class AnimalProducer {
 

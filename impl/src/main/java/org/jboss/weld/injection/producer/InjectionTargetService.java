@@ -3,8 +3,8 @@ package org.jboss.weld.injection.producer;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;

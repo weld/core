@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.no.binding;
 
-import javax.inject.Inject;
-import javax.interceptor.Interceptor;
-import javax.interceptor.Interceptors;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.Interceptors;
 
 import org.junit.Assert;
 

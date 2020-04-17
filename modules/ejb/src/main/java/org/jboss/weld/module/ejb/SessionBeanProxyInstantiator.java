@@ -20,8 +20,8 @@ import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;

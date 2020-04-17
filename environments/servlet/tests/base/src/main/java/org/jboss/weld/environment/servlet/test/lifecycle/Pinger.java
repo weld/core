@@ -19,7 +19,7 @@ package org.jboss.weld.environment.servlet.test.lifecycle;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

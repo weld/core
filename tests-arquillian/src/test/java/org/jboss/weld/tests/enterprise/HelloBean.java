@@ -18,11 +18,11 @@ package org.jboss.weld.tests.enterprise;
 
 import java.io.Serializable;
 
-import javax.annotation.Resource;
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Remove;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 @SuppressWarnings("serial")
 @Stateful

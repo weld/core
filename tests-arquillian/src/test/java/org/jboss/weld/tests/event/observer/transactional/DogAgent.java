@@ -17,16 +17,16 @@
 package org.jboss.weld.tests.event.observer.transactional;
 
 import java.lang.annotation.Annotation;
-import javax.annotation.Resource;
-import javax.ejb.EJBException;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import static javax.ejb.TransactionManagementType.BEAN;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.transaction.UserTransaction;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJBException;
+import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionManagement;
+import static jakarta.ejb.TransactionManagementType.BEAN;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.transaction.UserTransaction;
 
 @Stateless
 @TransactionManagement(BEAN)

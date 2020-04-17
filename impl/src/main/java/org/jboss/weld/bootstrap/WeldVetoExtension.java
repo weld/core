@@ -18,10 +18,10 @@ package org.jboss.weld.bootstrap;
 
 import java.util.regex.Pattern;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.util.AnnotatedTypes;

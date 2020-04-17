@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.ejb.business.view;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 @Local
 public interface BarLocal1 extends BarLocalSuperInterface<String> {

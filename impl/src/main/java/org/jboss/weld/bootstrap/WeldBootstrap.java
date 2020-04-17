@@ -18,7 +18,7 @@ package org.jboss.weld.bootstrap;
 
 import java.net.URL;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;

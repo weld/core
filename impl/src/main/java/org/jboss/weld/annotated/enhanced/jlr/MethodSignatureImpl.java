@@ -19,7 +19,7 @@ package org.jboss.weld.annotated.enhanced.jlr;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.MethodSignature;

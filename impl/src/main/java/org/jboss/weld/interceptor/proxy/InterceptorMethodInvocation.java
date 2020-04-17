@@ -1,6 +1,6 @@
 package org.jboss.weld.interceptor.proxy;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * @author Marius Bogoevici

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.se.example.numberguess;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class Generator {

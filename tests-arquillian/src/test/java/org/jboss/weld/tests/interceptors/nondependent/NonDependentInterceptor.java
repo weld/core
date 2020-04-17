@@ -19,10 +19,10 @@ package org.jboss.weld.tests.interceptors.nondependent;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 /**
  *

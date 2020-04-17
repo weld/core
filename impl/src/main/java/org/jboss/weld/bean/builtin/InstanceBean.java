@@ -19,11 +19,11 @@ package org.jboss.weld.bean.builtin;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
-import javax.inject.Provider;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.util.TypeLiteral;
+import jakarta.inject.Provider;
 
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -62,7 +62,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
 
     @Override
     public String toString() {
-        return "Implicit Bean [javax.enterprise.inject.Instance] with qualifiers [@Default]";
+        return "Implicit Bean [jakarta.enterprise.inject.Instance] with qualifiers [@Default]";
     }
 
     @Override

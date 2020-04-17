@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InterceptionType;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.interceptor.ExcludeClassInterceptors;
+import jakarta.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;

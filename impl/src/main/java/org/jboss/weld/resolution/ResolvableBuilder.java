@@ -28,17 +28,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InterceptionFactory;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Named;
-import javax.inject.Provider;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.New;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InterceptionFactory;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.inject.Named;
+import jakarta.inject.Provider;
 
 import org.jboss.weld.events.WeldEvent;
 import org.jboss.weld.inject.WeldInstance;

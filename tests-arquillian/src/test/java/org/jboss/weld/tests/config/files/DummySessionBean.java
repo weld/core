@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.config.files;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 /**
  * @author Martin Kouba

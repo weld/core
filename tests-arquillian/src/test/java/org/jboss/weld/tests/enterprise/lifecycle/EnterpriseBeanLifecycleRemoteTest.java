@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;

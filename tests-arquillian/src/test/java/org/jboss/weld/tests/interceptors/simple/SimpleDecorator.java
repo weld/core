@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.simple;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>

@@ -18,8 +18,8 @@ package org.jboss.weld.bean.builtin;
 
 import java.util.List;
 
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.manager.BeanManagerImpl;

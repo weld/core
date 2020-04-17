@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.interceptors;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * @author Peter Royle

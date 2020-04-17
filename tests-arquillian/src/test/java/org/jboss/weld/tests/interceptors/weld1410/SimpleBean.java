@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.weld1410;
 
-import javax.interceptor.Interceptors;
+import jakarta.interceptor.Interceptors;
 
 @Interceptors({ Interceptor1.class, Interceptor2.class })
 public class SimpleBean {

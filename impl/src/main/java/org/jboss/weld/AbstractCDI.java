@@ -24,10 +24,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.Unmanaged;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bean.builtin.PriorityComparator;

@@ -197,7 +197,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1449, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but its single parameter is not a {3}\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorMethodDoesNotHaveCorrectTypeOfParameter(Object param1, Object param2, Object param3, Object param4, Object stackElement);
 
-    @Message(id = 1451, value = "javax.transaction.UserTransaction cannot be injected into an enterprise bean with container-managed transactions: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1451, value = "jakarta.transaction.UserTransaction cannot be injected into an enterprise bean with container-managed transactions: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException userTransactionInjectionIntoBeanWithContainerManagedTransactions(Object param1, Object stackElement);
 
     @Message(id = 1452, value = "{0} is not a valid type for a Bean metadata injection point {1}\n\tat {2}\n  StackTrace", format = Format.MESSAGE_FORMAT)
@@ -245,7 +245,7 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException eventMetadataInjectedOutsideOfObserver(Object param1, Object stackElement);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1473, value = "javax.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implement javax.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with a passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1473, value = "jakarta.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implementjakarta.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with a passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)
     void beanNotPassivationCapable(Object param1);
 
     @Message(id = 1474, value = "Class {0} is on the classpath, but was ignored because a class it references was not found: {1}.\n", format = Format.MESSAGE_FORMAT)

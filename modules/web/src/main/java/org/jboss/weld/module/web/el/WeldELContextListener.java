@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.module.web.el;
 
-import javax.el.ELContextEvent;
-import javax.el.ELContextListener;
+import jakarta.el.ELContextEvent;
+import jakarta.el.ELContextListener;
 
 /**
  * Responsible for pushing the CreationalContext stack into the ELContext which

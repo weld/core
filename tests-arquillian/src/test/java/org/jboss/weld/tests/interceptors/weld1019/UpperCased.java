@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.interceptors.weld1019;
 
-import javax.interceptor.InterceptorBinding;
+import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

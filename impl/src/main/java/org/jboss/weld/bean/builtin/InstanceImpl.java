@@ -31,14 +31,14 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.AlterableContext;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.AlterableContext;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;

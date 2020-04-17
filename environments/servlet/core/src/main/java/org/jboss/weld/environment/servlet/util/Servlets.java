@@ -1,6 +1,6 @@
 package org.jboss.weld.environment.servlet.util;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;

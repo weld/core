@@ -26,8 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.context.api.ContextualInstance;

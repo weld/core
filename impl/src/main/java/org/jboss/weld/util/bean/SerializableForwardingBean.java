@@ -18,7 +18,7 @@ package org.jboss.weld.util.bean;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.serialization.BeanHolder;

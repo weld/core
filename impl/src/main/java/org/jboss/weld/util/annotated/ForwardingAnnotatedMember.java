@@ -18,8 +18,8 @@ package org.jboss.weld.util.annotated;
 
 import java.lang.reflect.Member;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 /**
  * Forwarding implementation of {@link AnnotatedMember}.

@@ -16,7 +16,7 @@ c * JBoss, Home of Professional Open Source
  */
 package org.jboss.weld.tests.extensions;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class Foo {
 

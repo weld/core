@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 /**
  * Smoke tests -- check anything unusual.

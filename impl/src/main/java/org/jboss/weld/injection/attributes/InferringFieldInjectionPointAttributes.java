@@ -18,8 +18,8 @@ package org.jboss.weld.injection.attributes;
 
 import java.lang.reflect.Field;
 
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.manager.BeanManagerImpl;

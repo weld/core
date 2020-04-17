@@ -17,9 +17,9 @@
 
 package org.jboss.weld.environment.se.test.event.async.classLoader;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.ObservesAsync;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.ObservesAsync;
+import jakarta.enterprise.inject.spi.CDI;
 
 @ApplicationScoped
 public class Observer {

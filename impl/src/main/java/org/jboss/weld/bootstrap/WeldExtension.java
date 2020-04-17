@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.bootstrap;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.contexts.activator.CdiRequestContextActivatorInterceptor;
 import org.jboss.weld.contexts.activator.ActivateRequestContextInterceptor;

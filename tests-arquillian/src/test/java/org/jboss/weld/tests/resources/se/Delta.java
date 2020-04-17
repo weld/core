@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resources.se;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 public class Delta {
 

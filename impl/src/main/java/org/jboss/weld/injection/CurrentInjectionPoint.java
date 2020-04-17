@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.injection;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bootstrap.api.Service;
 

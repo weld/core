@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.injectionPoint;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 public class PigSty {
     @Inject

@@ -17,16 +17,16 @@
 
 package org.jboss.weld.tests.contexts.conversation.nonexistant;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.NonexistentConversationException;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.NonexistentConversationException;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @ApplicationScoped
 public class ConversationBean {

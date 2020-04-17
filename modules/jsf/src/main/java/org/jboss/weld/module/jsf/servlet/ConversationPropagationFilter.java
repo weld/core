@@ -18,19 +18,19 @@ package org.jboss.weld.module.jsf.servlet;
 
 import java.io.IOException;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
-import javax.faces.context.FacesContext;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.Instance;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;

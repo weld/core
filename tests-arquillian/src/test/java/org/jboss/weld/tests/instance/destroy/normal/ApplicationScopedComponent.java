@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.instance.destroy.normal;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ApplicationScopedComponent extends AbstractComponent {

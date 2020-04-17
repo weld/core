@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se.test;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
 import org.jboss.weld.environment.se.WeldContainer;

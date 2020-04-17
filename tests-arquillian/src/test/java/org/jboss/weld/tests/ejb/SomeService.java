@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.ejb;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class SomeService {

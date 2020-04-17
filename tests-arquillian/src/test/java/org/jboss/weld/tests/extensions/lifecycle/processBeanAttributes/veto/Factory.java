@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.veto;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class Factory {

@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.jetty;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;

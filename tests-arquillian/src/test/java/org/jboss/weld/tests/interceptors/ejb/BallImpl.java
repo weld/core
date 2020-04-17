@@ -17,9 +17,9 @@
 
 package org.jboss.weld.tests.interceptors.ejb;
 
-import javax.ejb.Stateless;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
+import jakarta.ejb.Stateless;
+import jakarta.ejb.Timeout;
+import jakarta.ejb.Timer;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>

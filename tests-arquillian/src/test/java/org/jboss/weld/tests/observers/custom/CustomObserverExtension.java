@@ -21,12 +21,12 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.Reception;
-import javax.enterprise.event.TransactionPhase;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Reception;
+import jakarta.enterprise.event.TransactionPhase;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 public class CustomObserverExtension implements Extension {
 

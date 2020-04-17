@@ -18,7 +18,7 @@ package org.jboss.weld.tests.contexts.cache;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.ConversationScoped;
 
 @ConversationScoped
 public class ConversationScopedBean implements Serializable {

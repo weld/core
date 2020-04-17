@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.broken.passivation;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Wheel {

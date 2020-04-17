@@ -35,11 +35,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.AmbiguousResolutionException;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.AmbiguousResolutionException;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Environment;
@@ -280,7 +280,7 @@ class Reports {
                         for (Iterator<Annotation> iterator = bean.getQualifiers().iterator(); iterator.hasNext();) {
                             Annotation qualifier = iterator.next();
                             if (Any.class.equals(qualifier.annotationType())) {
-                                // Omit javax.enterprise.inject.Any
+                                // Omitjakarta.enterprise.inject.Any
                                 continue;
                             } else if (Default.class.equals(qualifier.annotationType())) {
                                 qualifiers.add(JsonObjects.simplifiedAnnotation(qualifier));

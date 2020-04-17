@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.weld1651.broken;
 
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Specializes;
 
 @SuppressWarnings("rawtypes")
 @Specializes

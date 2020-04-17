@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.injectionTarget.dispose;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.Extension;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 

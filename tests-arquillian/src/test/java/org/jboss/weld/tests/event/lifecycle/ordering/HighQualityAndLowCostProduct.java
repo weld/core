@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.lifecycle.ordering;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 /**
  *

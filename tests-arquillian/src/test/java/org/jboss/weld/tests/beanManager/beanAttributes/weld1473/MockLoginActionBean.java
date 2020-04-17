@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.beanManager.beanAttributes.weld1473;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 @Stateless
 public class MockLoginActionBean extends LoginActionBean {

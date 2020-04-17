@@ -22,15 +22,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.inject.Named;
-import javax.inject.Qualifier;
-import javax.inject.Scope;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.New;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.inject.Named;
+import jakarta.inject.Qualifier;
+import jakarta.inject.Scope;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;

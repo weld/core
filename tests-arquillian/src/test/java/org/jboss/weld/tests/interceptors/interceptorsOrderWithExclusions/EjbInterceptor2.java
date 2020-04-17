@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.interceptorsOrderWithExclusions;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 
 /**
  * @author Marius Bogoevici

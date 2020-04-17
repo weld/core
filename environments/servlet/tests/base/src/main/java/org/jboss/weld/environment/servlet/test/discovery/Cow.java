@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.servlet.test.discovery;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Cow {

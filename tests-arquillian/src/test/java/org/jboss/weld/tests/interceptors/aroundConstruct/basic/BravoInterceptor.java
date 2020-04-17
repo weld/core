@@ -21,9 +21,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 @Interceptor
 @BravoBinding

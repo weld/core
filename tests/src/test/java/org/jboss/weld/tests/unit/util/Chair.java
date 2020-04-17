@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.unit.util;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Produces;
 
 @Default
 public class Chair {

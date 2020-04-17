@@ -20,8 +20,8 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.enterprise.context.NormalScope;
-import javax.inject.Scope;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.inject.Scope;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.collections.SetMultimap;

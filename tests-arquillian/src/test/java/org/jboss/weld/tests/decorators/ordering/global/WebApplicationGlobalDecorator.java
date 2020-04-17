@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.decorators.ordering.global;
 
-import javax.annotation.Priority;
-import javax.decorator.Decorator;
+import jakarta.annotation.Priority;
+import jakarta.decorator.Decorator;
 
 @Decorator
 @Priority(2030)

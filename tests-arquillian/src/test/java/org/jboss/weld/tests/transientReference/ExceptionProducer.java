@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.transientReference;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.TransientReference;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.TransientReference;
 
 @ApplicationScoped
 public class ExceptionProducer {

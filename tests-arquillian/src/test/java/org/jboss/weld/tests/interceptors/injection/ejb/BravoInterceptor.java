@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.injection.ejb;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 
 public class BravoInterceptor {
 

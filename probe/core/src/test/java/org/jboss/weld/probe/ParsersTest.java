@@ -37,10 +37,10 @@ import java.lang.reflect.WildcardType;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.resolution.QualifierInstance;
@@ -120,10 +120,10 @@ public class ParsersTest {
     public void testParseQualifiers() {
         List<QualifierInstance> instances = Parsers.parseQualifiers("", null, testManager());
         assertEquals(0, instances.size());
-        instances = Parsers.parseQualifiers("javax.enterprise.inject.Any", null, testManager());
+        instances = Parsers.parseQualifiers("jakarta.enterprise.inject.Any", null, testManager());
         assertEquals(1, instances.size());
         assertEquals(Any.class, instances.get(0).getAnnotationClass());
-        instances = Parsers.parseQualifiers("javax.enterprise.inject.Any,javax.inject.Named(value=\"foo\")", null, testManager());
+        instances = Parsers.parseQualifiers("jakarta.enterprise.inject.Any,jakarta.inject.Named(value=\"foo\")", null, testManager());
         assertEquals(2, instances.size());
         assertEquals(Any.class, instances.get(0).getAnnotationClass());
         // Named does not need MetaAnnotationStore

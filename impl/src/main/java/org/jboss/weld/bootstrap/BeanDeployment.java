@@ -27,7 +27,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Context;
 
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.BeanManagerImplBean;

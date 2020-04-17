@@ -19,10 +19,10 @@ package org.jboss.weld.annotated;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.util.reflection.Formats;

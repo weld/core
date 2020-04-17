@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.servlet.test.isolation;
 
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 public class RangefinderCamera implements Camera {

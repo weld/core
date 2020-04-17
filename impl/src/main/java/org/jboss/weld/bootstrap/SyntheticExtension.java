@@ -18,8 +18,8 @@ package org.jboss.weld.bootstrap;
 
 import java.util.Collection;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 

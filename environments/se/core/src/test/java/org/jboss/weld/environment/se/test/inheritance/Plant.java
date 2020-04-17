@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.inheritance;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 public abstract class Plant {
 

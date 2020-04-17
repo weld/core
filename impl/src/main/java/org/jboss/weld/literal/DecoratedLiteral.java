@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.literal;
 
-import javax.enterprise.inject.Decorated;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.inject.Decorated;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link Decorated}.

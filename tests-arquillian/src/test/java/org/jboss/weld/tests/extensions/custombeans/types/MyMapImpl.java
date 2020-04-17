@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
 public class MyMapImpl extends MyMap {

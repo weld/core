@@ -9,8 +9,8 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

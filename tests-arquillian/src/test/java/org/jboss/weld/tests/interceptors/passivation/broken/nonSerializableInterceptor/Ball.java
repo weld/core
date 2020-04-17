@@ -19,7 +19,7 @@ package org.jboss.weld.tests.interceptors.passivation.broken.nonSerializableInte
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>

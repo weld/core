@@ -28,8 +28,8 @@ import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.inject.Qualifier;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;

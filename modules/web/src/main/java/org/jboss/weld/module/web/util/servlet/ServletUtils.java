@@ -1,6 +1,6 @@
 package org.jboss.weld.module.web.util.servlet;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;

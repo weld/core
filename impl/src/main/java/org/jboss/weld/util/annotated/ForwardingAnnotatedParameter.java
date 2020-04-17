@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.util.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 public abstract class ForwardingAnnotatedParameter<X> extends ForwardingAnnotated implements AnnotatedParameter<X> {
 

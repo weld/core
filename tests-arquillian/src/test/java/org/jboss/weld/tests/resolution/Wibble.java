@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @RequestScoped
 @Named

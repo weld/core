@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.named.ambiguous.case1;
 
-import javax.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.DeploymentException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;

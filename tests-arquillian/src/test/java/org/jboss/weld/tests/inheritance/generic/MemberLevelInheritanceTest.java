@@ -24,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

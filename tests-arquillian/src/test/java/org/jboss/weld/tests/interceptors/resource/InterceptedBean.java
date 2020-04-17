@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.resource;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.interceptor.Interceptors;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.interceptor.Interceptors;
 
 public class InterceptedBean {
 

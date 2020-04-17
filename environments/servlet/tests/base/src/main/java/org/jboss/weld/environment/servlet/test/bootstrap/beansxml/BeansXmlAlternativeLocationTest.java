@@ -19,7 +19,7 @@ package org.jboss.weld.environment.servlet.test.bootstrap.beansxml;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

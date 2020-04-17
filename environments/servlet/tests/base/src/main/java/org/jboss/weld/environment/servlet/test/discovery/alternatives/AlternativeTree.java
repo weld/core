@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.environment.servlet.test.discovery.alternatives;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Alternative;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Alternative;
 
 import org.jboss.weld.environment.servlet.test.discovery.Tree;
 

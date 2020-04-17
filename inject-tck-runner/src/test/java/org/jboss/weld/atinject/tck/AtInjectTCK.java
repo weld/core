@@ -28,8 +28,8 @@ import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 /**
  * Configure the AtInject TCK for use with the 299 RI

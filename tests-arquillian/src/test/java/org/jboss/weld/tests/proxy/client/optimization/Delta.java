@@ -18,8 +18,8 @@ package org.jboss.weld.tests.proxy.client.optimization;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.inject.Inject;
 
 @SuppressWarnings("serial")
 @ConversationScoped

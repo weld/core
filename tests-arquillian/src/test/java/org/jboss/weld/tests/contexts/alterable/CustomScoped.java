@@ -25,7 +25,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.context.NormalScope;
+import jakarta.enterprise.context.NormalScope;
 
 @NormalScope(passivating = true)
 @Inherited

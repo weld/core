@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.transientReference;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 public class TestingBean2 {
 

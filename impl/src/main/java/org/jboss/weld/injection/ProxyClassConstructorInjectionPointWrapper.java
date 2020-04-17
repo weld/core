@@ -19,8 +19,8 @@ package org.jboss.weld.injection;
 
 import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.bean.proxy.BeanInstance;
@@ -33,7 +33,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * A wrapper on a {@link ConstructorInjectionPoint}, to be used if a proxy subclass is instantiated instead of the
- * original (e.g. because the original is an abstract {@link javax.decorator.Decorator})
+ * original (e.g. because the original is an abstract {@link jakarta.decorator.Decorator})
  * <p/>
  *
  * This class is immutable.
@@ -52,7 +52,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, Class<?> declaringComponentClass, EnhancedAnnotatedConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
         super(weldConstructor, declaringBean, declaringComponentClass, InjectionPointFactory.silentInstance(), manager);
         this.contextId = manager.getContextId();
-        this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
+        this.decorator = (declaringBean instanceof jakarta.enterprise.inject.spi.Decorator);
         this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;
         this.bean = declaringBean;
         this.delegateInjectionPointPosition = initDelegateInjectionPointPosition();

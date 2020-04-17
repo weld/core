@@ -18,7 +18,7 @@ package org.jboss.weld.module.jta;
 
 import java.util.List;
 
-import javax.transaction.Synchronization;
+import jakarta.transaction.Synchronization;
 
 /**
  * A JTA transaction synchronization which wraps all defferred transactional event notifications.
@@ -40,7 +40,7 @@ class TransactionNotificationSynchronization implements Synchronization {
     /*
      * (non-Javadoc)
      *
-     * @see javax.transaction.Synchronization#afterCompletion(int)
+     * @see jakarta.transaction.Synchronization#afterCompletion(int)
      */
     public void afterCompletion(int status) {
         for (DeferredEventNotification<?> notification : notifications) {
@@ -53,7 +53,7 @@ class TransactionNotificationSynchronization implements Synchronization {
     /*
      * (non-Javadoc)
      *
-     * @see javax.transaction.Synchronization#beforeCompletion()
+     * @see jakarta.transaction.Synchronization#beforeCompletion()
      */
     public void beforeCompletion() {
         for (DeferredEventNotification<?> notification : notifications) {

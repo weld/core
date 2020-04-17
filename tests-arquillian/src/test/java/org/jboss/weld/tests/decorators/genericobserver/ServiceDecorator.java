@@ -22,9 +22,9 @@
 
 package org.jboss.weld.tests.decorators.genericobserver;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+import jakarta.decorator.Decorator;
+import jakarta.decorator.Delegate;
+import jakarta.inject.Inject;
 
 /**
  * ServiceDecorator

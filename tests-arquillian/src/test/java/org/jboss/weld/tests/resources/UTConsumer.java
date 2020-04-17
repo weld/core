@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.resources;
 
-import javax.annotation.Resource;
-import javax.transaction.UserTransaction;
+import jakarta.annotation.Resource;
+import jakarta.transaction.UserTransaction;
 
 public class UTConsumer {
 

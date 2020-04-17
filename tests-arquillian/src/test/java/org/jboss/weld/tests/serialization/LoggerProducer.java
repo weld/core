@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.serialization;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 import java.util.logging.Logger;
 
 public class LoggerProducer {

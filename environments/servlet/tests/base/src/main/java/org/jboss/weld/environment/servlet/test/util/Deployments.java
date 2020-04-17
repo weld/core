@@ -21,7 +21,7 @@ public class Deployments {
             + "      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd\">";
 
     public static final String DEFAULT_WEB_XML_BODY = toListener("org.jboss.weld.environment.servlet.Listener")
-            + "<resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
+            + "<resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>jakarta.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
     public static final String DEFAULT_WEB_XML_PREFIX = DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY;
     public static final String DEFAULT_WEB_XML_SUFFIX = "</web-app>";
 
@@ -31,7 +31,7 @@ public class Deployments {
             "<faces-config version=\"2.0\" xmlns=\"http://java.sun.com/xml/ns/javaee\"></faces-config>".getBytes());
 
     public static final Asset FACES_WEB_XML = new ByteArrayAsset((DEFAULT_WEB_XML_PREFIX
-            + "<listener><listener-class>com.sun.faces.config.ConfigureListener</listener-class></listener> <context-param><param-name>javax.faces.DEFAULT_SUFFIX</param-name><param-value>.xhtml</param-value></context-param> <servlet><servlet-name>Faces Servlet</servlet-name><servlet-class>javax.faces.webapp.FacesServlet</servlet-class><load-on-startup>1</load-on-startup></servlet> <servlet-mapping><servlet-name>Faces Servlet</servlet-name><url-pattern>*.jsf</url-pattern></servlet-mapping> "
+            + "<listener><listener-class>com.sun.faces.config.ConfigureListener</listener-class></listener> <context-param><param-name>jakarta.faces.DEFAULT_SUFFIX</param-name><param-value>.xhtml</param-value></context-param> <servlet><servlet-name>Faces Servlet</servlet-name><servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class><load-on-startup>1</load-on-startup></servlet> <servlet-mapping><servlet-name>Faces Servlet</servlet-name><url-pattern>*.jsf</url-pattern></servlet-mapping> "
             + DEFAULT_WEB_XML_SUFFIX).getBytes());
 
     private Deployments() {

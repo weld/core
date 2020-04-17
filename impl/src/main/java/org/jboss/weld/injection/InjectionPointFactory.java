@@ -22,13 +22,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.ObservesAsync;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.ObservesAsync;
+import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
+import jakarta.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;

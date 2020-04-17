@@ -19,10 +19,10 @@ package org.jboss.weld.environment.undertow;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.InstanceHandle;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Unmanaged;
-import javax.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
-import javax.servlet.ServletContext;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
+import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;

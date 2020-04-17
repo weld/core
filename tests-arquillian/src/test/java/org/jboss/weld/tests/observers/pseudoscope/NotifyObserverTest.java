@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.observers.pseudoscope;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

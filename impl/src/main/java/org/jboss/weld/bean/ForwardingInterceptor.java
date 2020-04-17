@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bean;
 
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.util.bean.IsolatedForwardingInterceptor;
 

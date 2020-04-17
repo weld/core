@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.servlet.async;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.RequestScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Bike {

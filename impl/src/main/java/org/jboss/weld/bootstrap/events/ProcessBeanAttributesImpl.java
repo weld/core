@@ -18,11 +18,11 @@ package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
 
 import org.jboss.weld.bootstrap.events.configurator.BeanAttributesConfiguratorImpl;
 import org.jboss.weld.logging.BootstrapLogger;

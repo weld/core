@@ -2,13 +2,13 @@ package org.jboss.weld.module.web.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletResponse;
 
 /**
  * This class provides support for cross-context dispatching to a web application that's using Weld.
@@ -52,9 +52,9 @@ public class WeldCrossContextFilter implements Filter {
        }
 
       // cross-context means request is dispatched as INCLUDE or FORWARD or ERROR
-      boolean crossCtx = request.getAttribute("javax.servlet.include.request_uri") != null
-            || request.getAttribute("javax.servlet.forward.request_uri") != null
-            || request.getAttribute("javax.servlet.error.request_uri") != null;
+      boolean crossCtx = request.getAttribute("jakarta.servlet.include.request_uri") != null
+            || request.getAttribute("jakarta.servlet.forward.request_uri") != null
+            || request.getAttribute("jakarta.servlet.error.request_uri") != null;
 
       boolean activated = false;
       try {

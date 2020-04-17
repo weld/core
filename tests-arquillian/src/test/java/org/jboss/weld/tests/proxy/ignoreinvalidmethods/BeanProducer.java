@@ -18,8 +18,8 @@ package org.jboss.weld.tests.proxy.ignoreinvalidmethods;
 
 import java.util.HashMap;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 public class BeanProducer {
 

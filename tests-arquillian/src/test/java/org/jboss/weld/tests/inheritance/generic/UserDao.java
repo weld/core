@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.inheritance.generic;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UserDao extends Dao<User> {

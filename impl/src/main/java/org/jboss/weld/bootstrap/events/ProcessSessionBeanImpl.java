@@ -18,9 +18,9 @@ package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessSessionBean;
-import javax.enterprise.inject.spi.SessionBeanType;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessSessionBean;
+import jakarta.enterprise.inject.spi.SessionBeanType;
 
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.logging.BootstrapLogger;

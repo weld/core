@@ -18,10 +18,10 @@ package org.jboss.weld.manager;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Producer;
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.DisposalMethod;

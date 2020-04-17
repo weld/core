@@ -18,9 +18,9 @@ package org.jboss.weld.probe.tests.integration.deployment.beans;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.inject.Inject;
 
 @ConversationScoped
 public class ConversationBean implements Serializable{

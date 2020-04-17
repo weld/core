@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.contexts.request.rmi;
 
-import javax.ejb.Remote;
+import jakarta.ejb.Remote;
 
 @Remote
 public interface Bridge {

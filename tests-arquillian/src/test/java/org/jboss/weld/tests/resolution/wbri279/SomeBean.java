@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resolution.wbri279;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SomeBean {
 

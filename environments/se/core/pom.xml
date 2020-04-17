@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-se-parent</artifactId>
         <groupId>org.jboss.weld.se</groupId>
-        <version>3.1.5-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -89,7 +89,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-cdi</artifactId>
+            <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

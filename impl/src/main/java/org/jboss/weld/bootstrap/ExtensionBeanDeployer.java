@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;

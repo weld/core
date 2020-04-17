@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.container.events;
 
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.event.Observes;
 
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;

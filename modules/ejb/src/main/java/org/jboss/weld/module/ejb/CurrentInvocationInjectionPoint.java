@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.module.ejb;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.injection.ThreadLocalStack;

@@ -18,7 +18,7 @@ package org.jboss.weld.environment.se.test.context.session;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
 public class Product implements Serializable {

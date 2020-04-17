@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.custombeans;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.DeploymentException;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;

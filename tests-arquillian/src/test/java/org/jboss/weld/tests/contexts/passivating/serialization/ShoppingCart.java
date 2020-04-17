@@ -18,9 +18,9 @@ package org.jboss.weld.tests.contexts.passivating.serialization;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.TransientReference;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.TransientReference;
+import jakarta.inject.Inject;
 
 @SessionScoped
 @SuppressWarnings("serial")

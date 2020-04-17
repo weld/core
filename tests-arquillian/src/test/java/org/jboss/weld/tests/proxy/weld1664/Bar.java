@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.proxy.weld1664;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Bar implements IBar {

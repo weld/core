@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.contexts;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 

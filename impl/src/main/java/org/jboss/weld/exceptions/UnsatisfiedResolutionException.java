@@ -21,12 +21,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Provides message localization service for the
- * {@link javax.enterprise.inject.UnsatisfiedResolutionException}.
+ * {@linkjakarta.enterprise.inject.UnsatisfiedResolutionException}.
  *
  * @author David Allen
  */
 @SuppressFBWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
-public class UnsatisfiedResolutionException extends javax.enterprise.inject.UnsatisfiedResolutionException {
+public class UnsatisfiedResolutionException extends jakarta.enterprise.inject.UnsatisfiedResolutionException {
     private static final long serialVersionUID = 2L;
 
     private final WeldExceptionMessage message;

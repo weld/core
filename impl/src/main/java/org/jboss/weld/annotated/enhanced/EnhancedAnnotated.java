@@ -18,12 +18,12 @@ package org.jboss.weld.annotated.enhanced;
 
 import org.jboss.weld.util.collections.Arrays2;
 
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.spi.Annotated;
-import javax.inject.Qualifier;
-import javax.inject.Scope;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.inject.Stereotype;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.inject.Qualifier;
+import jakarta.inject.Scope;
+import jakarta.interceptor.InterceptorBinding;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;

@@ -33,21 +33,21 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.AmbiguousResolutionException;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.SessionBeanType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.AmbiguousResolutionException;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.SessionBeanType;
 
 import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.bean.ManagedBean;
@@ -521,7 +521,7 @@ final class Components {
     }
 
     /**
-     * Priority ranges, as defined in {@link javax.interceptor.Interceptor.PRIORITY}
+     * Priority ranges, as defined in {@link jakarta.interceptor.Interceptor.PRIORITY}
      *
      * @author Jozef Hartinger
      *

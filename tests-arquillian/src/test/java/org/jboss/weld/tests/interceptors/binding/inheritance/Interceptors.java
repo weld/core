@@ -15,9 +15,9 @@
  * limitations under the License.
  */package org.jboss.weld.tests.interceptors.binding.inheritance;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 public class Interceptors {
 

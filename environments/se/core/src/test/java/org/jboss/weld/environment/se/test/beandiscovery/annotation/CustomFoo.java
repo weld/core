@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery.annotation;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @CustomScoped
 public class CustomFoo {

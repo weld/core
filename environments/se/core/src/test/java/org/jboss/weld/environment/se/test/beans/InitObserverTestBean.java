@@ -18,8 +18,8 @@ package org.jboss.weld.environment.se.test.beans;
 
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 /**
  * Tests the observing of both built-in and application-specific events.

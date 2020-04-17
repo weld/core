@@ -5,8 +5,8 @@ import static org.jboss.weld.tests.metadata.scanning.SystemPropertyExtension.UNS
 import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
 import static org.junit.Assert.assertEquals;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

@@ -18,8 +18,8 @@ package org.jboss.weld.tests.scope.unproxyable.array;
 
 import java.util.Comparator;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
 
 public class StringComparatorArrayProducer {
 

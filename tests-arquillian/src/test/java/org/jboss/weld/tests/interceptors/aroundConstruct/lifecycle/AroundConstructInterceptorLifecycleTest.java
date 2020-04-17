@@ -19,7 +19,7 @@ package org.jboss.weld.tests.interceptors.aroundConstruct.lifecycle;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

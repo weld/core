@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.contexts.errorpage;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.io.Serializable;
 
 @Named

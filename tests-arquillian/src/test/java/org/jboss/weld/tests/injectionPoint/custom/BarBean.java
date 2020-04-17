@@ -24,15 +24,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 public class BarBean implements Bean<Bar> {
 

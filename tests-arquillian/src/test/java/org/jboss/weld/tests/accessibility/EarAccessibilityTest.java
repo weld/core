@@ -18,7 +18,7 @@ package org.jboss.weld.tests.accessibility;
 
 import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;

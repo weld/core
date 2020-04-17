@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.module.jsf;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Helper class for preparing JSF URLs which include the conversation id.

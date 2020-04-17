@@ -19,9 +19,9 @@ package org.jboss.weld.tests.specialization.modular;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Alternative;
-import javax.inject.Inject;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

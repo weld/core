@@ -19,9 +19,9 @@ package org.jboss.weld.bean.builtin;
 import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.DecorableBean;

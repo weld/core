@@ -38,10 +38,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.event.NotificationOptions;
-import javax.enterprise.event.ObserverException;
-import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.event.NotificationOptions;
+import jakarta.enterprise.event.ObserverException;
+import jakarta.enterprise.inject.spi.EventMetadata;
+import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;

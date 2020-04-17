@@ -19,10 +19,10 @@ package org.jboss.weld.tests.interceptors.context.bindings;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.annotation.Priority;
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.WeldInvocationContext;
 

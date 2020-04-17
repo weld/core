@@ -16,17 +16,17 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
-import static javax.enterprise.event.TransactionPhase.AFTER_COMPLETION;
-import static javax.enterprise.event.TransactionPhase.AFTER_FAILURE;
-import static javax.enterprise.event.TransactionPhase.AFTER_SUCCESS;
-import static javax.enterprise.event.TransactionPhase.BEFORE_COMPLETION;
-import static javax.enterprise.event.TransactionPhase.IN_PROGRESS;
+import static jakarta.enterprise.event.TransactionPhase.AFTER_COMPLETION;
+import static jakarta.enterprise.event.TransactionPhase.AFTER_FAILURE;
+import static jakarta.enterprise.event.TransactionPhase.AFTER_SUCCESS;
+import static jakarta.enterprise.event.TransactionPhase.BEFORE_COMPLETION;
+import static jakarta.enterprise.event.TransactionPhase.IN_PROGRESS;
 import static org.jboss.weld.tests.event.observer.transactional.DogAgent.EVENT_FIRED;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

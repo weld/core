@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.specialization;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Named("beanA")
 public class BeanA {

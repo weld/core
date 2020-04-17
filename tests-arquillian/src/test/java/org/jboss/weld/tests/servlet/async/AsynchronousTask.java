@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.servlet.async;
 
-import javax.servlet.AsyncContext;
+import jakarta.servlet.AsyncContext;
 
 public class AsynchronousTask implements Runnable {
 

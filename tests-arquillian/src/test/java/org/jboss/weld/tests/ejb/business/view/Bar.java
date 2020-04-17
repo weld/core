@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.ejb.business.view;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 @Stateful
 @Named

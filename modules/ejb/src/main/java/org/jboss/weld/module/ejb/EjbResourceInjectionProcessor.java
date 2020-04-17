@@ -18,8 +18,8 @@ package org.jboss.weld.module.ejb;
 
 import java.lang.annotation.Annotation;
 
-import javax.ejb.EJB;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.injection.ResourceInjectionProcessor;
 import org.jboss.weld.injection.spi.EjbInjectionServices;

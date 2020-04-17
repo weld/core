@@ -18,10 +18,10 @@ package org.jboss.weld.tests.builtinBeans.metadata.passivation;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
 
 @Vetoed
 @SessionScoped

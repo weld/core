@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.specialization;
 
-import javax.enterprise.inject.Specializes;
+import jakarta.enterprise.inject.Specializes;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

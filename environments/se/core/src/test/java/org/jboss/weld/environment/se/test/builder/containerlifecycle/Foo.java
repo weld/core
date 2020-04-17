@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.builder.containerlifecycle;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Foo {

@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.resources.proxy.weld1782;
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
-import javax.jms.MessageListener;
+import jakarta.ejb.ActivationConfigProperty;
+import jakarta.ejb.MessageDriven;
+import jakarta.jms.MessageListener;
 
 @MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "jakarta.jms.Topic"),
         @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "java:jboss/exported/jms/topic/test") })
 public class TopicMessageDrivenBean extends AbstractMessageListener implements MessageListener {
 

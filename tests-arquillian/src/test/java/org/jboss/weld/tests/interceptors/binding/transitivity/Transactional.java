@@ -24,8 +24,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.util.AnnotationLiteral;
-import javax.interceptor.InterceptorBinding;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.interceptor.InterceptorBinding;
 
 @InterceptorBinding
 @Inherited

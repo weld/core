@@ -107,7 +107,7 @@ contents:
 <Context>
    <Resource name="BeanManager"
       auth="Container"
-      type="javax.enterprise.inject.spi.BeanManager"
+      type="jakarta.enterprise.inject.spi.BeanManager"
       factory="org.jboss.weld.resources.ManagerObjectFactory"/>
 </Context>
 ---------------------------------------------------------------
@@ -120,7 +120,7 @@ of `web.xml`:
 <resource-env-ref>
    <resource-env-ref-name>BeanManager</resource-env-ref-name>
    <resource-env-ref-type>
-      javax.enterprise.inject.spi.BeanManager
+     jakarta.enterprise.inject.spi.BeanManager
    </resource-env-ref-type>
 </resource-env-ref>
 -------------------------------------------------------------
@@ -245,7 +245,7 @@ To bind the BeanManager into JNDI, you should either populate
         <Arg>BeanManager</Arg>
         <Arg>
             <New class="javax.naming.Reference">
-                <Arg>javax.enterprise.inject.spi.BeanManager</Arg>
+                <Arg>jakarta.enterprise.inject.spi.BeanManager</Arg>
                 <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
                 <Arg/>
             </New>
@@ -273,7 +273,7 @@ deployment by adding this to the bottom of `web.xml`:
 <resource-env-ref>
    <resource-env-ref-name>BeanManager</resource-env-ref-name>
    <resource-env-ref-type>
-      javax.enterprise.inject.spi.BeanManager
+     jakarta.enterprise.inject.spi.BeanManager
    </resource-env-ref-type>
 </resource-env-ref>
 -------------------------------------------------------------
@@ -453,7 +453,7 @@ Here's an example of a simple CDI SE application:
 
 [source.JAVA, java]
 ------------------------------------------------------------------------------------------------------
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class HelloWorld
@@ -742,7 +742,7 @@ If Jandex is not found on the classpath Weld will use the Java Reflection as a f
 
 By default, an implicit bean archive that does not contain a beans.xml descriptor is excluded from discovery.
 However, it is possible to instruct Weld to scan all class path entries and discover such archive.
-You can do so by setting Weld system property `org.jboss.weld.se.scan.classpath.entries` or CDI 2.0 system property `javax.enterprise.inject.scan.implicit` to `true`.
+You can do so by setting Weld system property `org.jboss.weld.se.scan.classpath.entries` or CDI 2.0 system property `jakarta.enterprise.inject.scan.implicit` to `true`.
 Another approach is to use `Weld.property()` and `SeContainerInitializer.addProperty()` methods.
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.

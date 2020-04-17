@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.observers.transactional;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
-import javax.inject.Inject;
+import jakarta.ejb.Stateful;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.TransactionPhase;
+import jakarta.inject.Inject;
 
 //do not use app scoped SFSB's in a real application
 @Stateful

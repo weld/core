@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.weld1052;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Bar implements BarInterface {

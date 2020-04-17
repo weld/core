@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;

@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Named

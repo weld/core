@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.discovery.beanDefiningAnnotations;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  * A class which has one of the basic bean defining annotations

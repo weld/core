@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.session.newBean;
 
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.New;
+import jakarta.inject.Inject;
 
 public class WrappedEnterpriseBeanInjectionPoint {
     @Inject

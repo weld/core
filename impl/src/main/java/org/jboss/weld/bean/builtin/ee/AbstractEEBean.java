@@ -18,8 +18,8 @@ package org.jboss.weld.bean.builtin.ee;
 
 import java.util.concurrent.Callable;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;

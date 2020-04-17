@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.proxy.weld1052;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 @RequestScoped
 public class Baz implements BazInterface {

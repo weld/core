@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.spi;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.test.util.ActionSequence;
 

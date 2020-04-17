@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.container.instance;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
 
 @ApplicationScoped
 public class Bar {

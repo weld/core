@@ -20,10 +20,10 @@ import java.beans.FeatureDescriptor;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.Bean;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.logging.ElLogger;
 import org.jboss.weld.manager.BeanManagerImpl;

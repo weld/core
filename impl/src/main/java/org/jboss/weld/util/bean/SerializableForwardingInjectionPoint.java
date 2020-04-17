@@ -18,7 +18,7 @@ package org.jboss.weld.util.bean;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.serialization.InjectionPointHolder;

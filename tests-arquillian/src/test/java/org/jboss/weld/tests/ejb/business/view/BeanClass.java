@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.ejb.business.view;
 
-import javax.ejb.Local;
-import javax.ejb.Stateless;
+import jakarta.ejb.Local;
+import jakarta.ejb.Stateless;
 
 @Stateless
 @Local(LocalInterface.class)

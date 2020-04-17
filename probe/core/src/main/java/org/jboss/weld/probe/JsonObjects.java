@@ -138,23 +138,23 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.Prioritized;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.Interceptor;
+import jakarta.enterprise.inject.spi.ObserverMethod;
+import jakarta.enterprise.inject.spi.Prioritized;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -1224,7 +1224,7 @@ final class JsonObjects {
         for (Annotation qualifier : qualifiers) {
             if (Any.class.equals(qualifier.annotationType())) {
                 if (skipAny) {
-                    // Omit javax.enterprise.inject.Any
+                    // Omitjakarta.enterprise.inject.Any
                     continue;
                 }
                 builder.add(simplifiedAnnotation(qualifier));

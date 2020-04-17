@@ -19,10 +19,10 @@ package org.jboss.weld.bean.builtin;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.events.WeldEvent;
@@ -52,7 +52,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
 
     @Override
     public String toString() {
-        return "Implicit Bean [javax.enterprise.event.Event] with qualifiers [@Default]";
+        return "Implicit Bean [jakarta.enterprise.event.Event] with qualifiers [@Default]";
     }
 
     @Override

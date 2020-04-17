@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.weld770;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.bootstrap.unusedbeans;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class UnusedResolvableToInstance extends UnusedResolvableToInstanceBase {

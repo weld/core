@@ -18,8 +18,8 @@ package org.jboss.weld.util.annotated;
 
 import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 /**
  * Forwarding implementation of {@link AnnotatedCallable}.

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.transientReference.metadata;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.enterprise.inject.TransientReference;
+import jakarta.enterprise.inject.TransientReference;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

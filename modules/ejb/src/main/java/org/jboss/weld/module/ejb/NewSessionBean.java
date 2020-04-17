@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.module.ejb;
 
-import javax.enterprise.inject.spi.BeanAttributes;
+import jakarta.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.NewBean;

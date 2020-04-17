@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.decorators.generic;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici

@@ -18,9 +18,9 @@ package org.jboss.weld.module.web.el;
 
 import org.jboss.weld.module.web.util.el.ForwardingMethodExpression;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.MethodInfo;
+import jakarta.el.ELContext;
+import jakarta.el.MethodExpression;
+import jakarta.el.MethodInfo;
 
 import static org.jboss.weld.module.web.el.ELCreationalContextStack.getCreationalContextStore;
 

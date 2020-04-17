@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.internal.contructs;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *

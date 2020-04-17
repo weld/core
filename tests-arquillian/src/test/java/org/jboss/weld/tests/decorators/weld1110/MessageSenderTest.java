@@ -33,7 +33,7 @@ public class MessageSenderTest {
                         "<web-app>" +
                                 "<display-name>jax</display-name>" +
                                 "<servlet-mapping>" +
-                                "<servlet-name>javax.ws.rs.core.Application</servlet-name>" +
+                                "<servlet-name>jakarta.ws.rs.core.Application</servlet-name>" +
                                 "<url-pattern>/rest/*</url-pattern>" +
                                 "</servlet-mapping>" +
                                 "</web-app>"))

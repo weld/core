@@ -18,8 +18,8 @@ package org.jboss.weld.tests.event.async.extension;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.event.ObservesAsync;
-import javax.enterprise.inject.spi.Extension;
+import jakarta.enterprise.event.ObservesAsync;
+import jakarta.enterprise.inject.spi.Extension;
 
 public class ExtensionWithAsyncObserver implements Extension {
 
