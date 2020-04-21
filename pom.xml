@@ -90,7 +90,7 @@
         <shrinkwrap.resolver.version>3.1.3</shrinkwrap.resolver.version>
         <testng.version>6.14.3</testng.version>
         <testng.jcommander.version>1.78</testng.jcommander.version>
-        <weld.api.version>4.0.0-SNAPSHOT</weld.api.version>
+        <weld.api.version>4.0.Alpha1</weld.api.version>
         <weld.logging.tools.version>1.0.2.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>2.2.0.Final</wildfly.arquillian.version>
     </properties>
