@@ -72,12 +72,12 @@
         <javax.activation.version>1.2.1</javax.activation.version>
         <!-- -->
         <jakarta.el.version>4.0.0-RC1</jakarta.el.version>
+        <glassfish.jakarta.el.version>4.0.0-RC1</glassfish.jakarta.el.version>
         <jakarta.jms.api.version>3.0.0-RC1</jakarta.jms.api.version>
         <jsf.api.version>3.0.0-RC1</jsf.api.version>
         <jboss.logging.version>3.2.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.0.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <jboss.spec.el-api.version>1.0.0-SNAPSHOT</jboss.spec.el-api.version>
         <jsf.impl.version>2.3.14</jsf.impl.version>
         <jsp.api.version>3.0.0-M1</jsp.api.version>
         <jstl.api.version>2.0.0-RC1</jstl.api.version>
@@ -146,15 +146,23 @@
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>jakarta.el</artifactId>
-                <version>4.0.0-RC1</version>
+                <version>${glassfish.jakarta.el.version}</version>
             </dependency>
 
+            <!-- Used to use jboss version that doesn't yet exist for Jakarta 9
+            <groupId>org.jboss.spec.javax.faces</groupId>
+            <artifactId>jboss-jsf-api_2.3_spec</artifactId>
+            -->
             <dependency>
                 <groupId>jakarta.faces</groupId>
                 <artifactId>jakarta.faces-api</artifactId>
                 <version>${jsf.api.version}</version>
             </dependency>
 
+            <!-- Used to use jboss version that doesn't yet exist for Jakarta 9
+            <groupId>org.jboss.spec.javax.jms</groupId>
+            <artifactId>jboss-jms-api_2.0_spec</artifactId>
+            -->
             <dependency>
                 <groupId>jakarta.jms</groupId>
                 <artifactId>jakarta.jms-api</artifactId>
@@ -192,7 +200,6 @@
                 <version>${htmlunit.version}</version>
             </dependency>
 
-            <!-- TODO Jakarta EE version of the TCKs wasn't yet released, see https://github.com/eclipse-ee4j/injection-tck-->
             <dependency>
                 <groupId>jakarta.inject</groupId>
                 <artifactId>jakarta.inject-tck</artifactId>
@@ -503,6 +510,7 @@
                 <version>${jandex.version}</version>
             </dependency>
 
+
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>jakarta.faces</artifactId>
@@ -713,7 +721,7 @@
             <modules>
                 <module>environments/common</module>
                 <module>environments/se</module>
-                <!-- Skipped for now as servlet containers need updating
+                <!-- TODO Skipped for now as servlet containers need updating
                 <module>environments/servlet</module>
                 -->
             </modules>
