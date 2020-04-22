@@ -20,9 +20,9 @@ import java.io.CharArrayReader;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectInstance;
 import javax.management.remote.JMXConnector;

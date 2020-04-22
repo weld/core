@@ -258,7 +258,7 @@
                 </property>
             </activation>
             <properties>
-                <cdi.tck.version>${cdi.tck-2-0.version}</cdi.tck.version>
+                <cdi.tck.version>${cdi.tck-3-0.version}</cdi.tck.version>
             </properties>
             <build>
                 <plugins>
