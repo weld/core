@@ -20,8 +20,7 @@ The following Jakarta EE 9 dependencies have been updated:
 ** jta-api version to 2.0.0-RC1
 ** jaxrs-api version to 3.0.0-M1
 ** servlet-ap version to 5.0.0-M1
-* https://github.com/jakartaredhat/arquillian-core fork of arquillian-core to add Jakarta EE testenrichers
-**  *** version is 1.7.0-SNAPSHOT
+** arquillian-core version is 1.7.0-Alpha1
 * https://github.com/starksm64/arquillian-container-weld/tree/jakartaee9 Scott Stark fork of arquillian-container-weld to
 update the javax package to jakarta.
 ** version is 3.0.0.Final-SNAPSHOT
