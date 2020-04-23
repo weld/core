@@ -35,8 +35,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.spec.jakarta.servlet</groupId>
-            <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
