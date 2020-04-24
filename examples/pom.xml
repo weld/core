@@ -95,7 +95,8 @@
         <module>jsf/numberguess</module>
         <module>jsf/translator</module>
         <module>jsf/login</module>
-        <module>jsf/pastecode</module>
+        <!-- TODO Doesn't compile due to lack of JEE 9 version of hibernate-jpamodelgen-->
+        <!-- <module>jsf/pastecode</module>-->
         <module>se/numberguess</module>
         <module>se/groovy-numberguess</module>
     </modules>
