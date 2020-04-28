@@ -79,6 +79,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private final AtomicLong defaultTimeout;
     private final AtomicLong concurrentAccessTimeout;
 
+    private final boolean resetHttpSessionAttributeOnBeanAccess;
+
     private final ThreadLocal<R> associated;
 
     private final BeanManagerImpl manager;
@@ -100,6 +102,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         this.associated = new ThreadLocal<R>();
         this.manager = Container.instance(contextId).deploymentManager();
         this.beanIdentifierIndex = services.get(BeanIdentifierIndex.class);
+        this.resetHttpSessionAttributeOnBeanAccess = configuration.getBooleanProperty(ConfigurationKey.RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS);
     }
 
     @Override
@@ -159,16 +162,16 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     protected void copyConversationIdGeneratorAndConversationsToSession() {
         final R request = getRequest();
-        if(request == null) {
+        if (request == null) {
             return;
         }
         // If necessary, store the conversation id generator and conversation map in the session
         Object conversationIdGenerator = getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
-        if(conversationIdGenerator != null && getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
+        if (conversationIdGenerator != null && getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
             setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator, false);
         }
         Object conversationMap = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
-        if(conversationMap != null && getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
+        if (conversationMap != null && (resetHttpSessionAttributeOnBeanAccess || getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null)) {
             setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
         }
     }
@@ -224,7 +227,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 boolean lock = lock(conversation);
                 if (lock) {
                     // WELD-1690 Don't associate a conversation which was ended (race condition)
-                    if(conversation.isTransient()) {
+                    if (conversation.isTransient()) {
                         associateRequestWithNewConversation();
                         throw ConversationLogger.LOG.noConversationFoundToRestore(cid);
                     }
@@ -428,7 +431,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         Object conversationIdGenerator = getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
         if (conversationIdGenerator == null) {
             conversationIdGenerator = getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false);
-            if(conversationIdGenerator == null) {
+            if (conversationIdGenerator == null) {
                 conversationIdGenerator = new ConversationIdGenerator();
                 setRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator);
                 setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator, false);
@@ -471,10 +474,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         checkContextInitialized();
         final R request = getRequest();
         Object conversationMap = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
-        if(conversationMap == null) {
+        if (conversationMap == null) {
             conversationMap = getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false);
             if (conversationMap == null) {
                 conversationMap = Collections.synchronizedMap(new HashMap<String, ManagedConversation>());
+                setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap);
+                setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
+            } else if (resetHttpSessionAttributeOnBeanAccess) {
                 setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap);
                 setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
             } else {
