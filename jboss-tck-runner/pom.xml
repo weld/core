@@ -68,62 +68,6 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.el</groupId>
-                    <artifactId>jakarta.el-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck.version}</version>
-            <type>xml</type>
-            <classifier>suite</classifier>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.el</groupId>
-                    <artifactId>jakarta.el-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jakarta.faces</groupId>
-                    <artifactId>jakarta.faces-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>container-se-api</artifactId>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.el</groupId>
-                    <artifactId>jakarta.el-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jakarta.faces</groupId>
-                    <artifactId>jakarta.faces-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>container-se-api</artifactId>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.el</artifactId>
         </dependency>
@@ -224,6 +168,73 @@
 
     <profiles>
         <profile>
+            <id>tck2Deps</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!tck12</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-api</artifactId>
+                    <version>${cdi.tck.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>jakarta.el</groupId>
+                            <artifactId>jakarta.el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-impl</artifactId>
+                    <version>${cdi.tck.version}</version>
+                    <type>xml</type>
+                    <classifier>suite</classifier>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>jakarta.el</groupId>
+                            <artifactId>jakarta.el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>container-se-api</artifactId>
+                            <groupId>org.jboss.arquillian.container</groupId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-impl</artifactId>
+                    <version>${cdi.tck.version}</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>jakarta.el</groupId>
+                            <artifactId>jakarta.el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>container-se-api</artifactId>
+                            <groupId>org.jboss.arquillian.container</groupId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <!-- TCKs for 1.2 have different artifact GAVs (javax VS jakarta) so we need different dependency setup-->
             <id>tck12</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -234,6 +245,55 @@
             <properties>
                 <cdi.tck.version>${cdi.tck-1-2.version}</cdi.tck.version>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.cdi.tck</groupId>
+                    <artifactId>cdi-tck-api</artifactId>
+                    <version>${cdi.tck.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.cdi.tck</groupId>
+                    <artifactId>cdi-tck-impl</artifactId>
+                    <version>${cdi.tck.version}</version>
+                    <type>xml</type>
+                    <classifier>suite</classifier>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>javax.faces</groupId>
+                            <artifactId>javax.faces-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.cdi.tck</groupId>
+                    <artifactId>cdi-tck-impl</artifactId>
+                    <version>${cdi.tck.version}</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>javax.faces</groupId>
+                            <artifactId>javax.faces-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>

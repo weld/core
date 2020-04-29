@@ -84,13 +84,40 @@
             <artifactId>weld-web</artifactId>
             <version>${weld.update.version}</version>
         </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-ext-lib</artifactId>
-            <version>${cdi.tck.version}</version>
-        </dependency>
     </dependencies>
     <profiles>
+        <profile>
+            <id>tck2Deps</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!tck12</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-ext-lib</artifactId>
+                    <version>${cdi.tck.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>tck1Deps</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>tck12</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.cdi.tck</groupId>
+                    <artifactId>cdi-tck-ext-lib</artifactId>
+                    <version>${cdi.tck.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
         <!--Downloads WildFly, can be used for patch creation purposes-->
         <profile>
             <id>download-wfly</id>
