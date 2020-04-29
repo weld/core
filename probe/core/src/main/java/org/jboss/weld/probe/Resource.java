@@ -55,6 +55,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -441,12 +442,14 @@ enum Resource {
             return Strings.APPLICATION_JSON;
         }
 
+        @SuppressFBWarnings(value = "UC_USELESS_VOID_METHOD", justification = "This method is not useless")
         static void setHeaders(HttpServletResponse resp, String contentType) {
             resp.setCharacterEncoding(ENCODING_UTF8);
             resp.setContentType(contentType);
             setCorsHeaders(resp);
         }
 
+        @SuppressFBWarnings(value = "UC_USELESS_VOID_METHOD", justification = "This method is not useless")
         static void setCorsHeaders(HttpServletResponse resp) {
             // Support cross-site HTTP requests - we want to support external HTML5 clients
             // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
