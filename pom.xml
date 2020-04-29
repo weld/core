@@ -48,8 +48,7 @@
         <arquillian.version>1.7.0.Alpha1</arquillian.version>
         <arquillian.drone.version>2.5.1</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
-        <!-- Override with 3.x version as soon as it is released, then re-enable tests-->
-        <arquillian.weld.version>2.0.1.Final</arquillian.weld.version>
+        <arquillian.weld.version>3.0.0.Alpha1</arquillian.weld.version>
         <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
@@ -629,10 +628,9 @@
             <modules>
                 <module>porting-package</module>
                 <module>tests-common</module>
-                <!-- Temporarily out due to embedded container-->
-                <!--<module>tests</module>-->
-                <!--<module>tests-arquillian</module>-->
-                <!--<module>inject-tck-runner</module>-->
+                <module>tests</module>
+                <module>tests-arquillian</module>
+                <module>inject-tck-runner</module>
             </modules>
         </profile>
         <profile>
@@ -644,8 +642,7 @@
                 </property>
             </activation>
             <modules>
-                <!-- Temporarily out due to embedded container-->
-                <!--<module>jboss-tck-runner</module>-->
+                <module>jboss-tck-runner</module>
             </modules>
         </profile>
         <profile>
