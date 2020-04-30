@@ -76,7 +76,6 @@
             <groupId>org.jboss.spec.javax.faces</groupId>
             <artifactId>jboss-jsf-api_2.3_spec</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -168,7 +167,7 @@
 
     <profiles>
         <profile>
-            <id>tck2Deps</id>
+            <id>tck2</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
@@ -244,6 +243,7 @@
             </activation>
             <properties>
                 <cdi.tck.version>${cdi.tck-1-2.version}</cdi.tck.version>
+                <saaj.impl.version>1.5.2-b01</saaj.impl.version>
             </properties>
             <dependencies>
                 <dependency>
@@ -274,6 +274,10 @@
                             <groupId>javax.faces</groupId>
                             <artifactId>javax.faces-api</artifactId>
                         </exclusion>
+                        <exclusion>
+                            <groupId>javax.xml.ws</groupId>
+                            <artifactId>jaxws-api</artifactId>
+                        </exclusion>
                     </exclusions>
                 </dependency>
 
@@ -291,7 +295,16 @@
                             <groupId>javax.faces</groupId>
                             <artifactId>javax.faces-api</artifactId>
                         </exclusion>
+                        <exclusion>
+                            <groupId>javax.xml.ws</groupId>
+                            <artifactId>jaxws-api</artifactId>
+                        </exclusion>
                     </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.messaging.saaj</groupId>
+                    <artifactId>saaj-impl</artifactId>
+                    <version>${saaj.impl.version}</version>
                 </dependency>
             </dependencies>
             <build>
