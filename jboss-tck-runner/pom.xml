@@ -595,8 +595,9 @@
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <configuration>
+                            <!-- This serves to exclude TCK sources from instrumentation by JaCoCo -->
                             <excludes>
-                                <exclude>jakarta.enterprise.*</exclude>
+                                <exclude>org/jboss/cdi/tck/**/*</exclude>
                             </excludes>
                             <propertyName>jacoco.agent</propertyName>
                         </configuration>
