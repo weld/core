@@ -275,7 +275,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                                 .getId());
 
                         getBeanStore().attach();
-                        getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
+                        Map<String, ManagedConversation> conversationMap = getConversationMap();
+                        conversationMap.put(getCurrentConversation().getId(), getCurrentConversation());
+                        setSessionAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
                     }
                 }
             } finally {
@@ -308,6 +310,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 }
             }
         }
+        setSessionAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
         // let the lock go, now clean up the conversations, this triggers locking on the session
         Iterator<Entry<String, ManagedConversation>> toClearIterator = toClear.entrySet().iterator();
         while (toClearIterator.hasNext()) {
@@ -319,7 +322,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     public void conversationPromotedToLongRunning(ConversationImpl conversation) {
-        getConversationMap().put(conversation.getId(), conversation);
+        Map<String, ManagedConversation> conversationMap = getConversationMap();
+        conversationMap.put(conversation.getId(), conversation);
+        setSessionAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
     }
 
     @Override
