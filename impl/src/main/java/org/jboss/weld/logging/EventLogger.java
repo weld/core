@@ -80,9 +80,11 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 412, value = "ObserverMethod.{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException observerMethodsMethodReturnsNull(Object param1, Object param2);
 
+    @SuppressWarnings({ "weldlog:method-sig" })
     @Message(id = 413, value = "{0} cannot be replaced by an observer method with a different bean class {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException beanClassMismatch(ObserverMethod<?> originalObserverMethod, ObserverMethod<?> observerMethod);
 
+    @SuppressWarnings({ "weldlog:method-sig" })
     @Message(id = 414, value = "Observer method for container lifecycle event cannot be asynchronous. {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException asyncContainerLifecycleEventObserver(ObserverMethod<?> observer, Object stackElement);
 
@@ -96,6 +98,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 417, value = "The original observed type {0} is not assignable from {1} set by extension {2} - the observer method invocation may result in runtime exception!", format = Format.MESSAGE_FORMAT)
     void originalObservedTypeIsNotAssignableFrom(Object originalObservedType, Object observedType, Object extension);
 
+    @SuppressWarnings({ "weldlog:method-sig" })
     @Message(id = 418, value = "Observer method for container lifecycle event cannot be static. {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException staticContainerLifecycleEventObserver(ObserverMethod<?> observer, Object stackElement);
 
