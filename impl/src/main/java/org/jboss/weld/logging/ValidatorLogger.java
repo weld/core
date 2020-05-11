@@ -197,6 +197,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1449, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but its single parameter is not a {3}\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorMethodDoesNotHaveCorrectTypeOfParameter(Object param1, Object param2, Object param3, Object param4, Object stackElement);
 
+    @SuppressWarnings({ "weldlog:msg-value" })
     @Message(id = 1451, value = "jakarta.transaction.UserTransaction cannot be injected into an enterprise bean with container-managed transactions: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException userTransactionInjectionIntoBeanWithContainerManagedTransactions(Object param1, Object stackElement);
 
@@ -244,6 +245,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1472, value = "EventMetadata can only be injected into an observer method: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException eventMetadataInjectedOutsideOfObserver(Object param1, Object stackElement);
 
+    @SuppressWarnings({ "weldlog:msg-value" })
     @LogMessage(level = Level.WARN)
     @Message(id = 1473, value = "jakarta.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implementjakarta.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with a passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)
     void beanNotPassivationCapable(Object param1);

@@ -167,6 +167,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 140, value = "Calling Bootstrap method after container has already been initialized. For correct order, see CDI11Bootstrap's documentation.")
     IllegalStateException callingBootstrapMethodAfterContainerHasBeenInitialized();
 
+    @SuppressWarnings({ "weldlog:method-sig" })
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 141, value = "Falling back to the default observer method resolver due to {0}", format = Format.MESSAGE_FORMAT)
     void notUsingFastResolver(ObserverMethod<?> observer);

@@ -116,6 +116,7 @@ public interface ContextLogger extends WeldLogger {
     @Message(id = 225, value = "Bean store leak detected during {0} association: {1}", format = Format.MESSAGE_FORMAT)
     void beanStoreLeakDuringAssociation(Object context, Object info);
 
+    @SuppressWarnings({ "weldlog:method-sig" })
     @Message(id = 226, value = "Cannot register additional context for scope: {0}, {1}", format = Format.MESSAGE_FORMAT)
     DeploymentException cannotRegisterContext(Class<? extends Annotation> scope, Context context);
 

@@ -87,6 +87,7 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 16, value = "Missing beans.xml file in META-INF", format = Format.MESSAGE_FORMAT)
     IllegalStateException missingBeansXml();
 
+    @SuppressWarnings({ "weldlog:method-retType" })
     @Message(id = 18, value = "Unable to resolve a bean for {0} with bindings {1}", format = Format.MESSAGE_FORMAT)
     UnsatisfiedResolutionException unableToResolveBean(Object param1, Object param2);
 
