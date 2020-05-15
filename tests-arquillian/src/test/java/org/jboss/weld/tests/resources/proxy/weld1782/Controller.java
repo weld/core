@@ -27,8 +27,8 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Controller {
 
-    private CountDownLatch msgDeliveredLatch = new CountDownLatch(1);
-    private CountDownLatch contextDestroyedLatch = new CountDownLatch(1);
+    private final CountDownLatch msgDeliveredLatch = new CountDownLatch(1);
+    private final CountDownLatch contextDestroyedLatch = new CountDownLatch(1);
 
     public CountDownLatch getMsgDeliveredLatch() {
         return msgDeliveredLatch;
@@ -36,10 +36,5 @@ public class Controller {
 
     public CountDownLatch getContextDestroyedLatch() {
         return contextDestroyedLatch;
-    }
-
-    public void resetLatches() {
-        msgDeliveredLatch = new CountDownLatch(1);
-        contextDestroyedLatch = new CountDownLatch(1);
     }
 }
