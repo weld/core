@@ -31,7 +31,7 @@ public class WSApiAbstraction extends ApiAbstraction implements Service {
      */
     public WSApiAbstraction(ResourceLoader resourceLoader) {
         super(resourceLoader);
-        WEB_SERVICE_REF_ANNOTATION_CLASS = annotationTypeForName("javax.xml.ws.WebServiceRef");
+        WEB_SERVICE_REF_ANNOTATION_CLASS = annotationTypeForName("jakarta.xml.ws.WebServiceRef");
     }
 
     public void cleanup() {

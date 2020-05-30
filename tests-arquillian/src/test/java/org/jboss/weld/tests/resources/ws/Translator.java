@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.resources.ws;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebService;
 
 @WebService(targetNamespace = "http://ws.resources.tests.weld.jboss.org/")
 public interface Translator {

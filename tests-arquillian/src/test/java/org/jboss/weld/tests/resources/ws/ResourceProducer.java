@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.resources.ws;
 
 import jakarta.enterprise.inject.Produces;
-import javax.xml.ws.WebServiceRef;
+import jakarta.xml.ws.WebServiceRef;
 
 public class ResourceProducer {
 	
