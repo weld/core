@@ -145,6 +145,24 @@
             <artifactId>wildfly-arquillian-common</artifactId>
         </dependency>
 
+        <!-- Jakarta JAX/JWS are needed in jdk8+ -->
+        <dependency>
+            <groupId>jakarta.jws</groupId>
+            <artifactId>jakarta.jws-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.ws</groupId>
+            <artifactId>jakarta.xml.ws-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>rt</artifactId>
+            <version>${jax.artifacts.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -322,21 +340,7 @@
             <activation>
                 <jdk>[9,)</jdk>
             </activation>
-            <!--org.jboss.weld.tests.ws.interceptors.WebServiceInterceptorTest requires these as they are no longer--> 
-            <!--available by default in the JDK-->
             <dependencies>
-                <dependency>
-                    <groupId>jakarta.xml.ws</groupId>
-                    <artifactId>jakarta.xml.ws-api</artifactId>
-                    <version>${jax.api.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>rt</artifactId>
-                    <version>${jax.artifacts.version}</version>
-                    <scope>test</scope>
-                </dependency>
                 <dependency>
                     <groupId>com.sun.xml.bind</groupId>
                     <artifactId>jaxb-ri</artifactId>

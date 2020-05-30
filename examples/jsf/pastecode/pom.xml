@@ -207,11 +207,6 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>jakarta.xml.ws</groupId>
-                    <artifactId>jakarta.xml.ws-api</artifactId>
-                    <version>${jax.api.version}</version>
-                </dependency>
-                <dependency>
                     <groupId>com.sun.xml.ws</groupId>
                     <artifactId>rt</artifactId>
                     <version>${jax.artifacts.version}</version>
