@@ -60,8 +60,6 @@
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
-        <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
-        <cdi.tck-2-0.version>2.0.7.SP1</cdi.tck-2-0.version>
         <cdi.tck-3-0.version>3.0.0-M3</cdi.tck-3-0.version>
         <classfilewriter.version>1.2.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
