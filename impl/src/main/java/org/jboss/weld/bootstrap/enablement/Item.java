@@ -88,8 +88,11 @@ class Item implements Comparable<Item> {
              * their class name lexicographically.
              */
             return javaClass.getName().compareTo(o.javaClass.getName());
+        } else if (p1 < p2) {
+            return -1;
+        } else {
+            return 1;
         }
-        return p1 - p2;
     }
 
     @Override
