@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.resources.ws;
 
-import javax.jws.WebService;
+import jakarta.jws.WebService;
 
 @WebService(endpointInterface = "org.jboss.weld.tests.resources.ws.Translator", serviceName = "Translator")
 public class TranslatorEndpoint implements Translator {

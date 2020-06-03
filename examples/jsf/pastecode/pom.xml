@@ -207,15 +207,9 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>jakarta.xml.ws</groupId>
-                    <artifactId>jakarta.xml.ws-api</artifactId>
-                    <version>${jax.artifacts.version}</version>
-                </dependency>
-                <dependency>
                     <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-ri</artifactId>
+                    <artifactId>rt</artifactId>
                     <version>${jax.artifacts.version}</version>
-                    <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>com.sun.xml.bind</groupId>

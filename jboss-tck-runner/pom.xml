@@ -223,31 +223,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>tck12</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>tck12</name>
-                </property>
-            </activation>
-            <properties>
-                <cdi.tck.version>${cdi.tck-1-2.version}</cdi.tck.version>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/tck12/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
 
         <profile>
             <id>tck20</id>
@@ -550,14 +525,13 @@
                 <dependency>
                     <groupId>jakarta.xml.ws</groupId>
                     <artifactId>jakarta.xml.ws-api</artifactId>
-                    <version>${jax.artifacts.version}</version>
+                    <version>${jax.api.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-ri</artifactId>
+                    <artifactId>rt</artifactId>
                     <version>${jax.artifacts.version}</version>
-                    <type>zip</type>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
