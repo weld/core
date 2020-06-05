@@ -40,13 +40,10 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * This test only verifies that PreDestroy callback is called correctly on a conversation scoped bean when the HTTP session
- * times out (i.e. before a long-running operation on the same bean instance ends). However, it was originally intended to
- * simulate thread locals leaking scenario from WELD-1802 (see the stack in the server log for details).
- *
- * Note that testing thread locals leaks would require a more advanced container setup (e.g. limit the number of threads
- * processing HTTP requests).
+ * times out.
  *
  * @author Martin Kouba
+ * @author Matej Novotny
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -63,15 +60,17 @@ public class ConversationContextDestroyedOnSessionTimeoutTest {
 
     @Test
     public void testConversationContextDestroyedCorrectly() throws FailingHttpStatusCodeException, MalformedURLException,
-            IOException {
+            IOException, InterruptedException {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
         String cid = client.getPage(contextPath + "/init").getWebResponse().getContentAsString();
         ActionSequence sequence = new ActionSequence();
-        sequence.add(Foo.class.getSimpleName() + "pingStart");
+        sequence.add(Foo.class.getSimpleName() + "init");
+        sequence.add(Foo.class.getSimpleName() + "ping");
         sequence.add(SessionListener.class.getSimpleName() + "destroyed");
         sequence.add(Foo.class.getSimpleName() + "destroy");
-        sequence.add(Foo.class.getSimpleName() + "pingEnd");
+        // we need to wait over 1s for session to timeout and then attempt to send another request
+        Thread.sleep(1200L);
         assertEquals(sequence.dataToCsv(), client.getPage(contextPath + "/test" + "?cid=" + cid).getWebResponse()
                 .getContentAsString().trim());
     }
