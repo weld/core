@@ -16,34 +16,20 @@
  */
 package org.jboss.weld.tests.contexts.conversation.sessiontimeout;
 
-import java.io.Serializable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import org.jboss.weld.test.util.ActionSequence;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ConversationScoped;
 
-import org.jboss.weld.test.util.ActionSequence;
+import java.io.Serializable;
 
 @SuppressWarnings("serial")
 @ConversationScoped
 public class Foo implements Serializable {
 
-    volatile CountDownLatch doneSignal;
-
-    public void pong() {
-    }
-
     public void ping() {
-        doneSignal = new CountDownLatch(1);
-        ActionSequence.addAction(Foo.class.getSimpleName()+"pingStart");
-        try {
-            doneSignal.await(3000l, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        ActionSequence.addAction(Foo.class.getSimpleName()+"pingEnd");
+        ActionSequence.addAction(Foo.class.getSimpleName()+"ping");
     }
 
     @PostConstruct
@@ -54,7 +40,6 @@ public class Foo implements Serializable {
     @PreDestroy
     public void destroy() {
         ActionSequence.addAction(Foo.class.getSimpleName()+"destroy");
-        doneSignal.countDown();
     }
 
 }

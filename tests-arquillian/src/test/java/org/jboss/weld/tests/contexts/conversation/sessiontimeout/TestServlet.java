@@ -43,15 +43,14 @@ public class TestServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/plain");
         if ("/init".equals(req.getPathInfo())) {
+            ActionSequence.reset();
             req.getSession(true);
+            req.getSession().setMaxInactiveInterval(1);
             conversation.begin();
-            foo.pong();
+            foo.ping();
             resp.getWriter().println(conversation.getId());
         } else {
-            ActionSequence.reset();
-            req.getSession().setMaxInactiveInterval(1);
-            // It's highly unlikely that the session times out before Foo waits until the latch is counted down
-            foo.ping();
+            // we waited for >1 sec so session should timeout
             resp.getWriter().println(ActionSequence.getSequence().dataToCsv());
         }
     }
