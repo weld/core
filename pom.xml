@@ -732,9 +732,7 @@
             <modules>
                 <module>environments/common</module>
                 <module>environments/se</module>
-                <!-- TODO Skipped for now as servlet containers need updating
                 <module>environments/servlet</module>
-                -->
             </modules>
         </profile>
         <profile>
