@@ -72,16 +72,8 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
         String contextPath = servletContext.getContextPath();
         List<ScanResult> results = new ArrayList<>(super.scan());
 
-        // All previous results for WEB-INF/classes must be ignored
-        for (Iterator<ScanResult> iterator = results.iterator(); iterator.hasNext();) {
-            ScanResult result = iterator.next();
-            String path = result.getBeanArchiveRef().toString();
-            if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES)) {
-                iterator.remove();
-            } else {
-                result.extractBeanArchiveId(contextPath, WEB_INF);
-            }
-        }
+        File webInfClasses = null;
+        ScanResult webInfBeansXML = null;
 
         try {
             // WEB-INF/classes
@@ -100,18 +92,34 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
             if (beansXmlUrl != null) {
                 BeansXml beansXml = parseBeansXml(beansXmlUrl);
                 if (accept(beansXml)) {
-                    File webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
+                    webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
                     if (webInfClasses != null) {
-                        results.add(new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath, WEB_INF));
+                        webInfBeansXML = new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath, WEB_INF);
                     } else {
                         // The WAR is not extracted to the file system - make use of ServletContext.getResourcePaths()
-                        results.add(new ScanResult(beansXml, WEB_INF_CLASSES));
+                        webInfBeansXML = new ScanResult(beansXml, WEB_INF_CLASSES);
                     }
                 }
             }
         } catch (MalformedURLException e) {
             throw WeldServletLogger.LOG.errorLoadingResources(e);
         }
+
+        // All previous results for WEB-INF/classes must be ignored
+        for (Iterator<ScanResult> iterator = results.iterator(); iterator.hasNext();) {
+            ScanResult result = iterator.next();
+            String path = result.getBeanArchiveRef().toString();
+            if (new File(path).equals(webInfClasses)) {
+                iterator.remove();
+            } else {
+                result.extractBeanArchiveId(contextPath, WEB_INF);
+            }
+        }
+
+        if (webInfBeansXML != null) {
+            results.add(webInfBeansXML);
+        }
+
         return ImmutableList.copyOf(results);
     }
 }
