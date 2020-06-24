@@ -109,7 +109,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
         for (Iterator<ScanResult> iterator = results.iterator(); iterator.hasNext();) {
             ScanResult result = iterator.next();
             String path = result.getBeanArchiveRef().toString();
-            if (new File(path).equals(webInfClasses)) {
+            if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES) || new File(path).equals(webInfClasses)) {
                 iterator.remove();
             } else {
                 result.extractBeanArchiveId(contextPath, WEB_INF);
