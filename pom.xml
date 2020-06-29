@@ -53,7 +53,7 @@
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
         <arquillian.weld.version>3.0.0.Alpha1</arquillian.weld.version>
         <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
-        <arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
+        <arquillian.tomcat.version>1.2.0-SNAPSHOT</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>2.0.0.RC3</atinject.tck.version>
@@ -78,7 +78,8 @@
         <jboss.logging.version>3.4.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <jsf.impl.version>3.0.0-RC2</jsf.impl.version>
+        <!-- Note that this version is NOT in Maven Central, CR1 is though, might need to use that -->
+        <jsf.impl.version>3.0.0-RC1</jsf.impl.version>
         <jsp.api.version>3.0.0-M1</jsp.api.version>
         <jstl.api.version>2.0.0-RC1</jstl.api.version>
         <junit.version>4.12</junit.version>
@@ -288,7 +289,7 @@
 
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-tomcat-embedded-9</artifactId>
+                <artifactId>arquillian-tomcat-embedded-10</artifactId>
                 <version>${arquillian.tomcat.version}</version>
             </dependency>
 

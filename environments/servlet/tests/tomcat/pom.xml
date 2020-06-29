@@ -180,7 +180,7 @@
         </profile>
 
         <profile>
-            <id>tomcat9</id>
+            <id>tomcat10</id>
             <activation>
                 <property>
                     <name>incontainer</name>
@@ -190,7 +190,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-tomcat-embedded-9</artifactId>
+                    <artifactId>arquillian-tomcat-embedded-10</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
