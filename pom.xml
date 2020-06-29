@@ -78,8 +78,8 @@
         <jboss.logging.version>3.4.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <!-- Note that this version is NOT in Maven Central, CR1 is though, might need to use that -->
-        <jsf.impl.version>3.0.0-RC1</jsf.impl.version>
+        <!-- TODO - this version is NOT in Maven Central, see https://github.com/eclipse-ee4j/mojarra/issues/4729 -->
+        <jsf.impl.version>3.0.0-RC2</jsf.impl.version>
         <jsp.api.version>3.0.0-M1</jsp.api.version>
         <jstl.api.version>2.0.0-RC1</jstl.api.version>
         <junit.version>4.12</junit.version>
