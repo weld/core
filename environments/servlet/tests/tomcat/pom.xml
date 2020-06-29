@@ -75,12 +75,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Make sure this comes before Tomcat's EL on the classpath -->
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>el-impl</artifactId>
-            <scope>test</scope>
-        </dependency>
+<!--        &lt;!&ndash; Make sure this comes before Tomcat's EL on the classpath &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.glassfish.web</groupId>-->
+<!--            <artifactId>el-impl</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>jakarta.websocket</groupId>
