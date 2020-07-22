@@ -97,4 +97,8 @@ public interface ServletLogger extends WeldLogger {
     @Message(id = 718, value = "No EEModuleDescriptor defined for bean archive with ID: {0}. @Initialized and @Destroyed events for ApplicationScoped may be fired twice.", format = Format.MESSAGE_FORMAT)
     void noEeModuleDescriptor(Object beanArchiveId);
 
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 719, value = "An active HttpSessionDestructionContext detected. This is likely a leftover from previous sessions that ended exceptionally. This context will be terminated.", format = Format.MESSAGE_FORMAT)
+    void destructionContextLeak();
+
 }
