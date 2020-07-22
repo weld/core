@@ -238,6 +238,12 @@ public class HttpContextLifecycle implements Service {
 
         ServletLogger.LOG.requestInitialized(request);
 
+        // cleanup any leftover destruction context on this thread, see WELD-2631
+        if (getSessionDestructionContext().isActive()) {
+            ServletLogger.LOG.destructionContextLeak();
+            getSessionDestructionContext().deactivate();
+        }
+
         SessionHolder.requestInitialized(request);
 
         getRequestContext().associate(request);
