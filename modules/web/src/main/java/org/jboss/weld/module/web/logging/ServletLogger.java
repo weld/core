@@ -97,4 +97,6 @@ public interface ServletLogger extends WeldLogger {
     @Message(id = 718, value = "No EEModuleDescriptor defined for bean archive with ID: {0}. @Initialized and @Destroyed events for ApplicationScoped may be fired twice.", format = Format.MESSAGE_FORMAT)
     void noEeModuleDescriptor(Object beanArchiveId);
 
+    @Message(id = 720, value = "A call to WeldInitialListener#{0} was made, but the WeldInitialListener#contextInitialized method wasn't yet executed!", format = Format.MESSAGE_FORMAT)
+    IllegalStateException lifecycleNotInitialized(String listenerMethod);
 }

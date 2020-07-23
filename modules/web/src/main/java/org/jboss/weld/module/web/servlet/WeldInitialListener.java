@@ -110,21 +110,25 @@ public class WeldInitialListener extends AbstractServletListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        assertLifecycleInitialized("contextDestroyed");
         lifecycle.contextDestroyed(sce.getServletContext());
     }
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
+        assertLifecycleInitialized("sessionCreated");
         lifecycle.sessionCreated(event.getSession());
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
+        assertLifecycleInitialized("sessionDestroyed");
         lifecycle.sessionDestroyed(event.getSession());
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
+        assertLifecycleInitialized("requestDestroyed");
         if (event.getServletRequest() instanceof HttpServletRequest) {
             lifecycle.requestDestroyed((HttpServletRequest) event.getServletRequest());
         } else {
@@ -134,6 +138,7 @@ public class WeldInitialListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
+        assertLifecycleInitialized("requestInitialized");
         if (!lifecycle.isConversationActivationSet()) {
             Object value = event.getServletContext().getAttribute(CONVERSATION_FILTER_REGISTERED);
             if (Boolean.TRUE.equals(value)) {
@@ -146,6 +151,12 @@ public class WeldInitialListener extends AbstractServletListener {
             lifecycle.requestInitialized((HttpServletRequest) event.getServletRequest(), event.getServletContext());
         } else {
             throw ServletLogger.LOG.onlyHttpServletLifecycleDefined();
+        }
+    }
+
+    private void assertLifecycleInitialized(String listenerMethod) {
+        if (lifecycle == null) {
+            throw ServletLogger.LOG.lifecycleNotInitialized(listenerMethod);
         }
     }
 }
