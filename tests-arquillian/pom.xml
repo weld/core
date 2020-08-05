@@ -291,6 +291,50 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-jboss-home-is-set</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireEnvironmentVariable>
+                                            <variableName>JBOSS_HOME</variableName>
+                                            <message>Environment variable "JBOSS_HOME" must be set in order to execute in-container tests. Please configure it so that it points to your WildFly installation.</message>
+                                        </requireEnvironmentVariable>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <!-- perform this any time before the tests are executed -->
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${JBOSS_HOME}/standalone/configuration</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${JBOSS_HOME}/docs/examples/configs</directory>
+                                            <includes>standalone-activemq-embedded.xml</includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludedGroups>org.jboss.weld.tests.category.Broken,org.jboss.weld.tests.category.Performance,org.jboss.weld.tests.category.EmbeddedContainer</excludedGroups>
