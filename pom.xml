@@ -346,10 +346,6 @@
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.testenricher</groupId>
-                            <artifactId>arquillian-testenricher-cdi</artifactId>
-                        </exclusion>
                     </exclusions>
                 <scope>test</scope>
             </dependency>
