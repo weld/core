@@ -96,7 +96,7 @@ public class ClientConversationContextTest {
         WebClient client = new WebClient();
 
         // Access the start page
-        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage cloud = client.getPage(getPath("/cloud.xhtml"));
         String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
         assertEquals(Cloud.NAME, cloudName);
 
@@ -115,7 +115,7 @@ public class ClientConversationContextTest {
     public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
-        Page page = client.getPage(getPath("/cloud.jsf", "org.jboss.jsr299"));
+        Page page = client.getPage(getPath("/cloud.xhtml", "org.jboss.jsr299"));
 
         Assert.assertEquals(500, page.getWebResponse().getStatusCode());
     }
@@ -123,7 +123,7 @@ public class ClientConversationContextTest {
     @Test
     public void testRedirectToConversation() throws Exception {
         WebClient client = new WebClient();
-        HtmlPage page = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage page = client.getPage(getPath("/cloud.xhtml"));
         HtmlPage snowstorm = getFirstMatchingElement(page, HtmlSubmitInput.class, "snow").click();
         String name = getFirstMatchingElement(snowstorm, HtmlSpan.class, "snowstormName").getTextContent();
         assertEquals(Snowstorm.NAME, name);
@@ -136,7 +136,7 @@ public class ClientConversationContextTest {
     @Test
     public void testEndAndBeginInSameRequestsKeepsSameCid() throws Exception {
         WebClient client = new WebClient();
-        HtmlPage page = client.getPage(getPath("/tornado.jsf"));
+        HtmlPage page = client.getPage(getPath("/tornado.xhtml"));
         String name = getFirstMatchingElement(page, HtmlSpan.class, "tornadoName").getTextContent();
         assertEquals("Pete", name);
         page = getFirstMatchingElement(page, HtmlSubmitInput.class, "beginConversation").click();
@@ -157,13 +157,13 @@ public class ClientConversationContextTest {
         */
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
-        HtmlPage page = client.getPage(getPath("/locking-issue.jsf"));
+        HtmlPage page = client.getPage(getPath("/locking-issue.xhtml"));
         assertEquals("Gavin", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
         page = getFirstMatchingElement(page, HtmlSubmitInput.class, "start").click();
         assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
         String cid = getCid(page);
         getFirstMatchingElement(page, HtmlSubmitInput.class, "dummy").click();
-        page = client.getPage(getPath("/locking-issue.jsf?cid=" + cid));
+        page = client.getPage(getPath("/locking-issue.xhtml?cid=" + cid));
         assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
     }
 
@@ -174,10 +174,10 @@ public class ClientConversationContextTest {
         // First, try a transient conversation
 
         // Access a page that throws an exception
-        client.getPage(getPath("/thunderstorm.jsf"));
+        client.getPage(getPath("/thunderstorm.xhtml"));
 
         // Then access another page that doesn't and check the contexts are ok
-        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage cloud = client.getPage(getPath("/cloud.xhtml"));
         String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
         assertEquals(Cloud.NAME, cloudName);
 
@@ -200,7 +200,7 @@ public class ClientConversationContextTest {
         WebClient client = new WebClient();
 
         // Now start a conversation
-        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage cloud = client.getPage(getPath("/cloud.xhtml"));
         cloud = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "hurricane").click();
 
         // Invalidate the session
@@ -214,7 +214,7 @@ public class ClientConversationContextTest {
         WebClient client = new WebClient();
 
         // Now start a conversation
-        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage cloud = client.getPage(getPath("/cloud.xhtml"));
         cloud = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "hurricane").click();
 
         // Now invalidate the session and redirect
@@ -234,10 +234,10 @@ public class ClientConversationContextTest {
         client.setThrowExceptionOnFailingStatusCode(false);
 
         // Access a page that throws an exception
-        client.getPage(getPath("/hailstorm.jsf"));
+        client.getPage(getPath("/hailstorm.xhtml"));
 
         // Then access another page that doesn't and check the contexts are ok
-        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage cloud = client.getPage(getPath("/cloud.xhtml"));
         String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
         assertEquals(Cloud.NAME, cloudName);
 
@@ -247,7 +247,7 @@ public class ClientConversationContextTest {
 
         String cid = getCid(hailstorm);
 
-        cloud = client.getPage(getPath("/cloud.jsf", cid));
+        cloud = client.getPage(getPath("/cloud.xhtml", cid));
 
         // And navigate to another page, checking the conversation exists by
         // verifying that state is maintained
@@ -260,7 +260,7 @@ public class ClientConversationContextTest {
         WebClient client = new WebClient();
 
         // Access the start page
-        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage cloud = client.getPage(getPath("/cloud.xhtml"));
         assertEquals(Cloud.NAME, getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent());
 
         // Now start a conversation and check the cloud name changes
@@ -269,15 +269,15 @@ public class ClientConversationContextTest {
         String cid = getCid(page1);
 
         // Activate the conversation from a GET request
-        HtmlPage page2 = client.getPage(getPath("/cloud.jsf", cid));
+        HtmlPage page2 = client.getPage(getPath("/cloud.xhtml", cid));
         assertEquals(Cloud.CUMULUS, getFirstMatchingElement(page2, HtmlSpan.class, "cloudName").getTextContent());
 
         // Send a GET request with the "cid" parameter and suppressed conversation propagation (using conversationPropagation=none)
-        HtmlPage page3 = client.getPage(getPath("/cloud.jsf", cid) + "&conversationPropagation=none");
+        HtmlPage page3 = client.getPage(getPath("/cloud.xhtml", cid) + "&conversationPropagation=none");
         assertEquals(Cloud.NAME, getFirstMatchingElement(page3, HtmlSpan.class, "cloudName").getTextContent());
 
         // Test again using the proprietary "nocid" parameter (kept for backwards compatibility)
-        HtmlPage page4 = client.getPage(getPath("/cloud.jsf", cid) + "&nocid=true");
+        HtmlPage page4 = client.getPage(getPath("/cloud.xhtml", cid) + "&nocid=true");
         assertEquals(Cloud.NAME, getFirstMatchingElement(page4, HtmlSpan.class, "cloudName").getTextContent());
     }
 

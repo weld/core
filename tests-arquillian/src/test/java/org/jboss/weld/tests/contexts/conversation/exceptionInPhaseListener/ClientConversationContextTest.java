@@ -74,8 +74,8 @@ public class ClientConversationContextTest {
                 .addClasses(ConversationTestPhaseListener.class, Cloud.class)
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
-                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
+                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
+                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
@@ -91,10 +91,10 @@ public class ClientConversationContextTest {
 
 
         // Access a page that throws an exception
-        client.getPage(getPath("/thunderstorm.jsf"));
+        client.getPage(getPath("/thunderstorm.xhtml"));
 
         // Then access another page that doesn't and check the contexts are ok
-        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        HtmlPage cloud = client.getPage(getPath("/cloud.xhtml"));
         String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
         assertEquals(Cloud.NAME, cloudName);
 
@@ -105,7 +105,7 @@ public class ClientConversationContextTest {
         //  and access the page that throws an exception again
         getFirstMatchingElement(cloud, HtmlSubmitInput.class, "thunderstorm").click();
 
-        cloud = client.getPage(getPath("/cloud.jsf", cid));
+        cloud = client.getPage(getPath("/cloud.xhtml", cid));
 
         // And navigate to another page, checking the conversation exists by verifying that state is maintained
         cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
