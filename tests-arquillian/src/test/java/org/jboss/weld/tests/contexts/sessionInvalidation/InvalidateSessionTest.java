@@ -53,7 +53,7 @@ public class InvalidateSessionTest {
                 .addClasses(Storm.class, SomeBean.class)
                 .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-                .addAsWebResource(InvalidateSessionTest.class.getPackage(), "storm.jsf", "storm.jspx")
+                .addAsWebResource(InvalidateSessionTest.class.getPackage(), "storm.xhtml", "storm.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
@@ -68,7 +68,7 @@ public class InvalidateSessionTest {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(true);
 
-        HtmlPage page = client.getPage(getPath("/storm.jsf"));
+        HtmlPage page = client.getPage(getPath("/storm.xhtml"));
         HtmlSubmitInput invalidateSessionButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "invalidateSessionButton");
         page = invalidateSessionButton.click();
         HtmlInput inputField = getFirstMatchingElement(page, HtmlInput.class, "prop");
@@ -76,7 +76,7 @@ public class InvalidateSessionTest {
 
         // Make another request to verify that the session bean value is not the
         // one from the previous invalidated session.
-        page = client.getPage(getPath("/storm.jsf"));
+        page = client.getPage(getPath("/storm.xhtml"));
         inputField = getFirstMatchingElement(page, HtmlInput.class, "prop");
         Assert.assertEquals(SomeBean.DEFAULT_PROPERTY_VALUE, inputField.getValueAttribute());
     }
@@ -87,7 +87,7 @@ public class InvalidateSessionTest {
     @Test
     public void testNoDoubleDestructionOnExternalRedirect() throws Exception {
         WebClient client = new WebClient();
-        HtmlPage page = client.getPage(getPath("/storm.jsf"));
+        HtmlPage page = client.getPage(getPath("/storm.xhtml"));
         HtmlSubmitInput button = getFirstMatchingElement(page, HtmlSubmitInput.class, "redirectButton");
         button.click();
     }
