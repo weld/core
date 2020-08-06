@@ -23,13 +23,13 @@ import jakarta.faces.event.PhaseListener;
 public class ConversationTestPhaseListener implements PhaseListener {
 
     public void afterPhase(PhaseEvent event) {
-        if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.jspx")) {
+        if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.xhtml")) {
             throw new RuntimeException();
         }
     }
 
     public void beforePhase(PhaseEvent event) {
-        if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.jspx")) {
+        if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.xhtml")) {
             throw new RuntimeException();
         }
     }

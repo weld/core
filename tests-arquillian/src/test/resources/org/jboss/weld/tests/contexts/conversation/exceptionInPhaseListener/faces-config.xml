@@ -1,27 +1,28 @@
 <?xml version="1.0"?>
-<faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+              http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
    <lifecycle>
       <phase-listener>org.jboss.weld.tests.contexts.conversation.exceptionInPhaseListener.ConversationTestPhaseListener</phase-listener>
    </lifecycle>
 
    <navigation-rule>
-      <from-view-id>/cloud.jspx</from-view-id>
+      <from-view-id>/cloud.xhtml</from-view-id>
       <navigation-case>
          <redirect/>
          <from-action>#{cloud.thunderstorm}</from-action>
-         <to-view-id>/thunderstorm.jspx</to-view-id>
+         <to-view-id>/thunderstorm.xhtml</to-view-id>
       </navigation-case>
    </navigation-rule>
    
    <navigation-rule>
-      <from-view-id>/cloud.jspx</from-view-id>
+      <from-view-id>/cloud.xhtml</from-view-id>
       <navigation-case>
          <redirect/>
          <from-action>#{cloud.beginConversation}</from-action>
-         <to-view-id>/cloud.jspx</to-view-id>
+         <to-view-id>/cloud.xhtml</to-view-id>
       </navigation-case>
    </navigation-rule>
 
