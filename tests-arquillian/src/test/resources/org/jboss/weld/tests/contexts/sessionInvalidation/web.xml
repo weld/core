@@ -6,7 +6,7 @@
    
    <context-param>
       <param-name>jakarta.faces.DEFAULT_SUFFIX</param-name>
-      <param-value>.jspx</param-value>
+      <param-value>.xhtml</param-value>
    </context-param>
    <!-- JSF -->
    <servlet>
@@ -17,7 +17,7 @@
    
    <servlet-mapping>
       <servlet-name>Faces Servlet</servlet-name>
-      <url-pattern>*.jsf</url-pattern>
+      <url-pattern>*.xhtml</url-pattern>
    </servlet-mapping>
    
    <session-config>

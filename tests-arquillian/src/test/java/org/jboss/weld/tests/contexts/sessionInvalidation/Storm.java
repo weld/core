@@ -37,6 +37,6 @@ public class Storm {
     }
 
     public void redirect() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("storm.jsf");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("storm.xhtml");
     }
 }
