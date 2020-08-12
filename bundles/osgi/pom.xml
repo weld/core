@@ -46,19 +46,6 @@
     </properties>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <!-- Skip Javadoc generation for osgi bundle -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
 
             <plugin>
@@ -297,7 +284,71 @@
             <artifactId>weld-probe-core</artifactId>
         </dependency>
 
+        <!-- Following deps are for the sake of javadoc creation -->
+        <!-- We cannot delare them inside plugin otherwise we have to hardcode versions -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalDependencies>
+                                <additionalDependency>
+                                    <groupId>com.github.spotbugs</groupId>
+                                    <artifactId>spotbugs-annotations</artifactId>
+                                    <version>${spotbugs-annotations-version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss.logging</groupId>
+                                    <artifactId>jboss-logging-annotations</artifactId>
+                                    <version>${jboss.logging.processor.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.apache.bcel</groupId>
+                                    <artifactId>bcel</artifactId>
+                                    <version>${apache.bcel.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss.spec.javax.faces</groupId>
+                                    <artifactId>jboss-jsf-api_2.3_spec</artifactId>
+                                    <version>${jboss.jsf.api.version}</version>
+                                </additionalDependency>
+                            </additionalDependencies>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>javadoc</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <!-- SCM and distribution management -->
     <scm>
