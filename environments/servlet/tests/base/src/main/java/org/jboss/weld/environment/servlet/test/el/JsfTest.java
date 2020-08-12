@@ -42,8 +42,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 
-// temporary test exclusion, see WELD-2633
-@Ignore
 @RunAsClient
 @RunWith(Arquillian.class)
 public class JsfTest {
