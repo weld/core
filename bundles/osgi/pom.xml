@@ -46,6 +46,19 @@
     </properties>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Skip Javadoc generation for osgi bundle -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
 
             <plugin>
