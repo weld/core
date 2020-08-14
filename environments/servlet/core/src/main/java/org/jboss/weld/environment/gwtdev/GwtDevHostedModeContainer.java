@@ -24,6 +24,7 @@ import javax.servlet.ServletContext;
 import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.ContainerContext;
 import org.jboss.weld.environment.jetty.AbstractJettyContainer;
+import org.jboss.weld.environment.jetty.JettyContainer;
 import org.jboss.weld.environment.jetty.JettyWeldInjector;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
@@ -43,7 +44,7 @@ public class GwtDevHostedModeContainer extends AbstractJettyContainer {
     }
 
     protected Class<?> getWeldServletHandlerClass() {
-        return MortbayWeldServletHandler.class;
+      return JettyContainer.class;
     }
 
     public void initialize(ContainerContext context) {
