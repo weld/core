@@ -45,7 +45,7 @@
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.2</apache.bcel.version>
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.7.0.Alpha2</arquillian.version>
+        <arquillian.version>1.7.0.Alpha4</arquillian.version>
         <arquillian.drone.version>2.5.1</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
         <arquillian.weld.version>2.1.0.Final</arquillian.weld.version>
