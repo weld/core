@@ -32,7 +32,7 @@
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
         <surefire.plugin.jdk9.args />
-        <jax.artifacts.version>2.3.2</jax.artifacts.version>
+        <jax.artifacts.version>2.3.3</jax.artifacts.version>
 
         <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
