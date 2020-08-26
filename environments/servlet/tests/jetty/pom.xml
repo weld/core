@@ -113,11 +113,10 @@
 
     <profiles>
         <profile>
+            <!-- Prevents execution of tests when -Dincontainer parameter is not specified -->
             <id>default</id>
             <activation>
-                <property>
-                    <name>!incontainer</name>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -139,6 +138,9 @@
                     <name>incontainer</name>
                     <value>true</value>
                 </property>
+                <!-- Jetty for EE 9 requires JDK 11, but we still need to be able to compile servlet core against JDK 8 -->
+                <!-- Therefore we override the version in this profile and only execute Jetty tests on JDK 11 -->
+                <jdk>[11,)</jdk>
             </activation>
             <dependencies>
 
@@ -201,10 +203,18 @@
             <id>jetty-embedded-9</id>
 
             <activation>
+                <activeByDefault>false</activeByDefault>
                 <property>
                     <name>incontainer</name>
                 </property>
+                <!-- Jetty for EE 9 requires JDK 11, but we still need to be able to compile servlet core against JDK 8 -->
+                <!-- Therefore we override the version in this profile and only execute Jetty tests on JDK 11 -->
+                <jdk>[11,)</jdk>
             </activation>
+
+            <properties>
+                <jetty.version>11.0.0.beta1</jetty.version>
+            </properties>
 
             <dependencies>
                 <dependency>
@@ -250,10 +260,14 @@
                     <name>incontainer</name>
                     <value>weld-se-coop</value>
                 </property>
+                <!-- Jetty for EE 9 requires JDK 11, but we still need to be able to compile servlet core against JDK 8 -->
+                <!-- Therefore we override the version in this profile and only execute Jetty tests on JDK 11 -->
+                <jdk>[11,)</jdk>
             </activation>
 
             <properties>
                 <test.src.dir>src/test/weld-se-coop</test.src.dir>
+                <jetty.version>11.0.0.beta1</jetty.version>
             </properties>
 
             <dependencies>
