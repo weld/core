@@ -18,7 +18,9 @@
         <module>build</module>
         <module>tests/base</module>
         <module>tests/tomcat</module>
-<!--        <module>tests/jetty</module>-->
+        <!-- Jetty tests cannot be executed until there is new Arq. Jetty adapter -->
+        <!-- See https://github.com/arquillian/arquillian-container-jetty/issues/43 -->
+        <!--<module>tests/jetty</module>-->
     </modules>
 
     <description>
