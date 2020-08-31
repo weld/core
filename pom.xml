@@ -56,11 +56,11 @@
         <arquillian.tomcat.version>1.2.0.Alpha1</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
-        <atinject.tck.version>2.0.0.RC3</atinject.tck.version>
+        <atinject.tck.version>2.0.0</atinject.tck.version>
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
-        <cdi.tck-3-0.version>3.0.0-RC1</cdi.tck-3-0.version>
+        <cdi.tck-3-0.version>3.0.1</cdi.tck-3-0.version>
         <classfilewriter.version>1.2.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <spotbugs-maven-plugin.version>3.1.10</spotbugs-maven-plugin.version>
