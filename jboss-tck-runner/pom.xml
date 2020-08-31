@@ -23,6 +23,8 @@
     <properties>
         <htmlunit.version>2.9</htmlunit.version>
         <shrinkwrap.version>1.0.1</shrinkwrap.version>
+        <sonatypeOssDistMgmtNexusUrl>https://jakarta.oss.sonatype.org/</sonatypeOssDistMgmtNexusUrl>
+        <sonatypeOssDistMgmtStagingUrl>${sonatypeOssDistMgmtNexusUrl}content/repositories/staging/</sonatypeOssDistMgmtStagingUrl>
     </properties>
 
     <dependencies>
@@ -591,6 +593,39 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+        </profile>
+        <!-- A profile used to test Jakarta staged artifacts -->
+        <profile>
+            <id>staging</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>sonatype-nexus-staging</id>
+                    <name>Sonatype Nexus Staging</name>
+                    <url>${sonatypeOssDistMgmtStagingUrl}</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>sonatype-nexus-staging</id>
+                    <name>Sonatype Nexus Staging</name>
+                    <url>${sonatypeOssDistMgmtStagingUrl}</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
     </profiles>
 
