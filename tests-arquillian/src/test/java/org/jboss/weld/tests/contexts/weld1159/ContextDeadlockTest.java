@@ -87,7 +87,7 @@ public class ContextDeadlockTest {
 
     @Test
     public void test() throws Exception {
-        client.setTimeout(15000);
+        client.getOptions().setTimeout(15000);
 
         List<Callable<Void>> requests = new LinkedList<Callable<Void>>();
         requests.add(new ConcurrentRequest(url.toString() + "/foo"));

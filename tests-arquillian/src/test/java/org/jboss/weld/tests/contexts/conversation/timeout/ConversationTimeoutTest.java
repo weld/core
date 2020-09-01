@@ -61,8 +61,8 @@ public class ConversationTimeoutTest {
     @RunAsClient
     public void testConversationTimesout() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
-        
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
+
         TextPage page = client.getPage(url + "/servlet/beginConversation");
         String cid = page.getContent();
 

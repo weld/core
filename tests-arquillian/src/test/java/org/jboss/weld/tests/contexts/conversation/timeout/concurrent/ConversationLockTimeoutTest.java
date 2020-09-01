@@ -68,7 +68,7 @@ public class ConversationLockTimeoutTest {
     @Test
     public void testLongerConversationLockTimeout() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(true);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         TextPage initPage = client.getPage(url + "inspect?mode=" + InspectServlet.MODE_INIT);
         String cid = extractCid(initPage.getContent());
@@ -117,7 +117,7 @@ public class ConversationLockTimeoutTest {
         public String call() throws Exception {
 
             WebClient client = new WebClient();
-            client.setThrowExceptionOnFailingStatusCode(false);
+            client.getOptions().setThrowExceptionOnFailingStatusCode(false);
             client.getCookieManager().addCookie(new Cookie(contextPath.getHost(), JSESSIONID, jsessionid));
 
             Page page = client.getPage(contextPath + "inspect?mode=" + mode + "&cid=" + cid);

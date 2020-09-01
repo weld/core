@@ -103,7 +103,7 @@ public class EnhancedListenerShutdownTest {
 
         // Init foo - set info archive deployment url
         WebClient webClient = new WebClient();
-        webClient.setThrowExceptionOnFailingStatusCode(true);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getPage(testContext + "init?url=" + URLEncoder.encode(assertContext.toExternalForm(), "UTF-8"));
 
         // Undeploy TEST

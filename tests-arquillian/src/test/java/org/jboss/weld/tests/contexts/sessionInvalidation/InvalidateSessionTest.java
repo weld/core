@@ -66,7 +66,7 @@ public class InvalidateSessionTest {
     @Test
     public void testInvalidateSessionCalled() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(true);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         HtmlPage page = client.getPage(getPath("/storm.jsf"));
         HtmlSubmitInput invalidateSessionButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "invalidateSessionButton");
@@ -99,7 +99,7 @@ public class InvalidateSessionTest {
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getChildElements()) {
+        for (HtmlElement element : rootElement.getHtmlElementDescendants()) {
             result.addAll(getElements(element, elementClass));
         }
 

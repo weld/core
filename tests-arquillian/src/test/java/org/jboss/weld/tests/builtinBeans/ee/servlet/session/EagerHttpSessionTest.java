@@ -63,7 +63,7 @@ public class EagerHttpSessionTest {
     @Test
     public void testHttpSession() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(true);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         Page page = client.getPage(url + "/test");
         String id = page.getWebResponse().getContentAsString();
         assertFalse(id.isEmpty());

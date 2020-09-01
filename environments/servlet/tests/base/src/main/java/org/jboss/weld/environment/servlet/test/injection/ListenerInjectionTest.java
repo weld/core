@@ -25,9 +25,9 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -60,25 +60,22 @@ public class ListenerInjectionTest {
 
     @Test
     public void testRequestListenerInjection(@ArquillianResource URL baseURL) throws Exception {
-        HttpClient client = new HttpClient();
-        HttpMethod method = new GetMethod(new URL(baseURL, "bat?mode=request").toExternalForm());
-        int sc = client.executeMethod(method);
-        assertEquals(HttpServletResponse.SC_OK, sc);
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet request = new HttpGet(new URL(baseURL, "bat?mode=request").toExternalForm());
+        assertEquals(HttpServletResponse.SC_OK, client.execute(request).getStatusLine().getStatusCode());
     }
 
     @Test
     public void testSceListenerInjection(@ArquillianResource URL baseURL) throws Exception {
-        HttpClient client = new HttpClient();
-        HttpMethod method = new GetMethod(new URL(baseURL, "bat?mode=sce").toExternalForm());
-        int sc = client.executeMethod(method);
-        assertEquals(HttpServletResponse.SC_OK, sc);
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet request = new HttpGet(new URL(baseURL, "bat?mode=sce").toExternalForm());
+        assertEquals(HttpServletResponse.SC_OK, client.execute(request).getStatusLine().getStatusCode());
     }
 
     @Test
     public void testSessionListenerInjection(@ArquillianResource URL baseURL) throws Exception {
-        HttpClient client = new HttpClient();
-        HttpMethod method = new GetMethod(new URL(baseURL, "bat?mode=session").toExternalForm());
-        int sc = client.executeMethod(method);
-        assertEquals(HttpServletResponse.SC_OK, sc);
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet request = new HttpGet(new URL(baseURL, "bat?mode=session").toExternalForm());
+        assertEquals(HttpServletResponse.SC_OK, client.execute(request).getStatusLine().getStatusCode());
     }
 }

@@ -45,7 +45,7 @@ public class SimpleAsyncListenerTest {
     @Test
     public void testOnTimeoutCalledSuccesfully() throws Exception {
         WebClient webClient = new WebClient();
-        webClient.setThrowExceptionOnFailingStatusCode(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getPage(getPath(AsyncServlet.TEST_TIMEOUT));
         Page results = webClient.getPage(contextPath + "Status");
         assertTrue(results.getWebResponse().getContentAsString().contains("onTimeout: true"));
@@ -55,7 +55,7 @@ public class SimpleAsyncListenerTest {
     @Ignore //enable when WELD-1774 is fixed
     public void testOnErrorCalledSuccesfully() throws Exception {
         WebClient webClient = new WebClient();
-        webClient.setThrowExceptionOnFailingStatusCode(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getPage(getPath(AsyncServlet.TEST_ERROR));
         Page results = webClient.getPage(contextPath + "Status");
         assertTrue(results.getWebResponse().getContentAsString(), results.getWebResponse().getContentAsString().contains("onError: true"));

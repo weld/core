@@ -91,7 +91,7 @@ public class SessionScopedProducerTest {
 
         public ConcurrentRequest(Set<Cookie> cookies) {
             client = new WebClient();
-            client.setThrowExceptionOnFailingStatusCode(false);
+            client.getOptions().setThrowExceptionOnFailingStatusCode(false);
             for (Cookie cookie : cookies) {
                 client.getCookieManager().addCookie(cookie);
             }

@@ -118,7 +118,7 @@ public class ServletConversationTest {
 
         // verify that the conversation can no longer be restored
         {
-            client.setThrowExceptionOnFailingStatusCode(false);
+            client.getOptions().setThrowExceptionOnFailingStatusCode(false);
             Page page = client.getPage(getPath("/display", cid));
             assertEquals(500, page.getWebResponse().getStatusCode());
         }
@@ -225,14 +225,14 @@ public class ServletConversationTest {
 
         // Verify that the conversation 1 cannot be associated
         {
-            client.setThrowExceptionOnFailingStatusCode(false);
+            client.getOptions().setThrowExceptionOnFailingStatusCode(false);
             Page page = client.getPage(getPath("/display", cid1));
             assertEquals(500, page.getWebResponse().getStatusCode());
         }
 
         // Verify that the conversation 2 cannot be associated
         {
-            client.setThrowExceptionOnFailingStatusCode(false);
+            client.getOptions().setThrowExceptionOnFailingStatusCode(false);
             Page page = client.getPage(getPath("/display", cid2));
             assertEquals(500, page.getWebResponse().getStatusCode());
         }
@@ -269,7 +269,7 @@ public class ServletConversationTest {
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getChildElements()) {
+        for (HtmlElement element : rootElement.getHtmlElementDescendants()) {
             result.addAll(getElements(element, elementClass));
         }
 
