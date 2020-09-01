@@ -98,7 +98,6 @@
                                     <exclude>org.apache.tomcat:juli</exclude>
                                     <exclude>org.apache.tomcat:annotations-api</exclude>
                                     <exclude>javax.faces:jsf-api</exclude>
-                                    <exclude>org.mortbay.jetty:jetty</exclude>
                                     <exclude>javax.el:el-api</exclude>
                                     <exclude>org.jboss.spec.javax.el:jboss-el-api_3.0_spec</exclude>
                                 </excludes>
@@ -187,16 +186,6 @@
                                     <groupId>org.apache.tomcat.embed</groupId>
                                     <artifactId>tomcat-embed-core</artifactId>
                                     <version>${tomcat.version}</version>
-                                </additionalDependency>
-                                <additionalDependency>
-                                    <groupId>org.mortbay.jetty</groupId>
-                                    <artifactId>jetty</artifactId>
-                                    <version>${jetty6.version}</version>
-                                </additionalDependency>
-                                <additionalDependency>
-                                    <groupId>org.mortbay.jetty</groupId>
-                                    <artifactId>jetty-util</artifactId>
-                                    <version>${jetty6.version}</version>
                                 </additionalDependency>
                             </additionalDependencies>
                         </configuration>

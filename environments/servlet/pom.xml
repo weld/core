@@ -29,8 +29,6 @@
         <jsf.version>2.3.2</jsf.version>
         <tomcat.version>9.0.37</tomcat.version>
         <jetty.version>9.4.31.v20200723</jetty.version>
-        <!-- Jetty 6 API is used for GWT support only -->
-        <jetty6.version>6.1.26</jetty6.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
         <websockets.api>1.1.2</websockets.api>
         <undertow.version>1.3.0.Beta1</undertow.version>
@@ -64,37 +62,6 @@
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
                 <version>${tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty</artifactId>
-                <version>${jetty6.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-util</artifactId>
-                <version>${jetty6.version}</version>
-            </dependency>
-
-            <!-- plus and naming requires for using JNDI -->
-            <dependency>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-plus</artifactId>
-                <version>${jetty6.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-naming</artifactId>
-                <version>${jetty6.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jsp-2.1-jetty</artifactId>
-                <version>${jetty6.version}</version>
             </dependency>
 
             <dependency>
