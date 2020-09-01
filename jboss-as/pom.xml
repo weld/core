@@ -45,7 +45,7 @@
         <!--Path to original (pristine) WFLY-->
         <!--Running with -Pdownload-wfly will make Maven download the version specified below-->
         <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
-        <wildfly.download.version>18.0.1.Final</wildfly.download.version>
+        <wildfly.download.version>20.0.1.Final</wildfly.download.version>
         <cdi.tck.version>${cdi.tck-3-0.version}</cdi.tck.version>
 
         <!--Plugin versions-->
