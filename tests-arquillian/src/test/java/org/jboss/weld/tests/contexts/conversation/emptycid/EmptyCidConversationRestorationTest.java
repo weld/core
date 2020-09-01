@@ -60,7 +60,7 @@ public class EmptyCidConversationRestorationTest {
     public void testEmptyCidDoesNotTriggerConversationRestoration() throws FailingHttpStatusCodeException,
             MalformedURLException, IOException {
         WebClient webClient = new WebClient();
-        webClient.setThrowExceptionOnFailingStatusCode(true);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         TextPage page = webClient.getPage(contextPath + "echo?say=Hello&cid=");
         assertEquals("Hello", page.getContent());
     }

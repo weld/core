@@ -46,7 +46,7 @@ public class Weld1280Test {
     @Test
     public void testELContextOfDepedentScopeBean() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage main = client.getPage(url);
         assertTrue(main.getBody().asText().contains("Hello from dependent scope bean"));
     }

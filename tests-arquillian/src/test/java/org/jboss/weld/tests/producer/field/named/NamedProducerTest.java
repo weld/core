@@ -67,7 +67,7 @@ public class NamedProducerTest {
     @Test
     public void testNamedProducerWorks() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         HtmlPage page = client.getPage(getPath("/view.jsf"));
         // Check the page rendered ok
@@ -103,7 +103,7 @@ public class NamedProducerTest {
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getChildElements()) {
+        for (HtmlElement element : rootElement.getHtmlElementDescendants()) {
             result.addAll(getElements(element, elementClass));
         }
 

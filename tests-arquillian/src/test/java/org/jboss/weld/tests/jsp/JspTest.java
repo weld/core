@@ -73,7 +73,7 @@ public class JspTest {
     @Test
     public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         Page page = client.getPage(getPath("/index.jsp"));
 
         Assert.assertEquals(200, page.getWebResponse().getStatusCode());

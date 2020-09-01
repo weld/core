@@ -85,7 +85,7 @@ public class ClientConversationContextTest {
     @Test
     public void testExceptionPhaseListener() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         // First, try a transient conversation
 
@@ -128,7 +128,7 @@ public class ClientConversationContextTest {
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getChildElements()) {
+        for (HtmlElement element : rootElement.getHtmlElementDescendants()) {
             result.addAll(getElements(element, elementClass));
         }
 
