@@ -99,6 +99,8 @@
                     <!-- WELD-2101 enable when new version of Arquillian container jetty is released -->
                     <excludes>
                         <exclude>**/CrossContextForwardTest.java</exclude>
+                        <!-- This seems to be the cause https://github.com/eclipse/jetty.project/issues/4888 -->
+                        <exclude>**/HSCycleTest.java</exclude>
                     </excludes>
                 </configuration>
 
@@ -211,23 +213,6 @@
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-annotations</artifactId>
                     <scope>test</scope>
-                    <!-- excluding asm version 4.x and adding asm 5 version below because of problems on JDK 8 -->
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm-commons</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm</artifactId>
-                    <version>${jetty9.asm.version}</version>
                 </dependency>
             </dependencies>
 
