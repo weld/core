@@ -58,7 +58,6 @@
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -107,6 +106,33 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>jdk11-test-deps</id>
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- Dependencies below are a workaround because htmlunit 2.37.0 dep brings in
+                org.eclipse.jetty.websocket:websocket-client in version 9.x while we are running on Jetty 11. Version
+                for 11 has changed GAV (presumably due to Jakarta namespace changes), so we just replace it. -->
+                <dependency>
+                    <groupId>net.sourceforge.htmlunit</groupId>
+                    <artifactId>htmlunit</artifactId>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.jetty.websocket</groupId>
+                            <artifactId>websocket-client</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.jetty.websocket</groupId>
+                    <artifactId>websocket-jetty-client</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <!-- Prevents execution of tests when -Dincontainer parameter is not specified -->
             <id>default</id>
