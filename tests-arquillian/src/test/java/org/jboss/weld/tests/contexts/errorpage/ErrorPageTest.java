@@ -70,7 +70,7 @@ public class ErrorPageTest {
     @Test
     public void testActionMethodExceptionDoesNotDestroyContext() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         HtmlPage page = client.getPage(getPath("/storm.jsf"));
         HtmlSubmitInput disasterButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "disasterButton");
@@ -93,7 +93,7 @@ public class ErrorPageTest {
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getChildElements()) {
+        for (HtmlElement element : rootElement.getHtmlElementDescendants()) {
             result.addAll(getElements(element, elementClass));
         }
 

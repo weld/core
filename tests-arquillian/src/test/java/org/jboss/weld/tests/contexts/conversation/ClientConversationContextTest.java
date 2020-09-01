@@ -114,7 +114,7 @@ public class ClientConversationContextTest {
     @Test
     public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         Page page = client.getPage(getPath("/cloud.xhtml", "org.jboss.jsr299"));
 
         Assert.assertEquals(500, page.getWebResponse().getStatusCode());
@@ -156,7 +156,7 @@ public class ClientConversationContextTest {
         * refresh browser or retry url.
         */
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page = client.getPage(getPath("/locking-issue.xhtml"));
         assertEquals("Gavin", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
         page = getFirstMatchingElement(page, HtmlSubmitInput.class, "start").click();
@@ -231,7 +231,7 @@ public class ClientConversationContextTest {
 
         // First, try a transient conversation
 
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         // Access a page that throws an exception
         client.getPage(getPath("/hailstorm.xhtml"));
@@ -300,7 +300,7 @@ public class ClientConversationContextTest {
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getChildElements()) {
+        for (HtmlElement element : rootElement.getHtmlElementDescendants()) {
             result.addAll(getElements(element, elementClass));
         }
 

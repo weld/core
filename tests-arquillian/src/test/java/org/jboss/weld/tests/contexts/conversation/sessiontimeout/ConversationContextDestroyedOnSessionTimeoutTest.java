@@ -62,7 +62,7 @@ public class ConversationContextDestroyedOnSessionTimeoutTest {
     public void testConversationContextDestroyedCorrectly() throws FailingHttpStatusCodeException, MalformedURLException,
             IOException, InterruptedException {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         String cid = client.getPage(contextPath + "/init").getWebResponse().getContentAsString();
         ActionSequence sequence = new ActionSequence();
         sequence.add(Foo.class.getSimpleName() + "init");

@@ -24,9 +24,9 @@ import java.net.URL;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -50,9 +50,8 @@ public class FilterInjectionTest {
 
     @Test
     public void testFilterInjection(@ArquillianResource URL baseURL) throws Exception {
-        HttpClient client = new HttpClient();
-        HttpMethod method = new GetMethod(new URL(baseURL, "cat").toExternalForm());
-        int sc = client.executeMethod(method);
-        assertEquals(HttpServletResponse.SC_OK, sc);
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet request = new HttpGet(new URL(baseURL, "cat").toExternalForm());
+        assertEquals(HttpServletResponse.SC_OK, client.execute(request).getStatusLine().getStatusCode());
     }
 }

@@ -62,7 +62,7 @@ public class EMFFactoryTest {
     @Test
     public void testStaticEJBEMFProducerField() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         Page page = client.getPage(getPath("emfconsumer1"));
 
         assertEquals(200, page.getWebResponse().getStatusCode());
@@ -74,7 +74,7 @@ public class EMFFactoryTest {
     @Test
     public void testInstanceManagedBeanEMFProducerField() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         Page page = client.getPage(getPath("emfconsumer2"));
 
         assertEquals(200, page.getWebResponse().getStatusCode());
@@ -86,7 +86,7 @@ public class EMFFactoryTest {
     @Test
     public void testStaticManagedBeanEMFProducerField() throws Exception {
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(false);
+        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         Page page = client.getPage(getPath("emfconsumer3"));
 
         assertEquals(200, page.getWebResponse().getStatusCode());
