@@ -53,7 +53,7 @@ public class RequestScopedCacheLeakTest {
     @Test
     public void test() throws Exception {
         WebClient webClient = new WebClient();
-        webClient.setThrowExceptionOnFailingStatusCode(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         for (int i = 0; i < 100; i++) {
             // first, send out a hundred of poisoning requests
             // each of these should leave a thread in a broken state

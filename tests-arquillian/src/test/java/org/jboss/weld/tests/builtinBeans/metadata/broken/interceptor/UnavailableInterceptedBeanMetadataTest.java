@@ -55,7 +55,7 @@ public class UnavailableInterceptedBeanMetadataTest {
     @Test
     public void testMetadataIsNotAvailable() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         WebClient webClient = new WebClient();
-        webClient.setThrowExceptionOnFailingStatusCode(true);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         Page page = webClient.getPage(contextPath + "FooServlet");
         assertEquals("OK", page.getWebResponse().getContentAsString().trim());
     }

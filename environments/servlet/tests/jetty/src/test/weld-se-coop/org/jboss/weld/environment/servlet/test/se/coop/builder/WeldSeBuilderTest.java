@@ -81,7 +81,7 @@ public class WeldSeBuilderTest {
 
         try {
             WebClient webClient = new WebClient();
-            webClient.setThrowExceptionOnFailingStatusCode(true);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
             Page page = webClient.getPage("http://localhost:8080/test");
             assertEquals("Kitty", page.getWebResponse().getContentAsString().trim());
         } finally {

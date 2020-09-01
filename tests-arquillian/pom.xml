@@ -22,9 +22,6 @@
     <url>http://weld.cdi-spec.org</url>
 
     <properties>
-        <!-- Overriding parent version to pass tests on ipv6.
-        TCK tests still use version 2.4 from parent  -->
-        <htmlunit.version>2.9</htmlunit.version>
         <!-- allows local IP address to be overridden for ipv6 testing -->
         <node.address>127.0.0.1</node.address>
     </properties>

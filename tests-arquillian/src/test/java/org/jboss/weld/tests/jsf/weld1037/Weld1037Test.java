@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebClientOptions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -59,8 +60,9 @@ public class Weld1037Test {
     @RunAsClient
     public void testRedirectInPreRenderViewAction(@ArquillianResource URL url) throws Exception {
         WebClient client = new WebClient();
-        client.setRedirectEnabled(false);
-        client.setThrowExceptionOnFailingStatusCode(false);
+        WebClientOptions options = client.getOptions();
+        options.setRedirectEnabled(false);
+        options.setThrowExceptionOnFailingStatusCode(false);
 
         Page page = client.getPage(url + "/doRedirect.faces");
         assertEquals("Expected redirect:", HttpServletResponse.SC_MOVED_TEMPORARILY, page.getWebResponse().getStatusCode());

@@ -77,7 +77,7 @@ public class BootstrapNotNeededTest {
                 assertEquals(1, initEvents.size());
 
                 WebClient webClient = new WebClient();
-                webClient.setThrowExceptionOnFailingStatusCode(true);
+                webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
                 Page page = webClient.getPage("http://localhost:8080/test");
                 assertEquals(testBean.getId(), page.getWebResponse().getContentAsString().trim());
             } finally {
