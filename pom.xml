@@ -52,7 +52,7 @@
         <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
-        <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
+        <arquillian.glassfish.version>1.0.2</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
