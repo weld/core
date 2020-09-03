@@ -35,7 +35,7 @@
         <uel.glassfish.version>2.2</uel.glassfish.version>
         <websockets.api>2.0.0-RC1</websockets.api>
         <!-- We need undertow which uses Jakarta 9 packages! -->
-        <undertow.version>2.0.30.Final</undertow.version>
+        <undertow.version>2.1.3.Final</undertow.version>
         <!-- Testing deps -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <htmlunit.version>2.4</htmlunit.version>
