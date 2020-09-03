@@ -72,7 +72,7 @@
         <jboss.jms.api.version>2.0.0.Final</jboss.jms.api.version>
         <jboss.jsf.api.version>3.0.0.Final</jboss.jsf.api.version>
         <jboss.logging.version>3.2.1.Final</jboss.logging.version>
-        <jboss.logging.processor.version>2.0.1.Final</jboss.logging.processor.version>
+        <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>2.1.17.Final</jboss.logmanager.version>
         <jboss.spec.el-api.version>2.0.0.Final</jboss.spec.el-api.version>
         <jsf.impl.version>2.3.14</jsf.impl.version>
