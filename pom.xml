@@ -43,7 +43,7 @@
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
-        <apache.bcel.version>6.2</apache.bcel.version>
+        <apache.bcel.version>6.5.0</apache.bcel.version>
         <arquillian.version>1.7.0.Alpha4</arquillian.version>
         <arquillian.drone.version>2.5.1</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
