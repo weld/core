@@ -59,7 +59,6 @@
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.6.SP1</cdi.tck-2-0.version>
         <classfilewriter.version>1.2.4.Final</classfilewriter.version>
-        <contiperf.version>1.06</contiperf.version>
         <spotbugs-maven-plugin.version>3.1.10</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>3.1.11</spotbugs-annotations-version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
@@ -194,12 +193,6 @@
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject-tck</artifactId>
                 <version>${atinject.tck.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.databene</groupId>
-                <artifactId>contiperf</artifactId>
-                <version>${contiperf.version}</version>
             </dependency>
 
             <dependency>
