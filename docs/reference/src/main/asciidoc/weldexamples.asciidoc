@@ -365,19 +365,19 @@ Disable m2eclipse's _Workspace Resolution_, to make sure that Eclipse
 can find `StartMain`. Right click on the project, and choose _Properties
 \-> Maven_, and uncheck _Resolve dependencies from Workspace projects_:
 
-image:weld-se-numberguess-m2eclipse-1.png[image]
+image:images/weld-se-numberguess-m2eclipse-1.png[image]
 
 Right click on the project, and choose _Run As \-> Java Application_:
 
-image:weld-se-numberguess-m2eclipse-2.png[image]
+image:images/weld-se-numberguess-m2eclipse-2.png[image]
 
 Locate the `StartMain` class:
 
-image:weld-se-numberguess-m2eclipse-3.png[image]
+image:images/weld-se-numberguess-m2eclipse-3.png[image]
 
 The application should now launch!
 
-image:weld-se-numberguess-m2eclipse-4.png[image]
+image:images/weld-se-numberguess-m2eclipse-4.png[image]
 
 ==== Running the example from the command line
 
