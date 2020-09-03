@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>40</version>
+        <version>41</version>
     </parent>
 
     <prerequisites>
@@ -805,4 +805,17 @@
             </properties>
         </profile>
     </profiles>
+
+    <!-- Needed to download org.apache.maven.plugins:maven-compiler-plugin:jar:3.8.0-jboss-2 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
