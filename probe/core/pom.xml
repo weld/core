@@ -120,7 +120,7 @@
                     <plugin>
                         <groupId>ro.isdc.wro4j</groupId>
                         <artifactId>wro4j-maven-plugin</artifactId>
-                        <version>1.8.0</version>
+                        <version>1.9.0</version>
                         <dependencies>
                             <!-- dependency for JDK 10 compilation support -->
                             <dependency>
