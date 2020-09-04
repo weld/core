@@ -48,7 +48,7 @@
         <arquillian.drone.version>2.5.1</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
         <arquillian.weld.version>2.1.0.Final</arquillian.weld.version>
-        <arquillian.se.container.version>1.0.1.Final</arquillian.se.container.version>
+        <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.1.0.Final</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.2</arquillian.glassfish.version>
