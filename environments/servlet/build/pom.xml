@@ -40,6 +40,36 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+            <version>${weld.api.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -73,7 +103,6 @@
                                     <exclude>org.apache.tomcat:juli</exclude>
                                     <exclude>org.apache.tomcat:annotations-api</exclude>
                                     <exclude>jakarta.faces:jsf-api</exclude>
-                                    <exclude>org.mortbay.jetty:jetty</exclude>
                                     <exclude>jakarta.el:el-api</exclude>
                                 </excludes>
                             </artifactSet>
@@ -100,12 +129,69 @@
                         <configuration>
                             <includeDependencySources>true</includeDependencySources>
                             <dependencySourceIncludes>
-                                <dependency-source>org.jboss.weld:*</dependency-source>
-                                <dependency-source>org.jboss.weld.module:*</dependency-source>
-                                <dependency-source>org.jboss.weld.servlet:*</dependency-source>
-                                <dependency-source>jakarta.enterprise:*</dependency-source>
-                                <dependency-source>jakarta.inject:*</dependency-source>
+                                <dependencySourceInclude>org.jboss.weld:*</dependencySourceInclude>
+                                <dependencySourceInclude>org.jboss.weld.module:*</dependencySourceInclude>
+                                <dependencySourceInclude>org.jboss.weld.servlet:*</dependencySourceInclude>
+                                <dependencySourceInclude>jakarta.enterprise:*</dependencySourceInclude>
+                                <dependencySourceInclude>jakarta.inject:*</dependencySourceInclude>
                             </dependencySourceIncludes>
+                            <additionalDependencies>
+                                <additionalDependency>
+                                    <groupId>com.github.spotbugs</groupId>
+                                    <artifactId>spotbugs-annotations</artifactId>
+                                    <version>${spotbugs-annotations-version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss.logging</groupId>
+                                    <artifactId>jboss-logging-annotations</artifactId>
+                                    <version>${jboss.logging.processor.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.apache.bcel</groupId>
+                                    <artifactId>bcel</artifactId>
+                                    <version>${apache.bcel.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>io.undertow</groupId>
+                                    <artifactId>undertow-servlet</artifactId>
+                                    <version>${undertow.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>jakarta.servlet.jsp</groupId>
+                                    <artifactId>jakarta.servlet.jsp-api</artifactId>
+                                    <version>${jsp.api.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss</groupId>
+                                    <artifactId>jandex</artifactId>
+                                    <version>${jandex.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>jakarta.faces</groupId>
+                                    <artifactId>jakarta.faces-api</artifactId>
+                                    <version>${jsf.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.eclipse.jetty</groupId>
+                                    <artifactId>jetty-server</artifactId>
+                                    <version>${jetty.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.eclipse.jetty</groupId>
+                                    <artifactId>jetty-util</artifactId>
+                                    <version>${jetty.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.eclipse.jetty</groupId>
+                                    <artifactId>jetty-servlet</artifactId>
+                                    <version>${jetty.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.apache.tomcat.embed</groupId>
+                                    <artifactId>tomcat-embed-core</artifactId>
+                                    <version>${tomcat.version}</version>
+                                </additionalDependency>
+                            </additionalDependencies>
                         </configuration>
                         <executions>
                             <execution>
