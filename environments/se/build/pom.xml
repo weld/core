@@ -35,6 +35,31 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+            <version>${weld.api.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -106,11 +131,28 @@
                         <configuration>
                             <includeDependencySources>true</includeDependencySources>
                             <dependencySourceIncludes>
-                                <dependency-source>org.jboss.weld:*</dependency-source>
-                                <dependency-source>org.jboss.weld.se:*</dependency-source>
-                                <dependency-source>jakarta.enterprise:*</dependency-source>
-                                <dependency-source>jakarta.inject:*</dependency-source>
+                                <dependencySourceInclude>org.jboss.weld:*</dependencySourceInclude>
+                                <dependencySourceInclude>org.jboss.weld.se:*</dependencySourceInclude>
+                                <dependencySourceInclude>jakarta.enterprise:*</dependencySourceInclude>
+                                <dependencySourceInclude>jakarta.inject:*</dependencySourceInclude>
                             </dependencySourceIncludes>
+                            <additionalDependencies>
+                                <additionalDependency>
+                                    <groupId>com.github.spotbugs</groupId>
+                                    <artifactId>spotbugs-annotations</artifactId>
+                                    <version>${spotbugs-annotations-version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.jboss.logging</groupId>
+                                    <artifactId>jboss-logging-annotations</artifactId>
+                                    <version>${jboss.logging.processor.version}</version>
+                                </additionalDependency>
+                                <additionalDependency>
+                                    <groupId>org.apache.bcel</groupId>
+                                    <artifactId>bcel</artifactId>
+                                    <version>${apache.bcel.version}</version>
+                                </additionalDependency>
+                            </additionalDependencies>
                         </configuration>
                         <executions>
                             <execution>
