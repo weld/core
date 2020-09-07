@@ -233,7 +233,7 @@
                 </property>
             </activation>
             <properties>
-                <cdi.tck.version>${cdi.tck-3-0.version}</cdi.tck.version>
+                <cdi.tck.version>3.0.0</cdi.tck.version>
             </properties>
             <build>
                 <plugins>
