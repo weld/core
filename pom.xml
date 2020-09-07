@@ -61,7 +61,7 @@
         <classfilewriter.version>1.2.4.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.0.4</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.1.2</spotbugs-annotations-version>
-        <glassfish.el.version>2.1.2-b04</glassfish.el.version>
+        <glassfish.el.version>2.2.1-b05</glassfish.el.version>
         <groovy.version>2.4.20</groovy.version>
         <htmlunit.version>2.43.0</htmlunit.version>
         <jacoco.version>0.8.5</jacoco.version>
