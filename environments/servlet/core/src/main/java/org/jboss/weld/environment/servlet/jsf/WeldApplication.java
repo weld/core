@@ -27,7 +27,6 @@ import jakarta.servlet.ServletContext;
 import org.jboss.weld.module.web.el.WeldELContextListener;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
-import org.jboss.weld.environment.servlet.portlet.PortletSupport;
 import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
 import org.jboss.weld.environment.servlet.util.TransparentELResolver;
 
@@ -100,12 +99,6 @@ public class WeldApplication extends ApplicationWrapper {
                 if (obj instanceof ServletContext) {
                     final ServletContext ctx = (ServletContext) obj;
                     final BeanManager tmp = (BeanManager) ctx.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
-                    if (tmp == null) {
-                        return null;
-                    }
-                    this.beanManager = tmp;
-                } else if (PortletSupport.isPortletEnvSupported() && PortletSupport.isPortletContext(obj)) {
-                    final BeanManager tmp = PortletSupport.getBeanManager(obj);
                     if (tmp == null) {
                         return null;
                     }
