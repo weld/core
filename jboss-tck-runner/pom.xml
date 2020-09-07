@@ -70,7 +70,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck.version}</version>
+            <version>${cdi.tck-3-0.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.el</groupId>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck.version}</version>
+            <version>${cdi.tck-3-0.version}</version>
             <type>xml</type>
             <classifier>suite</classifier>
             <scope>test</scope>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck.version}</version>
+            <version>${cdi.tck-3-0.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -232,9 +232,6 @@
                     <name>!tck12</name>
                 </property>
             </activation>
-            <properties>
-                <cdi.tck.version>${cdi.tck-3-0.version}</cdi.tck.version>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
