@@ -32,7 +32,6 @@
         <tomcat.version>10.0.0-M7</tomcat.version>
         <jetty.version>9.4.14.v20181114</jetty.version>
         <jetty9.asm.version>7.0</jetty9.asm.version>
-        <uel.glassfish.version>2.2.1-b05</uel.glassfish.version>
         <websockets.api>2.0.0-RC1</websockets.api>
         <!-- We need undertow which uses Jakarta 9 packages! -->
         <undertow.version>2.0.30.Final</undertow.version>
@@ -113,7 +112,6 @@
             <dependency>
                 <groupId>org.glassfish.web</groupId>
                 <artifactId>el-impl</artifactId>
-                <version>${uel.glassfish.version}</version>
             </dependency>
 
             <dependency>
