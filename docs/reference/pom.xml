@@ -100,9 +100,9 @@
                     <execution>
                         <phase>process-classes</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <copy file="${basedir}/target/docbook/en-US/pdf/${pdf.name}" todir="${basedir}" />
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
