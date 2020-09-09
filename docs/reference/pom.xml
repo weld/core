@@ -31,7 +31,7 @@
         <asciidoctor.version>2.0.0</asciidoctor.version>
         <asciidoctorj-pdf.version>1.5.3</asciidoctorj-pdf.version>
         <pdf.name>weld-reference.pdf</pdf.name>
-        <html.name>weld-reference.html</html.name>
+        <html.name>index.html</html.name>
         <weld.version>${project.version}</weld.version>
         <doc.output.directory>target/docbook</doc.output.directory>
         <documentation.url>http://docs.jboss.org/weld/reference/latest-master/en-US/html</documentation.url>
