@@ -513,7 +513,6 @@
     <build>
         <pluginManagement>
             <plugins>
-
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
@@ -668,7 +667,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <tasks>
+                                    <target>
                                         <property name="weld.api.search.string" value="&lt;weld.api.bom.version&gt;${weld.api.version}&lt;/weld.api.bom.version&gt;" />
                                         <property name="bom.pom.file.path" value="bom${file.separator}pom.xml" />
                                         <echo message="Verify Weld API used in ${bom.pom.file.path} matches ${weld.api.version}" />
@@ -679,7 +678,7 @@
                                                 </not>
                                             </condition>
                                         </fail>
-                                    </tasks>
+                                    </target>
                                 </configuration>
                             </execution>
                         </executions>

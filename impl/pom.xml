@@ -121,12 +121,12 @@
                     <execution>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <!-- Delete default properties files manually -->
                                 <delete>
                                     <fileset dir="${project.build.directory}/classes/org/jboss/weld/logging" includes="*.properties" />
                                 </delete>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
