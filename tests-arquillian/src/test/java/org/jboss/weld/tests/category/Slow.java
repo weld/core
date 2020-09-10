@@ -16,11 +16,8 @@
  */
 package org.jboss.weld.tests.category;
 
-import org.jboss.weld.tests.NormalSuite;
-
 /**
- * Marker Interface for JUnit Category marking a Slow running test. <br/>
- * Used to exclude Integration and Performance tests from {@link NormalSuite}
+ * Marker Interface for JUnit Category marking a Slow running test.
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
