@@ -30,7 +30,7 @@
         <tomcat.version>9.0.37</tomcat.version>
         <jetty.version>9.4.31.v20200723</jetty.version>
         <websockets.api>1.1.2</websockets.api>
-        <undertow.version>1.3.0.Beta1</undertow.version>
+        <undertow.version>2.2.0.Final</undertow.version>
         <!-- Testing deps -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
     </properties>
