@@ -18,13 +18,15 @@ package org.jboss.weld.environment.servlet.undertow;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import jakarta.servlet.ServletException;
 
 import org.jboss.weld.environment.servlet.Container;
-import org.jboss.weld.environment.servlet.Listener;
+import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.undertow.UndertowContainer;
 import org.junit.Test;
 
@@ -47,33 +49,32 @@ public class UndertowSmokeTest {
 
     static final CountDownLatch SYNC = new CountDownLatch(3);
 
-    // TODO uncomment
-//    @Test
-//    public void testUndertow() throws ServletException, InterruptedException {
-//        DeploymentInfo servletBuilder = Servlets.deployment().setClassLoader(UndertowSmokeTest.class.getClassLoader())
-//                .setResourceManager(new ClassPathResourceManager(UndertowSmokeTest.class.getClassLoader())).setContextPath("/").setDeploymentName("test.war")
-//                // Weld listner
-//                .addListener(Servlets.listener(Listener.class))
-//                // application components
-//                .addServlet(Servlets.servlet(InjectedServlet.class).addMapping("/*").setLoadOnStartup(1))
-//                .addListener(Servlets.listener(InjectedListener.class))
-//                .addFilter(Servlets.filter(InjectedFilter.class))
-//                .setEagerFilterInit(true)
-//                .addInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS, UndertowContainer.class.getName());
-//
-//
-//        DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
-//        manager.deploy();
-//
-//        HttpHandler servletHandler = manager.start();
-//        PathHandler path = Handlers.path(Handlers.redirect("/")).addPrefixPath("/", servletHandler);
-//        Undertow server = Undertow.builder().addHttpListener(8080, "localhost").setHandler(path).build();
-//        server.start();
-//
-//        try {
-//            assertTrue(SYNC.await(5, TimeUnit.SECONDS));
-//        } finally {
-//            server.stop();
-//        }
-//    }
+    @Test
+    public void testUndertow() throws ServletException, InterruptedException {
+        DeploymentInfo servletBuilder = Servlets.deployment().setClassLoader(UndertowSmokeTest.class.getClassLoader())
+                .setResourceManager(new ClassPathResourceManager(UndertowSmokeTest.class.getClassLoader())).setContextPath("/").setDeploymentName("test.war")
+                // register Weld EnhancedListener
+                .addServletContainerInitializers(new ServletContainerInitializerInfo(EnhancedListener.class, Collections.<Class<?>>emptySet()))
+                // application components
+                .addServlet(Servlets.servlet(InjectedServlet.class).addMapping("/*").setLoadOnStartup(1))
+                .addListener(Servlets.listener(InjectedListener.class))
+                .addFilter(Servlets.filter(InjectedFilter.class))
+                .setEagerFilterInit(true)
+                .addInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS, UndertowContainer.class.getName());
+
+
+        DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
+        manager.deploy();
+
+        HttpHandler servletHandler = manager.start();
+        PathHandler path = Handlers.path(Handlers.redirect("/")).addPrefixPath("/", servletHandler);
+        Undertow server = Undertow.builder().addHttpListener(8080, "localhost").setHandler(path).build();
+        server.start();
+
+        try {
+            assertTrue(SYNC.await(5, TimeUnit.SECONDS));
+        } finally {
+            server.stop();
+        }
+    }
 }

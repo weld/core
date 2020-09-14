@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.undertow;
 
+import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.ListenerInfo;
@@ -31,16 +32,13 @@ import org.jboss.weld.environment.servlet.logging.UndertowLogger;
  * @author Jozef Hartinger
  *
  */
-// TODO uncomment
-//public class WeldServletExtension implements ServletExtension {
-public class WeldServletExtension {
+public class WeldServletExtension implements ServletExtension {
 
     public static final String INSTALLED = WeldServletExtension.class.getName() + ".installed";
     public static final String INSTALLED_SERVLET = "servlet-only";
     public static final String INSTALLED_FULL = "full";
 
-    // TODO uncomment
-    //    @Override
+    @Override
     public void handleDeployment(DeploymentInfo deploymentInfo, ServletContext servletContext) {
         // Servlet injection
         for (ServletInfo servlet : deploymentInfo.getServlets().values()) {
