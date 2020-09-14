@@ -138,15 +138,15 @@
         <!-- Undertow support -->
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet</artifactId>
+            <artifactId>undertow-servlet-jakartaee9</artifactId>
             <version>${undertow.version}</version>
             <scope>provided</scope>
-            <!-- TODO remove once on EE 9 undertow version, otherwise this breaks jboss logging processor as it
+            <!-- Undertow brings in a dependency that breaks jboss logging processor as it
             enforces usage of javax.annotation.Generated instead of javax.annotation.processing.Generated -->
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.spec.javax.annotation</groupId>
-                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+                    <artifactId>jboss-annotations-api_1.3_spec</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
