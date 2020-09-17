@@ -75,7 +75,7 @@
                             <attributes>
                                 <docinfo>shared</docinfo>
                             </attributes>
-                            <outputDirectory>${doc.output.directory}/en-US/html</outputDirectory>
+                            <outputDirectory>${doc.output.directory}/en-US/html_single</outputDirectory>
                             <outputFile>${html.name}</outputFile>
                         </configuration>
                     </execution>
