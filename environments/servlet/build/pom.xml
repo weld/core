@@ -191,6 +191,12 @@
                                     <artifactId>tomcat-embed-core</artifactId>
                                     <version>${tomcat.version}</version>
                                 </additionalDependency>
+                                <!-- Temporary until there is release with https://github.com/eclipse-ee4j/cdi/pull/449 -->
+                                <additionalDependency>
+                                    <groupId>jakarta.ejb</groupId>
+                                    <artifactId>jakarta.ejb-api</artifactId>
+                                    <version>4.0.0-RC2</version>
+                                </additionalDependency>
                             </additionalDependencies>
                         </configuration>
                         <executions>
