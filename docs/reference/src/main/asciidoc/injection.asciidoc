@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[injection]]
 == Dependency injection and programmatic lookup
 
@@ -96,7 +100,10 @@ for producer methods:
 
 This is a case where the `@Inject` annotation _is not_ required at the
 injection point. The same is true for observer methods (which we'll meet
-in <<events>>) and disposer methods.
+in
+ifndef::generate-index-link[<<events>>]
+ifdef::generate-index-link[link:events.html[events]]
+) and disposer methods.
 
 === What gets injected
 
@@ -468,7 +475,10 @@ change the type of the injection point to `Y`, or
 [NOTE]
 ====
 Weld also supports a non-standard workaround for this limitation.
-See <<relaxedConstruction,the Configuration chapter>> for more information.
+See
+ifndef::generate-index-link[<<relaxedConstruction, the Configuration chapter>>]
+ifdef::generate-index-link[link:configure.html#relaxedConstruction[the Configuration chapter]]
+for more information.
 ====
 
 === Obtaining a contextual instance by programmatic lookup

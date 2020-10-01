@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[weldexamples]]
 == Diving into the Weld examples
 
@@ -405,7 +409,10 @@ as a CDI application.
 NOTE: The `beans.xml` file is no longer required for CDI enablement as of CDI
 1.1. CDI is automatically enabled for archives which don't contain
 `beans.xml` but contain one or more bean classes with a _bean defining
-annotation_, as described in section <<_implicit_bean_archive>>.
+annotation_, as described in section
+ifndef::generate-index-link[<<_implicit_bean_archive>>]
+ifdef::generate-index-link[link:ee.html#_implicit_bean_archive[Implicit bean archive]]
+.
 
 The game's main logic is located in `Game.java`. Here is the code for
 that class, highlighting the ways in which this differs from the web
@@ -816,7 +823,10 @@ Finally, let's look at the EJB module, which is located in the example's
 NOTE: The `beans.xml` file is no longer required for CDI enablement as of CDI
 1.1. CDI is automatically enabled for archives which don't contain
 `beans.xml` but contain one or more bean classes with a _bean defining
-annotation_, as described in section <<_implicit_bean_archive>>.
+annotation_, as described in section
+ifndef::generate-index-link[<<_implicit_bean_archive>>]
+ifdef::generate-index-link[link:ee.html#_implicit_bean_archive[Implicit bean archive]]
+.
 
 We've saved the most interesting bit for last, the code! The project has
 two simple beans, `SentenceParser` and `TextTranslator` and two session

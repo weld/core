@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[configure]]
 == Configuration
 
@@ -31,7 +35,10 @@ This mode is not enabled by default. It can be enabled using the following confi
 |`org.jboss.weld.construction.relaxed` |false (true in weld-se)|If set to `true`, then requirements on bean constructors are relaxed.
 |=======================================================================
 
-Note that relaxed construction is enabled by default in <<weld-se,Weld SE>>.
+Note that relaxed construction is enabled by default in
+ifndef::generate-index-link[<<weld-se,Weld SE>>]
+ifdef::generate-index-link[link:environments.html#weld-se[Weld SE]]
+.
 
 ==== Concurrent deployment configuration
 
@@ -188,7 +195,10 @@ This optimization is used to reduce the HTTP session replication overhead. Howev
 |`org.jboss.weld.serialization.beanIdentifierIndexOptimization` |true (false in weld-servlet)|If set to `true`, the optimization is enabled.
 |=======================================================================
 
-NOTE: This optimization is disabled by default in <<weld-servlet,Servlet containers>>.
+NOTE: This optimization is disabled by default in
+ifndef::generate-index-link[<<weld-servlet,Servlet containers>>]
+ifdef::generate-index-link[link:environments.html#weld-servlet[Servlet containers]]
+.
 
 ==== Rolling upgrades ID delimiter
 
@@ -220,19 +230,43 @@ WARNING: Bean archive identifiers are provided by integrators. Therefore, the ab
 [[config-dev-mode]]
 ==== Development Mode
 
-Some features of the <<devmode,development mode>> may have negative impact on the performance and/or functionality of the application. The following configuration properties allow to tune or disable these features, e.g. to specify the set of components which will be monitored.
+Some features of the
+ifndef::generate-index-link[<<devmode,development mode>>]
+ifdef::generate-index-link[link:developmentmode.html[development mode]]
+may have negative impact on the performance and/or functionality of the application. The following configuration properties allow to tune or disable these features, e.g. to specify the set of components which will be monitored.
 
 .Supported configuration properties
 [cols="1,1,1,2",options="header"]
 |=======================================================================
 |Configuration key|Tool|Default value |Description
-|`org.jboss.weld.probe.invocationMonitor.excludeType`|<<probe,Probe>>|'' |A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the type is excluded from monitoring.
-|`org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties`|<<probe,Probe>>|'true' |If set to `true`, the JavaBean accessor methods are not monitored.
-|`org.jboss.weld.probe.eventMonitor.excludeType`|<<probe,Probe>>|'' |A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
-|`org.jboss.weld.probe.eventMonitor.containerLifecycleEvents`|<<probe,Probe>>|'false'|If set to `true` all the container lifecycle events are monitored during bootstrap.
-|`org.jboss.weld.probe.embedInfoSnippet`|<<probe,Probe>>|'true' | If set to `true` an informative HTML snippet will be added to every HTTP response with Content-Type of value `text/html`.
-|`org.jboss.weld.probe.jmxSupport`|<<probe,Probe>>|'false' | If set to `true` one or more MBean components may be registered so that it's possible to use JMX to access the Probe development tool data.
-|`org.jboss.weld.probe.exportDataAfterDeployment`|<<probe,Probe>>|'' | If a non-empty string the Probe data will be automatically exported after deployment validation. The value represents the path of the directory where to export the data file.
+|`org.jboss.weld.probe.invocationMonitor.excludeType`|
+ifndef::generate-index-link[<<probe,Probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+|'' |A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the type is excluded from monitoring.
+|`org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties`|
+ifndef::generate-index-link[<<probe,Probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+|'true' |If set to `true`, the JavaBean accessor methods are not monitored.
+|`org.jboss.weld.probe.eventMonitor.excludeType`|
+ifndef::generate-index-link[<<probe,Probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+|'' |A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+|`org.jboss.weld.probe.eventMonitor.containerLifecycleEvents`|
+ifndef::generate-index-link[<<probe,Probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+|'false'|If set to `true` all the container lifecycle events are monitored during bootstrap.
+|`org.jboss.weld.probe.embedInfoSnippet`|
+ifndef::generate-index-link[<<probe,Probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+|'true' | If set to `true` an informative HTML snippet will be added to every HTTP response with Content-Type of value `text/html`.
+|`org.jboss.weld.probe.jmxSupport`|
+ifndef::generate-index-link[<<probe,Probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+|'false' | If set to `true` one or more MBean components may be registered so that it's possible to use JMX to access the Probe development tool data.
+|`org.jboss.weld.probe.exportDataAfterDeployment`|
+ifndef::generate-index-link[<<probe,Probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+|'' | If a non-empty string the Probe data will be automatically exported after deployment validation. The value represents the path of the directory where to export the data file.
 |=======================================================================
 
 TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.
@@ -279,7 +313,10 @@ The functionality is implemented as a built-in portable extension processing all
 CDI applications consist of user-defined beans implementing the business logic, but also beans coming from libraries (e.g. DeltaSpike) and integrations (e.g. various Java EE technologies - JSF, Bean Validation, Batch).
 Most applications actually use only a small part of the beans provided by libraries and integrations.
 Still, Weld has to retain the metadata for all the beans in memory which can be considerably vast footprint, depending on the application.
-If <<allow-optimized-cleanup>> is allowed, Weld can remove _unused_ beans after bootstrap.
+If
+ifndef::generate-index-link[<<allow-optimized-cleanup>>]
+ifdef::generate-index-link[link:ri-spi.html#allow-optimized-cleanup[Optimized cleanup after bootstrap]]
+is allowed, Weld can remove _unused_ beans after bootstrap.
 
 An _unused_ bean:
 
@@ -291,7 +328,10 @@ An _unused_ bean:
 * does not declare a producer which is eligible for injection to any injection point,
 * is not eligible for injection into any `Instance<X>` injection point.
 
-TIP: If you run <<probe>> and list all the beans in your application, you will almost certainly notice some of them coming from 3rd party libraries which you never use (marked with a trash icon). Those are candidates for _unused beans_ as you can be sure you are not using them.
+TIP: If you run
+ifndef::generate-index-link[<<probe>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
+and list all the beans in your application, you will almost certainly notice some of them coming from 3rd party libraries which you never use (marked with a trash icon). Those are candidates for _unused beans_ as you can be sure you are not using them.
 
 NOTE: As usual, there is a trade-off between memory consumption and bootstrap time. The results may vary depending on the application, but you should always expect (most probably negligible) increase of the bootstrap time.
 
@@ -331,7 +371,10 @@ public class MyExternalConfiguration implements ExternalConfiguration {
 }
 --------------------------------------------------------------------------
 
-Bear in mind that because `ExternalConfiguration` extends a `Service` it is required that any custom external configuration implementation is explicitly registered. See <<_the_weld_spi>> for more information.
+Bear in mind that because `ExternalConfiguration` extends a `Service` it is required that any custom external configuration implementation is explicitly registered. See
+ifndef::generate-index-link[<<_the_weld_spi>>]
+ifdef::generate-index-link[link:ri-spi.html#_the_weld_spi[The Weld SPI]]
+for more information.
 
 Last but not least external configuration is considered a source with the lowest priority which means that the properties specified there can be overriden by other sources such as system properties.
 For information on supported configuration keys, see <<_weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead
@@ -352,7 +395,10 @@ CDI specification does not support regular expression patterns and `!`
 character to invert the activation condition.
 
 All the configuration is done in the `beans.xml` file. For more
-information see <<packaging-and-deployment>>.
+information see
+ifndef::generate-index-link[<<packaging-and-deployment>>]
+ifdef::generate-index-link[link:ee.html#packaging-and-deployment[Packaging and deployment]]
+.
 
 [source.XML, xml]
 ------------------------------------------------------------------------------------------------------
