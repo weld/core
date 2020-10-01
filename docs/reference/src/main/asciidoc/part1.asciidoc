@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[part-1]]
 = Beans
 
@@ -23,7 +27,10 @@ full support for Java EE modularity and the Java EE component
 architecture. But the specification does not limit the use of CDI to the
 Java EE environment. Starting with CDI 2.0, the specification covers the use of CDI
 in the Java SE environment as well. In Java SE, the services might be
-provided by a standalone CDI implementation like Weld (see <<_cdi_se_module>>), or even
+provided by a standalone CDI implementation like Weld (see
+ifndef::generate-index-link[<<_cdi_se_module>>]
+ifdef::generate-index-link[link:environments.html#_cdi_se_module[CDI SE Module]]
+), or even
 by a container that also implements the subset of EJB defined for
 embedded usage by the EJB 3.2 specification. CDI is especially useful in
 the context of web application development, but the problems it solves

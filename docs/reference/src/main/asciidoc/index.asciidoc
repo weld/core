@@ -1,0 +1,63 @@
+= Weld {weldVersion} - CDI Reference Implementation
+
+[preface]
+= A note about naming and nomenclature
+
+Throughout this document, mentions of JSR-299, JSR-346 and JSR-365 appear. JSR is
+a document of a proposed specification used in the Java Community
+Process (JCP). JSRs are somewhat analogous to RFCs used by IETF. JSR-299
+and JSR-346 are the JCP specification names for the 1.0 and 1.1 versions
+of CDI, respectively. JSR-365 is the JCP specification name for the CDI 2.0 version.
+
+Shortly before the final draft of JSR-299 was submitted, the
+specification changed its name from "Web Beans" to "Java Contexts and
+Dependency Injection for the Java EE platform", abbreviated CDI. For a
+brief period after the renaming, the reference implementation adopted
+the name "Web Beans". However, this ended up causing more confusion than
+it solved and Red Hat decided to change the name of the reference
+implementation to "Weld". You may still find other documentation, blogs,
+forum posts, etc. that use the old nomenclature. Please update any
+references you can. The naming game is over.
+
+You'll also find that some of the functionality that once existed in the
+specification is now missing, such as defining beans in XML. These
+features will be available as portable extensions.
+
+Note that this reference guide was started while changes were still
+being made to the specification. We've done our best to update it for
+accuracy. If you discover a conflict between what is written in this
+guide and the specification, the specification is the authority—assume
+it is correct. If you believe you have found an error in the
+specification, please report it to the CDI EG.
+
+Below are links to separate documentation chapters.
+
+. link:part1.html[Beans]
+.. link:intro.html[Introduction]
+.. link:beans.html[More about beans]
+.. link:example.html[JSF web application example]
+.. link:injection.html[Dependency injection and programmatic lookup]
+.. link:scopescontexts.html[Scopes and contexts]
+. link:part2.html[Getting Start with Weld, the CDI Reference Implementation]
+.. link:gettingstarted.html[Getting started with Weld]
+.. link:weldexamples.html[Diving into the Weld examples]
+. link:part3.html[Loose Coupling with Strong Typing]
+.. link:producermethods.html[Producer methods]
+.. link:interceptors.html[Interceptors]
+.. link:decorators.html[Decorators]
+.. link:events.html[Events]
+.. link:stereotypes.html[Stereotypes]
+.. link:specialization.html[Specialization, inheritance and alternatives]
+.. link:resources.html[Java EE component environment resources]
+. link:part4.html[CDI and the Java EE Ecosystem]
+.. link:ee.html[Java EE integration]
+.. link:extend.html[Portable extensions]
+.. link:next.html[Next steps]
+. link:part5.html[Weld Reference Guide]
+.. link:environments.html[Application servers and environments supported by Weld]
+.. link:configure.html[Weld configuration]
+.. link:logging.html[Logging]
+.. link:weldmanager.html[`WeldManager` interface]
+.. link:developmentmode.html[Development Mode]
+.. link:contexts.html[Context Management]
+.. link:ri-spi.html[Integrating Weld into other environments]
