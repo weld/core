@@ -60,7 +60,7 @@
         <!-- build.config.version>9</build.config.version-->
         <cdi.tck-3-0.version>3.0.1</cdi.tck-3-0.version>
         <classfilewriter.version>1.2.4.Final</classfilewriter.version>
-        <spotbugs-maven-plugin.version>4.0.4</spotbugs-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.1.3</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.1.2</spotbugs-annotations-version>
         <glassfish.el.version>2.2.1-b05</glassfish.el.version>
         <groovy.version>2.4.20</groovy.version>
