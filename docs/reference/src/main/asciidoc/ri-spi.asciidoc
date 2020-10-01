@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[ri-spi]]
 [appendix]
 == Integrating Weld into other environments
@@ -221,7 +225,8 @@ the integrator.
 
 The integrator may choose to provide all EE resource injection services
 themselves, using another library or framework. In this case the
-integrator should use the `EE` environment, and implement the <<_injection_services>> SPI.
+integrator should use the `EE` environment, and implement the
+<<_injection_services>> SPI.
 
 Alternatively, the integrator may choose to use CDI to provide EE
 resource injection. In this case, the `EE_INJECT` environment should be
@@ -462,7 +467,10 @@ To validate the deployed beans, call `Bootstrap.validateBeans()`.
 To place the container into a state where it can service requests, call
 `Bootstrap.endInitialization()`
 
-NOTE: Integrators can set `org.jboss.weld.bootstrap.allowOptimizedCleanup` configuration property using <<external_config>> to allow to perform efficient cleanup and further optimizations after bootstrap. In this case, `Bootstrap.endInitialization()` must be called after all EE components which support injection are installed (that means all relevant `ProcessInjectionTarget` events were already fired).
+NOTE: Integrators can set `org.jboss.weld.bootstrap.allowOptimizedCleanup` configuration property using
+ifndef::generate-index-link[<<external_config>>]
+ifdef::generate-index-link[link:configure.html#external_config[Defining external configuration]]
+to allow to perform efficient cleanup and further optimizations after bootstrap. In this case, `Bootstrap.endInitialization()` must be called after all EE components which support injection are installed (that means all relevant `ProcessInjectionTarget` events were already fired).
 
 To shutdown the container you call `Bootstrap.shutdown()`. This allows
 the container to perform any cleanup operations needed.
@@ -841,7 +849,13 @@ for more details.
 
 ==== Probe Development Tool (Optional)
 
-Optionally, an integrator may register the following <<probe,Probe Development Tool>> components in order to enable its functionality. Note that these components should only be registered if the development mode is enabled - see also <<devmode-enable>>.
+Optionally, an integrator may register the following
+ifndef::generate-index-link[<<probe,Probe Development Tool>>]
+ifdef::generate-index-link[link:developmentmode.html#probe[Probe Development Tool]]
+components in order to enable its functionality. Note that these components should only be registered if the development mode is enabled - see also
+ifndef::generate-index-link[<<devmode-enable>>]
+ifdef::generate-index-link[link:developmentmode.html#devmode-enable[How to enable the development mode]]
+.
 
 .Probe components
 [cols="1,1,2",options="header"]
@@ -859,7 +873,11 @@ NOTE: Probe REST API is implemented using a servlet filter. However, not all ser
 ==== Optimized cleanup after bootstrap
 
 Weld can perfom additional cleanup operations after bootstrap, in order to conserve resources.
-See for example <<remove-unused-beans>>.
+See for example
+ifndef::generate-index-link[<<remove-unused-beans>>]
+ifdef::generate-index-link[link:configure.html#remove-unused-beans[Memory consumption optimization - removing unused beans]]
+.
+
 However, this feature is disabled by default.
 An integrator may enable this feature provided the following requirements are met:
 
@@ -872,7 +890,10 @@ An integrator may enable this feature provided the following requirements are me
 |`org.jboss.weld.bootstrap.allowOptimizedCleanup` |`false`| If set to `true` Weld is allowed to perform efficient cleanup and further optimizations after bootstrap
 |=======================================================================
 
-NOTE: This property can only be set by integrators through <<external_config>>.
+NOTE: This property can only be set by integrators through
+ifndef::generate-index-link[<<external_config>>]
+ifdef::generate-index-link[link:configure.html#external_config[Defining external configuration]]
+.
 
 === Migration notes
 
@@ -978,7 +999,10 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 
 * Java 6 support was dropped. Java 7 or newer is now required for both compile time and runtime.
 
-* An observer for `@Initialized(ConversationScoped.class)` or `@Destroyed(ConversationScoped.class)` event no longer forces eager conversation context initialization. See also <<_lazy_and_eager_conversation_context_initialization>>.
+* An observer for `@Initialized(ConversationScoped.class)` or `@Destroyed(ConversationScoped.class)` event no longer forces eager conversation context initialization. See also
+ifndef::generate-index-link[<<_lazy_and_eager_conversation_context_initialization>>]
+ifdef::generate-index-link[link:scopescontexts.html#_lazy_and_eager_conversation_context_initialization[Lazy and eager conversation context initialization]]
+.
 
 * `ScheduledExecutorServiceFactory` is deprecated and no default implementation is provided by default. This service has not been used by Weld internals at least since version 1.1.0.Final.
 

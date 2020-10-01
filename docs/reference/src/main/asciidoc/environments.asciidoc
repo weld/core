@@ -1,10 +1,17 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[environments]]
 == Application servers and environments supported by Weld
 
 === Using Weld with WildFly
 
 WildFly comes with pre-configured Weld. There is no configuration needed to use Weld (or CDI for that matter).
-You may still want to fine-tune Weld with <<configure,additional configuration settings>>.
+You may still want to fine-tune Weld with
+ifndef::generate-index-link[<<configure,additional configuration settings>>]
+ifdef::generate-index-link[link:configure.html[additional configuration settings]]
+.
 
 === GlassFish
 
@@ -379,7 +386,10 @@ NOTE: Bean archive isolation is supported (and enabled by default) from version 
 
 ==== Implicit Bean Archive Support
 
-CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>).
+CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also
+ifndef::generate-index-link[<<packaging-and-deployment>>]
+ifdef::generate-index-link[link:ee.html#packaging-and-deployment[Packaging and deployment]]
+.
 This mode may bring additional overhead during container bootstrap. Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
@@ -736,7 +746,10 @@ TIP: All Weld SE specific configuration properties could be also set through CDI
 
 ==== Implicit Bean Archive Support
 
-CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>). This mode may bring additional overhead during container bootstrap.
+CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also
+ifndef::generate-index-link[<<packaging-and-deployment>>]
+ifdef::generate-index-link[link:ee.html#packaging-and-deployment[Packaging and deployment]]
+. This mode may bring additional overhead during container bootstrap.
 Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 

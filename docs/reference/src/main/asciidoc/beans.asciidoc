@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[beanscdi]]
 == More about beans
 
@@ -49,7 +53,10 @@ We can replace one bean with another different bean that implements the
 same interface and has a different lifecycle (a different scope) without
 affecting the other bean implementation. In fact, CDI defines a simple
 facility for overriding bean implementations at deployment time, as we
-will see in <<alternatives>>.
+will see in
+ifndef::generate-index-link[<<alternatives>>]
+ifdef::generate-index-link[link:injection.html#alternatives[Alternatives]]
+.
 
 Note that not all clients of a bean are beans themselves. Other objects
 such as servlets or message-driven beans—which are by nature not
@@ -121,7 +128,9 @@ NOTE: The bean types of a session bean include local interfaces and the bean
 class local view (if any). EJB remote interfaces are not considered bean
 types of a session bean. You can't inject an EJB using its remote
 interface unless you define a _resource_, which we'll meet in
-<<resources>>.
+ifndef::generate-index-link[<<resources>>]
+ifdef::generate-index-link[link:resources.html[Java EE component environment resources]]
+.
 
 Bean types may be restricted to an explicit set by annotating the bean
 with the `@Typed` annotation and listing the classes that should be bean
@@ -202,7 +211,10 @@ it has the default qualifier, `@Default`.
 That's not quite the end of the story. CDI also defines a simple
 _resolution rule_ that helps the container decide what to do if there is
 more than one bean that satisfies a particular contract. We'll get into
-the details in <<injection>>.
+the details in
+ifndef::generate-index-link[<<injection>>]
+ifdef::generate-index-link[link:injection.html[Dependency injection and programmatic lookup]]
+.
 
 ==== Scope
 
@@ -234,7 +246,10 @@ special scope called the _dependent pseudo-scope_. Beans with this scope
 live to serve the object into which they were injected, which means
 their lifecycle is bound to the lifecycle of that object.
 
-We'll talk more about scopes in <<scopescontexts>>.
+We'll talk more about scopes in
+ifndef::generate-index-link[<<scopescontexts>>]
+ifdef::generate-index-link[link:scopescontexts.html[Scopes and contexts]]
+.
 
 ==== EL name
 
@@ -301,7 +316,10 @@ Different modules can specify that they use different alternatives.
 The other way to enable an alternative is to annotate the bean with
 `@Priority` annotation. This will enable it globally.
 
-We cover alternatives in more detail in <<alternatives>>.
+We cover alternatives in more detail in
+ifndef::generate-index-link[<<alternatives>>]
+ifdef::generate-index-link[link:injection.html#alternatives[Alternatives]]
+.
 
 ==== Interceptor binding types
 
@@ -370,7 +388,14 @@ also where we specify the interceptor ordering.
 Better still, we can use `@Priority` annotation to enable the interceptor
 and define it's ordering at the same time.
 
-We'll discuss interceptors, and their cousins, decorators, in <<interceptors>> and <<decorators>>.
+We'll discuss interceptors, and their cousins, decorators, in
+ifndef::generate-index-link[<<interceptors>>]
+ifdef::generate-index-link[link:interceptors.html[Interceptors]]
+and
+ifndef::generate-index-link[<<decorators>>]
+ifdef::generate-index-link[link:decorators.html[Decorators]]
+.
+<<interceptors>> and <<decorators>>.
 
 === What kinds of classes are beans?
 
@@ -590,7 +615,10 @@ injection.
 }
 ------------------------------------------
 
-We'll talk much more about producer methods in <<producer_methods>>.
+We'll talk much more about producer methods in
+ifndef::generate-index-link[<<producer_methods>>]
+ifdef::generate-index-link[link:producermethods.html[Producer methods]]
+.
 
 ==== Producer fields
 
@@ -616,5 +644,7 @@ A producer field is really just a shortcut that lets us avoid writing a
 useless getter method. However, in addition to convenience, producer
 fields serve a specific purpose as an adaptor for Java EE component
 environment injection, but to learn more about that, you'll have to wait
-until <<resources>>. Because we can't wait to get
-to work on some examples.
+until
+ifndef::generate-index-link[<<resources>>]
+ifdef::generate-index-link[link:resources.html[Java EE component environment resources]]
+. Because we can't wait to get to work on some examples.
