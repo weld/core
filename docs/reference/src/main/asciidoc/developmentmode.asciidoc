@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[devmode]]
 == Development Mode
 
@@ -72,10 +76,16 @@ You should see the following log message during initialization of your applicati
 This tool allows you to inspect the application CDI components at runtime.
 There is a default UI - HTML client (single-page application), which is only available in web applications.
 Just point your browser to `protocol://host:port/webappContextPath/weld-probe`, e.g. `http://localhost:8080/weld-numberguess/weld-probe`.
-However, it's also posible to obtain the JSON data through the REST API, eventually (if <<config-dev-mode,JMX support is enabled>>) through the MXBean of name `org.jboss.weld.probe:type=JsonData,context=ID` where ID should be replaced with an idenfitier of an application.
+However, it's also posible to obtain the JSON data through the REST API, eventually (if
+ifndef::generate-index-link[<<config-dev-mode,JMX support is enabled>>]
+ifdef::generate-index-link[link:configure.html#config-dev-mode[JMX support is enabled]]
+) through the MXBean of name `org.jboss.weld.probe:type=JsonData,context=ID` where ID should be replaced with an idenfitier of an application.
 Right now, Probe integration is provided for WildFly, Tomcat and Jetty (Weld Servlet), and Weld SE.
 
-TIP: There are some configuration properties which allow to tune or disable Probe features, e.g. to restrict the set of components which will be monitored. See also <<config-dev-mode>>.
+TIP: There are some configuration properties which allow to tune or disable Probe features, e.g. to restrict the set of components which will be monitored. See also
+ifndef::generate-index-link[<<config-dev-mode>>]
+ifdef::generate-index-link[link:configure.html#config-dev-mode[Development Mode]]
+.
 
 
 [[validation-report]]
@@ -84,7 +94,10 @@ TIP: There are some configuration properties which allow to tune or disable Prob
 If a deployment validation fails and the development mode is enabled a simple HTML report is generated.
 The report contains a lot of useful information such as Weld version, list of enabled beans, list of bean archives, Weld configuration, etc.
 By default, the report is generated to the user's current working directory, ie. `user.dir`.
-However, it is also possible to specify a path to the target directory using the `org.jboss.weld.probe.exportDataAfterDeployment` configuration property - see also <<config-dev-mode>>.
+However, it is also possible to specify a path to the target directory using the `org.jboss.weld.probe.exportDataAfterDeployment` configuration property - see also
+ifndef::generate-index-link[<<config-dev-mode>>]
+ifdef::generate-index-link[link:configure.html#config-dev-mode[Development Mode]]
+.
 
 You should see a similar log message which contains the path to the report file:
 

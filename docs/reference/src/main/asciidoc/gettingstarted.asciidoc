@@ -1,3 +1,7 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
 [[gettingstarted]]
 == Getting started with Weld
 
@@ -199,7 +203,13 @@ container-managed transactions.
 
 NOTE: Note that due to limitations of servlet containers (e.g. read-only JNDI)
 your application might require some additional configuration as well
-(see <<_tomcat>> and <<_jetty>> for more info).
+(see
+ifndef::generate-index-link[<<_tomcat>>]
+ifdef::generate-index-link[link:environments.html#_tomcat[Tomcat]]
+and
+ifndef::generate-index-link[<<_jetty>>]
+ifdef::generate-index-link[link:environments.html#_jetty[Jetty]]
+for more info).
 
 Let's give the Weld servlet extension a spin on Apache Tomcat. First,
 you'll need to download Tomcat 9.0.11 or later from

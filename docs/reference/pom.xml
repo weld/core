@@ -59,6 +59,7 @@
                         </goals>
                         <configuration>
                             <backend>pdf</backend>
+                            <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
                             <outputDirectory>${doc.output.directory}/en-US/pdf</outputDirectory>
                             <outputFile>${pdf.name}</outputFile>
                         </configuration>
@@ -71,11 +72,28 @@
                         </goals>
                         <configuration>
                             <backend>html5</backend>
-                            <attributes>
-                                <docinfo>shared</docinfo>
-                            </attributes>
+                            <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
                             <outputDirectory>${doc.output.directory}/en-US/html_single</outputDirectory>
                             <outputFile>${html.name}</outputFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>output-html-chunked</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>html5</backend>
+                            <attributes>
+                                <docinfo>shared</docinfo>
+                                <!-- Auto-generate TOC for each HTML -->
+                                <toc>left</toc>
+                                <toclevels>3</toclevels>
+                                <!-- Triggers conditional addition of link to index page -->
+                                <generate-index-link></generate-index-link>
+                            </attributes>
+                            <outputDirectory>${doc.output.directory}/en-US/html</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -83,7 +101,6 @@
                 <configuration>
                     <doctype>book</doctype>
                     <sourceDirectory>${basedir}/src/main/asciidoc</sourceDirectory>
-                    <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
                     <templateEngine>slim</templateEngine>
                     <headerFooter>true</headerFooter>
                     <attributes>
