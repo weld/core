@@ -70,7 +70,10 @@
                             org.jboss.weld.probe;
 
                             <!-- Weld modules -->
-                            org.jboss.weld.module.*;
+                            org.jboss.weld.module.ejb.*;
+                            org.jboss.weld.module.jsf.*;
+                            org.jboss.weld.module.jta.*;
+                            org.jboss.weld.module.web.*;
 
                             <!-- Internal packages -->
                             org.jboss.weld;
@@ -79,6 +82,7 @@
                             org.jboss.weld.bean.proxy;
                             org.jboss.weld.bootstrap;
                             org.jboss.weld.config;
+                            org.jboss.weld.contexts.*;
                             org.jboss.weld.event;
                             org.jboss.weld.exceptions;
                             org.jboss.weld.injection;
