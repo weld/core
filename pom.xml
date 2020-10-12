@@ -78,7 +78,7 @@
         <jsf.impl.version>3.0.0-RC3</jsf.impl.version>
         <jsp.api.version>3.0.0-RC2</jsp.api.version>
         <jstl.api.version>2.0.0-RC1</jstl.api.version>
-        <junit.version>4.13</junit.version>
+        <junit.version>4.13.1</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
