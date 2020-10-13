@@ -187,9 +187,11 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-meta-inf-contents</id>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <phase>verify</phase>
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />

@@ -80,7 +80,6 @@
         <jstl.api.version>2.0.0-RC1</jstl.api.version>
         <junit.version>4.13</junit.version>
         <log4j.version>1.2.17</log4j.version>
-        <shade.plugin.version>2.3</shade.plugin.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
