@@ -177,6 +177,14 @@ import org.jboss.weld.util.collections.WeldCollections;
 public class Weld extends SeContainerInitializer implements ContainerInstanceFactory {
 
     /**
+     * By default, the set of bean-defining annotations is fixed. If set to a {@link Set} of annotation classes, the set of bean-defining annotations is
+     * augmented with the contents of the {@link Set}.
+     * <p>
+     * This key can be used through {@link #property(String, Object}.
+     */
+    public static final String ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY = "org.jboss.weld.se.additionalBeanDefiningAnnotations";
+
+    /**
      * By default, bean archive isolation is enabled. If set to false, Weld will use a "flat" deployment structure - all bean classes share the same bean
      * archive and all beans.xml descriptors are automatically merged into one.
      * <p>
@@ -774,6 +782,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
 
         final WeldBootstrap bootstrap = new WeldBootstrap();
+        // load possible additional BDA
+        parseAdditionalBeanDefiningAnnotations();
         final Deployment deployment = createDeployment(resourceLoader, bootstrap);
 
         final ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
@@ -786,7 +796,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         for (Entry<String, Object> property : properties.entrySet()) {
             String key = property.getKey();
             if (SHUTDOWN_HOOK_SYSTEM_PROPERTY.equals(key) || ARCHIVE_ISOLATION_SYSTEM_PROPERTY.equals(key) || DEV_MODE_SYSTEM_PROPERTY.equals(key)
-                    || SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY.equals(key) || JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT.equals(key)) {
+                    || SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY.equals(key) || JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT.equals(key)
+                    || ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY.equals(key)) {
                 continue;
             }
             configurationBuilder.add(key, property.getValue());
@@ -1212,6 +1223,49 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             return value;
         }
         return defaultValue;
+    }
+
+    /**
+     * Parses additional bean defining annotations from either system properties, or SE container properties.
+     */
+    private void parseAdditionalBeanDefiningAnnotations() {
+        // parse additional bean defining annotations from SE container properties
+        if (properties.containsKey(ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY)) {
+            Object valueObj = properties.get(ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY);
+            if (valueObj instanceof Collection) {
+                for (Object element : ((Collection<?>) valueObj)) {
+                    if (element instanceof Class<?> && Annotation.class.isAssignableFrom((Class<?>) element)) {
+                        extendedBeanDefiningAnnotations.add((Class<? extends Annotation>) element);
+                    } else {
+                        // one of the values is not an annotation, log warning
+                        WeldSELogger.LOG.unexpectedItemsInValueCollection(element.getClass());
+                    }
+                }
+            } else {
+                // value is not a collection, throw IAE
+                throw WeldSELogger.LOG.unexpectedValueForAdditionalBeanDefiningAnnotations(valueObj.getClass());
+            }
+        }
+
+        // parse from system properties
+        String stringValue = AccessController.doPrivileged(new GetSystemPropertyAction(ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY));
+        if (stringValue != null) {
+            for (String className : stringValue.split(",")) {
+                if (!className.isEmpty()) {
+                    try {
+                        Class<?> loadedClass = Class.forName(className);
+                        if (loadedClass.isAnnotation()) {
+                            extendedBeanDefiningAnnotations.add((Class<? extends Annotation>) loadedClass);
+                        } else {
+                            // one of the values is not an annotation, log warning
+                            WeldSELogger.LOG.unexpectedItemsInValueCollection(loadedClass);
+                        }
+                    } catch (LinkageError | ClassNotFoundException e) {
+                        throw WeldSELogger.LOG.failedToLoadClass(className, e.toString());
+                    }
+                }
+            }
+        }
     }
 
     private static class PackInfo {
