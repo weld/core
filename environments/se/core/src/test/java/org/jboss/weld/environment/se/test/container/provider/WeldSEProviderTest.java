@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -38,7 +39,12 @@ public class WeldSEProviderTest {
 
     @Test
     public void testNoContainer() {
-        assertNull(CDI.current());
+        try {
+            CDI.current();
+            fail();
+        } catch (IllegalStateException expected) {
+            // OK
+        }
     }
 
     @Test
