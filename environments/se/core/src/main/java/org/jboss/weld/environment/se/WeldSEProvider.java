@@ -59,7 +59,7 @@ public class WeldSEProvider implements CDIProvider {
     public CDI<Object> getCDI() {
         List<String> ids = WeldContainer.getRunningContainerIds();
         if (ids.isEmpty()) {
-            return null;
+            throw new IllegalStateException("Unable to find running Weld SE container");
         }
         if (ids.size() == 1) {
             return WeldContainer.instance(ids.get(0));
