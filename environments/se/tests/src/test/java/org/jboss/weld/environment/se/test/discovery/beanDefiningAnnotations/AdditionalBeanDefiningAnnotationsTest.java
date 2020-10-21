@@ -29,10 +29,19 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+
 /**
  * Adds new bean defining annotations in Weld SE, then leaves discovery on and asserts that beans were found.
  *
+ * Also tests that you can add new BDA via purely CDI SE container properties and via system properties.
+ *
  * @see WELD-2523
+ * @see WELD-2639
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
@@ -60,4 +69,130 @@ public class AdditionalBeanDefiningAnnotationsTest {
         }
     }
 
+    @Test
+    public void testDeclarationViaPropertiesWithWrongValue() {
+        Weld weld = new Weld()
+                .disableDiscovery()
+                .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
+                .addPackages(Bar.class.getPackage())
+                .addProperty(Weld.ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY, "foo");
+
+        try (WeldContainer container = weld.initialize()) {
+            // should throw up while booting
+            Assert.fail();
+        } catch (IllegalArgumentException expected) {
+            // OK
+        }
+    }
+
+    @Test
+    public void testDeclarationViaPropertiesWithCorruptedSet() {
+        // we log warning on each wrong item in the list, so this should pass and just skip wrong value
+        Set<Object> corruptedSet = new HashSet<>();
+        corruptedSet.add(NewBeanDefiningAnnotation.class);
+        corruptedSet.add(1l);
+
+        Weld weld = new Weld()
+                .disableDiscovery()
+                .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
+                .addPackages(Bar.class.getPackage())
+                .addProperty(Weld.ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY, corruptedSet);
+
+        try (WeldContainer container = weld.initialize()) {
+            Assert.assertTrue(container.isRunning());
+            Assert.assertTrue(container.select(Foo.class).isResolvable());
+            Assert.assertTrue(container.select(Bar.class).isResolvable());
+        }
+    }
+
+    @Test
+    public void testCorrectDeclarationViaProperties() {
+        // we log warning on each wrong item in the list, so this should pass and just skip wrong value
+        Set<Class<? extends Annotation>> correctSet = new HashSet<>();
+        correctSet.add(NewBeanDefiningAnnotation.class);
+
+        Weld weld = new Weld()
+                .disableDiscovery()
+                .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
+                .addPackages(Bar.class.getPackage())
+                .addProperty(Weld.ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY, correctSet);
+
+        try (WeldContainer container = weld.initialize()) {
+            Assert.assertTrue(container.isRunning());
+            Assert.assertTrue(container.select(Foo.class).isResolvable());
+            Assert.assertTrue(container.select(Bar.class).isResolvable());
+        }
+    }
+
+    @Test
+    public void testCorrectDeclarationViaSystemProperties() {
+        setupSystemProperty(true, false, false);
+        Weld weld = new Weld()
+                .disableDiscovery()
+                .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
+                .addPackages(Bar.class.getPackage());
+
+        try (WeldContainer container = weld.initialize()) {
+            Assert.assertTrue(container.isRunning());
+            Assert.assertTrue(container.select(Foo.class).isResolvable());
+            Assert.assertTrue(container.select(Bar.class).isResolvable());
+        } finally {
+            clearSystemProperty();
+        }
+    }
+
+    @Test
+    public void testDeclarationViaSystemPropertiesWithCorruptedList() {
+        setupSystemProperty(true, true, false);
+        Weld weld = new Weld()
+                .disableDiscovery()
+                .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
+                .addPackages(Bar.class.getPackage());
+
+        try (WeldContainer container = weld.initialize()) {
+            Assert.assertTrue(container.isRunning());
+            Assert.assertTrue(container.select(Foo.class).isResolvable());
+            Assert.assertTrue(container.select(Bar.class).isResolvable());
+        } finally {
+            clearSystemProperty();
+        }
+    }
+
+    @Test
+    public void testDeclarationViaSystemPropertiesWithWrongValue() {
+        setupSystemProperty(true, false, true);
+        Weld weld = new Weld()
+                .disableDiscovery()
+                .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
+                .addPackages(Bar.class.getPackage());
+
+        try (WeldContainer container = weld.initialize()) {
+            Assert.fail();
+        } catch (IllegalArgumentException expected) {
+            // OK, this should blow up
+            System.err.println(expected);
+        } finally {
+            clearSystemProperty();
+        }
+    }
+
+    private void setupSystemProperty(boolean correctClass, boolean wrongType, boolean nonExistentClass) {
+        Properties props = System.getProperties();
+        StringBuilder builder = new StringBuilder();
+        if (correctClass) {
+            builder.append(NewBeanDefiningAnnotation.class.getName()).append(",");
+        }
+        if (wrongType) {
+            builder.append(Integer.class.getName()).append(",");
+        }
+        if (nonExistentClass) {
+            builder.append("foo.bar.Nope");
+        }
+        props.setProperty(Weld.ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY, builder.toString());
+    }
+
+    private void clearSystemProperty() {
+        Properties props = System.getProperties();
+        props.remove(Weld.ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY);
+    }
 }
