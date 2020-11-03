@@ -1,9 +1,24 @@
 language: java
+os: linux
 jdk:
   - openjdk8
   - openjdk11
-script: "mvn verify"
-sudo: false
+
+# Download latest WFLY and set JBOSS_HOME
+before_install:
+  # TODO use the following once it stops returning 404
+  #- wget https://ci.wildfly.org/guestAuth/repository/download/WF_Nightly/latest.lastFinished/wildfly-latest-SNAPSHOT.zip -o wildfly.zip
+  - wget https://download.jboss.org/wildfly/21.0.0.Final/wildfly-21.0.0.Final.zip -o wildfly.zip
+  - unzip wildfly.zip
+  - export JBOSS_HOME=$(pwd)/wildfly
+
+# Custom install phase so that we can build the snapshot and update WFLY plus install TCK ext lib into it
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn package -f -Dtck -Pupdate-jboss-as jboss-as/pom.xml -B -V
+
+script: "mvn clean verify -Dincontainer"
+
 cache:
   directories:
    - $HOME/.m2/repository
