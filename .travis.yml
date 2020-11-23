@@ -1,9 +1,0 @@
-language: java
-jdk:
-  - openjdk8
-  - openjdk11
-script: "mvn verify"
-sudo: false
-cache:
-  directories:
-   - $HOME/.m2/repository
