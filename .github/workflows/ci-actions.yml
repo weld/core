@@ -11,24 +11,79 @@ on:
       - '*.txt'
 
 jobs:
+  # Job is to be removed once there is a stable nightly build of EE 9 WFLY
+  build-wfly-ee9:
+    name: "Build WFLY EE 9 version"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+      - name: Checkout WFLY repo
+        uses: actions/checkout@v2
+        with:
+          repository: wildfly/wildfly
+          path: wildfly
+          ref: master
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y-%m")"
+        shell: bash
+      - name: Cache Maven Repository
+        id: cache-maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          # special cache just for WFLY build not to bloat main build
+          key: wfly-maven-cache-${{ steps.get-date.outputs.date }}
+      - name: Build WFLY
+        run: |
+          cd wildfly
+          mvn clean install -DskipTests
+      - name: Zip Patched WildFly
+        run: |
+          cd wildfly/ee-9/dist/target
+          rm wildfly-preview-*.jar
+          mv wildfly-preview-* wildfly/
+          zip -r wildfly-ee9.zip wildfly
+      - name: Persist WildFly
+        uses: actions/upload-artifact@v1
+        with:
+          name: wildfly-snapshot-ee9-zip
+          path: wildfly/ee-9/dist/target/wildfly-ee9.zip
+
   # builds Weld snapshot, downloads WFLY and upgrades it, prepares ENV variable
   build-jdk11:
     name: "Initial JDK 11 Weld Build + WildFly patch"
     runs-on: ubuntu-latest
+    needs: build-wfly-ee9
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
-      - name: Download WildFly
+      - name: Download EE 9 SNAPSHOT WildFly
+        uses: actions/download-artifact@v1
+        with:
+          name: wildfly-snapshot-ee9-zip
+          path: .
+      - name: Unzip WFLY
         run: |
-          wget https://ci.wildfly.org/guestAuth/repository/download/WF_Nightly/latest.lastSuccessful/wildfly-latest-SNAPSHOT.zip
-          unzip wildfly-latest-SNAPSHOT.zip
-          # ZIP contains two more ZIPs, sources and actual WFLY
-          rm wildfly-*-src.zip
-          rm wildfly-latest-SNAPSHOT.zip
-          unzip wildfly-*.zip -d container
+          unzip wildfly-ee9.zip -d container
+# This is the original solution that we will use once there is stable WFLY for EE 9 download (replacing the two steps above)
+#      - name: Download WildFly
+#        run: |
+#          wget https://ci.wildfly.org/guestAuth/repository/download/WF_Nightly/latest.lastSuccessful/wildfly-latest-SNAPSHOT.zip
+#          unzip wildfly-latest-SNAPSHOT.zip
+#          # ZIP contains two more ZIPs, sources and actual WFLY
+#          rm wildfly-*-src.zip
+#          rm wildfly-latest-SNAPSHOT.zip
+#          unzip wildfly-*.zip -d container
+#          cd container
+#          mv ./* wildfly/
       - name: Get Date
         id: get-date
         run: |
@@ -52,7 +107,6 @@ jobs:
       - name: Zip Patched WildFly
         run: |
           cd container/
-          mv ./* wildfly/
           zip -r wildfly.zip wildfly
           cd ..
       - name: Persist WildFly
