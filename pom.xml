@@ -87,7 +87,7 @@
         <testng.jcommander.version>1.78</testng.jcommander.version>
         <weld.api.version>4.0.Beta1</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
-        <wildfly.arquillian.version>2.2.0.Final</wildfly.arquillian.version>
+        <wildfly.arquillian.version>3.0.1.Final</wildfly.arquillian.version>
     </properties>
 
     <modules>
