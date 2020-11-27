@@ -64,7 +64,7 @@ public class BeansXmlStreamParser {
 
     public static final String JAVAEE_LEGACY_URI = "http://java.sun.com/xml/ns/javaee";
     public static final String JAVAEE_URI = "http://xmlns.jcp.org/xml/ns/javaee";
-    public static final String JAKARTAEE_URI = "http://jakarta.ee/xml/ns/jakartaee";
+    public static final String JAKARTAEE_URI = "https://jakarta.ee/xml/ns/jakartaee";
     public static final Set<String> JAVAEE_URIS = ImmutableSet.of(JAVAEE_LEGACY_URI, JAVAEE_URI, JAKARTAEE_URI);
 
     public static final String WELD_URI = "http://jboss.org/schema/weld/beans";
