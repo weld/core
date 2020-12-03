@@ -42,6 +42,7 @@ class AnnotatedTypeLoader {
     final ContainerLifecycleEvents containerLifecycleEvents;
 
     static final String MODULEINFO_CLASS_NAME = "module-info";
+    static final String MULTI_RELEASE_JAR_PATH = "META-INF.versions";
 
     AnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ContainerLifecycleEvents containerLifecycleEvents) {
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
@@ -75,7 +76,7 @@ class AnnotatedTypeLoader {
     }
 
     protected <T> Class<T> loadClass(String className) {
-        if (isModuleInfo(className)) {
+        if (isModuleInfo(className) || isMultiReleaseJarClass(className)) {
             return null;
         }
         try {
@@ -114,5 +115,14 @@ class AnnotatedTypeLoader {
 
     protected boolean isModuleInfo(String className) {
         return MODULEINFO_CLASS_NAME.equals(className);
+    }
+
+    /**
+     * Determines if the class is a MR JAR class, e.g. checks if its path starts with "META-INF.versions"
+     *
+     * @param className name of the class
+     */
+    protected boolean isMultiReleaseJarClass(String className) {
+        return className.startsWith(MULTI_RELEASE_JAR_PATH);
     }
 }
