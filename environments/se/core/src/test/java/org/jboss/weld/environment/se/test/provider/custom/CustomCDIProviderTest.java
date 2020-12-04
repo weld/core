@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.provider.custom;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import jakarta.enterprise.inject.spi.CDI;
@@ -34,7 +34,9 @@ public class CustomCDIProviderTest extends WeldSETest {
         try {
             CustomCDIProvider.reset();
             CDI.setCDIProvider(new CustomCDIProvider());
-            assertNull(CDI.current());
+            CDI<Object> current = CDI.current();
+            assertNotNull(current);
+            assertTrue(current instanceof CustomCDIProvider.CustomCdi);
             assertTrue(CustomCDIProvider.isCalled);
         } finally {
             // Unset the CDIProvider so that other tests are not affected
