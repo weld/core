@@ -7,13 +7,11 @@ endif::[]
 
 A lot of additional information on CDI can be found online. Regardless,
 the CDI specification remains the authority for information on CDI. The
-spec is less than 100 pages and is quite readable (don't worry, it's not
-like your Blu-ray player manual). Of course, it covers many details
-we've skipped over here. The spec is available on the at the JCP website
-(http://jcp.org/en/jsr/detail?id=299[CDI 1.0])
-(http://jcp.org/en/jsr/detail?id=346[CDI 1.1]).
+spec is fairly readable and it covers many details
+we've skipped over here.It is available on the at the Jakarta website
+(https://jakarta.ee/specifications/cdi/3.0/jakarta-cdi-spec-3.0.html[CDI 3.0]).
 
-The CDI reference implementation, Weld, is being developed by the
+The CDI compatible implementation, Weld, is being developed by the
 https://github.com/weld/core/graphs/contributors[Weld team]. The team
 and the CDI spec lead blog at http://in.relation.to[in.relation.to].
 This guide was originally based on a series of blog entries published

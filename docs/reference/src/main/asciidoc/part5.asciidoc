@@ -7,7 +7,7 @@ endif::[]
 
 [partintro]
 --
-Weld is the reference implementation of CDI, and is used by WildFly,
+Weld is compatible implementation of CDI, and is used by WildFly,
 GlassFish and WebLogic to provide CDI services for Java Enterprise
 Edition (Java EE) applications. Weld also goes beyond the environments
 and APIs defined by the CDI specification by providing support for a

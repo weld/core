@@ -18,7 +18,7 @@ built-in beans, all with the qualifier `@Default`:
 
 * the current JTA `UserTransaction`,
 * a `Principal` representing the current caller identity,
-* the default http://jcp.org/en/jsr/detail?id=303[Bean Validation]
+* the default https://jakarta.ee/specifications/bean-validation/3.0/[Bean Validation]
 `ValidationFactory`,
 * a `Validator` for the default `ValidationFactory`,
 * `HttpServletRequest`, `HttpSession` and `ServletContext`

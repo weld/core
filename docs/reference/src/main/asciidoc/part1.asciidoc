@@ -7,7 +7,7 @@ endif::[]
 
 [partintro]
 --
-The http://jcp.org/en/jsr/detail?id=346[CDI] specification defines a set
+The https://jakarta.ee/specifications/cdi[CDI] specification defines a set
 of complementary services that help improve the structure of application
 code. CDI layers an enhanced lifecycle and interaction model over
 existing Java component types, including managed beans and Enterprise
@@ -22,10 +22,10 @@ new kind of interceptor, called a _decorator_, that is more appropriate
 for use in solving business problems, and
 * an _SPI_ for developing portable extensions to the container.
 
-The CDI services are a core aspect of the Java EE platform and include
-full support for Java EE modularity and the Java EE component
+The CDI services are a core aspect of the Jakarta EE platform and include
+full support for Jakarta EE modularity and the Jakarta EE component
 architecture. But the specification does not limit the use of CDI to the
-Java EE environment. Starting with CDI 2.0, the specification covers the use of CDI
+Jakarta EE environment. Starting with CDI 2.0, the specification covers the use of CDI
 in the Java SE environment as well. In Java SE, the services might be
 provided by a standalone CDI implementation like Weld (see
 ifndef::generate-index-link[<<_cdi_se_module>>]
@@ -105,21 +105,10 @@ handle persistence, or what web framework you have to use. You'll have
 to decide those kinds of things for yourself.
 
 CDI even provides a comprehensive SPI, allowing other kinds of object
-defined by future Java EE specifications or by third-party frameworks to
+defined by future Jakarta EE specifications or by third-party frameworks to
 be cleanly integrated with CDI, take advantage of the CDI services, and
 interact with any other kind of bean.
 
-CDI was influenced by a number of existing Java frameworks, including
-Seam, Guice and Spring. However, CDI has its own, very distinct,
-character: more typesafe than Seam, more stateful and less XML-centric
-than Spring, more web and enterprise-application capable than Guice. But
-it couldn't have been any of these without inspiration from the
-frameworks mentioned and _lots_ of collaboration and hard work by the
-JSR-299 and JSR-346 Expert Groups (EG).
-
-Finally, CDI is a http://jcp.org[Java Community Process] (JCP) standard.
-Java EE 7 requires that all compliant application servers provide
-support for JSR-346 (even in the web profile).
 --
 
 
