@@ -1,36 +1,19 @@
 = Weld {weldVersion} - CDI Reference Implementation
 
 [preface]
-= A note about naming and nomenclature
+= A note about this document
 
-Throughout this document, mentions of JSR-299, JSR-346 and JSR-365 appear. JSR is
-a document of a proposed specification used in the Java Community
-Process (JCP). JSRs are somewhat analogous to RFCs used by IETF. JSR-299
-and JSR-346 are the JCP specification names for the 1.0 and 1.1 versions
-of CDI, respectively. JSR-365 is the JCP specification name for the CDI 2.0 version.
+This document is meant as a complimentary source of information to the
+https://jakarta.ee/specifications/cdi/3.0/jakarta-cdi-spec-3.0.html[CDI specification].
+It doesn't cover all general parts of CDI, instead it goes more in-depth in certain areas
+and also explains many areas in which Weld offers certain non-portable configurations and
+behavior on top of what CDI defines.
 
-Shortly before the final draft of JSR-299 was submitted, the
-specification changed its name from "Web Beans" to "Java Contexts and
-Dependency Injection for the Java EE platform", abbreviated CDI. For a
-brief period after the renaming, the reference implementation adopted
-the name "Web Beans". However, this ended up causing more confusion than
-it solved and Red Hat decided to change the name of the reference
-implementation to "Weld". You may still find other documentation, blogs,
-forum posts, etc. that use the old nomenclature. Please update any
-references you can. The naming game is over.
+It also shows some simple setup examples for user applications and talks a bit about how to
+integrate Weld into various environments.
 
-You'll also find that some of the functionality that once existed in the
-specification is now missing, such as defining beans in XML. These
-features will be available as portable extensions.
-
-Note that this reference guide was started while changes were still
-being made to the specification. We've done our best to update it for
-accuracy. If you discover a conflict between what is written in this
-guide and the specification, the specification is the authority—assume
-it is correct. If you believe you have found an error in the
-specification, please report it to the CDI EG.
-
-Below are links to separate documentation chapters.
+The document is divided into many separate parts and chapters for ease of read and navigation.
+Below are the links to them.
 
 . link:part1.html[Beans]
 .. link:intro.html[Introduction]

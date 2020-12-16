@@ -161,8 +161,8 @@ $> mvn verify -Darquillian=wildfly-managed
 === Deploying to GlassFish
 
 Deploying to GlassFish should be easy and familiar, right? After all,
-it's the Java EE 8 reference implementation and Weld is the CDI
-reference implementation, meaning Weld gets bundled with GlassFish. So
+it's the Jakarta EE compatible implementation and Weld is the CDI
+compatible implementation, meaning Weld gets bundled with GlassFish. So
 yes, it's all quite easy and familiar.
 
 To deploy the examples to GlassFish, you'll need a GlassFish 5.1.0 release. Extract

@@ -298,9 +298,8 @@ does not provide the CDI services. For your convenience we provide a
 single jar suitable for running Weld in any servlet container (including
 Jetty), `weld-servlet-shaded`.
 
-NOTE: You must also include the jars for JSF, EL, and the common annotations
-(`jsr250-api.jar`), all of which are provided by the Java EE platform (a
-Java EE application server).
+NOTE: You must also include the jars for JSF, EL, and the common annotations,
+all of which are provided by the Java EE platform (a Java EE application server).
 
 Second, we need to explicitly specify the servlet listener in `web.xml`,
 again because the container isn't doing this stuff for you. The servlet
