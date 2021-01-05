@@ -28,7 +28,7 @@
     </description>
 
     <properties>
-        <jsf.version>3.0.0-RC1</jsf.version>
+        <jsf.version>3.0.0</jsf.version>
         <tomcat.version>10.0.0-M10</tomcat.version>
         <jetty.version>9.4.35.v20201120</jetty.version>
         <jetty9.asm.version>7.0</jetty9.asm.version>
