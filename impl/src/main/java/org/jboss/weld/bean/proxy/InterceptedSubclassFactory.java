@@ -242,12 +242,9 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                                 createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
                                 BeanLogger.LOG.addingMethodToProxy(method);
                             } else {
+                                // we only want to add default methods, rest is abstract and cannot be invoked
                                 if (Reflections.isDefault(method)) {
                                     createDelegateMethod(proxyClassType, method, methodInfo);
-                                } else {
-                                    final ClassMethod classMethod = proxyClassType.addMethod(method);
-                                    createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
-                                    BeanLogger.LOG.addingMethodToProxy(method);
                                 }
                             }
                         } catch (DuplicateMemberException e) {
