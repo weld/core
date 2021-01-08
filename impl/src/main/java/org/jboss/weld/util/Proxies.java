@@ -21,10 +21,13 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.Bean;
@@ -51,13 +54,38 @@ public class Proxies {
 
     public static class TypeInfo {
 
-        private final Set<Class<?>> interfaces;
-        private final Set<Class<?>> classes;
+        private final List<Class<?>> interfaces;
+        private final List<Class<?>> classes;
 
-        private TypeInfo() {
-            super();
-            this.interfaces = new LinkedHashSet<Class<?>>();
-            this.classes = new LinkedHashSet<Class<?>>();
+        private TypeInfo(Set<? extends Type> types) {
+            Comparator<Class<?>> classComparator = Comparator.comparing(Class::getName);
+            List<Class<?>> foundInterfaces = new ArrayList<>();
+            List<Class<?>> foundClasses = new ArrayList<>();
+
+            types.stream().forEach(type -> add(type, foundInterfaces, foundClasses));
+
+            // sort both collections and create unmodifiable lists
+            Collections.sort(foundClasses, classComparator);
+            Collections.sort(foundInterfaces, classComparator);
+            this.interfaces = Collections.unmodifiableList(foundInterfaces);
+            this.classes = Collections.unmodifiableList(foundClasses);
+        }
+
+        // only invoked during object construction, arrays are then immutable
+        private TypeInfo add(Type type, List<Class<?>> foundInterfaces, List<Class<?>> foundClasses) {
+            if (type instanceof Class<?>) {
+                Class<?> clazz = (Class<?>) type;
+                if (clazz.isInterface()) {
+                    foundInterfaces.add(clazz);
+                } else {
+                    foundClasses.add(clazz);
+                }
+            } else if (type instanceof ParameterizedType) {
+                add(((ParameterizedType) type).getRawType(), foundInterfaces, foundClasses);
+            } else {
+                throw UtilLogger.LOG.cannotProxyNonClassType(type);
+            }
+            return this;
         }
 
         public Class<?> getSuperClass() {
@@ -90,36 +118,16 @@ public class Proxies {
             return superclass;
         }
 
-        private TypeInfo add(Type type) {
-            if (type instanceof Class<?>) {
-                Class<?> clazz = (Class<?>) type;
-                if (clazz.isInterface()) {
-                    interfaces.add(clazz);
-                } else {
-                    classes.add(clazz);
-                }
-            } else if (type instanceof ParameterizedType) {
-                add(((ParameterizedType) type).getRawType());
-            } else {
-                throw UtilLogger.LOG.cannotProxyNonClassType(type);
-            }
-            return this;
+        public List<Class<?>> getClasses() {
+            return classes;
         }
 
-        public Set<Class<?>> getClasses() {
-            return Collections.unmodifiableSet(classes);
-        }
-
-        public Set<Class<?>> getInterfaces() {
-            return Collections.unmodifiableSet(interfaces);
+        public List<Class<?>> getInterfaces() {
+            return interfaces;
         }
 
         public static TypeInfo of(Set<? extends Type> types) {
-            TypeInfo typeInfo = new TypeInfo();
-            for (Type type : types) {
-                typeInfo.add(type);
-            }
-            return typeInfo;
+            return new TypeInfo(types);
         }
 
     }

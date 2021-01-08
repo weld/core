@@ -35,7 +35,6 @@ import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -277,10 +276,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         for (Class<?> type : typeInfo.getInterfaces()) {
             interfaces.add(type.getSimpleName());
         }
-        Collections.sort(interfaces);
-        for (final String iface : interfaces) {
-            name.append(iface);
-            name.append('$');
+        // no need to sort the set, because we copied and already sorted one
+        for (int i = 0; i < interfaces.size(); i++) {
+            name.append(interfaces.get(i));
+            if (i < interfaces.size() - 1) {
+                name.append("$");
+            }
         }
         //there is a remote chance that this could generate the same
         //proxy name for two interfaces with the same simple name.
