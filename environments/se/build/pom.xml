@@ -117,10 +117,10 @@
 
     <profiles>
         <profile>
-            <id>release</id>
+            <id>javadoc</id>
             <activation>
                 <property>
-                    <name>release</name>
+                    <name>dist</name>
                 </property>
             </activation>
             <build>
