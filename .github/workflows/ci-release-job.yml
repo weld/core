@@ -1,0 +1,79 @@
+# This job triggers automatically when a tag is created from the branch
+# Its purpose is to create and archive WFLY patch as zip file and to build and archive Weld distribution
+name: Weld Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  # builds Weld snapshot, downloads WFLY and upgrades it, prepares ENV variable
+  build-jdk11:
+    name: "Create Patch file and dist ZIPs"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Weld Core repo
+        uses: actions/checkout@v2
+        with:
+          path: core
+      - name: Checkout Weld dist repo
+        uses: actions/checkout@v2
+        with:
+          repository: weld/dist
+          path: dist
+      - name: Set up JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+          # done with JDK 8 because WFLY patch building utilities don't work with 11
+          java-version: 8
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y-%m")"
+        shell: bash
+      - name: Cache Maven Repository
+        id: cache-maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: q2maven-${{ steps.get-date.outputs.date }}
+      - name: Build Weld SNAPSHOT
+        run: mvn clean install -Ddist -DskipTests -B -V -f core/pom.xml
+      - name: Export env variables
+        run: |
+          echo "WELD_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec -f core/pom.xml)" >> $GITHUB_ENV
+          echo "WFLY_VERSION=$(mvn help:evaluate -Dexpression=wildfly.download.version -q -DforceStdout -f core/jboss-as/pom.xml)" >> $GITHUB_ENV
+      - name: Create WFLY patch
+        run: mvn clean package -Pdownload-wfly,update-jboss-as,wfly-patch-gen -f core/jboss-as/pom.xml
+      - name: Rename patch
+        run: |
+          cd core/jboss-as/target
+          mv patch.zip $GITHUB_WORKSPACE/wildfly-$WFLY_VERSION-weld-$WELD_VERSION-patch.zip
+      - name: Persist WildFly patch
+        uses: actions/upload-artifact@v2
+        with:
+          name: wildfly-patch
+          path: wildfly-${{ env.WFLY_VERSION }}-weld-${{ env.WELD_VERSION }}-patch.zip
+      - name: Execute Dist Build
+        run: |
+          cd dist
+          gradle -PweldVersion=$WELD_VERSION -PweldPath=$GITHUB_WORKSPACE/core
+      - name: Persist dist zip
+        uses: actions/upload-artifact@v2
+        with:
+          name: weld-dist-zip
+          path: dist/weld-${{ env.WELD_VERSION }}.zip
+      - name: ZIP created docs
+        run: |
+          cd dist
+          rm weld-*.zip
+          zip -r weld-docs.zip weld-$WELD_VERSION/doc/en-US
+      - name: Persist docs zip
+        uses: actions/upload-artifact@v2
+        with:
+          name: weld-docs-zip
+          path: dist/weld-docs.zip
+      - name: Delete Local Artifacts From Cache
+        shell: bash
+        run: rm -r ~/.m2/repository/org/jboss/weld*
