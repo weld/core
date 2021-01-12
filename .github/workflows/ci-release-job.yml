@@ -25,8 +25,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1.4.3
         with:
-          # done with JDK 8 because WFLY patch building utilities don't work with 11
-          java-version: 8
+          java-version: 11
       - name: Get Date
         id: get-date
         run: |
@@ -44,6 +43,12 @@ jobs:
         run: |
           echo "WELD_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec -f core/pom.xml)" >> $GITHUB_ENV
           echo "WFLY_VERSION=$(mvn help:evaluate -Dexpression=wildfly.download.version -q -DforceStdout -f core/jboss-as/pom.xml)" >> $GITHUB_ENV
+      # TODO we should figure out why patch building doesn't work with 11+
+      - name: Set up JDK 8 for patch building
+        uses: actions/setup-java@v1.4.3
+        with:
+          # done with JDK 8 because WFLY patch building utilities don't work with 11
+          java-version: 8
       - name: Create WFLY patch
         run: mvn clean package -Pdownload-wfly,update-jboss-as,wfly-patch-gen -f core/jboss-as/pom.xml
       - name: Rename patch
@@ -55,25 +60,26 @@ jobs:
         with:
           name: wildfly-patch
           path: wildfly-${{ env.WFLY_VERSION }}-weld-${{ env.WELD_VERSION }}-patch.zip
-      - name: Execute Dist Build
-        run: |
-          cd dist
-          gradle -PweldVersion=$WELD_VERSION -PweldPath=$GITHUB_WORKSPACE/core
-      - name: Persist dist zip
-        uses: actions/upload-artifact@v2
-        with:
-          name: weld-dist-zip
-          path: dist/weld-${{ env.WELD_VERSION }}.zip
-      - name: ZIP created docs
-        run: |
-          cd dist
-          rm weld-*.zip
-          zip -r weld-docs.zip weld-$WELD_VERSION/doc/en-US
-      - name: Persist docs zip
-        uses: actions/upload-artifact@v2
-        with:
-          name: weld-docs-zip
-          path: dist/weld-docs.zip
+      # TODO we cannot create dist build unless we find a way to sign artifacts created this way
+#      - name: Execute Dist Build
+#        run: |
+#          cd dist
+#          gradle -PweldVersion=$WELD_VERSION -PweldPath=$GITHUB_WORKSPACE/core
+#      - name: Persist dist zip
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: weld-dist-zip
+#          path: dist/weld-${{ env.WELD_VERSION }}.zip
+#      - name: ZIP created docs
+#        run: |
+#          cd dist
+#          rm weld-*.zip
+#          zip -r weld-docs.zip weld-$WELD_VERSION/doc/en-US
+#      - name: Persist docs zip
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: weld-docs-zip
+#          path: dist/weld-docs.zip
       - name: Delete Local Artifacts From Cache
         shell: bash
         run: rm -r ~/.m2/repository/org/jboss/weld*
