@@ -3,9 +3,6 @@
 name: Weld Release
 
 on:
-  # TODO temporary for testing only
-  pull_request:
-    branches: [ 3.1 ]
   push:
     tags:
       - '*'
