@@ -216,7 +216,8 @@ public class WeldStartup {
         }
         // check if ProxyServices implementation supports class defining on integrator side
         if (!registry.get(ProxyServices.class).supportsClassDefining()) {
-            // we will need to invoke CL.defineClass() ourselves, crack open those methods eagerly
+            // JDK 8 - we will need to invoke CL.defineClass() ourselves, crack open those methods eagerly
+            // JDK 11+ - this method is a noop
             ClassFileUtils.makeClassLoaderMethodsAccessible();
         }
         if (!registry.contains(SecurityServices.class)) {
