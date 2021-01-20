@@ -96,7 +96,7 @@ public class ClassFileUtils {
      * @param domain the protection domain for the class. If it is null, the default domain created by
      *               <code>java.lang.ClassLoader</code> is
      */
-    public static Class<?> toClass(ClassFile ct, ClassLoader loader, ProtectionDomain domain) {
+    public static Class<?> toClass(ClassFile ct, ClassLoader loader, ProtectionDomain domain, Class<?> originalClass) {
         try {
             byte[] b = ct.toBytecode();
             java.lang.reflect.Method method;

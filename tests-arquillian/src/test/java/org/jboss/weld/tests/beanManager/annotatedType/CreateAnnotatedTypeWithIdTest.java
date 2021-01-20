@@ -20,8 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.security.ProtectionDomain;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
@@ -30,6 +29,7 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.classfilewriter.AccessFlag;
+import org.jboss.classfilewriter.ClassFactory;
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.shrinkwrap.api.Archive;
@@ -41,7 +41,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.EmbeddedContainer;
-import org.jboss.weld.util.bytecode.ClassFileUtils;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -65,12 +64,20 @@ public class CreateAnnotatedTypeWithIdTest {
         AnnotatedType<Component> annotatedType = beanManager.createAnnotatedType(Component.class);
         assertTrue(annotatedType.isAnnotationPresent(Dependent.class));
         assertFalse(hasPongMethod(annotatedType));
+        ClassFactory factory = (loader, name, b, off, len, protectionDomain) -> {
+            if (loader instanceof SimpleClassLoader) {
+                return ((SimpleClassLoader) loader).publicDefineClass(name, b, off, len, protectionDomain);
+            } else {
+                throw new RuntimeException("ClassLoader needs to be an instance of SimpleClassLoader but was: " + loader);
+            }
+        };
         // Create a different class with the same name
-        ClassFile componentClassFile = new ClassFile(Component.class.getName(), Object.class.getName());
+        // we need to define this class in a new CL to avoid duplicate declaration - hence we use CFW way to define it
+        ClassFile componentClassFile = new ClassFile(Component.class.getName(), Object.class.getName(), new SimpleClassLoader(Component.class.getClassLoader()), factory, new String[]{});
         // Add void pong()
         CodeAttribute b = componentClassFile.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.SYNTHETIC), "pong", "V").getCodeAttribute();
         b.returnInstruction();
-        Class<?> componentClass = ClassFileUtils.toClass(componentClassFile, new URLClassLoader(new URL[] {}), null);
+        Class<?> componentClass = componentClassFile.define();
         @SuppressWarnings("unchecked")
         BackedAnnotatedType<Component> newAnnotatedType = (BackedAnnotatedType<Component>) beanManager.createAnnotatedType(componentClass,
                 componentClass.getName() + componentClass.getClassLoader().hashCode());
@@ -89,6 +96,18 @@ public class CreateAnnotatedTypeWithIdTest {
             }
         }
         return false;
+    }
+
+    private static class SimpleClassLoader extends ClassLoader {
+
+
+        SimpleClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        public final Class<?> publicDefineClass(String name, byte[] b, int off, int len, ProtectionDomain pd) {
+            return super.defineClass(name, b, off, len, pd);
+        }
     }
 
 }

@@ -116,7 +116,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -pl '!jboss-tck-runner'
+          mvn clean verify -Dincontainer -pl '!jboss-tck-runner,!impl'
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -216,8 +216,12 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
+        # avoid building impl as that can only be done with JDK 11
         run: |
-          mvn clean verify
+          mvn clean verify -pl '!impl'
+      - name: Test core-impl separately
+        run: |
+          mvn surefire:test -f impl/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
