@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>42</version>
+        <version>44</version>
     </parent>
 
     <prerequisites>
