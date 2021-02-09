@@ -28,6 +28,7 @@ import org.jboss.weld.exceptions.WeldException;
  *
  * @author David Allen
  */
+// TODO, I dont think we are ever going to use this normally, change the test and delete this and its predecessor?
 public class SwitchableCLProxyServices extends SimpleProxyServices {
     private ClassLoader currentClassLoader;
 
