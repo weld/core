@@ -15,69 +15,94 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.util.bytecode;
+package org.jboss.weld.bean.proxy.util;
 
-import org.jboss.classfilewriter.ClassFile;
 import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.bootstrap.WeldStartup;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.ProxyServices;
 
 import java.lang.invoke.MethodHandles;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
- * JDK 11 - friendly variant that avoids breaking into CLs and instead uses {@code MethodHandles.Lookup} if possible.
- * For proxies of Java internal classes (packages {@code java.*} and {@code javax.*}) and for proxies of classes inside
- * signed JARs, we have to use our own class loader. See {@link WeldProxyDeclaringCL}
- *
- * @author Matej Novotny
+ * This class is a default implementation of ProxyServices that will only be loaded if no other implementation is detected.
+ * It supports class defining and attempts to use {@link MethodHandles.Lookup} if possible making it JDK  11+ friendly.
+ * For classes in signed JARs and classes from Java internal packages, we are forced to use custom class loader.
  */
-public class ClassFileUtils {
+public class WeldDefaultProxyServices implements ProxyServices {
 
-    private ClassFileUtils() {
+    // a map of parent CL -> our CL serving as a cache
+    private ConcurrentMap<ClassLoader, WeldProxyDeclaringCL> clMap = new ConcurrentHashMap<ClassLoader, WeldProxyDeclaringCL>();
+
+    public ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
+        // TODO remove from API
+        throw new IllegalStateException("THIS METHOD IS NO LONGER USED!");
     }
 
-    /**
-     * Noop under JDK 11+
-     */
-    public static void makeClassLoaderMethodsAccessible() {
-        // noop, in newer JDK, we no longer need to perform this
+
+    public Class<?> loadBeanClass(final String className) {
+        // TODO remove from API
+        throw new IllegalStateException("NO LONGER USED!");
     }
 
-    /**
-     * Allows to define a new class using either {@link MethodHandles.Lookup} or a wrapping class loader
-     * ({@link WeldProxyDeclaringCL}). If possible, we will use {@link MethodHandles.Lookup} but if the new class needs
-     * to be created in non-existent package (proxies for java.* etc), we are forced to use class loader approach.
-     *
-     *
-     * @param ct {@code ClassFile} to be defined
-     * @param loader class loader which was used to declare the original class, used for wrapping it with our CL
-     * @param domain protection domain of the class; only matters if we use the CL-approach
-     * @param originalClass base class on top of which we built the proxy (or rather, the {@code ClassFile})
-     * @return
-     */
-    public static Class<?> toClass(ClassFile ct, ClassLoader loader, ProtectionDomain domain, Class<?> originalClass) {
+    @Override
+    public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len) throws ClassFormatError {
+        return defineClass(originalClass, className, classBytes, off, len, null);
+    }
+
+    @Override
+    public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
+        ClassLoader originalLoader = originalClass.getClassLoader();
+        if (originalLoader == null) {
+            originalLoader = Thread.currentThread().getContextClassLoader();
+            // is it's still null we cannot solve this issue and we need to throw an exception
+            if (originalLoader == null) {
+                throw BeanLogger.LOG.cannotDetermineClassLoader(className, originalClass);
+            }
+        }
         try {
-            String classToDefineName = ct.getName();
-            byte[] classBytes = ct.toBytecode();
             // this is one of the classes we define into our own packages, we need to use a CL approach
-            if (classToDefineName.startsWith(ProxyFactory.WELD_PROXY_PREFIX)) {
-                return defineWithClassLoader(classToDefineName, classBytes, classBytes.length, loader, domain);
+            if (className.startsWith(ProxyFactory.WELD_PROXY_PREFIX)) {
+                return defineWithClassLoader(className, classBytes, classBytes.length, originalLoader, protectionDomain);
             } else {
                 // these classes go into existing packages, we will use MethodHandles to define them
-                return defineWithMethodLookup(classToDefineName, classBytes, originalClass, loader);
+                return defineWithMethodLookup(className, classBytes, originalClass, originalLoader);
             }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Class<?> loadClass(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
+        ClassLoader loader = originalClass.getClassLoader();
+        // if the CL is null, we will use TCCL
+        if (loader == null) {
+            loader = Thread.currentThread().getContextClassLoader();
+            // the following should not happen, but if it does, we need to throw an exception
+            if (loader == null) {
+                throw BeanLogger.LOG.cannotDetermineClassLoader(classBinaryName, originalClass);
+            }
+        }
+        if (clMap.containsKey(loader)) {
+            loader = clMap.get(loader);
+        }
+        return loader.loadClass(classBinaryName);
+    }
+
+    // TODO deprecate in API?
+    @Override
+    public boolean supportsClassDefining() {
+        return true;
+    }
+
+    @Override
+    public void cleanup() {
+        clMap.clear();
     }
 
     /**
@@ -90,7 +115,7 @@ public class ClassFileUtils {
      * @param domain {@link ProtectionDomain}
      * @return
      */
-    private static Class<?> defineWithClassLoader(String classToDefineName, byte[] classBytes, int length, ClassLoader loader, ProtectionDomain domain) {
+    private Class<?> defineWithClassLoader(String classToDefineName, byte[] classBytes, int length, ClassLoader loader, ProtectionDomain domain) {
         WeldProxyDeclaringCL delegatingClassLoader = returnWeldCL(loader);
         if (domain == null) {
             return delegatingClassLoader.publicDefineClass(classToDefineName, classBytes, 0, length);
@@ -105,11 +130,11 @@ public class ClassFileUtils {
      * @param loader class loader
      * @return instance of {@link WeldProxyDeclaringCL}
      */
-    private static WeldProxyDeclaringCL returnWeldCL(ClassLoader loader) {
-            if (loader instanceof WeldProxyDeclaringCL) {
-                return (WeldProxyDeclaringCL) loader;
-            }
-            return new WeldProxyDeclaringCL(loader);
+    private WeldProxyDeclaringCL returnWeldCL(ClassLoader loader) {
+        if (loader instanceof WeldProxyDeclaringCL) {
+            return (WeldProxyDeclaringCL) loader;
+        }
+        return clMap.computeIfAbsent(loader, cl -> new WeldProxyDeclaringCL(cl));
     }
 
     /**
@@ -121,8 +146,8 @@ public class ClassFileUtils {
      * @param loader class loader that loaded the original class
      * @return
      */
-    private static Class<?> defineWithMethodLookup(String classToDefineName, byte[] classBytes, Class<?> originalClass, ClassLoader loader) {
-        Module thisModule = ClassFileUtils.class.getModule();
+    private Class<?> defineWithMethodLookup(String classToDefineName, byte[] classBytes, Class<?> originalClass, ClassLoader loader) {
+        Module thisModule = WeldDefaultProxyServices.class.getModule();
         try {
             Class<?> lookupBaseClass;
             try {
@@ -145,23 +170,9 @@ public class ClassFileUtils {
     }
 
     /**
-     * Delegates proxy creation via {@link ProxyServices} to the integrator.
+     * NOOP under JDK 11+
      */
-    public static Class<?> toClass(ClassFile ct, Class<?> originalClass, ProxyServices proxyServices, ProtectionDomain domain) {
-        try {
-            byte[] bytecode = ct.toBytecode();
-            Class<?> result;
-            if (domain == null) {
-                result = proxyServices.defineClass(originalClass, ct.getName(), bytecode, 0, bytecode.length);
-            } else {
-                result = proxyServices.defineClass(originalClass, ct.getName(), bytecode, 0, bytecode.length, domain);
-            }
-            return result;
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public static void makeClassLoaderMethodsAccessible() {
     }
 
     /**
@@ -171,8 +182,7 @@ public class ClassFileUtils {
      * This CL will cause issues if used to define proxies for beans with private access (which shouldn't happen).
      * It also makes (de)serialization) difficult because no other CL will know of our proxies.
      */
-    private static class WeldProxyDeclaringCL extends ClassLoader {
-
+    private class WeldProxyDeclaringCL extends ClassLoader {
 
         WeldProxyDeclaringCL(ClassLoader parent) {
             super(parent);
@@ -196,6 +206,4 @@ public class ClassFileUtils {
             }
         }
     }
-
 }
-

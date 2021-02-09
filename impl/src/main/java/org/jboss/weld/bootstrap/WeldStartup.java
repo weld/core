@@ -55,7 +55,7 @@ import org.jboss.weld.bean.builtin.BeanManagerImplBean;
 import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.proxy.ProtectionDomainCache;
 import org.jboss.weld.bean.proxy.ProxyInstantiator;
-import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
+import org.jboss.weld.bean.proxy.util.WeldDefaultProxyServices;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -129,7 +129,6 @@ import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Permissions;
-import org.jboss.weld.util.bytecode.ClassFileUtils;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Formats;
@@ -212,13 +211,13 @@ public class WeldStartup {
         registry.addAll(initialServices.entrySet());
 
         if (!registry.contains(ProxyServices.class)) {
-            registry.add(ProxyServices.class, new SimpleProxyServices());
+            // add our own default impl that supports class defining
+            registry.add(ProxyServices.class, new WeldDefaultProxyServices());
         }
-        // check if ProxyServices implementation supports class defining on integrator side
-        if (!registry.get(ProxyServices.class).supportsClassDefining()) {
-            // JDK 8 - we will need to invoke CL.defineClass() ourselves, crack open those methods eagerly
-            // JDK 11+ - this method is a noop
-            ClassFileUtils.makeClassLoaderMethodsAccessible();
+        // if we use our own ProxyServices impl, we need to crack open CL for JDK 8 impl
+        // note that this is no-op call for JDK 11+
+        if (registry.get(ProxyServices.class) instanceof WeldDefaultProxyServices) {
+            WeldDefaultProxyServices.makeClassLoaderMethodsAccessible();
         }
         if (!registry.contains(SecurityServices.class)) {
             registry.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
