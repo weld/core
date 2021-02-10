@@ -31,7 +31,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.test.util.Utils;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 public class NaiveClusterTest extends AbstractClusterTest {
@@ -42,7 +41,6 @@ public class NaiveClusterTest extends AbstractClusterTest {
                 .toString());
     }
 
-    @Ignore
     @Test(description = "A simple test to check session replication, doesn't carefully check if a bean ids are correct")
     public void testSimpleSessionReplication() throws Exception {
 
@@ -70,7 +68,6 @@ public class NaiveClusterTest extends AbstractClusterTest {
         container1.stopContainer();
     }
 
-    @Ignore
     @Test(description = "A simple test to check conversation replication")
     public void testConversationReplication() throws Exception {
 
@@ -139,7 +136,6 @@ public class NaiveClusterTest extends AbstractClusterTest {
         container1.stopContainer();
     }
 
-    @Ignore
     @Test
     public void testMultipleDependentObjectsSessionReplication() throws Exception {
         Collection<Class<?>> classes = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
@@ -186,7 +182,6 @@ public class NaiveClusterTest extends AbstractClusterTest {
         container2.stopContainer();
     }
 
-    @Ignore
     @Test(expectedExceptions = IllegalStateException.class)
     public void testVariableBeanDeploymentStructure() throws Exception {
         Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
@@ -212,7 +207,6 @@ public class NaiveClusterTest extends AbstractClusterTest {
         }
     }
 
-    @Ignore
     @Test
     public void testSessionReplication() throws Exception {
         Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
@@ -244,7 +238,6 @@ public class NaiveClusterTest extends AbstractClusterTest {
         container2.stopContainer();
     }
 
-    @Ignore
     @Test
     public void testVariableBeanDeploymentStructureNotVerified() throws Exception {
         Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
@@ -271,7 +264,6 @@ public class NaiveClusterTest extends AbstractClusterTest {
         }
     }
 
-    @Ignore
     @Test
     public void testSessionReplicationWorksIfBeanIdIndexDisabled() throws Exception {
         Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);

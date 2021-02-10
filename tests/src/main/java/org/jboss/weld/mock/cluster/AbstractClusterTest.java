@@ -20,6 +20,7 @@ import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveIm
 import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.proxy.util.WeldDefaultProxyServices;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -64,7 +65,7 @@ public class AbstractClusterTest {
         SwitchableSingletonProvider.use(id);
 
         TestContainer container = new TestContainer(new FlatDeployment(new BeanDeploymentArchiveImpl(classes)));
-        container.getDeployment().getServices().add(ProxyServices.class, new SwitchableCLProxyServices());
+        container.getDeployment().getServices().add(ProxyServices.class, new WeldDefaultProxyServices());
         container.startContainer();
         container.ensureRequestActive();
 
@@ -108,9 +109,5 @@ public class AbstractClusterTest {
     protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
         return in.readObject();
-    }
-
-    protected void useNewClassLoader(ClassLoader parentClassLoader) {
-        ((SwitchableCLProxyServices) Container.instance().services().get(ProxyServices.class)).useNewClassLoader(parentClassLoader);
     }
 }
