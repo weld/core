@@ -106,9 +106,10 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <manifest>
-                            <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
-                        </manifest>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                            <Main-Class>org.jboss.weld.environment.se.StartMain</Main-Class>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
