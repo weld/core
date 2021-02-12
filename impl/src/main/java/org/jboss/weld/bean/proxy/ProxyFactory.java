@@ -174,7 +174,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
         addDefaultAdditionalInterfaces();
         baseProxyName = proxyName;
-        // TODO can we expect that all services now support class defining? Throw an exception if they don't?
         proxyServices = Container.instance(contextId).services().get(ProxyServices.class);
         // hierarchy order
         if (additionalInterfaces.size() > 1) {
