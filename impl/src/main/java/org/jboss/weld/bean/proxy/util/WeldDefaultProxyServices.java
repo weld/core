@@ -17,6 +17,7 @@
 
 package org.jboss.weld.bean.proxy.util;
 
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.ProxyServices;
 
@@ -66,14 +67,11 @@ public class WeldDefaultProxyServices implements ProxyServices {
     }
 
     public ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
-        // TODO remove from API
-        throw new IllegalStateException("THIS METHOD IS NO LONGER USED!");
+        throw new UnsupportedOperationException("WeldDefaultProxyServices.getClassLoader(Class<?>) is not implemented.");
     }
 
-
     public Class<?> loadBeanClass(final String className) {
-        // TODO remove from API
-        throw new IllegalStateException("NO LONGER USED!");
+        throw new UnsupportedOperationException("WeldDefaultProxyServices.loadBeanClass(String) is not implemented.");
     }
 
     @Override
@@ -125,7 +123,6 @@ public class WeldDefaultProxyServices implements ProxyServices {
         return loader.loadClass(classBinaryName);
     }
 
-    // TODO deprecate in API?
     @Override
     public boolean supportsClassDefining() {
         return true;
