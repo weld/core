@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.security.AccessController;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -140,6 +141,57 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     }
 
+    private boolean skipIfBridgeMethod(Method method, Collection<Method> classDeclaredMethods) {
+        if (method.isBridge()) {
+            // if it's a bridge method, we need to see if the class also contains an actual "impl" of that method
+            // if it does, we can skip this method, if it doesn't we will need to intercept it
+            for (Method declaredMethod : classDeclaredMethods) {
+                // only check non-bridge declared methods
+                if (declaredMethod.isBridge()) {
+                    continue;
+                }
+                if (method.getName().equals(declaredMethod.getName())) {
+                    Class<?>[] methodParams = method.getParameterTypes();
+                    Class<?>[] declaredMethodParams = declaredMethod.getParameterTypes();
+                    if (methodParams.length != declaredMethodParams.length) {
+                        continue;
+                    }
+                    boolean paramsNotMatching = false;
+                    for (int i = 0; i < methodParams.length; i++) {
+                        String methodParamName = methodParams[i].getName();
+                        String declaredMethodParamName = declaredMethodParams[i].getName();
+                        if (methodParamName.equals(declaredMethodParamName)
+                                || methodParamName.equals(Object.class.getName())) {
+                            continue;
+                        } else {
+                            paramsNotMatching = true;
+                            break;
+                        }
+                    }
+                    if (paramsNotMatching) {
+                        continue;
+                    }
+                    if (!Modifier.isInterface(declaredMethod.getDeclaringClass().getModifiers())) {
+                        if (method.getReturnType().getName().equals(Object.class.getName()) || Modifier.isAbstract(declaredMethod.getModifiers())) {
+                            // bridge method with matching signature has Object as return type
+                            // or the method we compare against is abstract meaning the bridge overrides it
+                            // both cases are a match
+                            return true;
+                        } else {
+                            // as a last resort, we simply check equality of return Type
+                            if (method.getReturnType().getName().equals(declaredMethod.getReturnType().getName())) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
         try {
@@ -151,11 +203,12 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             Class<?> cls = getBeanType();
             while (cls != null) {
                 Set<BridgeMethod> declaredBridgeMethods = new HashSet<BridgeMethod>();
-                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
+                Collection<Method> classDeclaredMethods = Arrays.asList(AccessController.doPrivileged(new GetDeclaredMethodsAction(cls)).clone());
+                for (Method method : classDeclaredMethods) {
 
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
 
-                    if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
+                    if (!Modifier.isFinal(method.getModifiers()) && !skipIfBridgeMethod(method, classDeclaredMethods) && enhancedMethodSignatures.contains(methodSignature)
                             && !finalMethods.contains(methodSignature) && CommonProxiedMethodFilters.NON_PRIVATE_WITHOUT_PACK_PRIVATE_PARAMS.accept(method, getProxySuperclass())
                             && !bridgeMethodsContainsMethod(processedBridgeMethods, methodSignature, method.getGenericReturnType(), Modifier.isAbstract(method.getModifiers()))) {
                         try {

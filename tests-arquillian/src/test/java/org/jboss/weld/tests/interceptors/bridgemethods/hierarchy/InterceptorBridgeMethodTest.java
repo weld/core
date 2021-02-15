@@ -142,6 +142,15 @@ public class InterceptorBridgeMethodTest {
     }
 
     @Test
+    public void testSpecialBaseAsInterface(SpecialBase specialBase) {
+        // SpecialBase extends Base<String>
+        reset();
+        specialBase.invokeA("foo");
+        verify(SpecialParent.class);
+        reset();
+    }
+
+    @Test
     public void testAbstractParent(SpecialParent<String> parent) {
         // SpecialChild gets injected
         reset();

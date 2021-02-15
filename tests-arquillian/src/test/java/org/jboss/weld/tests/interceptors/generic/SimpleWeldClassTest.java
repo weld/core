@@ -62,7 +62,7 @@ public class SimpleWeldClassTest
         Collection<EnhancedAnnotatedMethod<?, ? super StringProcessor>> methods = weldClass.getEnhancedMethods();
         //assert methods.size() == 2;
         List<EnhancedAnnotatedMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
-        Assert.assertEquals(3, interceptableMethods.size());
+        Assert.assertEquals(5, interceptableMethods.size());
     }
 
 }

@@ -164,8 +164,8 @@ public class Beans {
     public static List<EnhancedAnnotatedMethod<?, ?>> getInterceptableMethods(EnhancedAnnotatedType<?> type) {
         List<EnhancedAnnotatedMethod<?, ?>> annotatedMethods = new ArrayList<EnhancedAnnotatedMethod<?, ?>>();
         for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : type.getEnhancedMethods()) {
-            boolean businessMethod = !annotatedMethod.isStatic() && !annotatedMethod.isAnnotationPresent(Inject.class)
-                    && !annotatedMethod.getJavaMember().isBridge();
+            // note that a bridge method can be a candidate for interception in rare cases; do not discard those
+            boolean businessMethod = !annotatedMethod.isStatic() && !annotatedMethod.isAnnotationPresent(Inject.class);
 
             if (businessMethod && !isInterceptorMethod(annotatedMethod)) {
                 annotatedMethods.add(annotatedMethod);
