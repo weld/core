@@ -65,7 +65,8 @@ public class BuiltInBeanPassivationCapableTest {
 
     @Test
     public void testUserTransactionBean(UserTransaction userTransaction) throws Throwable {
-        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
+        // proxy for this class will be declared using our CL hence the deserialization also needs to use the same CL
+        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction), userTransaction.getClass().getClassLoader());
         Assert.assertTrue(checkUserTransaction(userTransaction1));
     }
 
