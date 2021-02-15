@@ -546,4 +546,7 @@ public interface BeanLogger extends WeldLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 1577, value = "Detected private final method: {1}\non an intercepted bean: {0}\nWeld will ignore this method during interception.", format = Format.MESSAGE_FORMAT)
     void privateFinalMethodOnInterceptedBean(Object beanClass, Object method);
+
+    @Message(id = 1578, value = "WeldDefaultProxyServices failed to load/define a class with name {0} whose original class was {1} because all attempts to determine a class loader ended with null.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotDetermineClassLoader(Object beanName, Object originalClass);
 }
