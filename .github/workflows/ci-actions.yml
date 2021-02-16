@@ -119,13 +119,21 @@ jobs:
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
-        run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
+        run: |
+          find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
+          find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
         uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: test-reports-incontainer-jdk${{matrix.java.name}}
           path: 'test-reports.tgz'
+      - name: Upload server log artifact (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: server-log-incontainer-jdk${{matrix.java.name}}
+          path: 'server-log.tgz'
 
   # CDI TCKs in WildFly
   CDI-TCK:
@@ -174,13 +182,21 @@ jobs:
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
-        run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
+        run: |
+          find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
+          find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
         uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: test-reports-cdi-tck-jdk${{matrix.java.name}}
           path: 'test-reports.tgz'
+      - name: Upload server log artifact (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: server-log-cdi-tck-jdk${{matrix.java.name}}
+          path: 'server-log.tgz'
 
   # Weld no-container tests, includes junit, Weld SE tests plus CDI TCKs and integration tests that don't require EE container
   no-container-tests:
@@ -267,12 +283,20 @@ jobs:
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
-        run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
-      - name: Upload failure Archive (if maven failed)
+        run: |
+          find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
+          find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
+      - name: Upload failed tests artifact (if maven failed)
         uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: test-reports-examples
+          path: 'test-reports.tgz'
+      - name: Upload server log artifact (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: server-log-examples
           path: 'test-reports.tgz'
 
   # CDI TCK for SE environment
