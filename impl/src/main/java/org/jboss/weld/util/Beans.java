@@ -58,6 +58,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.inject.spi.Prioritized;
 import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
@@ -70,6 +71,7 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.WeldBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -223,16 +225,23 @@ public class Beans {
 
     public static boolean isBeanEnabled(Bean<?> bean, ModuleEnablement enabled) {
         if (bean.isAlternative()) {
+            boolean isEnabled = false;
             if (enabled.isEnabledAlternativeClass(bean.getBeanClass())) {
-                return true;
+                isEnabled = true;
             } else {
                 for (Class<? extends Annotation> stereotype : bean.getStereotypes()) {
                     if (enabled.isEnabledAlternativeStereotype(stereotype)) {
-                        return true;
+                        isEnabled = true;
+                        break;
                     }
                 }
-                return false;
             }
+            // For synthetic enabled alternatives, the ModuleEnablement may not yet be aware of them
+            if (!isEnabled
+                    && ((bean instanceof WeldBean && ((WeldBean<?>) bean).getPriority() != null) || bean instanceof Prioritized)) {
+                isEnabled = true;
+            }
+            return isEnabled;
         } else if (bean instanceof AbstractProducerBean<?, ?, ?>) {
             AbstractProducerBean<?, ?, ?> receiverBean = (AbstractProducerBean<?, ?, ?>) bean;
             return isBeanEnabled(receiverBean.getDeclaringBean(), enabled);

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2017, Red Hat, Inc., and individual contributors
+ * Copyright 2021, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,10 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.alternatives.customBeanPriority;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
+package org.jboss.weld.tests.extensions.custombeans.alternative;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -29,30 +27,30 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+
 /**
- * Tests that you can create a custom bean via (Weld)BeanConfigurator and give it a priority hence selecting it.
- * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
+ * Tests that registering a synthetic enabled alternative via {@code Bean<T>} that implements {@code Prioritized} will
+ * fire {@code ProcessBean} event.
  */
 @RunWith(Arquillian.class)
-public class CustomBeanPriorityTest {
+public class CustomPrioritizedBeanFiresProcessBeanEventTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomBeanPriorityTest.class))
-            .addClasses(CustomBeanPriorityTest.class, MyExtension.class, PlainFoo.class, FooAlternative.class)
-            .addAsServiceProvider(Extension.class, MyExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomPrioritizedBeanFiresProcessBeanEventTest.class))
+                .addClasses(Foo.class, MyExtension.class, FooBean.class)
+                .addAsServiceProvider(Extension.class, MyExtension.class);
     }
 
     @Inject
-    PlainFoo foo;
-
-    @Inject
-    FooAlternative alternative;
+    Foo foo;
 
     @Test
-    public void contextLifecycleEventFiredForPostConstructCallbackActivation() {
-        Assert.assertEquals("bar", alternative.ping());
-        Assert.assertEquals("bar", foo.ping());
-        Assert.assertEquals(1, MyExtension.PSB_OBSERVED);
+    public void testBeanTriggeredEvents() {
+        Assert.assertEquals(2, MyExtension.PB_TRIGGERED);
+        Assert.assertEquals(1, MyExtension.PSB_TRIGGERED);
+        Assert.assertEquals(FooBean.class.getSimpleName(), foo.ping());
     }
 }
