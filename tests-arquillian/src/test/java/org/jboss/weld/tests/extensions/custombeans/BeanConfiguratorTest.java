@@ -133,6 +133,11 @@ public class BeanConfiguratorTest {
         assertEquals(1, beans.size());
         blaBean = (Bean<Configuration>) beans.iterator().next();
         assertEquals(RequestScoped.class, blaBean.getScope());
+
+        beans = beanManager.getBeans(String.class);
+        assertEquals(1, beans.size());
+        Bean<String> stringBean = (Bean<String>) beans.iterator().next();
+        assertEquals(3, stringBean.getQualifiers().size());
     }
 
 }

@@ -269,7 +269,7 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         } else {
             ImmutableSet.Builder<Annotation> builder = ImmutableSet.builder();
             if (normalized.size() == 1) {
-                if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
+                if (normalized.iterator().next().annotationType().equals(Named.class)) {
                     builder.add(Default.Literal.INSTANCE);
                 }
             }
