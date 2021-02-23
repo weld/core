@@ -21,9 +21,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Model;
+import javax.enterprise.inject.literal.NamedLiteral;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -88,5 +91,13 @@ public class BuilderExtension implements Extension {
         event.addBean().addQualifier(Bla.Literal.of("dependent")).addType(Integer.class).createWith((ctx) -> 1);
         event.addBean().addQualifier(Bla.Literal.of("model")).addStereotype(Model.class).addType(Integer.class).createWith((ctx) -> 2);
         event.addBean().addQualifier(Bla.Literal.of("more")).addStereotype(Model.class).addStereotype(SuperCoolStereotype.class).addType(Integer.class).createWith((ctx) -> 3);
+
+        // add a bean testing that when a bean has @Named and @Any, @Default will be added automatically
+        event.addBean()
+                .beanClass(String.class)
+                .addType(String.class)
+                .addQualifiers(NamedLiteral.of("string"), Any.Literal.INSTANCE)
+                .createWith(a -> "foo")
+                .scope(ApplicationScoped.class);
     }
 }
