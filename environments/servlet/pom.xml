@@ -28,7 +28,7 @@
     <properties>
         <jsf.version>2.3.2</jsf.version>
         <tomcat.version>9.0.43</tomcat.version>
-        <jetty.version>9.4.35.v20201120</jetty.version>
+        <jetty.version>9.4.38.v20210224</jetty.version>
         <websockets.api>1.1.2</websockets.api>
         <undertow.version>2.2.3.Final</undertow.version>
         <!-- Testing deps -->
