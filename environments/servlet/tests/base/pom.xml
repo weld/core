@@ -48,6 +48,13 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
+            <exclusions>
+                <!-- htmlunit brings in partial Jetty deps which we do not use and the versioning can clash with our Jetty version -->
+                <exclusion>
+                    <groupId>org.eclipse.jetty.websocket</groupId>
+                    <artifactId>websocket-client</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
