@@ -35,7 +35,7 @@
         <!-- Following section is dedicated to WFLY download and patch creation -->
         <!-- Path to the patched WFLY server, if you chose to let Maven download it, this default will be used-->
         <!-- Maven will download pristine WFLY for you, but you need to provide a patched one yourself and make JBOSS_HOME point at it-->
-        <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</wildflyPatched>
+        <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-preview-${wildfly.download.version}</wildflyPatched>
         <!--Path to patch file; only change if you have your own, else Maven downloads it-->
         <patchConfigFile>${project.build.directory}/patch.xml</patchConfigFile>
         <!--These patches are automatically downloaded from github.com/weld/build/tree/master/wildfly; specify the file name here to determine which one to use-->
@@ -44,8 +44,8 @@
         <patchOutputFile>${project.build.directory}/patch.zip</patchOutputFile>
         <!--Path to original (pristine) WFLY-->
         <!--Running with -Pdownload-wfly will make Maven download the version specified below-->
-        <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
-        <wildfly.download.version>20.0.1.Final</wildfly.download.version>
+        <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-preview-${wildfly.download.version}</wildflyOriginal>
+        <wildfly.download.version>23.0.0.Final</wildfly.download.version>
 
         <!--Plugin versions-->
         <download.maven.plugin>1.6.1</download.maven.plugin>
@@ -94,11 +94,11 @@
         <profile>
             <id>download-wfly</id>
             <properties>
-                <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
+                <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-preview-${wildfly.download.version}</wildflyOriginal>
                 <!--Set jboss.home property to the location of the copy of WFLY we download-->
-                <jboss.home>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</jboss.home>
+                <jboss.home>${project.build.directory}/wildfly-patched/wildfly-preview-${wildfly.download.version}</jboss.home>
                 <!--Set wildflyPatched property for patch creation, this assumes you patch the WFLY by running -Pupdate-jboss-as as well-->
-                <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</wildflyPatched>
+                <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-preview-${wildfly.download.version}</wildflyPatched>
             </properties>
             <build>
                 <plugins>
@@ -115,7 +115,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.wildfly</groupId>
-                                            <artifactId>wildfly-dist</artifactId>
+                                            <artifactId>wildfly-preview-dist</artifactId>
                                             <version>${wildfly.download.version}</version>
                                             <type>tar.gz</type>
                                             <overWrite>false</overWrite>
