@@ -1,5 +1,5 @@
 # This job triggers automatically when a tag is created from the branch
-# Its purpose is to create and archive WFLY patch as zip file and to build and archive Weld distribution
+# Its purpose is to create and archive WFLY patch as zip file and to test it
 name: Weld Release
 
 on:
@@ -8,15 +8,15 @@ on:
       - '*'
 
 jobs:
-  # builds Weld snapshot, downloads WFLY and upgrades it, prepares ENV variable
   build-jdk11:
-    name: "Create Patch file and dist ZIPs"
+    name: "Create Patch file"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Weld Core repo
         uses: actions/checkout@v2
         with:
           path: core
+      # TODO not used ATM; if we try to build dist here, the artifacts wouldn't be signed
       - name: Checkout Weld dist repo
         uses: actions/checkout@v2
         with:
@@ -60,26 +60,17 @@ jobs:
         with:
           name: wildfly-patch
           path: wildfly-${{ env.WFLY_VERSION }}-weld-${{ env.WELD_VERSION }}-patch.zip
-      # TODO we cannot create dist build unless we find a way to sign artifacts created this way
-#      - name: Execute Dist Build
-#        run: |
-#          cd dist
-#          gradle -PweldVersion=$WELD_VERSION -PweldPath=$GITHUB_WORKSPACE/core
-#      - name: Persist dist zip
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: weld-dist-zip
-#          path: dist/weld-${{ env.WELD_VERSION }}.zip
-#      - name: ZIP created docs
-#        run: |
-#          cd dist
-#          rm weld-*.zip
-#          zip -r weld-docs.zip weld-$WELD_VERSION/doc/en-US
-#      - name: Persist docs zip
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: weld-docs-zip
-#          path: dist/weld-docs.zip
+      - name: Get WFLY and patch it
+        run: |
+          mvn clean package -Pdownload-wfly -f core/jboss-as/pom.xml
+          mkdir wflyServer
+          mv core/jboss-as/target/wildfly-original/*/* wflyServer
+          cd wflyServer
+          ./bin/jboss-cli.bat|sh --command="patch apply $GITHUB_WORKSPACE/wildfly-$WFLY_VERSION-weld-$WELD_VERSION-patch.zip"
+      - name: Use Patched WFLY To Run Arq. Tests
+        run: |
+          export JBOSS_HOME=$GITHUB_WORKSPACE/wflyServer
+          mvn clean verify -Dincontainer -f core/tests-arquillian/pom.xml
       - name: Delete Local Artifacts From Cache
         shell: bash
         run: rm -r ~/.m2/repository/org/jboss/weld*
