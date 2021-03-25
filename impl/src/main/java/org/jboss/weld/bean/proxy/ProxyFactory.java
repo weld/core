@@ -234,14 +234,18 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 className = typeInfo.getSuperClass().getSimpleName() + PROXY_SUFFIX;
             }
         }
-
         return proxyPackage + '.' + getEnclosingPrefix(proxiedBeanType) + className;
     }
 
     private static String createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
         String className;
         final List<String> interfaces = new ArrayList<String>();
+        final Set<String> declaringClasses = new HashSet<>();
         for (Class<?> type : typeInfo.getInterfaces()) {
+            Class<?> declaringClass = type.getDeclaringClass();
+            if (declaringClass != null && declaringClasses.add(declaringClass.getSimpleName())) {
+                interfaces.add(declaringClass.getSimpleName());
+            }
             interfaces.add(type.getSimpleName());
         }
         // no need to sort the set, because we copied and already sorted one
@@ -258,10 +262,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         if (bean != null && !(bean instanceof AbstractBuiltInBean)) {
             final BeanIdentifier id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
             int idHash = id.hashCode();
+            // add a separator so that WeldDefaultProxyServices can determine the correct full class name by first occurrence of "$"
+            name.append("$");
             name.append(Math.abs(idHash == Integer.MIN_VALUE ? 0 : idHash));
         }
         className = name.toString();
-        return className;
+            return className;
     }
 
     private static String getEnclosingPrefix(Class<?> clazz) {
