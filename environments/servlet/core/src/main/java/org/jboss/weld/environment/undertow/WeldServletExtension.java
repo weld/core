@@ -19,8 +19,12 @@ package org.jboss.weld.environment.undertow;
 import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.FilterInfo;
+import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ListenerInfo;
 import io.undertow.servlet.api.ServletInfo;
+import io.undertow.servlet.util.ImmediateInstanceFactory;
+
+import java.util.EventListener;
 
 import javax.servlet.ServletContext;
 
@@ -54,7 +58,10 @@ public class WeldServletExtension implements ServletExtension {
             // Listener injection
             for (ListenerInfo listener : deploymentInfo.getListeners()) {
                 UndertowLogger.LOG.installingCdiSupport(listener.getListenerClass());
-                listener.setInstanceFactory(WeldInstanceFactory.of(listener.getInstanceFactory(), servletContext, listener.getListenerClass()));
+                InstanceFactory<? extends EventListener> instanceFactory = listener.getInstanceFactory();
+                if (!(instanceFactory instanceof ImmediateInstanceFactory)) {
+                    listener.setInstanceFactory(WeldInstanceFactory.of(instanceFactory, servletContext, listener.getListenerClass()));
+                }
             }
             servletContext.setAttribute(INSTALLED, INSTALLED_FULL);
         } catch (NoSuchMethodError e) {
