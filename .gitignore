@@ -1,4 +1,5 @@
 .project
+.checkstyle
 .classpath
 .settings
 .factorypath
