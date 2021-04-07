@@ -187,35 +187,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     static String getProxyName(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
         TypeInfo typeInfo = TypeInfo.of(typeClosure);
-        String proxyPackage;
-        if (proxiedBeanType.equals(Object.class)) {
-            Class<?> superInterface = typeInfo.getSuperInterface();
-            if (superInterface == null) {
-                throw new IllegalArgumentException("Proxied bean type cannot be java.lang.Object without an interface");
-            } else {
-                String reason = getDefaultPackageReason(superInterface);
-                if (reason != null) {
-                    proxyPackage = DEFAULT_PROXY_PACKAGE;
-                    BeanLogger.LOG.generatingProxyToDefaultPackage(superInterface, DEFAULT_PROXY_PACKAGE, reason);
-                } else {
-                    proxyPackage = superInterface.getPackage().getName();
-                }
-            }
-        } else {
-            String reason = getDefaultPackageReason(proxiedBeanType);
-            if (reason != null && reason.equals(NO_PACKAGE)) {
-                proxyPackage = DEFAULT_PROXY_PACKAGE;
-                BeanLogger.LOG.generatingProxyToDefaultPackage(proxiedBeanType, DEFAULT_PROXY_PACKAGE, reason);
-            } else {
-                proxyPackage = proxiedBeanType.getPackage().getName();
-            }
-        }
         final String className;
-
+        ProxyNameHolder holder;
         if (typeInfo.getSuperClass() == Object.class) {
             final StringBuilder name = new StringBuilder();
             //interface only bean.
-            className = createCompoundProxyName(contextId, bean, typeInfo, name) + PROXY_SUFFIX;
+            holder = createCompoundProxyName(contextId, bean, typeInfo, name);
         } else {
             boolean typeModified = false;
             for (Class<?> iface : typeInfo.getInterfaces()) {
@@ -229,16 +206,41 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 //which can happen with some creative use of the SPI
                 //interface only bean.
                 StringBuilder name = new StringBuilder(typeInfo.getSuperClass().getSimpleName() + "$");
-                className = createCompoundProxyName(contextId, bean, typeInfo, name) + PROXY_SUFFIX;
+                holder = createCompoundProxyName(contextId, bean, typeInfo, name);
             } else {
-                className = typeInfo.getSuperClass().getSimpleName() + PROXY_SUFFIX;
+                holder = new ProxyNameHolder(null, typeInfo.getSuperClass().getSimpleName(), bean);
+            }
+        }
+        className = holder.getClassName() + PROXY_SUFFIX;
+        String proxyPackage = holder.getPackageName();
+        if (proxiedBeanType.equals(Object.class)) {
+            Class<?> superInterface = typeInfo.getSuperInterface();
+            if (superInterface == null) {
+                throw new IllegalArgumentException("Proxied bean type cannot be java.lang.Object without an interface");
+            } else {
+                String reason = getDefaultPackageReason(superInterface);
+                if (reason != null) {
+                    proxyPackage = DEFAULT_PROXY_PACKAGE;
+                    BeanLogger.LOG.generatingProxyToDefaultPackage(superInterface, DEFAULT_PROXY_PACKAGE, reason);
+                }
+            }
+        } else {
+            String reason = getDefaultPackageReason(proxiedBeanType);
+            if (reason != null && reason.equals(NO_PACKAGE)) {
+                proxyPackage = DEFAULT_PROXY_PACKAGE;
+                BeanLogger.LOG.generatingProxyToDefaultPackage(proxiedBeanType, DEFAULT_PROXY_PACKAGE, reason);
+            } else {
+                if (proxyPackage == null) {
+                    proxyPackage = proxiedBeanType.getPackage().getName();
+                }
             }
         }
         return proxyPackage + '.' + getEnclosingPrefix(proxiedBeanType) + className;
     }
 
-    private static String createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
+    private static ProxyNameHolder createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
         String className;
+        String proxyPackage = null;
         final List<String> interfaces = new ArrayList<String>();
         final Set<String> declaringClasses = new HashSet<>();
         for (Class<?> type : typeInfo.getInterfaces()) {
@@ -247,6 +249,9 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 interfaces.add(declaringClass.getSimpleName());
             }
             interfaces.add(type.getSimpleName());
+            if (proxyPackage == null) {
+                proxyPackage = typeInfo.getPackageNameForClass(type);
+            }
         }
         // no need to sort the set, because we copied and already sorted one
         for (int i = 0; i < interfaces.size(); i++) {
@@ -267,7 +272,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             name.append(Math.abs(idHash == Integer.MIN_VALUE ? 0 : idHash));
         }
         className = name.toString();
-            return className;
+        return new ProxyNameHolder(proxyPackage, className, bean);
     }
 
     private static String getEnclosingPrefix(Class<?> clazz) {
@@ -919,6 +924,38 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * When creating a proxy class name we can sometimes determine it's package as well.
+     */
+    private static class ProxyNameHolder {
+        private String packageName;
+        private String className;
+
+        private ProxyNameHolder(String packageName, String className, Bean<?> bean) {
+            this.packageName = packageName;
+            if (className == null) {
+                throw BeanLogger.LOG.tryingToCreateProxyNameHolderWithoutClassName(bean.getBeanClass());
+            }
+            this.className = className;
+        }
+
+        /**
+         * Class name, never null
+         * @return class name, never null
+         */
+        public String getClassName() {
+            return className;
+        }
+
+        /**
+         * Package name, can be null
+         * @return package name or null
+         */
+        public String getPackageName() {
+            return packageName;
         }
     }
 }
