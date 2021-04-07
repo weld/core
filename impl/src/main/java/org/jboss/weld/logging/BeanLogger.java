@@ -397,8 +397,6 @@ public interface BeanLogger extends WeldLogger {
 
     /**
      * ID of this message was originally 0 but in jboss-logging zero is a special value meaning no ID
-     *
-     * @param params
      */
     @LogMessage(level = Level.TRACE)
     @Message(id = 1536, value = "Found {0} constructors annotated with @Inject for {1}", format = Format.MESSAGE_FORMAT)
@@ -549,4 +547,7 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1578, value = "WeldDefaultProxyServices failed to load/define a class with name {0} whose original class was {1} because all attempts to determine a class loader ended with null.", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotDetermineClassLoader(Object beanName, Object originalClass);
+
+    @Message(id = 1579, value = "An instance of ProxyFactory.ProxyNameHolder has to contain a class name. This instance was created for bean class: {1}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException tryingToCreateProxyNameHolderWithoutClassName(Object bean);
 }

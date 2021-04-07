@@ -34,7 +34,7 @@ import javax.inject.Inject;
 
 /**
  * Tests that we are able to define a proxy class for producer method that returns a type from different package.
- * In JDK 11+ this means we need to perform lsookup in correct module.
+ * In JDK 11+ this means we need to perform lookup in correct module.
  */
 @RunWith(Arquillian.class)
 public class ClassDefiningWithProducerTest {
