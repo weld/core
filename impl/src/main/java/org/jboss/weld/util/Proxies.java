@@ -24,10 +24,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.Bean;
@@ -39,6 +41,8 @@ import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -56,32 +60,35 @@ public class Proxies {
 
         private final List<Class<?>> interfaces;
         private final List<Class<?>> classes;
+        private final Map<String, String> classToPackageMap;
 
         private TypeInfo(Set<? extends Type> types) {
-            Comparator<Class<?>> classComparator = Comparator.comparing(Class::getName);
             List<Class<?>> foundInterfaces = new ArrayList<>();
             List<Class<?>> foundClasses = new ArrayList<>();
+            Map<String, String> classToPackage = new HashMap<>();
 
-            types.stream().forEach(type -> add(type, foundInterfaces, foundClasses));
+            types.stream().forEach(type -> add(type, foundInterfaces, foundClasses, classToPackage));
 
-            // sort both collections and create unmodifiable lists
-            Collections.sort(foundClasses, classComparator);
-            Collections.sort(foundInterfaces, classComparator);
-            this.interfaces = Collections.unmodifiableList(foundInterfaces);
-            this.classes = Collections.unmodifiableList(foundClasses);
+            // sort both collections and create immutable collections
+            Collections.sort(foundClasses, Comparator.comparing(Class::getName));
+            Collections.sort(foundInterfaces, new CustomClassComparator());
+            this.interfaces = ImmutableList.copyOf(foundInterfaces);
+            this.classes = ImmutableList.copyOf(foundClasses);
+            this.classToPackageMap = ImmutableMap.copyOf(classToPackage);
         }
 
         // only invoked during object construction, arrays are then immutable
-        private TypeInfo add(Type type, List<Class<?>> foundInterfaces, List<Class<?>> foundClasses) {
+        private TypeInfo add(Type type, List<Class<?>> foundInterfaces, List<Class<?>> foundClasses, Map<String, String> classToPackageMap) {
             if (type instanceof Class<?>) {
                 Class<?> clazz = (Class<?>) type;
+                classToPackageMap.put(clazz.getName(), clazz.getPackage().getName());
                 if (clazz.isInterface()) {
                     foundInterfaces.add(clazz);
                 } else {
                     foundClasses.add(clazz);
                 }
             } else if (type instanceof ParameterizedType) {
-                add(((ParameterizedType) type).getRawType(), foundInterfaces, foundClasses);
+                add(((ParameterizedType) type).getRawType(), foundInterfaces, foundClasses, classToPackageMap);
             } else {
                 throw UtilLogger.LOG.cannotProxyNonClassType(type);
             }
@@ -124,6 +131,10 @@ public class Proxies {
 
         public List<Class<?>> getInterfaces() {
             return interfaces;
+        }
+
+        public String getPackageNameForClass(Class<?> clazz) {
+            return classToPackageMap.get(clazz.getName());
         }
 
         public static TypeInfo of(Set<? extends Type> types) {
