@@ -45,7 +45,7 @@ jobs:
           # after the job is done. In this case we refresh the cache monthly (by changing key) to avoid unlimited growth.
           key: q2maven-master-${{ steps.get-date.outputs.date }}
       - name: Build Weld SNAPSHOT
-        run: mvn clean install -DskipTests -B -V
+        run: mvn clean install -DskipTests -B -V -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Patch WildFly
         run: |
           JBOSS_HOME=`pwd`'/container/*'
@@ -116,7 +116,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -pl '!jboss-tck-runner,!impl'
+          mvn clean verify -Dincontainer -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -pl '!jboss-tck-runner,!impl'
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -179,7 +179,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -f jboss-tck-runner/pom.xml
+          mvn clean verify -Dincontainer -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f jboss-tck-runner/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -234,7 +234,7 @@ jobs:
       - name: Build with Maven
         # avoid building impl as that can only be done with JDK 11
         run: |
-          mvn clean verify -pl '!impl'
+          mvn clean verify -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -pl '!impl'
       - name: Test core-impl separately
         run: |
           mvn surefire:test -f impl/pom.xml
@@ -280,7 +280,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Darquillian=wildfly-managed -f examples/pom.xml
+          mvn clean verify -Darquillian=wildfly-managed -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f examples/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -334,7 +334,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn clean verify -Dincontainer=se -f jboss-tck-runner/pom.xml
+          mvn clean verify -Dincontainer=se -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f jboss-tck-runner/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -368,7 +368,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn clean verify -Dincontainer=weld-se-coop -f environments/servlet/tests/jetty/pom.xml
+          mvn clean verify -Dincontainer=weld-se-coop -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f environments/servlet/tests/jetty/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
