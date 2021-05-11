@@ -243,7 +243,7 @@
             </activation>
             <properties>
                 <cdi.tck.version>${cdi.tck-1-2.version}</cdi.tck.version>
-                <saaj.impl.version>1.5.2</saaj.impl.version>
+                <saaj.impl.version>1.5.3</saaj.impl.version>
             </properties>
             <dependencies>
                 <dependency>
