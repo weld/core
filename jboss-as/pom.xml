@@ -50,7 +50,7 @@
 
         <!--Plugin versions-->
         <download.maven.plugin>1.6.1</download.maven.plugin>
-        <patch.gen.plugin>2.1.0.Final</patch.gen.plugin>
+        <patch.gen.plugin>2.1.1.Final</patch.gen.plugin>
     </properties>
 
     <dependencies>
