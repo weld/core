@@ -22,7 +22,7 @@
    </licenses>
 
    <properties>
-       <jakarta.json.version>2.0.0</jakarta.json.version>
+       <jakarta.json.version>2.0.1</jakarta.json.version>
    </properties>
 
    <dependencies>
