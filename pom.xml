@@ -69,7 +69,7 @@
         <spotbugs-annotations-version>4.2.1</spotbugs-annotations-version>
         <glassfish.el.version>2.2.1-b05</glassfish.el.version>
         <groovy.version>2.4.21</groovy.version>
-        <htmlunit.version>2.45.0</htmlunit.version>
+        <htmlunit.version>2.49.1</htmlunit.version>
         <jacoco.version>0.8.6</jacoco.version>
         <jandex.version>2.2.3.Final</jandex.version>
         <javax.activation.version>2.0.0</javax.activation.version>
