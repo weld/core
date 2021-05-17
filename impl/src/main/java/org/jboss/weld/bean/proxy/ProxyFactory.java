@@ -51,6 +51,7 @@ import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.util.Boxing;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -240,7 +241,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private static ProxyNameHolder createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
         String className;
-        String proxyPackage = null;
+        String proxyPackage;
+        if (bean instanceof RIBean) {
+            proxyPackage = typeInfo.getPackageNameForClass(((RIBean) bean).getType());
+        } else {
+            proxyPackage = typeInfo.getPackageNameForClass(bean.getBeanClass());
+        }
         final List<String> interfaces = new ArrayList<String>();
         final Set<String> declaringClasses = new HashSet<>();
         for (Class<?> type : typeInfo.getInterfaces()) {
@@ -373,7 +379,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             proxyClassName = proxyClassName.replaceFirst(JAVA, WELD_PROXY_PREFIX);
         }
         Class<T> proxyClass = null;
-        Class<?> originalClass = bean != null ? bean.getBeanClass() : proxiedBeanType;
+        Class<?> originalClass;
+        if (bean instanceof RIBean) {
+            originalClass = ((RIBean) bean).getType();
+        } else {
+            originalClass = bean != null ? bean.getBeanClass() : proxiedBeanType;
+        }
         BeanLogger.LOG.generatingProxyClass(proxyClassName);
         try {
             // First check to see if we already have this proxy class
