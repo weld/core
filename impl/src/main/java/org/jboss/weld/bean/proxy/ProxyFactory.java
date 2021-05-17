@@ -36,6 +36,7 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,7 @@ import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.util.Boxing;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -241,7 +243,17 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     private static ProxyNameHolder createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
         String className;
         String proxyPackage = null;
-        final List<String> interfaces = new ArrayList<String>();
+        // we need a sorted collection without repetition, hence LinkedHashSet
+        final Set<String> interfaces = new LinkedHashSet<>();
+        // for producers, try to determine the most specific class and make sure the proxy starts with the same package and class
+        if (bean != null && bean instanceof AbstractProducerBean) {
+            Class<?> mostSpecificClass = ((AbstractProducerBean) bean).getType();
+            proxyPackage = mostSpecificClass.getPackage().getName();
+            if (mostSpecificClass.getDeclaringClass() != null) {
+                interfaces.add(mostSpecificClass.getDeclaringClass().getSimpleName());
+            }
+            interfaces.add(mostSpecificClass.getSimpleName());
+        }
         final Set<String> declaringClasses = new HashSet<>();
         for (Class<?> type : typeInfo.getInterfaces()) {
             Class<?> declaringClass = type.getDeclaringClass();
@@ -254,11 +266,13 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             }
         }
         // no need to sort the set, because we copied and already sorted one
-        for (int i = 0; i < interfaces.size(); i++) {
-            name.append(interfaces.get(i));
-            if (i < interfaces.size() - 1) {
+        Iterator<String> iterator = interfaces.iterator();
+        while (iterator.hasNext()) {
+            name.append(iterator.next());
+            if (iterator.hasNext()) {
                 name.append("$");
             }
+
         }
         //there is a remote chance that this could generate the same
         //proxy name for two interfaces with the same simple name.
