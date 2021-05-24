@@ -60,10 +60,6 @@ public class BeanIdentifiers {
         return getPrefix(InterceptorImpl.class).append(type.slim().getIdentifier().asString()).toString();
     }
 
-    public static String forNewManagedBean(EnhancedAnnotatedType<?> type) {
-        return getPrefix(NewManagedBean.class).append(type.slim().getIdentifier().asString()).toString();
-    }
-
     public static String forProducerField(EnhancedAnnotatedField<?, ?> field, AbstractClassBean<?> declaringBean) {
         StringBuilder sb = getPrefix(ProducerField.class).append(declaringBean.getAnnotated().getIdentifier().asString())
                 .append(BEAN_ID_SEPARATOR);

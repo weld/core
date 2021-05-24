@@ -18,7 +18,6 @@ package org.jboss.weld.bean.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +25,6 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.inject.Named;
 import jakarta.inject.Qualifier;
@@ -63,15 +61,6 @@ public class BeanAttributesFactory {
      */
     public static <T> BeanAttributes<T> forBean(EnhancedAnnotated<T, ?> annotated, BeanManagerImpl manager) {
         return new BeanAttributesBuilder<T>(annotated, manager).build();
-    }
-
-    public static <T> BeanAttributes<T> forNewBean(Set<Type> types, final Class<?> javaClass) {
-        Set<Annotation> qualifiers = Collections.<Annotation>singleton(New.Literal.of(javaClass));
-        return new ImmutableBeanAttributes<T>(Collections.<Class<? extends Annotation>> emptySet(), false, null, qualifiers, types, Dependent.class);
-    }
-
-    public static <T> BeanAttributes<T> forNewManagedBean(EnhancedAnnotatedType<T> weldClass, BeanManagerImpl manager) {
-        return forNewBean(SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(weldClass)), weldClass.getJavaClass());
     }
 
     public static class BeanAttributesBuilder<T> {

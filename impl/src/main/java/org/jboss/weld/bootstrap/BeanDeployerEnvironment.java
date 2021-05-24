@@ -26,11 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import jakarta.enterprise.event.Event;
-import jakarta.enterprise.inject.Instance;
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.spi.Extension;
-import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
@@ -41,7 +37,6 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.ManagedBean;
-import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
@@ -49,15 +44,12 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.util.AnnotatedTypes;
-import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.SetMultimap;
-import org.jboss.weld.util.reflection.Reflections;
 
 public class BeanDeployerEnvironment {
 
@@ -191,9 +183,7 @@ public class BeanDeployerEnvironment {
     }
 
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
-        if (!(bean instanceof NewBean)) {
-            classBeanMap.get(bean.getBeanClass()).add(bean);
-        }
+        classBeanMap.get(bean.getBeanClass()).add(bean);
         addAbstractBean(bean);
     }
 
@@ -220,46 +210,10 @@ public class BeanDeployerEnvironment {
 
     public void addDisposesMethod(DisposalMethod<?, ?> bean) {
         allDisposalBeans.add(bean);
-        addNewBeansFromInjectionPoints(bean.getInjectionPoints());
     }
 
     public void addObserverMethod(ObserverInitializationContext<?, ?> observerInitializer) {
         this.observers.add(observerInitializer);
-        addNewBeansFromInjectionPoints(observerInitializer.getObserver().getInjectionPoints());
-    }
-
-    public void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean) {
-        addNewBeansFromInjectionPoints(bean.getInjectionPoints());
-    }
-
-    public void addNewBeansFromInjectionPoints(Set<? extends InjectionPoint> injectionPoints) {
-        for (InjectionPoint injectionPoint : injectionPoints) {
-            WeldInjectionPointAttributes<?, ?> weldInjectionPoint = InjectionPoints.getWeldInjectionPoint(injectionPoint);
-            if (weldInjectionPoint.getQualifier(New.class) != null) {
-
-                Class<?> rawType = Reflections.getRawType(weldInjectionPoint.getType());
-                if (Event.class.equals(rawType)) {
-                    continue;
-                }
-                New _new = weldInjectionPoint.getQualifier(New.class);
-                if (_new.value().equals(New.class)) {
-                    if (rawType.equals(Instance.class)) {
-                        // e.g. @Inject @New(ChequePaymentProcessor.class) Instance<PaymentProcessor> chequePaymentProcessor;
-                        // see WELD-975
-                        Type typeParameter = Reflections.getActualTypeArguments(weldInjectionPoint.getType())[0];
-                        addNewBeanFromInjectionPoint(typeParameter);
-                    } else {
-                        addNewBeanFromInjectionPoint(weldInjectionPoint.getType());
-                    }
-                } else {
-                    addNewBeanFromInjectionPoint(_new.value());
-                }
-            }
-        }
-    }
-
-    private void addNewBeanFromInjectionPoint(Type baseType) {
-        newBeanTypes.add(baseType);
     }
 
     public Set<? extends RIBean<?>> getBeans() {

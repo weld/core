@@ -33,7 +33,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory.BeanAttributesBuilder;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -94,11 +93,6 @@ class SessionBeans {
         return builder.toString();
     }
 
-    public static String createIdentifierForNew(EjbDescriptor<?> descriptor) {
-        StringBuilder builder = BeanIdentifiers.getPrefix(NewSessionBean.class);
-        return appendEjbNameAndClass(builder, descriptor).toString();
-    }
-
     private static StringBuilder appendEjbNameAndClass(StringBuilder builder, EjbDescriptor<?> descriptor) {
         return builder.append(descriptor.getEjbName()).append(BEAN_ID_SEPARATOR).append(descriptor.getBeanClass().getName());
     }
@@ -112,11 +106,6 @@ class SessionBeans {
     public static <T> BeanAttributes<T> createBeanAttributes(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
         final Set<Type> types = SharedObjectCache.instance(manager).getSharedSet(getSessionBeanTypes(annotated, Reflections.<InternalEjbDescriptor<T>> cast(descriptor)));
         return new BeanAttributesBuilder<T>(annotated, types, manager).build();
-    }
-
-    public static <T> BeanAttributes<T> createBeanAttributesForNew(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager, Class<?> javaClass) {
-        final BeanAttributes<T> originalAttributes = createBeanAttributes(annotated, descriptor, manager);
-        return BeanAttributesFactory.forNewBean(originalAttributes.getTypes(), javaClass);
     }
 
     /**

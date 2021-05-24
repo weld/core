@@ -449,7 +449,6 @@ public class WeldStartup {
         }
         for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.getBeanDeployer().processProducerAttributes();
-            deployment.getBeanDeployer().createNewBeans();
         }
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.deploySpecialized(environment);

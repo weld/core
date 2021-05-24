@@ -30,7 +30,6 @@ import java.util.Set;
 
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Instance;
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Decorator;
@@ -152,16 +151,7 @@ public class ResolvableBuilder {
     private ResolvableBuilder addQualifier(Annotation qualifier, InjectionPoint injectionPoint) {
         QualifierInstance qualifierInstance = QualifierInstance.of(qualifier, store);
         final Class<? extends Annotation> annotationType = qualifierInstance.getAnnotationClass();
-        // Handle the @New qualifier special case
-        if (annotationType.equals(New.class)) {
-            New newQualifier = New.class.cast(qualifier);
-            if (newQualifier.value().equals(New.class) && rawType == null) {
-                throw new IllegalStateException("Cannot transform @New when there is no known raw type");
-            } else if (newQualifier.value().equals(New.class)) {
-                qualifier = New.Literal.of(rawType);
-                qualifierInstance = QualifierInstance.of(qualifier, store);
-            }
-        } else if (injectionPoint != null && annotationType.equals(Named.class)) {
+        if (injectionPoint != null && annotationType.equals(Named.class)) {
             Named named = (Named) qualifier;
             if (named.value().equals("")) {
                 // WELD-1739

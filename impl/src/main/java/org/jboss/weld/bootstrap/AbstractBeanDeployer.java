@@ -17,7 +17,6 @@
 package org.jboss.weld.bootstrap;
 
 import java.lang.reflect.Member;
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import jakarta.enterprise.inject.Disposes;
@@ -38,8 +37,6 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.ManagedBean;
-import org.jboss.weld.bean.NewBean;
-import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
@@ -124,9 +121,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     protected AbstractBeanDeployer<E> fireProcessBeanEvents() {
         for (RIBean<?> bean : getEnvironment().getBeans()) {
-            if (!(bean instanceof NewBean)) {
-                containerLifecycleEvents.fireProcessBean(getManager(), bean);
-            }
+            containerLifecycleEvents.fireProcessBean(getManager(), bean);
         }
         return this;
     }
@@ -136,7 +131,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             return;
         }
         for (AbstractBean<?, ?> bean : beans) {
-            if (!(bean instanceof NewBean) && bean instanceof AbstractClassBean<?>) {
+            if (bean instanceof AbstractClassBean<?>) {
                 containerLifecycleEvents.fireProcessInjectionTarget(getManager(), (AbstractClassBean<?>) bean);
             }
         }
@@ -147,7 +142,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             return;
         }
         for (AbstractBean<?, ?> bean : beans) {
-            if (!(bean instanceof NewBean) && bean instanceof AbstractProducerBean<?, ?, ?>) {
+            if (bean instanceof AbstractProducerBean<?, ?, ?>) {
                 containerLifecycleEvents.fireProcessProducer(getManager(), Reflections.<AbstractProducerBean<?, ?, Member>>cast(bean));
             }
         }
@@ -280,12 +275,6 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         ManagedBean<T> bean = ManagedBean.of(attributes, weldClass, manager);
         getEnvironment().addManagedBean(bean);
         return bean;
-    }
-
-    protected <T> void createNewManagedBean(Class<T> clazz, Type type) {
-        EnhancedAnnotatedType<T> enhancedType = classTransformer.getEnhancedAnnotatedType(clazz, type, manager.getId());
-        slimAnnotatedTypeStore.put(enhancedType.slim());
-        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(enhancedType, manager), enhancedType, manager));
     }
 
     protected <T> void createDecorator(EnhancedAnnotatedType<T> weldClass) {
