@@ -17,7 +17,6 @@
 package org.jboss.weld.bootstrap;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +50,6 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Pete Muir
@@ -244,11 +242,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         processBeans(getEnvironment().getClassBeans());
         processBeans(getEnvironment().getDecorators());
         processBeans(getEnvironment().getInterceptors());
-
-        // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
-        searchForNewBeanDeclarations(getEnvironment().getClassBeans());
-        searchForNewBeanDeclarations(getEnvironment().getDecorators());
-        searchForNewBeanDeclarations(getEnvironment().getInterceptors());
     }
 
     private void preInitializeBeans(Iterable<? extends AbstractBean<?, ?>> beans) {
@@ -295,12 +288,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         processBeans(previouslySpecializedBeans);
     }
 
-    protected void searchForNewBeanDeclarations(Iterable<? extends AbstractBean<?, ?>> beans) {
-        for (AbstractBean<?, ?> bean : beans) {
-            getEnvironment().addNewBeansFromInjectionPoints(bean);
-        }
-    }
-
     public void createProducersAndObservers() {
         for (AbstractClassBean<?> bean : getEnvironment().getClassBeans()) {
             createObserversProducersDisposers(bean);
@@ -309,21 +296,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void processProducerAttributes() {
         processBeans(getEnvironment().getProducerFields());
-        searchForNewBeanDeclarations(getEnvironment().getProducerFields());
         // process BeanAttributes for producer methods
         preInitializeBeans(getEnvironment().getProducerMethodBeans());
         processBeans(getEnvironment().getProducerMethodBeans());
-        searchForNewBeanDeclarations(getEnvironment().getProducerMethodBeans());
-    }
-
-    public void createNewBeans() {
-        for (Type type : getEnvironment().getNewBeanTypes()) {
-            Class<?> clazz = Reflections.getRawType(type);
-            if (!ejbSupport.isEjb(clazz)) {
-                createNewManagedBean(clazz, type);
-            }
-        }
-        ejbSupport.createNewSessionBeans(getEnvironment(), getManager());
     }
 
     public void deploy() {

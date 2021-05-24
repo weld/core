@@ -46,7 +46,6 @@ import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Intercepted;
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.TransientReference;
 import jakarta.enterprise.inject.spi.Annotated;
@@ -75,7 +74,6 @@ import org.jboss.weld.bean.DecorableBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
-import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
@@ -162,9 +160,6 @@ public class Validator implements Service {
      */
     protected void validateRIBean(CommonBean<?> bean, BeanManagerImpl beanManager, Collection<CommonBean<?>> specializedBeans) {
         validateGeneralBean(bean, beanManager);
-        if (bean instanceof NewBean) {
-            return;
-        }
         if (bean instanceof DecorableBean) {
             validateDecorators(beanManager, (DecorableBean<?>) bean);
         }
@@ -294,9 +289,6 @@ public class Validator implements Service {
      * Checks for definition errors associated with a given {@link InjectionPoint}
      */
     public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
-        if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
-            throw ValidatorLogger.LOG.newWithQualifiers(ij, Formats.formatAsStackTraceElement(ij));
-        }
         if (ij.getType() instanceof TypeVariable<?>) {
             throw ValidatorLogger.LOG.injectionPointWithTypeVariable(ij, Formats.formatAsStackTraceElement(ij));
         }
@@ -321,10 +313,7 @@ public class Validator implements Service {
                 throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(), Reflections.<AnnotatedField<?>>cast(ij.getAnnotated()).getDeclaringType());
             }
         }
-        boolean newBean = (bean instanceof NewBean);
-        if (!newBean) {
-            checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
-        }
+        checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
         checkFacadeInjectionPoint(ij, Instance.class);
         checkFacadeInjectionPoint(ij, Event.class);
 
@@ -716,9 +705,7 @@ public class Validator implements Service {
             // lookup structure for validation of alternatives
             Multimap<Class<?>, Bean<?>> beansByClass = SetMultimap.newSetMultimap();
             for (Bean<?> bean : beanManager.getDynamicAccessibleBeans()) {
-                if (!(bean instanceof NewBean)) {
-                    beansByClass.put(bean.getBeanClass(), bean);
-                }
+                beansByClass.put(bean.getBeanClass(), bean);
             }
             for (Metadata<String> definition : beansXml.getEnabledAlternativeClasses()) {
                 Class<?> enabledClass = loadedClasses.get(definition.getValue());

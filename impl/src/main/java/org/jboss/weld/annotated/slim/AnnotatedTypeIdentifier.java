@@ -19,7 +19,6 @@ package org.jboss.weld.annotated.slim;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
@@ -38,7 +37,7 @@ import org.jboss.weld.util.Types;
  *    <li>The declaring class name.</li>
  *    <li>An optional suffix. The suffix is used for two purposes.</li>
  *    <ul>
- *       <li>If a {@link BackedAnnotatedType} is created for a parameterized type (a {@link New} injection point), suffix is set to an identifier of that type</li>
+ *       <li>If a {@link BackedAnnotatedType} is created for a parameterized type, suffix is set to an identifier of that type</li>
  *       <li>For an {@link UnbackedAnnotatedType} suffix holds the type identifier provided by the extension or calculated based on the type's qualities (see {@link AnnotatedTypes#createTypeId(AnnotatedType)})</li>
  *    </ul>
  *    <li>Modified flag which indicates whether this is an identifier for an {@link AnnotatedType} which has been modified during {@link ProcessAnnotatedType} event notification.</li>

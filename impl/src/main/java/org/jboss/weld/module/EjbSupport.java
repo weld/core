@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 
@@ -81,15 +80,6 @@ public interface EjbSupport extends Service {
      * @param manager
      */
     void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> classes, BeanManagerImpl manager);
-
-    /**
-     * Creates {@link New} session beans and registers them within the given environment.
-     *
-     * @param environment
-     * @param classes
-     * @param manager
-     */
-    void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager);
 
     /**
      * Returns the class object for the {@link jakarta.ejb.Timeout} annotation.
@@ -162,10 +152,6 @@ public interface EjbSupport extends Service {
 
         @Override
         public void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> classes, BeanManagerImpl manager) {
-        }
-
-        @Override
-        public void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
         }
 
         @Override

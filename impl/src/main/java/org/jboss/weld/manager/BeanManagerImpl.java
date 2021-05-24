@@ -91,7 +91,6 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ContextualInstance;
-import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.SyntheticBeanFactory;
@@ -457,8 +456,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                     getServices().get(ContextualStore.class).putIfAbsent(bean);
                 }
                 registerBeanNamespace(bean);
-                // New beans (except for SessionBeans) and most built in beans aren't resolvable transitively
-                if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
+                // SessionBeans and most built in beans aren't resolvable transitively
+                if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof AbstractBuiltInBean<?>))) {
                     transitiveBeans.add(bean);
                 }
             }
