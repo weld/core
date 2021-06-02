@@ -23,8 +23,6 @@
     <properties>
         <!-- This matches the htmlunit version in TCK -->
         <htmlunit.version>2.50.0</htmlunit.version>
-        <!-- Make the surefire plugin version explicit -->
-        <surefire.version>3.0.0-M5</surefire.version>
     </properties>
 
     <dependencies>
@@ -248,7 +246,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.1.2</version>
                         <executions>
                             <execution>
                                 <id>copy-test-suites</id>
@@ -506,8 +503,9 @@
                             <excludedGroups>${excluded.groups}</excludedGroups>
                             <properties>
                                 <property>
+                                    <!-- Note a 7.4.0 issue results in NPEs and useless output if you go higher than 1 here -->
                                     <name>surefire.testng.verbose</name>
-                                    <value>1</value>
+                                    <value>0</value>
                                 </property>
                             </properties>
                             <systemPropertyVariables>
@@ -523,7 +521,6 @@
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <additional.vm.args>-Dtest=org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryEarTest</additional.vm.args>
                                 <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
-                                <test>org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryEarTest</test>
                             </systemProperties>
                             <suiteXmlFiles>
                                 <suiteXmlFile>target/suites/tck-web-suite.xml</suiteXmlFile>
