@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/schema/arquillian" xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-    <defaultProtocol type="Servlet 3.0" />
+    <defaultProtocol type="Servlet 5.0" />
 
     <engine>
         <property name="maxTestClassesBeforeRestart">250</property>
         <!-- property name="deploymentExportPath">target/</property-->
     </engine>
 
-    <container qualifier="wildfly-8" default="true">
+    <container qualifier="wildfly-23" default="true">
         <configuration>
             <!-- This config file includes embedded JMS broker and is copied into WFLY dir from ${JBOSS_HOME}/docs/examples/configs -->
             <property name="serverConfig">standalone-activemq-embedded.xml</property>
-            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true ${illegal.access.option} ${additional.vm.args} ${jacoco.agent}</property>
+            <property name="javaVmArguments">-Xms128m -Xmx1g -ea -DcdiTckExcludeDummy=true ${gc.args} ${illegal.access.option} ${additional.vm.args} ${jacoco.agent}</property>
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="startupTimeoutInSeconds">${server.startup.timeout:60}</property>
         </configuration>
-        <protocol type="Servlet 3.0">
+        <protocol type="Servlet 5.0">
             <property name="host">127.0.0.1</property>
             <property name="port">8080</property>
         </protocol>
