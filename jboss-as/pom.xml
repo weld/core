@@ -86,7 +86,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-ext-lib</artifactId>
-            <version>${cdi.tck-3-0.version}</version>
+            <version>${cdi.tck-4-0.version}</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -297,7 +297,7 @@
                                     <target>
                                         <copy todir="${env.JBOSS_HOME}/standalone/lib/ext" overwrite="true">
                                             <fileset dir="target/dependency/lib">
-                                                <include name="cdi-tck-ext-lib-${cdi.tck-3-0.version}.jar" />
+                                                <include name="cdi-tck-ext-lib-${cdi.tck-4-0.version}.jar" />
                                             </fileset>
                                         </copy>
                                     </target>
