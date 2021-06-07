@@ -501,6 +501,17 @@
                         <version>${surefire.version}</version>
                         <configuration>
                             <excludedGroups>${excluded.groups}</excludedGroups>
+
+                            <argLine>
+                                --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                                --add-opens=java.base/java.io=ALL-UNNAMED
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                                --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                                --add-opens=java.base/java.security=ALL-UNNAMED
+                                --add-opens=java.base/java.util=ALL-UNNAMED
+                                --add-opens=java.management/javax.management=ALL-UNNAMED
+                                --add-opens=java.naming/javax.naming=ALL-UNNAMED
+                            </argLine>
                             <properties>
                                 <property>
                                     <!-- Note a 7.4.0 issue results in NPEs and useless output if you go higher than 1 here -->
@@ -519,7 +530,19 @@
                             </systemPropertyVariables>
                             <systemProperties>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <additional.vm.args>-Dtest=org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryEarTest</additional.vm.args>
+                                <!-- Specifiy any garbage collection related args here -->
+                                <gc.args></gc.args>
+                                <!-- This property propagates to the javaVmArguments in arquillian.xml -->
+                                <additional.vm.args>
+                                    --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                                    --add-opens=java.base/java.io=ALL-UNNAMED
+                                    --add-opens=java.base/java.lang=ALL-UNNAMED
+                                    --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                                    --add-opens=java.base/java.security=ALL-UNNAMED
+                                    --add-opens=java.base/java.util=ALL-UNNAMED
+                                    --add-opens=java.management/javax.management=ALL-UNNAMED
+                                    --add-opens=java.naming/javax.naming=ALL-UNNAMED
+                                </additional.vm.args>
                                 <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
                             </systemProperties>
                             <suiteXmlFiles>
