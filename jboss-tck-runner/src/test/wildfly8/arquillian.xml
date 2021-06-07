@@ -12,7 +12,7 @@
         <configuration>
             <!-- This config file includes embedded JMS broker and is copied into WFLY dir from ${JBOSS_HOME}/docs/examples/configs -->
             <property name="serverConfig">standalone-activemq-embedded.xml</property>
-            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true ${illegal.access.option} ${additional.vm.args} ${jacoco.agent}</property>
+            <property name="javaVmArguments">-Xms128m -Xmx1g -ea -DcdiTckExcludeDummy=true ${illegal.access.option} ${additional.vm.args} ${jacoco.agent}</property>
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="startupTimeoutInSeconds">${server.startup.timeout:60}</property>

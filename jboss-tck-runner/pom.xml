@@ -419,6 +419,17 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludedGroups>${excluded.groups}</excludedGroups>
+                            <argLine>
+                                --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                                --add-opens=java.base/java.io=ALL-UNNAMED
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                                --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                                --add-opens=java.base/java.security=ALL-UNNAMED
+                                --add-opens=java.base/java.util=ALL-UNNAMED
+                                --add-opens=java.management/javax.management=ALL-UNNAMED
+                                --add-opens=java.naming/javax.naming=ALL-UNNAMED"
+                            </argLine>
+
                             <systemPropertyVariables>
                                 <!-- Silencing the broken code in getActiveConfiguration(),
                                     see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
@@ -430,7 +441,18 @@
                             </systemPropertyVariables>
                             <systemProperties>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <!-- This property propagates to the javaVmArguments in arquillian.xml -->
+                                <additional.vm.args>
+                                    --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                                    --add-opens=java.base/java.io=ALL-UNNAMED
+                                    --add-opens=java.base/java.lang=ALL-UNNAMED
+                                    --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                                    --add-opens=java.base/java.security=ALL-UNNAMED
+                                    --add-opens=java.base/java.util=ALL-UNNAMED
+                                    --add-opens=java.management/javax.management=ALL-UNNAMED
+                                    --add-opens=java.naming/javax.naming=ALL-UNNAMED"
+                                </additional.vm.args>
+
                                 <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
                             </systemProperties>
                         </configuration>
