@@ -22,6 +22,8 @@ import jakarta.enterprise.util.AnnotationLiteral;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
@@ -50,8 +52,8 @@ public class HSListener implements HttpSessionListener {
     @SuppressWarnings("serial")
     public void sessionCreated(HttpSessionEvent se) {
         // Use a special qualifier to distinguish @Initialized context events
-        getBeanManager().fireEvent(se.getSession(), new AnnotationLiteral<Lifecycle>() {
-        });
+        getBeanManager().getEvent().select(HttpSession.class, new AnnotationLiteral<Lifecycle>() {
+        }).fire(se.getSession());
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {

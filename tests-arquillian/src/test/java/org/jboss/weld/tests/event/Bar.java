@@ -49,12 +49,12 @@ public class Bar {
     }
 
     public void fireWithNoQualifiersViaManager() {
-        manager.fireEvent("");
+        manager.getEvent().select(String.class).fire("");
     }
 
     public void fireWithUpdatedQualifierViaManager() {
-        manager.fireEvent("", new AnnotationLiteral<Updated>() {
-        });
+        manager.getEvent().select(String.class, new AnnotationLiteral<Updated>() {
+        }).fire("");
     }
 
     public void fireWithUpdatedQualifierViaAnnotation() {

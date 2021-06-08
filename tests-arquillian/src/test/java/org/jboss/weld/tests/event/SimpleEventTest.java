@@ -57,8 +57,8 @@ public class SimpleEventTest {
     public void testFireEventOnManager() {
         initFlags();
 
-        beanManager.fireEvent("Fired using Manager Interface with AnnotationLiteral.", new AnnotationLiteral<Updated>() {
-        });
+        beanManager.getEvent().select(String.class, new AnnotationLiteral<Updated>() {
+        }).fire("Fired using Manager Interface with AnnotationLiteral.");
 
         assert RECEIVE_1_OBSERVED == true;
         assert RECEIVE_2_OBSERVED == true;
@@ -66,7 +66,7 @@ public class SimpleEventTest {
 
         initFlags();
 
-        beanManager.fireEvent("Fired using Manager Interface.");
+        beanManager.getEvent().select(String.class).fire("Fired using Manager Interface.");
 
         assert RECEIVE_1_OBSERVED == false; // not called
         assert RECEIVE_2_OBSERVED == true;

@@ -43,8 +43,8 @@ public class CustomExtension implements Extension {
                 return foo;
             }
         };
-        event.addAnnotatedType(foo);
-        event.addAnnotatedType(bar);
+        event.addAnnotatedType(foo, Foo.class.getSimpleName());
+        event.addAnnotatedType(bar, Bar.class.getSimpleName());
     }
 
     protected <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(BeanManager manager, Class<T> javaClass) {

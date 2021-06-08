@@ -54,7 +54,7 @@ public class AnnotatedTypeObserversTest
    @Test
    public void testRoomObservers()
    {
-      beanManager.fireEvent(new CleanEvent());
+      beanManager.getEvent().select(CleanEvent.class).fire(new CleanEvent());
 
       Assert.assertTrue(hall.isClean());
       Assert.assertTrue(pit.isClean());

@@ -36,6 +36,6 @@ public class AppleExtension implements Extension {
             public AnnotatedType<Apple> delegate() {
                 return type;
             }
-        });
+        }, Apple.class.getSimpleName() + "AnnotatedType");
     }
 }

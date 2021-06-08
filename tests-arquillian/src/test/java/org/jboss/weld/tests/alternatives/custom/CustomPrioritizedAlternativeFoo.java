@@ -92,9 +92,4 @@ public class CustomPrioritizedAlternativeFoo implements Bean<Foo>, Prioritized {
     public Set<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
     }
-
-    @Override
-    public boolean isNullable() {
-        return false;
-    }
 }

@@ -42,6 +42,6 @@ public class InheritanceTest {
 
     @Test
     public void testInheritance(BeanManager manager) throws Exception {
-        manager.fireEvent(new MyEvent());
+        manager.getEvent().select(MyEvent.class).fire(new MyEvent());
     }
 }

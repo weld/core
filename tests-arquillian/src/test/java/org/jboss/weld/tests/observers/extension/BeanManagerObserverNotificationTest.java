@@ -32,6 +32,6 @@ public class BeanManagerObserverNotificationTest extends AbstractObserverNotific
 
     @Override
     public void fireEvent(Giraffe payload, Annotation... qualifiers) {
-        manager.fireEvent(payload, qualifiers);
+        manager.getEvent().select(Giraffe.class, qualifiers).fire(payload);
     }
 }

@@ -50,7 +50,8 @@ public class SerializationTest {
     public void testSerializationOfEventInNonContextual() throws Exception {
 
         NonContextual instance = new NonContextual();
-        beanManager.createInjectionTarget(beanManager.createAnnotatedType(NonContextual.class)).inject(
+        beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(NonContextual.class))
+                .createInjectionTarget(null).inject(
                 instance, beanManager.createCreationalContext((Contextual<NonContextual>) null));
         new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(instance);
     }

@@ -527,11 +527,6 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         }
 
         @Override
-        public boolean isNullable() {
-            return false;
-        }
-
-        @Override
         protected BeanAttributes<T> attributes() {
             return attributes;
         }

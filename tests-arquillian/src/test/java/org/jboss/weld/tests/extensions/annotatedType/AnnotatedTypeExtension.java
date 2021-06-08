@@ -338,7 +338,7 @@ public class AnnotatedTypeExtension implements Extension {
         };
         clothesParameters.add(clothesParameter);
 
-        beforeBeanDiscovery.addAnnotatedType(tumbleDryer);
+        beforeBeanDiscovery.addAnnotatedType(tumbleDryer, TumbleDryer.class.getSimpleName());
     }
 
     /**
@@ -435,7 +435,7 @@ public class AnnotatedTypeExtension implements Extension {
         };
         constructors.add(constructor);
 
-        beforeBeanDiscovery.addAnnotatedType(type);
+        beforeBeanDiscovery.addAnnotatedType(type, WashingMachine.class.getSimpleName());
     }
 
     public void vetoOriginalTumbleDryer(@Observes ProcessAnnotatedType<TumbleDryer> event) {

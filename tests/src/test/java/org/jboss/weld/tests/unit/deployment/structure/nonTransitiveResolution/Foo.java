@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
@@ -25,11 +24,6 @@ public class Foo {
     // Inject the bean manager to make sure the bean is intranstive
     @Inject
     private BeanManager beanManager;
-
-    // Inject the @New bean to make sure the bean is intranstive
-    @Inject
-    @New
-    String str;
 
     public BeanManager getBeanManager() {
         return beanManager;

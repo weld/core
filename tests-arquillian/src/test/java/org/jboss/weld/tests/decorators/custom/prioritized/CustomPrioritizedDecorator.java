@@ -108,11 +108,6 @@ public class CustomPrioritizedDecorator implements Decorator<FooDecorator>, Pass
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public FooDecorator create(CreationalContext<FooDecorator> creationalContext) {
         FooDecorator fooDecorator = new FooDecorator();
         fooDecorator.delegate = (Decorated) beanManager.getInjectableReference(injectionPoints.iterator().next(),

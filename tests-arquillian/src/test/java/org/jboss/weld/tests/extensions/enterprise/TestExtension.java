@@ -102,11 +102,6 @@ public class TestExtension implements Extension {
             public Set<InjectionPoint> getInjectionPoints() {
                 return Collections.emptySet();
             }
-
-            @Override
-            public boolean isNullable() {
-                return false;
-            }
         });
 
     }

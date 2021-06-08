@@ -182,11 +182,6 @@ public class WrongExtension implements Extension {
         }
 
         @Override
-        public boolean isNullable() {
-            return false;
-        }
-
-        @Override
         public Set<Type> getTypes() {
             HashSet<Type> set = new HashSet<Type>();
             set.add(Foo.class);

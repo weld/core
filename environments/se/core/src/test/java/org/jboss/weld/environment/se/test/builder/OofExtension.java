@@ -26,7 +26,8 @@ import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 public class OofExtension implements Extension {
 
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
-        event.addAnnotatedType(new AnnotatedTypeWrapper<Oof>(beanManager.createAnnotatedType(Oof.class), false));
+        event.addAnnotatedType(new AnnotatedTypeWrapper<Oof>(beanManager.createAnnotatedType(Oof.class), false),
+                Oof.class.getSimpleName());
     }
 
 }

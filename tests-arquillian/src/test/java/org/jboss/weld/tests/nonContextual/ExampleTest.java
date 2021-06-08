@@ -79,7 +79,7 @@ public class ExampleTest {
         public NonContextual(BeanManager manager, Class<T> clazz) {
             this.manager = manager;
             AnnotatedType<T> type = manager.createAnnotatedType(clazz);
-            this.it = manager.createInjectionTarget(type);
+            this.it = manager.getInjectionTargetFactory(type).createInjectionTarget(null);
         }
 
         public CreationalContext<T> postConstruct(T instance) {

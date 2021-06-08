@@ -24,7 +24,7 @@ import jakarta.enterprise.inject.spi.Extension;
 public class TestExtension implements Extension {
 
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
-        event.addAnnotatedType(beanManager.createAnnotatedType(Foo.class));
+        event.addAnnotatedType(beanManager.createAnnotatedType(Foo.class), Foo.class.getSimpleName());
     }
 
 }

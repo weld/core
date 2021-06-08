@@ -113,13 +113,6 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
     }
 
     @Override
-    public void addAnnotatedType(AnnotatedType<?> source) {
-        checkWithinObserverNotification();
-        BootstrapLogger.LOG.deprecatedAddAnnotatedTypeMethodUsed(source.getJavaClass());
-        addAnnotatedType(source, null);
-    }
-
-    @Override
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
         checkWithinObserverNotification();
         addSyntheticAnnotatedType(type, id);

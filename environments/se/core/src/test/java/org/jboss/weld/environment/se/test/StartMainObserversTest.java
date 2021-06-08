@@ -49,7 +49,7 @@ public class StartMainObserversTest {
 
         WeldContainer container = startMain.go();
         BeanManager manager = container.getBeanManager();
-        manager.fireEvent(new CustomEvent());
+        manager.getEvent().select(CustomEvent.class).fire(new CustomEvent());
 
         assertTrue(ObserverTestBean.isBuiltInObserved());
         assertTrue(ObserverTestBean.isCustomObserved());

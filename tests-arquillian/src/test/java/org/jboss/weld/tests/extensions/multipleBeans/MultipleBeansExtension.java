@@ -47,19 +47,19 @@ public class MultipleBeansExtension implements Extension {
         Method format = BlogFormatter.class.getMethod("format");
         formatter.addToMethod(format, new ProducesLiteral());
         formatter.addToMethod(format, new FormattedBlogLiteral("Bob"));
-        event.addAnnotatedType(formatter.create());
+        event.addAnnotatedType(formatter.create(), BlogFormatter.class.getSimpleName());
 
         TestAnnotatedTypeBuilder<BlogConsumer> consumer = new TestAnnotatedTypeBuilder<BlogConsumer>(BlogConsumer.class);
         consumer.addToClass(new ConsumerLiteral("Bob"));
         content = BlogConsumer.class.getField("blogContent");
         consumer.addToField(content, new InjectLiteral());
         consumer.addToField(content, new FormattedBlogLiteral("Bob"));
-        event.addAnnotatedType(consumer.create());
+        event.addAnnotatedType(consumer.create(), BlogConsumer.class.getSimpleName());
 
         // two beans that are exactly the same
         // this is not very useful, however should still work
         TestAnnotatedTypeBuilder<UselessBean> uselessBuilder = new TestAnnotatedTypeBuilder<UselessBean>(UselessBean.class);
-        event.addAnnotatedType(uselessBuilder.create());
+        event.addAnnotatedType(uselessBuilder.create(), UselessBean.class.getSimpleName());
 
     }
 

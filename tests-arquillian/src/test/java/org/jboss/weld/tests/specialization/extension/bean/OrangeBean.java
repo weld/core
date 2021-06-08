@@ -78,11 +78,6 @@ public class OrangeBean implements Bean<Orange> {
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public Class<?> getBeanClass() {
         return Orange.class;
     }

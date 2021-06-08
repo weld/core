@@ -54,7 +54,7 @@ public class InjectionTargetTest {
     @Test
     public void testCreateInjectionTargetOfInterface(BeanManager beanManager) {
         try {
-            beanManager.createInjectionTarget(beanManager.createAnnotatedType(Foo.class));
+            beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(Foo.class)).createInjectionTarget(null);
         } catch (IllegalArgumentException e) {
             return;
         }

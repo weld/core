@@ -55,7 +55,7 @@ public class EjbTestBean {
             manager.persist(new Object());
         } catch (Exception e) {
             ctx.setRollbackOnly();
-            beanManager.fireEvent(new Foo());
+            beanManager.getEvent().select(Foo.class).fire(new Foo());
         }
     }
 }

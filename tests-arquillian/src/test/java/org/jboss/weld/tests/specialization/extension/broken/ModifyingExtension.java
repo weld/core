@@ -63,6 +63,6 @@ public class ModifyingExtension implements Extension {
                 return Named.class.equals(annotationType);
             }
         };
-        event.addAnnotatedType(modifiedAnotherFoo);
+        event.addAnnotatedType(modifiedAnotherFoo, Foo.class.getSimpleName() + "Modified");
     }
 }

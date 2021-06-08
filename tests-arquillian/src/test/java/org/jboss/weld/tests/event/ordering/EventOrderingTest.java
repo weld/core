@@ -31,7 +31,7 @@ public class EventOrderingTest {
     public void testOrdering() {
 
         EventPayload p1 = new EventPayload();
-        manager.fireEvent(p1);
+        manager.getEvent().select(EventPayload.class).fire(p1);
 
         p1.assertObservers(Alpha.class.getName(), Charlie.class.getName(), Bravo.class.getName(), NoPriority.class.getName());
         p1.reset();

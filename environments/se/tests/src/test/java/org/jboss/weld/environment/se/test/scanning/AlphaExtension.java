@@ -26,7 +26,8 @@ import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 public class AlphaExtension implements Extension, MyExtension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(Alpha.class, beanManager));
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(Alpha.class, beanManager),
+                Alpha.class.getSimpleName());
     }
 
 }
