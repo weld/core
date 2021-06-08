@@ -30,7 +30,7 @@
     </developers>
 
     <properties>
-        <weld.api.bom.version>5.0-SNAPSHOT</weld.api.bom.version>
+        <weld.api.bom.version>5.0.Alpha1</weld.api.bom.version>
         <gpg.plugin.version>3.0.1</gpg.plugin.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
@@ -144,8 +144,9 @@
                   <artifactId>maven-gpg-plugin</artifactId>
                   <version>${gpg.plugin.version}</version>
                   <configuration>
-                     <passphrase>${gpg.passphrase}</passphrase>
-                     <useAgent>${gpg.useAgent}</useAgent>
+                      <!-- Without interactive=true, there is no prompt for pwd when running on gpg plugin 3.0.1 -->
+                      <interactive>true</interactive>
+                      <useAgent>${gpg.useAgent}</useAgent>
                   </configuration>
                   <executions>
                      <execution>
