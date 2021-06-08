@@ -16,13 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processInjectionPoint.modify;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.New;
-import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -54,14 +50,5 @@ public class InjectionPointOverridingTest {
         assertTrue(hound.decorated());
         assertNotNull(dog);
         assertTrue(dog.decorated());
-    }
-
-    @Test
-    public void testNewInjectionPointDiscovered(InjectingBean bean, BeanManager manager) {
-        assertEquals(1, manager.getBeans(Cat.class, New.Literal.INSTANCE).size());
-        assertNotNull(bean.getCat());
-        assertNotNull(bean.getCat().getBean());
-        assertEquals(Dependent.class, bean.getCat().getBean().getScope());
-        assertEquals(null, bean.getCat().getBean().getName());
     }
 }

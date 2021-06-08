@@ -65,7 +65,6 @@ import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeShutdown;
 import jakarta.enterprise.inject.spi.Decorator;
-import jakarta.enterprise.inject.spi.EventMetadata;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.InjectionTarget;
@@ -119,7 +118,6 @@ import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventImpl;
-import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverMethodImpl;
@@ -179,7 +177,6 @@ import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
-import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
@@ -617,21 +614,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Fires an event object with given event object for given bindings
-     *
-     * @param event The event object to pass along
-     * @param qualifiers The binding types to match
-     * @seejakarta.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
-     */
-    @Override
-    public void fireEvent(Object event, Annotation... qualifiers) {
-        Preconditions.checkArgumentNotNull(event, "event");
-        Type eventType = Types.getCanonicalType(event.getClass());
-        EventMetadata metadata = new EventMetadataImpl(eventType, null, qualifiers);
-        globalStrictObserverNotifier.fireEvent(event, metadata, qualifiers);
-    }
-
-    /**
      * Gets an active context of the given scope. Throws an exception if there are no active contexts found or if there are too many matches
      *
      * @throws IllegalStateException if there are multiple active scopes for a given context
@@ -1014,11 +996,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        return getInjectionTargetFactory(type).createInjectionTarget(null);
-    }
-
-    @Override
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         if (descriptor.isMessageDriven()) {
             AnnotatedType<T> type = Reflections.cast(createAnnotatedType(descriptor.getBeanClass()));
@@ -1234,7 +1211,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType) {
-        return fireProcessInjectionTarget(annotatedType, createInjectionTarget(annotatedType));
+        return fireProcessInjectionTarget(annotatedType, getInjectionTargetFactory(annotatedType).createInjectionTarget(null));
     }
 
     @Override

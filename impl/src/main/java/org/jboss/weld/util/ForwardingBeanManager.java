@@ -40,7 +40,6 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.InjectionPoint;
-import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.enterprise.inject.spi.InjectionTargetFactory;
 import jakarta.enterprise.inject.spi.InterceptionFactory;
 import jakarta.enterprise.inject.spi.InterceptionType;
@@ -97,11 +96,6 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     @Override
     public void validate(InjectionPoint injectionPoint) {
         delegate().validate(injectionPoint);
-    }
-
-    @Override
-    public void fireEvent(Object event, Annotation... qualifiers) {
-        delegate().fireEvent(event, qualifiers);
     }
 
     @Override
@@ -197,11 +191,6 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     @Override
     public <T> AnnotatedType<T> createAnnotatedType(Class<T> type) {
         return delegate().createAnnotatedType(type);
-    }
-
-    @Override
-    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        return delegate().createInjectionTarget(type);
     }
 
     @Override

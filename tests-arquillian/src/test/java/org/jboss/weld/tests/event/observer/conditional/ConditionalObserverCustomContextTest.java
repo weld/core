@@ -55,7 +55,7 @@ public class ConditionalObserverCustomContextTest {
     @Test
     public void testBeanInstanceNotInstantiated() {
         assertNotNull(beanManager);
-        beanManager.fireEvent(new Miracle());
+        beanManager.getEvent().select(Miracle.class).fire(new Miracle());
         assertEquals(0, ActionSequence.getSequenceSize());
     }
 

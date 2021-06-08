@@ -87,7 +87,7 @@ public class EnterpriseBeanTest {
     @Test
     public void testEJBRemoteInterfacesOkForObservers(Scottish scottish) {
         Feed feed = new Feed();
-        beanManager.fireEvent(feed);
+        beanManager.getEvent().select(Feed.class).fire(feed);
         Assert.assertEquals(feed, scottish.getFeed());
     }
 

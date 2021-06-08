@@ -30,7 +30,7 @@ public class ObserverInjectionTest {
     @Test
     public void testInjectionHappens(SampleObserver sampleObserver) {
         Assert.assertFalse(sampleObserver.isInjectionAndObservationOccured());
-        beanManager.fireEvent(new Baz());
+        beanManager.getEvent().select(Baz.class).fire(new Baz());
         Assert.assertTrue(sampleObserver.isInjectionAndObservationOccured());
     }
 

@@ -24,6 +24,6 @@ import jakarta.enterprise.inject.spi.Extension;
 public class Library2Extension implements Extension {
 
     void registerImpl(@Observes BeforeBeanDiscovery event, BeanManager manager) {
-        event.addAnnotatedType(manager.createAnnotatedType(Library2Impl.class));
+        event.addAnnotatedType(manager.createAnnotatedType(Library2Impl.class), Library2Impl.class.getSimpleName());
     }
 }

@@ -110,11 +110,6 @@ class BuilderInterceptorBean implements Interceptor<BuilderInterceptorInstance>,
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public Set<Type> getTypes() {
         return types;
     }

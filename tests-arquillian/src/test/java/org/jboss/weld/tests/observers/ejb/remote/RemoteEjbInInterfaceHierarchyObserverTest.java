@@ -42,7 +42,7 @@ public class RemoteEjbInInterfaceHierarchyObserverTest {
 
     @Test
     public void testRemoteEjbObserverNotified(BeanManager beanManager) {
-        beanManager.fireEvent(new Giraffe());
+        beanManager.getEvent().select(Giraffe.class).fire(new Giraffe());
         Assert.assertEquals(BarBean.observations.get(), 1);
     }
 

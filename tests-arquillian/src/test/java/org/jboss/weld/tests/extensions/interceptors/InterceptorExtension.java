@@ -47,7 +47,7 @@ public class InterceptorExtension implements Extension {
 
         Method around = IncrementingInterceptor.class.getMethod("doAround", InvocationContext.class);
         incBuilder.addToMethod(around, new AroundInvokeLiteral());
-        event.addAnnotatedType(incBuilder.create());
+        event.addAnnotatedType(incBuilder.create(), IncrementingInterceptor.class.getSimpleName());
 
         TestAnnotatedTypeBuilder<LifecycleInterceptor> marBuilder = new TestAnnotatedTypeBuilder<LifecycleInterceptor>(LifecycleInterceptor.class);
         marBuilder.addToClass(new InterceptorLiteral());
@@ -59,7 +59,7 @@ public class InterceptorExtension implements Extension {
         Method post = LifecycleInterceptor.class.getMethod("postConstruct", InvocationContext.class);
         marBuilder.addToMethod(post, new PostConstructLiteral());
 
-        event.addAnnotatedType(marBuilder.create());
+        event.addAnnotatedType(marBuilder.create(), LifecycleInterceptor.class.getSimpleName());
     }
 
     private static class InterceptorLiteral extends AnnotationLiteral<Interceptor> implements Interceptor {

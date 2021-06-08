@@ -86,9 +86,4 @@ public class PassivationCapableBeanImpl<T> extends ForwardingBeanAttributes<T> i
     protected BeanAttributes<T> attributes() {
         return attributes;
     }
-
-    @Override
-    public boolean isNullable() {
-        return false;
-    }
 }

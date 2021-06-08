@@ -17,13 +17,15 @@
 
 package org.jboss.weld.atinject.tck;
 
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Unmanaged;
 import org.atinject.tck.auto.Drivers;
 import org.atinject.tck.auto.DriversSeat;
 import org.atinject.tck.auto.Seat;
 import org.atinject.tck.auto.Tire;
+import org.atinject.tck.auto.accessories.Cupholder;
 import org.atinject.tck.auto.accessories.SpareTire;
 
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Named;
@@ -52,7 +54,7 @@ public class Producers {
      */
     @Produces
     @Drivers
-    public Seat produceAtDriversSeat(@New DriversSeat driversSeat) {
+    public Seat produceAtDriversSeat(DriversSeat driversSeat) {
         return driversSeat;
     }
 
@@ -63,8 +65,10 @@ public class Producers {
      */
     @Produces
     @Typed(DriversSeat.class)
-    public DriversSeat produceDriversSeat(@New DriversSeat driversSeat) {
-        return driversSeat;
+    public DriversSeat produceDriversSeat(BeanManager manager) {
+        // TODO this used to use @New to create the instance, do this in a cleaner way
+        Unmanaged<DriversSeat> driversSeatUnmanaged = new Unmanaged<>(manager, DriversSeat.class);
+        return driversSeatUnmanaged.newInstance().produce().inject().postConstruct().get();
     }
 
     @Qualifier
@@ -83,7 +87,7 @@ public class Producers {
     @Produces
     @Named("spare")
     @Spare
-    public Tire produceAtNamedSpareTire(@New SpareTire spareTire) {
+    public Tire produceAtNamedSpareTire(SpareTire spareTire) {
         return spareTire;
     }
 
@@ -92,8 +96,10 @@ public class Producers {
      */
     @Produces
     @Typed(SpareTire.class)
-    public SpareTire produceSpareTire(@New SpareTire spareTire) {
-        return spareTire;
+    public SpareTire produceSpareTire(BeanManager manager) {
+        // TODO this used to use @New to create the instance, do this in a cleaner way
+        Unmanaged<SpareTire> spareTireUnmanaged = new Unmanaged<>(manager, SpareTire.class);
+        return spareTireUnmanaged.newInstance().produce().inject().postConstruct().get();
     }
 
 }

@@ -63,7 +63,8 @@ public class InjectionTargetDecorationTest {
 
     @Test
     public void testInjectionTargetMayBeCreatedForAbstractClass() {
-        InjectionTarget<AbstractClass> it = manager.createInjectionTarget(manager.createAnnotatedType(AbstractClass.class));
+        InjectionTarget<AbstractClass> it = manager.getInjectionTargetFactory(manager.createAnnotatedType(AbstractClass.class))
+                .createInjectionTarget(null);
         ConcreteClass instance = new ConcreteClass();
         it.inject(instance, manager.<AbstractClass>createCreationalContext(null));
     }

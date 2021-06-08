@@ -64,8 +64,8 @@ public class MemberLevelInheritanceTest {
 
     @Test
     public void testObserverMethods(UserDao userDao, CarDao carDao) {
-        manager.fireEvent(new User());
-        manager.fireEvent(new Car());
+        manager.getEvent().select(User.class).fire(new User());
+        manager.getEvent().select(Car.class).fire(new Car());
 
         assertNotNull(userDao.getEvent());
         assertNotNull(userDao.getObserverInjectionPoint());

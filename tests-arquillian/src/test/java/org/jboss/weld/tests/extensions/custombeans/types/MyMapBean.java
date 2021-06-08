@@ -78,11 +78,6 @@ public class MyMapBean implements Bean<MyMap>, PassivationCapable {
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public MyMap create(CreationalContext<MyMap> creationalContext) {
         return new MyMapImpl();
     }

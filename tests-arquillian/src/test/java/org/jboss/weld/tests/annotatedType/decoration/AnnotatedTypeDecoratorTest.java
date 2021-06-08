@@ -121,7 +121,7 @@ public class AnnotatedTypeDecoratorTest {
 
         public NonContextual(BeanManager manager, AnnotatedType<T> type) {
             this.manager = manager;
-            this.it = manager.createInjectionTarget(type);
+            this.it = manager.getInjectionTargetFactory(type).createInjectionTarget(null);
             cc = manager.createCreationalContext(null);
         }
 

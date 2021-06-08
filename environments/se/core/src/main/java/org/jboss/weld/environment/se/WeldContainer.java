@@ -89,7 +89,7 @@ import org.jboss.weld.util.collections.ImmutableList;
  *
  * <pre>
  * Foo foo = container.select(Foo.class).get();
- * container.getBeanManager().fireEvent(new Bar())
+ * container.getBeanManager().getEvent().select(Bar.class).fire(new Bar)
  * container.event().select(Bar.class).fire(new Bar());
  * </pre>
  *
@@ -233,7 +233,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     private void fireContainerInitializedEvent() {
         WeldSELogger.LOG.weldContainerInitialized(id);
-        beanManager().fireEvent(new ContainerInitialized(id), Initialized.Literal.APPLICATION);
+        beanManager().getEvent().select(ContainerInitialized.class, Initialized.Literal.APPLICATION).fire(new ContainerInitialized(id));
     }
 
     /**
@@ -294,12 +294,12 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     public synchronized void shutdown() {
         checkIsRunning();
         try {
-            beanManager().fireEvent(new ContainerBeforeShutdown(id), BeforeDestroyed.Literal.APPLICATION);
+            beanManager().getEvent().select(ContainerBeforeShutdown.class, BeforeDestroyed.Literal.APPLICATION).fire(new ContainerBeforeShutdown(id));
         } finally {
             discard(id);
             // Destroy all the dependent beans correctly
             creationalContext.release();
-            beanManager().fireEvent(new ContainerShutdown(id), Destroyed.Literal.APPLICATION);
+            beanManager().getEvent().select(ContainerShutdown.class, Destroyed.Literal.APPLICATION).fire(new ContainerShutdown(id));
             bootstrap.shutdown();
             WeldSELogger.LOG.weldContainerShutdown(id);
         }

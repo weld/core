@@ -97,9 +97,4 @@ public class Foo implements Bean<String>, PassivationCapable {
     public Set<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
     }
-
-    @Override
-    public boolean isNullable() {
-        return false;
-    }
 }
