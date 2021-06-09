@@ -83,12 +83,12 @@ jobs:
       fail-fast: false
       matrix:
         java:
-          - { name: "8",
-              java-version: 8,
+          - { name: "11",
+              java-version: 11,
           }
           - {
-            name: "11",
-            java-version: 11,
+            name: "16",
+            java-version: 16,
           }
     steps:
       - uses: actions/checkout@v2
@@ -146,12 +146,12 @@ jobs:
       fail-fast: false
       matrix:
         java:
-          - { name: "8",
-              java-version: 8,
+          - { name: "11",
+              java-version: 11,
           }
           - {
-            name: "11",
-            java-version: 11,
+            name: "16",
+            java-version: 16,
           }
     steps:
       - uses: actions/checkout@v2
@@ -209,12 +209,12 @@ jobs:
       fail-fast: false
       matrix:
         java:
-          - { name: "8",
-              java-version: 8,
+          - { name: "11",
+              java-version: 11,
           }
           - {
-            name: "11",
-            java-version: 11,
+            name: "16",
+            java-version: 16,
           }
     steps:
       - uses: actions/checkout@v2
@@ -234,10 +234,7 @@ jobs:
       - name: Build with Maven
         # avoid building impl as that can only be done with JDK 11
         run: |
-          mvn clean verify -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -pl '!impl'
-      - name: Test core-impl separately
-        run: |
-          mvn surefire:test -f impl/pom.xml
+          mvn clean verify -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -310,12 +307,12 @@ jobs:
       fail-fast: false
       matrix:
         java:
-          - { name: "8",
-              java-version: 8,
+          - { name: "11",
+              java-version: 11,
           }
           - {
-            name: "11",
-            java-version: 11,
+            name: "16",
+            java-version: 16,
           }
     steps:
       - uses: actions/checkout@v2
