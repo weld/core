@@ -21,15 +21,22 @@ import junit.framework.Test;
 import org.atinject.tck.Tck;
 import org.atinject.tck.auto.Car;
 import org.atinject.tck.auto.Convertible;
+import org.atinject.tck.auto.DriversSeat;
 import org.atinject.tck.auto.FuelTank;
 import org.atinject.tck.auto.Seat;
 import org.atinject.tck.auto.Tire;
 import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
+import org.atinject.tck.auto.accessories.SpareTire;
+import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
+import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
+import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import java.util.Arrays;
 
 /**
  * Configure the AtInject TCK for use with the 299 RI
@@ -46,18 +53,18 @@ public class AtInjectTCK {
     public static Test suite() {
         // Create and start the TestContainer, which takes care of starting the container, deploying the
         // classes, starting the contexts etc.
-        TestContainer container = new TestContainer(
-
-                // The classes to deploy as beans
+        BeanDeploymentArchive archive = new BeanDeploymentArchiveImpl(AllDiscoveryBeansXml.INSTANCE, Arrays.asList(
                 Convertible.class,
                 Seat.class,
+                DriversSeat.class,
                 V8Engine.class,
                 Cupholder.class,
                 FuelTank.class,
                 Tire.class,
-                // Producer Methods allowing to expose DriversSeat, SpareTire, @Named("spare") SpareTire, @Drivers Seat
-                Producers.class
-        );
+                SpareTire.class
+        ), Environments.SE);
+        TestContainer container = new TestContainer(new FlatDeployment(archive, new AtInjectTCKExtension()));
+
         container.startContainer();
 
         // Our entry point is the single bean deployment archive
