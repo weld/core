@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
 
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Decorated;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Decorator;
@@ -27,8 +30,11 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
+import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.literal.DecoratedLiteral;
+import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.bean.SerializableForwardingBean;
 
 /**
  * Allows a decorator to obtain information about the bean it decorates.
@@ -47,6 +53,32 @@ public class DecoratedBeanMetadataBean extends InterceptedBeanMetadataBean {
     protected void checkInjectionPoint(InjectionPoint ip) {
         if (!(ip.getBean() instanceof Decorator<?>)) {
             throw new IllegalArgumentException("@Decorated Bean<?> can only be injected into a decorator.");
+        }
+    }
+
+    @Override
+    protected Bean<?> newInstance(InjectionPoint ip, CreationalContext<Bean<?>> ctx) {
+        checkInjectionPoint(ip);
+
+        WeldCreationalContext<?> decoratorContext = getParentCreationalContext(ctx);
+        WeldCreationalContext<?> beanContext = getParentCreationalContext(decoratorContext);
+        // when there are more decorators present, a CreationalContext hierarchy is created between them
+        // we want to iterate over this hierarchy to make sure we return the original decorated bean
+        while (beanContext.getContextual() instanceof Decorator) {
+            beanContext = getParentCreationalContext(beanContext);
+        }
+        Contextual<?> decoratedContextual = beanContext.getContextual();
+
+        if (decoratedContextual instanceof Bean<?>) {
+            Bean<?> bean = (Bean<?>) decoratedContextual;
+            if (bean instanceof Serializable) {
+                return bean;
+            } else {
+                return SerializableForwardingBean.of(getBeanManager().getContextId(), bean);
+            }
+        } else {
+            InterceptorLogger.LOG.unableToDetermineInterceptedBean(ip);
+            return null;
         }
     }
 

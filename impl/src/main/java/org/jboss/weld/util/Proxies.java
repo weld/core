@@ -58,6 +58,8 @@ public class Proxies {
 
     public static class TypeInfo {
 
+        private static final String DEFAULT_PACKAGE = "";
+
         private final List<Class<?>> interfaces;
         private final List<Class<?>> classes;
         private final Map<String, String> classToPackageMap;
@@ -81,7 +83,7 @@ public class Proxies {
         private TypeInfo add(Type type, List<Class<?>> foundInterfaces, List<Class<?>> foundClasses, Map<String, String> classToPackageMap) {
             if (type instanceof Class<?>) {
                 Class<?> clazz = (Class<?>) type;
-                classToPackageMap.put(clazz.getName(), clazz.getPackage().getName());
+                classToPackageMap.put(clazz.getName(), clazz.getPackage()==null?DEFAULT_PACKAGE:clazz.getPackage().getName());
                 if (clazz.isInterface()) {
                     foundInterfaces.add(clazz);
                 } else {

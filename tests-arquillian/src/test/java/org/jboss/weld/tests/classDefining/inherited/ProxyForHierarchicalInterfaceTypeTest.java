@@ -60,12 +60,12 @@ public class ProxyForHierarchicalInterfaceTypeTest {
         MyInterface interfaceBean = this.bean.getProducedInterfaceBean();
         Assert.assertEquals(MyInterface.class.getSimpleName(), interfaceBean.anotherPing());
         Assert.assertEquals(AncestorInterface.class.getSimpleName(), interfaceBean.ping());
-        // assert that the proxy from hierarchical interface start with package based on alphabetical ordering of partaking classes
-        Assert.assertTrue(interfaceBean.getClass().getName().startsWith("org.jboss.weld.tests.classDefining.inherited.base.AncestorInterface"));
+        // assert that the proxy from hierarchical interface starts with package and class of the most specific interface we know of
+        Assert.assertTrue(interfaceBean.getClass().getName().startsWith("org.jboss.weld.tests.classDefining.inherited.extending.MyInterface"));
 
         AMuchBetterPrincipal principal = this.bean.getPrincipal();
         Assert.assertEquals(AMuchBetterPrincipal.class.getSimpleName(), principal.getName());
-        // assert that the proxy created from Principal and custom class has the package of custom class even though it is alphabetically reversed
+        // assert that the proxy created from Principal and custom class has the package of custom class
         Assert.assertTrue(principal.getClass().getName().startsWith("org.jboss.weld.tests.classDefining.inherited.AMuchBetterPrincipal"));
     }
 }
