@@ -71,7 +71,7 @@ public class WeldInvocationContextImpl extends ForwardingInvocationContext imple
         } else {
             this.interceptorBindings = interceptorBindings;
         }
-        getContextData().put(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
+        getContextData().put(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY, this.interceptorBindings);
     }
 
     @Override
