@@ -48,7 +48,7 @@
         <wildfly.download.version>20.0.1.Final</wildfly.download.version>
 
         <!--Plugin versions-->
-        <download.maven.plugin>1.6.3</download.maven.plugin>
+        <download.maven.plugin>1.6.6</download.maven.plugin>
         <patch.gen.plugin>2.1.1.Final</patch.gen.plugin>
     </properties>
 
