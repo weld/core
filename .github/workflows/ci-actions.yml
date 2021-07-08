@@ -77,6 +77,8 @@ jobs:
   incontainer-tests:
     name: "Weld In-container Tests - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
+    # TODO temporarily force-skip any in-container testing until we have a WFLY version that can execute it
+    if: "false"
     needs: build-jdk11
     timeout-minutes: 120
     strategy:
@@ -140,6 +142,8 @@ jobs:
   CDI-TCK:
     name: "CDI TCK - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
+    # TODO temporarily force-skip any in-container testing until we have a WFLY version that can execute it
+    if: "false"
     needs: build-jdk11
     timeout-minutes: 120
     strategy:
@@ -251,6 +255,8 @@ jobs:
     name: "Weld Examples build and test - JDK 11}"
     runs-on: ubuntu-latest
     needs: build-jdk11
+    # TODO temporarily force-skip any in-container testing until we have a WFLY version that can execute it
+    if: "false"
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v2
