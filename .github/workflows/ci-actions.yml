@@ -354,6 +354,8 @@ jobs:
     name: "Weld SE-Servlet Cooperation"
     runs-on: ubuntu-latest
     needs: build-jdk11
+    # TODO temporarily force-skip due to JSF usage relying on now removed deprecated APIs
+    if: "false"
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v2
