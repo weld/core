@@ -2,7 +2,7 @@ Weld
 ====
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/weld/user)
-[![Travis CI Build Status](https://img.shields.io/travis/weld/core/master.svg)](https://travis-ci.org/weld/core)
+![GH Actions Build Status](https://github.com/weld/core/actions/workflows/ci-actions.yml/badge.svg?branch=3.1)
 [![Maven Central](http://img.shields.io/maven-central/v/org.jboss.weld.se/weld-se-shaded.svg)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22weld-core-impl%22)
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -32,33 +32,6 @@ Then, run the upgrade script:
 
 In the above snippet, `${weld.version}` is the version of Weld you want to use.
 Now you should have patched WildFly in `JBOSS_HOME`.
-
-Creating a patch file for WildFly
----------------------------------
-
-Apart from just patching a WildFly, there is an automated way to create reusable patch-file too.
-To do that, three things are needed:
-* Clean WildFly
-  * A basis which you want the patch for
-  * If you use `-Pdownload-wfly` profile, latest patch-able WildFly version will be automatically downloaded into `core/jboss-as/target` folder
-  * If you already have WildFly, set the path to it throught property `-DwildflyOriginal=/path/to/clean/wfly`
-* Patched WildFly with Weld 3 version you want
-  * `-Pupdate-jboss-as` can be used to create patched WildFly, see the paragraph above
-  * If you have this in advance, just set the path to it via `-DwildflyPatched=/path/to/patched/wfly`
-* Patch XML descriptor
-  * By default, this is automatically grabbed from our [repository](https://github.com/weld/build/tree/master/wildfly) for given WildFly
-  * You can set different version via `-Dpatch.file.name="patch-config-wildfly-15-weld-3.1.xml"`
-
-So, here are some commands:
-* `mvn clean package -Pdownload-wfly,update-jboss-as,wfly-patch-gen`
-  * Fully automated way of downloading pristine WildFly, patching it and creating a patch file, all in `jboss-as/target` folder
-* `mvn clean install -Pupdate-jboss-as,download-wfly -f jboss-as/pom.xml`
-  * This will download pristine WildFly, make a copy of it and patch it right away
-  * No patch file will be generated
-* `export JBOSS_HOME=/path/to/wfly; mvn clean install -Pwfly-patch-gen -DwildflyOriginal=/opt/myCleanWfly -DwildflyPatched=/opt/myPatchedWfly -f jboss-as/pom.xml`
-  * This is a manual way where all variables are specified; here we generate patch file for Wildfly
-  * Need to specify both WildFly instances - clean one and already patched one
-  * You can also provide specific patch XML descriptor if the default one doesn't suit through `-DpatchConfig=patch-config-wildfly-15-weld-3.1.xml`
 
 Running integration tests and the TCK on WildFly
 ----------------------------------------------------
