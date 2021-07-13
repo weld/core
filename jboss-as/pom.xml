@@ -31,21 +31,6 @@
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
         as the release plugin won't deal with double evaluation -->
         <weld.update.version>3.1.8-SNAPSHOT</weld.update.version>
-
-        <!-- Following section is dedicated to WFLY download and patch creation -->
-        <!-- Path to the patched WFLY server, if you chose to let Maven download it, this default will be used-->
-        <!-- Maven will download pristine WFLY for you, but you need to provide a patched one yourself and make JBOSS_HOME point at it-->
-        <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</wildflyPatched>
-        <!--Path to patch file; only change if you have your own, else Maven downloads it-->
-        <patchConfigFile>${project.build.directory}/patch.xml</patchConfigFile>
-        <!--These patches are automatically downloaded from github.com/weld/build/tree/master/wildfly; specify the file name here to determine which one to use-->
-        <patch.file.name>patch-config-wildfly-14-weld-3.1.xml</patch.file.name>
-        <!--Use this property to set the path to and the name of the resulting patch zip file-->
-        <patchOutputFile>${project.build.directory}/patch.zip</patchOutputFile>
-        <!--Path to original (pristine) WFLY-->
-        <!--Running with -Pdownload-wfly will make Maven download the version specified below-->
-        <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
-        <wildfly.download.version>23.0.0.Final</wildfly.download.version>
         <cdi.tck.version>${cdi.tck-2-0.version}</cdi.tck.version>
 
         <!--Plugin versions-->
@@ -117,66 +102,6 @@
                     <version>${cdi.tck.version}</version>
                 </dependency>
             </dependencies>
-        </profile>
-        <!--Downloads WildFly, can be used for patch creation purposes-->
-        <profile>
-            <id>download-wfly</id>
-            <properties>
-                <wildflyOriginal>${project.build.directory}/wildfly-original/wildfly-${wildfly.download.version}</wildflyOriginal>
-                <!--Set jboss.home property to the location of the copy of WFLY we download-->
-                <jboss.home>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</jboss.home>
-                <!--Set wildflyPatched property for patch creation, this assumes you patch the WFLY by running -Pupdate-jboss-as as well-->
-                <wildflyPatched>${project.build.directory}/wildfly-patched/wildfly-${wildfly.download.version}</wildflyPatched>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack-wildfly</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.wildfly</groupId>
-                                            <artifactId>wildfly-dist</artifactId>
-                                            <version>${wildfly.download.version}</version>
-                                            <type>tar.gz</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/wildfly-original</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-resources</id>
-                                <!-- Execute this after we've downloaded WFLY -->
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/wildfly-patched</outputDirectory>
-                                    <resources>          
-                                        <resource>
-                                            <directory>${project.build.directory}/wildfly-original</directory>
-                                        </resource>
-                                    </resources>              
-                                </configuration>            
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
             <id>update-jboss-as</id>
@@ -336,68 +261,9 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>wfly-patch-gen</id>
-            <build>
-                <plugins>
-                    <!--Downloads given patch file from our build repository-->
-                    <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>download-patch-file</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://raw.githubusercontent.com/weld/build/master/wildfly/${patch.file.name}</url>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <outputFileName>patch.xml</outputFileName>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>patch-gen-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>create-patch-file</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>generate-patch</goal>
-                                </goals>
-                                <configuration>
-                                    <appliesToDist>${wildflyOriginal}</appliesToDist>
-                                    <updatedDist>${wildflyPatched}</updatedDist>
-                                    <patchConfig>${patchConfigFile}</patchConfig>
-                                    <outputFile>${patchOutputFile}</outputFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.googlecode.maven-download-plugin</groupId>
-                    <artifactId>download-maven-plugin</artifactId>
-                    <version>${download.maven.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>patch-gen-maven-plugin</artifactId>
-                    <version>${patch.gen.plugin}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
