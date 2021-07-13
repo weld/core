@@ -17,10 +17,6 @@ import org.testng.annotations.Test;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.lang.reflect.AccessibleObject;
-
-import sun.misc.Unsafe;
-
 public class ThreadLocalTestCase {
 
     @SuppressWarnings("unused")
@@ -81,11 +77,10 @@ public class ThreadLocalTestCase {
 
     private void verifyThreadLocals() throws Exception {
         Field threadLocalsField = Thread.class.getDeclaredField("threadLocals");
+        threadLocalsField.setAccessible(true);
 
-        makeAccessible(threadLocalsField);
         Field inheritableThreadLocalsField = Thread.class.getDeclaredField("inheritableThreadLocals");
-
-        makeAccessible(inheritableThreadLocalsField);
+        inheritableThreadLocalsField.setAccessible(true);
 
         Thread thread = Thread.currentThread();
 
@@ -93,8 +88,8 @@ public class ThreadLocalTestCase {
         Field size = tlmClass.getDeclaredField("size");
         Field table = tlmClass.getDeclaredField("table");
 
-        makeAccessible(size);
-        makeAccessible(table);
+        size.setAccessible(true);
+        table.setAccessible(true);
 
         verifyThreadLocalValues(
             extractThreadLocalValues(
@@ -123,15 +118,14 @@ public class ThreadLocalTestCase {
         if (map != null) {
             Method mapRemove = map.getClass().getDeclaredMethod("remove", new Class[] { ThreadLocal.class });
 
-            makeAccessible(mapRemove);
+            mapRemove.setAccessible(true);
             Object[] table = (Object[]) (Object[]) internalTableField.get(map);
             if (table != null) {
                 for (Object aTable : table) {
                     if (aTable != null) {
                         Object key = ((Reference<?>) aTable).get();
                         Field valueField = aTable.getClass().getDeclaredField("value");
-
-                        makeAccessible(valueField);
+                        valueField.setAccessible(true);
                         Object value = valueField.get(aTable);
                         values.put(key, value);
                     }
@@ -139,27 +133,5 @@ public class ThreadLocalTestCase {
             }
         }
         return values;
-    }
-
-    /**
-     * JDK 9+ doesn't allow us to call setAccessible() directly, hence we hack it with Unsafe 
-     */
-    private void makeAccessible(AccessibleObject ao) throws NoSuchFieldException, IllegalAccessException {
-        try {
-            // get Unsafe singleton instance
-            Field singleoneInstanceField = Unsafe.class.getDeclaredField("theUnsafe");
-            singleoneInstanceField.setAccessible(true);
-            Unsafe theUnsafe = (Unsafe) singleoneInstanceField.get(null);
-
-            // get the offset of the override field in AccessibleObject
-            long overrideOffset = theUnsafe.objectFieldOffset(AccessibleObject.class.getDeclaredField("override"));
-
-            // make both accessible
-            theUnsafe.putBoolean(ao, overrideOffset, true);
-            theUnsafe.putBoolean(ao, overrideOffset, true);
-        } catch (NoSuchFieldException e) {
-            // JDK 12, Unsafe won't work, use setAccessible
-            ao.setAccessible(true);
-        }
     }
 }
