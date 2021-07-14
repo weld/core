@@ -16,7 +16,7 @@
 
     <properties>
         <urlrewritefilter.version>4.0.4</urlrewritefilter.version>
-        <jpamodelgen.version>5.4.32.Final</jpamodelgen.version>
+        <jpamodelgen.version>5.5.3.Final</jpamodelgen.version>
     </properties>
 
     <dependencies>
