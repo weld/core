@@ -10,7 +10,7 @@
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>4.0.2.Final</version>
+        <version>4.0.3-SNAPSHOT</version>
     </parent>
 
     <modules>
