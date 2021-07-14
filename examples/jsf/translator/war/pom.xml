@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.weld.examples.jsf.translator</groupId>
         <artifactId>weld-jsf-translator-parent</artifactId>
-        <version>3.1.8.Final</version>
+        <version>3.1.9-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jboss.weld.examples.jsf.translator</groupId>
