@@ -49,7 +49,7 @@
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.5.0</apache.bcel.version>
-        <arquillian.version>1.7.0.Alpha9</arquillian.version>
+        <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <arquillian.drone.version>2.5.2</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
         <arquillian.weld.version>2.1.0.Final</arquillian.weld.version>
