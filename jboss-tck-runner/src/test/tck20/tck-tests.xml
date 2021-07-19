@@ -26,12 +26,6 @@
             <!-- Issues in the spec -->
 
             <!-- Issues in the TCK -->
-            <!-- https://github.com/eclipse-ee4j/cdi-tck/issues/217 -->
-            <class name="org.jboss.cdi.tck.tests.se.customCDIProvider.CustomCDIProviderTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
 
