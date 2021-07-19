@@ -63,7 +63,7 @@
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
-        <cdi.tck-3-0.version>3.0.2.SP1</cdi.tck-3-0.version>
+        <cdi.tck-3-0.version>3.0.3</cdi.tck-3-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.2.3</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.2.3</spotbugs-annotations-version>
