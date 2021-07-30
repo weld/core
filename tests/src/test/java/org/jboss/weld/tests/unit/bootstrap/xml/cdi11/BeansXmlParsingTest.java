@@ -41,7 +41,7 @@ public class BeansXmlParsingTest {
     @Test
     public void testNoSchemaNoAttributes() {
         BeansXml xml = getBeansXml("cdi11-beans1.xml");
-        assertEquals(xml.getBeanDiscoveryMode(), BeanDiscoveryMode.ALL);
+        assertEquals(xml.getBeanDiscoveryMode(), BeanDiscoveryMode.ANNOTATED);
         assertNull(xml.getVersion());
     }
 

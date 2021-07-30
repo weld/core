@@ -247,7 +247,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     protected final Set<Class<? extends Annotation>> extendedBeanDefiningAnnotations;
 
-    protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
+    protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ANNOTATED;
 
     private final List<Metadata<String>> selectedAlternatives;
 
@@ -685,7 +685,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Sets the bean discovery mode for synthetic bean archive. Default mode is ALL.
+     * Sets the bean discovery mode for synthetic bean archive. Default mode is ANNOTATED.
      * @param mode bean discovery mode in a form of an enum from {@link org.jboss.weld.bootstrap.spi.BeanDiscoveryMode}. Accepted values are ALL, ANNOTATED
      *
      * @return  self

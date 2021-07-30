@@ -55,7 +55,7 @@
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <arquillian.drone.version>2.5.2</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
-        <arquillian.weld.version>3.0.0.Alpha2</arquillian.weld.version>
+        <arquillian.weld.version>3.0.0.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Alpha1</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
@@ -91,7 +91,7 @@
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
         <testng.jcommander.version>1.81</testng.jcommander.version>
-        <weld.api.version>5.0.Alpha1</weld.api.version>
+        <weld.api.version>5.0.Alpha2</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>3.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -604,7 +604,7 @@
             <id>tck</id>
             <activation>
                 <property>
-                    <name>weld.default.build.cditck</name>
+                        <name>weld.default.build.cditck</name>
                     <value>!false</value>
                 </property>
             </activation>
