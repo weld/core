@@ -97,7 +97,7 @@ public class BeansXmlStreamParser {
     private List<Metadata<String>> selectedAlternativeStereotypes = null;
     private List<Metadata<Filter>> includes = null;
     private List<Metadata<Filter>> excludes = null;
-    private BeanDiscoveryMode discoveryMode = BeanDiscoveryMode.ALL;
+    private BeanDiscoveryMode discoveryMode = BeanDiscoveryMode.ANNOTATED;
     private String version;
     private boolean isTrimmed;
 

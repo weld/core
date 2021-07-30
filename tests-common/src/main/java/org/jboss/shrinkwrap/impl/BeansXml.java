@@ -41,7 +41,7 @@ public class BeansXml implements Asset {
     private final List<Class<?>> stereotypes;
     private final List<Exclude> excludeFilters;
 
-    private BeanDiscoveryMode mode = BeanDiscoveryMode.ALL;
+    private BeanDiscoveryMode mode = BeanDiscoveryMode.ANNOTATED;
 
     public static class Exclude {
 
