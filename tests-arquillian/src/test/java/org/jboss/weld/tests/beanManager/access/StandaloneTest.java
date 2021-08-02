@@ -18,6 +18,7 @@ package org.jboss.weld.tests.beanManager.access;
 
 import static org.junit.Assert.assertEquals;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.CDI;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,11 +32,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
+@Dependent // needed so that the calling class of CDI is in a bean archive
 public class StandaloneTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StandaloneTest.class)).addClass(ScrewDriver.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StandaloneTest.class))
+                .addClasses(ScrewDriver.class);
     }
 
     @Test

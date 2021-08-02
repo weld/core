@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.extension;
 
+import jakarta.enterprise.context.Dependent;
+
 @FooInterceptorBinding
+@Dependent
 public class InterceptedBean {
 
     public boolean foo() {

@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.qualifiers.annotated;
 
+import jakarta.enterprise.context.Dependent;
+
 @Quick(dirty = false, name = "man")
+@Dependent
 public class Hack {
 
 }

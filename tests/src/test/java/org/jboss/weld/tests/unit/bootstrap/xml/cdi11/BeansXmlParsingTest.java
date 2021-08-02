@@ -76,7 +76,7 @@ public class BeansXmlParsingTest {
     @Test
     public void testEmptyFile() {
         BeansXml xml = getBeansXml("cdi11-beans5.xml");
-        assertEquals(xml.getBeanDiscoveryMode(), BeanDiscoveryMode.ALL);
+        assertEquals(xml.getBeanDiscoveryMode(), BeanDiscoveryMode.ANNOTATED);
         assertNull(xml.getVersion());
     }
 

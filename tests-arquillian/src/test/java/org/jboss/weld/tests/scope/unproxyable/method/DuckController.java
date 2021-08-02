@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.scope.unproxyable.method;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class DuckController {
 
     @Inject

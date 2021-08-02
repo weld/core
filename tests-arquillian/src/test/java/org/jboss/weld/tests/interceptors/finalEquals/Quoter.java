@@ -17,9 +17,12 @@
 package org.jboss.weld.tests.interceptors.finalEquals;
 
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Sebastian Graca, ISPiK S.A.
  */
+@Dependent
 public class Quoter {
     @Quoted
     public String returnUnquoted(String value) {

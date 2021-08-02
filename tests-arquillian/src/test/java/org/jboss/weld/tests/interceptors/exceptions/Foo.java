@@ -1,11 +1,12 @@
 package org.jboss.weld.tests.interceptors.exceptions;
 
-import org.jboss.weld.exceptions.WeldException;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *
  */
 @FooBinding
+@Dependent
 public class Foo {
 
     public void throwCheckedException() throws FooCheckedException {

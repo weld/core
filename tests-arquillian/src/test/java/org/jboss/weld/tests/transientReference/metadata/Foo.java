@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.transientReference.metadata;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.TransientReference;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.inject.Inject;
 
+@Dependent
 public class Foo {
 
     private final Bean<Bar> bean;

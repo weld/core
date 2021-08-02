@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
 
+@Dependent
 public class BeerProducer {
     public
     @Produces

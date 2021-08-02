@@ -17,7 +17,9 @@
 package org.jboss.weld.tests.contexts.creational;
 
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class DependencyWithPreDestroy {
 
     @PreDestroy

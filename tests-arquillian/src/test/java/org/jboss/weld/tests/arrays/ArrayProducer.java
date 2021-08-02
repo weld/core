@@ -1,10 +1,12 @@
 package org.jboss.weld.tests.arrays;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
 /**
  *
  */
+@Dependent
 public class ArrayProducer {
 
     public static final Bar<Integer> INTEGER_BAR = new Bar<Integer>(Integer.MAX_VALUE);

@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.interceptors.context.bindings;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 @BazBinding(secret = "bye")
 @FooBinding(secret = "hello")
+@Dependent
 public class SimpleBean {
 
     @FooBinding(secret = "bla")

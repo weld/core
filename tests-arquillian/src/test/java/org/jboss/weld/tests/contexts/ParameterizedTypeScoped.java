@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import java.util.Arrays;
 import java.util.List;
 
+@Dependent
 public class ParameterizedTypeScoped {
 
     @RequestScoped

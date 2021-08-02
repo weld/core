@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.contexts.creational;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class DependencyWithoutPreDestroy {
 
 }

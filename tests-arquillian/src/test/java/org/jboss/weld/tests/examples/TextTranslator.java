@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.examples;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class TextTranslator {
     private SentenceParser sentenceParser;
     private Translator sentenceTranslator;

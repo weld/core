@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.tests.interceptors.generic.overriden;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class ActualInterceptedService extends AbstractService<Foo> {
 
     @Override

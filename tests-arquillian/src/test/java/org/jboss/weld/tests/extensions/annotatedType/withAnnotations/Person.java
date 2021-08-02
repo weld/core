@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.validation.constraints.NotNull;
 
+@Dependent
 public class Person {
 
     @NotNull

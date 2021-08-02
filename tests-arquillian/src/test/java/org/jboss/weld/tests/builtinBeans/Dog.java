@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.inject.Inject;
 import java.io.Serializable;
 
+@Dependent
 public class Dog implements Serializable {
 
     private static InjectionPoint injectionPoint;

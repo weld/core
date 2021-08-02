@@ -18,6 +18,7 @@ package org.jboss.weld.tests.beanManager.injectionTarget.mdb;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -26,6 +27,7 @@ import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 
 @AroundConstructBinding
+@Dependent
 public class MessageDriven implements MessageListener {
 
     @Inject

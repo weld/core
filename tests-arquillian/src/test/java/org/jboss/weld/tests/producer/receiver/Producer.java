@@ -17,8 +17,10 @@
 package org.jboss.weld.tests.producer.receiver;
 
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Producer {
 
     private static boolean destroyed;

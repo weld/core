@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.nonContextual;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
+@Dependent
 public class External {
 
     public External() {

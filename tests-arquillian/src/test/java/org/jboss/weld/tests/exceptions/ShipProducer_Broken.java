@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.exceptions;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class ShipProducer_Broken {
 
     @Produces

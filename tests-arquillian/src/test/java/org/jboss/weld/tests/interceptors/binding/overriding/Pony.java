@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.interceptors.binding.overriding;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.tests.interceptors.binding.overriding.Aging.Speed;
 
 @Aging(Speed.FAST)
 @Negating // verifies that this interceptor binding is not removed (overriden)
+@Dependent
 class Pony {
 
     @Aging(Speed.SLOW)

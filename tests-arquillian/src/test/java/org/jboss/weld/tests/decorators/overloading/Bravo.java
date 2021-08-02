@@ -19,12 +19,14 @@ package org.jboss.weld.tests.decorators.overloading;
 import java.util.Collection;
 import java.util.Set;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.test.util.ActionSequence;
 
 /**
  *
  * @author Martin Kouba
  */
+@Dependent
 public class Bravo implements BravoService {
 
     @Override

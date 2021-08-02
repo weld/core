@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.beanManager.bean;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class FireTruck implements Vehicle {
 
     public boolean decorated() {

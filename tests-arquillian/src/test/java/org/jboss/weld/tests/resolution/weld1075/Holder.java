@@ -17,12 +17,14 @@
 
 package org.jboss.weld.tests.resolution.weld1075;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import java.util.UUID;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Dependent
 public class Holder {
     @Inject
     Interface1<UUID, String> dependency;

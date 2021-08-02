@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Produces;
@@ -23,6 +24,7 @@ import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Named;
 
 @Alternative
+@Dependent
 public class BravoProducer {
 
     @Produces

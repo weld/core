@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.decorators.generic.extend;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class ExtendsDecoratedImpl implements ExtendsDecorated {
     public String decoratedEcho(String parameter) {
         return parameter;

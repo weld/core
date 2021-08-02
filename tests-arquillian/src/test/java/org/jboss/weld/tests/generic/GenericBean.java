@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.generic;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class GenericBean<T> implements GenericInterface<T> {
 
     public T echo(T parameter) {

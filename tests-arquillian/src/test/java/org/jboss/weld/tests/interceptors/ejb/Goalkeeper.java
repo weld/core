@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.ejb;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
@@ -26,6 +27,7 @@ import jakarta.interceptor.InvocationContext;
  */
 @Shot
 @Interceptor
+@Dependent
 public class Goalkeeper {
 
     @AroundInvoke

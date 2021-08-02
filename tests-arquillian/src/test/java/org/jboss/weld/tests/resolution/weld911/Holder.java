@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.resolution.weld911;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Dependent
 public class Holder {
     private Foo foo;
 

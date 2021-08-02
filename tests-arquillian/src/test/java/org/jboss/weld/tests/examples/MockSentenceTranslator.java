@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.examples;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 
 @Alternative
+@Dependent
 public class MockSentenceTranslator implements Translator {
     public String translate(String sentence) {
         return "Lorem ipsum dolor sit amet";

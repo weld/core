@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.interceptors.annotated;
 
+import jakarta.enterprise.context.Dependent;
+
 @Quick(dirty = true, name = "man")
+@Dependent
 public class Hack {
 
     public void ping() {

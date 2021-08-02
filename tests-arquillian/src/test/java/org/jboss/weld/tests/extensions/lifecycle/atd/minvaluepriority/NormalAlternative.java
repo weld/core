@@ -17,10 +17,12 @@
 package org.jboss.weld.tests.extensions.lifecycle.atd.minvaluepriority;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 
 @Alternative
 @Priority(100)
+@Dependent
 public class NormalAlternative {
 	
 }

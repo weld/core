@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.interceptors.retrySimple;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class FailingProcessor {
     int attempts = 0;
 

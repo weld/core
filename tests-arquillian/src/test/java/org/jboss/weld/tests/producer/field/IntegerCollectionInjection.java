@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.producer.field;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import java.util.Collection;
 
+@Dependent
 public class IntegerCollectionInjection {
 
     private Collection<Integer> value;

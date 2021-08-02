@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.event.observer.vetoreplace;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 
+@Dependent
 public class Observer {
 
     public void observer1(@Observes @Experimental String event) {

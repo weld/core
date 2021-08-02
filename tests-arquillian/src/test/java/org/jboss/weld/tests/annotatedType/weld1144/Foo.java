@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.annotatedType.weld1144;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 @Original
+@Dependent
 public class Foo {
 
     private boolean initCalled;

@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.specialization.weld1651.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @SuppressWarnings("rawtypes")
 @Specializes
+@Dependent
 public class MyRawBean extends MyBean {
 }

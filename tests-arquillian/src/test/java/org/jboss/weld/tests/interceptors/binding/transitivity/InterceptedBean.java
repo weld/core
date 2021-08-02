@@ -1,8 +1,11 @@
 package org.jboss.weld.tests.interceptors.binding.transitivity;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marko Luksa
  */
+@Dependent
 public class InterceptedBean {
 
     @Synchronized

@@ -1,8 +1,10 @@
 package org.jboss.weld.tests.producer.method;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Kitchen {
 
     private static Food compostedFood;

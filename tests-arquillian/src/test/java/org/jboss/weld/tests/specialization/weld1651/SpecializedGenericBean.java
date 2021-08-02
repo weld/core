@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
+import jakarta.enterprise.context.Dependent;
+
 import java.util.Collection;
 import java.util.List;
 
 /**
  * @author Matus Abaffy
  */
+@Dependent
 public class SpecializedGenericBean<S extends List<Integer> & Collection<Integer>, T extends Bar> {
 }

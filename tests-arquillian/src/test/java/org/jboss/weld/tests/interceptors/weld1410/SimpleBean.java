@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.interceptors.weld1410;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.Interceptors;
 
 @Interceptors({ Interceptor1.class, Interceptor2.class })
+@Dependent
 public class SimpleBean {
 
     @Interceptors({ Interceptor1.class, Interceptor2.class, Interceptor1.class })

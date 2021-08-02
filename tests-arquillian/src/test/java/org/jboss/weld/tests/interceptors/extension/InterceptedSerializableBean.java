@@ -18,10 +18,12 @@ package org.jboss.weld.tests.interceptors.extension;
 
 import java.io.Serializable;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Typed;
 
 @SuppressWarnings("serial")
 @Typed(InterceptedSerializableBean.class)
+@Dependent
 public class InterceptedSerializableBean extends InterceptedBean implements Serializable {
 
     @FooInterceptorBinding

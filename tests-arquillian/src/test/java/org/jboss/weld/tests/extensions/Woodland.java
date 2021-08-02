@@ -17,8 +17,10 @@
 package org.jboss.weld.tests.extensions;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Woodland {
 
     private static boolean postConstructCalled;

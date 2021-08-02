@@ -21,11 +21,13 @@ import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 
+@Dependent
 public class Master {
 
     @Inject

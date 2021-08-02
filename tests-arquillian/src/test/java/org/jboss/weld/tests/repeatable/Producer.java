@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.repeatable;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Producer {
 
     @Produces

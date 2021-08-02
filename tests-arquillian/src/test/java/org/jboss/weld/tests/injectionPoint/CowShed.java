@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.util.reflection.Reflections;
 
+@Dependent
 public class CowShed {
 
     @Produces

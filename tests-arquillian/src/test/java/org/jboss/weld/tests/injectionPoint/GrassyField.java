@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class GrassyField extends Field {
 
 }

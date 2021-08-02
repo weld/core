@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.resolution.weld1723;
 
+import jakarta.enterprise.context.Dependent;
+
 @SuppressWarnings("rawtypes")
+@Dependent
 public class BarBean implements Bar {
 
 }

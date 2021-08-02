@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
+@Dependent
 public class StringGenerator {
 
     private static InjectionPoint injectionPoint;

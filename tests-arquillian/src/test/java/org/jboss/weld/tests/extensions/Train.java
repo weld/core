@@ -1,9 +1,11 @@
 package org.jboss.weld.tests.extensions;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Train {
 
     @Produces

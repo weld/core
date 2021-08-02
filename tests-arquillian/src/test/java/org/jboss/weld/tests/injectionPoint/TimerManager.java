@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import java.io.Serializable;
 import java.util.Timer;
 
+@Dependent
 public class TimerManager implements Serializable {
 
     private static final long serialVersionUID = 5156835887786174326L;

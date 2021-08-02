@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.tests.extensions.injectionPointWithTypesAndQualifiersOnly;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Kirill Gaevskii
  */
+@Dependent
 public class DummyBean {
 
     public int getSomeValue() {

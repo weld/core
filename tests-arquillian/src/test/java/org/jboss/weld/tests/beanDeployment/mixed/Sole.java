@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.beanDeployment.mixed;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Whitefish
 @Named("whitefish")
+@Dependent
 class Sole implements ScottishFish {
 
 }

@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processInjectionPoint;
 
+import jakarta.enterprise.context.Dependent;
+
 @Bar
+@Dependent
 class Bravo<T> {
 
 }

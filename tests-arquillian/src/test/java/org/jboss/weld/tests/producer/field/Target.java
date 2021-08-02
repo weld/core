@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.producer.field;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 
+@Dependent
 public class Target {
 
     @Inject

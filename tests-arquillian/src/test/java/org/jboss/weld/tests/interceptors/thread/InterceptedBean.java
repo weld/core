@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.tests.interceptors.thread;
 
+import jakarta.enterprise.context.Dependent;
+
 @DispatchToThread
 @Inc
+@Dependent
 public class InterceptedBean {
 
     public int foo() {

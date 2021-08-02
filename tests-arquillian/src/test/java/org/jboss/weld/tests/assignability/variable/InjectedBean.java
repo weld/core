@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.assignability.variable;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class InjectedBean<T extends RuntimeException> {
 
     @Inject

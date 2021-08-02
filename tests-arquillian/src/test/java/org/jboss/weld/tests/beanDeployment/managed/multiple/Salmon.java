@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.beanDeployment.managed.multiple;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named
+@Dependent
 class Salmon implements ScottishFish {
 
 }

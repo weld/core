@@ -17,10 +17,13 @@
 
 package org.jboss.weld.tests.decorators.resolution;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
 @Simple
+@Dependent
 public class SimpleBean implements SomeBean {
     public String hello(String name) {
         return "Hello, " + name;

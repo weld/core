@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.tests.resolution.circular;
 
+import jakarta.enterprise.context.Dependent;
+
 import java.io.Serializable;
 
+@Dependent
 class Violation implements Serializable {
 
     public void ping() {

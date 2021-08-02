@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.disposer.exception;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.BeanManager;
 
+@Dependent
 public class Producer {
 
     @Produces

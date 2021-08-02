@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.interceptors.annotated;
 
+import jakarta.enterprise.context.Dependent;
+
 @Actor
+@Dependent
 public class James {
 
     public void ping() {

@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Intercepted;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.DefinitionException;
@@ -45,6 +46,7 @@ public class InterceptedBeanMetadataInjectionIntoBeanTest {
         // should throw definition exception
      }
 
+    @Dependent
     public static class BrokenBean {
         @Inject
         @Intercepted

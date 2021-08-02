@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.producer.field.named;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class User {
     private String name;
 

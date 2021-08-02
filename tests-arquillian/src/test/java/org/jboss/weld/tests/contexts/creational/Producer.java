@@ -18,9 +18,11 @@ package org.jboss.weld.tests.contexts.creational;
 
 import java.util.UUID;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Producer {
 
     // Optimization is not allowed because there is a dependency with @PreDestroy callback

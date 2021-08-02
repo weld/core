@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.instance.destroy.dependent;
 
+import jakarta.enterprise.context.Dependent;
+
 @Intercept
+@Dependent
 public class Intercepted {
 
     public void foo() {

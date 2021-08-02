@@ -17,12 +17,14 @@
 
 package org.jboss.weld.tests.interceptors.ejb3model;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.InvocationContext;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
+@Dependent
 public class Defender {
     public static boolean defended = false;
 

@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.specialization.extension;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Foo {
 
     @Produces

@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.interceptors.bridgemethods.hierarchy;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.test.util.ActionSequence;
 
 @Juicy
 @Fast
+@Dependent
 public class Child extends Parent<String> {
 
     public void invokeA(String param) {

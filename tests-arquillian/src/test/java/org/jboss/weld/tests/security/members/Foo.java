@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.security.members;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class Foo {
 
     private final Bar constructorBar;
