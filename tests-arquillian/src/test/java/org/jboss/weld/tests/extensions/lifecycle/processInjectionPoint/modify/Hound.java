@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processInjectionPoint.modify;
 
+import jakarta.enterprise.context.Dependent;
+
 @Fast
+@Dependent
 public class Hound extends Dog {
 
 }

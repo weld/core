@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.specialization.weld1651.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Typed;
 
 @Typed(GenericInterface.class)
+@Dependent
 public class GenericBean<T> implements GenericInterface<T> {
 }

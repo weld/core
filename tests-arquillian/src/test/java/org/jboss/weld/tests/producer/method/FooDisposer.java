@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
@@ -23,6 +24,7 @@ import jakarta.enterprise.inject.Produces;
 /**
  * @author pmuir
  */
+@Dependent
 public class FooDisposer {
 
     private static boolean disposed;

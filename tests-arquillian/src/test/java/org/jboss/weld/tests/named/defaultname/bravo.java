@@ -17,9 +17,11 @@
 
 package org.jboss.weld.tests.named.defaultname;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named
+@Dependent
 public class bravo {
 
 }

@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.specialization.weld1651.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 import org.jboss.weld.tests.specialization.weld1651.Fan;
 
 @Specializes
+@Dependent
 public class RockFan2<T extends Rock> extends Fan<T> {
 }

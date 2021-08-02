@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.ejb3model;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.AroundTimeout;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
@@ -25,6 +26,7 @@ import jakarta.interceptor.InvocationContext;
  */
 @Interceptor
 @TimeBound
+@Dependent
 public class Referee {
     public static boolean ballCollected = false;
 

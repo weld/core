@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.proxy.instantiator;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class InjectedBean {
 
     @Inject

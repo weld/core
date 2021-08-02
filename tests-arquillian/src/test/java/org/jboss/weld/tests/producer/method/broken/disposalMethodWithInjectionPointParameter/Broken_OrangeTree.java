@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.producer.method.broken.disposalMethodWithInjectionPointParameter;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
+@Dependent
 public class Broken_OrangeTree {
 
     @Produces

@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.extensions.qualifiers.annotated;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named
 @Slow
+@Dependent
 public class Snail {
 
 }

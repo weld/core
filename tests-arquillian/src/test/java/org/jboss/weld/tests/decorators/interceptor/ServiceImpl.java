@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.decorators.interceptor;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class ServiceImpl implements Service {
 
     public static int invocationCount = 0;

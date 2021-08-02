@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.inject.Inject;
 
+@Dependent
 class ManagerProducer {
 
     @Inject

@@ -18,7 +18,9 @@ package org.jboss.weld.tests.transientReference;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class TestingBean2 {
 
     private static boolean initialized;

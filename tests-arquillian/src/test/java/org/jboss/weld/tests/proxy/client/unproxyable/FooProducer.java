@@ -17,8 +17,10 @@
 package org.jboss.weld.tests.proxy.client.unproxyable;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class FooProducer {
 
     @Juicy

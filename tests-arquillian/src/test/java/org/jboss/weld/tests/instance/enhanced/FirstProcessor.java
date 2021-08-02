@@ -18,12 +18,14 @@ package org.jboss.weld.tests.instance.enhanced;
 
 import jakarta.annotation.PreDestroy;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.test.util.ActionSequence;
 
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class FirstProcessor implements Processor {
 
     @Override

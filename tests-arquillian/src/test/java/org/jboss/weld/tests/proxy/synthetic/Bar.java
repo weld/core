@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.proxy.synthetic;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.Interceptors;
 
 @Interceptors(BarInterceptor.class)
+@Dependent
 public class Bar {
 
     void bar() {

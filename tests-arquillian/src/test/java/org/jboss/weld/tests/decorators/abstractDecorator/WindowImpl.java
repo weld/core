@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class WindowImpl implements Window {
     @Inject
     WindowPane pane;

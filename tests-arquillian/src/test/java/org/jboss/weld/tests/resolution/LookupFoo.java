@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.resolution;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class LookupFoo {
 
     @Inject

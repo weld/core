@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.bridge.methods;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class AlphaDisposer implements BasicDisposer<Bar> {
 
     @Produces

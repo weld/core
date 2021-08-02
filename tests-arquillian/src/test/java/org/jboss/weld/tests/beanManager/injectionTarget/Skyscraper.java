@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.beanManager.injectionTarget;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Skyscraper implements Building {
 
     public boolean decorated1() {

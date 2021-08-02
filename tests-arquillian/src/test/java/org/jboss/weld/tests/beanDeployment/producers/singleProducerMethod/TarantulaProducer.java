@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.beanDeployment.producers.singleProducerMethod;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class TarantulaProducer {
 
     @Produces

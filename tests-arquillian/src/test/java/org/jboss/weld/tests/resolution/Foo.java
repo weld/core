@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.resolution;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Foo extends FooBase<Bar> {
 
     public String getName() {

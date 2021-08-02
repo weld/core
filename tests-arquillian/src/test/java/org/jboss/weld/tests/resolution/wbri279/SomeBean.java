@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.resolution.wbri279;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class SomeBean {
 
     @Inject

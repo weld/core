@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.weld1651.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 import org.jboss.weld.tests.specialization.weld1651.Fan;
@@ -23,5 +24,6 @@ import org.jboss.weld.tests.specialization.weld1651.Music;
 
 @SuppressWarnings("rawtypes")
 @Specializes
+@Dependent
 public class RockFan3<T extends Music> extends Fan {
 }

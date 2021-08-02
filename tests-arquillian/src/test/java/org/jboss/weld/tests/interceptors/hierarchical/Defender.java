@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.hierarchical;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
@@ -25,6 +26,7 @@ import jakarta.interceptor.InvocationContext;
  */
 @Interceptor
 @Play
+@Dependent
 public class Defender {
     static int invocationsCount = 0;
 

@@ -18,8 +18,10 @@ package org.jboss.weld.tests.bridge.methods;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 
+@Dependent
 public class CharlieObserver implements BasicObserver<Bar> {
 
     static final AtomicInteger OBSERVATIONS = new AtomicInteger(0);

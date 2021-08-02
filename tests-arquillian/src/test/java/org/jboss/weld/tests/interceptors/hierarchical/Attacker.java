@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.tests.interceptors.hierarchical;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
 
+@Dependent
 public class Attacker extends Player {
 
     public void playBall() {

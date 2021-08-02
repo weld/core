@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.interceptors.visibility.packagePrivate.pack2;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Foo {
 
     /**

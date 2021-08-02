@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 
 @Alternative
+@Dependent
 public class Mike {
 
 }

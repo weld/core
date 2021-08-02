@@ -22,9 +22,11 @@ import jakarta.enterprise.inject.spi.DeploymentException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +40,7 @@ public class ObserverMethodParameterInjectionValidationTest {
     @ShouldThrowException(DeploymentException.class)
     public static JavaArchive getDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClasses(SimpleTarget.class, SimpleObserver.class);
     }
 

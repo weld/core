@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.ejb3model;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.ExcludeClassInterceptors;
 import jakarta.interceptor.Interceptors;
@@ -26,6 +27,7 @@ import jakarta.interceptor.InvocationContext;
  * @author Marius Bogoevici
  */
 @Interceptors({Goalkeeper.class, Referee.class})
+@Dependent
 public class Ball {
     public static boolean played = false;
 

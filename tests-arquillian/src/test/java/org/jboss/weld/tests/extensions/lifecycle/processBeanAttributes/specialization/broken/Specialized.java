@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.specialization.broken;
 
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 class Specialized {
 
 }

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.contexts.passivating.validation;
 
+import jakarta.enterprise.context.Dependent;
+
 import java.io.Serializable;
 
 /**
@@ -23,6 +25,7 @@ import java.io.Serializable;
  * 
  */
 @EnginePowered
+@Dependent
 @SuppressWarnings("serial")
 public class Ferry implements Vessel, Serializable {
 

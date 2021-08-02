@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.generic;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class BoundedGenericBean<T extends BaseClass> {
     public T echo(T param) {
         return param;

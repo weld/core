@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.disposer.weld1894;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+@Dependent
 public class TestObserver {
 
     @Inject

@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.extensions.lifecycle.atd;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 
 /**
@@ -25,6 +26,7 @@ import jakarta.enterprise.inject.Alternative;
  */
 @Alternative
 @Priority(2600)
+@Dependent
 public class EchoAlternative {
     
 }

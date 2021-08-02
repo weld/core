@@ -23,6 +23,7 @@ import jakarta.inject.Inject;
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class TestBean {
     @Inject
     @Dependent

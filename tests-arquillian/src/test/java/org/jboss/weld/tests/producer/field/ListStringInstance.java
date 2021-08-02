@@ -18,9 +18,11 @@ package org.jboss.weld.tests.producer.field;
 
 import java.util.List;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+@Dependent
 public class ListStringInstance {
     @Inject
     Instance<List<String>> instance;

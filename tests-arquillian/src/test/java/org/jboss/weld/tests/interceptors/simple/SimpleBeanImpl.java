@@ -18,11 +18,13 @@
 package org.jboss.weld.tests.interceptors.simple;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 //@PrimaryInterceptionBinding
+@Dependent
 public class SimpleBeanImpl implements SimpleBean {
 
     public static boolean businessMethodInvoked = false;

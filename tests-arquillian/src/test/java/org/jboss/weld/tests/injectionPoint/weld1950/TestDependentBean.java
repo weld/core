@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1950;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+@Dependent
 public class TestDependentBean {
 
     @Inject

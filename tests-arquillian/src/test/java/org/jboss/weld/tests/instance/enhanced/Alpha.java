@@ -21,12 +21,14 @@ import java.util.UUID;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.test.util.ActionSequence;
 
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class Alpha {
 
     private String id;

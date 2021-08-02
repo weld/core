@@ -18,10 +18,12 @@ package org.jboss.weld.tests.disposer.weld1894;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.TransientReference;
 
+@Dependent
 public class ProducerBean {
 
     public static AtomicInteger firstDisposerCalled = new AtomicInteger();

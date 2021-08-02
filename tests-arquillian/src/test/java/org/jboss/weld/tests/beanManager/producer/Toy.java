@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.beanManager.producer;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Toy {
 
     private final String name;

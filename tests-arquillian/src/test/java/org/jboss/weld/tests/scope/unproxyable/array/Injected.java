@@ -18,8 +18,10 @@ package org.jboss.weld.tests.scope.unproxyable.array;
 
 import java.util.Comparator;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class Injected {
 
     @Inject

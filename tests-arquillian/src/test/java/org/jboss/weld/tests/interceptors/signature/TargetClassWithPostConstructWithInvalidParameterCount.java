@@ -1,11 +1,13 @@
 package org.jboss.weld.tests.interceptors.signature;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.InvocationContext;
 
 /**
 * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
 */
+@Dependent
 public class TargetClassWithPostConstructWithInvalidParameterCount {
     public boolean postConstructInvoked;
 

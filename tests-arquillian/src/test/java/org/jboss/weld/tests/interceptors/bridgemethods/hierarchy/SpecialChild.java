@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.interceptors.bridgemethods.hierarchy;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.test.util.ActionSequence;
 
 @Fast
+@Dependent
 public class SpecialChild extends SpecialParent<String> implements SpecialBase {
 
     @Override

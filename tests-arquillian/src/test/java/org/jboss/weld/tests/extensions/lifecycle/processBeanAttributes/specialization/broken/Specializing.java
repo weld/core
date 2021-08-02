@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.specialization.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 import jakarta.inject.Named;
 
 @Specializes
 @Named("specializing")
+@Dependent
 class Specializing extends Specialized {
 
 }

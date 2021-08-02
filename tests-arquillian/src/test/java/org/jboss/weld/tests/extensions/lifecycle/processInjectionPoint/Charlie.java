@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processInjectionPoint;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 class Charlie {
 
 }

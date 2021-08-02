@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.beanManager.access;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class ScrewDriver {
 
     public String ping() {

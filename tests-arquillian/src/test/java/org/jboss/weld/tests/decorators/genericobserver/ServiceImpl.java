@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.genericobserver;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 
 /**
@@ -24,6 +25,7 @@ import jakarta.enterprise.event.Observes;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
+@Dependent
 public class ServiceImpl implements Service<Dog> {
     public static int invocationCount = 0;
 

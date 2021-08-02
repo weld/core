@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.lifecycle;
 
+import jakarta.enterprise.context.Dependent;
+
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
 @AlphaBinding
+@Dependent
 public class Alpha implements Serializable {
 
     public Boolean ping() {

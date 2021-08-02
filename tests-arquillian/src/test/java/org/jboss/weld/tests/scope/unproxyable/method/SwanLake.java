@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.scope.unproxyable.method;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class SwanLake {
 
     @Inject

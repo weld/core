@@ -1,8 +1,11 @@
 package org.jboss.weld.tests.interceptors.self;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class Bean implements Decorated {
     
     public void doUnintercepted() {

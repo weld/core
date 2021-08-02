@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.tests.interceptors.weld1538;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Kirill Gaevskii
  *
  */
 @InterceptMe
+@Dependent
 class Intercepted {
     public String sayHello() {
         return "Hello World!";

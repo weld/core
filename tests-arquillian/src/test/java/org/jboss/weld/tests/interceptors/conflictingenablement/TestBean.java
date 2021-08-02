@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.tests.interceptors.conflictingenablement;
 
+import jakarta.enterprise.context.Dependent;
+
 @Logged
 @Transactional
+@Dependent
 public class TestBean implements Test {
 
     public void ping() {

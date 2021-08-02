@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.decorators.abstractDecorator.inherited;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class SimpleClass implements DecorationInterface {
 
     public static boolean decoratorCalled = false;

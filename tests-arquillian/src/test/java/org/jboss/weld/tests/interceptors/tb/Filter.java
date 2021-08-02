@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.interceptors.tb;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Dependent
 public class Filter {
     private CDAO cdao;
 

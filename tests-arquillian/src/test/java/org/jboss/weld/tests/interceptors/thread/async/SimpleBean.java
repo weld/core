@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.tests.interceptors.thread.async;
 
+import jakarta.enterprise.context.Dependent;
+
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 
+@Dependent  
 public class SimpleBean {
 
     @Async

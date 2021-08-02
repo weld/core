@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.no.binding;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.Interceptors;
 
+@Dependent
 public class Foo {
 
     @Interceptors(FooInterceptor.class)

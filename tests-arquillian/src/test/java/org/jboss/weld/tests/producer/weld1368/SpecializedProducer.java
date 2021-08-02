@@ -1,5 +1,6 @@
 package org.jboss.weld.tests.producer.weld1368;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.Specializes;
 import jakarta.enterprise.inject.Typed;
@@ -10,13 +11,16 @@ import jakarta.enterprise.inject.Typed;
  * @author tremes
  * 
  */
+@Dependent
 public class SpecializedProducer {
 
 	@Typed
+	@Dependent
 	public static class TestBean1 {
 
 	}
 
+	@Dependent
 	public static class TestProducer1 {
 
 		@Produces
@@ -26,10 +30,12 @@ public class SpecializedProducer {
 	}
 
 	@Typed
+	@Dependent
 	public static class TestBean2 extends TestBean1 {
 	
 	}
 
+	@Dependent
 	public static class TestProducer2 extends TestProducer1 {
 
 		public void anyMethod() {
@@ -46,10 +52,12 @@ public class SpecializedProducer {
 	}
 
 	@Typed
+	@Dependent
 	public static class TestBean3 extends TestBean2 {
 		
 	}
 
+	@Dependent
 	public static class TestProducer3 extends TestProducer2 {
 
 		@Produces

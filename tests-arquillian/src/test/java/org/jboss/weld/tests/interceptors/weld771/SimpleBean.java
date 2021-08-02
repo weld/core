@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.interceptors.weld771;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class SimpleBean {
     private int notInterceptedInvocationCount = 0;
 

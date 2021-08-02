@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.assignability.variable;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class FooProducer {
 
     @Produces

@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.decorators.decoratedTypes;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class TestBean implements Decorated, NotDecorated {
     static boolean decoratedInvoked;
     static boolean notDecoratedInvoked;

@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.resolution.named;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-
+@Dependent
 public class NamedBeanConsumer {
 
     @Inject

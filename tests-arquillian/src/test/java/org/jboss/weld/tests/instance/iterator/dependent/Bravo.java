@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.instance.iterator.dependent;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Bravo extends Base {
 
     @Override

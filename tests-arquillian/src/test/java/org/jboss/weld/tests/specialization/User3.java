@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.specialization;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @Specializes
+@Dependent
 public class User3 extends User2 {
 }

@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.producer.method.parameterized;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class ParameterizedProducer {
 
     @Produces

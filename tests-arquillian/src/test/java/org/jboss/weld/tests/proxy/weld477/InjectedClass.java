@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.proxy.weld477;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class InjectedClass {
     @Inject
     ScopedClass dependency;

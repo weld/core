@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.interceptors.weld770;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class SimpleBean {
 
     private Counter invocationsCounter;

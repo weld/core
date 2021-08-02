@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.alternatives.accessible;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Alternative
+@Dependent
 public class BUser implements IUser {
 }

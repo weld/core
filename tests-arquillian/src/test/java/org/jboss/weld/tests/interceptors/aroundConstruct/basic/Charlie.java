@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
+import jakarta.enterprise.context.Dependent;
+
 @CharlieBinding
+@Dependent
 public class Charlie {
 
 }

@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1950;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
+@Dependent
 public class TestDependentBeanProducer {
 
     @Inject

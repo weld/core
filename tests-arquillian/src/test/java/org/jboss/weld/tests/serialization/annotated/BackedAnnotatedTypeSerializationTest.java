@@ -56,7 +56,7 @@ public class BackedAnnotatedTypeSerializationTest {
     @Test
     public void testType() throws Exception {
         AnnotatedType<?> type = Utils.deserialize(Utils.serialize(getAnnotatedType()));
-        assertEquals(1, type.getAnnotations().size());
+        assertEquals(2, type.getAnnotations().size());
     }
 
     @Test

@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.specialization.weld1651.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @Specializes
+@Dependent
 public class SpecializingBean extends GenericBean {
 }

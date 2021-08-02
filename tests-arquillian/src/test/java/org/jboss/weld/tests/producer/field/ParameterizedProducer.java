@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.producer.field;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Dependent
 public class ParameterizedProducer {
 
     @Produces

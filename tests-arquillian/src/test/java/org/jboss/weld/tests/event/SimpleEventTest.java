@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.event;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -108,6 +109,7 @@ public class SimpleEventTest {
         assert RECEIVE_3_OBSERVED == true;
     }
 
+    @Dependent
     public static class App {
         @Inject
         @Any
@@ -138,6 +140,7 @@ public class SimpleEventTest {
         }
     }
 
+    @Dependent
     public static class Receiver {
         public void receive1(@Observes @Updated String s) {
             RECEIVE_1_OBSERVED = true;

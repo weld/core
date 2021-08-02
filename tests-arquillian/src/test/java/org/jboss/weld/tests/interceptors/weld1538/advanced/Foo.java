@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.tests.interceptors.weld1538.advanced;
 
+import jakarta.enterprise.context.Dependent;
+
 @Dispatch
 @Alpha
 @Bravo
+@Dependent
 public class Foo {
 
     public int foo() {

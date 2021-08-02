@@ -17,9 +17,11 @@
 
 package org.jboss.weld.tests.specialization;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @Specializes
+@Dependent
 public class BeanC extends BeanB {
     @Override
     public String getPropA() {

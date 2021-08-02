@@ -18,11 +18,13 @@ package org.jboss.weld.tests.builtinBeans;
 
 import java.io.Serializable;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.inject.Inject;
 
 @Foo
 @SuppressWarnings("serial")
+@Dependent
 public class Sheep implements Serializable, Animal {
 
     @Inject

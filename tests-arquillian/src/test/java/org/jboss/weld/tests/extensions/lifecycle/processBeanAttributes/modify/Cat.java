@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.modify;
 
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 class Cat implements Animal {
 }

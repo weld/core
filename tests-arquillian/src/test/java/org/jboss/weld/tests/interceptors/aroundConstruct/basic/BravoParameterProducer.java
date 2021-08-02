@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class BravoParameterProducer {
 
     @Produces

@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.parser;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 
 @Alternative
+@Dependent
 public class Cow {
 
     private boolean pinged;

@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.exceptions;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 class Lorry_Broken {
 
     public Lorry_Broken() throws Exception {

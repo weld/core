@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author pmuir
  */
+@Dependent
 public class Foo {
 
 }

@@ -26,8 +26,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 /**
@@ -47,12 +45,6 @@ public class ProxyTest {
     @Test
     public void testProxy() {
         Assert.assertEquals("Hello", service.greet());
-    }
-
-    @Produces
-    @ApplicationScoped
-    public GreetServiceString getService() {
-        return new GreetServiceStringImpl("Hello");
     }
 
     public static interface GreetService {

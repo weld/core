@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.inject.Inject;
@@ -44,6 +45,7 @@ public class DecoratorMetadataInjectionIntoBeanTest {
         // should throw definition exception
      }
 
+    @Dependent
     public static class BrokenBean {
         @Inject
         @SuppressWarnings("unused")

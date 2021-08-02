@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.interceptors.weld770;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class Counter {
     private int count = 0;
 

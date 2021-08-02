@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.atd;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class TransactionLogger implements Logger {
 
     @Override

@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.resolution.wbri279;
 
+import jakarta.enterprise.context.Dependent;
+
 @IntFactory
+@Dependent
 public class IntegerFactory extends AbstractFactory<Integer> {
 
     public static final Integer VALUE = 123;
