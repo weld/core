@@ -18,6 +18,7 @@ package org.jboss.weld.environment.se.test.instance.enhanced;
 
 import java.math.BigDecimal;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 import org.jboss.weld.inject.WeldInstance;
@@ -26,6 +27,7 @@ import org.jboss.weld.inject.WeldInstance;
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class Client {
 
     @Inject

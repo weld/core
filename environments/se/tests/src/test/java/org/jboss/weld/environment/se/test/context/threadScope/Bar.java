@@ -17,11 +17,13 @@
 
 package org.jboss.weld.environment.se.test.context.threadScope;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 import org.jboss.weld.environment.se.contexts.activators.ActivateThreadScope;
 
 @ActivateThreadScope
+@Dependent
 public class Bar {
 
     @Inject

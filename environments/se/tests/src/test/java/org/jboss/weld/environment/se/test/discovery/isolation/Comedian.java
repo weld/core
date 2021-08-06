@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.environment.se.test.discovery.isolation;
 
+import jakarta.enterprise.context.Dependent;
+
 @FooBinding
+@Dependent
 public class Comedian {
 
     void ping() {

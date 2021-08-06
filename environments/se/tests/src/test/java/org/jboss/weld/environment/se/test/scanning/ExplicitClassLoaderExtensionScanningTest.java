@@ -44,7 +44,7 @@ public class ExplicitClassLoaderExtensionScanningTest {
     public static Archive<?> createTestArchive() {
         final JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class)
                 .addClasses(ExplicitClassLoaderExtensionScanningTest.class, MyExtension.class, Alpha.class, Bravo.class, AlphaExtension.class,
-                        BravoExtension.class)
+                        BravoExtension.class, DummyBean.class)
                 .addAsManifestResource(new BeansXml(), "beans.xml").addAsServiceProvider(Extension.class, AlphaExtension.class, BravoExtension.class)
                 .addAsServiceProvider(MyExtension.class, AlphaExtension.class);
         return ClassPath.builder().add(bda1).build();

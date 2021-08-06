@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.test.event.options.timeout;
 import java.util.concurrent.CountDownLatch;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.ObservesAsync;
 
 /**
@@ -26,6 +27,7 @@ import jakarta.enterprise.event.ObservesAsync;
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class LazyObserver {
 
     public void observeAndDrinkCoffee(@ObservesAsync @Priority(2) CountDownLatch latch) throws InterruptedException {

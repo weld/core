@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.environment.se.test.provider;
 
+import jakarta.enterprise.context.Dependent;
+
 @Female
+@Dependent
 public class Girl extends Child {
 
     @Override

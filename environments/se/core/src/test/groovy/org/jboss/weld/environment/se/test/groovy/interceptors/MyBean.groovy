@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 package org.jboss.weld.environment.se.test.groovy.interceptors
-import jakarta.enterprise.context.ApplicationScoped
+import jakarta.enterprise.context.Dependent
 
+@Dependent
 class MyBean {
 
     @Log

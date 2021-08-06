@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
@@ -23,6 +24,7 @@ import org.jboss.weld.environment.se.test.beandiscovery.interceptors.Decorable;
 import org.jboss.weld.environment.se.test.beandiscovery.interceptors.InterceptorBindingAnnotation;
 
 @InterceptorBindingAnnotation
+@Dependent
 public class Flat implements Decorable {
 
     @Inject

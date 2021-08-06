@@ -17,9 +17,12 @@
 
 package org.jboss.weld.environment.se.test.decorators;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Peter Royle
  */
+@Dependent
 public class HouseDoor extends AbstractDoor {
 
 }

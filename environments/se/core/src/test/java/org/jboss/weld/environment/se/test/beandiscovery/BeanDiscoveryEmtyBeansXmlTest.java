@@ -39,7 +39,7 @@ public class BeanDiscoveryEmtyBeansXmlTest {
     public void testArchive02(BeanManager manager) {
         assertEquals(1, manager.getBeans(Tree.class).size());
         assertEquals(1, manager.getBeans(Plant.class).size());
-        assertEquals(1, manager.getBeans(Stone.class).size());
+        assertEquals(0, manager.getBeans(Stone.class).size());
     }
 
     @Test
