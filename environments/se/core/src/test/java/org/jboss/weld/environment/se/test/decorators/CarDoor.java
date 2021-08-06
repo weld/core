@@ -17,9 +17,12 @@
 
 package org.jboss.weld.environment.se.test.decorators;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Peter Royle
  */
+@Dependent
 public class CarDoor extends AbstractDoor {
 
     private boolean isWindowOpen = false;

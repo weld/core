@@ -17,10 +17,12 @@
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *
  */
+@Dependent
 @Priority(2)
 public class Priority2 extends Base implements WithPriority {
 

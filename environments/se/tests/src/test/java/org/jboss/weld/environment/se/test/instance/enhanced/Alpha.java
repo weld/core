@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class Alpha extends Base {
 
 }

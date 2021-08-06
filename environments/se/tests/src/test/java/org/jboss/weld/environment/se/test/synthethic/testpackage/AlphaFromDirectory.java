@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.synthethic.testpackage;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class AlphaFromDirectory {
 
     public int ping(){

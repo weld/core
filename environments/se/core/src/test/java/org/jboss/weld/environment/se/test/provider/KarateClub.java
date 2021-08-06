@@ -17,8 +17,10 @@
 
 package org.jboss.weld.environment.se.test.provider;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class KarateClub {
 
     @Inject

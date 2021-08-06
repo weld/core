@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.cleanup;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Foo {
 
     public void ping() {

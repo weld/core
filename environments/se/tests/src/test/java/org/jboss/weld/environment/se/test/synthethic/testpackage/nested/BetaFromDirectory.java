@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.synthethic.testpackage.nested;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class BetaFromDirectory {
 
     public int ping(){

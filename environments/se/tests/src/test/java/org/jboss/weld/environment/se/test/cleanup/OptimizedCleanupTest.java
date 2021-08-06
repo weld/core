@@ -46,7 +46,7 @@ public class OptimizedCleanupTest {
     @Test
     public void testEnabled() {
         TestExtension.PIT_OBSERVED.set(false);
-        try (WeldContainer container = new Weld().disableIsolation().addExtension(new TestExtension()).property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.TRUE)
+        try (WeldContainer container = new Weld().addExtension(new TestExtension()).property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.TRUE)
                 .initialize()) {
             BeanManagerImpl beanManager = BeanManagerProxy.unwrap(container.getBeanManager());
             Bean<?> fooBean = beanManager.resolve(beanManager.getBeans(Foo.class));
@@ -60,7 +60,7 @@ public class OptimizedCleanupTest {
     @Test
     public void testDisabled() {
         TestExtension.PIT_OBSERVED.set(false);
-        try (WeldContainer container = new Weld().disableIsolation().addExtension(new TestExtension()).property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.FALSE)
+        try (WeldContainer container = new Weld().addExtension(new TestExtension()).property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.FALSE)
                 .initialize()) {
             BeanManagerImpl beanManager = BeanManagerProxy.unwrap(container.getBeanManager());
             Bean<?> fooBean = beanManager.resolve(beanManager.getBeans(Foo.class));

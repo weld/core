@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.environment.se.test.resource;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+@Dependent
 public class Golf {
 
     @Inject

@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.servlet.undertow;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 class Foo {
 
 }

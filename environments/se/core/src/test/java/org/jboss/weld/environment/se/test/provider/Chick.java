@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.environment.se.test.provider;
 
+import jakarta.enterprise.context.Dependent;
+
 @Pretty
+@Dependent
 public class Chick extends Girl {
 
 }

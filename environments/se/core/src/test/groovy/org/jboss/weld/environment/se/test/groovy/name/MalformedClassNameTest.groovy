@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.groovy.name;
+package org.jboss.weld.environment.se.test.groovy.name
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.arquillian.container.test.api.Deployment
 import org.jboss.arquillian.junit.Arquillian
 import org.jboss.shrinkwrap.api.Archive
@@ -37,6 +38,7 @@ class MalformedClassNameTest {
         ShrinkWrap.create(BeanArchive.class).addPackage(MalformedClassNameTest.class.getPackage());
     }
 
+    @Dependent
     private static class Inner {
         def _ = [1, 2, 3].each {}
     }

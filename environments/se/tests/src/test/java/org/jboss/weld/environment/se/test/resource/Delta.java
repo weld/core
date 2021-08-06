@@ -17,7 +17,9 @@
 package org.jboss.weld.environment.se.test.resource;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class Delta {
 
     private int val;

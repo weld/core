@@ -30,7 +30,7 @@ public class TestExtension implements Extension {
 
    // This observer is always dropped after bootstrap
    void observeFooPat(@Observes ProcessAnnotatedType<Foo> event) {
-       event.configureAnnotatedType().add(ApplicationScoped.Literal.INSTANCE);
+       event.configureAnnotatedType().removeAll().add(ApplicationScoped.Literal.INSTANCE);
    }
 
    // This observer is only dropped if optimized cleanup is allowed
