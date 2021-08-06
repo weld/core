@@ -15,10 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.environment.se.test.merging;
+package org.jboss.weld.environment.se.test.implicit.merging;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
-@ApplicationScoped
-public class Foo {
+public class Bar {
 }
