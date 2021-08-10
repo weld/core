@@ -22,13 +22,11 @@ jobs:
         with:
           java-version: 11
       - name: Download WildFly
+        # TODO - wget link needs to eventually be replaced once there is a WFLY that we can use for EE 10
         run: |
-          wget https://ci.wildfly.org/guestAuth/repository/download/WF_WildflyPreviewNightly/latest.lastSuccessful/wildfly-preview-latest-SNAPSHOT.zip
-          unzip wildfly-preview-latest-SNAPSHOT.zip
-          # ZIP contains two more ZIPs, sources and actual WFLY
-          rm wildfly-*-src.zip
-          rm wildfly-preview-latest-SNAPSHOT.zip
+          wget https://download.jboss.org/wildfly/24.0.1.Final/wildfly-preview-24.0.1.Final.zip
           unzip wildfly-*.zip -d container
+          rm wildfly-preview-24.0.1.Final.zip
           cd container
           mv ./* wildfly/
       - name: Get Date
@@ -236,7 +234,6 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
-        # avoid building impl as that can only be done with JDK 11
         run: |
           mvn clean verify -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Prepare failure archive (if maven failed)
