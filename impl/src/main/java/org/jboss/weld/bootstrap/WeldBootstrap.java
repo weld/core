@@ -26,6 +26,7 @@ import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -125,15 +126,29 @@ public class WeldBootstrap implements CDI11Bootstrap {
 
     @Override
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-        return BeansXmlParser.merge(urls, this::parse, removeDuplicates);
+        return parse(urls, removeDuplicates, BeanDiscoveryMode.ANNOTATED);
     }
 
     @Override
     public BeansXml parse(URL url) {
+        return parse(url, BeanDiscoveryMode.ANNOTATED);
+    }
+
+    @Override
+    public BeansXml parse(URL url, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         if (beansXmlValidator != null) {
             beansXmlValidator.validate(url);
         }
-        return new BeansXmlStreamParser(url).parse();
+        return new BeansXmlStreamParser(url, emptyBeansXmlDiscoveryMode).parse();    }
+
+    @Override
+    public BeansXml parse(Iterable<URL> urls, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        return parse(urls, false, emptyBeansXmlDiscoveryMode);
+    }
+
+    @Override
+    public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        return BeansXmlParser.merge(urls, url -> parse(url, emptyBeansXmlDiscoveryMode), removeDuplicates);
     }
 
     @Override

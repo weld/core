@@ -345,6 +345,30 @@ The following properties can be used to restrict the set of beans Weld is going 
 |`org.jboss.weld.bootstrap.unusedBeans.excludeAnnotation` |`javax\\.ws\\.rs.*`| A regular expression. A bean is not removed if the corresponding `AnnotatedType`, or any member, is annotated with an annotation which matches this pattern. By default, a type annotated with any JAX-RS annotation is excluded from removal.
 |=======================================================================
 
+[[legacy-empty-beans-xml]]
+==== Legacy mode for treatment of empty `beans.xml` files
+
+Starting with CDI 4.0, bean archives with empty `beans.xml` have discovery mode `annotated`.
+However, CDI mandates that there is a compatibility configuration option that users can leverage to switch this back to `all` discovery mode. Since this option is temporary and serves to ease the migration process to new CDI version, users are strongly encouraged to adapt their bean archives accordingly.
+
+Every platform and container needs to provide their own way to configure this and users should look into their respective documentation for guidance.
+
+For Weld SE, users can start Weld container with following property:
+
+[source.JAVA, java]
+--------------------------------------------------------------------------
+try (WeldContainer container = new Weld()
+    // LEGACY_EMPTY_BEANS_XML_TREATMENT = "org.jboss.weld.se.discovery.emptyBeansXmlModeAll"
+    .property(Weld.LEGACY_EMPTY_BEANS_XML_TREATMENT, true)
+    .initialize()) {
+      performAppLogic();
+}
+--------------------------------------------------------------------------
+
+For Weld Servlet, there is a `ServletContext` parameter with `String` key `org.jboss.weld.environment.servlet.emptyBeansXmlModeAll` that, if set to `true`, triggers this legacy behavior.
+
+WARNING: Since this configuration has to be known prior to Weld discovery, it cannot be defined through standard means! Furthermore, this option will act as a global configuration affecting all of your bean archives in the deployed application!
+
 [[external_config]]
 === Defining external configuration
 

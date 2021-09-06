@@ -200,6 +200,15 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public static final String DEV_MODE_SYSTEM_PROPERTY = "org.jboss.weld.development";
 
     /**
+     * Standard behavior is that empty {@code beans.xml} is treated as discovery mode {@code annotated}.
+     * This configuration property allows to change the behavior to discovery mode {@code all} which is how it used to work prior to
+     * CDI 4.0.
+     * <p/>
+     * Note that this option is temporary and servers to easy migration. As such, it will be eventually removed.
+     */
+    public static final String EMPTY_BEANS_XML_DISCOVERY_MODE_ALL = "org.jboss.weld.se.discovery.emptyBeansXmlModeAll";
+
+    /**
      * By default, Weld automatically registers shutdown hook during initialization. If set to false, the registration of a shutdown hook is skipped.
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
@@ -357,7 +366,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * Scanning may also have negative impact on bootstrap performance.
      * </p>
      *
-     * @param classes
+     * @param packageClasses classes whose packages are to be added to synthetic bean archive
      * @return self
      */
     public Weld packages(Class<?>... packageClasses) {
@@ -944,6 +953,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
 
+        final BeanDiscoveryMode emptyBeansXmlDiscoveryMode = isEnabled(EMPTY_BEANS_XML_DISCOVERY_MODE_ALL, false) ? BeanDiscoveryMode.ALL : BeanDiscoveryMode.ANNOTATED;
         final Iterable<Metadata<Extension>> extensions = getExtensions();
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final Deployment deployment;
@@ -959,9 +969,10 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
         if (discoveryEnabled) {
             DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
-                   beanDefiningAnnotations, isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false));
+                   beanDefiningAnnotations, isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false),
+                    emptyBeansXmlDiscoveryMode);
             if (isImplicitScanEnabled()) {
-                strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
+                strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap, emptyBeansXmlDiscoveryMode));
             }
             beanDeploymentArchives.addAll(strategy.performDiscovery());
             ClassFileServices classFileServices = strategy.getClassFileServices();

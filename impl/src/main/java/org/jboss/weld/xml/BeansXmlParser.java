@@ -44,9 +44,20 @@ import org.jboss.weld.metadata.ScanningImpl;
 public class BeansXmlParser {
 
     private final BeansXmlValidator beansXmlValidator;
+    // having this information here allows WFLY to create appropriate parser
+    private final BeanDiscoveryMode emptyBeansXmlDiscoveryModeAll;
 
     public BeansXmlParser() {
+        this(false);
+    }
+
+    public BeansXmlParser(boolean emptyBeansXmlDiscoveryModeAll) {
         beansXmlValidator = SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled() ? null : new BeansXmlValidator();
+        if (emptyBeansXmlDiscoveryModeAll) {
+            this.emptyBeansXmlDiscoveryModeAll = BeanDiscoveryMode.ALL;
+        } else {
+            this.emptyBeansXmlDiscoveryModeAll = BeanDiscoveryMode.ANNOTATED;
+        }
     }
 
     public BeansXml parse(final URL beansXml) {
@@ -54,7 +65,7 @@ public class BeansXmlParser {
         if (beansXmlValidator != null) {
             beansXmlValidator.validate(beansXml, handler);
         }
-        return handler != null ? new BeansXmlStreamParser(beansXml, text -> handler.interpolate(text)).parse() : new BeansXmlStreamParser(beansXml).parse();
+        return handler != null ? new BeansXmlStreamParser(beansXml, text -> handler.interpolate(text), emptyBeansXmlDiscoveryModeAll).parse() : new BeansXmlStreamParser(beansXml, emptyBeansXmlDiscoveryModeAll).parse();
     }
 
     public BeansXml parse(Iterable<URL> urls) {
