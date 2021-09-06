@@ -32,6 +32,7 @@ import java.util.Set;
 import jakarta.annotation.Priority;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -62,8 +63,11 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
     private final List<BeanArchiveHandler> handlers;
 
+    private final BeanDiscoveryMode emptyBeansXmlDiscoveryMode;
+
     protected AbstractDiscoveryStrategy() {
         handlers = new LinkedList<BeanArchiveHandler>();
+        this.emptyBeansXmlDiscoveryMode = BeanDiscoveryMode.ANNOTATED;
     }
 
     /**
@@ -71,12 +75,16 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
      * @param resourceLoader
      * @param bootstrap
      * @param initialBeanDefiningAnnotations
+     * @param emptyBeansXmlDiscoveryMode
      */
-    public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+    public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap,
+                                     Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
+                                     BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         handlers = new LinkedList<BeanArchiveHandler>();
         setResourceLoader(resourceLoader);
         setBootstrap(bootstrap);
         setInitialBeanDefiningAnnotations(initialBeanDefiningAnnotations);
+        this.emptyBeansXmlDiscoveryMode = emptyBeansXmlDiscoveryMode;
     }
 
     @Override
@@ -102,7 +110,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
     public Set<WeldBeanDeploymentArchive> performDiscovery() {
 
         if (scanner == null) {
-            scanner = new DefaultBeanArchiveScanner(resourceLoader, bootstrap);
+            scanner = new DefaultBeanArchiveScanner(resourceLoader, bootstrap, emptyBeansXmlDiscoveryMode);
         }
 
         final List<BeanArchiveBuilder> beanArchiveBuilders = new ArrayList<BeanArchiveBuilder>();

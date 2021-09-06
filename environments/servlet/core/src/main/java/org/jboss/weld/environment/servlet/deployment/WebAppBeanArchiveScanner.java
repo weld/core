@@ -26,6 +26,7 @@ import java.util.List;
 import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.discovery.DefaultBeanArchiveScanner;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
@@ -60,8 +61,9 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
      * @param bootstrap
      * @param servletContext
      */
-    public WebAppBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, ServletContext servletContext) {
-        super(resourceLoader, bootstrap);
+    public WebAppBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, ServletContext servletContext,
+                                    BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        super(resourceLoader, bootstrap, emptyBeansXmlDiscoveryMode);
         this.servletContext = servletContext;
     }
 

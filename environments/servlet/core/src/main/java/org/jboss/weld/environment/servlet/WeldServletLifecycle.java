@@ -38,6 +38,7 @@ import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor.ModuleType;
@@ -94,6 +95,9 @@ public class WeldServletLifecycle {
     private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
 
     private static final String JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER = "org.jboss.weld.environment.servlet.deployment.JandexServletContextBeanArchiveHandler";
+
+    // allows to handle empty beans.xml as having discovery mode ALL
+    private static final String LEGACY_EMPTY_BEANS_XML_TREATMENT = WeldServletLifecycle.class.getPackage().getName() + ".emptyBeansXmlModeAll";
 
     // This context param is used to activate the development mode
     private static final String CONTEXT_PARAM_DEV_MODE = "org.jboss.weld.development";
@@ -285,8 +289,9 @@ public class WeldServletLifecycle {
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final EEModuleDescriptor eeModule = new EEModuleDescriptorImpl(context.getContextPath(), ModuleType.WEB);
 
+        final BeanDiscoveryMode emptyBeansXmlDiscoveryMode = Boolean.parseBoolean(context.getInitParameter(LEGACY_EMPTY_BEANS_XML_TREATMENT)) ? BeanDiscoveryMode.ALL : BeanDiscoveryMode.ANNOTATED;
         final DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations(),
-            Boolean.parseBoolean(context.getInitParameter(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY)));
+            Boolean.parseBoolean(context.getInitParameter(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY)), emptyBeansXmlDiscoveryMode);
 
         if (Jandex.isJandexAvailable(resourceLoader)) {
             try {
@@ -298,7 +303,7 @@ public class WeldServletLifecycle {
         } else {
             strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
         }
-        strategy.setScanner(new WebAppBeanArchiveScanner(resourceLoader, bootstrap, context));
+        strategy.setScanner(new WebAppBeanArchiveScanner(resourceLoader, bootstrap, context, emptyBeansXmlDiscoveryMode));
         Set<WeldBeanDeploymentArchive> beanDeploymentArchives = strategy.performDiscovery();
 
         String isolation = context.getInitParameter(CONTEXT_PARAM_ARCHIVE_ISOLATION);

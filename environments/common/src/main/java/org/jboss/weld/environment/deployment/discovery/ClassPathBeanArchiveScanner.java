@@ -39,6 +39,7 @@ import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
@@ -75,8 +76,8 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
      *
      * @param bootstrap
      */
-    public ClassPathBeanArchiveScanner(Bootstrap bootstrap) {
-        super(bootstrap);
+    public ClassPathBeanArchiveScanner(Bootstrap bootstrap, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        super(bootstrap, emptyBeansXmlDiscoveryMode);
     }
 
     @Override

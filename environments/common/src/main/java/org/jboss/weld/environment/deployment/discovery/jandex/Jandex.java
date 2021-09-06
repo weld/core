@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -33,13 +34,13 @@ public class Jandex {
     }
 
     public static JandexDiscoveryStrategy createJandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap,
-            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations)
+            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, BeanDiscoveryMode emptyBeansXmlDiscoveryMode)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
         Class<JandexDiscoveryStrategy> strategyClass = Reflections.loadClass(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME);
         return SecurityActions
-                .newConstructorInstance(strategyClass, new Class<?>[] { ResourceLoader.class, Bootstrap.class, Set.class }, resourceLoader, bootstrap,
-                        initialBeanDefiningAnnotations);
+                .newConstructorInstance(strategyClass, new Class<?>[] { ResourceLoader.class, Bootstrap.class, Set.class, BeanDiscoveryMode.class }, resourceLoader, bootstrap,
+                        initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
 
     }
 

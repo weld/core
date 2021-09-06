@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.junit.Test;
 
@@ -34,7 +35,7 @@ public class DiscoveryStrategyTest {
     @Test
     public void testBeanArchiveHandlers() {
         AbstractDiscoveryStrategy strategy = (AbstractDiscoveryStrategy) DiscoveryStrategyFactory
-                .create(new ClassLoaderResourceLoader(getClass().getClassLoader()), null, Collections.emptySet(), true);
+                .create(new ClassLoaderResourceLoader(getClass().getClassLoader()), null, Collections.emptySet(), true, BeanDiscoveryMode.ANNOTATED);
         strategy.registerHandler(new TestHandler2());
         List<BeanArchiveHandler> handlers = strategy.initBeanArchiveHandlers();
         assertEquals(3, handlers.size());
