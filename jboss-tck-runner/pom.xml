@@ -348,6 +348,9 @@
                                 <!-- Travis CI build workaround -->
                                 <argLine>${travis.surefire.argLine}</argLine>
                             </systemPropertyVariables>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>target/suites/tck-core-suite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                 </plugins>
