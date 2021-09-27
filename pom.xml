@@ -64,7 +64,7 @@
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <!-- Version of the CDI 4.x release TCK -->
-        <cdi.tck-4-0.version>4.1.0.Alpha2</cdi.tck-4-0.version>
+        <cdi.tck-4-0.version>4.1.0.Alpha3</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.3.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.3.0</spotbugs-annotations-version>
