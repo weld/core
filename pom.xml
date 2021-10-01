@@ -75,7 +75,7 @@
         <jandex.version>2.3.0.Final</jandex.version>
         <javax.activation.version>2.0.1</javax.activation.version>
         <jakarta.el.version>4.0.0</jakarta.el.version>
-        <glassfish.jakarta.el.version>4.0.1</glassfish.jakarta.el.version>
+        <glassfish.jakarta.el.version>4.0.2</glassfish.jakarta.el.version>
         <jakarta.jms.api.version>3.0.0</jakarta.jms.api.version>
         <jsf.api.version>3.0.0</jsf.api.version>
         <jboss.logging.version>3.4.2.Final</jboss.logging.version>
