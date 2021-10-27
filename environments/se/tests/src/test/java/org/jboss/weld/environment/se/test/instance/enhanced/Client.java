@@ -19,9 +19,8 @@ package org.jboss.weld.environment.se.test.instance.enhanced;
 import java.math.BigDecimal;
 
 import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-
-import org.jboss.weld.inject.WeldInstance;
 
 /**
  *
@@ -31,24 +30,24 @@ import org.jboss.weld.inject.WeldInstance;
 public class Client {
 
     @Inject
-    WeldInstance<Alpha> alphaInstance;
+    Instance<Alpha> alphaInstance;
 
     @Inject
-    WeldInstance<Object> instance;
+    Instance<Object> instance;
 
     @Inject
     @Juicy
-    WeldInstance<BigDecimal> bigDecimalInstance;
+    Instance<BigDecimal> bigDecimalInstance;
 
-    WeldInstance<Alpha> getAlphaInstance() {
+    Instance<Alpha> getAlphaInstance() {
         return alphaInstance;
     }
 
-    WeldInstance<BigDecimal> getBigDecimalInstance() {
+    Instance<BigDecimal> getBigDecimalInstance() {
         return bigDecimalInstance;
     }
 
-    WeldInstance<Object> getInstance() {
+    Instance<Object> getInstance() {
         return instance;
     }
 }

@@ -85,8 +85,22 @@ public abstract class ForwardingWeldInstance<T> implements WeldInstance<T> {
     }
 
     @Override
+    public Handle getHandle() {
+        return delegate().getHandle();
+    }
+
+    @Override
+    public Iterable<Handle<T>> handles() {
+        return delegate().handles();
+    }
+
+    @Override
     public Comparator<Handler<?>> getPriorityComparator() {
         return delegate().getPriorityComparator();
     }
 
+    @Override
+    public Comparator<Handle<?>> getHandlePriorityComparator() {
+        return delegate().getHandlePriorityComparator();
+    }
 }

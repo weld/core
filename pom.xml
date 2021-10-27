@@ -91,7 +91,7 @@
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
         <testng.jcommander.version>1.81</testng.jcommander.version>
-        <weld.api.version>5.0.Alpha4</weld.api.version>
+        <weld.api.version>5.0.Beta1</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>3.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -130,34 +130,25 @@
                 <version>${javax.activation.version}</version>
             </dependency>
 
-            <!-- This version of EL 3.0 API is not JDK 6 compatible -->
             <dependency>
                 <groupId>jakarta.el</groupId>
                 <artifactId>jakarta.el-api</artifactId>
                 <version>${jakarta.el.version}</version>
             </dependency>
 
-            <!-- This artifact bundles EL API and impl and is not JDK 6 compatible -->
+            <!-- This artifact bundles EL API -->
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>jakarta.el</artifactId>
                 <version>${glassfish.jakarta.el.version}</version>
             </dependency>
 
-            <!-- Used to use jboss version that doesn't yet exist for Jakarta 9
-            <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.3_spec</artifactId>
-            -->
             <dependency>
                 <groupId>jakarta.faces</groupId>
                 <artifactId>jakarta.faces-api</artifactId>
                 <version>${jsf.api.version}</version>
             </dependency>
 
-            <!-- Used to use jboss version that doesn't yet exist for Jakarta 9
-            <groupId>org.jboss.spec.javax.jms</groupId>
-            <artifactId>jboss-jms-api_2.0_spec</artifactId>
-            -->
             <dependency>
                 <groupId>jakarta.jms</groupId>
                 <artifactId>jakarta.jms-api</artifactId>

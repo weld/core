@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2021, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.tests.instance.enhanced;
 
 import static org.junit.Assert.assertEquals;
@@ -21,44 +22,38 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
-import java.util.List;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.inject.WeldInstance;
-import org.jboss.weld.inject.WeldInstance.Handler;
 import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- *
- * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
- */
+import java.util.Iterator;
+import java.util.List;
+
 @RunWith(Arquillian.class)
-public class WeldInstanceTest {
+public class InstanceHandleTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceTest.class))
-                .addClasses(Alpha.class, Bravo.class, FirstProcessor.class, Juicy.class, Processor.class,
-                        SecondProcessor.class, WeldClient.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceHandleTest.class))
+                .addClasses(Alpha.class, Bravo.class, Client.class, FirstProcessor.class, Processor.class,
+                        SecondProcessor.class, Juicy.class)
+                .addPackage(WeldInstanceTest.class.getPackage())
                 .addClass(ActionSequence.class);
     }
 
     @Test
-    public void testIsResolvable(WeldClient client) {
+    public void testIsResolvable(Client client) {
         ActionSequence.reset();
         assertNotNull(client);
         assertTrue(client.getAlphaInstance().isResolvable());
@@ -66,21 +61,21 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testGetHandler(WeldClient client, BeanManager beanManager) {
+    public void testGetHandle(Client client, BeanManager beanManager) {
         ActionSequence.reset();
         assertNotNull(client);
 
         Bean<?> alphaBean = beanManager.resolve(beanManager.getBeans(Alpha.class));
-        WeldInstance<Alpha> instance = client.getAlphaInstance();
+        Instance<Alpha> instance = client.getAlphaInstance();
 
-        Handler<Alpha> alpha1 = instance.getHandler();
+        Instance.Handle<Alpha> alpha1 = instance.getHandle();
         assertEquals(alphaBean, alpha1.getBean());
         assertEquals(Dependent.class, alpha1.getBean().getScope());
 
         String alpha2Id;
 
         // Test try-with-resource
-        try (Handler<Alpha> alpha2 = instance.getHandler()) {
+        try (Instance.Handle<Alpha> alpha2 = instance.getHandle()) {
             alpha2Id = alpha2.get().getId();
             assertFalse(alpha1.get().getId().equals(alpha2Id));
         }
@@ -97,9 +92,9 @@ public class WeldInstanceTest {
         assertEquals(2, sequence.size());
 
         // Test normal scoped bean is also destroyed
-        WeldInstance<Bravo> bravoInstance = client.getInstance().select(Bravo.class);
+        Instance<Bravo> bravoInstance = client.getInstance().select(Bravo.class);
         String bravoId = bravoInstance.get().getId();
-        try (Handler<Bravo> bravo = bravoInstance.getHandler()) {
+        try (Instance.Handle<Bravo> bravo = bravoInstance.getHandle()) {
             assertEquals(bravoId, bravo.get().getId());
             ActionSequence.reset();
         }
@@ -109,11 +104,11 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testGetAfterDestroyingContextualInstance(WeldClient client) {
+    public void testGetAfterDestroyingContextualInstance(Client client) {
         ActionSequence.reset();
         assertNotNull(client);
 
-        Handler<Alpha> alphaHandle = client.getAlphaInstance().getHandler();
+        Instance.Handle<Alpha> alphaHandle = client.getAlphaInstance().getHandle();
         // trigger bean creation
         alphaHandle.get();
         // trigger bean destruction
@@ -132,13 +127,13 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testHandlers(WeldInstance<Processor> instance) {
+    public void testHandles(Instance<Processor> instance) {
         ActionSequence.reset();
         assertTrue(instance.isAmbiguous());
-        for (Handler<Processor> handler : instance.handlers()) {
-            handler.get().ping();
-            if (handler.getBean().getScope().equals(Dependent.class)) {
-                handler.destroy();
+        for (Instance.Handle<Processor> handle : instance.handles()) {
+            handle.get().ping();
+            if (handle.getBean().getScope().equals(Dependent.class)) {
+                handle.destroy();
             }
         }
         assertEquals(3, ActionSequence.getSequenceSize());
@@ -146,9 +141,9 @@ public class WeldInstanceTest {
 
         ActionSequence.reset();
         assertTrue(instance.isAmbiguous());
-        for (Iterator<Handler<Processor>> iterator = instance.handlers().iterator(); iterator.hasNext();) {
-            try (Handler<Processor> handler = iterator.next()) {
-                handler.get().ping();
+        for (Iterator<Instance.Handle<Processor>> iterator = instance.handles().iterator(); iterator.hasNext();) {
+            try (Instance.Handle<Processor> handle = iterator.next()) {
+                handle.get().ping();
             }
         }
         assertEquals(4, ActionSequence.getSequenceSize());

@@ -14,32 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.instance.enhanced;
+package org.jboss.weld.tests.instance.enhanced;
 
-import jakarta.annotation.PreDestroy;
+import java.math.BigDecimal;
 
 import jakarta.enterprise.context.Dependent;
-import org.jboss.weld.test.util.ActionSequence;
+import jakarta.inject.Inject;
+
+import org.jboss.weld.inject.WeldInstance;
 
 /**
+ * A version of {@link Client} that uses {@link WeldInstance} interface
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @Dependent
-public class FirstProcessor implements Processor {
+public class WeldClient {
 
-    @Override
-    public void ping() {
-        ActionSequence.addAction("firstPing");
+    @Inject
+    WeldInstance<Alpha> alphaInstance;
+
+    @Inject
+    WeldInstance<Object> instance;
+
+    @Inject
+    @Juicy
+    WeldInstance<BigDecimal> bigDecimalInstance;
+
+    WeldInstance<Alpha> getAlphaInstance() {
+        return alphaInstance;
     }
 
-    @PreDestroy
-    void destroy() {
-        ActionSequence.addAction("firstDestroy");
+    WeldInstance<BigDecimal> getBigDecimalInstance() {
+        return bigDecimalInstance;
     }
 
-    @Override
-    public String getId() {
-        return FirstProcessor.class.getName();
+    WeldInstance<Object> getInstance() {
+        return instance;
     }
 }

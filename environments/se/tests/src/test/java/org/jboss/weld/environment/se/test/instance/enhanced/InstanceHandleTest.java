@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2021, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
 import static org.junit.Assert.assertEquals;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Bean;
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -32,8 +34,6 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.inject.WeldInstance;
-import org.jboss.weld.inject.WeldInstance.Handler;
 import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
@@ -45,16 +45,17 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
- * @author Martin Kouba
+ * Similar to {@link WeldInstanceTest} but uses purely CDI APIs
+ *
+ * @author Matej Novotny
  */
 @RunWith(Arquillian.class)
-public class WeldInstanceTest {
+public class InstanceHandleTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceTest.class))
-                .addPackage(WeldInstanceTest.class.getPackage()).addClass(ActionSequence.class)).build();
+        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceHandleTest.class))
+                .addPackage(InstanceHandleTest.class.getPackage()).addClass(ActionSequence.class)).build();
     }
 
     @Test
@@ -66,14 +67,14 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testGetHandler() {
+    public void testGetHandle() {
         ActionSequence.reset();
         try (WeldContainer container = new Weld().initialize()) {
 
             Bean<?> alphaBean = container.getBeanManager().resolve(container.getBeanManager().getBeans(Alpha.class));
-            WeldInstance<Alpha> instance = container.select(Alpha.class);
+            Instance<Alpha> instance = container.select(Alpha.class);
 
-            Handler<Alpha> alpha1 = instance.getHandler();
+            Instance.Handle<Alpha> alpha1 = instance.getHandle();
             assertEquals(alphaBean, alpha1.getBean());
             assertEquals(Dependent.class, alpha1.getBean().getScope());
             // Contextual reference is obtained lazily
@@ -82,7 +83,7 @@ public class WeldInstanceTest {
             String alpha2Id;
 
             // Test try-with-resource
-            try (Handler<Alpha> alpha2 = instance.getHandler()) {
+            try (Instance.Handle<Alpha> alpha2 = instance.getHandle()) {
                 assertNull(ActionSequence.getSequenceData());
                 alpha2Id = alpha2.get().getId();
                 assertFalse(alpha1.get().getId().equals(alpha2Id));
@@ -102,9 +103,9 @@ public class WeldInstanceTest {
             alpha1.destroy();
 
             // Test normal scoped bean is also destroyed
-            WeldInstance<Bravo> bravoInstance = container.select(Bravo.class);
+            Instance<Bravo> bravoInstance = container.select(Bravo.class);
             String bravoId = bravoInstance.get().getId();
-            try (Handler<Bravo> bravo = bravoInstance.getHandler()) {
+            try (Instance.Handle<Bravo> bravo = bravoInstance.getHandle()) {
                 assertEquals(bravoId, bravo.get().getId());
                 ActionSequence.reset();
             }
@@ -121,7 +122,7 @@ public class WeldInstanceTest {
             WeldClient client = container.select(WeldClient.class).get();
             assertNotNull(client);
 
-            Handler<Alpha> alphaHandle = client.getAlphaInstance().getHandler();
+            Instance.Handle<Alpha> alphaHandle = client.getAlphaInstance().getHandle();
             // trigger bean creation and assert
             alphaHandle.get();
             List<String> sequence = ActionSequence.getSequenceData();
@@ -143,15 +144,15 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testHandlers() {
+    public void testHandles() {
         ActionSequence.reset();
         try (WeldContainer container = new Weld().initialize()) {
-            WeldInstance<Processor> instance = container.select(Processor.class);
+            Instance<Processor> instance = container.select(Processor.class);
             assertTrue(instance.isAmbiguous());
-            for (Handler<Processor> handler : instance.handlers()) {
-                handler.get().ping();
-                if (handler.getBean().getScope().equals(Dependent.class)) {
-                    handler.destroy();
+            for (Instance.Handle<Processor> handle : instance.handles()) {
+                handle.get().ping();
+                if (handle.getBean().getScope().equals(Dependent.class)) {
+                    handle.destroy();
                 }
             }
             assertEquals(3, ActionSequence.getSequenceSize());
@@ -159,9 +160,9 @@ public class WeldInstanceTest {
 
             ActionSequence.reset();
             assertTrue(instance.isAmbiguous());
-            for (Iterator<Handler<Processor>> iterator = instance.handlers().iterator(); iterator.hasNext(); ) {
-                try (Handler<Processor> handler = iterator.next()) {
-                    handler.get().ping();
+            for (Iterator<Instance.Handle<Processor>> iterator = instance.handles().iterator(); iterator.hasNext(); ) {
+                try (Instance.Handle<Processor> handle = iterator.next()) {
+                    handle.get().ping();
                 }
             }
             assertEquals(4, ActionSequence.getSequenceSize());
@@ -171,11 +172,11 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testHandlersStream() {
+    public void testHandlesStream() {
         ActionSequence.reset();
         try (WeldContainer container = new Weld().initialize()) {
 
-            Handler<Processor> processor = container.select(Processor.class).handlersStream().filter(h -> Dependent.class.equals(h.getBean().getScope()))
+            Instance.Handle<Processor> processor = container.select(Processor.class).handlesStream().filter(h -> Dependent.class.equals(h.getBean().getScope()))
                     .findFirst().orElse(null);
             assertNull(ActionSequence.getSequenceData());
             assertNotNull(processor);
@@ -186,7 +187,7 @@ public class WeldInstanceTest {
             assertEquals(1, sequence.size());
             assertEquals("firstDestroy", sequence.get(0));
 
-            Handler<WithPriority> withPriority = container.select(WithPriority.class).handlersStream().sorted(container.getPriorityComparator()).findFirst()
+            Instance.Handle<WithPriority> withPriority = container.select(WithPriority.class).handlesStream().sorted(container.getHandlePriorityComparator()).findFirst()
                     .orElse(null);
             assertNotNull(withPriority);
             assertEquals(Priority3.class, withPriority.getBean().getBeanClass());

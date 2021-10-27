@@ -24,7 +24,5 @@ public interface Processor {
 
     void ping();
 
-    int getPriority();
-
     String getId();
 }
