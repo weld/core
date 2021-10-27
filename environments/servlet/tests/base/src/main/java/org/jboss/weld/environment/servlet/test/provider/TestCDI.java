@@ -71,6 +71,16 @@ public class TestCDI extends CDI<Object> {
     }
 
     @Override
+    public Handle<Object> getHandle() {
+        return null;
+    }
+
+    @Override
+    public Iterable<Handle<Object>> handles() {
+        return null;
+    }
+
+    @Override
     public Iterator<Object> iterator() {
         throw new UnsupportedOperationException();
     }

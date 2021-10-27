@@ -85,6 +85,16 @@ public class CustomCDIProvider implements CDIProvider {
         }
 
         @Override
+        public Handle<Object> getHandle() {
+            return null;
+        }
+
+        @Override
+        public Iterable<Handle<Object>> handles() {
+            return null;
+        }
+
+        @Override
         public Object get() {
             return null;
         }

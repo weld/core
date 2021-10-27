@@ -197,9 +197,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     }
 
     @Override
-    public Handler<T> getHandler() {
+    public Handle<T> getHandle() {
         checkBeanResolved();
         return new HandlerImpl<T>(() -> getBeanInstance(bean), this, bean);
+    }
+
+    @Override
+    public Handler<T> getHandler() {
+        return Reflections.cast(getHandle());
     }
 
     @Override
@@ -208,17 +213,22 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     }
 
     @Override
+    public Iterable<Handle<T>> handles() {
+        return () -> new HandleIterator(allBeans());
+    }
+
+    @Override
     public Iterable<Handler<T>> handlers() {
-        return new Iterable<WeldInstance.Handler<T>>() {
-            @Override
-            public Iterator<org.jboss.weld.inject.WeldInstance.Handler<T>> iterator() {
-                return new HandlerIterator(allBeans());
-            }
-        };
+        return Reflections.cast(handles());
     }
 
     @Override
     public Comparator<Handler<?>> getPriorityComparator() {
+        return Reflections.cast(getHandlePriorityComparator());
+    }
+
+    @Override
+    public Comparator<Handle<?>> getHandlePriorityComparator() {
         return new PriorityComparator(getBeanManager().getServices().get(AnnotationApiAbstraction.class));
     }
 
@@ -326,14 +336,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         }
     }
 
-    class HandlerIterator extends BeanIterator<Handler<T>> {
+    class HandleIterator extends BeanIterator<Handle<T>> {
 
-        private HandlerIterator(Set<Bean<?>> beans) {
+        private HandleIterator(Set<Bean<?>> beans) {
             super(beans);
         }
 
         @Override
-        public Handler<T> next() {
+        public Handle<T> next() {
             Bean<?> bean = delegate.next();
             return new HandlerImpl<>(() -> getBeanInstance(bean), InstanceImpl.this, bean);
         }
@@ -359,6 +369,10 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
         @Override
         public T get() {
+            // attempting to resolve the contextual reference after it has been destroyed should throw an ISE
+            if (isDestroyed.get()) {
+                throw BeanLogger.LOG.tryingToResolveContextualReferenceAfterDestroyWasInvoked(this);
+            }
             if (!value.isAvailable() && instance.get() == null) {
                 // Contextual reference cannot be obtained if the producing Instance does not exist
                 throw BeanLogger.LOG.cannotObtainHandlerContextualReference(this);
@@ -367,8 +381,9 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         }
 
         @Override
-        public Bean<?> getBean() {
-            return bean;
+        public Bean<T> getBean() {
+            // original API was returning Bean<?> whereas CDI API uses <Bean<T>>, we need to cast the result
+            return (Bean<T>) bean;
         }
 
         @Override

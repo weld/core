@@ -18,20 +18,21 @@ package org.jboss.weld.bean.builtin;
 
 import java.util.Comparator;
 
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Prioritized;
 
 import org.jboss.weld.bean.ClassBean;
 import org.jboss.weld.inject.WeldInstance;
-import org.jboss.weld.inject.WeldInstance.Handler;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 
 /**
  *
  * @author Martin Kouba
  * @see WeldInstance#getPriorityComparator()
+ * @see WeldInstance#getHandlePriorityComparator()
  */
-public class PriorityComparator implements Comparator<Handler<?>> {
+public class PriorityComparator implements Comparator<Instance.Handle<?>> {
 
     private final AnnotationApiAbstraction annotationApi;
 
@@ -40,11 +41,11 @@ public class PriorityComparator implements Comparator<Handler<?>> {
     }
 
     @Override
-    public int compare(Handler<?> h1, Handler<?> h2) {
+    public int compare(Instance.Handle<?> h1, Instance.Handle<?> h2) {
         return Integer.compare(getPriority(h2), getPriority(h1));
     }
 
-    private int getPriority(Handler<?> handler) {
+    private int getPriority(Instance.Handle<?> handler) {
         Bean<?> bean = handler.getBean();
         if (bean instanceof ClassBean) {
             ClassBean<?> classBean = (ClassBean<?>) bean;
@@ -57,5 +58,4 @@ public class PriorityComparator implements Comparator<Handler<?>> {
         }
         return 0;
     }
-
 }
