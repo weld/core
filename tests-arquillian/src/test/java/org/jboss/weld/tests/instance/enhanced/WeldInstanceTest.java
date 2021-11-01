@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,7 +92,6 @@ public class WeldInstanceTest {
 
         sequence = ActionSequence.getSequenceData();
         assertEquals(2, sequence.size());
-        assertEquals(alpha1.get().getId(), sequence.get(1));
 
         // Test normal scoped bean is also destroyed
         WeldInstance<Bravo> bravoInstance = client.getInstance().select(Bravo.class);
@@ -104,6 +103,29 @@ public class WeldInstanceTest {
         sequence = ActionSequence.getSequenceData();
         assertEquals(1, sequence.size());
         assertEquals(bravoId, sequence.get(0));
+    }
+
+    @Test
+    public void testGetAfterDestroyingContextualInstance(Client client) {
+        ActionSequence.reset();
+        assertNotNull(client);
+
+        Handler<Alpha> alphaHandle = client.getAlphaInstance().getHandler();
+        // trigger bean creation
+        alphaHandle.get();
+        // trigger bean destruction
+        alphaHandle.destroy();
+        // verify that the destruction happened
+        List<String> sequence = ActionSequence.getSequenceData();
+        assertEquals(1, sequence.size());
+
+        // try to invoke Handle.get() again; this should throw an exception
+        try {
+            alphaHandle.get();
+            fail("Invoking Handle.get() after destroying contextual instance should throw an exception.");
+        } catch (IllegalStateException e) {
+            // expected
+        }
     }
 
     @Test

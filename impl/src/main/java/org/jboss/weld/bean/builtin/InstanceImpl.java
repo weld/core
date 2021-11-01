@@ -359,6 +359,10 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
         @Override
         public T get() {
+            // attempting to resolve the contextual reference after it has been destroyed should throw an ISE
+            if (isDestroyed.get()) {
+                throw BeanLogger.LOG.tryingToResolveContextualReferenceAfterDestroyWasInvoked(this);
+            }
             if (!value.isAvailable() && instance.get() == null) {
                 // Contextual reference cannot be obtained if the producing Instance does not exist
                 throw BeanLogger.LOG.cannotObtainHandlerContextualReference(this);

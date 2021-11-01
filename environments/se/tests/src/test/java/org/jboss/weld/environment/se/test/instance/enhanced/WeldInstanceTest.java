@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -99,7 +100,6 @@ public class WeldInstanceTest {
             // Alpha1 destroyed
             sequence = ActionSequence.getSequenceData();
             assertEquals(4, sequence.size());
-            assertEquals("d" + alpha1.get().getId(), sequence.get(3));
             // Subsequent invocations are no-op
             alpha1.destroy();
 
@@ -113,6 +113,34 @@ public class WeldInstanceTest {
             sequence = ActionSequence.getSequenceData();
             assertEquals(1, sequence.size());
             assertEquals("d" + bravoId, sequence.get(0));
+        }
+    }
+
+    @Test
+    public void testGetAfterDestroyingContextualInstance() {
+        ActionSequence.reset();
+        try (WeldContainer container = new Weld().initialize()) {
+            Client client = container.select(Client.class).get();
+            assertNotNull(client);
+
+            Handler<Alpha> alphaHandle = client.getAlphaInstance().getHandler();
+            // trigger bean creation and assert
+            alphaHandle.get();
+            List<String> sequence = ActionSequence.getSequenceData();
+            assertEquals(1, sequence.size());
+            // trigger bean destruction
+            alphaHandle.destroy();
+            // verify that the destruction happened
+            sequence = ActionSequence.getSequenceData();
+            assertEquals(2, sequence.size());
+
+            // try to invoke Handle.get() again; this should throw an exception
+            try {
+                alphaHandle.get();
+                fail("Invoking Handle.get() after destroying contextual instance should throw an exception.");
+            } catch (IllegalStateException e) {
+                // expected
+            }
         }
     }
 

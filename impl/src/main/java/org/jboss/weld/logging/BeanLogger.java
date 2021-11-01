@@ -550,4 +550,7 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1579, value = "An instance of ProxyFactory.ProxyNameHolder has to contain a class name. This instance was created for bean class: {1}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException tryingToCreateProxyNameHolderWithoutClassName(Object bean);
+
+    @Message(id = 1580, value = "Cannot obtain contextual reference for {0} - a previously obtained reference has already been destroyed.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException tryingToResolveContextualReferenceAfterDestroyWasInvoked(Object handler);
 }
