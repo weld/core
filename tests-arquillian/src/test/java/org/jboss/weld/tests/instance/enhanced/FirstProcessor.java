@@ -31,11 +31,6 @@ public class FirstProcessor implements Processor {
         ActionSequence.addAction("firstPing");
     }
 
-    @Override
-    public int getPriority() {
-        return 1;
-    }
-
     @PreDestroy
     void destroy() {
         ActionSequence.addAction("firstDestroy");
