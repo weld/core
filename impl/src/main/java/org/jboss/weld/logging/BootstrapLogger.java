@@ -342,4 +342,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 182, value= "Provided implementation of org.jboss.weld.serialization.spi.ProxyServices ({0}) does not support class defining. This functionality is required in order to be able to define proxy classes.", format = Format.MESSAGE_FORMAT)
     IllegalStateException proxyServicesWithoutClassDefining(Object services);
 
+    @Message(id = 183, value= "Multiple different @Priority values derived from stereotype annotations for annotated type - {0}", format = Format.MESSAGE_FORMAT)
+    DefinitionException multiplePriorityValuesDeclared(Object annotatedType);
+
 }
