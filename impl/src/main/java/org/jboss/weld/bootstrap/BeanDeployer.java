@@ -22,7 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.annotation.Priority;
 import jakarta.decorator.Decorator;
+import jakarta.enterprise.inject.Stereotype;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Extension;
@@ -98,22 +100,79 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         return ctx;
     }
 
+    /**
+     * Attempts to find a {@code @Priority} annotation declared on a stereotype(s) of given {@code AnnotatedType}.
+     * Returns the value in this annotation, or {@code null} if none was found.
+     *
+     * If the {@code AnnotatedType} declares more than one stereotype and at least two of them declare different
+     * {@code @Priority} values, a definition exception is thrown.
+     *
+     * If there are multiple {@code @Priority} values in a hierarchy of single stereotype, first annotation value is
+     * used.
+     *
+     * @param type AnnotatedType to be searched
+     * @return an Integer representing the priority value, null if none was found
+     */
+    private Integer findPriorityInStereotypes(AnnotatedType<?> type) {
+        // search all annotations
+        Set<Integer> foundPriorities = new HashSet<>();
+        for (Annotation annotation : type.getAnnotations()) {
+            // identify stereotypes
+            Class<? extends Annotation> annotationClass = annotation.annotationType();
+            if (annotationClass.getAnnotation(Stereotype.class) != null) {
+                recursiveStereotypeSearch(annotationClass, foundPriorities);
+            }
+        }
+        // more than one value found, throw exception
+        if (foundPriorities.size() > 1) {
+            throw BootstrapLogger.LOG.multiplePriorityValuesDeclared(type);
+        }
+        // no priority found
+        if (foundPriorities.isEmpty()) {
+            return null;
+        }
+        // exactly one value found
+        return foundPriorities.iterator().next();
+    }
+
+    private void recursiveStereotypeSearch(Class<? extends Annotation> stereotype, Set<Integer> foundPriorities) {
+        // search each stereotype for priority annotation, store all values found
+        Priority priorityAnnotation = stereotype.getAnnotation(Priority.class);
+        if (priorityAnnotation != null) {
+            // if found, store the value
+            foundPriorities.add(priorityAnnotation.value());
+        }
+        // perform a recursive search for more stereotypes
+        for (Annotation annotation : stereotype.getAnnotations()) {
+            Class<? extends Annotation> annotationClass = annotation.annotationType();
+            if (annotationClass.getAnnotation(Stereotype.class) != null) {
+                recursiveStereotypeSearch(annotationClass, foundPriorities);
+            }
+        }
+    }
+
     private void processPriority(AnnotatedType<?> type) {
+        // check if @Priority is declared directly on the AnnotatedType
         Object priority = type.getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
-        if (priority != null) {
-            Integer value = annotationApi.getPriority(priority);
-            if (value != null) {
-                if (type.isAnnotationPresent(Interceptor.class)) {
-                    globalEnablementBuilder.addInterceptor(type.getJavaClass(), value);
-                } else if (type.isAnnotationPresent(Decorator.class)) {
-                    globalEnablementBuilder.addDecorator(type.getJavaClass(), value);
-                } else {
-                    /*
-                     * An alternative may be given a priority for the application by placing the @Priority annotation on the bean
-                     * class that declares the producer method, field or resource.
-                     */
-                    globalEnablementBuilder.addAlternative(type.getJavaClass(), value);
-                }
+        Integer value;
+        if (priority == null) {
+            // if not declared, search in any stereotypes of given AnnotatedType
+            value = findPriorityInStereotypes(type);
+        } else {
+            value = annotationApi.getPriority(priority);
+        }
+        if (value != null) {
+            // if we discovered any priority, register the AnnotatedType into global enablement
+            if (type.isAnnotationPresent(Interceptor.class)) {
+                globalEnablementBuilder.addInterceptor(type.getJavaClass(), value);
+            } else if (type.isAnnotationPresent(Decorator.class)) {
+                globalEnablementBuilder.addDecorator(type.getJavaClass(), value);
+            } else {
+                /*
+                 * An alternative may be given a priority for the application by placing the @Priority annotation on the bean
+                 * class that declares the producer method, field or resource.
+                 */
+                globalEnablementBuilder.addAlternative(type.getJavaClass(), value);
             }
         }
     }
