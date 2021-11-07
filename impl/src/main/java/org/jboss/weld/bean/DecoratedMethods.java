@@ -101,13 +101,13 @@ class DecoratedMethods {
     }
 
     private boolean matches(InvokableAnnotatedMethod<?> decoratedMethod, Method candidate) {
-        if (candidate.getParameterTypes().length != decoratedMethod.getParameters().size()) {
+        if (candidate.getParameterCount() != decoratedMethod.getParameters().size()) {
             return false;
         }
         if (!candidate.getName().equals(decoratedMethod.getJavaMember().getName())) {
             return false;
         }
-        for (int i = 0; i < candidate.getParameterTypes().length; i++) {
+        for (int i = 0; i < candidate.getParameterCount(); i++) {
             Type decoratedMethodParamType = decoratedMethod.getJavaMember().getGenericParameterTypes()[i];
             Type candidateParamType = candidate.getGenericParameterTypes()[i];
             if (Types.containsTypeVariable(decoratedMethodParamType) || Types.containsTypeVariable(candidateParamType)) {

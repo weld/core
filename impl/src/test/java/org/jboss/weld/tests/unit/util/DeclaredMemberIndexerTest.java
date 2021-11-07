@@ -87,7 +87,7 @@ public class DeclaredMemberIndexerTest {
 
     private void verifyConstructor(List<Constructor<?>> constructors, int index, Class<?>... expectedParamTypes) {
         Constructor<?> constructor = constructors.get(index);
-        assertEquals(constructor.getParameterTypes().length, expectedParamTypes.length);
+        assertEquals(constructor.getParameterCount(), expectedParamTypes.length);
         for (int i = 0; i < expectedParamTypes.length; i++) {
             if (!constructor.getParameterTypes()[i].getName().equals(expectedParamTypes[i].getName())) {
                 fail(constructor.getParameterTypes()[i].getName() + " ne " + expectedParamTypes[i].getName());
@@ -100,7 +100,7 @@ public class DeclaredMemberIndexerTest {
     private void verifyMethod(List<Method> methods, int index, String expectedName, Class<?>... expectedParamTypes) {
         Method method = methods.get(index);
         assertEquals(expectedName, method.getName());
-        assertEquals(method.getParameterTypes().length, expectedParamTypes.length);
+        assertEquals(method.getParameterCount(), expectedParamTypes.length);
         for (int i = 0; i < expectedParamTypes.length; i++) {
             if (!method.getParameterTypes()[i].getName().equals(expectedParamTypes[i].getName())) {
                 fail(method.getParameterTypes()[i].getName() + " ne " + expectedParamTypes[i].getName());

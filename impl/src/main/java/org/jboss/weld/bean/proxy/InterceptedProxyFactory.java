@@ -188,12 +188,12 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
                 methodInfo.getParameterTypes(), staticConstructor);
         b.aconstNull();
 
-        b.iconst(method.getParameterTypes().length);
+        b.iconst(method.getParameterCount());
         b.anewarray(JAVA_LANG_OBJECT);
 
         int localVariableCount = 1;
 
-        for (int i = 0; i < method.getParameterTypes().length; ++i) {
+        for (int i = 0; i < method.getParameterCount(); ++i) {
             String typeString = methodInfo.getParameterTypes()[i];
             b.dup(); // duplicate the array reference
             b.iconst(i);
@@ -238,10 +238,10 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
                 methodInfo.getParameterTypes(), staticConstructor);
         b.dup();
         // Params
-        b.iconst(method.getParameterTypes().length);
+        b.iconst(method.getParameterCount());
         b.anewarray(JAVA_LANG_OBJECT);
         int localVariableCount = 1;
-        for (int i = 0; i < method.getParameterTypes().length; ++i) {
+        for (int i = 0; i < method.getParameterCount(); ++i) {
             String typeString = methodInfo.getParameterTypes()[i];
             b.dup(); // duplicate the array reference
             b.iconst(i);

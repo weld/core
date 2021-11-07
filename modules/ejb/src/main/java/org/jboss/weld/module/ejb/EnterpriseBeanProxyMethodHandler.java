@@ -142,7 +142,7 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
     }
 
     private boolean isToStringMethod(Method method) {
-        return "toString".equals(method.getName()) && method.getParameterTypes().length == 0;
+        return "toString".equals(method.getName()) && method.getParameterCount() == 0;
     }
 
     private Class<?> getBusinessInterface(Method method) {

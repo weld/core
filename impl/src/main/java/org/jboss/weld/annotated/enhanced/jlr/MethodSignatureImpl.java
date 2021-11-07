@@ -49,8 +49,8 @@ public class MethodSignatureImpl implements MethodSignature {
 
     public MethodSignatureImpl(Method method) {
         this.methodName = method.getName();
-        this.parameterTypes = new String[method.getParameterTypes().length];
-        for (int i = 0; i < method.getParameterTypes().length; i++) {
+        this.parameterTypes = new String[method.getParameterCount()];
+        for (int i = 0; i < method.getParameterCount(); i++) {
             parameterTypes[i] = method.getParameterTypes()[i].getName();
         }
     }
