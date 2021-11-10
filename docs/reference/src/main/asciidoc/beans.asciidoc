@@ -63,6 +63,7 @@ such as servlets or message-driven beans—which are by nature not
 injectable, contextual objects—may also obtain references to beans by
 injection.
 
+[[the_anatomy_of_a_bean]]
 === The anatomy of a bean
 
 Enough hand-waving. More formally, the anatomy of a bean, according to
@@ -395,7 +396,6 @@ and
 ifndef::generate-index-link[<<decorators>>]
 ifdef::generate-index-link[link:decorators.html[Decorators]]
 .
-<<interceptors>> and <<decorators>>.
 
 === What kinds of classes are beans?
 

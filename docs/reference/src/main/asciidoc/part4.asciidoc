@@ -5,8 +5,6 @@ endif::[]
 [[part-4]]
 = CDI and the Java EE ecosystem
 
-[partintro]
---
 The third theme of CDI is _integration_. We've already seen how CDI
 helps integrate EJB and JSF, allowing EJBs to be bound directly to JSF
 pages. That's just the beginning. The CDI services are integrated into
@@ -33,7 +31,6 @@ are provided to support portable extensions to CDI. You might not ever
 need to use these SPIs directly, but don't take them for granted. You
 will likely be using them indirectly, every time you use a third-party
 extension, such as http://deltaspike.apache.org/[DeltaSpike].
---
 
 include::ee.asciidoc[]
 

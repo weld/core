@@ -204,11 +204,11 @@ container-managed transactions.
 NOTE: Note that due to limitations of servlet containers (e.g. read-only JNDI)
 your application might require some additional configuration as well
 (see
-ifndef::generate-index-link[<<_tomcat>>]
-ifdef::generate-index-link[link:environments.html#_tomcat[Tomcat]]
+ifndef::generate-index-link[<<tomcat>>]
+ifdef::generate-index-link[link:environments.html#tomcat[Tomcat]]
 and
-ifndef::generate-index-link[<<_jetty>>]
-ifdef::generate-index-link[link:environments.html#_jetty[Jetty]]
+ifndef::generate-index-link[<<jetty>>]
+ifdef::generate-index-link[link:environments.html#jetty[Jetty]]
 for more info).
 
 Let's give the Weld servlet extension a spin on Apache Tomcat. First,

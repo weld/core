@@ -159,7 +159,8 @@ Weld defines the following non-portable notification options (see `WeldNotificat
 
 NOTE: It is also possible to use the key constants and static convenient methods declared on `org.jboss.weld.events.WeldNotificationOptions` from Weld API, e.g. `WeldNotificationOptions.TIMEOUT` or `WeldNotificationOptions.withParallelMode()`.
 
-.[[notification-modes-table]]Notification modes
+[[notification-modes-table]]
+.Notification modes
 [cols=",",options="header",]
 |=======================================================================
 |Mode|Description

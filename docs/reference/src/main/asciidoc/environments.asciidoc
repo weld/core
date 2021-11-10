@@ -97,6 +97,7 @@ Setting the identifier is as simple as adding one context parameter into `web.xm
 </context-param>
 -------------------------------------------------------------------------------
 
+[[tomcat]]
 ==== Tomcat
 
 Tomcat 9, which implements Servlet 4.0 specification, is supported.
@@ -171,6 +172,7 @@ public class Main {
 -------------------------------------------------------------
 <1> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically
 
+[[jetty]]
 ==== Jetty
 
 Jetty 9.4.14 and newer are supported. Context activation/deactivation and dependency
@@ -435,6 +437,7 @@ callbacks
 
 EJB beans are not supported.
 
+[[cdi_se_module]]
 ==== CDI SE Module
 
 Weld provides an extension which will boot a CDI bean manager in Java

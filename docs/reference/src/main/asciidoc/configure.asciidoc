@@ -5,6 +5,7 @@ endif::[]
 [[configure]]
 == Configuration
 
+[[weld_configuration]]
 === Weld configuration
 
 Weld can be configured per application through the set of properties. All the supported configuration properties are described in the following subsections.
@@ -396,12 +397,12 @@ public class MyExternalConfiguration implements ExternalConfiguration {
 --------------------------------------------------------------------------
 
 Bear in mind that because `ExternalConfiguration` extends a `Service` it is required that any custom external configuration implementation is explicitly registered. See
-ifndef::generate-index-link[<<_the_weld_spi>>]
-ifdef::generate-index-link[link:ri-spi.html#_the_weld_spi[The Weld SPI]]
+ifndef::generate-index-link[<<the_weld_spi>>]
+ifdef::generate-index-link[link:ri-spi.html#the_weld_spi[The Weld SPI]]
 for more information.
 
 Last but not least external configuration is considered a source with the lowest priority which means that the properties specified there can be overriden by other sources such as system properties.
-For information on supported configuration keys, see <<_weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead
+For information on supported configuration keys, see <<weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead
 to deployment problem.
 
 === Excluding classes from scanning and deployment

@@ -5,8 +5,6 @@ endif::[]
 [[part-1]]
 = Beans
 
-[partintro]
---
 The https://jakarta.ee/specifications/cdi[CDI] specification defines a set
 of complementary services that help improve the structure of application
 code. CDI layers an enhanced lifecycle and interaction model over
@@ -28,8 +26,8 @@ architecture. But the specification does not limit the use of CDI to the
 Jakarta EE environment. Starting with CDI 2.0, the specification covers the use of CDI
 in the Java SE environment as well. In Java SE, the services might be
 provided by a standalone CDI implementation like Weld (see
-ifndef::generate-index-link[<<_cdi_se_module>>]
-ifdef::generate-index-link[link:environments.html#_cdi_se_module[CDI SE Module]]
+ifndef::generate-index-link[<<cdi_se_module>>]
+ifdef::generate-index-link[link:environments.html#cdi_se_module[CDI SE Module]]
 ), or even
 by a container that also implements the subset of EJB defined for
 embedded usage by the EJB 3.2 specification. CDI is especially useful in
@@ -108,9 +106,6 @@ CDI even provides a comprehensive SPI, allowing other kinds of object
 defined by future Jakarta EE specifications or by third-party frameworks to
 be cleanly integrated with CDI, take advantage of the CDI services, and
 interact with any other kind of bean.
-
---
-
 
 include::intro.asciidoc[]
 

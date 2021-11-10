@@ -316,6 +316,7 @@ http://weld.cdi-spec.org/documentation/#3[this FAQ page for details].
 Alternatively, the lazy conversation context initialization (see below)
 may be used.
 
+[[lazy_and_eager_conversation_context_initialization]]
 ==== Lazy and eager conversation context initialization
 
 Conversation context may be initialized lazily or eagerly.
