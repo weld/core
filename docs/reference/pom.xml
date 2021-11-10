@@ -76,6 +76,9 @@
                             <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
                             <outputDirectory>${doc.output.directory}/en-US/html_single</outputDirectory>
                             <outputFile>${html.name}</outputFile>
+                            <attributes>
+                                <source-highlighter>highlight.js</source-highlighter>
+                            </attributes>
                         </configuration>
                     </execution>
                     <execution>
@@ -93,6 +96,7 @@
                                 <toclevels>3</toclevels>
                                 <!-- Triggers conditional addition of link to index page -->
                                 <generate-index-link />
+                                <source-highlighter>highlight.js</source-highlighter>
                             </attributes>
                             <outputDirectory>${doc.output.directory}/en-US/html</outputDirectory>
                         </configuration>
