@@ -231,8 +231,8 @@ BeanManager manager = CDI.current().getBeanManager();
 
 The `CDI` class can be used directly to programmatically lookup CDI
 beans as described in
-ifndef::generate-index-link[<<_obtaining_a_contextual_instance_by_programmatic_lookup>>]
-ifdef::generate-index-link[link:injection.html#_obtaining_a_contextual_instance_by_programmatic_lookup[Obtaining a contextual instance by programmatic lookup]]
+ifndef::generate-index-link[<<obtaining_a_contextual_instance_by_programmatic_lookup>>]
+ifdef::generate-index-link[link:injection.html#obtaining_a_contextual_instance_by_programmatic_lookup[Obtaining a contextual instance by programmatic lookup]]
 .
 
 [source.JAVA, java]
@@ -295,8 +295,8 @@ decorators and producer methods.
 
 The `BeanAttributes` interface exposes all the interesting things we
 discussed in
-ifndef::generate-index-link[<<_the_anatomy_of_a_bean>>]
-ifdef::generate-index-link[link:beans.html#_the_anatomy_of_a_bean[The anatomy of a bean]]
+ifndef::generate-index-link[<<the_anatomy_of_a_bean>>]
+ifdef::generate-index-link[link:beans.html#the_anatomy_of_a_bean[The anatomy of a bean]]
 .
 
 [source.JAVA, java]

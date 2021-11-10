@@ -416,7 +416,7 @@ Just remember: "There can be only one."
 
 On the other hand, if you really do have an optional or multivalued
 injection point, you should change the type of your injection point to
-`Instance`, as we'll see in <<_obtaining_a_contextual_instance_by_programmatic_lookup>>.
+`Instance`, as we'll see in <<obtaining_a_contextual_instance_by_programmatic_lookup>>.
 
 Now there's one more issue you need to be aware of when using the
 dependency injection service.
@@ -481,6 +481,7 @@ ifdef::generate-index-link[link:configure.html#relaxedConstruction[the Configura
 for more information.
 ====
 
+[[obtaining_a_contextual_instance_by_programmatic_lookup]]
 === Obtaining a contextual instance by programmatic lookup
 
 In certain situations, injection is not the most convenient way to

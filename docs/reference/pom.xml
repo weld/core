@@ -63,6 +63,11 @@
                             <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
                             <outputDirectory>${doc.output.directory}/en-US/pdf</outputDirectory>
                             <outputFile>${pdf.name}</outputFile>
+                            <!-- NOTE - there is no PDF source highlighter that would work out of the box, so they need to be locally installed -->
+                            <!-- This link contains information on how to do that - https://docs.asciidoctor.org/asciidoc/latest/verbatim/source-highlighter/ -->
+                            <attributes>
+                                <source-highlighter>rouge</source-highlighter>
+                            </attributes>
                         </configuration>
                     </execution>
                     <execution>
