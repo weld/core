@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1823;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
@@ -24,6 +25,7 @@ import jakarta.inject.Inject;
 /*
  *@author Emily Jiang
  */
+@Dependent
 public class CDIBeanProducer {
 
     @Inject

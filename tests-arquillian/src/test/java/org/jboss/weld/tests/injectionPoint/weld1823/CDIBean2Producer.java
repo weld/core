@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.injectionPoint.weld1823;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
 /*
  *@author Emily Jiang
  */
+@Dependent
 public class CDIBean2Producer {
 
     @Produces

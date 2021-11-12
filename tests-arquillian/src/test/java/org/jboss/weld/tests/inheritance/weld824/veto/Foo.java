@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.inheritance.weld824.veto;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class Foo {
     private boolean superclassInitialized = false;
 

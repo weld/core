@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.packaging.beans.xml.location;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Foo {
 
     public String getName() {

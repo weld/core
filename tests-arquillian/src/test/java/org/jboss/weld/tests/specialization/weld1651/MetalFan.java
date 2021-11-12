@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 /**
  * @author Tomas Remes
  */
 @Specializes
+@Dependent
 public class MetalFan<T extends Music> extends Fan<T>{
 }

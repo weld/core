@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
+@Dependent
 public class BlogFormatter {
     @Inject
     @Author(name = "Barry")

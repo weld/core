@@ -27,6 +27,7 @@ public class StaticNestedClassesParent {
     }
 
     @Specializes
+    @Dependent
     public static class StaticMockSpecializationBean extends StaticSpecializationBean {
 
     }

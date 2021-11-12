@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.resources.ws;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.xml.ws.WebServiceRef;
 
+@Dependent
 public class ResourceProducer {
 	
     @True

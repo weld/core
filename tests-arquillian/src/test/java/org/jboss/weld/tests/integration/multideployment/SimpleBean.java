@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.integration.multideployment;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 /**
  * @author Stuart Douglas
  */
 @Named
+@Dependent
 public class SimpleBean {
 }

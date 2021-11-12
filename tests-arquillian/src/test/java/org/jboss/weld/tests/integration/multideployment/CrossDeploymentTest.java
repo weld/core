@@ -22,10 +22,12 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,7 +50,7 @@ public class CrossDeploymentTest {
     public static Archive<?> deploy() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "d1.jar");
         jar.addClasses(SimpleBean.class);
-        jar.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        jar.addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml");
         return jar;
     }
 
@@ -56,7 +58,7 @@ public class CrossDeploymentTest {
     public static Archive<?> deploy2() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "d2.jar");
         jar.addClass(CrossDeploymentTest.class);
-        jar.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        jar.addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml");
         jar.addAsManifestResource(new StringAsset("Dependencies: deployment.d1.jar meta-inf\n"), "MANIFEST.MF");
         return jar;
     }

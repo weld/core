@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.serialization.annotated.id;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
+@Dependent
 public class CarFactory2 {
 
     @Inject

@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.tests.contexts.application.event;
 
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class MultiObserver4 extends AbstractObserver {
 
     @Override

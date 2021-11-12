@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.specialization.modular;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @Specializes
+@Dependent
 public class SpecializedFactory extends Factory {
 
 }

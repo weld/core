@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.global.accessibility;
 
+import jakarta.enterprise.context.Dependent;
+
 @FooBinding
+@Dependent
 public class Foo {
 
     public String ping() {

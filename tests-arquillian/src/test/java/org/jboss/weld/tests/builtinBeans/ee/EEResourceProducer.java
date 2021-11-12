@@ -18,6 +18,7 @@ package org.jboss.weld.tests.builtinBeans.ee;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -25,6 +26,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceUnit;
 import jakarta.transaction.UserTransaction;
 
+@Dependent
 public class EEResourceProducer {
 
     @Resource(mappedName = "java:comp/UserTransaction")

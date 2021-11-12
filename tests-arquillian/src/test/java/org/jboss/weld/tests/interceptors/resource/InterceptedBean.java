@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.interceptors.resource;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.interceptor.Interceptors;
 
+@Dependent
 public class InterceptedBean {
 
     @Interceptors(BeanManagerInjectingInterceptor.class)

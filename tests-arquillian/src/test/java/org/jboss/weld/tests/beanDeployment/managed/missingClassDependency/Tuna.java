@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.beanDeployment.managed.missingClassDependency;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named
+@Dependent
 class Tuna {
 
     public Sardine getName() {

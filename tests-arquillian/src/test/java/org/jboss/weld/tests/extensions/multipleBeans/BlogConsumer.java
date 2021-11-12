@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 @Consumer(name = "Barry")
+@Dependent
 public class BlogConsumer {
     @Inject
     @FormattedBlog(name = "Barry")

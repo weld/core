@@ -27,6 +27,7 @@ import jakarta.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -54,7 +55,7 @@ public class GlobalDecoratorOrderingTest {
     public static Archive<?> getWebArchive() {
         JavaArchive thirdPartyLibrary = ShrinkWrap.create(JavaArchive.class).addClasses(ThirdPartyDecorator.class, ThirdPartyDecoratorExtension.class).addAsServiceProvider(Extension.class, ThirdPartyDecoratorExtension.class);
 
-        BeansXml beans = new BeansXml();
+        BeansXml beans = new BeansXml(BeanDiscoveryMode.ALL);
         beans.decorators(LegacyDecorator1.class, LegacyDecorator2.class, LegacyDecorator3.class);
         return ShrinkWrap
                 .create(WebArchive.class, "test.war")
@@ -71,7 +72,7 @@ public class GlobalDecoratorOrderingTest {
                         GloballyEnabledDecorator2.class, GloballyEnabledDecorator3.class, GloballyEnabledDecorator4.class,
                         GloballyEnabledDecorator5.class, ExtensionEnabledDecorator1.class,
                         ExtensionEnabledDecorator2.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml");
     }
 
     @Test
