@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.specialization.modular;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class Factory {
 
     public static boolean eventDelivered;

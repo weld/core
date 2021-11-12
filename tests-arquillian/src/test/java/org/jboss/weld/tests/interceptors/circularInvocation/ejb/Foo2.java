@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.interceptors.circularInvocation.ejb;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author Kirill Gaevskii
  */
 @Accountant
+@Dependent
 public class Foo2 {
 
     @Inject

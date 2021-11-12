@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.interceptors.weld783;
 
 import jakarta.ejb.EJB;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 import jakarta.interceptor.Interceptors;
 
@@ -25,6 +26,7 @@ import jakarta.interceptor.Interceptors;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Named
+@Dependent
 public class MyController {
     @EJB
     private MyEJB ejb;

@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.enterprise.validation;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named("Bean")
+@Dependent
 public class Alpha {
 
 }

@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.specialization;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @Baz
 @Specializes
+@Dependent
 public class Charlie extends Bravo {
 
 }

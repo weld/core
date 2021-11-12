@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.proxy.privateconstructor;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 
+@Dependent
 public class Holder {
     Foo foo;
 

@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.packaging.beans.xml.location;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
 
 @Alternative
+@Dependent
 public class Bar extends Foo {
 
     @Override

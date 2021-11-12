@@ -20,6 +20,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
@@ -50,6 +51,7 @@ public class AnnotatedTypeExtensionTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeExtensionTest.class))
+                .beanDiscoveryMode(BeanDiscoveryMode.ALL)
                 .addPackage(AnnotatedTypeExtensionTest.class.getPackage())
                 .addClass(Utils.class)
                 .addAsServiceProvider(Extension.class, AnnotatedTypeExtension.class);

@@ -22,6 +22,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -47,11 +48,11 @@ public class SplitInterceptorsTest {
     public static Archive<?> deploy() {
         WebArchive web = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SplitInterceptorsTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(SplitInterceptorsTest.class.getPackage());
 
-        BeanArchive fst = ShrinkWrap.create(BeanArchive.class).intercept(TxInterceptor.class);
+        BeanArchive fst = ShrinkWrap.create(BeanArchive.class).intercept(TxInterceptor.class).beanDiscoveryMode(BeanDiscoveryMode.ALL);
         fst.addPackage(TDAO.class.getPackage());
         web.addAsLibrary(fst);
 
-        JavaArchive snd = ShrinkWrap.create(JavaArchive.class).addAsManifestResource(new BeansXml().interceptors(TxInterceptor.class), ArchivePaths.create("beans.xml"));
+        JavaArchive snd = ShrinkWrap.create(JavaArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).interceptors(TxInterceptor.class), ArchivePaths.create("beans.xml"));
         snd.addPackage(CDAO.class.getPackage());
         web.addAsLibrary(snd);
 

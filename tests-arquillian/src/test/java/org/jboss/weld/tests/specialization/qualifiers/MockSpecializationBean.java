@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.specialization.qualifiers;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @Specializes
+@Dependent
 public class MockSpecializationBean extends SpecializationBean {
 }

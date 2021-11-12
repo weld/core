@@ -21,6 +21,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
@@ -39,6 +40,7 @@ public class InjectionWithExclusionsTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionWithExclusionsTest.class))
+                .beanDiscoveryMode(BeanDiscoveryMode.ALL)
                 .addPackage(InjectionWithExclusionsTest.class.getPackage());
     }
 

@@ -17,8 +17,10 @@
 package org.jboss.weld.tests.resources;
 
 import jakarta.annotation.Resource;
+import jakarta.enterprise.context.Dependent;
 import jakarta.transaction.UserTransaction;
 
+@Dependent
 public class UTConsumer {
 
     @Resource

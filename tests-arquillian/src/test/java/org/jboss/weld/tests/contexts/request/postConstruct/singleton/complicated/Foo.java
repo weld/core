@@ -19,8 +19,10 @@ package org.jboss.weld.tests.contexts.request.postConstruct.singleton.complicate
 import static org.junit.Assert.assertEquals;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class Foo {
 
     @Inject

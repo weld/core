@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.packaging.beans.xml.location;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class InjectedBean {
 
     @Inject

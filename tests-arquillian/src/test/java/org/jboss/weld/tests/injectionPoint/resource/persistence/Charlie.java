@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.injectionPoint.resource.persistence;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import org.jboss.weld.test.util.ActionSequence;
 
+@Dependent
 public class Charlie {
 
     protected EntityManager superPersistenceContext;
