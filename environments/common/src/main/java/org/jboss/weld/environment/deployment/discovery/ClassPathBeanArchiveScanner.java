@@ -94,6 +94,10 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
                 continue;
             }
             File entryFile = new File(entry);
+            if (!entryFile.exists()) {
+                CommonLogger.LOG.classPathEntryDoesNotExist(entryFile);
+                continue;
+            }
             if (!entryFile.canRead()) {
                 throw CommonLogger.LOG.cannotReadClassPathEntry(entryFile);
             }
