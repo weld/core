@@ -140,7 +140,7 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 34, value = "Cannot scan class path entry: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotScanClassPathEntry(Object entry, @Cause Throwable cause);
 
-    @Message(id = 35, value = "Class path entry does not exist or cannot be read: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 35, value = "Class path entry cannot be read: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotReadClassPathEntry(Object entry);
 
     @Message(id = 36, value = "Weld cannot read the java class path system property!", format = Format.MESSAGE_FORMAT)
@@ -163,5 +163,9 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 41, value = "Using {0} for bean discovery", format = Format.MESSAGE_FORMAT)
     void usingServiceLoaderSourcedDiscoveryStrategy(Object discoveryStrategy);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 42, value = "Class path entry does not exist: {0}", format = Format.MESSAGE_FORMAT)
+    void classPathEntryDoesNotExist(Object entry);
 
 }
