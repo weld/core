@@ -48,6 +48,7 @@ import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.environment.jetty.JettyLegacyContainer;
+import org.jboss.weld.lite.extension.translator.LiteExtensionTranslator;
 import org.jboss.weld.module.web.el.WeldELContextListener;
 import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.ContainerInstanceFactory;
@@ -278,11 +279,18 @@ public class WeldServletLifecycle {
      * @return new servlet deployment
      */
     protected CDI11Deployment createDeployment(ServletContext context, CDI11Bootstrap bootstrap) {
-
         ImmutableSet.Builder<Metadata<Extension>> extensionsBuilder = ImmutableSet.builder();
         extensionsBuilder.addAll(bootstrap.loadExtensions(WeldResourceLoader.getClassLoader()));
         if (isDevModeEnabled) {
             extensionsBuilder.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
+        }
+
+        // Register org.jboss.weld.lite.extension.translator.LiteExtensionTranslator in order to be able to execute build compatible extensions
+        try {
+            extensionsBuilder.add(new MetadataImpl<Extension>(SecurityActions.newInstance(LiteExtensionTranslator.class),
+                    "synthetic:" + LiteExtensionTranslator.class.getName()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         final Iterable<Metadata<Extension>> extensions = extensionsBuilder.build();

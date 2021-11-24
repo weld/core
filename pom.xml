@@ -55,7 +55,7 @@
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <arquillian.drone.version>2.5.2</arquillian.drone.version>
         <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
-        <arquillian.weld.version>3.0.0.Final</arquillian.weld.version>
+        <arquillian.weld.version>3.0.1.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Alpha1</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
@@ -64,7 +64,7 @@
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <!-- Version of the CDI 4.x release TCK -->
-        <cdi.tck-4-0.version>4.1.0.Alpha3</cdi.tck-4-0.version>
+        <cdi.tck-4-0.version>4.0.0.Alpha4</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.4.1</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.4.1</spotbugs-annotations-version>
@@ -91,7 +91,7 @@
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
         <testng.jcommander.version>1.81</testng.jcommander.version>
-        <weld.api.version>5.0.Beta1</weld.api.version>
+        <weld.api.version>5.0.Beta2</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>3.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -104,6 +104,7 @@
         <module>modules/web</module>
         <module>probe</module>
         <module>bom</module>
+        <module>weld-lite-extension-translator</module>
     </modules>
 
     <!-- Dependency management. KEEP IN ALPHABETICAL ORDER -->
@@ -349,6 +350,12 @@
             <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-core-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-lite-extension-translator</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
