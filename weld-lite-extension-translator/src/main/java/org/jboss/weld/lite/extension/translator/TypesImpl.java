@@ -12,6 +12,9 @@ import jakarta.enterprise.lang.model.types.WildcardType;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class TypesImpl implements Types {
+
+    private final String UNKNOWN_PRIM_TYPE = "Unknown primitive type ";
+
     @Override
     public Type of(Class<?> clazz) {
         if (clazz.isArray()) {
@@ -44,7 +47,7 @@ class TypesImpl implements Types {
             } else if (clazz == char.class) {
                 return ofPrimitive(PrimitiveType.PrimitiveKind.CHAR);
             } else {
-                throw new IllegalArgumentException("Unknown primitive type " + clazz);
+                throw new IllegalArgumentException(UNKNOWN_PRIM_TYPE + clazz);
             }
         }
 
@@ -76,7 +79,7 @@ class TypesImpl implements Types {
             case CHAR:
                 return new PrimitiveTypeImpl(Character.TYPE);
             default:
-                throw new IllegalArgumentException("Unknown primitive type " + kind);
+                throw new IllegalArgumentException(UNKNOWN_PRIM_TYPE + kind);
         }
     }
 

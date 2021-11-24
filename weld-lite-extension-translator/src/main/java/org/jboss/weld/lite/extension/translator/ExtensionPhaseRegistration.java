@@ -34,14 +34,15 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
             parameter.verifyAvailable(ExtensionPhase.REGISTRATION, method);
         }
 
-        if (numQueryParameters == 0) {
-            throw new IllegalArgumentException("No parameter of type BeanInfo or ObserverInfo"
-                    + " for method " + method + " @ " + method.getDeclaringClass());
-        }
+        if (numQueryParameters != 1) {
+            String errorMsg = " of type BeanInfo or ObserverInfo for method " + method + " @ " + method.getDeclaringClass();
+            if (numQueryParameters == 0) {
+                throw new IllegalArgumentException("No parameter" + errorMsg);
+            }
 
-        if (numQueryParameters > 1) {
-            throw new IllegalArgumentException("More than 1 parameter of type BeanInfo or ObserverInfo"
-                    + " for method " + method + " @ " + method.getDeclaringClass());
+            if (numQueryParameters > 1) {
+                throw new IllegalArgumentException("More than 1 parameter" + errorMsg);
+            }
         }
 
         ExtensionMethodParameterType query = parameters.stream()
