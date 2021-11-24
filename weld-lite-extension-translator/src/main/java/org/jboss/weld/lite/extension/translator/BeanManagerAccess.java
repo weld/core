@@ -10,6 +10,9 @@ import java.lang.annotation.Annotation;
 final class BeanManagerAccess {
     private static jakarta.enterprise.inject.spi.BeanManager beanManager;
 
+    private BeanManagerAccess() {
+    }
+
     static void set(jakarta.enterprise.inject.spi.BeanManager beanManager) {
         BeanManagerAccess.beanManager = beanManager;
     }

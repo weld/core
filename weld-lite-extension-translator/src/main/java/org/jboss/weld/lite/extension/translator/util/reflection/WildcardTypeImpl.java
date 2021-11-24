@@ -64,11 +64,14 @@ final class WildcardTypeImpl implements java.lang.reflect.WildcardType {
             return "?";
         } else if (noUpperBound) {
             return "? super " + lowerBounds[0];
-        } else if (noLowerBound) {
-            return "? extends " + upperBounds[0];
         } else {
-            // should never happen
-            return "? extends " + upperBounds[0] + " super " + lowerBounds[0];
+            String returnString = "? extends " + upperBounds[0];
+            if (noLowerBound) {
+                return returnString;
+            } else {
+                // should never happen
+                return returnString + " super " + lowerBounds[0];
+            }
         }
     }
 }

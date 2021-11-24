@@ -33,10 +33,11 @@ final class GenericArrayTypeImpl implements java.lang.reflect.GenericArrayType {
 
     @Override
     public String toString() {
+        String arrayBrackets = "[]";
         if (componentType instanceof Class) {
-            return ((Class<?>) componentType).getName() + "[]";
+            return ((Class<?>) componentType).getName() + arrayBrackets;
         }
 
-        return componentType + "[]";
+        return componentType + arrayBrackets;
     }
 }

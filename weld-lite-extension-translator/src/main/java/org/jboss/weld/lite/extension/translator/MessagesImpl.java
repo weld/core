@@ -8,6 +8,9 @@ import jakarta.enterprise.lang.model.AnnotationTarget;
 import java.util.logging.Logger;
 
 class MessagesImpl implements Messages {
+
+    private final String AT = " at ";
+
     private final SharedErrors errors;
     private final Logger logger;
 
@@ -23,17 +26,17 @@ class MessagesImpl implements Messages {
 
     @Override
     public void info(String message, AnnotationTarget relatedTo) {
-        logger.info(message + " at " + relatedTo);
+        logger.info(message + AT + relatedTo);
     }
 
     @Override
     public void info(String message, BeanInfo relatedTo) {
-        logger.info(message + " at " + relatedTo);
+        logger.info(message + AT + relatedTo);
     }
 
     @Override
     public void info(String message, ObserverInfo relatedTo) {
-        logger.info(message + " at " + relatedTo);
+        logger.info(message + AT + relatedTo);
     }
 
     @Override
@@ -43,17 +46,17 @@ class MessagesImpl implements Messages {
 
     @Override
     public void warn(String message, AnnotationTarget relatedTo) {
-        logger.warning(message + " at " + relatedTo);
+        logger.warning(message + AT + relatedTo);
     }
 
     @Override
     public void warn(String message, BeanInfo relatedTo) {
-        logger.warning(message + " at " + relatedTo);
+        logger.warning(message + AT + relatedTo);
     }
 
     @Override
     public void warn(String message, ObserverInfo relatedTo) {
-        logger.warning(message + " at " + relatedTo);
+        logger.warning(message + AT + relatedTo);
     }
 
     @Override
@@ -64,20 +67,20 @@ class MessagesImpl implements Messages {
 
     @Override
     public void error(String message, AnnotationTarget relatedTo) {
-        logger.severe(message + " at " + relatedTo);
-        errors.list.add(new jakarta.enterprise.inject.spi.DeploymentException(message + " at " + relatedTo));
+        logger.severe(message + AT + relatedTo);
+        errors.list.add(new jakarta.enterprise.inject.spi.DeploymentException(message + AT + relatedTo));
     }
 
     @Override
     public void error(String message, BeanInfo relatedTo) {
-        logger.severe(message + " at " + relatedTo);
-        errors.list.add(new jakarta.enterprise.inject.spi.DeploymentException(message + " at " + relatedTo));
+        logger.severe(message + AT + relatedTo);
+        errors.list.add(new jakarta.enterprise.inject.spi.DeploymentException(message + AT + relatedTo));
     }
 
     @Override
     public void error(String message, ObserverInfo relatedTo) {
-        logger.severe(message + " at " + relatedTo);
-        errors.list.add(new jakarta.enterprise.inject.spi.DeploymentException(message + " at " + relatedTo));
+        logger.severe(message + AT + relatedTo);
+        errors.list.add(new jakarta.enterprise.inject.spi.DeploymentException(message + AT + relatedTo));
     }
 
     @Override

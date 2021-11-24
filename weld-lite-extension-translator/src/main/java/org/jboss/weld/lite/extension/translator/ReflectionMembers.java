@@ -9,6 +9,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 class ReflectionMembers {
+
+    private ReflectionMembers() {
+    }
+
     static Set<Method> allMethods(Class<?> clazz) {
         Set<Method> result = new HashSet<>();
         forEachSuperclass(clazz, it -> result.addAll(Arrays.asList(it.getDeclaredMethods())));
