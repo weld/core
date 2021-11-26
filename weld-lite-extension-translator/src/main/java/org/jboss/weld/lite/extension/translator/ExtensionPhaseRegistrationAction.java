@@ -1,6 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -34,7 +33,7 @@ class ExtensionPhaseRegistrationAction {
         }
 
         java.lang.reflect.Type observedType = pom.getObserverMethod().getObservedType();
-        if (satisfies(Collections.singleton(observedType))) {
+        if (satisfiesObserverMethod(observedType)) {
             observerAcceptor.accept(pom);
         }
     }
@@ -47,6 +46,24 @@ class ExtensionPhaseRegistrationAction {
             }
 
             if (inspectedTypes.contains(rawType)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean satisfiesObserverMethod(java.lang.reflect.Type observedType) {
+        Class<?> rawObservedType = getRawType(observedType);
+        if (rawObservedType == null) {
+            return false;
+        }
+        for (java.lang.reflect.Type type : this.types) {
+            Class<?> rawType = getRawType(type);
+            if (rawType == null) {
+                continue;
+            }
+            if (rawType.isAssignableFrom(rawObservedType)) {
                 return true;
             }
         }
