@@ -13,7 +13,7 @@ class ExtensionPhaseEnhancementAction {
     private final Consumer<jakarta.enterprise.inject.spi.ProcessAnnotatedType<?>> acceptor;
 
     ExtensionPhaseEnhancementAction(Set<Class<?>> types, boolean withSubtypes, Set<Class<? extends Annotation>> withAnnotations,
-            Consumer<jakarta.enterprise.inject.spi.ProcessAnnotatedType<?>> acceptor) {
+                                    Consumer<jakarta.enterprise.inject.spi.ProcessAnnotatedType<?>> acceptor) {
         this.types = types;
         this.withSubtypes = withSubtypes;
         this.withAnnotations = withAnnotations;
@@ -45,16 +45,19 @@ class ExtensionPhaseEnhancementAction {
     }
 
     private boolean satisfiesAnnotationConstraints(jakarta.enterprise.inject.spi.AnnotatedType<?> annotatedType) {
+        // TODO see https://github.com/eclipse-ee4j/cdi/issues/564
+        // This is a default value of all Enhancement methods but we need to treat it as "accept all"
+        // in order to be able to modify all classes
+        if (withAnnotations.contains(Enhancement.BeanDefiningAnnotations.class)) {
+            return true;
+        }
+
         return AnnotationPresence.allAnnotations(annotatedType)
                 .anyMatch(it -> {
                     if (withAnnotations.contains(Annotation.class)) {
                         return true;
                     }
                     if (withAnnotations.contains(it.annotationType())) {
-                        return true;
-                    }
-                    if (withAnnotations.contains(Enhancement.BeanDefiningAnnotations.class)
-                            && BeanManagerAccess.isBeanDefiningAnnotation(it.annotationType())) {
                         return true;
                     }
                     return false;

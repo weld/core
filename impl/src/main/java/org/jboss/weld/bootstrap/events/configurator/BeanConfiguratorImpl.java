@@ -508,6 +508,7 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
             if (destroyCallback != null) {
                 destroyCallback.destroy(instance, creationalContext, beanManager);
             }
+            creationalContext.release();
         }
 
         @Override

@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.lang.model.AnnotationMember;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -18,6 +19,16 @@ final class AnnotationProxy {
         Map<String, Object> values = new HashMap<>();
         for (Map.Entry<String, AnnotationMember> member : members.entrySet()) {
             values.put(member.getKey(), ((AnnotationMemberImpl) member.getValue()).value);
+        }
+        // include default values methods where no values were specified
+        for (Method method : clazz.getDeclaredMethods()) {
+            String methodName = method.getName();
+            if (!values.containsKey(methodName)) {
+                Object value = method.getDefaultValue();
+                if (value != null) {
+                    values.put(methodName, value);
+                }
+            }
         }
         return (T) java.lang.reflect.Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces,
                 new AnnotationInvocationHandler(clazz, values));
