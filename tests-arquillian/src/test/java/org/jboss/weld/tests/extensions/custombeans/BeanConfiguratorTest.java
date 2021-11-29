@@ -27,6 +27,7 @@ import java.util.Set;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
@@ -73,15 +74,44 @@ public class BeanConfiguratorTest {
         Foo foo = (Foo) beanManager.getReference(fooBean, Foo.class, beanManager.createCreationalContext(fooBean));
         foo.ping();
 
+        // bean is deliberately created via new creational context and BM.getReference
         beans = beanManager.getBeans(Integer.class, Random.Literal.INSTANCE);
+        assertEquals(0, DependentBean.TIMES_DESTROY_INVOKED);
         assertEquals(1, beans.size());
         Bean<Integer> randomBean = (Bean<Integer>) beans.iterator().next();
         CreationalContext<Integer> ctx = beanManager.createCreationalContext(randomBean);
         Integer random = (Integer) beanManager.getReference(randomBean, Integer.class, ctx);
         assertNotNull(random);
         assertTrue(random >= 0 && random < 1000);
+        assertEquals(0, DependentBean.TIMES_DESTROY_INVOKED);
         randomBean.destroy(random, ctx);
         assertTrue(BuilderExtension.DISPOSED.get());
+        assertEquals(2, DependentBean.TIMES_DESTROY_INVOKED);
+
+        // same as above but using Instance
+        DependentBean.resetCounter();
+        BuilderExtension.DISPOSED.set(false);
+        Instance<Integer> integerInstance = beanManager.createInstance().select(Integer.class, Random.Literal.INSTANCE);
+        assertEquals(0, DependentBean.TIMES_DESTROY_INVOKED);
+        random = integerInstance.get();
+        assertNotNull(random);
+        assertTrue(random >= 0 && random < 1000);
+        assertEquals(0, DependentBean.TIMES_DESTROY_INVOKED);
+        integerInstance.destroy(random);
+        assertTrue(BuilderExtension.DISPOSED.get());
+        assertEquals(2, DependentBean.TIMES_DESTROY_INVOKED);
+
+        // same as above but with plain injection
+        DependentBean.resetCounter();
+        BuilderExtension.DISPOSED.set(false);
+        Instance<BeanInjectingSyntheticInteger> injectingBeanInstance = beanManager.createInstance().select(BeanInjectingSyntheticInteger.class);
+        BeanInjectingSyntheticInteger bean = injectingBeanInstance.get();
+        assertNotNull(bean);
+        Integer beanValue = bean.getNumber();
+        assertTrue(beanValue >= 0 && beanValue < 1000);
+        injectingBeanInstance.destroy(bean);
+        assertTrue(BuilderExtension.DISPOSED.get());
+        assertEquals(2, DependentBean.TIMES_DESTROY_INVOKED);
 
         beans = beanManager.getBeans(Long.class, AnotherRandom.Literal.INSTANCE);
         assertEquals(1, beans.size());
