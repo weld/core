@@ -68,7 +68,14 @@ public class BuilderExtension implements Extension {
 
         // Test simple produceWith callback
         event.addBean().addType(Integer.class).addQualifier(Random.Literal.INSTANCE)
-                .produceWith((i) -> new java.util.Random().nextInt(1000)).disposeWith((beanInstance, instance) -> DISPOSED.set(true));
+                .produceWith((i) -> {
+                    i.select(DependentBean.class).get(); // create dependent instance
+                    return new java.util.Random().nextInt(1000);
+                })
+                .disposeWith((beanInstance, instance) -> {
+                    instance.select(DependentBean.class).get(); // create dependent instance
+                    DISPOSED.set(true);
+                });
 
         // Test produceWith callback with Instance<Object> param
         event.addBean().addType(Long.class).addQualifier(AnotherRandom.Literal.INSTANCE)
