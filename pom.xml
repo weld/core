@@ -54,7 +54,7 @@
         <apache.bcel.version>6.5.0</apache.bcel.version>
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <arquillian.drone.version>2.5.2</arquillian.drone.version>
-        <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
+        <arquillian.graphene.version>2.5.4</arquillian.graphene.version>
         <arquillian.weld.version>3.0.0.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Alpha1</arquillian.tomcat.version>
