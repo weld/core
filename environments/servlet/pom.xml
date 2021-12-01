@@ -34,7 +34,7 @@
         <jetty9.asm.version>7.0</jetty9.asm.version>
         <websockets.api>2.0.0</websockets.api>
         <!-- We need undertow which uses Jakarta 9 packages! -->
-        <undertow.version>2.2.12.Final</undertow.version>
+        <undertow.version>2.2.13.Final</undertow.version>
         <!-- Testing deps -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
     </properties>
