@@ -115,7 +115,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 for (ExtensionMethodParameterType parameter : parameters) {
                     Object argument;
                     if (parameter.isQuery()) {
-                        argument = new ObserverInfoImpl(pom.getObserverMethod(), pom.getAnnotatedMethod());
+                        boolean isSynthetic = pom instanceof jakarta.enterprise.inject.spi.ProcessSyntheticObserverMethod;
+                        argument = new ObserverInfoImpl(pom.getObserverMethod(), isSynthetic ? null : pom.getAnnotatedMethod());
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
