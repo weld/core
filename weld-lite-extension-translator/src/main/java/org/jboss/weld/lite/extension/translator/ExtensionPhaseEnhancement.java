@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
+import jakarta.enterprise.inject.spi.DefinitionException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,11 +39,11 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
             String errorMsg = " of type ClassInfo, MethodInfo, FieldInfo, ClassConfig, MethodConfig," +
                     " or FieldConfig for method " + method + " @ " + method.getDeclaringClass();
             if (numQueryParameters == 0) {
-                throw new IllegalArgumentException("No parameter" + errorMsg);
+                throw new DefinitionException("No parameter" + errorMsg);
             }
 
             if (numQueryParameters > 1) {
-                throw new IllegalArgumentException("More than 1 parameter" + errorMsg);
+                throw new DefinitionException("More than 1 parameter" + errorMsg);
             }
         }
 

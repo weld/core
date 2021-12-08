@@ -1,5 +1,8 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.DeploymentException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +29,11 @@ abstract class ExtensionPhaseBase {
             for (java.lang.reflect.Method method : extensionMethods) {
                 runExtensionMethod(method);
             }
+        } catch (DefinitionException | DeploymentException e) {
+            throw e;
         } catch (Exception e) {
             // TODO proper diagnostics system
-            throw new RuntimeException(e);
+            throw new DeploymentException(e);
         }
     }
 
