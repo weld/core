@@ -1,7 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
-
 import java.lang.annotation.Annotation;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -45,10 +43,7 @@ class ExtensionPhaseEnhancementAction {
     }
 
     private boolean satisfiesAnnotationConstraints(jakarta.enterprise.inject.spi.AnnotatedType<?> annotatedType) {
-        // TODO see https://github.com/eclipse-ee4j/cdi/issues/564
-        // This is a default value of all Enhancement methods but we need to treat it as "accept all"
-        // in order to be able to modify all classes
-        if (withAnnotations.contains(Enhancement.BeanDefiningAnnotations.class)) {
+        if (withAnnotations.isEmpty()) {
             return true;
         }
 
