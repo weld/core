@@ -427,7 +427,7 @@
                                 --add-opens=java.base/java.security=ALL-UNNAMED
                                 --add-opens=java.base/java.util=ALL-UNNAMED
                                 --add-opens=java.management/javax.management=ALL-UNNAMED
-                                --add-opens=java.naming/javax.naming=ALL-UNNAMED"
+                                --add-opens=java.naming/javax.naming=ALL-UNNAMED
                             </argLine>
 
                             <systemPropertyVariables>
@@ -450,7 +450,7 @@
                                     --add-opens=java.base/java.security=ALL-UNNAMED
                                     --add-opens=java.base/java.util=ALL-UNNAMED
                                     --add-opens=java.management/javax.management=ALL-UNNAMED
-                                    --add-opens=java.naming/javax.naming=ALL-UNNAMED"
+                                    --add-opens=java.naming/javax.naming=ALL-UNNAMED
                                 </additional.vm.args>
 
                                 <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
