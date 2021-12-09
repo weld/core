@@ -160,7 +160,7 @@ public class InstanceHandleTest {
 
             ActionSequence.reset();
             assertTrue(instance.isAmbiguous());
-            for (Iterator<Instance.Handle<Processor>> iterator = instance.handles().iterator(); iterator.hasNext(); ) {
+            for (Iterator<? extends Instance.Handle<Processor>> iterator = instance.handles().iterator(); iterator.hasNext(); ) {
                 try (Instance.Handle<Processor> handle = iterator.next()) {
                     handle.get().ping();
                 }
