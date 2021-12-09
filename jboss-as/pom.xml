@@ -40,6 +40,11 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-lite-extension-translator</artifactId>
+            <version>${weld.update.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.weld.probe</groupId>
             <artifactId>weld-probe-core</artifactId>
             <version>${weld.update.version}</version>
@@ -119,6 +124,7 @@
                                         <property name="weld.jta.file" value="weld-jta-${weld.update.version}.jar" />
                                         <property name="weld.web.file" value="weld-web-${weld.update.version}.jar" />
                                         <property name="weld.ejb.file" value="weld-ejb-${weld.update.version}.jar" />
+                                        <property name="weld.lite-extension.file" value="weld-lite-extension-translator-${weld.update.version}.jar" />
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
@@ -140,6 +146,7 @@
                                                 <include name="${weld.jta.file}" />
                                                 <include name="${weld.web.file}" />
                                                 <include name="${weld.ejb.file}" />
+                                                <include name="${weld.lite-extension.file}" />
                                             </fileset>
                                         </copy>
 
@@ -148,6 +155,7 @@
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-ejb.*?&quot;" replace="path=&quot;${weld.ejb.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-jta.*?&quot;" replace="path=&quot;${weld.jta.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-web.*?&quot;" replace="path=&quot;${weld.web.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-lite-extension-translator.*?&quot;" replace="path=&quot;${weld.lite-extension.file}&quot;" byline="true" />
 
                                         <copy todir="${module.dir}/probe/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
@@ -246,7 +254,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core-impl,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>

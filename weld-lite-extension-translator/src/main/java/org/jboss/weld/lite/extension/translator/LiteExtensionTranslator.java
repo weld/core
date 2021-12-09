@@ -3,12 +3,14 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanDisposer;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserver;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,13 +24,24 @@ import java.util.List;
  * </p>
  */
 public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Extension {
-    private final ExtensionInvoker util = new ExtensionInvoker();
+    private final ExtensionInvoker util;
+    private final ClassLoader cl; // class loader to be used, WFLY for instance needs to set its own
     private final SharedErrors errors = new SharedErrors();
 
     private final List<Class<? extends jakarta.enterprise.context.spi.AlterableContext>> contextsToRegister = new ArrayList<>();
 
     private final List<ExtensionPhaseEnhancementAction> enhancementActions = new ArrayList<>();
     private final List<ExtensionPhaseRegistrationAction> registrationActions = new ArrayList<>();
+
+    public LiteExtensionTranslator() {
+        this.util = new ExtensionInvoker();
+        this.cl = Thread.currentThread().getContextClassLoader();
+    }
+
+    public LiteExtensionTranslator(Collection<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions, ClassLoader cl) {
+        this.util = new ExtensionInvoker(buildCompatibleExtensions);
+        this.cl = cl;
+    }
 
     public void discovery(@Priority(Integer.MAX_VALUE) @Observes jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd,
             jakarta.enterprise.inject.spi.BeanManager bm) {
@@ -39,7 +52,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             List<MetaAnnotationsImpl.StereotypeConfigurator<?>> stereotypes = new ArrayList<>();
             List<MetaAnnotationsImpl.ContextData> contexts = new ArrayList<>();
 
-            new ExtensionPhaseDiscovery(bm, util, errors, bbd, stereotypes, contexts).run();
+            new ExtensionPhaseDiscovery(bm, util, errors, bbd, stereotypes, contexts, cl).run();
 
             // qualifiers and interceptor bindings are handled directly in MetaAnnotationsImpl (via BBD)
             for (MetaAnnotationsImpl.StereotypeConfigurator<?> stereotype : stereotypes) {
