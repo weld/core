@@ -106,6 +106,7 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <optional>true</optional>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.jboss.classfilewriter</groupId>
@@ -131,7 +132,6 @@
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
-                <version>1.13.0</version>
                 <executions>
                     <execution>
                         <goals>

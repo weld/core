@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>45</version>
+        <version>46</version>
     </parent>
 
     <prerequisites>
@@ -25,8 +25,8 @@
     <properties>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <!-- Should be equal to the newest Java version for which sources exist -->
         <jdk.min.version>11</jdk.min.version>
@@ -69,7 +69,7 @@
         <spotbugs-maven-plugin.version>4.4.1</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.4.1</spotbugs-annotations-version>
         <glassfish.el.version>2.2.1-b05</glassfish.el.version>
-        <groovy.version>2.4.21</groovy.version>
+        <groovy.version>3.0.9</groovy.version>
         <htmlunit.version>2.53.0</htmlunit.version>
         <jacoco.version>0.8.7</jacoco.version>
         <jandex.version>2.4.0.Final</jandex.version>
@@ -91,7 +91,7 @@
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
         <testng.jcommander.version>1.81</testng.jcommander.version>
-        <weld.api.version>5.0.Beta3</weld.api.version>
+        <weld.api.version>5.0.Beta4</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>3.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -123,6 +123,7 @@
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>${groovy.version}</version>
+                <type>pom</type>
             </dependency>
 
             <dependency>
