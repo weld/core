@@ -219,11 +219,6 @@ public class WeldStartup {
         if (!proxyServices.supportsClassDefining()) {
             throw BootstrapLogger.LOG.proxyServicesWithoutClassDefining(proxyServices.getClass().getName());
         }
-        // if we use our own ProxyServices impl, we need to crack open CL for JDK 8 impl
-        // note that this is no-op call for JDK 11+
-        if (proxyServices instanceof WeldDefaultProxyServices) {
-            WeldDefaultProxyServices.makeClassLoaderMethodsAccessible();
-        }
         if (!registry.contains(SecurityServices.class)) {
             registry.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
         }
