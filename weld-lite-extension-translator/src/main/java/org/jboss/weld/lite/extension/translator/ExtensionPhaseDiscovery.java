@@ -6,15 +6,17 @@ class ExtensionPhaseDiscovery extends ExtensionPhaseBase {
     private final jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd;
     private final List<MetaAnnotationsImpl.StereotypeConfigurator<?>> stereotypes;
     private final List<MetaAnnotationsImpl.ContextData> contexts;
+    private final ClassLoader cl;
 
     ExtensionPhaseDiscovery(jakarta.enterprise.inject.spi.BeanManager beanManager, ExtensionInvoker util,
             SharedErrors errors, jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd,
             List<MetaAnnotationsImpl.StereotypeConfigurator<?>> stereotypes,
-            List<MetaAnnotationsImpl.ContextData> contexts) {
+            List<MetaAnnotationsImpl.ContextData> contexts, ClassLoader cl) {
         super(ExtensionPhase.DISCOVERY, beanManager, util, errors);
         this.bbd = bbd;
         this.stereotypes = stereotypes;
         this.contexts = contexts;
+        this.cl = cl;
     }
 
     @Override
@@ -23,7 +25,7 @@ class ExtensionPhaseDiscovery extends ExtensionPhaseBase {
             case META_ANNOTATIONS:
                 return new MetaAnnotationsImpl(bbd, stereotypes, contexts);
             case SCANNED_CLASSES:
-                return new ScannedClassesImpl(bbd);
+                return new ScannedClassesImpl(bbd, cl);
 
             default:
                 return super.argumentForExtensionMethod(type, method);

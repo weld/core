@@ -90,7 +90,7 @@ public abstract class ForwardingWeldInstance<T> implements WeldInstance<T> {
     }
 
     @Override
-    public Iterable<Handle<T>> handles() {
+    public Iterable<? extends Handle<T>> handles() {
         return delegate().handles();
     }
 

@@ -7,6 +7,7 @@ import jakarta.interceptor.Interceptor;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,6 @@ class ExtensionInvoker {
     ExtensionInvoker() {
         for (BuildCompatibleExtension extension : ServiceLoader.load(BuildCompatibleExtension.class)) {
             Class<? extends BuildCompatibleExtension> extensionClass = extension.getClass();
-
             SkipIfPortableExtensionPresent skip = extensionClass.getAnnotation(SkipIfPortableExtensionPresent.class);
             if (skip != null && isClassPresent(skip.value())) {
                 continue;
@@ -31,6 +31,26 @@ class ExtensionInvoker {
 
             extensionClasses.put(extensionClass.getName(), extensionClass);
             extensionClassInstances.put(extensionClass, extension);
+        }
+    }
+
+    // used from WFLY to initiate with already known collection of extensions
+    ExtensionInvoker(Collection<Class<? extends BuildCompatibleExtension>> extensions) {
+        for (Class<? extends BuildCompatibleExtension> extensionClass : extensions) {
+            SkipIfPortableExtensionPresent skip = extensionClass.getAnnotation(SkipIfPortableExtensionPresent.class);
+            if (skip != null && isClassPresent(skip.value())) {
+                continue;
+            }
+
+            try {
+                BuildCompatibleExtension extensionInstance = extensionClass.newInstance();
+                extensionClasses.put(extensionClass.getName(), extensionClass);
+                extensionClassInstances.put(extensionClass, extensionInstance);
+            } catch (InstantiationException | IllegalAccessException e) {
+                // TODO handle this properly
+                throw new RuntimeException(e);
+            }
+
         }
     }
 

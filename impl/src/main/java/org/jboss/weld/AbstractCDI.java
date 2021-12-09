@@ -134,7 +134,7 @@ public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
     }
 
     @Override
-    public Iterable<Handle<T>> handles() {
+    public Iterable<? extends Handle<T>> handles() {
         return getInstance().handles();
     }
 
