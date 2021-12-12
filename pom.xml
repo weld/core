@@ -98,13 +98,13 @@
 
     <modules>
         <module>impl</module>
+        <module>weld-lite-extension-translator</module>
         <module>modules/ejb</module>
         <module>modules/jsf</module>
         <module>modules/jta</module>
         <module>modules/web</module>
         <module>probe</module>
         <module>bom</module>
-        <module>weld-lite-extension-translator</module>
     </modules>
 
     <!-- Dependency management. KEEP IN ALPHABETICAL ORDER -->
@@ -595,6 +595,7 @@
                 <module>porting-package</module>
                 <module>tests-common</module>
                 <module>tests</module>
+                <module>lang-model-tck</module>
                 <module>tests-arquillian</module>
                 <module>inject-tck-runner</module>
             </modules>
