@@ -57,7 +57,8 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
 
         List<ParameterInfo> result = new ArrayList<>();
         Parameter[] parameters = reflection.getParameters();
-        parameters = enumConstructorHack(parameters);
+        boolean isEnumConstructorParam = isEnumConstructorParam(parameters);
+        parameters = enumConstructorHack(parameters, isEnumConstructorParam);
 
         int position = 0;
         for (Parameter parameter : parameters) {
@@ -68,7 +69,7 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
             if (map.containsKey(parameter)) {
                 result.add(new ParameterInfoImpl(map.get(parameter)));
             } else {
-                result.add(new ParameterInfoImpl(parameter, this, position));
+                result.add(new ParameterInfoImpl(parameter, this, position, isEnumConstructorParam));
             }
 
             position++;
@@ -77,14 +78,18 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
         return result;
     }
 
-    private Parameter[] enumConstructorHack(Parameter[] parameters) {
+    private boolean isEnumConstructorParam(Parameter[] parameters) {
         // enum constructors often have 2 synthetic parameters whose `isSynthetic()` returns `false`
-        if (isConstructor()
+        return isConstructor()
                 && reflection.getDeclaringClass().isEnum()
                 && reflection.getGenericParameterTypes().length != parameters.length
                 && parameters.length >= 2
                 && parameters[0].getType().equals(String.class)
-                && parameters[1].getType().equals(int.class)) {
+                && parameters[1].getType().equals(int.class);
+    }
+
+    private Parameter[] enumConstructorHack(Parameter[] parameters, boolean isEnumConstructorParam) {
+        if (isEnumConstructorParam) {
             Parameter[] declaredParameters = new Parameter[parameters.length - 2];
             System.arraycopy(parameters, 2, declaredParameters, 0, declaredParameters.length);
             return declaredParameters;

@@ -18,17 +18,21 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
     // only for equals/hashCode and going back to the method
     private final MethodInfoImpl method;
     private final int position;
+    private final Boolean isEnumConstructorParam;
 
     ParameterInfoImpl(jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDeclaration) {
         super(cdiDeclaration.getJavaParameter(), cdiDeclaration);
         this.method = new MethodInfoImpl(cdiDeclaration.getDeclaringCallable());
         this.position = cdiDeclaration.getPosition();
+        // doesn't matter if it's enum when we have CDI declaration
+        this.isEnumConstructorParam = null;
     }
 
-    ParameterInfoImpl(Parameter reflectionDeclaration, MethodInfoImpl backReference, int position) {
+    ParameterInfoImpl(Parameter reflectionDeclaration, MethodInfoImpl backReference, int position, boolean isEnumConstructorParam) {
         super(reflectionDeclaration, null);
         this.method = backReference;
         this.position = position;
+        this.isEnumConstructorParam = isEnumConstructorParam;
     }
 
     @Override
@@ -64,12 +68,13 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
             return true;
         }
 
-        java.lang.reflect.Executable method = this.method.reflection;
-        if (method.getParameterTypes().length == method.getParameterAnnotations().length) {
-            return true;
+        // we need special handling in case of enum constructor parameters as there are synth parameters in play
+        if (isEnumConstructorParam != null && isEnumConstructorParam.booleanValue()) {
+            return false;
         }
 
-        return false;
+        // all other cases should work just fine
+        return true;
     }
 
     @Override
@@ -78,7 +83,12 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
             return super.hasAnnotation(annotationType);
         }
 
-        Annotation[] annotations = method.reflection.getParameterAnnotations()[position];
+        Annotation[] annotations;
+        if (isEnumConstructorParam && method.reflection.getParameterAnnotations()[0].length == 0) { // in JDK 11, all annotations belong to first member, in 17, they belong to correct member
+            annotations = method.reflection.getParameterAnnotations()[position + 2]; // add the synth parameters
+        } else {
+            annotations = method.reflection.getParameterAnnotations()[position];
+        }
         return Arrays.stream(annotations)
                 .anyMatch(it -> annotationType.isAssignableFrom(it.annotationType()));
     }
@@ -111,7 +121,12 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
             return super.repeatableAnnotation(annotationType);
         }
 
-        Annotation[] annotations = method.reflection.getParameterAnnotations()[position];
+        Annotation[] annotations;
+        if (isEnumConstructorParam && method.reflection.getParameterAnnotations()[0].length == 0) { // in JDK 11, all annotations belong to first member, in 17, they belong to correct member
+            annotations = method.reflection.getParameterAnnotations()[position + 2]; // add the synth parameters
+        } else {
+            annotations = method.reflection.getParameterAnnotations()[position];
+        }
         return Arrays.stream(new AnnotationOverrides(annotations).getAnnotationsByType(annotationType))
                 .map(AnnotationInfoImpl::new)
                 .collect(Collectors.toList());
@@ -123,7 +138,12 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
             return super.annotations(predicate);
         }
 
-        Annotation[] annotations = method.reflection.getParameterAnnotations()[position];
+        Annotation[] annotations;
+        if (isEnumConstructorParam && method.reflection.getParameterAnnotations()[0].length == 0) { // in JDK 11, all annotations belong to first member, in 17, they belong to correct member
+            annotations = method.reflection.getParameterAnnotations()[position + 2]; // add the synth parameters
+        } else {
+            annotations = method.reflection.getParameterAnnotations()[position];
+        }
         return Arrays.stream(annotations)
                 .map(AnnotationInfoImpl::new)
                 .filter(predicate)
