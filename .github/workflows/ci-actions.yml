@@ -87,8 +87,8 @@ jobs:
               java-version: 11,
           }
           - {
-            name: "16",
-            java-version: 16,
+            name: "17",
+            java-version: 17,
           }
     steps:
       - uses: actions/checkout@v2
@@ -152,8 +152,8 @@ jobs:
               java-version: 11,
           }
           - {
-            name: "16",
-            java-version: 16,
+            name: "17",
+            java-version: 17,
           }
     steps:
       - uses: actions/checkout@v2
@@ -215,8 +215,8 @@ jobs:
               java-version: 11,
           }
           - {
-            name: "16",
-            java-version: 16,
+            name: "17",
+            java-version: 17,
           }
     steps:
       - uses: actions/checkout@v2
@@ -314,8 +314,8 @@ jobs:
               java-version: 11,
           }
           - {
-            name: "16",
-            java-version: 16,
+            name: "17",
+            java-version: 17,
           }
     steps:
       - uses: actions/checkout@v2
