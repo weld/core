@@ -63,7 +63,7 @@
         <cdi.tck-1-2.version>1.2.10.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.7.SP2</cdi.tck-2-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
-        <spotbugs-maven-plugin.version>4.4.1</spotbugs-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.5.2.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.4.1</spotbugs-annotations-version>
         <glassfish.el.version>2.2.1-b05</glassfish.el.version>
         <groovy.version>2.4.21</groovy.version>
