@@ -90,6 +90,10 @@ jobs:
             name: "11",
             java-version: 11,
           }
+          - {
+            name: "17",
+            java-version: 17,
+          }
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java.name }}
@@ -153,6 +157,10 @@ jobs:
             name: "11",
             java-version: 11,
           }
+          - {
+            name: "17",
+            java-version: 17,
+          }
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java.name }}
@@ -215,6 +223,10 @@ jobs:
           - {
             name: "11",
             java-version: 11,
+          }
+          - {
+            name: "17",
+            java-version: 17,
           }
     steps:
       - uses: actions/checkout@v2
@@ -316,6 +328,10 @@ jobs:
           - {
             name: "11",
             java-version: 11,
+          }
+          - {
+            name: "17",
+            java-version: 17,
           }
     steps:
       - uses: actions/checkout@v2

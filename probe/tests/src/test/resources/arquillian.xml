@@ -16,7 +16,7 @@
             <!-- ARQ-649 workaround -->
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
-            <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m ${jacoco.agent} ${additional.vm.args}</property>
+            <property name="javaVmArguments">-Xms128m -Xmx768m ${additional.vm.args} ${jacoco.agent}</property>
         </configuration>
     </container>
 
