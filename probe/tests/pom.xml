@@ -161,7 +161,7 @@
                             <systemProperties>
                                 <arquillian.xml>arquillian.xml</arquillian.xml>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <additional.vm.args>${surefire.plugin.jdk17.args}</additional.vm.args>
                                 <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
                             <test>${test}</test>

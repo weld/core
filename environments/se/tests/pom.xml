@@ -125,7 +125,6 @@
                   <libPath>${project.build.outputDirectory}</libPath>
                   <jacoco.agent>${jacoco.agent}</jacoco.agent>
                   <weld.se.debug>false</weld.se.debug>
-                  <surefire.plugin.jdk9.args>${surefire.plugin.jdk9.args}</surefire.plugin.jdk9.args>
                </systemProperties>
             </configuration>
          </plugin>

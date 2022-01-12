@@ -169,7 +169,7 @@
                 <version>${surefire.version}</version>
                 <configuration>
                     <!-- http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4425695 -->
-                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true ${surefire.plugin.jdk9.args}</argLine>
+                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true</argLine>
                     <forkMode>once</forkMode>
                     <properties>
                         <property>
@@ -537,16 +537,8 @@
                                 <gc.args />
                                 <!-- This property propagates to the javaVmArguments in arquillian.xml -->
                                 <additional.vm.args>
-                                    --add-exports=java.desktop/sun.awt=ALL-UNNAMED
-                                    --add-opens=java.base/java.io=ALL-UNNAMED
-                                    --add-opens=java.base/java.lang=ALL-UNNAMED
-                                    --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-                                    --add-opens=java.base/java.security=ALL-UNNAMED
-                                    --add-opens=java.base/java.util=ALL-UNNAMED
-                                    --add-opens=java.management/javax.management=ALL-UNNAMED
-                                    --add-opens=java.naming/javax.naming=ALL-UNNAMED
+                                    ${surefire.plugin.jdk17.args}
                                 </additional.vm.args>
-                                <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
                             </systemProperties>
                             <suiteXmlFiles>
                                 <suiteXmlFile>target/suites/tck-web-suite.xml</suiteXmlFile>
@@ -619,7 +611,6 @@
                             <systemPropertyVariables>
                                 <arquillian.launch>weld-se</arquillian.launch>
                                 <libPath>${project.build.outputDirectory}</libPath>
-                                <surefire.plugin.jdk9.args>${surefire.plugin.jdk9.args}</surefire.plugin.jdk9.args>
                             </systemPropertyVariables>
                             <suiteXmlFiles>
                                 <suiteXmlFile>target/suites/tck-core-suite.xml</suiteXmlFile>
