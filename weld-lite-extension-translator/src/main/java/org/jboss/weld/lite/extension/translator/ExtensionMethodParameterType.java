@@ -14,6 +14,7 @@ import jakarta.enterprise.inject.build.compatible.spi.Types;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -65,9 +66,10 @@ enum ExtensionMethodParameterType {
 
     void verifyAvailable(ExtensionPhase phase, java.lang.reflect.Method method) {
         if (!validPhases.contains(phase)) {
-            throw new IllegalArgumentException(phase + " methods can't declare a parameter of type "
-                    + (type != null ? type.getSimpleName() : this.name()) + ", found at "
-                    + method.getDeclaringClass().getSimpleName() + "." + method.getName());
+            throw LiteExtensionTranslatorLogger.LOG.invalidMethodParameter(phase.toString(),
+                    (type != null ? type.getSimpleName() : this.name()),
+                    method.getDeclaringClass().getSimpleName(),
+                    method.getName());
         }
     }
 

@@ -1,7 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.Registration;
-import jakarta.enterprise.inject.spi.DefinitionException;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,15 +35,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
             parameter.verifyAvailable(ExtensionPhase.REGISTRATION, method);
         }
 
-        if (numQueryParameters != 1) {
-            String errorMsg = " of type BeanInfo or ObserverInfo for method " + method + " @ " + method.getDeclaringClass();
-            if (numQueryParameters == 0) {
-                throw new DefinitionException("No parameter" + errorMsg);
-            }
-
-            if (numQueryParameters > 1) {
-                throw new DefinitionException("More than 1 parameter" + errorMsg);
-            }
+        if (numQueryParameters == 0 || numQueryParameters > 1) {
+            throw LiteExtensionTranslatorLogger.LOG.incorrectParameterCount("BeanInfo or ObserverInfo", method, method.getDeclaringClass());
         }
 
         ExtensionMethodParameterType query = parameters.stream()
@@ -74,7 +67,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 try {
                     util.callExtensionMethod(method, arguments);
                 } catch (ReflectiveOperationException e) {
-                    throw new RuntimeException(e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
                 }
             };
 
@@ -103,7 +96,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 try {
                     util.callExtensionMethod(method, arguments);
                 } catch (ReflectiveOperationException e) {
-                    throw new RuntimeException(e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
                 }
             };
 
@@ -127,7 +120,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 try {
                     util.callExtensionMethod(method, arguments);
                 } catch (ReflectiveOperationException e) {
-                    throw new RuntimeException(e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
                 }
             };
 
@@ -135,7 +128,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
             actions.add(new ExtensionPhaseRegistrationAction(new HashSet<>(Arrays.asList(registration.types())),
                     null, pomAcceptor));
         } else {
-            throw new IllegalStateException("Unknown query parameter " + query);
+            throw LiteExtensionTranslatorLogger.LOG.unknownQueryParameter(query);
         }
     }
 

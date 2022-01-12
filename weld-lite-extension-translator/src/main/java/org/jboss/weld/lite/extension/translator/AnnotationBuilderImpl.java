@@ -6,6 +6,7 @@ import jakarta.enterprise.lang.model.AnnotationMember;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.types.ArrayType;
 import jakarta.enterprise.lang.model.types.Type;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -230,7 +231,7 @@ class AnnotationBuilderImpl implements AnnotationBuilder {
             }
         }
 
-        throw new IllegalArgumentException("Illegal type " + type);
+        throw LiteExtensionTranslatorLogger.LOG.illegalAnnotationMemberType(type);
     }
 
     @Override

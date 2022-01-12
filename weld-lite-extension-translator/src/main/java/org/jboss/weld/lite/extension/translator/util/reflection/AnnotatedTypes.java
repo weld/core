@@ -1,5 +1,7 @@
 package org.jboss.weld.lite.extension.translator.util.reflection;
 
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
+
 public final class AnnotatedTypes {
 
     private AnnotatedTypes() {
@@ -26,7 +28,7 @@ public final class AnnotatedTypes {
         } else if (type instanceof java.lang.reflect.GenericArrayType) {
             return new AnnotatedArrayTypeImpl((java.lang.reflect.GenericArrayType) type);
         } else {
-            throw new IllegalArgumentException("Unknown type " + type);
+            throw LiteExtensionTranslatorLogger.LOG.unknownReflectionType(type);
         }
     }
 

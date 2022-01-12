@@ -10,6 +10,7 @@ import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.declarations.ParameterInfo;
 import jakarta.enterprise.lang.model.types.Type;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 import java.util.Collection;
@@ -65,7 +66,7 @@ class ObserverInfoImpl implements ObserverInfo {
                 return new ParameterInfoImpl(parameter);
             }
         }
-        throw new IllegalStateException("Observer method without an @Observes parameter: " + cdiDeclaration);
+        throw LiteExtensionTranslatorLogger.LOG.missingObservesAnnotation(cdiDeclaration);
     }
 
     @Override
@@ -73,9 +74,8 @@ class ObserverInfoImpl implements ObserverInfo {
         if (cdiDeclaration == null) {
             return null;
         }
-
-        // TODO ???
-        throw new UnsupportedOperationException("Probably get rid of ObserverInfo.bean()");
+        // disposer declaration should be null because the declaring bean will be a class-based bean
+        return new BeanInfoImpl(cdiObserver.getDeclaringBean(), cdiDeclaration, null);
     }
 
     @Override

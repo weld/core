@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.AnnotationMember;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
         } catch (NoSuchMethodException e) {
             return null;
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw LiteExtensionTranslatorLogger.LOG.unableToAccessAnnotationMembers(annotation, e.toString());
         }
     }
 
@@ -58,7 +59,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
             }
             return result;
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw LiteExtensionTranslatorLogger.LOG.unableToAccessAnnotationMembers(annotation, e.toString());
         }
     }
 
