@@ -2,6 +2,7 @@ package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.DeclarationInfo;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -31,7 +32,7 @@ abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.refle
         } else if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedField) {
             return new FieldInfoImpl((jakarta.enterprise.inject.spi.AnnotatedField<?>) cdiDeclaration);
         } else {
-            throw new IllegalArgumentException("Unknown declaration " + cdiDeclaration);
+            throw LiteExtensionTranslatorLogger.LOG.unknownDeclaration(cdiDeclaration);
         }
     }
 

@@ -4,6 +4,7 @@ import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SkipIfPortableExtensionPresent;
 import jakarta.interceptor.Interceptor;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -43,12 +44,11 @@ class ExtensionInvoker {
             }
 
             try {
-                BuildCompatibleExtension extensionInstance = extensionClass.newInstance();
+                BuildCompatibleExtension extensionInstance = extensionClass.getDeclaredConstructor().newInstance();
                 extensionClasses.put(extensionClass.getName(), extensionClass);
                 extensionClassInstances.put(extensionClass, extensionInstance);
-            } catch (InstantiationException | IllegalAccessException e) {
-                // TODO handle this properly
-                throw new RuntimeException(e);
+            } catch (ReflectiveOperationException e) {
+                throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(extensionClass, e.toString());
             }
 
         }
@@ -118,7 +118,7 @@ class ExtensionInvoker {
                 parameterTypes[i] = jakarta.enterprise.inject.build.compatible.spi.Types.class;
             } else {
                 // should never happen, internal error (or missing error handling) if it does
-                throw new IllegalArgumentException("Unexpected extension method argument: " + argument);
+                throw LiteExtensionTranslatorLogger.LOG.unexpectedMethodArgument(argument);
             }
         }
 

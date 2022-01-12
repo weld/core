@@ -36,6 +36,7 @@ public enum Category {
     INTERCEPTOR("Interceptor"),
     SERIALIZATION("Serialization"),
     CONFIGURATION("Configuration"),
+    LITE_EXTENSION_TRANSLATOR("LiteExtensionTranslator"),
     ;
 
     private static final String LOG_PREFIX = "org.jboss.weld.";

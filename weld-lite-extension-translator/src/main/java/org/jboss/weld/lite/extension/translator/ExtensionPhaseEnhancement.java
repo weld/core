@@ -1,7 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
-import jakarta.enterprise.inject.spi.DefinitionException;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,16 +35,8 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
             parameter.verifyAvailable(ExtensionPhase.ENHANCEMENT, method);
         }
 
-        if (numQueryParameters != 1) {
-            String errorMsg = " of type ClassInfo, MethodInfo, FieldInfo, ClassConfig, MethodConfig," +
-                    " or FieldConfig for method " + method + " @ " + method.getDeclaringClass();
-            if (numQueryParameters == 0) {
-                throw new DefinitionException("No parameter" + errorMsg);
-            }
-
-            if (numQueryParameters > 1) {
-                throw new DefinitionException("More than 1 parameter" + errorMsg);
-            }
+        if (numQueryParameters == 0 || numQueryParameters > 1) {
+            throw LiteExtensionTranslatorLogger.LOG.incorrectParameterCount("ClassInfo, MethodInfo, FieldInfo, ClassConfig, MethodConfig, or FieldConfig", method, method.getDeclaringClass());
         }
 
         ExtensionMethodParameterType query = parameters.stream()
@@ -166,14 +158,14 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                     argumentsForAllInvocations.add(arguments);
                 }
             } else {
-                throw new IllegalStateException("Unknown query parameter " + query);
+                throw LiteExtensionTranslatorLogger.LOG.unknownQueryParameter(query);
             }
 
             for (List<Object> arguments : argumentsForAllInvocations) {
                 try {
                     util.callExtensionMethod(method, arguments);
                 } catch (ReflectiveOperationException e) {
-                    throw new RuntimeException(e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
                 }
             }
         };

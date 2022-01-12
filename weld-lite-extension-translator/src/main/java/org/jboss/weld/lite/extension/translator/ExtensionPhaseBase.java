@@ -2,6 +2,7 @@ package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.enterprise.inject.spi.DeploymentException;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,6 @@ abstract class ExtensionPhaseBase {
             return new MessagesImpl(method, errors);
         }
 
-        throw new IllegalArgumentException("internal error, " + type + " parameter declared at "
-                + method.getDeclaringClass().getSimpleName() + "." + method.getName());
+        throw LiteExtensionTranslatorLogger.LOG.invalidExtensionMethodParameterType(type, method.getDeclaringClass(), method.getName());
     }
 }

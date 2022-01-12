@@ -4,6 +4,7 @@ import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.AnnotationMember;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.types.Type;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 import java.lang.annotation.Annotation;
@@ -65,13 +66,13 @@ class AnnotationMemberImpl implements AnnotationMember {
         } else if (value instanceof Object[]) {
             return Kind.ARRAY;
         } else {
-            throw new IllegalArgumentException("Unknown annotation member: " + value);
+            throw LiteExtensionTranslatorLogger.LOG.unknownAnnotationMember(value);
         }
     }
 
     private void checkKind(Kind kind) {
         if (this.kind != kind) {
-            throw new IllegalStateException("Not " + kind + ": " + value);
+            throw LiteExtensionTranslatorLogger.LOG.kindNotEqual(kind, value);
         }
     }
 

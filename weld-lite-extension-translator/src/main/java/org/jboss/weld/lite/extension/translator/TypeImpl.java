@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.lang.model.types.Type;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
@@ -41,7 +42,7 @@ abstract class TypeImpl<ReflectionType extends java.lang.reflect.AnnotatedType> 
                 }
                 return new ClassTypeImpl(reflectionType, overrides);
             } else {
-                throw new IllegalArgumentException("Unknown type " + reflectionType);
+                throw LiteExtensionTranslatorLogger.LOG.unknownReflectionType(reflectionType);
             }
         }
     }

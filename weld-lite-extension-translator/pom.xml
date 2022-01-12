@@ -11,7 +11,6 @@
     <artifactId>weld-lite-extension-translator</artifactId>
 
     <properties>
-        <!-- TODO do we want source 11? -->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
@@ -26,6 +25,45 @@
             <groupId>jakarta.interceptor</groupId>
             <artifactId>jakarta.interceptor-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-impl</artifactId>
+        </dependency>
+
+        <!-- Provides access to jboss logging annotations with managed version -->
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-processor</artifactId>
+        </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>findbugs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
+                        <configuration>
+                            <effort>Max</effort>
+                            <xmlOutput>true</xmlOutput>
+                            <threshold>${findbugs.threshold}</threshold>
+                            <failOnError>${findbugs.failOnError}</failOnError>
+                            <excludeFilterFile>${project.basedir}/findbugsfilter.xml</excludeFilterFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

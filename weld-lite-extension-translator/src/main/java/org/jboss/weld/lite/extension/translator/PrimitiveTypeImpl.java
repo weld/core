@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.lang.model.types.PrimitiveType;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
@@ -51,7 +52,7 @@ class PrimitiveTypeImpl extends TypeImpl<AnnotatedType> implements PrimitiveType
         } else if (clazz == char.class) {
             return PrimitiveKind.CHAR;
         } else {
-            throw new IllegalStateException("Unknown primitive type " + clazz);
+            throw LiteExtensionTranslatorLogger.LOG.unknownPrimitiveType(clazz);
         }
     }
 }
