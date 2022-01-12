@@ -69,7 +69,7 @@
         <groovy.version>2.4.21</groovy.version>
         <htmlunit.version>2.53.0</htmlunit.version>
         <jacoco.version>0.8.7</jacoco.version>
-        <jandex.version>2.4.0.Final</jandex.version>
+        <jandex.version>2.4.2.Final</jandex.version>
         <javax.activation.version>1.2.2</javax.activation.version>
         <javax.el.version>3.0.2</javax.el.version>
         <jboss.jms.api.version>2.0.0.Final</jboss.jms.api.version>
