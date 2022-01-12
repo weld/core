@@ -131,7 +131,6 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
-                    <argLine>${surefire.plugin.jdk9.args}</argLine>
                 </configuration>
             </plugin>
             <plugin>

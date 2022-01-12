@@ -14,7 +14,8 @@
          <property name="debug">${weld.se.debug}</property>
          <property name="logLevel">INFO</property>
          <property name="keepDeploymentArchives">false</property>
-         <property name="additionalJavaOpts">${surefire.plugin.jdk9.args} ${jacoco.agent}</property>
+         <!-- additionalJavaOpts can be used to pass in JDK add-opens formulas contained in ${surefire.plugin.jdk17.args}  -->
+         <property name="additionalJavaOpts">${jacoco.agent}</property>
          <property name="waitTime">${connection.wait.time:15}</property>
       </configuration>
    </container>

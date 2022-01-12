@@ -170,13 +170,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>${surefire.plugin.jdk9.args}</argLine>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -195,7 +188,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>${surefire.plugin.jdk9.args} ${jacoco.agent}</argLine>
+                            <argLine>${jacoco.agent}</argLine>
                         </configuration>
                     </plugin>
                     <plugin>
