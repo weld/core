@@ -32,11 +32,9 @@
         <jdk.min.version>11</jdk.min.version>
 
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
-        <!-- Travis CI build workaround -->
-        <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
-        <surefire.plugin.jdk9.args />
+        <surefire.plugin.jdk17.args />
         <!-- Jakarta JAX/JWS api and implementation -->
         <jax.api.version>3.0.1</jax.api.version>
         <jws.api.version>3.0.0</jws.api.version>
@@ -71,7 +69,7 @@
         <groovy.version>2.4.21</groovy.version>
         <htmlunit.version>2.53.0</htmlunit.version>
         <jacoco.version>0.8.7</jacoco.version>
-        <jandex.version>2.4.0.Final</jandex.version>
+        <jandex.version>2.4.2.Final</jandex.version>
         <javax.activation.version>2.0.1</javax.activation.version>
         <jakarta.el.version>4.0.0</jakarta.el.version>
         <glassfish.jakarta.el.version>4.0.2</glassfish.jakarta.el.version>
@@ -758,15 +756,22 @@
             </build>
         </profile>
         <profile>
-            <!-- Auto-activated profile for any JDK 9 or newer -->
-            <!-- Should contain all JDK 9+ related versions and/or test setup such as illegal-access=deny -->
-            <id>jdk9+</id>
+            <!-- Auto-activated profile for JDK 17 or newer -->
+            <id>jdk17+</id>
             <activation>
-                <jdk>(9,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <properties>
-                <!--In the future we will want to test with illegal access denied. As of WFLY 13 Alpha, it is not yet possible-->
-                <!--Once working, set "surefire.plugin.jdk9.args" to "[double-hyphen]illegal-access=deny"-->
+                <surefire.plugin.jdk17.args>
+                    --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                    --add-opens=java.base/java.io=ALL-UNNAMED
+                    --add-opens=java.base/java.lang=ALL-UNNAMED
+                    --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                    --add-opens=java.base/java.security=ALL-UNNAMED
+                    --add-opens=java.base/java.util=ALL-UNNAMED
+                    --add-opens=java.management/javax.management=ALL-UNNAMED
+                    --add-opens=java.naming/javax.naming=ALL-UNNAMED
+                </surefire.plugin.jdk17.args>
             </properties>
         </profile>
     </profiles>
