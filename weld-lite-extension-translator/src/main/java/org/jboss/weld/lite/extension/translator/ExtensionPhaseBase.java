@@ -62,7 +62,7 @@ abstract class ExtensionPhaseBase {
     // all phases should override and use this as a fallback
     Object argumentForExtensionMethod(ExtensionMethodParameterType type, java.lang.reflect.Method method) {
         if (type == ExtensionMethodParameterType.MESSAGES) {
-            return new MessagesImpl(method, errors);
+            return new MessagesImpl(errors);
         }
 
         throw LiteExtensionTranslatorLogger.LOG.invalidExtensionMethodParameterType(type, method.getDeclaringClass(), method.getName());
