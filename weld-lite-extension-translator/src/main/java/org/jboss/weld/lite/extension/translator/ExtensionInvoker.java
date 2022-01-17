@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 class ExtensionInvoker {
@@ -21,19 +20,6 @@ class ExtensionInvoker {
 
     private final Map<String, Class<?>> extensionClasses = new HashMap<>();
     private final Map<Class<?>, Object> extensionClassInstances = new HashMap<>();
-
-    ExtensionInvoker() {
-        for (BuildCompatibleExtension extension : ServiceLoader.load(BuildCompatibleExtension.class)) {
-            Class<? extends BuildCompatibleExtension> extensionClass = extension.getClass();
-            SkipIfPortableExtensionPresent skip = extensionClass.getAnnotation(SkipIfPortableExtensionPresent.class);
-            if (skip != null) {
-                continue;
-            }
-
-            extensionClasses.put(extensionClass.getName(), extensionClass);
-            extensionClassInstances.put(extensionClass, extension);
-        }
-    }
 
     // used from WFLY to initiate with already known collection of extensions
     ExtensionInvoker(Collection<Class<? extends BuildCompatibleExtension>> extensions) {

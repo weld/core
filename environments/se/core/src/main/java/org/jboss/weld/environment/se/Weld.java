@@ -89,6 +89,7 @@ import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.environment.util.Reflections;
+import org.jboss.weld.lite.extension.translator.BuildCompatibleExtensionLoader;
 import org.jboss.weld.lite.extension.translator.LiteExtensionTranslator;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
@@ -1093,11 +1094,14 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
         }
         // Register org.jboss.weld.lite.extension.translator.LiteExtensionTranslator in order to be able to execute build compatible extensions
-        try {
-            result.add(new MetadataImpl<Extension>(SecurityActions.newInstance(LiteExtensionTranslator.class),
-                    SYNTHETIC_LOCATION_PREFIX + LiteExtensionTranslator.class.getName()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        // Note that we only register this if we detect any BuildCompatibleExtension implementations
+        if (!BuildCompatibleExtensionLoader.getBuildCompatibleExtensions().isEmpty()) {
+            try {
+                result.add(new MetadataImpl<Extension>(SecurityActions.newInstance(LiteExtensionTranslator.class),
+                        SYNTHETIC_LOCATION_PREFIX + LiteExtensionTranslator.class.getName()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         if (!containerLifecycleObservers.isEmpty()) {
             result.add(new MetadataImpl<Extension>(new ContainerLifecycleObserverExtension(containerLifecycleObservers),
