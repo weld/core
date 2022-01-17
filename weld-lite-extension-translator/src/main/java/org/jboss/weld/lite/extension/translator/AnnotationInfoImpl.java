@@ -39,7 +39,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
     public AnnotationMember member(String name) {
         try {
             java.lang.reflect.Method member = annotation.annotationType().getDeclaredMethod(name);
-            member.setAccessible(true); // TODO!
+            SecurityActions.ensureAccessible(member, annotation);
             Object value = member.invoke(annotation);
             return new AnnotationMemberImpl(value, bm);
         } catch (NoSuchMethodException e) {
@@ -55,7 +55,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
             java.lang.reflect.Method[] members = annotation.annotationType().getDeclaredMethods();
             Map<String, AnnotationMember> result = new HashMap<>();
             for (java.lang.reflect.Method member : members) {
-                member.setAccessible(true); // TODO!
+                SecurityActions.ensureAccessible(member, annotation);
                 String name = member.getName();
                 Object value = member.invoke(annotation);
                 result.put(name, new AnnotationMemberImpl(value, bm));
