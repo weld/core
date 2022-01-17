@@ -5,6 +5,7 @@ import jakarta.enterprise.event.Reception;
 import jakarta.enterprise.event.TransactionPhase;
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.ObserverInfo;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
@@ -19,31 +20,34 @@ import java.util.stream.Collectors;
 class ObserverInfoImpl implements ObserverInfo {
     final jakarta.enterprise.inject.spi.ObserverMethod<?> cdiObserver;
     final jakarta.enterprise.inject.spi.AnnotatedMethod<?> cdiDeclaration;
+    final BeanManager bm;
 
     ObserverInfoImpl(jakarta.enterprise.inject.spi.ObserverMethod<?> cdiObserver,
-            jakarta.enterprise.inject.spi.AnnotatedMethod<?> cdiDeclaration) {
+            jakarta.enterprise.inject.spi.AnnotatedMethod<?> cdiDeclaration,
+                     BeanManager bm) {
         this.cdiObserver = cdiObserver;
         this.cdiDeclaration = cdiDeclaration;
+        this.bm = bm;
     }
 
     @Override
     public Type eventType() {
         java.lang.reflect.Type observedType = cdiObserver.getObservedType();
-        return TypeImpl.fromReflectionType(AnnotatedTypes.from(observedType));
+        return TypeImpl.fromReflectionType(AnnotatedTypes.from(observedType), bm);
     }
 
     @Override
     public Collection<AnnotationInfo> qualifiers() {
         return cdiObserver.getObservedQualifiers()
                 .stream()
-                .map(AnnotationInfoImpl::new)
+                .map(annotation -> new AnnotationInfoImpl(annotation, bm))
                 .collect(Collectors.toList());
     }
 
     @Override
     public ClassInfo declaringClass() {
-        jakarta.enterprise.inject.spi.AnnotatedType<?> beanClass = BeanManagerAccess.createAnnotatedType(cdiObserver.getBeanClass());
-        return new ClassInfoImpl(beanClass);
+        jakarta.enterprise.inject.spi.AnnotatedType<?> beanClass = bm.createAnnotatedType(cdiObserver.getBeanClass());
+        return new ClassInfoImpl(beanClass, bm);
     }
 
     @Override
@@ -52,7 +56,7 @@ class ObserverInfoImpl implements ObserverInfo {
             return null;
         }
 
-        return new MethodInfoImpl(cdiDeclaration);
+        return new MethodInfoImpl(cdiDeclaration, bm);
     }
 
     @Override
@@ -63,7 +67,7 @@ class ObserverInfoImpl implements ObserverInfo {
 
         for (jakarta.enterprise.inject.spi.AnnotatedParameter<?> parameter : cdiDeclaration.getParameters()) {
             if (parameter.isAnnotationPresent(Observes.class)) {
-                return new ParameterInfoImpl(parameter);
+                return new ParameterInfoImpl(parameter, bm);
             }
         }
         throw LiteExtensionTranslatorLogger.LOG.missingObservesAnnotation(cdiDeclaration);
@@ -75,7 +79,7 @@ class ObserverInfoImpl implements ObserverInfo {
             return null;
         }
         // disposer declaration should be null because the declaring bean will be a class-based bean
-        return new BeanInfoImpl(cdiObserver.getDeclaringBean(), cdiDeclaration, null);
+        return new BeanInfoImpl(cdiObserver.getDeclaringBean(), cdiDeclaration, null, bm);
     }
 
     @Override

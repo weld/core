@@ -2,6 +2,7 @@ package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
 import jakarta.enterprise.inject.build.compatible.spi.MetaAnnotations;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
@@ -13,33 +14,38 @@ import java.util.function.Predicate;
 class MetaAnnotationsImpl implements MetaAnnotations {
     private final jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd;
 
+    private final BeanManager bm;
+
     private final List<StereotypeConfigurator<?>> stereotypes;
     private final List<ContextData> contexts;
 
-    MetaAnnotationsImpl(jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd, List<StereotypeConfigurator<?>> stereotypes, List<ContextData> contexts) {
+    MetaAnnotationsImpl(jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd, List<StereotypeConfigurator<?>> stereotypes,
+                        List<ContextData> contexts, BeanManager bm) {
         this.bbd = bbd;
 
         this.stereotypes = stereotypes;
         this.contexts = contexts;
+
+        this.bm = bm;
     }
 
     @Override
     public ClassConfig addQualifier(Class<? extends Annotation> annotation) {
         jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<? extends Annotation> cfg = bbd.configureQualifier(annotation);
-        return new ClassConfigImpl(cfg);
+        return new ClassConfigImpl(cfg, bm);
     }
 
     @Override
     public ClassConfig addInterceptorBinding(Class<? extends Annotation> annotation) {
         jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<? extends Annotation> cfg = bbd.configureInterceptorBinding(annotation);
-        return new ClassConfigImpl(cfg);
+        return new ClassConfigImpl(cfg, bm);
     }
 
     @Override
     public ClassConfig addStereotype(Class<? extends Annotation> annotation) {
-        StereotypeConfigurator<? extends Annotation> cfg = new StereotypeConfigurator<>(annotation);
+        StereotypeConfigurator<? extends Annotation> cfg = new StereotypeConfigurator<>(annotation, bm);
         stereotypes.add(cfg);
-        return new ClassConfigImpl(cfg);
+        return new ClassConfigImpl(cfg, bm);
     }
 
     @Override
@@ -72,14 +78,16 @@ class MetaAnnotationsImpl implements MetaAnnotations {
     static final class StereotypeConfigurator<T extends Annotation> implements jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<T> {
         final Class<T> annotation;
         final Set<Annotation> annotations = new HashSet<>();
+        final BeanManager bm;
 
-        StereotypeConfigurator(Class<T> annotation) {
+        StereotypeConfigurator(Class<T> annotation, BeanManager bm) {
             this.annotation = annotation;
+            this.bm = bm;
         }
 
         @Override
         public jakarta.enterprise.inject.spi.AnnotatedType<T> getAnnotated() {
-            return BeanManagerAccess.createAnnotatedType(annotation);
+            return bm.createAnnotatedType(annotation);
         }
 
         @Override

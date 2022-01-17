@@ -6,6 +6,8 @@ import jakarta.enterprise.inject.build.compatible.spi.DisposerInfo;
 import jakarta.enterprise.inject.build.compatible.spi.InjectionPointInfo;
 import jakarta.enterprise.inject.build.compatible.spi.ScopeInfo;
 import jakarta.enterprise.inject.build.compatible.spi.StereotypeInfo;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
@@ -20,26 +22,28 @@ class BeanInfoImpl implements BeanInfo {
     final jakarta.enterprise.inject.spi.Bean<?> cdiBean;
     final jakarta.enterprise.inject.spi.Annotated cdiDeclaration;
     final jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDisposerDeclaration;
+    final BeanManager bm;
 
     BeanInfoImpl(jakarta.enterprise.inject.spi.Bean<?> cdiBean, jakarta.enterprise.inject.spi.Annotated cdiDeclaration,
-            jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDisposerDeclaration) {
+                 jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDisposerDeclaration, BeanManager bm) {
         this.cdiBean = cdiBean;
         this.cdiDeclaration = cdiDeclaration;
         this.cdiDisposerDeclaration = cdiDisposerDeclaration;
+        this.bm = bm;
     }
 
     @Override
     public ScopeInfo scope() {
-        jakarta.enterprise.inject.spi.AnnotatedType<?> scopeType = BeanManagerAccess.createAnnotatedType(cdiBean.getScope());
+        jakarta.enterprise.inject.spi.AnnotatedType<?> scopeType = bm.createAnnotatedType(cdiBean.getScope());
         boolean isNormal = scopeType.isAnnotationPresent(jakarta.enterprise.context.NormalScope.class);
-        return new ScopeInfoImpl(new ClassInfoImpl(scopeType), isNormal);
+        return new ScopeInfoImpl(new ClassInfoImpl(scopeType, bm), isNormal);
     }
 
     @Override
     public Collection<Type> types() {
         return cdiBean.getTypes()
                 .stream()
-                .map(it -> TypeImpl.fromReflectionType(AnnotatedTypes.from(it)))
+                .map(it -> TypeImpl.fromReflectionType(AnnotatedTypes.from(it), bm))
                 .collect(Collectors.toList());
     }
 
@@ -47,14 +51,14 @@ class BeanInfoImpl implements BeanInfo {
     public Collection<AnnotationInfo> qualifiers() {
         return cdiBean.getQualifiers()
                 .stream()
-                .map(AnnotationInfoImpl::new)
+                .map(annotation -> new AnnotationInfoImpl(annotation, bm))
                 .collect(Collectors.toList());
     }
 
     @Override
     public ClassInfo declaringClass() {
-        jakarta.enterprise.inject.spi.AnnotatedType<?> beanClass = BeanManagerAccess.createAnnotatedType(cdiBean.getBeanClass());
-        return new ClassInfoImpl(beanClass);
+        jakarta.enterprise.inject.spi.AnnotatedType<?> beanClass = bm.createAnnotatedType(cdiBean.getBeanClass());
+        return new ClassInfoImpl(beanClass, bm);
     }
 
     @Override
@@ -80,7 +84,7 @@ class BeanInfoImpl implements BeanInfo {
     @Override
     public MethodInfo producerMethod() {
         if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedMethod) {
-            return new MethodInfoImpl((jakarta.enterprise.inject.spi.AnnotatedMethod<?>) cdiDeclaration);
+            return new MethodInfoImpl((jakarta.enterprise.inject.spi.AnnotatedMethod<?>) cdiDeclaration, bm);
         }
         return null;
     }
@@ -88,7 +92,7 @@ class BeanInfoImpl implements BeanInfo {
     @Override
     public FieldInfo producerField() {
         if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedField) {
-            return new FieldInfoImpl((jakarta.enterprise.inject.spi.AnnotatedField<?>) cdiDeclaration);
+            return new FieldInfoImpl((jakarta.enterprise.inject.spi.AnnotatedField<?>) cdiDeclaration, bm);
         }
         return null;
     }
@@ -119,7 +123,7 @@ class BeanInfoImpl implements BeanInfo {
     @Override
     public DisposerInfo disposer() {
         if (cdiDisposerDeclaration != null) {
-            return new DisposerInfoImpl(cdiDisposerDeclaration);
+            return new DisposerInfoImpl(cdiDisposerDeclaration, bm);
         }
         return null;
     }
@@ -128,7 +132,7 @@ class BeanInfoImpl implements BeanInfo {
     public Collection<StereotypeInfo> stereotypes() {
         return cdiBean.getStereotypes()
                 .stream()
-                .map(StereotypeInfoImpl::new)
+                .map(aClass -> new StereotypeInfoImpl(aClass, bm))
                 .collect(Collectors.toList());
     }
 
@@ -136,7 +140,7 @@ class BeanInfoImpl implements BeanInfo {
     public Collection<InjectionPointInfo> injectionPoints() {
         return cdiBean.getInjectionPoints()
                 .stream()
-                .map(InjectionPointInfoImpl::new)
+                .map((InjectionPoint cdiInjectionPoint) -> new InjectionPointInfoImpl(cdiInjectionPoint, bm))
                 .collect(Collectors.toList());
     }
 

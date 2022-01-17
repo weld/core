@@ -20,7 +20,7 @@ class ExtensionPhaseSynthesis extends ExtensionPhaseBase {
             case SYNTHETIC_COMPONENTS:
                 return new SyntheticComponentsImpl(syntheticBeans, syntheticObservers, method.getDeclaringClass());
             case TYPES:
-                return new TypesImpl();
+                return new TypesImpl(beanManager);
 
             default:
                 return super.argumentForExtensionMethod(type, method);

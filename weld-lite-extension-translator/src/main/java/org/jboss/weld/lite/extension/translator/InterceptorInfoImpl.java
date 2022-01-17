@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.InterceptorInfo;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 
 import java.util.Collection;
@@ -10,8 +11,8 @@ class InterceptorInfoImpl extends BeanInfoImpl implements InterceptorInfo {
     final jakarta.enterprise.inject.spi.Interceptor<?> cdiInterceptor;
 
     InterceptorInfoImpl(jakarta.enterprise.inject.spi.Interceptor<?> cdiInterceptor,
-            jakarta.enterprise.inject.spi.Annotated cdiDeclaration) {
-        super(cdiInterceptor, cdiDeclaration, null);
+                        jakarta.enterprise.inject.spi.Annotated cdiDeclaration, BeanManager bm) {
+        super(cdiInterceptor, cdiDeclaration, null, bm);
         this.cdiInterceptor = cdiInterceptor;
     }
 
@@ -19,7 +20,7 @@ class InterceptorInfoImpl extends BeanInfoImpl implements InterceptorInfo {
     public Collection<AnnotationInfo> interceptorBindings() {
         return cdiInterceptor.getInterceptorBindings()
                 .stream()
-                .map(AnnotationInfoImpl::new)
+                .map(annotation -> new AnnotationInfoImpl(annotation, bm))
                 .collect(Collectors.toList());
     }
 

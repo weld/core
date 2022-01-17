@@ -9,7 +9,7 @@ class ExtensionPhaseValidation extends ExtensionPhaseBase {
     @Override
     Object argumentForExtensionMethod(ExtensionMethodParameterType type, java.lang.reflect.Method method) {
         if (type == ExtensionMethodParameterType.TYPES) {
-            return new TypesImpl();
+            return new TypesImpl(beanManager);
         }
 
         return super.argumentForExtensionMethod(type, method);

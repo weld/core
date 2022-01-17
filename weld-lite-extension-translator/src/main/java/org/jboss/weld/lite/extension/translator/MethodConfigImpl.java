@@ -2,6 +2,7 @@ package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.MethodConfig;
 import jakarta.enterprise.inject.build.compatible.spi.ParameterConfig;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 
@@ -13,14 +14,17 @@ import java.util.stream.Collectors;
 
 class MethodConfigImpl implements MethodConfig {
     private final jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator<?> configurator;
+    private final BeanManager bm;
 
-    MethodConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator<?> configurator) {
+    MethodConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator<?> configurator,
+                     BeanManager bm) {
         this.configurator = configurator;
+        this.bm = bm;
     }
 
     @Override
     public MethodInfo info() {
-        return new MethodInfoImpl(configurator.getAnnotated());
+        return new MethodInfoImpl(configurator.getAnnotated(), bm);
     }
 
     @Override
@@ -43,7 +47,7 @@ class MethodConfigImpl implements MethodConfig {
 
     @Override
     public MethodConfig removeAnnotation(Predicate<AnnotationInfo> predicate) {
-        configurator.remove(annotation -> predicate.test(new AnnotationInfoImpl(annotation)));
+        configurator.remove(annotation -> predicate.test(new AnnotationInfoImpl(annotation, bm)));
         return this;
     }
 
@@ -57,7 +61,7 @@ class MethodConfigImpl implements MethodConfig {
     public List<ParameterConfig> parameters() {
         return configurator.params()
                 .stream()
-                .map(ParameterConfigImpl::new)
+                .map(annotatedParameterConfigurator -> new ParameterConfigImpl(annotatedParameterConfigurator, bm))
                 .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.declarations.ParameterInfo;
@@ -22,15 +23,15 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
     private final String name;
     private final java.lang.reflect.Type[] parameterTypes;
 
-    MethodInfoImpl(jakarta.enterprise.inject.spi.AnnotatedCallable<?> cdiDeclaration) {
-        super((java.lang.reflect.Executable) cdiDeclaration.getJavaMember(), cdiDeclaration);
+    MethodInfoImpl(jakarta.enterprise.inject.spi.AnnotatedCallable<?> cdiDeclaration, BeanManager bm) {
+        super((java.lang.reflect.Executable) cdiDeclaration.getJavaMember(), cdiDeclaration, bm);
         this.className = reflection.getDeclaringClass().getName();
         this.name = reflection.getName();
         this.parameterTypes = reflection.getGenericParameterTypes();
     }
 
-    MethodInfoImpl(java.lang.reflect.Executable reflectionDeclaration) {
-        super(reflectionDeclaration, null);
+    MethodInfoImpl(java.lang.reflect.Executable reflectionDeclaration, BeanManager bm) {
+        super(reflectionDeclaration, null, bm);
         this.className = reflectionDeclaration.getDeclaringClass().getName();
         this.name = reflectionDeclaration.getName();
         this.parameterTypes = reflectionDeclaration.getGenericParameterTypes();
@@ -67,9 +68,9 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
             }
 
             if (map.containsKey(parameter)) {
-                result.add(new ParameterInfoImpl(map.get(parameter)));
+                result.add(new ParameterInfoImpl(map.get(parameter), bm));
             } else {
-                result.add(new ParameterInfoImpl(parameter, this, position, isEnumConstructorParam));
+                result.add(new ParameterInfoImpl(parameter, this, position, isEnumConstructorParam, bm));
             }
 
             position++;
@@ -99,7 +100,7 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
 
     @Override
     public Type returnType() {
-        return TypeImpl.fromReflectionType(reflection.getAnnotatedReturnType());
+        return TypeImpl.fromReflectionType(reflection.getAnnotatedReturnType(), bm);
     }
 
     @Override
@@ -109,13 +110,13 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
             return null;
         }
 
-        return TypeImpl.fromReflectionType(receiverType);
+        return TypeImpl.fromReflectionType(receiverType, bm);
     }
 
     @Override
     public List<Type> throwsTypes() {
         return Arrays.stream(reflection.getAnnotatedExceptionTypes())
-                .map(TypeImpl::fromReflectionType)
+                .map(annotatedType -> TypeImpl.fromReflectionType(annotatedType, bm))
                 .collect(Collectors.toList());
     }
 
@@ -123,7 +124,7 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
     public List<TypeVariable> typeParameters() {
         return Arrays.stream(reflection.getTypeParameters())
                 .map(AnnotatedTypes::typeVariable)
-                .map(TypeVariableImpl::new)
+                .map(annotatedTypeVariable -> new TypeVariableImpl(annotatedTypeVariable, bm))
                 .collect(Collectors.toList());
     }
 
@@ -154,7 +155,7 @@ class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, j
 
     @Override
     public ClassInfo declaringClass() {
-        return new ClassInfoImpl(BeanManagerAccess.createAnnotatedType(reflection.getDeclaringClass()));
+        return new ClassInfoImpl(bm.createAnnotatedType(reflection.getDeclaringClass()), bm);
     }
 
     @Override

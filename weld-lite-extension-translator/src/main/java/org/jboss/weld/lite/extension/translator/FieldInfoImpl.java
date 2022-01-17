@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.types.Type;
@@ -11,14 +12,14 @@ class FieldInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Field, jakarta
     private final String className;
     private final String name;
 
-    FieldInfoImpl(jakarta.enterprise.inject.spi.AnnotatedField<?> cdiDeclaration) {
-        super(cdiDeclaration.getJavaMember(), cdiDeclaration);
+    FieldInfoImpl(jakarta.enterprise.inject.spi.AnnotatedField<?> cdiDeclaration, BeanManager bm) {
+        super(cdiDeclaration.getJavaMember(), cdiDeclaration, bm);
         this.className = reflection.getDeclaringClass().getName();
         this.name = reflection.getName();
     }
 
-    FieldInfoImpl(java.lang.reflect.Field reflectionDeclaration) {
-        super(reflectionDeclaration, null);
+    FieldInfoImpl(java.lang.reflect.Field reflectionDeclaration, BeanManager bm) {
+        super(reflectionDeclaration, null, bm);
         this.className = reflectionDeclaration.getDeclaringClass().getName();
         this.name = reflectionDeclaration.getName();
     }
@@ -30,7 +31,7 @@ class FieldInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Field, jakarta
 
     @Override
     public Type type() {
-        return TypeImpl.fromReflectionType(reflection.getAnnotatedType());
+        return TypeImpl.fromReflectionType(reflection.getAnnotatedType(), bm);
     }
 
     @Override
@@ -50,7 +51,7 @@ class FieldInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Field, jakarta
 
     @Override
     public ClassInfo declaringClass() {
-        return new ClassInfoImpl(BeanManagerAccess.createAnnotatedType(reflection.getDeclaringClass()));
+        return new ClassInfoImpl(bm.createAnnotatedType(reflection.getDeclaringClass()), bm);
     }
 
     @Override

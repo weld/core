@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.AnnotationMember;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
@@ -16,10 +17,12 @@ import java.util.Objects;
 class AnnotationMemberImpl implements AnnotationMember {
     final Kind kind;
     final Object value;
+    final BeanManager bm;
 
-    AnnotationMemberImpl(Object value) {
+    AnnotationMemberImpl(Object value, BeanManager bm) {
         this.kind = determineKind(value);
         this.value = value;
+        this.bm = bm;
     }
 
     private static Kind determineKind(Object value) {
@@ -151,20 +154,20 @@ class AnnotationMemberImpl implements AnnotationMember {
     public ClassInfo asEnumClass() {
         checkKind(Kind.ENUM);
         Class<?> enumType = ((Enum<?>) value).getDeclaringClass();
-        return new ClassInfoImpl(BeanManagerAccess.createAnnotatedType(enumType));
+        return new ClassInfoImpl(bm.createAnnotatedType(enumType), bm);
     }
 
     @Override
     public Type asType() {
         checkKind(Kind.CLASS);
         Class<?> clazz = (Class<?>) value;
-        return TypeImpl.fromReflectionType(AnnotatedTypes.from(clazz));
+        return TypeImpl.fromReflectionType(AnnotatedTypes.from(clazz), bm);
     }
 
     @Override
     public AnnotationInfo asNestedAnnotation() {
         checkKind(Kind.NESTED_ANNOTATION);
-        return new AnnotationInfoImpl((Annotation) value);
+        return new AnnotationInfoImpl((Annotation) value, bm);
     }
 
     @Override
@@ -173,39 +176,39 @@ class AnnotationMemberImpl implements AnnotationMember {
         List<AnnotationMember> result = new ArrayList<>();
         if (value instanceof boolean[]) {
             for (boolean element : ((boolean[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof byte[]) {
             for (byte element : ((byte[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof short[]) {
             for (short element : ((short[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof int[]) {
             for (int element : ((int[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof long[]) {
             for (long element : ((long[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof float[]) {
             for (float element : ((float[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof double[]) {
             for (double element : ((double[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof char[]) {
             for (char element : ((char[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         } else if (value instanceof Object[]) {
             for (Object element : ((Object[]) value)) {
-                result.add(new AnnotationMemberImpl(element));
+                result.add(new AnnotationMemberImpl(element, bm));
             }
         }
         return Collections.unmodifiableList(result);

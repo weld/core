@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.declarations.ParameterInfo;
@@ -20,16 +21,16 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
     private final int position;
     private final Boolean isEnumConstructorParam;
 
-    ParameterInfoImpl(jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDeclaration) {
-        super(cdiDeclaration.getJavaParameter(), cdiDeclaration);
-        this.method = new MethodInfoImpl(cdiDeclaration.getDeclaringCallable());
+    ParameterInfoImpl(jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDeclaration, BeanManager bm) {
+        super(cdiDeclaration.getJavaParameter(), cdiDeclaration, bm);
+        this.method = new MethodInfoImpl(cdiDeclaration.getDeclaringCallable(), bm);
         this.position = cdiDeclaration.getPosition();
         // doesn't matter if it's enum when we have CDI declaration
         this.isEnumConstructorParam = null;
     }
 
-    ParameterInfoImpl(Parameter reflectionDeclaration, MethodInfoImpl backReference, int position, boolean isEnumConstructorParam) {
-        super(reflectionDeclaration, null);
+    ParameterInfoImpl(Parameter reflectionDeclaration, MethodInfoImpl backReference, int position, boolean isEnumConstructorParam, BeanManager bm) {
+        super(reflectionDeclaration, null, bm);
         this.method = backReference;
         this.position = position;
         this.isEnumConstructorParam = isEnumConstructorParam;
@@ -44,7 +45,7 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
     public Type type() {
         // in the vast majority of cases, this condition holds true
         if (canSuperHandleAnnotations()) {
-            return TypeImpl.fromReflectionType(reflection.getAnnotatedType());
+            return TypeImpl.fromReflectionType(reflection.getAnnotatedType(), bm);
         }
 
         // this only applies in a very specific situation: a method that has synthetic
@@ -55,7 +56,7 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
         // compensate for that
         AnnotationOverrides overrides = new AnnotationOverrides(reflection.getDeclaringExecutable()
                 .getAnnotatedParameterTypes()[position].getAnnotations());
-        return TypeImpl.fromReflectionType(reflection.getAnnotatedType(), overrides);
+        return TypeImpl.fromReflectionType(reflection.getAnnotatedType(), overrides, bm);
     }
 
     @Override
@@ -101,7 +102,7 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
 
         Annotation[] annotations = method.reflection.getParameterAnnotations()[position];
         return Arrays.stream(annotations)
-                .anyMatch(it -> predicate.test(new AnnotationInfoImpl(it)));
+                .anyMatch(it -> predicate.test(new AnnotationInfoImpl(it, bm)));
     }
 
     @Override
@@ -112,7 +113,7 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
 
         Annotation[] annotations = method.reflection.getParameterAnnotations()[position];
         T annotation = new AnnotationOverrides(annotations).getAnnotation(annotationType);
-        return annotation != null ? new AnnotationInfoImpl(annotation) : null;
+        return annotation != null ? new AnnotationInfoImpl(annotation, bm) : null;
     }
 
     @Override
@@ -128,7 +129,7 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
             annotations = method.reflection.getParameterAnnotations()[position];
         }
         return Arrays.stream(new AnnotationOverrides(annotations).getAnnotationsByType(annotationType))
-                .map(AnnotationInfoImpl::new)
+                .map(t -> new AnnotationInfoImpl(t, bm))
                 .collect(Collectors.toList());
     }
 
@@ -145,7 +146,7 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
             annotations = method.reflection.getParameterAnnotations()[position];
         }
         return Arrays.stream(annotations)
-                .map(AnnotationInfoImpl::new)
+                .map(annotation -> new AnnotationInfoImpl(annotation, bm))
                 .filter(predicate)
                 .collect(Collectors.toList());
     }

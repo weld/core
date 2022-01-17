@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.types.PrimitiveType;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
@@ -10,21 +11,21 @@ import java.lang.reflect.AnnotatedType;
 class PrimitiveTypeImpl extends TypeImpl<AnnotatedType> implements PrimitiveType {
     final Class<?> clazz;
 
-    PrimitiveTypeImpl(AnnotatedType primitiveType) {
-        this(primitiveType, null);
+    PrimitiveTypeImpl(AnnotatedType primitiveType, BeanManager bm) {
+        this(primitiveType, null, bm);
     }
 
-    PrimitiveTypeImpl(AnnotatedType primitiveType, AnnotationOverrides overrides) {
-        super(primitiveType, overrides);
+    PrimitiveTypeImpl(AnnotatedType primitiveType, AnnotationOverrides overrides, BeanManager bm) {
+        super(primitiveType, overrides, bm);
         this.clazz = (Class<?>) primitiveType.getType();
     }
 
-    PrimitiveTypeImpl(Class<?> primitiveType) {
-        this(primitiveType, null);
+    PrimitiveTypeImpl(Class<?> primitiveType, BeanManager bm) {
+        this(primitiveType, null, bm);
     }
 
-    PrimitiveTypeImpl(Class<?> primitiveType, AnnotationOverrides overrides) {
-        super(AnnotatedTypes.from(primitiveType), overrides);
+    PrimitiveTypeImpl(Class<?> primitiveType, AnnotationOverrides overrides, BeanManager bm) {
+        super(AnnotatedTypes.from(primitiveType), overrides, bm);
         this.clazz = primitiveType;
     }
 

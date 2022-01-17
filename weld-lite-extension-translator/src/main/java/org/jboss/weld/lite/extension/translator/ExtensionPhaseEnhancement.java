@@ -54,7 +54,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                 for (ExtensionMethodParameterType parameter : parameters) {
                     Object argument;
                     if (parameter == ExtensionMethodParameterType.CLASS_INFO) {
-                        argument = new ClassInfoImpl(pat.getAnnotatedType());
+                        argument = new ClassInfoImpl(pat.getAnnotatedType(), beanManager);
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
@@ -67,7 +67,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                 for (ExtensionMethodParameterType parameter : parameters) {
                     Object argument;
                     if (parameter == ExtensionMethodParameterType.CLASS_CONFIG) {
-                        argument = new ClassConfigImpl(pat.configureAnnotatedType());
+                        argument = new ClassConfigImpl(pat.configureAnnotatedType(), beanManager);
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
@@ -81,7 +81,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                     for (ExtensionMethodParameterType parameter : parameters) {
                         Object argument;
                         if (parameter == ExtensionMethodParameterType.METHOD_INFO) {
-                            argument = new MethodInfoImpl(targetMethod);
+                            argument = new MethodInfoImpl(targetMethod, beanManager);
                         } else {
                             argument = argumentForExtensionMethod(parameter, method);
                         }
@@ -94,7 +94,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                     for (ExtensionMethodParameterType parameter : parameters) {
                         Object argument;
                         if (parameter == ExtensionMethodParameterType.METHOD_INFO) {
-                            argument = new MethodInfoImpl(targetConstructor);
+                            argument = new MethodInfoImpl(targetConstructor, beanManager);
                         } else {
                             argument = argumentForExtensionMethod(parameter, method);
                         }
@@ -108,7 +108,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                     for (ExtensionMethodParameterType parameter : parameters) {
                         Object argument;
                         if (parameter == ExtensionMethodParameterType.METHOD_CONFIG) {
-                            argument = new MethodConfigImpl(targetMethodConfigurator);
+                            argument = new MethodConfigImpl(targetMethodConfigurator, beanManager);
                         } else {
                             argument = argumentForExtensionMethod(parameter, method);
                         }
@@ -121,7 +121,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                     for (ExtensionMethodParameterType parameter : parameters) {
                         Object argument;
                         if (parameter == ExtensionMethodParameterType.METHOD_CONFIG) {
-                            argument = new MethodConstructorConfigImpl(targetConstructorConfigurator);
+                            argument = new MethodConstructorConfigImpl(targetConstructorConfigurator, beanManager);
                         } else {
                             argument = argumentForExtensionMethod(parameter, method);
                         }
@@ -135,7 +135,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                     for (ExtensionMethodParameterType parameter : parameters) {
                         Object argument;
                         if (parameter == ExtensionMethodParameterType.FIELD_INFO) {
-                            argument = new FieldInfoImpl(targetField);
+                            argument = new FieldInfoImpl(targetField, beanManager);
                         } else {
                             argument = argumentForExtensionMethod(parameter, method);
                         }
@@ -149,7 +149,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
                     for (ExtensionMethodParameterType parameter : parameters) {
                         Object argument;
                         if (parameter == ExtensionMethodParameterType.FIELD_CONFIG) {
-                            argument = new FieldConfigImpl(targetFieldConfigurator);
+                            argument = new FieldConfigImpl(targetFieldConfigurator, beanManager);
                         } else {
                             argument = argumentForExtensionMethod(parameter, method);
                         }
@@ -178,7 +178,7 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
     @Override
     Object argumentForExtensionMethod(ExtensionMethodParameterType type, java.lang.reflect.Method method) {
         if (type == ExtensionMethodParameterType.TYPES) {
-            return new TypesImpl();
+            return new TypesImpl(beanManager);
         }
 
         return super.argumentForExtensionMethod(type, method);

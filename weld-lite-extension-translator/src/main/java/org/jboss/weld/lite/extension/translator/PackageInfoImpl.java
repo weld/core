@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.PackageInfo;
 
 import java.util.Objects;
@@ -8,8 +9,8 @@ class PackageInfoImpl extends DeclarationInfoImpl<Package, /*always null*/ jakar
     // only for equals/hashCode
     private final String name;
 
-    PackageInfoImpl(Package pkg) {
-        super(pkg, null);
+    PackageInfoImpl(Package pkg, BeanManager bm) {
+        super(pkg, null, bm);
         this.name = reflection.getName();
     }
 
