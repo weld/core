@@ -125,7 +125,6 @@ class ExtensionInvoker {
         Class<?> extensionClass = extensionClasses.get(method.getDeclaringClass().getName());
         Object extensionClassInstance = extensionClassInstances.get(extensionClass);
 
-        method.setAccessible(true);
         method.invoke(extensionClassInstance, arguments.toArray());
     }
 
