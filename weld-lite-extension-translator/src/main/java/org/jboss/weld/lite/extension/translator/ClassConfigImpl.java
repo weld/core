@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
 import jakarta.enterprise.inject.build.compatible.spi.FieldConfig;
 import jakarta.enterprise.inject.build.compatible.spi.MethodConfig;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 
@@ -14,14 +15,17 @@ import java.util.stream.Collectors;
 
 class ClassConfigImpl implements ClassConfig {
     private final jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<?> configurator;
+    private final BeanManager bm;
 
-    ClassConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<?> configurator) {
+    ClassConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<?> configurator,
+                    BeanManager bm) {
         this.configurator = configurator;
+        this.bm = bm;
     }
 
     @Override
     public ClassInfo info() {
-        return new ClassInfoImpl(configurator.getAnnotated());
+        return new ClassInfoImpl(configurator.getAnnotated(), bm);
     }
 
     @Override
@@ -44,7 +48,7 @@ class ClassConfigImpl implements ClassConfig {
 
     @Override
     public ClassConfig removeAnnotation(Predicate<AnnotationInfo> predicate) {
-        configurator.remove(annotation -> predicate.test(new AnnotationInfoImpl(annotation)));
+        configurator.remove(annotation -> predicate.test(new AnnotationInfoImpl(annotation, bm)));
         return this;
     }
 
@@ -58,7 +62,7 @@ class ClassConfigImpl implements ClassConfig {
     public Collection<MethodConfig> constructors() {
         return configurator.constructors()
                 .stream()
-                .map(MethodConstructorConfigImpl::new)
+                .map(annotatedConstructorConfigurator -> new MethodConstructorConfigImpl(annotatedConstructorConfigurator, bm))
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +70,7 @@ class ClassConfigImpl implements ClassConfig {
     public Collection<MethodConfig> methods() {
         return configurator.methods()
                 .stream()
-                .map(MethodConfigImpl::new)
+                .map(annotatedMethodConfigurator -> new MethodConfigImpl(annotatedMethodConfigurator, bm))
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +78,7 @@ class ClassConfigImpl implements ClassConfig {
     public Collection<FieldConfig> fields() {
         return configurator.fields()
                 .stream()
-                .map(FieldConfigImpl::new)
+                .map(annotatedFieldConfigurator -> new FieldConfigImpl(annotatedFieldConfigurator, bm))
                 .collect(Collectors.toList());
     }
 }

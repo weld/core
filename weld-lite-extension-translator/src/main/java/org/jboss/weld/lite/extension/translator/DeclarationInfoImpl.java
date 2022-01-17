@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.DeclarationInfo;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
@@ -14,23 +15,23 @@ abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.refle
         CdiDeclaration extends jakarta.enterprise.inject.spi.Annotated> extends AnnotationTargetImpl<ReflectionDeclaration> implements DeclarationInfo {
     final CdiDeclaration cdiDeclaration; // may be null
 
-    DeclarationInfoImpl(ReflectionDeclaration reflectionDeclaration, CdiDeclaration cdiDeclaration) {
-        super(reflectionDeclaration, null);
+    DeclarationInfoImpl(ReflectionDeclaration reflectionDeclaration, CdiDeclaration cdiDeclaration, BeanManager bm) {
+        super(reflectionDeclaration, null, bm);
         this.cdiDeclaration = cdiDeclaration;
     }
 
-    static DeclarationInfo fromCdiDeclaration(jakarta.enterprise.inject.spi.Annotated cdiDeclaration) {
+    static DeclarationInfo fromCdiDeclaration(jakarta.enterprise.inject.spi.Annotated cdiDeclaration, BeanManager bm) {
         Objects.requireNonNull(cdiDeclaration);
 
         if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedType) {
-            return new ClassInfoImpl((jakarta.enterprise.inject.spi.AnnotatedType<?>) cdiDeclaration);
+            return new ClassInfoImpl((jakarta.enterprise.inject.spi.AnnotatedType<?>) cdiDeclaration, bm);
         } else if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedCallable) {
             // method or constructor
-            return new MethodInfoImpl((jakarta.enterprise.inject.spi.AnnotatedCallable<?>) cdiDeclaration);
+            return new MethodInfoImpl((jakarta.enterprise.inject.spi.AnnotatedCallable<?>) cdiDeclaration, bm);
         } else if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedParameter) {
-            return new ParameterInfoImpl((jakarta.enterprise.inject.spi.AnnotatedParameter<?>) cdiDeclaration);
+            return new ParameterInfoImpl((jakarta.enterprise.inject.spi.AnnotatedParameter<?>) cdiDeclaration, bm);
         } else if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedField) {
-            return new FieldInfoImpl((jakarta.enterprise.inject.spi.AnnotatedField<?>) cdiDeclaration);
+            return new FieldInfoImpl((jakarta.enterprise.inject.spi.AnnotatedField<?>) cdiDeclaration, bm);
         } else {
             throw LiteExtensionTranslatorLogger.LOG.unknownDeclaration(cdiDeclaration);
         }
@@ -53,7 +54,7 @@ abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.refle
 
         return cdiDeclaration.getAnnotations()
                 .stream()
-                .anyMatch(it -> predicate.test(new AnnotationInfoImpl(it)));
+                .anyMatch(it -> predicate.test(new AnnotationInfoImpl(it, bm)));
     }
 
     @Override
@@ -63,7 +64,7 @@ abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.refle
         }
 
         T annotation = cdiDeclaration.getAnnotation(annotationType);
-        return annotation == null ? null : new AnnotationInfoImpl(annotation);
+        return annotation == null ? null : new AnnotationInfoImpl(annotation, bm);
     }
 
     @Override
@@ -74,7 +75,7 @@ abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.refle
 
         return cdiDeclaration.getAnnotations(annotationType)
                 .stream()
-                .map(AnnotationInfoImpl::new)
+                .map(t -> new AnnotationInfoImpl(t, bm))
                 .collect(Collectors.toList());
     }
 
@@ -86,7 +87,7 @@ abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.refle
 
         return cdiDeclaration.getAnnotations()
                 .stream()
-                .map(AnnotationInfoImpl::new)
+                .map(annotation -> new AnnotationInfoImpl(annotation, bm))
                 .filter(predicate)
                 .collect(Collectors.toList());
     }

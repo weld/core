@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.Types;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.types.ArrayType;
 import jakarta.enterprise.lang.model.types.ClassType;
@@ -13,6 +14,12 @@ import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorL
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class TypesImpl implements Types {
+
+    private final BeanManager bm;
+
+    public TypesImpl(BeanManager bm) {
+        this.bm = bm;
+    }
 
     @Override
     public Type of(Class<?> clazz) {
@@ -50,33 +57,33 @@ class TypesImpl implements Types {
             }
         }
 
-        return new ClassTypeImpl(clazz);
+        return new ClassTypeImpl(clazz, bm);
     }
 
     @Override
     public VoidType ofVoid() {
-        return new VoidTypeImpl();
+        return new VoidTypeImpl(bm);
     }
 
     @Override
     public PrimitiveType ofPrimitive(PrimitiveType.PrimitiveKind kind) {
         switch (kind) {
             case BOOLEAN:
-                return new PrimitiveTypeImpl(Boolean.TYPE);
+                return new PrimitiveTypeImpl(Boolean.TYPE, bm);
             case BYTE:
-                return new PrimitiveTypeImpl(Byte.TYPE);
+                return new PrimitiveTypeImpl(Byte.TYPE, bm);
             case SHORT:
-                return new PrimitiveTypeImpl(Short.TYPE);
+                return new PrimitiveTypeImpl(Short.TYPE, bm);
             case INT:
-                return new PrimitiveTypeImpl(Integer.TYPE);
+                return new PrimitiveTypeImpl(Integer.TYPE, bm);
             case LONG:
-                return new PrimitiveTypeImpl(Long.TYPE);
+                return new PrimitiveTypeImpl(Long.TYPE, bm);
             case FLOAT:
-                return new PrimitiveTypeImpl(Float.TYPE);
+                return new PrimitiveTypeImpl(Float.TYPE, bm);
             case DOUBLE:
-                return new PrimitiveTypeImpl(Double.TYPE);
+                return new PrimitiveTypeImpl(Double.TYPE, bm);
             case CHAR:
-                return new PrimitiveTypeImpl(Character.TYPE);
+                return new PrimitiveTypeImpl(Character.TYPE, bm);
             default:
                 throw LiteExtensionTranslatorLogger.LOG.unknownPrimitiveType(kind);
         }
@@ -86,7 +93,7 @@ class TypesImpl implements Types {
     public ClassType ofClass(String name) {
         try {
             Class<?> clazz = Class.forName(name, true, Thread.currentThread().getContextClassLoader());
-            return new ClassTypeImpl(clazz);
+            return new ClassTypeImpl(clazz, bm);
         } catch (ClassNotFoundException e) {
             return null;
         }
@@ -99,12 +106,12 @@ class TypesImpl implements Types {
 
     @Override
     public ArrayType ofArray(Type elementType, int dimensions) {
-        return new ArrayTypeImpl(AnnotatedTypes.array(((TypeImpl<?>) elementType).reflection.getType(), dimensions));
+        return new ArrayTypeImpl(AnnotatedTypes.array(((TypeImpl<?>) elementType).reflection.getType(), dimensions), bm);
     }
 
     @Override
     public ParameterizedType parameterized(Class<?> genericType, Class<?>... typeArguments) {
-        return new ParameterizedTypeImpl(AnnotatedTypes.parameterized(genericType, typeArguments));
+        return new ParameterizedTypeImpl(AnnotatedTypes.parameterized(genericType, typeArguments), bm);
     }
 
     @Override
@@ -113,7 +120,7 @@ class TypesImpl implements Types {
         for (int i = 0; i < typeArguments.length; i++) {
             underlyingTypeArguments[i] = ((TypeImpl<?>) typeArguments[i]).reflection.getType();
         }
-        return new ParameterizedTypeImpl(AnnotatedTypes.parameterized(genericType, underlyingTypeArguments));
+        return new ParameterizedTypeImpl(AnnotatedTypes.parameterized(genericType, underlyingTypeArguments), bm);
     }
 
     @Override
@@ -123,21 +130,21 @@ class TypesImpl implements Types {
         for (int i = 0; i < typeArguments.length; i++) {
             underlyingTypeArguments[i] = ((TypeImpl<?>) typeArguments[i]).reflection.getType();
         }
-        return new ParameterizedTypeImpl(AnnotatedTypes.parameterized(clazz, underlyingTypeArguments));
+        return new ParameterizedTypeImpl(AnnotatedTypes.parameterized(clazz, underlyingTypeArguments), bm);
     }
 
     @Override
     public WildcardType wildcardWithUpperBound(Type upperBound) {
-        return new WildcardTypeImpl(AnnotatedTypes.wildcardWithUpperBound(((TypeImpl<?>) upperBound).reflection.getType()));
+        return new WildcardTypeImpl(AnnotatedTypes.wildcardWithUpperBound(((TypeImpl<?>) upperBound).reflection.getType()), bm);
     }
 
     @Override
     public WildcardType wildcardWithLowerBound(Type lowerBound) {
-        return new WildcardTypeImpl(AnnotatedTypes.wildcardWithLowerBound(((TypeImpl<?>) lowerBound).reflection.getType()));
+        return new WildcardTypeImpl(AnnotatedTypes.wildcardWithLowerBound(((TypeImpl<?>) lowerBound).reflection.getType()), bm);
     }
 
     @Override
     public WildcardType wildcardUnbounded() {
-        return new WildcardTypeImpl(AnnotatedTypes.unboundedWildcardType());
+        return new WildcardTypeImpl(AnnotatedTypes.unboundedWildcardType(), bm);
     }
 }

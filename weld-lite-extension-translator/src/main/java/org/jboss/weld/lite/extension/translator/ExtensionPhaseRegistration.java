@@ -57,7 +57,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                             disposer = ((jakarta.enterprise.inject.spi.ProcessProducerMethod<?, ?>) pb).getAnnotatedDisposedParameter();
                         }
 
-                        argument = new BeanInfoImpl(pb.getBean(), pb.getAnnotated(), disposer);
+                        argument = new BeanInfoImpl(pb.getBean(), pb.getAnnotated(), disposer, beanManager);
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
@@ -86,7 +86,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 for (ExtensionMethodParameterType parameter : parameters) {
                     Object argument;
                     if (parameter.isQuery()) {
-                        argument = new InterceptorInfoImpl(cdiInterceptor, pb.getAnnotated());
+                        argument = new InterceptorInfoImpl(cdiInterceptor, pb.getAnnotated(), beanManager);
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
@@ -110,7 +110,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                     Object argument;
                     if (parameter.isQuery()) {
                         boolean isSynthetic = pom instanceof jakarta.enterprise.inject.spi.ProcessSyntheticObserverMethod;
-                        argument = new ObserverInfoImpl(pom.getObserverMethod(), isSynthetic ? null : pom.getAnnotatedMethod());
+                        argument = new ObserverInfoImpl(pom.getObserverMethod(), isSynthetic ? null : pom.getAnnotatedMethod(), beanManager);
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
@@ -135,7 +135,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
     @Override
     Object argumentForExtensionMethod(ExtensionMethodParameterType type, java.lang.reflect.Method method) {
         if (type == ExtensionMethodParameterType.TYPES) {
-            return new TypesImpl();
+            return new TypesImpl(beanManager);
         }
 
         return super.argumentForExtensionMethod(type, method);

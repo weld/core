@@ -5,6 +5,7 @@ import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.build.compatible.spi.ScopeInfo;
 import jakarta.enterprise.inject.build.compatible.spi.StereotypeInfo;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.inject.Named;
 import jakarta.inject.Scope;
@@ -19,9 +20,11 @@ import java.util.Optional;
 class StereotypeInfoImpl implements StereotypeInfo {
     // declaration of the sterotype annotation
     private final jakarta.enterprise.inject.spi.AnnotatedType<? extends Annotation> cdiDeclaration;
+    private final BeanManager bm;
 
-    StereotypeInfoImpl(Class<? extends Annotation> stereotypeAnnotation) {
-        cdiDeclaration = BeanManagerAccess.createAnnotatedType(stereotypeAnnotation);
+    StereotypeInfoImpl(Class<? extends Annotation> stereotypeAnnotation, BeanManager bm) {
+        cdiDeclaration = bm.createAnnotatedType(stereotypeAnnotation);
+        this.bm = bm;
     }
 
     @Override
@@ -31,12 +34,12 @@ class StereotypeInfoImpl implements StereotypeInfo {
                 .filter(it -> it.annotationType().isAnnotationPresent(Scope.class)
                         || it.annotationType().isAnnotationPresent(NormalScope.class))
                 .findAny()
-                .map(it -> BeanManagerAccess.createAnnotatedType(it.annotationType()));
+                .map(it -> bm.createAnnotatedType(it.annotationType()));
 
         if (scopeAnnotation.isPresent()) {
             jakarta.enterprise.inject.spi.AnnotatedType<?> scopeType = scopeAnnotation.get();
             boolean isNormal = scopeType.isAnnotationPresent(NormalScope.class);
-            return new ScopeInfoImpl(new ClassInfoImpl(scopeType), isNormal);
+            return new ScopeInfoImpl(new ClassInfoImpl(scopeType, bm), isNormal);
         }
 
         return null;
@@ -47,7 +50,7 @@ class StereotypeInfoImpl implements StereotypeInfo {
         List<AnnotationInfo> result = new ArrayList<>();
         for (Annotation annotation : cdiDeclaration.getAnnotations()) {
             if (annotation.annotationType().isAnnotationPresent(InterceptorBinding.class)) {
-                result.add(new AnnotationInfoImpl(annotation));
+                result.add(new AnnotationInfoImpl(annotation, bm));
             }
         }
         return result;

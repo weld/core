@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.FieldConfig;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 
@@ -10,14 +11,17 @@ import java.util.function.Predicate;
 
 class FieldConfigImpl implements FieldConfig {
     private final jakarta.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator<?> configurator;
+    private final BeanManager bm;
 
-    FieldConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator<?> configurator) {
+    FieldConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator<?> configurator,
+                    BeanManager bm) {
         this.configurator = configurator;
+        this.bm = bm;
     }
 
     @Override
     public FieldInfo info() {
-        return new FieldInfoImpl(configurator.getAnnotated());
+        return new FieldInfoImpl(configurator.getAnnotated(), bm);
     }
 
     @Override
@@ -40,7 +44,7 @@ class FieldConfigImpl implements FieldConfig {
 
     @Override
     public FieldConfig removeAnnotation(Predicate<AnnotationInfo> predicate) {
-        configurator.remove(annotation -> predicate.test(new AnnotationInfoImpl(annotation)));
+        configurator.remove(annotation -> predicate.test(new AnnotationInfoImpl(annotation, bm)));
         return this;
     }
 

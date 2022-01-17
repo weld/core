@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.AnnotationMember;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
@@ -12,14 +13,16 @@ import java.util.Objects;
 
 class AnnotationInfoImpl implements AnnotationInfo {
     final Annotation annotation;
+    final BeanManager bm;
 
-    AnnotationInfoImpl(Annotation annotation) {
+    AnnotationInfoImpl(Annotation annotation, BeanManager bm) {
         this.annotation = annotation;
+        this.bm = bm;
     }
 
     @Override
     public ClassInfo declaration() {
-        return new ClassInfoImpl(BeanManagerAccess.createAnnotatedType(annotation.annotationType()));
+        return new ClassInfoImpl(bm.createAnnotatedType(annotation.annotationType()), bm);
     }
 
     @Override
@@ -38,7 +41,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
             java.lang.reflect.Method member = annotation.annotationType().getDeclaredMethod(name);
             member.setAccessible(true); // TODO!
             Object value = member.invoke(annotation);
-            return new AnnotationMemberImpl(value);
+            return new AnnotationMemberImpl(value, bm);
         } catch (NoSuchMethodException e) {
             return null;
         } catch (ReflectiveOperationException e) {
@@ -55,7 +58,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
                 member.setAccessible(true); // TODO!
                 String name = member.getName();
                 Object value = member.invoke(annotation);
-                result.put(name, new AnnotationMemberImpl(value));
+                result.put(name, new AnnotationMemberImpl(value, bm));
             }
             return result;
         } catch (ReflectiveOperationException e) {

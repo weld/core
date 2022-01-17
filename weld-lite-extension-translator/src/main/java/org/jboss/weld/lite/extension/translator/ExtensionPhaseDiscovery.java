@@ -23,7 +23,7 @@ class ExtensionPhaseDiscovery extends ExtensionPhaseBase {
     Object argumentForExtensionMethod(ExtensionMethodParameterType type, java.lang.reflect.Method method) {
         switch (type) {
             case META_ANNOTATIONS:
-                return new MetaAnnotationsImpl(bbd, stereotypes, contexts);
+                return new MetaAnnotationsImpl(bbd, stereotypes, contexts, beanManager);
             case SCANNED_CLASSES:
                 return new ScannedClassesImpl(bbd, cl);
 

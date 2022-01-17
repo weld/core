@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.types.Type;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
@@ -9,38 +10,38 @@ import java.util.Arrays;
 import java.util.Objects;
 
 abstract class TypeImpl<ReflectionType extends java.lang.reflect.AnnotatedType> extends AnnotationTargetImpl<ReflectionType> implements Type {
-    TypeImpl(ReflectionType reflectionType, AnnotationOverrides overrides) {
-        super(reflectionType, overrides);
+    TypeImpl(ReflectionType reflectionType, AnnotationOverrides overrides, BeanManager bm) {
+        super(reflectionType, overrides, bm);
     }
 
-    static Type fromReflectionType(java.lang.reflect.AnnotatedType reflectionType) {
-        return fromReflectionType(reflectionType, null);
+    static Type fromReflectionType(java.lang.reflect.AnnotatedType reflectionType, BeanManager bm) {
+        return fromReflectionType(reflectionType, null, bm);
     }
 
-    static Type fromReflectionType(java.lang.reflect.AnnotatedType reflectionType, AnnotationOverrides overrides) {
+    static Type fromReflectionType(java.lang.reflect.AnnotatedType reflectionType, AnnotationOverrides overrides, BeanManager bm) {
         if (reflectionType instanceof java.lang.reflect.AnnotatedParameterizedType) {
-            return new ParameterizedTypeImpl((java.lang.reflect.AnnotatedParameterizedType) reflectionType, overrides);
+            return new ParameterizedTypeImpl((java.lang.reflect.AnnotatedParameterizedType) reflectionType, overrides, bm);
         } else if (reflectionType instanceof java.lang.reflect.AnnotatedTypeVariable) {
-            return new TypeVariableImpl((java.lang.reflect.AnnotatedTypeVariable) reflectionType, overrides);
+            return new TypeVariableImpl((java.lang.reflect.AnnotatedTypeVariable) reflectionType, overrides, bm);
         } else if (reflectionType instanceof java.lang.reflect.AnnotatedArrayType) {
-            return new ArrayTypeImpl((java.lang.reflect.AnnotatedArrayType) reflectionType, overrides);
+            return new ArrayTypeImpl((java.lang.reflect.AnnotatedArrayType) reflectionType, overrides, bm);
         } else if (reflectionType instanceof java.lang.reflect.AnnotatedWildcardType) {
-            return new WildcardTypeImpl((java.lang.reflect.AnnotatedWildcardType) reflectionType, overrides);
+            return new WildcardTypeImpl((java.lang.reflect.AnnotatedWildcardType) reflectionType, overrides, bm);
         } else {
             // plain java.lang.reflect.AnnotatedType
             if (reflectionType.getType() instanceof Class) {
                 Class<?> clazz = (Class<?>) reflectionType.getType();
                 if (clazz.isPrimitive()) {
                     if (clazz == void.class) {
-                        return new VoidTypeImpl();
+                        return new VoidTypeImpl(bm);
                     } else {
-                        return new PrimitiveTypeImpl(reflectionType, overrides);
+                        return new PrimitiveTypeImpl(reflectionType, overrides, bm);
                     }
                 }
                 if (clazz.isArray()) {
-                    return new ArrayTypeImpl((java.lang.reflect.AnnotatedArrayType) AnnotatedTypes.from(clazz), overrides);
+                    return new ArrayTypeImpl((java.lang.reflect.AnnotatedArrayType) AnnotatedTypes.from(clazz), overrides, bm);
                 }
-                return new ClassTypeImpl(reflectionType, overrides);
+                return new ClassTypeImpl(reflectionType, overrides, bm);
             } else {
                 throw LiteExtensionTranslatorLogger.LOG.unknownReflectionType(reflectionType);
             }

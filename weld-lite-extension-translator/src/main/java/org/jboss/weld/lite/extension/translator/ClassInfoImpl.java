@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
@@ -22,8 +23,8 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
     // only for equals/hashCode
     private final String name;
 
-    ClassInfoImpl(jakarta.enterprise.inject.spi.AnnotatedType<?> cdiDeclaration) {
-        super(cdiDeclaration.getJavaClass(), cdiDeclaration);
+    ClassInfoImpl(jakarta.enterprise.inject.spi.AnnotatedType<?> cdiDeclaration, BeanManager bm) {
+        super(cdiDeclaration.getJavaClass(), cdiDeclaration, bm);
         this.name = cdiDeclaration.getJavaClass().getName();
     }
 
@@ -39,41 +40,41 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
 
     @Override
     public PackageInfo packageInfo() {
-        return new PackageInfoImpl(reflection.getPackage());
+        return new PackageInfoImpl(reflection.getPackage(), bm);
     }
 
     @Override
     public List<TypeVariable> typeParameters() {
         return Arrays.stream(reflection.getTypeParameters())
                 .map(AnnotatedTypes::typeVariable)
-                .map(TypeVariableImpl::new)
+                .map(annotatedTypeVariable -> new TypeVariableImpl(annotatedTypeVariable, bm))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Type superClass() {
         java.lang.reflect.AnnotatedType superClass = reflection.getAnnotatedSuperclass();
-        return superClass != null ? TypeImpl.fromReflectionType(superClass) : null;
+        return superClass != null ? TypeImpl.fromReflectionType(superClass, bm) : null;
     }
 
     @Override
     public ClassInfo superClassDeclaration() {
         Class<?> superClass = reflection.getSuperclass();
-        return superClass != null ? new ClassInfoImpl(BeanManagerAccess.createAnnotatedType(superClass)) : null;
+        return superClass != null ? new ClassInfoImpl(bm.createAnnotatedType(superClass), bm) : null;
     }
 
     @Override
     public List<Type> superInterfaces() {
         java.lang.reflect.AnnotatedType[] interfaces = reflection.getAnnotatedInterfaces();
         return Arrays.stream(interfaces)
-                .map(TypeImpl::fromReflectionType)
+                .map(annotatedType -> TypeImpl.fromReflectionType(annotatedType, bm))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<ClassInfo> superInterfacesDeclarations() {
         return Arrays.stream(reflection.getInterfaces())
-                .map(it -> new ClassInfoImpl(BeanManagerAccess.createAnnotatedType(it)))
+                .map(it -> new ClassInfoImpl(bm.createAnnotatedType(it), bm))
                 .collect(Collectors.toList());
     }
 
@@ -136,9 +137,9 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
                 .filter(it -> !it.isSynthetic())
                 .map(it -> {
                     if (map.containsKey(it)) {
-                        return new MethodInfoImpl(map.get(it));
+                        return new MethodInfoImpl(map.get(it), bm);
                     } else {
-                        return new MethodInfoImpl(it);
+                        return new MethodInfoImpl(it, bm);
                     }
                 }).collect(Collectors.toList());
     }
@@ -159,9 +160,9 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
                 .filter(it -> !it.isSynthetic())
                 .map(it -> {
                     if (map.containsKey(it)) {
-                        return new MethodInfoImpl(map.get(it));
+                        return new MethodInfoImpl(map.get(it), bm);
                     } else {
-                        return new MethodInfoImpl(it);
+                        return new MethodInfoImpl(it, bm);
                     }
                 }).collect(Collectors.toList());
     }
@@ -182,9 +183,9 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
                 .filter(it -> !it.isSynthetic())
                 .map(it -> {
                     if (map.containsKey(it)) {
-                        return new FieldInfoImpl(map.get(it));
+                        return new FieldInfoImpl(map.get(it), bm);
                     } else {
-                        return new FieldInfoImpl(it);
+                        return new FieldInfoImpl(it, bm);
                     }
                 })
                 .collect(Collectors.toList());
