@@ -11,7 +11,6 @@ import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorL
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,13 +36,15 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
     private jakarta.enterprise.inject.spi.BeanManager bm;
 
     public LiteExtensionTranslator() {
-        this.util = new ExtensionInvoker();
-        this.cl = Thread.currentThread().getContextClassLoader();
+        this(BuildCompatibleExtensionLoader.getBuildCompatibleExtensions(), Thread.currentThread().getContextClassLoader());
     }
 
-    public LiteExtensionTranslator(Collection<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions, ClassLoader cl) {
+    public LiteExtensionTranslator(List<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions, ClassLoader cl) {
         this.util = new ExtensionInvoker(buildCompatibleExtensions);
         this.cl = cl;
+        // clear out information about extensions we found, this is to prevent issues in test environments where this
+        // could interfere when subsequent tests are run on the same JVM
+        BuildCompatibleExtensionLoader.clearDiscoveredExtensions();
     }
 
     public void discovery(@Priority(Integer.MAX_VALUE) @Observes jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd,
