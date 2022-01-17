@@ -73,7 +73,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     }
 
     @Override
-    protected void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter) {
+    protected <Y> void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter, EnhancedAnnotatedMethod<T, Y> annotated) {
         Class<?> rawObserverType = Reflections.getRawType(getObservedType());
         boolean isProcessAnnotatedType = rawObserverType.equals(ProcessAnnotatedType.class) || rawObserverType.equals(ProcessSyntheticAnnotatedType.class);
         if (!isProcessAnnotatedType && !requiredTypeAnnotations.isEmpty()) {
@@ -82,7 +82,10 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         }
         if (isProcessAnnotatedType && requiredTypeAnnotations.isEmpty()) {
             Type[] typeArguments = eventParameter.getActualTypeArguments();
-            if (typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0]) || Reflections.isUnboundedTypeVariable(typeArguments[0])) {
+            if ((typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0]) || Reflections.isUnboundedTypeVariable(typeArguments[0])) &&
+                    // LiteExtensionTranslator is an exception because it is the only way to implement build compatible extensions via portable extensions
+                    // Not that we use hardcoded String because we want to avoid circular dependencies between weld-core-impl and weld-lite-extension-translator
+                    !annotated.getJavaMember().getDeclaringClass().getName().equals("org.jboss.weld.lite.extension.translator.LiteExtensionTranslator")) {
                 EventLogger.LOG.unrestrictedProcessAnnotatedTypes(this);
             }
         }

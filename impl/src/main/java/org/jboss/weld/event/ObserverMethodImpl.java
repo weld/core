@@ -207,7 +207,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
             throw EventLogger.LOG.multipleEventParameters(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         EnhancedAnnotatedParameter<?, Y> eventParameter = eventObjects.iterator().next();
-        checkRequiredTypeAnnotations(eventParameter);
+        checkRequiredTypeAnnotations(eventParameter, annotated);
         // Check for parameters annotated with @Disposes
         List<?> disposeParams = annotated.getEnhancedParameters(Disposes.class);
         if (disposeParams.size() > 0) {
@@ -231,7 +231,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
 
     }
 
-    protected void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter) {
+    protected <Y> void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter, EnhancedAnnotatedMethod<T, Y> annotated) {
         if (eventParameter.isAnnotationPresent(WithAnnotations.class)) {
             throw EventLogger.LOG
                     .invalidWithAnnotations(this, Formats.formatAsStackTraceElement(eventParameter.getDeclaringEnhancedCallable().getJavaMember()));
