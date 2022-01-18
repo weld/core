@@ -27,7 +27,9 @@ final class AnnotationPresence {
                 .stream()
                 .flatMap(it -> it.getParameters().stream())
                 .flatMap(it -> it.getAnnotations().stream());
-        // TODO meta-annotations
+
+        // TODO meta-annotations - theoretically, all of the annotations can be declared as meta-annotations as well
+        // so we should also recursively search all of the annotations declared by annotations and so on...
 
         return Stream.concat(
                 classAnnotations,

@@ -24,17 +24,18 @@ abstract class ExtensionPhaseBase {
     }
 
     final void run() {
-        try {
-            List<java.lang.reflect.Method> extensionMethods = util.findExtensionMethods(phase.annotation);
+        List<java.lang.reflect.Method> extensionMethods = util.findExtensionMethods(phase.annotation);
 
-            for (java.lang.reflect.Method method : extensionMethods) {
+        for (java.lang.reflect.Method method : extensionMethods) {
+            try {
                 runExtensionMethod(method);
+            } catch (DefinitionException | DeploymentException e) {
+                throw e;
+            } catch (Exception e) {
+                // we treat every other error as deployment error
+                throw LiteExtensionTranslatorLogger.LOG.problemExecutingExtensionMethod(method, phase, e.toString());
+
             }
-        } catch (DefinitionException | DeploymentException e) {
-            throw e;
-        } catch (Exception e) {
-            // TODO proper diagnostics system
-            throw new DeploymentException(e);
         }
     }
 

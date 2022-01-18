@@ -194,7 +194,7 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
     @Override
     public Collection<RecordComponentInfo> recordComponents() {
         if (isRecord()) {
-            // TODO records are not supported yet because base JDK version for lang model is 11
+            // Records are not supported yet because base JDK version for lang model is 11
             throw new UnsupportedOperationException("Records not yet supported");
         }
         return Collections.emptyList();

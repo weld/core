@@ -104,19 +104,19 @@ class MetaAnnotationsImpl implements MetaAnnotations {
 
         @Override
         public Set<jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator<? super T>> methods() {
-            // TODO
+            // methods of Stereotype should not be configurable, return empty set
             return Collections.emptySet();
         }
 
         @Override
         public Set<jakarta.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator<? super T>> fields() {
-            // TODO
+            // fields of Stereotype should not be configurable, return empty set
             return Collections.emptySet();
         }
 
         @Override
         public Set<jakarta.enterprise.inject.spi.configurator.AnnotatedConstructorConfigurator<T>> constructors() {
-            // TODO
+            // constructors of Stereotype should not be configurable, return empty set
             return Collections.emptySet();
         }
     }

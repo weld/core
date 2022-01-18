@@ -23,6 +23,7 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.Category;
@@ -89,5 +90,8 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     @Message(id = 16, value = "AnnotationBuilderFactoryImpl wasn't initialized properly before using it. This can be caused by attempted usage outside of build compatible extension cycle. " +
             "The init process will use a fallback method.", format = Message.Format.MESSAGE_FORMAT)
     void annotationFactoryInstanceNotInitialized();
+
+    @Message(id = 17, value = "There was a problem executing Build Compatible Extension method {0} during phase {1}. The exception was: {2}", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException problemExecutingExtensionMethod(Object method, Object phase, String exception);
 
 }

@@ -78,7 +78,8 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             boolean isPassivating;
             if (context.isNormal != null) {
                 isNormal = context.isNormal;
-                isPassivating = false; // TODO
+                // in case the scope was declared normal via boolean, we assume it cannot be passivating
+                isPassivating = false;
             } else {
                 NormalScope normalScope = scopeAnnotation.getAnnotation(NormalScope.class);
                 if (normalScope != null) {
