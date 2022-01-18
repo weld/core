@@ -470,7 +470,7 @@ public class Beans {
                 && classFileInfo.hasCdiConstructor()
                 && (!Modifier.isAbstract(classFileInfo.getModifiers()) || classFileInfo.isAnnotationDeclared(Decorator.class));
         if (checkTypeModifiers) {
-            return isTypeManagedBean && (classFileInfo.isTopLevelClass() || Modifier.isStatic(classFileInfo.getModifiers()));
+            return isTypeManagedBean && (ClassFileInfo.NestingType.TOP_LEVEL.equals(classFileInfo.getNestingType()) || Modifier.isStatic(classFileInfo.getModifiers()));
         } else {
             return isTypeManagedBean;
         }

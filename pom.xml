@@ -47,7 +47,7 @@
         <!-- A property which is handed over to WFLY container through Arquillian, allows to configure server-specific options -->
         <additional.jboss.args />
 
-        <manifest.specification.title>Jakarta EE 9 Contexts and Dependency Injection for Java</manifest.specification.title>
+        <manifest.specification.title>Jakarta EE 10 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
@@ -64,7 +64,7 @@
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <!-- Version of the CDI 4.x release TCK -->
-        <cdi.tck-4-0.version>4.0.0.Alpha5</cdi.tck-4-0.version>
+        <cdi.tck-4-0.version>4.0.0.CR2</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.4.1</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.4.1</spotbugs-annotations-version>
@@ -91,7 +91,7 @@
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
         <testng.jcommander.version>1.81</testng.jcommander.version>
-        <weld.api.version>5.0.Beta4</weld.api.version>
+        <weld.api.version>5.0-SNAPSHOT</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>3.0.1.Final</wildfly.arquillian.version>
     </properties>
