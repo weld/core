@@ -69,6 +69,9 @@
                             <!-- Probe development tool -->
                             org.jboss.weld.probe;
 
+                            <!-- Weld Lite Extension Translator module -->
+                            org.jboss.weld.lite.extension.*;
+
                             <!-- Weld modules -->
                             org.jboss.weld.module.ejb.*;
                             org.jboss.weld.module.jsf.*;
@@ -291,6 +294,11 @@
             <artifactId>weld-probe-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-lite-extension-translator</artifactId>
+        </dependency>
+
         <!-- Following deps are for the sake of javadoc creation -->
         <!-- We cannot delare them inside plugin otherwise we have to hardcode versions -->
         <dependency>
@@ -362,7 +370,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>3.0.0-SNAPSHOT</tag>
+        <tag>5.0.0-SNAPSHOT</tag>
     </scm>
 
 </project>
