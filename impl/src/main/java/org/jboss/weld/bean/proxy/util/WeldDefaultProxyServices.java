@@ -18,7 +18,6 @@
 package org.jboss.weld.bean.proxy.util;
 
 import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.ProxyServices;
 
@@ -36,14 +35,6 @@ public class WeldDefaultProxyServices implements ProxyServices {
 
     // a map of parent CL -> our CL serving as a cache
     private ConcurrentMap<ClassLoader, WeldProxyDeclaringCL> clMap = new ConcurrentHashMap<ClassLoader, WeldProxyDeclaringCL>();
-
-    public ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
-        throw new UnsupportedOperationException("WeldDefaultProxyServices.getClassLoader(Class<?>) is not implemented.");
-    }
-
-    public Class<?> loadBeanClass(final String className) {
-        throw new UnsupportedOperationException("WeldDefaultProxyServices.loadBeanClass(String) is not implemented.");
-    }
 
     @Override
     public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len) throws ClassFormatError {
@@ -90,11 +81,6 @@ public class WeldDefaultProxyServices implements ProxyServices {
             loader = clMap.get(loader);
         }
         return loader.loadClass(classBinaryName);
-    }
-
-    @Override
-    public boolean supportsClassDefining() {
-        return true;
     }
 
     @Override

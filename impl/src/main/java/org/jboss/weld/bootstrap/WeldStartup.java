@@ -214,11 +214,6 @@ public class WeldStartup {
             // add our own default impl that supports class defining
             registry.add(ProxyServices.class, new WeldDefaultProxyServices());
         }
-        // all implementations of ProxyServices need to support class defining
-        ProxyServices proxyServices = registry.get(ProxyServices.class);
-        if (!proxyServices.supportsClassDefining()) {
-            throw BootstrapLogger.LOG.proxyServicesWithoutClassDefining(proxyServices.getClass().getName());
-        }
         if (!registry.contains(SecurityServices.class)) {
             registry.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
         }

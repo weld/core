@@ -339,8 +339,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 181, value = "org.jboss.weld.executor.threadPoolType=COMMON detected but ForkJoinPool.commonPool() does not work with SecurityManager enabled, switching to {0} thread pool", format = Format.MESSAGE_FORMAT)
     void commonThreadPoolWithSecurityManagerEnabled(Object threadPoolType);
 
-    @Message(id = 182, value= "Provided implementation of org.jboss.weld.serialization.spi.ProxyServices ({0}) does not support class defining. This functionality is required in order to be able to define proxy classes.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException proxyServicesWithoutClassDefining(Object services);
+    // id 182 was used in Weld 3 and 4 and removed for Weld 5
 
     @Message(id = 183, value= "Multiple different @Priority values derived from stereotype annotations for annotated type - {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException multiplePriorityValuesDeclared(Object annotatedType);
