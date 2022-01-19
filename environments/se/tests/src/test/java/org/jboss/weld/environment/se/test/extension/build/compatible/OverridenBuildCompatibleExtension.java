@@ -30,8 +30,7 @@ import jakarta.enterprise.lang.model.declarations.ClassInfo;
 /**
  * This BCE is overriden and should never be invoked
  */
-// TODO change to OverridingPortableExtension.class once https://github.com/eclipse-ee4j/cdi/issues/585 is resolved
-@SkipIfPortableExtensionPresent("org.jboss.weld.environment.se.test.extension.build.compatible.OverridingPortableExtension")
+@SkipIfPortableExtensionPresent(OverridingPortableExtension.class)
 public class OverridenBuildCompatibleExtension implements BuildCompatibleExtension {
 
     public static int TIMES_INVOKED = 0;

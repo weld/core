@@ -25,7 +25,7 @@ class ExtensionInvoker {
         for (BuildCompatibleExtension extension : ServiceLoader.load(BuildCompatibleExtension.class)) {
             Class<? extends BuildCompatibleExtension> extensionClass = extension.getClass();
             SkipIfPortableExtensionPresent skip = extensionClass.getAnnotation(SkipIfPortableExtensionPresent.class);
-            if (skip != null && isClassPresent(skip.value())) {
+            if (skip != null) {
                 continue;
             }
 
@@ -38,7 +38,7 @@ class ExtensionInvoker {
     ExtensionInvoker(Collection<Class<? extends BuildCompatibleExtension>> extensions) {
         for (Class<? extends BuildCompatibleExtension> extensionClass : extensions) {
             SkipIfPortableExtensionPresent skip = extensionClass.getAnnotation(SkipIfPortableExtensionPresent.class);
-            if (skip != null && isClassPresent(skip.value())) {
+            if (skip != null) {
                 continue;
             }
 
@@ -51,16 +51,6 @@ class ExtensionInvoker {
                 throw new RuntimeException(e);
             }
 
-        }
-    }
-
-    private boolean isClassPresent(String className) {
-        try {
-            Class.forName(className, true, Thread.currentThread().getContextClassLoader());
-            // TODO consult BeanManager if extension is present?
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
         }
     }
 
