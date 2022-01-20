@@ -486,7 +486,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
         ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
 
-        if (proxiedBeanType.getPackage() == null || proxiedBeanType.equals(Object.class)) {
+        if (proxiedBeanType.getPackage() == null || proxiedBeanType.getPackage().getName().isEmpty() || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
         } else if (System.getSecurityManager() != null) {
             ProtectionDomainCache cache = Container.instance(contextId).services().get(ProtectionDomainCache.class);
