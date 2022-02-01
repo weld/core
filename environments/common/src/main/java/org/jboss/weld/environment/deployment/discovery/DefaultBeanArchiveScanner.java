@@ -21,6 +21,7 @@ import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_FILE;
 import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_HTTP;
 import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_HTTPS;
 import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_JAR;
+import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_JRT;
 import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_FILE_PART;
 import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_WAR_PART;
 
@@ -113,6 +114,9 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
                 ref = ref.substring(0, ref.lastIndexOf(JAR_URL_SEPARATOR));
             }
             ref = getBeanArchiveReferenceForJar(ref, url);
+        } else if (PROCOTOL_JRT.equals(url.getProtocol())) {
+            // Getting the reference of an url like "jrt:/weld.module.example/META-INF/beans.xml" (returns "jrt:/weld.module.example")
+            ref = url.toExternalForm().replaceAll("^(jrt:/[\\w.]+)/.*$", "$1");
         } else {
             logger.infov("Unable to adapt URL: {0}, using its external form instead", url);
             ref = url.toExternalForm();

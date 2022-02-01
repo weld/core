@@ -26,10 +26,12 @@ public class URLUtils {
 
     public static final String PROCOTOL_FILE = "file";
     public static final String PROCOTOL_JAR = "jar";
+    public static final String PROCOTOL_JRT = "jrt";
     public static final String PROCOTOL_WAR = "war";
     public static final String PROCOTOL_HTTP = "http";
     public static final String PROCOTOL_HTTPS = "https";
     public static final String PROTOCOL_FILE_PART = PROCOTOL_FILE + ":";
+    public static final String PROTOCOL_JRT_PART = PROCOTOL_JRT + ":/";
     public static final String PROTOCOL_WAR_PART = PROCOTOL_WAR + ":";
     // according to JarURLConnection api doc, the separator is "!/"
     public static final String JAR_URL_SEPARATOR = "!/";

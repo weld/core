@@ -18,6 +18,8 @@ package org.jboss.weld.environment.deployment.discovery.jandex;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -30,6 +32,8 @@ import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveHandler;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.util.Preconditions;
+
+import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_JRT_PART;
 
 /**
  * This class uses an existing Jandex-Index ("META-INF/jandex.idx") to scan the bean archive. If no index is available the
@@ -49,12 +53,17 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
 
     @Override
     public BeanArchiveBuilder handle(String path) {
-        File beanArchiveFile = new File(path);
-        if (!beanArchiveFile.canRead() || beanArchiveFile.isDirectory()) {
-            // Currently only JAR files are supported
-            return null;
+        Index index;
+        if (path.startsWith(PROTOCOL_JRT_PART)) {
+            index = getIndexFromJrt(path);
+        } else {
+            File beanArchiveFile = new File(path);
+            if (!beanArchiveFile.canRead() || beanArchiveFile.isDirectory()) {
+                // Currently only JAR files are supported
+                return null;
+            }
+            index = getIndexFromJar(beanArchiveFile);
         }
-        Index index = getIndex(beanArchiveFile);
         if (index == null) {
             return null;
         }
@@ -63,7 +72,22 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
         return builder;
     }
 
-    private Index getIndex(final File beanArchiveFile) {
+    private Index getIndexFromJrt(String jrtPath) {
+        logger.debugv("Try to get Jandex index from JRT: {0}", jrtPath);
+        Index index = null;
+        try {
+            URL url = URI.create(jrtPath + "/" + JANDEX_INDEX_NAME).toURL();
+            index = new IndexReader(url.openStream()).read();
+            logger.debugv("Jandex index found: {0}", jrtPath);
+        } catch (IOException e) {
+            CommonLogger.LOG.catchingDebug(e);
+        } finally {
+            CommonLogger.LOG.errorv("Cannot get Jandex index from JRT: {0}", jrtPath);
+        }
+        return index;
+    }
+
+    private Index getIndexFromJar(File beanArchiveFile) {
         Preconditions.checkArgumentNotNull(beanArchiveFile, "beanArchiveFile");
         logger.debugv("Try to get Jandex index for: {0}", beanArchiveFile);
         Index index = null;
