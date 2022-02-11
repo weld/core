@@ -22,15 +22,11 @@ jobs:
         with:
           java-version: 11
       - name: Download WildFly
+        # WFLY 26 preview is the last to support EE 9 and JDK 8, see also https://www.wildfly.org/news/2022/01/21/WildFly-2022/
         run: |
-          wget https://ci.wildfly.org/guestAuth/repository/download/WF_WildflyPreviewNightly/latest.lastSuccessful/wildfly-preview-latest-SNAPSHOT.zip
-          unzip wildfly-preview-latest-SNAPSHOT.zip
-          # ZIP contains two more ZIPs, sources and actual WFLY
-          rm wildfly-*-src.zip
-          rm wildfly-preview-latest-SNAPSHOT.zip
-          unzip wildfly-*.zip -d container
-          cd container
-          mv ./* wildfly/
+          wget https://github.com/wildfly/wildfly/releases/download/26.0.1.Final/wildfly-preview-26.0.1.Final.zip
+          unzip wildfly-preview-26.0.1.Final.zip -d container
+          rm wildfly-preview-26.0.1.Final.zip
       - name: Get Date
         id: get-date
         run: |
@@ -54,6 +50,7 @@ jobs:
       - name: Zip Patched WildFly
         run: |
           cd container/
+          mv ./* wildfly/
           zip -r wildfly.zip wildfly
           cd ..
       - name: Persist WildFly
