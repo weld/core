@@ -54,7 +54,7 @@
         <apache.bcel.version>6.5.0</apache.bcel.version>
         <arquillian.version>1.7.0.Alpha10</arquillian.version>
         <arquillian.drone.version>2.5.2</arquillian.drone.version>
-        <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
+        <arquillian.graphene.version>2.5.4</arquillian.graphene.version>
         <arquillian.weld.version>3.0.2.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Alpha1</arquillian.tomcat.version>
@@ -67,7 +67,7 @@
         <cdi.tck-4-0.version>4.0.0-RC2</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.5.3.0</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>4.4.1</spotbugs-annotations-version>
+        <spotbugs-annotations-version>4.5.3</spotbugs-annotations-version>
         <glassfish.el.version>2.2.1-b05</glassfish.el.version>
         <groovy.version>3.0.9</groovy.version>
         <htmlunit.version>2.53.0</htmlunit.version>
@@ -78,10 +78,10 @@
         <glassfish.jakarta.el.version>4.0.2</glassfish.jakarta.el.version>
         <jakarta.jms.api.version>3.0.0</jakarta.jms.api.version>
         <jsf.api.version>3.0.0</jsf.api.version>
-        <jboss.logging.version>3.4.2.Final</jboss.logging.version>
+        <jboss.logging.version>3.4.3.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>2.1.18.Final</jboss.logmanager.version>
-        <jsf.impl.version>3.0.1</jsf.impl.version>
+        <jsf.impl.version>3.0.2</jsf.impl.version>
         <jsp.api.version>3.0.0</jsp.api.version>
         <jstl.api.version>2.0.0</jstl.api.version>
         <junit.version>4.13.2</junit.version>
