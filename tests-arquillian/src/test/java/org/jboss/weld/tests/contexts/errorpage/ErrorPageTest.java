@@ -80,10 +80,10 @@ public class ErrorPageTest {
         Assert.assertEquals("Application Error", page.getTitleText());
 
         HtmlDivision conversationValue = getFirstMatchingElement(page, HtmlDivision.class, "conversation");
-        Assert.assertEquals("10", conversationValue.asText());
+        Assert.assertEquals("10", conversationValue.asNormalizedText());
 
         HtmlDivision requestValue = getFirstMatchingElement(page, HtmlDivision.class, "request");
-        Assert.assertEquals("medium", requestValue.asText());
+        Assert.assertEquals("medium", requestValue.asNormalizedText());
     }
 
     protected String getPath(String page) {
