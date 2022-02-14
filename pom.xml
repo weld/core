@@ -86,7 +86,7 @@
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
-        <testng.version>7.4.0</testng.version>
+        <testng.version>7.5</testng.version>
         <testng.jcommander.version>1.82</testng.jcommander.version>
         <weld.api.version>4.0.Final</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
