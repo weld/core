@@ -84,11 +84,11 @@ public class JsfTest {
         HtmlSpan oldel = getFirstMatchingElement(page, HtmlSpan.class, "oldel");
         assertNotNull(oldel);
         final String charlie = "Charlie";
-        assertEquals(charlie, oldel.asText());
+        assertEquals(charlie, oldel.asNormalizedText());
 
         HtmlSpan newel = getFirstMatchingElement(page, HtmlSpan.class, "newel");
         assertNotNull(newel);
-        assertEquals(charlie, newel.asText());
+        assertEquals(charlie, newel.asNormalizedText());
     }
 
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {

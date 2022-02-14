@@ -48,7 +48,7 @@ public class Weld1280Test {
         WebClient client = new WebClient();
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage main = client.getPage(url);
-        assertTrue(main.getBody().asText().contains("Hello from dependent scope bean"));
+        assertTrue(main.getBody().asNormalizedText().contains("Hello from dependent scope bean"));
     }
 
 }
