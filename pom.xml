@@ -74,7 +74,7 @@
         <javax.el.version>3.0.2</javax.el.version>
         <jboss.jms.api.version>2.0.0.Final</jboss.jms.api.version>
         <jboss.jsf.api.version>3.0.0.Final</jboss.jsf.api.version>
-        <jboss.logging.version>3.4.2.Final</jboss.logging.version>
+        <jboss.logging.version>3.4.3.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>2.1.18.Final</jboss.logmanager.version>
         <jboss.spec.el-api.version>2.0.0.Final</jboss.spec.el-api.version>
