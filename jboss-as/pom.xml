@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>3.1.9-SNAPSHOT</version>
+        <version>3.1.9.Final</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -30,7 +30,7 @@
     <properties>
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
         as the release plugin won't deal with double evaluation -->
-        <weld.update.version>3.1.9-SNAPSHOT</weld.update.version>
+        <weld.update.version>3.1.9.Final</weld.update.version>
         <cdi.tck.version>${cdi.tck-2-0.version}</cdi.tck.version>
 
         <!--Plugin versions-->
