@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+        <version>5.0.0.CR1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.jboss.weld.examples</groupId>
     <artifactId>weld-examples-parent</artifactId>
-  <version>5.0.0-SNAPSHOT</version>
+  <version>5.0.0.CR1</version>
     <packaging>pom</packaging>
     <name>Weld Examples</name>
 

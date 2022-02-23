@@ -3,7 +3,7 @@
    <parent>
       <artifactId>weld-se-parent</artifactId>
       <groupId>org.jboss.weld.se</groupId>
-      <version>5.0.0-SNAPSHOT</version>
+      <version>5.0.0.CR1</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
