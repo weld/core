@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.contexts.request.custom;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class ResultProducer {
 
     @RequestScoped

@@ -17,10 +17,13 @@
 
 package org.jboss.weld.tests.decorators.resolution;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
 @Complex
+@Dependent
 public class ComplexBean implements SomeBean {
     public String hello(String name) {
         return "Sophisticated Hello, " + name;

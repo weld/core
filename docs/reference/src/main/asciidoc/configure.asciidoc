@@ -5,6 +5,7 @@ endif::[]
 [[configure]]
 == Configuration
 
+[[weld_configuration]]
 === Weld configuration
 
 Weld can be configured per application through the set of properties. All the supported configuration properties are described in the following subsections.
@@ -345,6 +346,30 @@ The following properties can be used to restrict the set of beans Weld is going 
 |`org.jboss.weld.bootstrap.unusedBeans.excludeAnnotation` |`javax\\.ws\\.rs.*`| A regular expression. A bean is not removed if the corresponding `AnnotatedType`, or any member, is annotated with an annotation which matches this pattern. By default, a type annotated with any JAX-RS annotation is excluded from removal.
 |=======================================================================
 
+[[legacy-empty-beans-xml]]
+==== Legacy mode for treatment of empty `beans.xml` files
+
+Starting with CDI 4.0, bean archives with empty `beans.xml` have discovery mode `annotated`.
+However, CDI mandates that there is a compatibility configuration option that users can leverage to switch this back to `all` discovery mode. Since this option is temporary and serves to ease the migration process to new CDI version, users are strongly encouraged to adapt their bean archives accordingly.
+
+Every platform and container needs to provide their own way to configure this and users should look into their respective documentation for guidance.
+
+For Weld SE, users can start Weld container with following property:
+
+[source.JAVA, java]
+--------------------------------------------------------------------------
+try (WeldContainer container = new Weld()
+    // LEGACY_EMPTY_BEANS_XML_TREATMENT = "org.jboss.weld.se.discovery.emptyBeansXmlModeAll"
+    .property(Weld.LEGACY_EMPTY_BEANS_XML_TREATMENT, true)
+    .initialize()) {
+      performAppLogic();
+}
+--------------------------------------------------------------------------
+
+For Weld Servlet, there is a `ServletContext` parameter with `String` key `org.jboss.weld.environment.servlet.emptyBeansXmlModeAll` that, if set to `true`, triggers this legacy behavior.
+
+WARNING: Since this configuration has to be known prior to Weld discovery, it cannot be defined through standard means! Furthermore, this option will act as a global configuration affecting all of your bean archives in the deployed application!
+
 [[external_config]]
 === Defining external configuration
 
@@ -372,12 +397,12 @@ public class MyExternalConfiguration implements ExternalConfiguration {
 --------------------------------------------------------------------------
 
 Bear in mind that because `ExternalConfiguration` extends a `Service` it is required that any custom external configuration implementation is explicitly registered. See
-ifndef::generate-index-link[<<_the_weld_spi>>]
-ifdef::generate-index-link[link:ri-spi.html#_the_weld_spi[The Weld SPI]]
+ifndef::generate-index-link[<<the_weld_spi>>]
+ifdef::generate-index-link[link:ri-spi.html#the_weld_spi[The Weld SPI]]
 for more information.
 
 Last but not least external configuration is considered a source with the lowest priority which means that the properties specified there can be overriden by other sources such as system properties.
-For information on supported configuration keys, see <<_weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead
+For information on supported configuration keys, see <<weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead
 to deployment problem.
 
 === Excluding classes from scanning and deployment

@@ -16,7 +16,7 @@
     limitations under the License.
 
 -->
-<beans>
+<beans bean-discovery-mode="all">
    <interceptors>
       <class>org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor</class>
       <class>org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor</class>

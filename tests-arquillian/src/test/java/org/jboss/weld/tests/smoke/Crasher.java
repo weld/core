@@ -1,10 +1,13 @@
 package org.jboss.weld.tests.smoke;
 
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Sam Corbet
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Dependent
 public class Crasher {
     protected class NonStaticInner {
         public NonStaticInner(Integer a) {

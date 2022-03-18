@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.NotificationOptions;
 import jakarta.enterprise.event.Observes;
@@ -78,13 +79,16 @@ public class FireAsyncWithExecutorTest {
         assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
     }
 
-    public static void receiveRequest(@ObservesAsync Request request, Event<Response> event) {
-        REQUEST_RECEIVED.set(true);
-        event.fire(new Response(Thread.currentThread()));
-    }
+    @Dependent
+    public static class ObserverBean {
+        public static void receiveRequest(@ObservesAsync Request request, Event<Response> event) {
+            REQUEST_RECEIVED.set(true);
+            event.fire(new Response(Thread.currentThread()));
+        }
 
-    public static void receive(@Observes Response response) throws InterruptedException {
-        RESPONSE_RECEIVED.set(response);
-        SYNCHRONIZER.offer(response, 10, TimeUnit.SECONDS);
+        public static void receive(@Observes Response response) throws InterruptedException {
+            RESPONSE_RECEIVED.set(response);
+            SYNCHRONIZER.offer(response, 10, TimeUnit.SECONDS);
+        }
     }
 }

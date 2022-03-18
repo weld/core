@@ -16,5 +16,8 @@
  */
 package org.jboss.weld.tests.serialization.annotated.id;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Car {
 }

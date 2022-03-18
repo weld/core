@@ -46,7 +46,7 @@ public class DogAgent implements Agent {
     public void sendInTransaction(Object event, Annotation... annot) {
         try {
             userTransaction.begin();
-            jsr299Manager.fireEvent(event, annot);
+            jsr299Manager.getEvent().select(annot).fire(event);
             Actions.add(EVENT_FIRED);
             userTransaction.commit();
         } catch (EJBException ejbException) {
@@ -59,14 +59,14 @@ public class DogAgent implements Agent {
     @Override
     public void sendInTransactionAndFail(Object event) throws Exception {
         userTransaction.begin();
-        jsr299Manager.fireEvent(event);
+        jsr299Manager.getEvent().fire(event);
         Actions.add(EVENT_FIRED);
         userTransaction.rollback();
     }
 
     @Override
     public void sendOutsideTransaction(Object event) {
-        jsr299Manager.fireEvent(event);
+        jsr299Manager.getEvent().fire(event);
         Actions.add(EVENT_FIRED);
     }
 }

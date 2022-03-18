@@ -97,9 +97,4 @@ public class FireAsyncCompletionStageTest {
         }).toCompletableFuture().get();
         assertTrue(payload.getThreadName().startsWith(CustomExecutorServices.PREFIX));
     }
-
-    public static void observe(@ObservesAsync Payload payload) throws InterruptedException {
-        payload.setThreadName(Thread.currentThread().getName());
-    }
-
 }

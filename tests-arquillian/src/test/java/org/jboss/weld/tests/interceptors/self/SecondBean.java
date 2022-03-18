@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.interceptors.self;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class SecondBean implements ISecondBean {
 
     public void doUnintercepted() {

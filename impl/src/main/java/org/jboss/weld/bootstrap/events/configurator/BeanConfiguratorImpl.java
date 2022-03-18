@@ -44,6 +44,7 @@ import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bean.WeldBean;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.event.WeldBeanConfigurator;
+import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -343,6 +344,8 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
 
         private final Function<Instance<Object>, T> instance;
 
+        private CreationalContext<T> creationalContext;
+
         static <T> CreateCallback<T> fromProduceWith(Function<Instance<Object>, T> callback) {
             return new CreateCallback<T>(null, null, callback);
         }
@@ -362,6 +365,7 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         }
 
         private T create(Bean<?> bean, CreationalContext<T> ctx, BeanManagerImpl beanManager) {
+            this.creationalContext = ctx;
             if (simple != null) {
                 return simple.get();
             } else if (instance != null) {
@@ -377,6 +381,10 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
                 return instance;
             }
             return new GuardedInstance<>(bean, instance);
+        }
+
+        CreationalContext<T> getCreationalContext() {
+            return creationalContext;
         }
 
     }
@@ -508,6 +516,18 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
             if (destroyCallback != null) {
                 destroyCallback.destroy(instance, creationalContext, beanManager);
             }
+            // release dependent beans from create/destroy callbacks
+            if (creationalContext instanceof CreationalContextImpl) {
+                // release dependent instances linked with this bean but avoid double invocation
+                ((CreationalContextImpl<T>) creationalContext).release(this, instance);
+                // in some cases, the CC for create and destroy callbacks might differ; hence this special handling
+                CreationalContext<T> createCallbackCreationalContext = createCallback.getCreationalContext();
+                if (createCallbackCreationalContext != null && createCallbackCreationalContext != creationalContext) {
+                    createCallbackCreationalContext.release();
+                }
+            } else {
+                creationalContext.release();
+            }
         }
 
         @Override
@@ -524,11 +544,6 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         @Override
         public Set<InjectionPoint> getInjectionPoints() {
             return injectionPoints;
-        }
-
-        @Override
-        public boolean isNullable() {
-            return false;
         }
 
         @Override

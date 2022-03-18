@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.interceptors.exclusion;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 import jakarta.interceptor.ExcludeClassInterceptors;
 import jakarta.interceptor.Interceptors;
 
 @Interceptors({ Interceptor1.class, Interceptor2.class })
+@Dependent
 public class InterceptedBean {
 
     @Inject

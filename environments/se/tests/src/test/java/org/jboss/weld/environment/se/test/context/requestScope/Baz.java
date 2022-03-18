@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.environment.se.test.context.requestScope;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 import org.jboss.weld.context.activator.ActivateRequestContext;
 
 
 @ActivateRequestContext
+@Dependent
 public class Baz {
 
     @Inject

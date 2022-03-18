@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.util.Reflections;
@@ -37,8 +38,10 @@ public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private final AtomicBoolean annotatedDiscoveryProcessed;
 
-    public ReflectionDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
-        super(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+    public ReflectionDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap,
+                                       Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
+                                       BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        super(resourceLoader, bootstrap, initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
         this.annotatedDiscoveryProcessed = new AtomicBoolean(false);
         registerHandler(new FileSystemBeanArchiveHandler());
     }

@@ -3,12 +3,12 @@
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-jboss-runner-tck</artifactId>
-    <name>CDI TCK runner (2.0) for Weld (WildFly)</name>
+    <name>CDI TCK runner (4.0) for Weld (WildFly)</name>
     <description>Aggregates dependencies and runs the CDI TCK (both standalone and on WildFly)</description>
 
     <licenses>
@@ -21,8 +21,8 @@
     <url>http://weld.cdi-spec.org</url>
 
     <properties>
-        <htmlunit.version>2.9</htmlunit.version>
-        <shrinkwrap.version>1.0.1</shrinkwrap.version>
+        <!-- This matches the htmlunit version in TCK -->
+        <htmlunit.version>2.50.0</htmlunit.version>
     </properties>
 
     <dependencies>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck-3-0.version}</version>
+            <version>${cdi.tck-4-0.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.el</groupId>
@@ -81,8 +81,8 @@
 
         <dependency>
             <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck-3-0.version}</version>
+            <artifactId>cdi-tck-core-impl</artifactId>
+            <version>${cdi.tck-4-0.version}</version>
             <type>xml</type>
             <classifier>suite</classifier>
             <scope>test</scope>
@@ -104,8 +104,8 @@
 
         <dependency>
             <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck-3-0.version}</version>
+            <artifactId>cdi-tck-core-impl</artifactId>
+            <version>${cdi.tck-4-0.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -133,6 +133,12 @@
             <artifactId>jakarta.faces-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -160,9 +166,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
                 <configuration>
                     <!-- http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4425695 -->
-                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true ${surefire.plugin.jdk9.args}</argLine>
+                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true</argLine>
                     <forkMode>once</forkMode>
                     <properties>
                         <property>
@@ -172,13 +179,15 @@
                     </properties>
                     <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
                     <dependenciesToScan>
-                        <dependency>jakarta.enterprise:cdi-tck-impl</dependency>
+                        <dependency>jakarta.enterprise:cdi-tck-core-impl</dependency>
+                        <dependency>jakarta.enterprise:cdi-tck-web-impl</dependency>
                     </dependenciesToScan>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${surefire.version}</version>
                 <executions>
                     <execution>
                         <id>generate-test-report</id>
@@ -223,11 +232,11 @@
     </build>
 
     <profiles>
-
         <profile>
-            <id>tck20</id>
+            <!-- Copies the TCK testsuite xml artifacts into the target/suites directory for use by profiles -->
+            <id>copy-test-suites</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>!tck12</name>
                 </property>
@@ -236,17 +245,45 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-test-suites</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                         <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/tck20/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>jakarta.enterprise</groupId>
+                                    <artifactId>cdi-tck-core-impl</artifactId>
+                                    <version>${cdi.tck-4-0.version}</version>
+                                    <type>xml</type>
+                                    <classifier>suite</classifier>
+                                    <overWrite>false</overWrite>
+                                    <destFileName>tck-core-suite.xml</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>jakarta.enterprise</groupId>
+                                    <artifactId>cdi-tck-web-impl</artifactId>
+                                    <version>${cdi.tck-4-0.version}</version>
+                                    <type>xml</type>
+                                    <classifier>suite</classifier>
+                                    <overWrite>false</overWrite>
+                                    <destFileName>tck-web-suite.xml</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>target/suites</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
-
         <!-- Run the TCK in standalone mode -->
         <profile>
             <id>weld-embedded</id>
@@ -299,6 +336,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.version}</version>
                         <configuration>
                             <excludedGroups>integration,javaee-full,se</excludedGroups>
                             <systemPropertyVariables>
@@ -310,6 +348,9 @@
                                 <!-- Travis CI build workaround -->
                                 <argLine>${travis.surefire.argLine}</argLine>
                             </systemPropertyVariables>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>target/suites/tck-core-suite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -331,6 +372,49 @@
             </properties>
             <dependencies>
                 <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-web-impl</artifactId>
+                    <version>${cdi.tck-4-0.version}</version>
+                    <type>xml</type>
+                    <classifier>suite</classifier>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>jakarta.el</groupId>
+                            <artifactId>jakarta.el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>container-se-api</artifactId>
+                            <groupId>org.jboss.arquillian.container</groupId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-web-impl</artifactId>
+                    <version>${cdi.tck-4-0.version}</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>jakarta.el</groupId>
+                            <artifactId>jakarta.el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>container-se-api</artifactId>
+                            <groupId>org.jboss.arquillian.container</groupId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
                     <scope>test</scope>
@@ -351,7 +435,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-servlet</artifactId>
+                    <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
                     <version>${arquillian.version}</version>
                     <scope>test</scope>
                 </dependency>
@@ -417,12 +501,31 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.version}</version>
                         <configuration>
                             <excludedGroups>${excluded.groups}</excludedGroups>
+
+                            <argLine>
+                                --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                                --add-opens=java.base/java.io=ALL-UNNAMED
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                                --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                                --add-opens=java.base/java.security=ALL-UNNAMED
+                                --add-opens=java.base/java.util=ALL-UNNAMED
+                                --add-opens=java.management/javax.management=ALL-UNNAMED
+                                --add-opens=java.naming/javax.naming=ALL-UNNAMED
+                            </argLine>
+                            <properties>
+                                <property>
+                                    <!-- Note a 7.4.0 issue results in NPEs and useless output if you go higher than 1 here -->
+                                    <name>surefire.testng.verbose</name>
+                                    <value>0</value>
+                                </property>
+                            </properties>
                             <systemPropertyVariables>
                                 <!-- Silencing the broken code in getActiveConfiguration(),
                                     see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>wildfly-8</arquillian.launch>
+                                <arquillian.launch>wildfly-23</arquillian.launch>
                                 <!-- Specified system properties are not
                                     available during in-container test execution -->
                                 <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
@@ -430,9 +533,16 @@
                             </systemPropertyVariables>
                             <systemProperties>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
-                                <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
+                                <!-- Specifiy any garbage collection related args here -->
+                                <gc.args />
+                                <!-- This property propagates to the javaVmArguments in arquillian.xml -->
+                                <additional.vm.args>
+                                    ${surefire.plugin.jdk17.args}
+                                </additional.vm.args>
                             </systemProperties>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>target/suites/tck-web-suite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -501,8 +611,10 @@
                             <systemPropertyVariables>
                                 <arquillian.launch>weld-se</arquillian.launch>
                                 <libPath>${project.build.outputDirectory}</libPath>
-                                <surefire.plugin.jdk9.args>${surefire.plugin.jdk9.args}</surefire.plugin.jdk9.args>
                             </systemPropertyVariables>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>target/suites/tck-core-suite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -555,40 +667,7 @@
                 </plugins>
             </build>
         </profile>
-        <!--This should probably be inside TCK itself in the future, remove if present there-->
-        <profile>
-            <!-- auto-activated profile for any JDK 9+ -->
-            <id>jdk9+</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>jakarta.xml.ws</groupId>
-                    <artifactId>jakarta.xml.ws-api</artifactId>
-                    <version>${jax.api.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>rt</artifactId>
-                    <version>${jax.artifacts.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-ri</artifactId>
-                    <version>${jax.artifacts.version}</version>
-                    <type>zip</type>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>jakarta.activation</groupId>
-                    <artifactId>jakarta.activation-api</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
+
     </profiles>
 
 </project>

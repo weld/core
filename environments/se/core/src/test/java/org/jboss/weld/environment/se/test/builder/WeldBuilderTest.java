@@ -32,6 +32,7 @@ import jakarta.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.environment.se.ContainerLifecycleObserver;
@@ -184,13 +185,13 @@ public class WeldBuilderTest {
             assertEquals(11, container.select(Beta1.class).get().getVal());
             assertEquals(22, container.select(Beta2.class).get().getVal());
         }
-        // Scan the package from cdi-api.jar
-        try (WeldContainer container = weld.reset().packages(ObserverException.class).initialize()) {
+        // Scan the package from cdi-api.jar, use discovery mode ALL
+        try (WeldContainer container = weld.reset().packages(ObserverException.class).setBeanDiscoveryMode(BeanDiscoveryMode.ALL).initialize()) {
             assertFalse(container.select(ObserverException.class).isUnsatisfied());
         }
         // Scan the package recursively from cdi-api.jar
         try (WeldContainer container = weld.reset().addPackage(true, Any.class).initialize()) {
-            // There is no managed bean discovered, therefore we only check the the bean class was found
+            // There is no managed bean discovered, therefore we only check that the bean class was found
             boolean found = false;
             for (BeanDeploymentArchive beanDeploymentArchive : Container.instance(container.getId()).beanDeploymentArchives().keySet()) {
                 if (beanDeploymentArchive.getBeanClasses().contains(DefinitionException.class.getName())) {

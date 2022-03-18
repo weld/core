@@ -18,8 +18,10 @@ package org.jboss.weld.environment.se.test.builder.scanning;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 
+@Dependent
 public class EmbeddedApplication {
 
     public void process(@Observes AtomicInteger value) {

@@ -26,6 +26,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -44,6 +45,7 @@ public class EnterpriseBeanTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanTest.class))
+                .beanDiscoveryMode(BeanDiscoveryMode.ALL)
                 .addPackage(EnterpriseBeanTest.class.getPackage())
                 .addClasses(Utils.class, BeanPassivator.class);
     }
@@ -87,7 +89,7 @@ public class EnterpriseBeanTest {
     @Test
     public void testEJBRemoteInterfacesOkForObservers(Scottish scottish) {
         Feed feed = new Feed();
-        beanManager.fireEvent(feed);
+        beanManager.getEvent().select(Feed.class).fire(feed);
         Assert.assertEquals(feed, scottish.getFeed());
     }
 

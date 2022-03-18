@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processInjectionPoint.subclass;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Bar {
 
 }

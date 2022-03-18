@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.beanManager.serializability;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Foo {
 
 }

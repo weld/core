@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
 
+@Dependent
 public class JmsTemplateConfigurationProducer {
 
     public static final int LONG_RECEIVE_TIMEOUT = 3 * 3600;

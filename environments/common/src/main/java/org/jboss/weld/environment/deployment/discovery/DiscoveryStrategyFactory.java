@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.logging.CommonLogger;
@@ -46,7 +47,8 @@ public final class DiscoveryStrategyFactory {
      * @return the discovery strategy
      */
     public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap,
-        Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, boolean jandexStrategyDisabled) {
+        Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, boolean jandexStrategyDisabled,
+        BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         DiscoveryStrategy returnValue = null;
         final Iterator<Metadata<DiscoveryStrategy>> iterator = ServiceLoader.load(DiscoveryStrategy.class, resourceLoader).iterator();
         if (iterator != null && iterator.hasNext()) {
@@ -64,15 +66,18 @@ public final class DiscoveryStrategyFactory {
             } else {
                 CommonLogger.LOG.usingJandex();
                 try {
-                    returnValue = Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+                    returnValue = Jandex.createJandexDiscoveryStrategy(resourceLoader, bootstrap,
+                            initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
                 } catch (Exception e) {
                     throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
-                        Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
+                        Arrays.toString(new Object[] { resourceLoader, bootstrap,
+                                initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode }), e);
                 }
             }
         }
         if (returnValue == null) {
-            returnValue = new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+            returnValue = new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations,
+                    emptyBeansXmlDiscoveryMode);
         }
         return returnValue;
     }

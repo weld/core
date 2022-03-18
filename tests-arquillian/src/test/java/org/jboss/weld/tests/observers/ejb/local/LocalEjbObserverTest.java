@@ -43,7 +43,7 @@ public class LocalEjbObserverTest {
     @Test
     public void testRemoteEjbObserverNotified(BeanManager beanManager) {
         FooBean.observations.set(0);
-        beanManager.fireEvent(new Giraffe());
+        beanManager.getEvent().select(Giraffe.class).fire(new Giraffe());
         assertEquals(2, FooBean.observations.get());
     }
 

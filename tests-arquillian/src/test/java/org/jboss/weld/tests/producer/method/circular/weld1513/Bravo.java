@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.producer.method.circular.weld1513;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class Bravo {
 
     @Inject

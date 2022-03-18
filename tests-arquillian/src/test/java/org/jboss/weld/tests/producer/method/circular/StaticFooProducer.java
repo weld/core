@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.producer.method.circular;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
+@Dependent
 class StaticFooProducer {
 
     @Inject

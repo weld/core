@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.binding.array;
 
+import jakarta.enterprise.context.Dependent;
+
 @ArrayBinding(1)
+@Dependent
 public class Foo {
 
 }

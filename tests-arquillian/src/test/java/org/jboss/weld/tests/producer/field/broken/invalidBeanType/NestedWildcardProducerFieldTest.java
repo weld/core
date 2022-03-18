@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.producer.field.broken.invalidBeanType;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.DefinitionException;
 
@@ -50,6 +51,7 @@ public class NestedWildcardProducerFieldTest {
     private static class Foo<T> {
     }
 
+    @Dependent
     public static class Producer {
         @Produces
         public Foo<Foo<?>> producerField;

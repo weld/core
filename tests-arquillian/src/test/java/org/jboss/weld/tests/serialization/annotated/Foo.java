@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.tests.serialization.annotated;
 
+import jakarta.enterprise.context.Dependent;
+
 @FooAnnotation
+@Dependent
 public class Foo {
 
     @FooAnnotation

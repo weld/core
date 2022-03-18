@@ -42,11 +42,6 @@ public class FooBean implements Bean<Foo>, Prioritized {
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public Foo create(CreationalContext<Foo> creationalContext) {
         return new Foo(FooBean.class.getSimpleName());
     }

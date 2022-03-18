@@ -17,8 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.circularInvocation;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.InvocationContext;
 
@@ -26,7 +26,7 @@ import jakarta.interceptor.InvocationContext;
  * @author Marius Bogoevici
  */
 @AllPurpose
-@Singleton
+@ApplicationScoped
 @Succeeding
 public class SomeBeanImplWithSucceedingBean implements SomeBean {
 

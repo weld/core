@@ -61,11 +61,6 @@ public abstract class IsolatedForwardingBean<T> extends ForwardingBeanAttributes
     }
 
     @Override
-    public boolean isNullable() {
-        return delegate().isNullable();
-    }
-
-    @Override
     public int hashCode() {
         return delegate().hashCode();
     }

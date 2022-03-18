@@ -17,8 +17,10 @@
 package org.jboss.weld.tests.resolution.circular;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 class Foo {
 
     public static boolean success;

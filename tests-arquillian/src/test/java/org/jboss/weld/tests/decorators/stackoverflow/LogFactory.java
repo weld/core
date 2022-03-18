@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.decorators.stackoverflow;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import java.util.logging.Logger;
  *
  * @author wayne
  */
+@Dependent
 public class LogFactory {
     @Produces
     public Logger getLogger(InjectionPoint ip) {

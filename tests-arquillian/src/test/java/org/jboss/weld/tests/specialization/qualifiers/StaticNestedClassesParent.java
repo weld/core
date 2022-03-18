@@ -16,15 +16,18 @@
  */
 package org.jboss.weld.tests.specialization.qualifiers;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 public class StaticNestedClassesParent {
     @Admin
+    @Dependent
     public static class StaticSpecializationBean {
 
     }
 
     @Specializes
+    @Dependent
     public static class StaticMockSpecializationBean extends StaticSpecializationBean {
 
     }

@@ -53,11 +53,6 @@ public class MyExtension implements Extension {
             }
 
             @Override
-            public boolean isNullable() {
-                return false;
-            }
-
-            @Override
             public Set<Type> getTypes() {
                 return new HashSet<Type>(Collections.singletonList(getBeanClass()));
             }

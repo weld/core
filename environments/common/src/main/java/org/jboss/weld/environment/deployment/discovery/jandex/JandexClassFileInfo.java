@@ -107,11 +107,6 @@ public class JandexClassFileInfo implements ClassFileInfo {
     }
 
     @Override
-    public boolean isTopLevelClass() {
-        return classInfo.nestingType().equals(ClassInfo.NestingType.TOP_LEVEL);
-    }
-
-    @Override
     public ClassFileInfo.NestingType getNestingType() {
         NestingType result = null;
         switch (classInfo.nestingType()) {

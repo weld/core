@@ -18,6 +18,7 @@ package org.jboss.weld.tests.producer.method;
 
 import java.lang.reflect.Member;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
@@ -29,6 +30,7 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
  *
  * @author David Allen
  */
+@Dependent
 public class BarProducer {
     private static Bar disposedBar;
     private static Member producedInjection;

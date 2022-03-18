@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.disposer.withStaticProducer;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class FooProducer {
 
     public static boolean disposed = false;

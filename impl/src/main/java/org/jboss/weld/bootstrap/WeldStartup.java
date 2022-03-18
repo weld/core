@@ -214,16 +214,6 @@ public class WeldStartup {
             // add our own default impl that supports class defining
             registry.add(ProxyServices.class, new WeldDefaultProxyServices());
         }
-        // all implementations of ProxyServices need to support class defining
-        ProxyServices proxyServices = registry.get(ProxyServices.class);
-        if (!proxyServices.supportsClassDefining()) {
-            throw BootstrapLogger.LOG.proxyServicesWithoutClassDefining(proxyServices.getClass().getName());
-        }
-        // if we use our own ProxyServices impl, we need to crack open CL for JDK 8 impl
-        // note that this is no-op call for JDK 11+
-        if (proxyServices instanceof WeldDefaultProxyServices) {
-            WeldDefaultProxyServices.makeClassLoaderMethodsAccessible();
-        }
         if (!registry.contains(SecurityServices.class)) {
             registry.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
         }
@@ -449,7 +439,6 @@ public class WeldStartup {
         }
         for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.getBeanDeployer().processProducerAttributes();
-            deployment.getBeanDeployer().createNewBeans();
         }
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.deploySpecialized(environment);

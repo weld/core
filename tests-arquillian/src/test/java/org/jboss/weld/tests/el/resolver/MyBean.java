@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named("com.acme.settings")
+@Dependent
 public class MyBean {
 
     public String getFoo() {

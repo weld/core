@@ -38,7 +38,7 @@ public class NamedParameterInjectionPointTest {
 
     @Test
     public void testNamedObserverMethodInjectionPointAllowed(BeanManager beanManager) throws Exception {
-        beanManager.fireEvent(new Event());
+        beanManager.getEvent().select(Event.class).fire(new Event());
     }
 
 }

@@ -1,6 +1,9 @@
 package org.jboss.weld.tests.event.observer.superclass;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 @Disabled
+@ApplicationScoped
 public class DisabledTestObserver extends TestObserver {
 
     @Override

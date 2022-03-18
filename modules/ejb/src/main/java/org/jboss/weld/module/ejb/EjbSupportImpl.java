@@ -17,7 +17,6 @@
 package org.jboss.weld.module.ejb;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
 
@@ -139,26 +138,6 @@ class EjbSupportImpl implements EjbSupport {
         final SlimAnnotatedType<T> type = transformer.getBackedAnnotatedType(descriptor.getBeanClass(), manager.getId());
         manager.getServices().get(SlimAnnotatedTypeStore.class).put(type);
         return createSessionBean(descriptor, type, environment, manager, transformer);
-    }
-
-    @Override
-    public void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
-        final SlimAnnotatedTypeStore store = manager.getServices().get(SlimAnnotatedTypeStore.class);
-        final ClassTransformer classTransformer = manager.getServices().get(ClassTransformer.class);
-        for (Type type : environment.getNewBeanTypes()) {
-            Class<?> clazz = Reflections.getRawType(type);
-            if (isEjb(clazz)) {
-                EnhancedAnnotatedType<?> enhancedType = classTransformer.getEnhancedAnnotatedType(clazz, type, manager.getId());
-                InternalEjbDescriptor<?> descriptor = ejbDescriptors.getUnique(clazz);
-                environment.addSessionBean(createNewSessionBean(enhancedType, descriptor, manager, store));
-            }
-        }
-    }
-
-    private <T> SessionBean<T> createNewSessionBean(EnhancedAnnotatedType<?> type, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, SlimAnnotatedTypeStore store) {
-        store.put(type.slim());
-        final BeanAttributes<T> attributes = Reflections.cast(SessionBeans.createBeanAttributesForNew(type, ejbDescriptor, beanManager, type.getJavaClass()));
-        return NewSessionBean.of(attributes, ejbDescriptor, beanManager);
     }
 
     @Override

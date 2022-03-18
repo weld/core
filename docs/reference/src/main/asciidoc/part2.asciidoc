@@ -5,8 +5,6 @@ endif::[]
 [[part-2]]
 = Getting Start with Weld, the CDI Reference Implementation
 
-[partintro]
---
 Weld, the CDI Reference Implementation (RI), can be downloaded from the
 http://weld.cdi-spec.org/download[download page]. Information about the
 Weld source code repository and instructions about how to obtain and
@@ -21,7 +19,6 @@ Weld comes with an extensive library of examples, which are a great
 starting point from which to learn CDI. In addition, a number of
 quickstarts featuring CDI can be found at the
 http://www.jboss.org/developer/quickstarts.html[JBoss Developer site]
---
 
 include::gettingstarted.asciidoc[]
 

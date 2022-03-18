@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.broken.passivation;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.SessionScoped;
 
 /**
@@ -25,6 +26,7 @@ import jakarta.enterprise.context.SessionScoped;
  * @author Jozef Hartinger
  * 
  */
+@Dependent
 class Laptop {
 
 }

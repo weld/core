@@ -171,7 +171,7 @@ public class Observers {
             return false;
         }
         for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
-            if (NOTIFY_METHOD_NAME.equals(method.getName()) && method.getParameterTypes().length == 1) {
+            if (NOTIFY_METHOD_NAME.equals(method.getName()) && method.getParameterCount() == 1) {
                 return true;
             }
         }

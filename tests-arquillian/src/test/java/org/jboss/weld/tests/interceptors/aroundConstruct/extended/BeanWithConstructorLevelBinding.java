@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
 import org.jboss.weld.test.util.ActionSequence;
 
 @AroundInvokeBinding
+@Dependent
 public class BeanWithConstructorLevelBinding {
 
     @Inject

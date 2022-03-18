@@ -35,11 +35,11 @@ public class AnnotatedTypeEjbExtension implements Extension {
         TestAnnotatedTypeBuilder<Lathe> builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
         builder.addToClass(new AnnotationLiteral<SmallLathe>() {
         });
-        beforeBeanDiscovery.addAnnotatedType(builder.create());
+        beforeBeanDiscovery.addAnnotatedType(builder.create(), Lathe.class.getSimpleName());
         builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
         builder.addToClass(new AnnotationLiteral<BigLathe>() {
         });
-        beforeBeanDiscovery.addAnnotatedType(builder.create());
+        beforeBeanDiscovery.addAnnotatedType(builder.create(), BigLathe.class.getSimpleName());
     }
 
     /**

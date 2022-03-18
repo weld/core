@@ -18,8 +18,10 @@ package org.jboss.weld.tests.specialization.weld1651.broken;
 
 import java.util.Collection;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 class ProducerBean2 {
 
     @Produces

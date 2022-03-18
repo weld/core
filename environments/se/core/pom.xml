@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-se-parent</artifactId>
         <groupId>org.jboss.weld.se</groupId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -42,6 +42,11 @@
         <dependency>
             <groupId>org.jboss.weld.environment</groupId>
             <artifactId>weld-environment-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-lite-extension-translator</artifactId>
         </dependency>
 
         <dependency>
@@ -101,6 +106,7 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <optional>true</optional>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.jboss.classfilewriter</groupId>
@@ -126,7 +132,6 @@
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
-                <version>1.12.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -165,13 +170,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>${surefire.plugin.jdk9.args}</argLine>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -190,7 +188,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>${surefire.plugin.jdk9.args} ${jacoco.agent}</argLine>
+                            <argLine>${jacoco.agent}</argLine>
                         </configuration>
                     </plugin>
                     <plugin>

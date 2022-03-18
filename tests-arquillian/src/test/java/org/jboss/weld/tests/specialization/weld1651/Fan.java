@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Tomas Remes
  */
+@Dependent
 public class Fan<T extends Music> {
 }

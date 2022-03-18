@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.specialization.extension.veto;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Foo {
 
 }

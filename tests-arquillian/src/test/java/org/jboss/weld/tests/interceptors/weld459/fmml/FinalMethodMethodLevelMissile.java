@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.weld459.fmml;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class FinalMethodMethodLevelMissile {
     @FooBinding
     public final void fire() {

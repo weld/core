@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.decorators.defaultmethod;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class DecoratedBean implements Decorated {
 
     public void doUndecorated() {

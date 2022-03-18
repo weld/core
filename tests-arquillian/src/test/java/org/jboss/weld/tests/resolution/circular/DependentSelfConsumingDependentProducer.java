@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.resolution.circular;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 class DependentSelfConsumingDependentProducer {
     @SelfConsumingDependent
     Violation violation;

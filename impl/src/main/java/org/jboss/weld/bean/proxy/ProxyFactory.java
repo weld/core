@@ -108,6 +108,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     protected static final String INVOKE_METHOD_NAME = "invoke";
     protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
     static final String JAVA = "java";
+    static final String JAKARTA = "jakarta";
     static final String NO_PACKAGE = "the class package is null or empty";
     static final String SIGNED = "the class is signed";
     private static final Set<ProxiedMethodFilter> METHOD_FILTERS;
@@ -385,6 +386,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         }
         if (proxyClassName.startsWith(JAVA)) {
             proxyClassName = proxyClassName.replaceFirst(JAVA, WELD_PROXY_PREFIX);
+        } else if (proxyClassName.startsWith(JAKARTA)) {
+            proxyClassName = proxyClassName.replaceFirst(JAKARTA, WELD_PROXY_PREFIX);
         }
         Class<T> proxyClass = null;
         Class<?> originalClass = bean != null ? bean.getBeanClass() : proxiedBeanType;
@@ -483,7 +486,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
         ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
 
-        if (proxiedBeanType.getPackage() == null || proxiedBeanType.equals(Object.class)) {
+        if (proxiedBeanType.getPackage() == null || proxiedBeanType.getPackage().getName().isEmpty() || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
         } else if (System.getSecurityManager() != null) {
             ProtectionDomainCache cache = Container.instance(contextId).services().get(ProtectionDomainCache.class);

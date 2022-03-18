@@ -18,9 +18,12 @@
 package org.jboss.weld.tests.interceptors;
 
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
+@Dependent
 public class BallImpl implements Ball {
     @Shot
     public void shoot() {

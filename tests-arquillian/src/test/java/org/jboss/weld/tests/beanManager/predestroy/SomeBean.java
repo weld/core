@@ -22,7 +22,9 @@
 package org.jboss.weld.tests.beanManager.predestroy;
 
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class SomeBean {
 
     public static boolean destroyCalled = false;

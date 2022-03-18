@@ -45,7 +45,7 @@ public class InterceptedObserverMethodTest {
     @Test
     public void testInterceptedObserver(BeanManager beanManager) {
         ActionSequence.reset();
-        beanManager.fireEvent("bar", Juicy.Literal.INSTANCE);
+        beanManager.getEvent().select(String.class, Juicy.Literal.INSTANCE).fire("bar");
         assertEquals(8, ActionSequence.getSequenceSize());
         ActionSequence.assertSequenceDataContainsAll(PublicObserver.class.getName(), PrivateObserver.class.getName(), ProtectedObserver.class.getName(),
                 PackagePrivateObserver.class.getName(), SecureInterceptor.class.getName());

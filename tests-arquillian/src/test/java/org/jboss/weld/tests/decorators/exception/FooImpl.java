@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.decorators.exception;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class FooImpl implements Foo {
 
     @Override

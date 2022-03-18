@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.named;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Named
+@Dependent
 public class Carp implements Fish {
 }

@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.proxy.weld1766;
 
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Inject;
 
@@ -55,22 +53,9 @@ public class ProducerProxyTest {
     @Qualifier2
     private TestComponent customScopedComponent;
 
-    @Produces
-    @Qualifier1
-    @RequestScoped
-    public TestComponent produceRequestScopedComponent() {
-        return new TestComponent();
-    }
-
-    @Produces
-    @Qualifier2
-    @CustomScoped
-    public TestComponent produceCustomScopedComponent() {
-        return new TestComponent();
-    }
-
     @Inject
     private CustomScopeExtension customScopeExtension;
+
 
     @Test
     public void testCustomScopedComponent() {

@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.producer.field.broken.invalidBeanType;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.DefinitionException;
 
@@ -47,6 +48,7 @@ public class MultiDimensionalTypeVariableArrayProducerFieldTest {
         // should throw definition exception
      }
 
+    @Dependent
     public static class Producer<T> {
         @Produces
         private T[][] producerField;

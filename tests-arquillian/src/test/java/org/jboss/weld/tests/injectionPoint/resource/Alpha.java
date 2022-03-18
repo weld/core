@@ -19,8 +19,10 @@ package org.jboss.weld.tests.injectionPoint.resource;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.test.util.ActionSequence;
 
+@Dependent
 public class Alpha extends Bravo {
 
     private SessionBean sessionBean;

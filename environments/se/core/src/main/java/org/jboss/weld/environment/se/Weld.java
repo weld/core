@@ -89,6 +89,8 @@ import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.environment.util.Reflections;
+import org.jboss.weld.lite.extension.translator.BuildCompatibleExtensionLoader;
+import org.jboss.weld.lite.extension.translator.LiteExtensionTranslator;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -200,6 +202,15 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public static final String DEV_MODE_SYSTEM_PROPERTY = "org.jboss.weld.development";
 
     /**
+     * Standard behavior is that empty {@code beans.xml} is treated as discovery mode {@code annotated}.
+     * This configuration property allows to change the behavior to discovery mode {@code all} which is how it used to work prior to
+     * CDI 4.0.
+     * <p/>
+     * Note that this option is temporary and servers to easy migration. As such, it will be eventually removed.
+     */
+    public static final String EMPTY_BEANS_XML_DISCOVERY_MODE_ALL = "org.jboss.weld.se.discovery.emptyBeansXmlModeAll";
+
+    /**
      * By default, Weld automatically registers shutdown hook during initialization. If set to false, the registration of a shutdown hook is skipped.
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
@@ -247,7 +258,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     protected final Set<Class<? extends Annotation>> extendedBeanDefiningAnnotations;
 
-    protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ALL;
+    protected BeanDiscoveryMode beanDiscoveryMode = BeanDiscoveryMode.ANNOTATED;
 
     private final List<Metadata<String>> selectedAlternatives;
 
@@ -357,7 +368,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * Scanning may also have negative impact on bootstrap performance.
      * </p>
      *
-     * @param classes
+     * @param packageClasses classes whose packages are to be added to synthetic bean archive
      * @return self
      */
     public Weld packages(Class<?>... packageClasses) {
@@ -685,7 +696,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Sets the bean discovery mode for synthetic bean archive. Default mode is ALL.
+     * Sets the bean discovery mode for synthetic bean archive. Default mode is ANNOTATED.
      * @param mode bean discovery mode in a form of an enum from {@link org.jboss.weld.bootstrap.spi.BeanDiscoveryMode}. Accepted values are ALL, ANNOTATED
      *
      * @return  self
@@ -944,6 +955,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
 
+        final BeanDiscoveryMode emptyBeansXmlDiscoveryMode = isEnabled(EMPTY_BEANS_XML_DISCOVERY_MODE_ALL, false) ? BeanDiscoveryMode.ALL : BeanDiscoveryMode.ANNOTATED;
         final Iterable<Metadata<Extension>> extensions = getExtensions();
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final Deployment deployment;
@@ -959,9 +971,10 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
         if (discoveryEnabled) {
             DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
-                   beanDefiningAnnotations, isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false));
+                   beanDefiningAnnotations, isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false),
+                    emptyBeansXmlDiscoveryMode);
             if (isImplicitScanEnabled()) {
-                strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
+                strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap, emptyBeansXmlDiscoveryMode));
             }
             beanDeploymentArchives.addAll(strategy.performDiscovery());
             ClassFileServices classFileServices = strategy.getClassFileServices();
@@ -1079,6 +1092,16 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         if (isEnabled(DEV_MODE_SYSTEM_PROPERTY, false)) {
             // The development mode is enabled - register the Probe extension
             result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
+        }
+        // Register org.jboss.weld.lite.extension.translator.LiteExtensionTranslator in order to be able to execute build compatible extensions
+        // Note that we only register this if we detect any BuildCompatibleExtension implementations
+        if (!BuildCompatibleExtensionLoader.getBuildCompatibleExtensions().isEmpty()) {
+            try {
+                result.add(new MetadataImpl<Extension>(SecurityActions.newInstance(LiteExtensionTranslator.class),
+                        SYNTHETIC_LOCATION_PREFIX + LiteExtensionTranslator.class.getName()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         if (!containerLifecycleObservers.isEmpty()) {
             result.add(new MetadataImpl<Extension>(new ContainerLifecycleObserverExtension(containerLifecycleObservers),

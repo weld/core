@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.contexts.creational;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 @SuppressWarnings("unused")
+@Dependent
 public class InjectedBean {
 
     @Inject

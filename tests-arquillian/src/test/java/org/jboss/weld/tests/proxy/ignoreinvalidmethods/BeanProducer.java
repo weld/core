@@ -19,8 +19,10 @@ package org.jboss.weld.tests.proxy.ignoreinvalidmethods;
 import java.util.HashMap;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class BeanProducer {
 
     @Juicy

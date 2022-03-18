@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.decorators.proxyable;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * Not proxyable since default constructor is private.
  */
+@Dependent
 public class BeanWithPrivateNoArgsConstructor implements DecoratedBean {
 
     private BeanWithPrivateNoArgsConstructor() {

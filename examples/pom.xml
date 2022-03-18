@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.jboss.weld.examples</groupId>
     <artifactId>weld-examples-parent</artifactId>
-  <version>4.0.2-SNAPSHOT</version>
+  <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Weld Examples</name>
 
@@ -105,8 +105,8 @@
         <servlet.api.version>5.0.0</servlet.api.version>
         <jsf.api.version>3.0.0</jsf.api.version>
         <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>2.0.2.Final</wildfly.plugin.version>
-        <uel.version>4.0.1</uel.version>
+        <wildfly.plugin.version>2.1.0.Final</wildfly.plugin.version>
+        <uel.version>4.0.2</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
     </properties>
@@ -201,7 +201,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.3.2</version>
                     <configuration>
                         <useCache>false</useCache>
                     </configuration>

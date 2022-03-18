@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processSyntheticAnnotatedType;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Apple {
 
 }

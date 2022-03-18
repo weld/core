@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.named.ambiguous.case1;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named("foo.bar")
+@Dependent
 public class Bean2 {
 
 }

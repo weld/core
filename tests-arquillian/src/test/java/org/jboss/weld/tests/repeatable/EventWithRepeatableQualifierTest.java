@@ -47,14 +47,14 @@ public class EventWithRepeatableQualifierTest {
     @Test
     public void testWithBeanManager(BeanManager manager) {
         observer.reset();
-        manager.fireEvent(EVENT, new Literal("foo"), new Literal("bar"));
+        manager.getEvent().select(String.class, new Literal("foo"), new Literal("bar")).fire(EVENT);
         Assert.assertTrue(observer.getAll().contains(EVENT));
         Assert.assertTrue(observer.getFoo().contains(EVENT));
         Assert.assertTrue(observer.getFooBar().contains(EVENT));
         Assert.assertFalse(observer.getFooBarBaz().contains(EVENT));
         Assert.assertFalse(observer.getFooQux().contains(EVENT));
         observer.reset();
-        manager.fireEvent(EVENT, new Literal("foo"), new Literal("bar"), new Literal("baz"));
+        manager.getEvent().select(String.class, new Literal("foo"), new Literal("bar"), new Literal("baz")).fire(EVENT);
         Assert.assertTrue(observer.getAll().contains(EVENT));
         Assert.assertTrue(observer.getFoo().contains(EVENT));
         Assert.assertTrue(observer.getFooBar().contains(EVENT));

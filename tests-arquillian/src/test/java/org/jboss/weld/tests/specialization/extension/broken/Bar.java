@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.specialization.extension.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 @Specializes
+@Dependent
 public class Bar extends Foo {
 
 }

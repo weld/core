@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.specialization.qualifiers;
 
+import jakarta.enterprise.context.Dependent;
+
 @Admin
+@Dependent
 public class SpecializationBean {
 }

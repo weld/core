@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.event.async;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.ObservesAsync;
 
+@Dependent
 class Recipient {
 
     public void observe(@ObservesAsync Message message) {

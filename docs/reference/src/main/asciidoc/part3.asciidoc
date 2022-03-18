@@ -5,8 +5,6 @@ endif::[]
 [[part-3]]
 = Loose coupling with strong typing
 
-[partintro]
---
 The first major theme of CDI is _loose coupling_. We've already seen
 three means of achieving loose coupling:
 
@@ -81,7 +79,6 @@ that these features exist to make our code both easier to validate and
 more understandable. Most of the time you don't ever really _need_ to
 use these features, but if you use them wisely, you'll come to
 appreciate their power.
---
 
 include::producermethods.asciidoc[]
 

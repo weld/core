@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.alternatives.samePriority;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Alternative;
 
 /**
@@ -25,6 +26,7 @@ import jakarta.enterprise.inject.Alternative;
  */
 @Alternative
 @Priority(10)
+@ApplicationScoped
 public class FooAlt2 extends Foo{
 
 }

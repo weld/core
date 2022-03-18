@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -141,7 +141,10 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>${surefire.plugin.jdk9.args} -Xmx128m</argLine>
+                            <!-- Needed because of setAccessible(true) in ThreadLocalTestCase -->
+                            <argLine>
+                                ${surefire.plugin.jdk17.args}
+                            </argLine>
                         </configuration>
                     </plugin>
                     <plugin>

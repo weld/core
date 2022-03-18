@@ -29,14 +29,7 @@ public class InjectingBean implements Serializable {
     @Lazy
     private Dog dog;
 
-    @Inject
-    private Cat cat;
-
     public Dog getDog() {
         return dog;
-    }
-
-    public Cat getCat() {
-        return cat;
     }
 }

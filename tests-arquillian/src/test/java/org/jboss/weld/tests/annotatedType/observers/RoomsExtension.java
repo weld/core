@@ -46,9 +46,10 @@ public class RoomsExtension implements Extension
    private void addRoomAnnotatedTypes(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
       
       AnnotatedType<Room> wrapped = bm.createAnnotatedType(Room.class);
-      
-      bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, "hall"));
-      bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, "pit"));
+      String hallID = "hall";
+      String pitID = "pit";
+      bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, hallID), hallID);
+      bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, pitID), pitID);
    }
    
    private static class RoomAnnotatedTypeWrapper implements AnnotatedType<Room> {

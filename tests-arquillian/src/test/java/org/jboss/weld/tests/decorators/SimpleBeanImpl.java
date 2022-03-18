@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.tests.decorators;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
+@Dependent
 public class SimpleBeanImpl implements SimpleBean {
 
     private boolean invoked = false;

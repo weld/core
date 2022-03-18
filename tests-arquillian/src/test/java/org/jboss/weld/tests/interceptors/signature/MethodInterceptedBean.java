@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
+import jakarta.enterprise.context.Dependent;
 import org.junit.Assert;
 
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
@@ -26,6 +27,7 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 @Intercept
+@Dependent
 public class MethodInterceptedBean {
 
     public String foo() {

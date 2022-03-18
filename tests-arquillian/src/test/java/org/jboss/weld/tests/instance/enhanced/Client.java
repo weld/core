@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2016, Red Hat, Inc., and individual contributors
+ * Copyright 2021, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,39 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.tests.instance.enhanced;
+
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 import java.math.BigDecimal;
 
-import jakarta.inject.Inject;
-
-import org.jboss.weld.inject.WeldInstance;
-
 /**
+ * A version of {@link Client} that uses purely CDI interfaces
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
+@Dependent
 public class Client {
 
     @Inject
-    WeldInstance<Alpha> alphaInstance;
+    Instance<Alpha> alphaInstance;
 
     @Inject
-    WeldInstance<Object> instance;
+    Instance<Object> instance;
 
     @Inject
     @Juicy
-    WeldInstance<BigDecimal> bigDecimalInstance;
+    Instance<BigDecimal> bigDecimalInstance;
 
-    WeldInstance<Alpha> getAlphaInstance() {
+    Instance<Alpha> getAlphaInstance() {
         return alphaInstance;
     }
 
-    WeldInstance<BigDecimal> getBigDecimalInstance() {
+    Instance<BigDecimal> getBigDecimalInstance() {
         return bigDecimalInstance;
     }
 
-    WeldInstance<Object> getInstance() {
+    Instance<Object> getInstance() {
         return instance;
     }
 }

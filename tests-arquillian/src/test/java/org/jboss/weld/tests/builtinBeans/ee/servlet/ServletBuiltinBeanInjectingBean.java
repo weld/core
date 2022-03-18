@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee.servlet;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+@Dependent
 public class ServletBuiltinBeanInjectingBean {
 
     @Inject

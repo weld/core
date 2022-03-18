@@ -7,6 +7,7 @@ import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
@@ -19,6 +20,7 @@ public class BeansXmlTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeansXmlTest.class))
                 .alternate(Bar.class)
+                .beanDiscoveryMode(BeanDiscoveryMode.ALL)
                 .addPackage(BeansXmlTest.class.getPackage());
     }
 

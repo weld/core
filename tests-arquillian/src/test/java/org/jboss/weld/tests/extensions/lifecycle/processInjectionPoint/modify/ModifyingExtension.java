@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.New;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
@@ -74,22 +73,6 @@ public class ModifyingExtension implements Extension {
             @Override
             public Type getType() {
                 return Animal.class;
-            }
-        });
-    }
-
-    public void overrideFieldInjectionPointToTriggerNewBeanCreation(@Observes ProcessInjectionPoint<InjectingBean, Cat> event) {
-        final InjectionPoint delegate = event.getInjectionPoint();
-        event.setInjectionPoint(new ForwardingInjectionPoint() {
-
-            @Override
-            protected InjectionPoint delegate() {
-                return delegate;
-            }
-
-            @Override
-            public Set<Annotation> getQualifiers() {
-                return Collections.<Annotation> singleton(New.Literal.INSTANCE);
             }
         });
     }

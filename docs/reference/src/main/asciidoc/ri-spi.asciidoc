@@ -23,6 +23,7 @@ work in any container supporting the Servlet API.
 All SPIs and APIs described have extensive JavaDoc, which spell out the
 detailed contract between the container and Weld.
 
+[[the_weld_spi]]
 === The Weld SPI
 
 The Weld SPI is located in the `weld-spi` module, and packaged as
@@ -175,6 +176,7 @@ should be loaded by the application. To aid the container integrator,
 Weld provides the method `Bootstrap.loadExtensions(ClassLoader)` which
 will load the extensions for the specified classloader.
 
+[[ee_modules]]
 ===== EE Modules
 
 In Java EE environment, description of each Java EE module that contains bean archives
@@ -226,16 +228,16 @@ the integrator.
 The integrator may choose to provide all EE resource injection services
 themselves, using another library or framework. In this case the
 integrator should use the `EE` environment, and implement the
-<<_injection_services>> SPI.
+<<injection_services>> SPI.
 
 Alternatively, the integrator may choose to use CDI to provide EE
 resource injection. In this case, the `EE_INJECT` environment should be
-used, and the integrator should implement the <<_ejb_services>>, <<_resource_services>>
-and <<_jpa_services>>.
+used, and the integrator should implement the <<ejb_services>>, <<resource_services>>
+and <<jpa_services>>.
 
 IMPORTANT: CDI only provides annotation-based EE resource injection; if you wish to
 provide deployment descriptor (e.g. `ejb-jar.xml`) injection, you must
-use <<_injection_services>>.
+use <<injection_services>>.
 
 If the container performs EE resource injection, the injected resources
 must be serializable. If EE resource injection is provided by Weld, the
@@ -272,6 +274,7 @@ public interface ResourceReference<T> {
 }
 ---------------------------------------
 
+[[ejb_services]]
 ==== EJB services
 
 EJB services are split between two interfaces which are both per-BDA.
@@ -288,7 +291,7 @@ removed.
 `EjbInjectionServices.registerEjbInjectionPoint(InjectionPoint injectionPoint)`
 registers an `@EJB` injection point (on a managed bean) and returns a
 `ResourceReferenceFactory` as explained above. This service is not
-required if the implementation of <<_injection_services>> takes care of `@EJB` injection.
+required if the implementation of <<injection_services>> takes care of `@EJB` injection.
 
 NOTE: `EJBInjectionServices.resolveEjb(InjectionPoint ij)`, which allows
 `@EJB` injection point to be resolved without prior registration was
@@ -297,6 +300,7 @@ should be registered properly using
 `EjbInjectionServices.registerEjbInjectionPoint(InjectionPoint injectionPoint)`
 instead.
 
+[[jpa_services]]
 ==== JPA services
 
 Just as EJB resolution is delegated to the container, resolution of
@@ -305,7 +309,7 @@ Just as EJB resolution is delegated to the container, resolution of
 
 To allow JPA integration, the `org.jboss.weld.injection.spi.JpaInjectionServices` interface
 should be implemented. This service is not required if the implementation of
-<<_injection_services>> takes care of `@PersistenceContext` injection.
+<<injection_services>> takes care of `@PersistenceContext` injection.
 
 [NOTE]
 ====
@@ -343,12 +347,13 @@ active for the requesting thread, the `isTransactionActive()` method can
 be used. The SPI implementation should query the same JTA transaction
 manager used for the EJBs.
 
+[[resource_services]]
 ==== Resource Services
 
 The resolution of `@Resource` (for injection into managed beans) is
 delegated to the container. You must provide an implementation of
 `ResourceInjectionServices` which provides these operations. This
-service is not required if the implementation of <<_injection_services>> takes care of
+service is not required if the implementation of <<injection_services>> takes care of
 `@Resource` injection.
 
 [NOTE]
@@ -377,8 +382,9 @@ following methods:
 The resolution of `@WebServiceRef` (for injection into managed beans) is
 delegated to the container. An integrator must provide an implementation
 of `JaxwsInjectionServices`. This service is not required if the
-implementation of <<_injection_services>> takes care of `@WebServiceRef` injection.
+implementation of <<injection_services>> takes care of `@WebServiceRef` injection.
 
+[[injection_services]]
 ==== Injection Services
 
 An integrator may wish to use `InjectionServices` to provide additional
@@ -926,14 +932,14 @@ an integrator to eliminate the overhead of CDI context activation for
 certain types of requests where CDI is known not to be needed (e.g.
 request for a static resource).
 
-Note that when the service is provided, link:#context.mapping[user
-configuration] is overriden.
+Note that when the service is provided, user
+configuration is overriden.
 
 ===== Non-portable mode
 
 The
 http://docs.jboss.org/weld/javadoc/2.1/weld-spi/org/jboss/weld/bootstrap/spi/BootstrapConfiguration.html#isNonPortableModeEnabled%28%29[BootstrapConfiguration]
-service now allows the link:#non-portable.mode[non-portable mode] to be
+service now allows the non-portable mode to be
 enabled by the integrator.
 
 ===== Singleton SPI
@@ -980,7 +986,7 @@ SPI was added. The SPI allows an integrator to obtain a customized
 * http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/bootstrap/api/CDI11Bootstrap.html#startContainer%28java.lang.String,%20org.jboss.weld.bootstrap.api.Environment,%20org.jboss.weld.bootstrap.spi.Deployment%29[CDIBootstrap.startContainer()] method, which allows a container identifier to be passed as a parameter, was added.
 * The contract of the http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/api/SessionObjectReference.html#getBusinessObject%28java.lang.Class%29[SessionObjectReference.getBusinessObject()] method was altered. Weld may now call
 this method passing in a remote view of a session bean.
-* The link:#cdiProvider[CDI provider implementation] was reimplemented
+* The CDI provider implementation was reimplemented
 and is no longer compatible with the previous version.
 
 ==== Migration from Weld 2.2 to 2.3
@@ -995,13 +1001,13 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 |======================================================
 
 * `EEModuleDescriptor` which describes Java EE modules has been introduced and is now required as part of deployment structure metadata.
-  See <<_ee_modules>> for details.
+  See <<ee_modules>> for details.
 
 * Java 6 support was dropped. Java 7 or newer is now required for both compile time and runtime.
 
 * An observer for `@Initialized(ConversationScoped.class)` or `@Destroyed(ConversationScoped.class)` event no longer forces eager conversation context initialization. See also
-ifndef::generate-index-link[<<_lazy_and_eager_conversation_context_initialization>>]
-ifdef::generate-index-link[link:scopescontexts.html#_lazy_and_eager_conversation_context_initialization[Lazy and eager conversation context initialization]]
+ifndef::generate-index-link[<<lazy_and_eager_conversation_context_initialization>>]
+ifdef::generate-index-link[link:scopescontexts.html#lazy_and_eager_conversation_context_initialization[Lazy and eager conversation context initialization]]
 .
 
 * `ScheduledExecutorServiceFactory` is deprecated and no default implementation is provided by default. This service has not been used by Weld internals at least since version 1.1.0.Final.

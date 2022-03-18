@@ -17,7 +17,9 @@
 package org.jboss.weld.environment.se.test.context.requestScope.postConstruct;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class Gama {
 
     public void ping(){

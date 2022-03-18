@@ -31,7 +31,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
 
     @Override
     protected List<AnnotatedParameter<X>> initParameters(Constructor<X> member, SharedObjectCache sharedObjectCache) {
-        int length = member.getParameterTypes().length;
+        int length = member.getParameterCount();
         if (length == member.getGenericParameterTypes().length && length == member.getParameterAnnotations().length) {
             return BackedAnnotatedParameter.forExecutable(member, this, sharedObjectCache);
         } else {

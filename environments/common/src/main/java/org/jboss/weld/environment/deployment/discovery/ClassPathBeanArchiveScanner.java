@@ -39,6 +39,7 @@ import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
@@ -69,14 +70,14 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
 
     private static final Pattern MANIFEST_CLASSPATH_SEPARATOR_PATTERN = Pattern.compile(" +");
 
-    private final Set<URL> visitedManifestClassPathEntries = new HashSet<>();
+    private final Set<URL> visitedClassPathEntries = new HashSet<>();
 
     /**
      *
      * @param bootstrap
      */
-    public ClassPathBeanArchiveScanner(Bootstrap bootstrap) {
-        super(bootstrap);
+    public ClassPathBeanArchiveScanner(Bootstrap bootstrap, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        super(bootstrap, emptyBeansXmlDiscoveryMode);
     }
 
     @Override
@@ -93,10 +94,17 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
                 continue;
             }
             File entryFile = new File(entry);
-            if (!entryFile.canRead()) {
-                throw CommonLogger.LOG.cannotReadClassPathEntry(entryFile);
-            }
             try {
+                if (!visitedClassPathEntries.add(entryFile.toURI().toURL())) {
+                    continue;
+                }
+                if (!entryFile.exists()) {
+                    CommonLogger.LOG.classPathEntryDoesNotExist(entryFile);
+                    continue;
+                }
+                if (!entryFile.canRead()) {
+                    throw CommonLogger.LOG.cannotReadClassPathEntry(entryFile);
+                }
                 if (entryFile.isDirectory()) {
                     scanDirectory(entryFile, results);
                 } else {
@@ -175,7 +183,7 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
             }
             try {
                 URL entryUrl = new URL(context, entry);
-                if (visitedManifestClassPathEntries.add(entryUrl) && entryUrl.getProtocol().equals("file")) {
+                if (visitedClassPathEntries.add(entryUrl) && entryUrl.getProtocol().equals("file")) {
                     File entryFile = new File(URI.create(entryUrl.toString()));
                     // do not throw an error here, as some libraries use the class path attribute wrongly
                     if (entryFile.canRead()) {

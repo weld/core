@@ -85,11 +85,6 @@ public class JuicyBarBean implements Bean<Bar> {
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public Class<?> getBeanClass() {
         return JuicyBarBean.class;
     }

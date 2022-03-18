@@ -3,19 +3,19 @@
     <parent>
         <artifactId>weld-probe-parent</artifactId>
         <groupId>org.jboss.weld.probe</groupId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.probe</groupId>
     <artifactId>weld-probe-tests</artifactId>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
 
     <properties>
         <json.version>1.1.4</json.version>
-        <json.path.version>2.5.0</json.path.version>
-        <tomcat.version>10.0.6</tomcat.version>
+        <json.path.version>2.7.0</json.path.version>
+        <tomcat.version>10.0.16</tomcat.version>
     </properties>
 
     <dependencies>
@@ -161,7 +161,7 @@
                             <systemProperties>
                                 <arquillian.xml>arquillian.xml</arquillian.xml>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <additional.vm.args>${surefire.plugin.jdk17.args}</additional.vm.args>
                                 <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
                             <test>${test}</test>

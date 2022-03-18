@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.repeatable;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class InterceptedBean {
 
     @RepeatableQualifier("foo")

@@ -56,7 +56,7 @@ import org.junit.runner.RunWith;
  * 
  * @author Jozef Hartinger
  * 
- * @see WELD-1614
+ * See also WELD-1614
  */
 @RunWith(Arquillian.class)
 public class ContainerLifecycleEventInvocationOutsideObserverTest {
@@ -92,7 +92,7 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
 
         new Invocation() {
             void execute() {
-                event.addAnnotatedType(type);
+                event.addAnnotatedType(type, ContainerLifecycleEventInvocationOutsideObserverTest.class.getSimpleName());
             }
         }.run();
         new Invocation() {
@@ -237,11 +237,6 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
         @Override
         public Set<InjectionPoint> getInjectionPoints() {
             return Collections.emptySet();
-        }
-
-        @Override
-        public boolean isNullable() {
-            return false;
         }
     }
 

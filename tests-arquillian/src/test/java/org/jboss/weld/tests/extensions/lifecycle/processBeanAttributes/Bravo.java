@@ -16,5 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 class Bravo implements BravoInterface {
 }

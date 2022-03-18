@@ -32,7 +32,7 @@ public class Marker {
     }
 
     public static boolean isMarker(int position, Method method, Object[] args) {
-        return method.getParameterTypes().length > position && method.getParameterTypes()[position].equals(Marker.class) && INSTANCE.equals(args[position]);
+        return method.getParameterCount() > position && method.getParameterTypes()[position].equals(Marker.class) && INSTANCE.equals(args[position]);
     }
 
 }

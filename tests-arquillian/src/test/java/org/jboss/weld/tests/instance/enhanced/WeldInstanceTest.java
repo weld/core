@@ -21,11 +21,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
 import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 
@@ -38,6 +38,7 @@ import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.inject.WeldInstance.Handler;
 import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,12 +51,14 @@ public class WeldInstanceTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceTest.class)).addPackage(WeldInstanceTest.class.getPackage())
-            .addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceTest.class))
+                .addClasses(Alpha.class, Bravo.class, FirstProcessor.class, Juicy.class, Processor.class,
+                        SecondProcessor.class, WeldClient.class)
+                .addClass(ActionSequence.class);
     }
 
     @Test
-    public void testIsResolvable(Client client) {
+    public void testIsResolvable(WeldClient client) {
         ActionSequence.reset();
         assertNotNull(client);
         assertTrue(client.getAlphaInstance().isResolvable());
@@ -63,7 +66,7 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testGetHandler(Client client, BeanManager beanManager) {
+    public void testGetHandler(WeldClient client, BeanManager beanManager) {
         ActionSequence.reset();
         assertNotNull(client);
 
@@ -92,7 +95,6 @@ public class WeldInstanceTest {
 
         sequence = ActionSequence.getSequenceData();
         assertEquals(2, sequence.size());
-        assertEquals(alpha1.get().getId(), sequence.get(1));
 
         // Test normal scoped bean is also destroyed
         WeldInstance<Bravo> bravoInstance = client.getInstance().select(Bravo.class);
@@ -104,6 +106,29 @@ public class WeldInstanceTest {
         sequence = ActionSequence.getSequenceData();
         assertEquals(1, sequence.size());
         assertEquals(bravoId, sequence.get(0));
+    }
+
+    @Test
+    public void testGetAfterDestroyingContextualInstance(WeldClient client) {
+        ActionSequence.reset();
+        assertNotNull(client);
+
+        Handler<Alpha> alphaHandle = client.getAlphaInstance().getHandler();
+        // trigger bean creation
+        alphaHandle.get();
+        // trigger bean destruction
+        alphaHandle.destroy();
+        // verify that the destruction happened
+        List<String> sequence = ActionSequence.getSequenceData();
+        assertEquals(1, sequence.size());
+
+        // try to invoke Handle.get() again; this should throw an exception
+        try {
+            alphaHandle.get();
+            Assert.fail("Invoking Handle.get() after destroying contextual instance should throw an exception.");
+        } catch (IllegalStateException e) {
+            // expected
+        }
     }
 
     @Test

@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.decorators.generic;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class GenericBean<T extends String> implements Decorated<T>, NotDecorated<T> {
     static boolean decoratedInvoked;
     static boolean notDecoratedInvoked;

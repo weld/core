@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.event;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -57,8 +58,8 @@ public class SimpleEventTest {
     public void testFireEventOnManager() {
         initFlags();
 
-        beanManager.fireEvent("Fired using Manager Interface with AnnotationLiteral.", new AnnotationLiteral<Updated>() {
-        });
+        beanManager.getEvent().select(String.class, new AnnotationLiteral<Updated>() {
+        }).fire("Fired using Manager Interface with AnnotationLiteral.");
 
         assert RECEIVE_1_OBSERVED == true;
         assert RECEIVE_2_OBSERVED == true;
@@ -66,7 +67,7 @@ public class SimpleEventTest {
 
         initFlags();
 
-        beanManager.fireEvent("Fired using Manager Interface.");
+        beanManager.getEvent().select(String.class).fire("Fired using Manager Interface.");
 
         assert RECEIVE_1_OBSERVED == false; // not called
         assert RECEIVE_2_OBSERVED == true;
@@ -108,6 +109,7 @@ public class SimpleEventTest {
         assert RECEIVE_3_OBSERVED == true;
     }
 
+    @Dependent
     public static class App {
         @Inject
         @Any
@@ -138,6 +140,7 @@ public class SimpleEventTest {
         }
     }
 
+    @Dependent
     public static class Receiver {
         public void receive1(@Observes @Updated String s) {
             RECEIVE_1_OBSERVED = true;

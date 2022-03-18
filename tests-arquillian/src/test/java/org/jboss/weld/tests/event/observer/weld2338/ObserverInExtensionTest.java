@@ -55,7 +55,7 @@ public class ObserverInExtensionTest {
         Assert.assertEquals(0, Observer.timesNonCleNotified.get());
 
         // then we fire additional event and see if @Observers @Experimental Object   was notified
-        bm.fireEvent(new Payload(), Experimental.Literal.INSTANCE);
+        bm.getEvent().select(Payload.class, Experimental.Literal.INSTANCE).fire(new Payload());
         Assert.assertTrue(Observer.nonCleFooInjected.get());
         Assert.assertEquals(1, Observer.timesNonCleNotified.get());
         // @Observes Object  should get notification as well

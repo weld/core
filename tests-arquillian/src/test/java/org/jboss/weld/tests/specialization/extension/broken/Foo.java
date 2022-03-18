@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.specialization.extension.broken;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
 @Named("foo")
+@Dependent
 public class Foo {
 }

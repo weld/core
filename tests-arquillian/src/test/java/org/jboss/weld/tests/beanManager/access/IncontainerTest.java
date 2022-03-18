@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,11 +38,11 @@ public class IncontainerTest {
     @Deployment
     public static WebArchive getDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(IncontainerTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Alpha.class, MarkerObtainer1.class, Foo.class, Marker.class)
-                .addAsWebInfResource(new BeansXml().alternatives(Alpha.class), "beans.xml");
+                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL).alternatives(Alpha.class), "beans.xml");
         JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class).addClasses(Bravo.class, MarkerObtainer2.class, Bar.class)
-                .addAsManifestResource(new BeansXml().alternatives(Bravo.class), "beans.xml");
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).alternatives(Bravo.class), "beans.xml");
         JavaArchive bda2 = ShrinkWrap.create(JavaArchive.class).addClasses(Charlie.class, MarkerObtainer3.class, Baz.class)
-                .addAsManifestResource(new BeansXml().alternatives(Charlie.class), "beans.xml");
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).alternatives(Charlie.class), "beans.xml");
         JavaArchive nonBda = ShrinkWrap.create(JavaArchive.class).addClasses(MarkerObtainer4.class);
         return war.addAsLibraries(bda1, bda2, nonBda);
     }

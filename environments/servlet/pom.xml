@@ -10,7 +10,7 @@
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
     </parent>
 
     <modules>
@@ -29,12 +29,12 @@
 
     <properties>
         <jsf.version>3.0.0</jsf.version>
-        <tomcat.version>10.0.6</tomcat.version>
-        <jetty.version>9.4.40.v20210413</jetty.version>
+        <tomcat.version>10.0.16</tomcat.version>
+        <jetty.version>11.0.8</jetty.version>
         <jetty9.asm.version>7.0</jetty9.asm.version>
         <websockets.api>2.0.0</websockets.api>
         <!-- We need undertow which uses Jakarta 9 packages! -->
-        <undertow.version>2.2.8.Final</undertow.version>
+        <undertow.version>2.2.13.Final</undertow.version>
         <!-- Testing deps -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
     </properties>
@@ -129,18 +129,4 @@
 
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <argLine>${surefire.plugin.jdk9.args}</argLine>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>

@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.observers.inheritance;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Specializes;
@@ -26,6 +27,7 @@ import jakarta.enterprise.inject.Specializes;
  */
 @Alternative
 @Specializes
+@ApplicationScoped
 public class Bar extends Foo {
     @Override
     void init() {

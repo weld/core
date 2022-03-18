@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.tests.producer.method.circular.weld1513;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 @SuppressWarnings("unused")
+@Dependent
 public class CharlieProducer {
 
     @Inject

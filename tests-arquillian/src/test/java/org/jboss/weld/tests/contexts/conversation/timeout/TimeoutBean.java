@@ -18,8 +18,10 @@
 package org.jboss.weld.tests.contexts.conversation.timeout;
 
 import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class TimeoutBean {
 
     @Inject

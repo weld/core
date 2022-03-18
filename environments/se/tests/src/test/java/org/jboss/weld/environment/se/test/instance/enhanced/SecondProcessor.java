@@ -33,11 +33,6 @@ public class SecondProcessor implements Processor {
         ActionSequence.addAction("secondPing");
     }
 
-    @Override
-    public int getPriority() {
-        return 10;
-    }
-
     @PreDestroy
     void destroy() {
         ActionSequence.addAction("secondDestroy");

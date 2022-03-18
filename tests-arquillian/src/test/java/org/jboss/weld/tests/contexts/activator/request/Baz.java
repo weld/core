@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.contexts.activator.request;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 import org.jboss.weld.context.activator.ActivateRequestContext;
 
 @ActivateRequestContext
+@Dependent
 public class Baz {
 
     @Inject

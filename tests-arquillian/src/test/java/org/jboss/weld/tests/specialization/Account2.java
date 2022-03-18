@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.specialization;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Specializes
+@Dependent
 public class Account2 extends Account {
 }

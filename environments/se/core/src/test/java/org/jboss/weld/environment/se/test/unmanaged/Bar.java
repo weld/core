@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.unmanaged;
 
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class Bar {
 
 }

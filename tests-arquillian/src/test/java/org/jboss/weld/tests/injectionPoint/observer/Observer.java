@@ -24,12 +24,14 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.EventMetadata;
 
+@Dependent
 public class Observer {
 
     void observeFooEvent(@Observes Foo event, EventMetadata metadata) {

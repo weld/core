@@ -17,7 +17,9 @@
 package org.jboss.weld.tests.producer.receiver;
 
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class Dependency {
 
     private static boolean destroyed;

@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.serialization;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import java.util.logging.Logger;
 
+@Dependent
 public class LoggerProducer {
 
     @Produces

@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -214,7 +214,7 @@
 
         <!-- Arquillian container adapter profiles -->
 
-        <!-- Weld EE 1.1 - Embedded -->
+        <!-- Weld Weld Arq. Container - embedded testing -->
         <profile>
             <id>default</id>
             <activation>
@@ -241,8 +241,6 @@
                                 <arquillian.xml>arquillian.xml</arquillian.xml>
                             </systemProperties>
                             <test>${test}</test>
-                            <!-- Travis CI build workaround -->
-                            <argLine>${surefire.plugin.jdk9.args} ${travis.surefire.argLine}</argLine>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -336,9 +334,8 @@
                                 <arquillian.xml>wildfly-arquillian.xml</arquillian.xml>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <additional.vm.args>${surefire.plugin.jdk17.args}</additional.vm.args>
                                 <additional.jboss.args>${additional.jboss.args}</additional.jboss.args>
-                                <illegal.access.option>${surefire.plugin.jdk9.args}</illegal.access.option>
                                 <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
                             <test>${test}</test>

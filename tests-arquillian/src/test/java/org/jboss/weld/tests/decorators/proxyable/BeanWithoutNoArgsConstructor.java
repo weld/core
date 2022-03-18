@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.decorators.proxyable;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
@@ -24,6 +25,7 @@ import jakarta.inject.Inject;
  * 
  * Whatsmore the bean uses constructor injection.
  */
+@Dependent
 public class BeanWithoutNoArgsConstructor implements DecoratedBean {
 
     public @Inject

@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.decorators.custom;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class WindowImpl implements Window {
     public static boolean drawn = false;
 

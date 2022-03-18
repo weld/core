@@ -24,7 +24,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,9 +41,11 @@ public class NotifyObserverTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotifyObserverTest.class))
+        return ShrinkWrap.create(JavaArchive.class, Utils.getDeploymentNameAsHash(NotifyObserverTest.class))
                 .addPackage(NotifyObserverTest.class.getPackage())
-                .addAsServiceProvider(Extension.class, CustomSingletonExtension.class);
+                .addAsServiceProvider(Extension.class, CustomSingletonExtension.class)
+                // requires `all` discovery mode to pick up beans with pseudoscope
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml");
     }
 
     @Inject

@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Stuart Douglas
  */
+@Dependent
 public class WindowPane {
 
 }

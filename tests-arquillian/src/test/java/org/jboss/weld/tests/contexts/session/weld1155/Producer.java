@@ -19,10 +19,12 @@ package org.jboss.weld.tests.contexts.session.weld1155;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.Bean;
 
+@Dependent
 public class Producer {
 
     private static final CountDownLatch latch = new CountDownLatch(2);

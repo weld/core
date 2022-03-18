@@ -36,6 +36,7 @@ import java.util.zip.ZipFile;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
@@ -59,8 +60,8 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
      * @param resourceLoader
      * @param bootstrap
      */
-    public DefaultBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap) {
-        super(bootstrap);
+    public DefaultBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        super(bootstrap, emptyBeansXmlDiscoveryMode);
         this.resourceLoader = resourceLoader;
     }
 

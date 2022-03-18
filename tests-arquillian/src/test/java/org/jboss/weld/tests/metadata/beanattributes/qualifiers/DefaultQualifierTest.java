@@ -18,6 +18,7 @@ package org.jboss.weld.tests.metadata.beanattributes.qualifiers;
 
 import java.lang.annotation.Annotation;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.Bean;
@@ -76,18 +77,22 @@ public class DefaultQualifierTest {
     }
 
     @Any
+    @Dependent
     static class Foo {
     }
 
     @Named
     @Any
+    @Dependent
     static class Bar {
     }
 
+    @Dependent
     static class Baz {
     }
 
     @Juicy
+    @Dependent
     static class Qux {
     }
 

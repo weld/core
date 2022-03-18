@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.event.weld1361;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 
+@Dependent
 public class EventFiringBean {
 
     @Inject

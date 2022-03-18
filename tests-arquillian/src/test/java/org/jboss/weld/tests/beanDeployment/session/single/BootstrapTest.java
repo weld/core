@@ -20,6 +20,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -39,6 +40,7 @@ public class BootstrapTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BootstrapTest.class))
+                .beanDiscoveryMode(BeanDiscoveryMode.ALL)
                 .addPackage(BootstrapTest.class.getPackage());
     }
 

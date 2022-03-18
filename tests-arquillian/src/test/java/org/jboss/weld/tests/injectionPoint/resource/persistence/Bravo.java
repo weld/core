@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.injectionPoint.resource.persistence;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
 
 import org.jboss.weld.test.util.ActionSequence;
 
+@Dependent
 public class Bravo extends Charlie {
 
     protected EntityManagerFactory superPersistenceUnit;

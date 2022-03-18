@@ -4,7 +4,7 @@
 
     <groupId>org.jboss.weld.reference-guide</groupId>
     <artifactId>weld-reference-guide</artifactId>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Weld Reference Guide</name>
@@ -21,15 +21,15 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <description>The Weld reference guide</description>
 
     <properties>
-        <asciidoctor.version>2.1.0</asciidoctor.version>
-        <asciidoctorj-pdf.version>1.6.0</asciidoctorj-pdf.version>
+        <asciidoctor.version>2.2.2</asciidoctor.version>
+        <asciidoctorj-pdf.version>1.6.2</asciidoctorj-pdf.version>
         <pdf.name>weld-reference.pdf</pdf.name>
         <html.name>index.html</html.name>
         <weld.version>${project.version}</weld.version>
@@ -63,6 +63,11 @@
                             <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
                             <outputDirectory>${doc.output.directory}/en-US/pdf</outputDirectory>
                             <outputFile>${pdf.name}</outputFile>
+                            <!-- NOTE - there is no PDF source highlighter that would work out of the box, so they need to be locally installed -->
+                            <!-- This link contains information on how to do that - https://docs.asciidoctor.org/asciidoc/latest/verbatim/source-highlighter/ -->
+                            <attributes>
+                                <source-highlighter>rouge</source-highlighter>
+                            </attributes>
                         </configuration>
                     </execution>
                     <execution>
@@ -76,6 +81,9 @@
                             <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
                             <outputDirectory>${doc.output.directory}/en-US/html_single</outputDirectory>
                             <outputFile>${html.name}</outputFile>
+                            <attributes>
+                                <source-highlighter>highlight.js</source-highlighter>
+                            </attributes>
                         </configuration>
                     </execution>
                     <execution>
@@ -93,6 +101,7 @@
                                 <toclevels>3</toclevels>
                                 <!-- Triggers conditional addition of link to index page -->
                                 <generate-index-link />
+                                <source-highlighter>highlight.js</source-highlighter>
                             </attributes>
                             <outputDirectory>${doc.output.directory}/en-US/html</outputDirectory>
                         </configuration>

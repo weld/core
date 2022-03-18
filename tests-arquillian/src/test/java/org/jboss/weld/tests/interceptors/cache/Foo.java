@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.tests.interceptors.cache;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+@Dependent
 public class Foo {
 
     @Inject

@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.contexts.passivating.serialization;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Dependent
 public class NonSerializableLogger implements Logger {
 
     @Inject

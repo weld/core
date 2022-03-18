@@ -161,8 +161,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
 
     // m is more generic than a
     private static boolean isEqual(Method m, Method a) {
-        if (m.getName().equals(a.getName()) && m.getParameterTypes().length == a.getParameterTypes().length && m.getReturnType().isAssignableFrom(a.getReturnType())) {
-            for (int i = 0; i < m.getParameterTypes().length; i++) {
+        if (m.getName().equals(a.getName()) && m.getParameterCount() == a.getParameterCount() && m.getReturnType().isAssignableFrom(a.getReturnType())) {
+            for (int i = 0; i < m.getParameterCount(); i++) {
                 if (!(m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]))) {
                     return false;
                 }
@@ -230,7 +230,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         b.aload(0); // load this
         int localVariables = 1;
         int actualDelegateParameterPosition = 0;
-        for (int i = 0; i < initializerMethodInfo.getMethod().getParameterTypes().length; ++i) {
+        for (int i = 0; i < initializerMethodInfo.getMethod().getParameterCount(); ++i) {
             if (i == delegateParameterPosition) {
                 // figure out the actual position of the delegate in the local
                 // variables

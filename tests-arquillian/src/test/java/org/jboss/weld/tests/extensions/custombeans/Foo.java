@@ -46,7 +46,7 @@ public class Foo implements VetoedBean {
     }
 
     public void ping() {
-        beanManager.fireEvent(new Foo());
+        beanManager.getEvent().select(Foo.class).fire(new Foo());
     }
 
     public Long getId() {

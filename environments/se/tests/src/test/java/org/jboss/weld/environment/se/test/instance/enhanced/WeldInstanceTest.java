@@ -22,13 +22,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.List;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.Bean;
-
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -41,11 +36,15 @@ import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.inject.WeldInstance.Handler;
 import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.List;
+
 /**
- *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  * @author Martin Kouba
  */
@@ -59,7 +58,7 @@ public class WeldInstanceTest {
     }
 
     @Test
-    public void testIsResolvable(Client client) {
+    public void testIsResolvable() {
         try (WeldContainer container = new Weld().initialize()) {
             assertTrue(container.select(Alpha.class).isResolvable());
             assertFalse(container.select(BigDecimal.class, Juicy.Literal.INSTANCE).isResolvable());
@@ -99,7 +98,6 @@ public class WeldInstanceTest {
             // Alpha1 destroyed
             sequence = ActionSequence.getSequenceData();
             assertEquals(4, sequence.size());
-            assertEquals("d" + alpha1.get().getId(), sequence.get(3));
             // Subsequent invocations are no-op
             alpha1.destroy();
 
@@ -113,6 +111,34 @@ public class WeldInstanceTest {
             sequence = ActionSequence.getSequenceData();
             assertEquals(1, sequence.size());
             assertEquals("d" + bravoId, sequence.get(0));
+        }
+    }
+
+    @Test
+    public void testGetAfterDestroyingContextualInstance() {
+        ActionSequence.reset();
+        try (WeldContainer container = new Weld().initialize()) {
+            WeldClient client = container.select(WeldClient.class).get();
+            assertNotNull(client);
+
+            Handler<Alpha> alphaHandle = client.getAlphaInstance().getHandler();
+            // trigger bean creation and assert
+            alphaHandle.get();
+            List<String> sequence = ActionSequence.getSequenceData();
+            assertEquals(1, sequence.size());
+            // trigger bean destruction
+            alphaHandle.destroy();
+            // verify that the destruction happened
+            sequence = ActionSequence.getSequenceData();
+            assertEquals(2, sequence.size());
+
+            // try to invoke Handle.get() again; this should throw an exception
+            try {
+                alphaHandle.get();
+                Assert.fail("Invoking Handle.get() after destroying contextual instance should throw an exception.");
+            } catch (IllegalStateException e) {
+                // expected
+            }
         }
     }
 
@@ -133,7 +159,7 @@ public class WeldInstanceTest {
 
             ActionSequence.reset();
             assertTrue(instance.isAmbiguous());
-            for (Iterator<Handler<Processor>> iterator = instance.handlers().iterator(); iterator.hasNext();) {
+            for (Iterator<Handler<Processor>> iterator = instance.handlers().iterator(); iterator.hasNext(); ) {
                 try (Handler<Processor> handler = iterator.next()) {
                     handler.get().ping();
                 }
@@ -171,5 +197,4 @@ public class WeldInstanceTest {
             assertEquals("c" + Priority3.class.getName(), sequence.get(1));
         }
     }
-
 }

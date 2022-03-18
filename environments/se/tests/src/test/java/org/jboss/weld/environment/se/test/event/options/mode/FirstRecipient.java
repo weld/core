@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.environment.se.test.event.options.mode;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.ObservesAsync;
 
+@Dependent
 class FirstRecipient {
 
     public void observe(@ObservesAsync Message message) throws InterruptedException {

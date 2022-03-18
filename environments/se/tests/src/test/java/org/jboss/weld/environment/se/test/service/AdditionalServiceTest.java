@@ -59,7 +59,8 @@ public class AdditionalServiceTest {
             Bravo2Service.class,
             BravoImpl.class,
             ExecutorServices1.class,
-            ExecutorServices2.class
+            ExecutorServices2.class,
+            DummyBean.class
         };
         final JavaArchive bda1 = ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdditionalServiceTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(classes).addAsServiceProvider(Service.class, ExecutorServices1.class);

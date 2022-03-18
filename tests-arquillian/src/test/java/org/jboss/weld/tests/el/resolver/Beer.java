@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
 
-public
 @Named
-class Beer {
+@Dependent
+public class Beer {
     private String name = "Chimay Grande Reserve (Blue)";
 
     private String style = "Belgium Strong Dark Ale";

@@ -47,7 +47,7 @@ public class CustomObserverSuperclassNotifyTest {
 
     @Test
     public void testCustomObserver(BeanManager beanManager) {
-        beanManager.fireEvent(Long.valueOf(1));
+        beanManager.getEvent().select(Long.class).fire(Long.valueOf(1));
         assertTrue(CustomObserverSuperclassExtension.OBSERVED.get());
     }
 }

@@ -17,11 +17,13 @@
 package org.jboss.weld.tests.contexts.conversation.event.enterprise;
 
 import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.event.Observes;
 
 import org.jboss.weld.test.util.ActionSequence;
 
+@Dependent
 public class ObserverWeb2 {
 
     void conversationDestroyed(@Observes @Destroyed(ConversationScoped.class) Object event) {

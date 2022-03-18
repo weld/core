@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
 
     <name>Weld Parent</name>
 
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>44</version>
+        <version>46</version>
     </parent>
 
     <prerequisites>
@@ -25,8 +25,8 @@
     <properties>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <!-- Should be equal to the newest Java version for which sources exist -->
         <jdk.min.version>11</jdk.min.version>
@@ -36,26 +36,26 @@
         <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
-        <surefire.plugin.jdk9.args />
+        <surefire.plugin.jdk17.args />
         <!-- Jakarta JAX/JWS api and implementation -->
         <jax.api.version>3.0.1</jax.api.version>
         <jws.api.version>3.0.0</jws.api.version>
-        <jax.artifacts.version>3.0.1</jax.artifacts.version>
+        <jax.artifacts.version>3.0.2</jax.artifacts.version>
 
         <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
         <!-- A property which is handed over to WFLY container through Arquillian, allows to configure server-specific options -->
         <additional.jboss.args />
 
-        <manifest.specification.title>Jakarta EE 9 Contexts and Dependency Injection for Java</manifest.specification.title>
+        <manifest.specification.title>Jakarta EE 10 Contexts and Dependency Injection for Java</manifest.specification.title>
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.5.0</apache.bcel.version>
-        <arquillian.version>1.7.0.Alpha9</arquillian.version>
-        <arquillian.drone.version>2.5.2</arquillian.drone.version>
-        <arquillian.graphene.version>2.3.2</arquillian.graphene.version>
-        <arquillian.weld.version>3.0.0.Alpha1</arquillian.weld.version>
+        <arquillian.version>1.7.0.Alpha10</arquillian.version>
+        <arquillian.drone.version>2.5.5</arquillian.drone.version>
+        <arquillian.graphene.version>2.5.4</arquillian.graphene.version>
+        <arquillian.weld.version>3.0.2.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Alpha1</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
@@ -63,40 +63,42 @@
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
-        <cdi.tck-3-0.version>3.0.2.SP1</cdi.tck-3-0.version>
+        <!-- Version of the CDI 4.x release TCK -->
+        <cdi.tck-4-0.version>4.0.0.RC6</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
-        <spotbugs-maven-plugin.version>4.2.3</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>4.2.3</spotbugs-annotations-version>
+        <spotbugs-maven-plugin.version>4.5.3.0</spotbugs-maven-plugin.version>
+        <spotbugs-annotations-version>4.5.3</spotbugs-annotations-version>
         <glassfish.el.version>2.2.1-b05</glassfish.el.version>
-        <groovy.version>2.4.21</groovy.version>
-        <htmlunit.version>2.50.0</htmlunit.version>
+        <groovy.version>3.0.9</groovy.version>
+        <htmlunit.version>2.58.0</htmlunit.version>
         <jacoco.version>0.8.7</jacoco.version>
-        <jandex.version>2.2.3.Final</jandex.version>
-        <javax.activation.version>2.0.1</javax.activation.version>
+        <jandex.version>2.4.2.Final</jandex.version>
+        <javax.activation.version>2.1.0</javax.activation.version>
         <jakarta.el.version>4.0.0</jakarta.el.version>
-        <glassfish.jakarta.el.version>4.0.1</glassfish.jakarta.el.version>
+        <glassfish.jakarta.el.version>4.0.2</glassfish.jakarta.el.version>
         <jakarta.jms.api.version>3.0.0</jakarta.jms.api.version>
         <jsf.api.version>3.0.0</jsf.api.version>
-        <jboss.logging.version>3.4.2.Final</jboss.logging.version>
+        <jboss.logging.version>3.4.3.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>2.1.18.Final</jboss.logmanager.version>
-        <jsf.impl.version>3.0.0</jsf.impl.version>
+        <jsf.impl.version>3.0.2</jsf.impl.version>
         <jsp.api.version>3.0.0</jsp.api.version>
         <jstl.api.version>2.0.0</jstl.api.version>
         <junit.version>4.13.2</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
-        <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
+        <shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
-        <testng.jcommander.version>1.81</testng.jcommander.version>
-        <weld.api.version>4.0.SP1</weld.api.version>
+        <testng.jcommander.version>1.82</testng.jcommander.version>
+        <weld.api.version>5.0.CR1</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>3.0.1.Final</wildfly.arquillian.version>
     </properties>
 
     <modules>
         <module>impl</module>
+        <module>weld-lite-extension-translator</module>
         <module>modules/ejb</module>
         <module>modules/jsf</module>
         <module>modules/jta</module>
@@ -121,6 +123,7 @@
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>${groovy.version}</version>
+                <type>pom</type>
             </dependency>
 
             <dependency>
@@ -129,34 +132,25 @@
                 <version>${javax.activation.version}</version>
             </dependency>
 
-            <!-- This version of EL 3.0 API is not JDK 6 compatible -->
             <dependency>
                 <groupId>jakarta.el</groupId>
                 <artifactId>jakarta.el-api</artifactId>
                 <version>${jakarta.el.version}</version>
             </dependency>
 
-            <!-- This artifact bundles EL API and impl and is not JDK 6 compatible -->
+            <!-- This artifact bundles EL API -->
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>jakarta.el</artifactId>
                 <version>${glassfish.jakarta.el.version}</version>
             </dependency>
 
-            <!-- Used to use jboss version that doesn't yet exist for Jakarta 9
-            <groupId>org.jboss.spec.javax.faces</groupId>
-            <artifactId>jboss-jsf-api_2.3_spec</artifactId>
-            -->
             <dependency>
                 <groupId>jakarta.faces</groupId>
                 <artifactId>jakarta.faces-api</artifactId>
                 <version>${jsf.api.version}</version>
             </dependency>
 
-            <!-- Used to use jboss version that doesn't yet exist for Jakarta 9
-            <groupId>org.jboss.spec.javax.jms</groupId>
-            <artifactId>jboss-jms-api_2.0_spec</artifactId>
-            -->
             <dependency>
                 <groupId>jakarta.jms</groupId>
                 <artifactId>jakarta.jms-api</artifactId>
@@ -357,6 +351,12 @@
             <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-core-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-lite-extension-translator</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -567,7 +567,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>4.0.0-SNAPSHOT</tag>
+        <tag>5.0.0-SNAPSHOT</tag>
     </scm>
 
 
@@ -595,6 +595,7 @@
                 <module>porting-package</module>
                 <module>tests-common</module>
                 <module>tests</module>
+                <module>lang-model-tck</module>
                 <module>tests-arquillian</module>
                 <module>inject-tck-runner</module>
             </modules>
@@ -603,7 +604,7 @@
             <id>tck</id>
             <activation>
                 <property>
-                    <name>weld.default.build.cditck</name>
+                        <name>weld.default.build.cditck</name>
                     <value>!false</value>
                 </property>
             </activation>
@@ -758,15 +759,22 @@
             </build>
         </profile>
         <profile>
-            <!-- Auto-activated profile for any JDK 9 or newer -->
-            <!-- Should contain all JDK 9+ related versions and/or test setup such as illegal-access=deny -->
-            <id>jdk9+</id>
+            <!-- Auto-activated profile for JDK 17 or newer -->
+            <id>jdk17+</id>
             <activation>
-                <jdk>(9,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <properties>
-                <!--In the future we will want to test with illegal access denied. As of WFLY 13 Alpha, it is not yet possible-->
-                <!--Once working, set "surefire.plugin.jdk9.args" to "[double-hyphen]illegal-access=deny"-->
+                <surefire.plugin.jdk17.args>
+                    --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                    --add-opens=java.base/java.io=ALL-UNNAMED
+                    --add-opens=java.base/java.lang=ALL-UNNAMED
+                    --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                    --add-opens=java.base/java.security=ALL-UNNAMED
+                    --add-opens=java.base/java.util=ALL-UNNAMED
+                    --add-opens=java.management/javax.management=ALL-UNNAMED
+                    --add-opens=java.naming/javax.naming=ALL-UNNAMED
+                </surefire.plugin.jdk17.args>
             </properties>
         </profile>
     </profiles>

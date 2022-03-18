@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.xml;
 
+import static java.util.Collections.emptyList;
 import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
+import static org.jboss.weld.bootstrap.spi.Scanning.EMPTY_SCANNING;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,7 +99,7 @@ public class BeansXmlStreamParser {
     private List<Metadata<String>> selectedAlternativeStereotypes = null;
     private List<Metadata<Filter>> includes = null;
     private List<Metadata<Filter>> excludes = null;
-    private BeanDiscoveryMode discoveryMode = BeanDiscoveryMode.ALL;
+    private BeanDiscoveryMode discoveryMode = BeanDiscoveryMode.ANNOTATED;
     private String version;
     private boolean isTrimmed;
 
@@ -105,12 +107,14 @@ public class BeansXmlStreamParser {
 
     private final Function<String, String> interpolator;
 
+    private final BeanDiscoveryMode emptyBeansXmlDiscoveryMode;
+
     /**
      *
      * @param beansXml
      */
     public BeansXmlStreamParser(URL beansXml) {
-        this(beansXml, Function.identity());
+        this(beansXml, Function.identity(), BeanDiscoveryMode.ANNOTATED);
     }
 
     /**
@@ -119,8 +123,17 @@ public class BeansXmlStreamParser {
      * @param interpolator
      */
     public BeansXmlStreamParser(URL beansXml, Function<String, String> interpolator) {
+        this(beansXml, interpolator, BeanDiscoveryMode.ANNOTATED);
+    }
+
+    public BeansXmlStreamParser(URL beansXml, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        this(beansXml, Function.identity(), emptyBeansXmlDiscoveryMode);
+    }
+
+    public BeansXmlStreamParser(URL beansXml, Function<String, String> interpolator, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         this.beansXml = beansXml;
         this.interpolator = interpolator;
+        this.emptyBeansXmlDiscoveryMode = emptyBeansXmlDiscoveryMode;
     }
 
     @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
@@ -132,7 +145,13 @@ public class BeansXmlStreamParser {
         try (InputStream in = beansXml.openStream()) {
             if (in.available() == 0) {
                 // The file is just acting as a marker file
-                return EMPTY_BEANS_XML;
+                // if the legacy treatment is on, we use discovery mode as specified, otherwise we default to annotated mode
+                if (emptyBeansXmlDiscoveryMode.equals(BeanDiscoveryMode.ANNOTATED)) {
+                    return EMPTY_BEANS_XML;
+                } else {
+                    return new BeansXmlImpl(emptyList(), emptyList(), emptyList(), emptyList(), EMPTY_SCANNING,
+                            null, emptyBeansXmlDiscoveryMode, null, false);
+                }
             }
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLEventReader reader = factory.createXMLEventReader(in);

@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.broken;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Telephone {
 
 }

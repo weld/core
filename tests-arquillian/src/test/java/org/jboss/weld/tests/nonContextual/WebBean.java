@@ -16,5 +16,8 @@
  */
 package org.jboss.weld.tests.nonContextual;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class WebBean {
 }

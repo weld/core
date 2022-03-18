@@ -18,9 +18,11 @@ package org.jboss.weld.tests.specialization.weld1651.broken;
 
 import java.util.Collection;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.Specializes;
 
+@Dependent
 class SpecializingProducerBean2 extends ProducerBean2 {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

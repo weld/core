@@ -29,13 +29,16 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 public abstract class AbstractBeanArchiveScanner implements BeanArchiveScanner {
 
     protected final Bootstrap bootstrap;
+    // Allow to treat empty beans.xml as having discovery mode other than default (which is ANNOTATED from CDI 4.0)
+    protected final BeanDiscoveryMode emptyBeansXmlDiscoveryMode;
 
     /**
      *
      * @param bootstrap
      */
-    public AbstractBeanArchiveScanner(Bootstrap bootstrap) {
+    public AbstractBeanArchiveScanner(Bootstrap bootstrap, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         this.bootstrap = bootstrap;
+        this.emptyBeansXmlDiscoveryMode = emptyBeansXmlDiscoveryMode;
     }
 
     protected boolean accept(BeansXml beansXml) {
@@ -43,7 +46,7 @@ public abstract class AbstractBeanArchiveScanner implements BeanArchiveScanner {
     }
 
     protected BeansXml parseBeansXml(URL beansXmlUrl) {
-        return bootstrap.parse(beansXmlUrl);
+        return bootstrap.parse(beansXmlUrl, emptyBeansXmlDiscoveryMode);
     }
 
 }

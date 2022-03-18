@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class MyBeanMeta implements MyInterfaceMeta {
 
 }

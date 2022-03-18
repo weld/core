@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.bridge.methods;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
+@Dependent
 public class BravoProducer implements BasicProducer {
 
     // Covariant return type

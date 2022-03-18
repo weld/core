@@ -18,7 +18,9 @@ package org.jboss.weld.xml;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -42,9 +44,20 @@ import org.jboss.weld.metadata.ScanningImpl;
 public class BeansXmlParser {
 
     private final BeansXmlValidator beansXmlValidator;
+    // having this information here allows WFLY to create appropriate parser
+    private final BeanDiscoveryMode emptyBeansXmlDiscoveryModeAll;
 
     public BeansXmlParser() {
+        this(false);
+    }
+
+    public BeansXmlParser(boolean emptyBeansXmlDiscoveryModeAll) {
         beansXmlValidator = SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled() ? null : new BeansXmlValidator();
+        if (emptyBeansXmlDiscoveryModeAll) {
+            this.emptyBeansXmlDiscoveryModeAll = BeanDiscoveryMode.ALL;
+        } else {
+            this.emptyBeansXmlDiscoveryModeAll = BeanDiscoveryMode.ANNOTATED;
+        }
     }
 
     public BeansXml parse(final URL beansXml) {
@@ -52,7 +65,7 @@ public class BeansXmlParser {
         if (beansXmlValidator != null) {
             beansXmlValidator.validate(beansXml, handler);
         }
-        return handler != null ? new BeansXmlStreamParser(beansXml, text -> handler.interpolate(text)).parse() : new BeansXmlStreamParser(beansXml).parse();
+        return handler != null ? new BeansXmlStreamParser(beansXml, text -> handler.interpolate(text), emptyBeansXmlDiscoveryModeAll).parse() : new BeansXmlStreamParser(beansXml, emptyBeansXmlDiscoveryModeAll).parse();
     }
 
     public BeansXml parse(Iterable<URL> urls) {
@@ -78,6 +91,8 @@ public class BeansXmlParser {
         List<Metadata<Filter>> excludes = new ArrayList<>();
         boolean isTrimmed = false;
         URL beansXmlUrl = null;
+        // capture all found discovery modes - if there is just one, use it; otherwise fallback to ALL
+        Set<BeanDiscoveryMode> discoveryModesSet = new HashSet<>();
         for (T item : items) {
             BeansXml beansXml = function.apply(item);
             // if Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT is true, there doesn't need to be beans.xml
@@ -89,14 +104,16 @@ public class BeansXmlParser {
                 includes.addAll(beansXml.getScanning().getIncludes());
                 excludes.addAll(beansXml.getScanning().getExcludes());
                 isTrimmed = beansXml.isTrimmed();
+                discoveryModesSet.add(beansXml.getBeanDiscoveryMode());
                 /*
                  * provided we are merging the content of multiple XML files, getBeansXml() returns an InputStream representing the last one
                  */
                 beansXmlUrl = beansXml.getUrl();
             }
         }
+
         return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl,
-                BeanDiscoveryMode.ALL, null, isTrimmed);
+                discoveryModesSet.size() == 1 ? discoveryModesSet.iterator().next() : BeanDiscoveryMode.ALL, null, isTrimmed);
     }
 
     private static void addTo(List<Metadata<String>> list, List<Metadata<String>> listToAdd, boolean removeDuplicates) {

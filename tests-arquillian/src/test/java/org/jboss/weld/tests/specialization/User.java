@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.specialization;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class User {
 
 }

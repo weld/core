@@ -18,11 +18,13 @@ package org.jboss.weld.tests.specialization.weld1651;
 
 import java.util.List;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Specializes;
 
 /**
  * @author Matus Abaffy
  */
 @Specializes
+@Dependent
 public class SpecializingGenericBean<S extends List<Integer>, T extends Bar & Foo> extends SpecializedGenericBean<S, T> {
 }

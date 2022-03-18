@@ -17,11 +17,13 @@
 
 package org.jboss.weld.tests.generic;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 /**
  * @author Marius Bogoevici
  */
+@Dependent
 public class TestBean {
     @Inject
     GenericInterface<String> genericStringField;

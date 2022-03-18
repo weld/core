@@ -19,9 +19,11 @@ package org.jboss.weld.tests.interceptors.weld1391;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.test.util.ActionSequence;
 
 @Simple
+@Dependent
 public class SimpleBean {
 
     public SimpleBean() {

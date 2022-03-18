@@ -34,6 +34,7 @@ import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.discovery.AbstractDiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
@@ -59,8 +60,10 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private JandexClassFileServices classFileServices;
 
-    public JandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
-        super(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
+    public JandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap,
+                                   Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
+                                   BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+        super(resourceLoader, bootstrap, initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
         registerHandler(new JandexIndexBeanArchiveHandler());
         registerHandler(new JandexFileSystemBeanArchiveHandler());
     }

@@ -17,9 +17,12 @@
 
 package org.jboss.weld.tests.resolution.weld911;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Dependent
 public class BarImplDependent implements Bar {
     public Foo foo() {
         return null;

@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import java.util.List;
 
-
+@Dependent
 public class StringHolder {
 
     @Inject

@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.tests.decorators.unwrapException;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
+@Dependent
 public class SimpleCheckedImpl implements SimpleChecked {
     public String speak() throws Exception {
         return "Bark";

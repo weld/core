@@ -18,11 +18,14 @@ package org.jboss.weld.tests.interceptors.initialization.block;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import jakarta.enterprise.context.Dependent;
 import jakarta.transaction.UserTransaction;
 
 /**
  *@author Emily Jiang
  */
+@Dependent
 public class InitializationBlock{
 
     public final String VALUE;

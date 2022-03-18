@@ -1,7 +1,10 @@
 package org.jboss.weld.tests.proxy.observer;
 
+import jakarta.enterprise.context.Dependent;
+
 import java.io.Serializable;
 
+@Dependent
 public class Qux implements Serializable {
 
     /**

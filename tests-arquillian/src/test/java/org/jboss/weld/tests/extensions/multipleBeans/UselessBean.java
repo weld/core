@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
  */
+@Dependent
 public class UselessBean {
 
 }

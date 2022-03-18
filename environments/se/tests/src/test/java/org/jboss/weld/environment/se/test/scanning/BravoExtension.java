@@ -26,7 +26,8 @@ import org.jboss.weld.util.annotated.VetoedSuppressedAnnotatedType;
 public class BravoExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(Bravo.class, beanManager));
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(Bravo.class, beanManager),
+                Bravo.class.getSimpleName());
     }
 
 }

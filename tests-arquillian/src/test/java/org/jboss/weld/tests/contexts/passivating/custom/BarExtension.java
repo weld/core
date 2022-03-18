@@ -74,11 +74,5 @@ public class BarExtension implements Extension {
 
     private static abstract class AbstractPassivationCapableBean<T> extends ForwardingBeanAttributes<T> implements Bean<T>,
             PassivationCapable {
-
-        @Override
-        public boolean isNullable() {
-            return false;
-        }
-
     }
 }

@@ -54,11 +54,6 @@ public class CustomBeanType implements Bean<Object> {
     }
 
     @Override
-    public boolean isNullable() {
-        return false;
-    }
-
-    @Override
     public Set<Type> getTypes() {
         return Collections.singleton(type);
     }

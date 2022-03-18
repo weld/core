@@ -19,7 +19,9 @@ package org.jboss.weld.tests.contexts.passivating.serialization;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 
+@Dependent
 public class OutputWriter {
 
     private static final AtomicInteger counter = new AtomicInteger();

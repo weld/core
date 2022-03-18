@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.finalMethod;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class TopSecretBriefing {
     public static final String MESSAGE = "Briefing";
 

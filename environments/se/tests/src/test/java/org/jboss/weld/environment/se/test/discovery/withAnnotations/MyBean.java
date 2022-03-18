@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.discovery.withAnnotations;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class MyBean implements MyInterface {
 
 }
