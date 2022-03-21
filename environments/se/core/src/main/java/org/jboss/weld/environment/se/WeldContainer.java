@@ -24,6 +24,9 @@ import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.Shutdown;
+import jakarta.enterprise.event.Startup;
+import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.enterprise.inject.se.SeContainer;
@@ -34,6 +37,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -234,6 +238,10 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     private void fireContainerInitializedEvent() {
         WeldSELogger.LOG.weldContainerInitialized(id);
         beanManager().getEvent().select(ContainerInitialized.class, Initialized.Literal.APPLICATION).fire(new ContainerInitialized(id));
+        Environment env = Container.getEnvironment();
+        if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
+            beanManager().getEvent().select(Startup.class, Any.Literal.INSTANCE).fire(new Startup());
+        }
     }
 
     /**
@@ -294,6 +302,12 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     public synchronized void shutdown() {
         checkIsRunning();
         try {
+            // firstly, fire Shutdown event
+            Environment env = Container.getEnvironment();
+            if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
+                beanManager().getEvent().select(Shutdown.class, Any.Literal.INSTANCE).fire(new Shutdown());
+            }
+            // followed up by BeforeDestroyed for app scope
             beanManager().getEvent().select(ContainerBeforeShutdown.class, BeforeDestroyed.Literal.APPLICATION).fire(new ContainerBeforeShutdown(id));
         } finally {
             discard(id);

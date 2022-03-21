@@ -23,6 +23,8 @@ import java.util.concurrent.ConcurrentMap;
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Destroyed;
 
+import jakarta.enterprise.event.Shutdown;
+import jakarta.enterprise.inject.Any;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
@@ -55,6 +57,8 @@ public class WeldRuntime {
 
     public void shutdown() {
         try {
+            // fire Shutdown event for all modules first
+            fireEventForAllModules(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
             // The container must destroy all contexts.
             // For non-web modules, fire @BeforeDestroyed event
             fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_BEFORE_DESTROYED, BeforeDestroyed.Literal.APPLICATION);
@@ -92,5 +96,22 @@ public class WeldRuntime {
                 }
             } catch (Exception ignored) {
             }
+    }
+
+    /**
+     * Fires given event for all modules. Used for @Shutdown event.
+     */
+    private void fireEventForAllModules(Type eventType, Object event, Annotation... qualifiers) {
+        try {
+            BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
+            if (modules != null) {
+                // fire event for non-web modules
+                // web modules are handled by HttpContextLifecycle
+                for (BeanDeploymentModule module : modules) {
+                    module.fireEvent(eventType, event, qualifiers);
+                }
+            }
+        } catch (Exception ignored) {
+        }
     }
 }
