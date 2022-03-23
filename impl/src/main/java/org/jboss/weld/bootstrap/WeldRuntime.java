@@ -27,6 +27,7 @@ import jakarta.enterprise.event.Shutdown;
 import jakarta.enterprise.inject.Any;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ApplicationContext;
@@ -58,7 +59,10 @@ public class WeldRuntime {
     public void shutdown() {
         try {
             // fire Shutdown event for all modules first
-            fireEventForAllModules(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
+            Environment env = Container.getEnvironment();
+            if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
+                fireEventForAllModules(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
+            }
             // The container must destroy all contexts.
             // For non-web modules, fire @BeforeDestroyed event
             fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_BEFORE_DESTROYED, BeforeDestroyed.Literal.APPLICATION);
