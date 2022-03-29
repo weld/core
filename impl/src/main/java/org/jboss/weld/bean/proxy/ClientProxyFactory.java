@@ -172,11 +172,15 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     protected void createForwardingMethodBody(ClassMethod classMethod, final MethodInformation methodInfo, ClassMethod staticConstructor) {
         final Method method = methodInfo.getMethod();
         // we can only use bytecode based invocation for some methods
-        // at the moment we restrict it solely to public methods with public
+        // at the moment we restrict it solely to public/protected methods with public/protected
         // return and parameter types
-        boolean bytecodeInvocationAllowed = Modifier.isPublic(method.getModifiers()) && Modifier.isPublic(method.getReturnType().getModifiers());
+        int methodModifiers = method.getModifiers();
+        int returnTypeModifiers = method.getReturnType().getModifiers();
+        boolean bytecodeInvocationAllowed = (Modifier.isPublic(methodModifiers) || Modifier.isProtected(methodModifiers))
+                && (Modifier.isPublic(returnTypeModifiers) || Modifier.isProtected(returnTypeModifiers));
         for (Class<?> paramType : method.getParameterTypes()) {
-            if (!Modifier.isPublic(paramType.getModifiers())) {
+            int paramTypeMofidiers = paramType.getModifiers();
+            if (!(Modifier.isPublic(paramTypeMofidiers) || Modifier.isProtected(paramTypeMofidiers))) {
                 bytecodeInvocationAllowed = false;
                 break;
             }
