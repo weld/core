@@ -19,6 +19,7 @@ package org.jboss.weld.lite.extension.translator.logging;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
@@ -38,7 +39,7 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     LiteExtensionTranslatorLogger LOG = Logger.getMessageLogger(LiteExtensionTranslatorLogger.class, Category.LITE_EXTENSION_TRANSLATOR.getName());
 
     @Message(id = 0, value = "Unable to instantiate object from class {0} via no-args constructor. The exception was: {1}", format = Message.Format.MESSAGE_FORMAT)
-    IllegalStateException unableToInstantiateObject(Class<?> classToInstantiate, String exception);
+    IllegalStateException unableToInstantiateObject(Class<?> classToInstantiate, String exception, @Cause Throwable cause);
 
     @Message(id = 1, value = "Unexpected extension method argument: {0}", format = Message.Format.MESSAGE_FORMAT)
     IllegalArgumentException unexpectedMethodArgument(Object argument);
@@ -63,10 +64,10 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     IllegalStateException unknownQueryParameter(Object query);
 
     @Message(id = 8, value = "Unable to invoke extension method {0} with arguments {1}. The exception was: {2}", format = Message.Format.MESSAGE_FORMAT)
-    IllegalStateException unableToInvokeExtensionMethod(Object method, Object arguments, String exception);
+    IllegalStateException unableToInvokeExtensionMethod(Object method, Object arguments, String exception, @Cause Exception cause);
 
     @Message(id = 9, value = "Unable to load class with name {0}. The exception was: {1}", format = Message.Format.MESSAGE_FORMAT)
-    IllegalStateException cannotLoadClassByName(Object className, String exception);
+    IllegalStateException cannotLoadClassByName(Object className, String exception, @Cause Throwable cause);
 
     @Message(id = 10, value = "Unrecognized parameter of type {0} declared in class {1}#{2}", format = Message.Format.MESSAGE_FORMAT)
     IllegalArgumentException invalidExtensionMethodParameterType(Object type, Object declaringClass, Object methodName);
@@ -81,7 +82,7 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     IllegalArgumentException kindNotEqual(Object kind, Object value);
 
     @Message(id = 14, value = "Unable to access annotation member(s) for annotation {0}. The exception was: {1}", format = Message.Format.MESSAGE_FORMAT)
-    DefinitionException unableToAccessAnnotationMembers(Object annotation, String exception);
+    DefinitionException unableToAccessAnnotationMembers(Object annotation, String exception, @Cause Throwable cause);
 
     @Message(id = 15, value = "Provided type {0} is illegal because it doesn't match an of known annotation member types.", format = Message.Format.MESSAGE_FORMAT)
     IllegalArgumentException illegalAnnotationMemberType(Object type);
@@ -92,6 +93,6 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     void annotationFactoryInstanceNotInitialized();
 
     @Message(id = 17, value = "There was a problem executing Build Compatible Extension method {0} during phase {1}. The exception was: {2}", format = Message.Format.MESSAGE_FORMAT)
-    DeploymentException problemExecutingExtensionMethod(Object method, Object phase, String exception);
+    DeploymentException problemExecutingExtensionMethod(Object method, Object phase, String exception, @Cause Throwable cause);
 
 }

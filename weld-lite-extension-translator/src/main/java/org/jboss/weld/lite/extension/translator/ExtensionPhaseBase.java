@@ -4,6 +4,7 @@ import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.enterprise.inject.spi.DeploymentException;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +32,11 @@ abstract class ExtensionPhaseBase {
                 runExtensionMethod(method);
             } catch (DefinitionException | DeploymentException e) {
                 throw e;
+            } catch (InvocationTargetException e) {
+                throw LiteExtensionTranslatorLogger.LOG.problemExecutingExtensionMethod(method, phase, e.getCause().toString(), e);
             } catch (Exception e) {
                 // we treat every other error as deployment error
-                throw LiteExtensionTranslatorLogger.LOG.problemExecutingExtensionMethod(method, phase, e.toString());
+                throw LiteExtensionTranslatorLogger.LOG.problemExecutingExtensionMethod(method, phase, e.toString(), e);
 
             }
         }

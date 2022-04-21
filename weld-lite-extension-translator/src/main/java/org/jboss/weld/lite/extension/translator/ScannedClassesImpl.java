@@ -17,7 +17,7 @@ class ScannedClassesImpl implements ScannedClasses {
         try {
             bbd.addAnnotatedType(Class.forName(className, true, cl), className);
         } catch (ClassNotFoundException e) {
-            throw LiteExtensionTranslatorLogger.LOG.cannotLoadClassByName(className, e.toString());
+            throw LiteExtensionTranslatorLogger.LOG.cannotLoadClassByName(className, e.toString(), e);
         }
     }
 }
