@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.inject.build.compatible.spi.Registration;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -66,8 +67,10 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
 
                 try {
                     util.callExtensionMethod(method, arguments);
+                } catch (InvocationTargetException e) {
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString(), e);
                 }
             };
 
@@ -95,8 +98,10 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
 
                 try {
                     util.callExtensionMethod(method, arguments);
+                } catch (InvocationTargetException e) {
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString(), e);
                 }
             };
 
@@ -119,8 +124,10 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
 
                 try {
                     util.callExtensionMethod(method, arguments);
+                } catch (InvocationTargetException e) {
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString(), e);
                 }
             };
 
