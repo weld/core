@@ -74,8 +74,8 @@
                     <scope>compile</scope>
                 </dependency>
                 <dependency>
-                    <groupId>org.jboss.spec.jakarta.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.3_spec</artifactId>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
                     <scope>compile</scope>
                 </dependency>
                 <dependency>
@@ -117,8 +117,8 @@
             <id>tomcat</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.spec.jakarta.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.3_spec</artifactId>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
                 </dependency>
 
                 <dependency>
@@ -160,8 +160,8 @@
             <id>jetty</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.spec.jakarta.faces</groupId>
-                    <artifactId>jboss-jsf-api_2.3_spec</artifactId>
+                    <groupId>jakarta.faces</groupId>
+                    <artifactId>jakarta.faces-api</artifactId>
                 </dependency>
 
                 <dependency>
