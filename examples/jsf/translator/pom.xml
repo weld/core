@@ -21,7 +21,7 @@
     </licenses>
 
     <description>
-        Ear Example for the reference implementation of JSR 299: Weld
+        Ear Example for the Jakarta Context Dependency Injection compatible implementation: Weld
     </description>
 
     <modules>
