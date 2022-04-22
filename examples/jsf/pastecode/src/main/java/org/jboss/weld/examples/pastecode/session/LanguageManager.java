@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import jakarta.enterprise.context.Dependent;
 import org.jboss.weld.examples.pastecode.model.Language;
 
 import jakarta.enterprise.inject.Produces;
@@ -26,6 +27,7 @@ import jakarta.inject.Named;
  *
  * @author Pete Muir
  */
+@Dependent
 public class LanguageManager {
 
     @Produces
