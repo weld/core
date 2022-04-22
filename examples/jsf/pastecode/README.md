@@ -2,8 +2,8 @@ Weld PasteCode Example
 ======================
 
 This example demonstrates the use of Weld in Java EE Environment. Contextual
-state management and dependency injection are handled by JSR-299. Transaction
-and persistence context management is handled by the EJB 3 container. All services
+state management and dependency injection are handled by akarta Context Dependency Injection.
+Transaction and persistence context management is handled by the EJB container. All services
 are self-contained within the deployment.
 
 Weld Features Covered

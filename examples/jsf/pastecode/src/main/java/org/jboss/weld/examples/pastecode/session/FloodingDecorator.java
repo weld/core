@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import jakarta.annotation.Priority;
 import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 import jakarta.decorator.Decorator;
@@ -29,6 +30,7 @@ import java.io.Serializable;
  * @author Pete Muir
  */
 @Decorator
+@Priority(jakarta.interceptor.Interceptor.Priority.APPLICATION + 10)
 public abstract class FloodingDecorator implements CodeFragmentManager, Serializable {
 
     private static final long serialVersionUID = -4615837206290420112L;

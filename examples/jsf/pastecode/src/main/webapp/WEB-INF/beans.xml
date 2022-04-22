@@ -3,14 +3,9 @@
    The contents of this file is permitted to be empty.
    The schema definition is provided for your convenience.
 -->
-<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-      http://xmlns.jcp.org/xml/ns/javaee 
-      http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd">
-      
-      <decorators>
-      	<class>org.jboss.weld.examples.pastecode.session.FloodingDecorator</class>
-      </decorators>
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_4_0.xsd"
+       version="4.0" bean-discovery-mode="annotated">
       
 </beans>
