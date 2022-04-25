@@ -9,14 +9,10 @@ A lot of additional information on CDI can be found online. Regardless,
 the CDI specification remains the authority for information on CDI. The
 spec is fairly readable and it covers many details
 we've skipped over here.It is available on the at the Jakarta website
-(https://jakarta.ee/specifications/cdi/3.0/jakarta-cdi-spec-3.0.html[CDI 3.0]).
+(https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html[CDI 4.0]).
 
 The CDI compatible implementation, Weld, is being developed by the
-https://github.com/weld/core/graphs/contributors[Weld team]. The team
-and the CDI spec lead blog at http://in.relation.to[in.relation.to].
-This guide was originally based on a series of blog entries published
-there while the specification was being developed. It's probably the
-best source of information about the future of CDI and Weld.
+https://github.com/weld/core/graphs/contributors[Weld team].
 
 We encourage you to follow the
 https://lists.jboss.org/mailman/listinfo/weld-dev[weld-dev] mailing list

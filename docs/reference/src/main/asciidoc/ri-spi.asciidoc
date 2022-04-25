@@ -10,9 +10,6 @@ If you want to use Weld in another environment, you will need to provide
 certain information to Weld via the integration SPI. In this Appendix we
 will briefly discuss the steps needed.
 
-If you are upgrading existing Weld integration to work with Weld 3, see
-<<weld_2_to_3_migration>>.
-
 NOTE: If you just want to use managed beans, and not take advantage of
 enterprise services (EE resource injection, CDI injection into EE
 component classes, transactional events, support for CDI services in
@@ -903,237 +900,103 @@ ifdef::generate-index-link[link:configure.html#external_config[Defining external
 
 === Migration notes
 
-This part of the appendix documents the changes in Weld across major and
-minor releases that an integrator should be aware of. These changes
-mostly touch changes in the SPI or in the container contract.
-
-==== Migration from Weld 1.x to 2.0
-
-All the changes are documented in this external
-https://community.jboss.org/wiki/WeldIntegratorGuide-ChangesForWeld20[migration
-document].
-
-==== Migration from Weld 2.0 to 2.1
+This part of the appendix documents the changes in Weld from previous major version and the changes in current minor releases that an integrator should be aware of.
+These changes mostly touch changes in the SPI or in the container contract.
+For information on migration to older Weld versions, please consult https://docs.jboss.org/weld/reference/[their respective documentation].
 
-===== Logging
+[[weld_4_to_5_migration]]
+==== Migration from Weld 4.0 to 5.0
 
-Weld no longer uses `slf4j` for logging. Instead,
-http://search.maven.org/#search%7Cga%7C1%7Cjboss-logging[jboss-logging]
-is now used as a logging facade.
+Weld 5 is a compatible implementation of Jakarta CDI 4.0 which is a major version bump that brings new APIs, removal of deprecated API, breaking changes and the introduction of CDI Lite.
 
-===== HttpContextActivationFilter
+===== Java 11
 
-A new service named
-http://docs.jboss.org/weld/javadoc/2.1/weld-spi/org/jboss/weld/servlet/spi/HttpContextActivationFilter.html[HttpContextActivationFilter]
-was added to the Weld SPI. This optional service allows an integrator to
-decide if CDI contexts should be activated or not for a given HTTP
-request. By default, CDI contexts are always active but this hook allows
-an integrator to eliminate the overhead of CDI context activation for
-certain types of requests where CDI is known not to be needed (e.g.
-request for a static resource).
+Both, Weld 5.0 and CDI 4.0 require at least Java 11 for compile time and runtime but both are made to run with JDK 17 as well.
 
-Note that when the service is provided, user
-configuration is overriden.
+===== CDI Lite and CDI Full
 
-===== Non-portable mode
+By far the biggest change in CDI 4.0 is the introduction of CDI Lite.
+In short, CDI Lite is a feature subset of CDI Full that broadens the amount of environments in which CDI can execute; more precisely, it enables CDI in build time oriented frameworks such as Micronaut or Quarkus.
+What does that means for Weld users?
+Nothing much, Weld is and will be a runtime oriented implementation and you can keep using CDI as you did up until now.
+To be exact, Weld is so called CDI Full implementation meaning it provides each and every CDI feature and while there were some deprecations and removals, the rest stays the same.
 
-The
-http://docs.jboss.org/weld/javadoc/2.1/weld-spi/org/jboss/weld/bootstrap/spi/BootstrapConfiguration.html#isNonPortableModeEnabled%28%29[BootstrapConfiguration]
-service now allows the non-portable mode to be
-enabled by the integrator.
+===== Empty `beans.xml` discovery mode
 
-===== Singleton SPI
+CDI 4 changes the default discovery mode used for empty `beans.xml` - it is now `annotated` mode.
+This aligns nicely with recommendations from the past and saves memory and boot times by discovering only annotated beans as opposed to scanning everything.
 
-Since Weld 2.1 the
-http://docs.jboss.org/weld/javadoc/2.1/weld-spi/org/jboss/weld/bootstrap/api/Singleton.html[Singleton
-SPI] requires the singleton to be identified by a String `context id`.
-This allows multiple Weld containers to run at the same time in
-environments where the TCCL cannot be used to distinguish the containers
-(e.g. OSGi environment).
+For existing applications with empty `beans.xml`, this might be a breaking change.
+This can typically be fixed via:
 
-The integrator should:
+* Making sure all needed beans have required annotations. This mostly boils down to adding https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#bean_defining_annotations[bean defining annotations] to classes that are supposed to be beans but have none of them.
+** Typically, you will see a lot of unsatisfied dependency injections which should give you a hint at which beans are most likely missing an annotation
+* Changing `beans.xml` to non-empty and adding `<beans>` element with attribute `bean-discovery-mode="all"`. This will revert the discovery mode to previously used `all` mode.
+* In EE servers, https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#bean_archive_full[CDI specification requires integrators] to provide a compatibility switch that triggers previous behavior
+** Note that this is a temporary measure to ensure backward compatibility and it will be removed in the future. Applications are encouraged to eventually apply one of the above solutions.
+** Consult the documentation of each integrator (such as WildFly) to learn how to enable this option.
 
-* implement the new methods
-* use WeldBootstrap.startContainer(String contextId, Environment environment,
-Deployment deployment) to start Weld
-* eliminate all Container.instance() calls and replace them with Container.instance(String contextId)
+====== Notes for integrators
 
-===== Weld-OSGi bundle
+If you are an integrator looking to implement this switch with Weld, here are a few leads.
+Depending on how exactly you integrate Weld, you are likely using one of the following ways to parse `beans.xml`:
 
-The Weld-OSGi bundle does no include Weld's runtime dependencies
-anymore. Therefore, it is possible to deploy the following artifacts in
-order to satisfy Weld's dependencies:
+* Directly invoking parser via `org.jboss.weld.xml.BeansXmlStreamParser`.
+** `BeansXmlStreamParser` now has new constructor methods which allow passing a `BeanDiscoveryMode` parameter telling Weld how to interpret empty `beans.xml`.
+** All former constructors were retained and default to `BeanDiscoveryMode.ANNOTATED`   .
+* Indirectly invoking it via an implementation of `org.jboss.weld.bootstrap.api.Bootstrap` and its `parse` methods.
+** New variantions of the `parse` methods were added and accept `BeanDiscoveryMode` parameter telling Weld how to interpret empty `beans.xml`.
+** All former variations of `parse` methods were retained and default to `BeanDiscoveryMode.ANNOTATED`.
 
-[cols=",,",options="header",]
-|======================================================
-|group id |artifact id |version
-|org.jboss.logging |jboss-logging |3.1.3.GA
-|jakarta.enterprise |cdi-api |1.1-20130918
-|jakarta.annotation |jakarta.annotation-api |1.2
-|jakarta.interceptor |jakarta.interceptor-api |1.2
-|org.apache.geronimo.specs |geronimo-el_2.2_spec |1.0.3
-|======================================================
+===== Build Compatible Extensions
 
-==== Migration from Weld 2.1 to 2.2
+With the addition of CDI Lite, the one big new feature are so-called Build Compatible Extensions (BCE).
+Their purpose is very similar to that of Portable Extensions (PE) - synthetic alteration of the bean model.
+Unlike PE which are inherently runtime oriented, BCE can be used in more restricted environments while retaining portability.
+If you want to learn more, take a look at https://eclipse-ee4j.github.io/cdi/2021/12/03/you-know-build-compatible-extensions.html[this article].
 
-* The definition of a _bean defining annotation_ was altered in CDI 1.2.
-See the http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations[specification] for more information.
-* A new
-http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/manager/api/WeldInjectionTargetBuilder.html[WeldInjectionTargetBuilder]
-SPI was added. The SPI allows an integrator to obtain a customized
-`InjectionTarget` implementation using the builder pattern.
-* The AnnotationDiscovery service was deprecated in favor of link:#classFileServices[ClassFileServices].
-* http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/bootstrap/api/CDI11Bootstrap.html#startContainer%28java.lang.String,%20org.jboss.weld.bootstrap.api.Environment,%20org.jboss.weld.bootstrap.spi.Deployment%29[CDIBootstrap.startContainer()] method, which allows a container identifier to be passed as a parameter, was added.
-* The contract of the http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/api/SessionObjectReference.html#getBusinessObject%28java.lang.Class%29[SessionObjectReference.getBusinessObject()] method was altered. Weld may now call
-this method passing in a remote view of a session bean.
-* The CDI provider implementation was reimplemented
-and is no longer compatible with the previous version.
+====== How to make Weld understand Build Compatible Extensions?
 
-==== Migration from Weld 2.2 to 2.3
+Since BCE use a different language model but are otherwise similar, Weld internally maps their execution to a special Portable Extension named https://github.com/weld/core/blob/5.0.0.CR2/weld-lite-extension-translator/src/main/java/org/jboss/weld/lite/extension/translator/LiteExtensionTranslator.java[`LiteExtensionTranslator`].
+This extension is inside a newly added Maven module - `weld-lite-extension-translator`.
+The GAV of this artifact is org.jboss.weld:weld-lite-extension-translator:5.0.0.Final.
 
-* The `jboss-classfilewriter` dependency, which is used by Weld for runtime bytecode generation, is no longer bundled within the Weld OSGi bundle.
-Instead, this dependency needs to be deployed separately to the OSGi container.
+Just like any Portable Extension, it needs an entry in `META-INF` or an instance of this extensions has to be added programmaticaly during Weld bootstrap. This is where it gets tricky; *it doesn’t work out of the box in all environments!*
 
-[cols=",,",options="header",]
-|======================================================
-|group id |artifact id |version
-|org.jboss.classfilewriter |jboss-classfilewriter |1.1.2.Final
-|======================================================
+* Weld SE - works out of the box, the extension is automagically added
+* Weld Servlet - works out of the box, the extensions is automagically added
+* EE - doesn’t work without integrator registering the extension
+* Any other custom integration - doesn’t work without integrator registering the extension
 
-* `EEModuleDescriptor` which describes Java EE modules has been introduced and is now required as part of deployment structure metadata.
-  See <<ee_modules>> for details.
+In complex/custom environments, Weld doesn't have enough information to decide when and how to register the extension, hence it instead lets the integrator decide.
 
-* Java 6 support was dropped. Java 7 or newer is now required for both compile time and runtime.
+====== Registering `LiteExtensionTranslator`
 
-* An observer for `@Initialized(ConversationScoped.class)` or `@Destroyed(ConversationScoped.class)` event no longer forces eager conversation context initialization. See also
-ifndef::generate-index-link[<<lazy_and_eager_conversation_context_initialization>>]
-ifdef::generate-index-link[link:scopescontexts.html#lazy_and_eager_conversation_context_initialization[Lazy and eager conversation context initialization]]
-.
+Registering the `LiteExtensionTranslator` can be as easy as adding a `META-INF` entry with it into some archive in the deployment.
+An example of this would be https://github.com/arquillian/arquillian-container-weld[`arquillian-container-weld`], a test container for Weld applications.
+As you can see from https://github.com/arquillian/arquillian-container-weld/pull/114/files[this pull request], it basically adds a `META-INF` entry which is sufficient to support new extension model. Since it a test tool, the extension is always registered without any attempt to optimize it.
 
-* `ScheduledExecutorServiceFactory` is deprecated and no default implementation is provided by default. This service has not been used by Weld internals at least since version 1.1.0.Final.
+The above solution is nice and clean, but won’t cut it for any EE integrators.
+Instead, EE integrators will want to register this extension very similarly to how they currently register `ProbeExtension` - add it programmatically as part of the CDI deployment.
+This extension should to be registered at most once per deployment.
+It is therefore recommended to put it directly into `org.jboss.weld.bootstrap.spi.CDI11Deployment` implementation.
 
-==== Migration from Weld 2.3 to 2.4
+Lastly, this process can and should be optimized so that the extension is only registered when there is at least one BCE detected.
+The reason being that the extension monitors a wide variety of generic events, such `ProcessAnnotatedType<?>`, which can be time consuming for bigger applications.
+There is a utility class to help with this - `org.jboss.weld.lite.extension.translator.BuildCompatibleExtensionLoader` - which allows performing a standard service discovery process with given `ClassLoader` and returns the set of discovered BCE classes.
+Integrators can then instantiate `LiteExtensionTranslator` via a constructor that takes this set as an input; or skip registering it if there are no BCE at all.
 
-* Weld does not depend on `com.google.guava:guava` anymore. The dependency is also not bundled with shaded artifacts for Weld SE and Weld Servlet.
+===== Deprecations and removals
 
-* A wildcard type is not considered an unresolvable type variable - this reflects the output of a clarification issue https://issues.jboss.org/browse/CDI-494[CDI-494].
+This section mostly focuses on removals in Weld itself.
+If you are looking for deprecation removals in CDI API, take a look at https://github.com/eclipse-ee4j/cdi/issues/472[this GH issue].
 
-* Deprecated `org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory` was removed.
+* Multiple methods from `org.jboss.weld.serialization.spi.ProxyServices` were removed.
+** If you are an integrator, you probably implemented this interface at some point in time; these methods weren’t used by Weld anyway, so they are now gone for good.
+** https://issues.redhat.com/browse/WELD-2702[Here is a JIRA issue] with more details and PR link.
+* Any integrators making use of Jandex likely implemented `ClassFileInfo`; its `isTopLevelClass()` has been removed.
+** Note that this method was redundant and can be replaced by `getClassNestingType()`.
+* `WeldInstance.Handler` class is now deprecated and so are multiple methods returning this type from `WeldInstance`
+** The reason for this removal is that the very same feature was accepted into CDI specification so you can now use CDI API interfaces to achieve the same.
+** For more information, take a look at https://github.com/eclipse-ee4j/cdi/blob/master/api/src/main/java/jakarta/enterprise/inject/Instance.java#L266-L315[`Instance.Handle` class from CDI API].
 
-* Weld SE:
-
-** `org.jboss.weld.environment.se.contexts.activators.ActivateRequestScope` was moved to the Weld API. From now on, the FQCN of the interceptor binding is: `org.jboss.weld.context.activator.ActivateRequestScope`.
-
-** Deprecated `org.jboss.weld.environment.se.beans.InstanceManager` was removed.
-
-** Deprecated `org.jboss.weld.environment.se.ShutdownManager` was removed.
-
-** Deprecated `org.jboss.weld.environment.se.contexts.interceptors.ActivateThreadScope` was removed.
-
-[[weld_2_to_3_migration]]
-==== Migration from Weld 2.4 to 3.0
-
-Weld 3.0 implements CDI 2.0 so this is a huge update which contains bunch of new features.
-However, this document only covers part which might prove problematic while moving existing application from Weld 2.4 to Weld 3.0.
-For more information on the CDI 2.0 itself, please consult http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[the specification].
-
-===== Java 8
-
-Both, Weld 3.0 and CDI 2.0 require Java 8 for compile time and runtime.
-
-===== Shaded JARs name change
-
-Weld 2.4 created shaded JARs for SE and Servlet with following artifact IDs: `weld-se`, `weld-servlet`.
-In Weld 3.0 a `-shaded` affix was added to the name of these artifacts to make it clear what they contain.
-E.g. new artifact IDs of these JARs are `weld-se-shaded` and `weld-servlet-shaded` respectively.
-
-===== Weld 3 modules
-
-Weld 3.0 was fine-grained and several optional modules were separated from the core.
-Namely, Weld now has Web, JTA, JSF and EJB modules.
-
-The coordinates for these artifacts are as follows:
-
-* WEB - `org.jboss.weld.module:weld-web`
-* JTA - `org.jboss.weld.module:weld-jta`
-* JSF - `org.jboss.weld.module:weld-jsf`
-* EJB - `org.jboss.weld.module:weld-ejb`
-
-Each module represents the logic behind Weld integration with the given technology.
-
-===== `beans.xml` change for vetoed alternatives
-
-Based on the decision taken in https://issues.jboss.org/browse/CDI-627[CDI-627], the behaviour of vetoed alternatives had changed slightly.
-`beans.xml` validation is now less strict and you can have a vetoed alternative while still having it enabled via `beans.xml`.
-This behaviour is the same as it was in CDI 1.0.
-
-===== `BeanManager#fireEvent` was deprecated
-
-While `BeanManager#fireEvent` still works, users are encouraged to use newly added `BeanManager#getEvent` method instead.
-This method returns an instance of `Event<Object>` built-in bean which can then have the types and qualifiers further specified via `select` method.
-It also allows to fire both kinds of events; synchronous and asynchronous.
-See the example below:
-
-[source.JAVA, java]
---------------------------------------------------------------------------------------------------
-@Inject
-BeanManager bm;
-
-public void fireMyEvent() {
-    bm.getEvent().select(Any.Literal.INSTANCE).fire(new Payload());
-    bm.getEvent().select(PaymentCheck.class, Default.Literal.INSTANCE)
-        .fireAsync(new Payload());
-}
---------------------------------------------------------------------------------------------------
-
-===== Weld-core artifact change
-
-For historical reasons, Weld 2.4 core is released in two versions which *are identical* in their contents.
-Those are `org.jboss.weld:weld-core` and `org.jboss.weld:weld-core-impl`.
-Starting with Weld 3.0, only `org.jboss.weld:weld-core-impl` artifact will be released.
-
-===== SPI changes
-
-The SPI changes are mainly important for integrators, such as WildFly.
-Here is a list of changes based on what SPI class/method they affect:
-
-* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/bootstrap/spi/BeanDeploymentArchive.html[`org.jboss.weld.bootstrap.spi.BeanDeploymentArchive`]
-
-** Two new methods - `getKnownClasses()` and `getLoadedBeanClasses()`; both of them have default implementations
-** `getLoadedBeanClasses()`
-*** Integrators might want to override this method if they want to make use of preloaded classes during bootstrap
-** `getKnownClasses()`
-*** For explicit bean archive, the result of this method should be equal to that of `getBeanClasses()`
-*** For implicit bean archive, it should also return types which have neither bean defining annotations nor session bean definitions
-
-* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/bootstrap/spi/BeansXml.html[`org.jboss.weld.bootstrap.spi.BeansXml`]
-
-** One new method - `isTrimmed()`
-** If an explicit bean archive contains the `<trim/>` element in its `beans.xml` file, types that don’t have either a bean defining annotation or any scope annotation, are removed from the set of discovered types.
-** If an integrator provides custom implementation of `BeansXml` interface, this method will need to be implemented as well
-
-* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/security/spi/SecurityServices.html[`org.jboss.weld.security.spi.SecurityServices`]
-
-** One new method - `getSecurityContext()`
-** Returns current security context, which can then be propagated to different threads
-** This method has a default implementation which returns a no-op `SecurityContext` implementation
-
-* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/security/spi/SecurityContext.html[`org.jboss.weld.security.spi.SecurityContext`]
-
-** Newly added interface which Weld uses to associate and dissociate security context with given thread
-** The main use case for this are asynchronous event observers which are executed in separate threads, yet need to have identical context
-** There are three methods in this interface - `associate()`, `dissociate()` and `close()`
-
-* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/manager/api/ExecutorServices.html[`org.jboss.weld.manager.api.ExecutorServices`]
-
-** One new method - `getTimerExecutor()`
-** Returns an instance of https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ScheduledExecutorService.html[`ScheduledExecutorService`]
-** This executor is only required for the timeout feature of asynchronous events
-** This method has a default implementation returning `null'
-
-* http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/manager/api/WeldManager.html[`org.jboss.weld.manager.api.WeldManager`]
-
-** Following methods were removed from the SPI:
-*** `WeldManager.createActivity`
-*** `WeldManager.getCurrent`
-*** `WeldManager.setCurrentsetCurrent`

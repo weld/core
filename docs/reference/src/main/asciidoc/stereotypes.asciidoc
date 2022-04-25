@@ -148,6 +148,23 @@ public class MockLoginAction extends LoginAction { ... }
 </beans>
 ---------------------------------------------------------
 
+=== Stereotypes with `@Priority`
+
+A stereotype can declare a `@Priority` annotation which then affects enablement and ordering of beans.
+This is typically useful in combination with `@Alternative` to immediately mark a bean as a globally enabled alternative:
+
+[source.JAVA, java]
+------------------------------------
+@Alternative
+@Priority(Interceptor.Priority.APPLICATION + 5)
+@Stereotype
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface EnabledAlternativeStereotype {}
+------------------------------------
+
+A `@Priority` annotation declared directly on the bean always precedes any `@Priority` annotation inherited via stereotypes.
+
 === Stereotype stacking
 
 This may blow your mind a bit, but stereotypes may declare other
