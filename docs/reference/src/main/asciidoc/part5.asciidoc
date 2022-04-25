@@ -6,24 +6,18 @@ endif::[]
 = Weld Reference Guide
 
 Weld is compatible implementation of CDI, and is used by WildFly,
-GlassFish and WebLogic to provide CDI services for Java Enterprise
-Edition (Java EE) applications. Weld also goes beyond the environments
-and APIs defined by the CDI specification by providing support for a
-number of other environments (such as a servlet container such as
-Tomcat, or Java SE).
-
-You might also want to check out
-http://deltaspike.apache.org/[DeltaSpike] project which provides
-portable extensions to CDI.
+GlassFish, Liberty, and WebLogic to provide CDI services for Jakarta EE applications.
+Weld also goes beyond the environments and APIs defined by the CDI specification by providing support for a
+number of other environments (for instance servlet container such as Tomcat, or Java SE).
 
 If you want to get started quickly using Weld (and, in turn, CDI) with
 WildFly, GlassFish or Tomcat and experiment with one of the examples,
 take a look at
 ifndef::generate-index-link[<<gettingstarted>>]
 ifdef::generate-index-link[link:gettingstarted.html[Getting started with Weld]]
-. Otherwise read on for a
-exhaustive discussion of using Weld in all the environments and application
-servers it supports and the Weld extensions.
+. Otherwise, read on for an
+exhaustive description of using Weld in all the environments and application
+servers it supports as well as various Weld extensions going beyond what specification requires.
 
 include::environments.asciidoc[]
 

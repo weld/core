@@ -717,3 +717,25 @@ context.
 
 For more information on implementing a custom context see this
 http://in.relation.to/Bloggers/CreatingACustomScope[blog post] or the https://github.com/weld/command-context-example[Command context example].
+
+[[extend_lite]]
+== Build Compatible extensions
+
+Since CDI 4, users can leverage Build Compatible extensions as an alternative to <<extend>>.
+Both extension models are targeting the same set of use cases and can users can choose either model or even combine both.
+
+As name suggests, Build Compatible extensions are tailored to run in more constrained environments and as such have to sacrifice some functionality and user-friendliness in order to retain portability across very different environments.
+For example, Build Compatible extension cannot be injected as a bean at runtime and therefore cannot be used to carry information gathered during CDI bootstrap into later stages of your application.
+Another notable difference is that unlike Portable extensions and their reflection-heavy model (for instance `AnnotatedType`), Build Compatible extensions use an entirely different language model, that has a reflection-free API.
+
+Weld supports Build Compatible extensions and their language model but does so through usage of reflection and executes these extensions by binding their lifecycle calls to a specialized Portable extension.
+Since Weld is a CDI Full implementation, it is recommended to keep using Portable extensions over Build Compatible extensions.
+
+The support works out of the box for Weld SE and Weld Servlet but for any other environments and custom integrations, it is up to integrators to make sure the support is included.
+Take a look at `org.jboss.weld.lite.extension.translator.LiteExtensionTranslator` and `org.jboss.weld.lite.extension.translator.BuildCompatibleExtensionLoader` in case you want to learn more about this topic.
+
+Users can also choose to provide the same functionality in both variants - a Portable extension and a Build Compatible extension.
+It is then possible to annotate the Build Compatible variant with `@jakarta.enterprise.inject.build.compatible.spi.SkipIfPortableExtensionPresent` which will automatically disable the Build Compatible variant in favor of Portable extension variant in CDI Full environments.
+
+Build Compatible extension have an extensive Javadoc describing how to use them; a good starting point is the `jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension` interface.
+Further documentation is available in https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#spi_lite[dedicated CDI specification chapter].
