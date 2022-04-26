@@ -576,10 +576,11 @@ public class WeldStartup {
             for (BeanDeploymentModule module : modules) {
                 if (!module.isWebModule()) {
                     module.fireEvent(Object.class, ContextEvent.APPLICATION_INITIALIZED, Initialized.Literal.APPLICATION);
-                }
-                // Fire Startup event for all modules if required
-                if (environment.automaticallyHandleStartupShutdownEvents()) {
-                    module.fireEvent(Startup.class, new Startup(), Any.Literal.INSTANCE);
+                    // Fire Startup event for all non-web modules if required
+                    // web modules have to be handled alongside @Initialized(AppScoped) fired there to make sure the ordering fits
+                    if (environment.automaticallyHandleStartupShutdownEvents()) {
+                        module.fireEvent(Startup.class, new Startup(), Any.Literal.INSTANCE);
+                    }
                 }
             }
         }

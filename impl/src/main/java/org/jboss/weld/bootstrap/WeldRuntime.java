@@ -58,10 +58,10 @@ public class WeldRuntime {
 
     public void shutdown() {
         try {
-            // fire Shutdown event for all modules first
+            // fire Shutdown event for all non-web modules first
             Environment env = Container.getEnvironment();
             if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
-                fireEventForAllModules(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
+                fireEventForNonWebModules(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
             }
             // The container must destroy all contexts.
             // For non-web modules, fire @BeforeDestroyed event

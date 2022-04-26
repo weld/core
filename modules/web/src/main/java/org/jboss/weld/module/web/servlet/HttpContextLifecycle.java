@@ -22,6 +22,9 @@ import java.util.Collections;
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Destroyed;
 import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Shutdown;
+import jakarta.enterprise.event.Startup;
+import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.spi.EventMetadata;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequestListener;
@@ -31,6 +34,7 @@ import jakarta.servlet.http.HttpSession;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeploymentModule;
 import org.jboss.weld.bootstrap.BeanDeploymentModules;
+import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.BoundContext;
 import org.jboss.weld.context.ManagedContext;
@@ -145,9 +149,18 @@ public class HttpContextLifecycle implements Service {
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
         fireEventForApplicationScope(ctx, Initialized.Literal.APPLICATION);
+        Environment env = Container.getEnvironment();
+        if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
+            module.fireEvent(Startup.class, new Startup(), Any.Literal.INSTANCE);
+        }
     }
 
     public void contextDestroyed(ServletContext ctx) {
+        // firstly, fire Shutdown event
+        Environment env = Container.getEnvironment();
+        if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
+            module.fireEvent(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
+        }
         // TODO WELD-2282 Firing these two right after each other does not really make sense
         fireEventForApplicationScope(ctx, BeforeDestroyed.Literal.APPLICATION);
         fireEventForApplicationScope(ctx, Destroyed.Literal.APPLICATION);
