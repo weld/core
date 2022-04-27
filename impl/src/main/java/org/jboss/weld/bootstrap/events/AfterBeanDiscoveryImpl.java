@@ -102,8 +102,24 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public <T> WeldBeanConfigurator<T> addBean() {
+        return addBean(getReceiver().getClass());
+    }
+
+    /**
+     * Used by {@code LiteExtensionTranslator} to register beans coming from Build Compatible extensions.
+     * This ensures that the bean is registered under given BCE class instead of being linked to
+     * {@code LiteExtensionTranslator}.
+     *
+     * This method should not be used anywhere else.
+     *
+     * @param receiverClass class of the Build Compatible extension performing synth. bean registration
+     * @param <T> bean type
+     * @return instance of {@link WeldBeanConfigurator}
+     */
+    public <T> WeldBeanConfigurator<T> addBean(Class<?> receiverClass) {
         checkWithinObserverNotification();
-        BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(getReceiver().getClass(), getBeanDeploymentFinder());
+        BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(receiverClass, getBeanDeploymentFinder());
+        // note that here we deliberately keep getReceiver() since the logging is related to registering portable extension
         additionalBeans.add(BeanRegistration.of(configurator, getReceiver()));
         return configurator;
     }
