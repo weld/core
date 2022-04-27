@@ -1,5 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanBuilder;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanDisposer;
@@ -23,9 +24,11 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     Set<Class<? extends Annotation>> stereotypes = new HashSet<>();
     Class<? extends SyntheticBeanCreator<T>> creatorClass;
     Class<? extends SyntheticBeanDisposer<T>> disposerClass;
+    Class<? extends BuildCompatibleExtension> extensionClass;
 
-    SyntheticBeanBuilderImpl(Class<?> implementationClass) {
+    SyntheticBeanBuilderImpl(Class<?> implementationClass, Class<? extends BuildCompatibleExtension> extensionClass) {
         this.implementationClass = implementationClass;
+        this.extensionClass = extensionClass;
     }
 
     @Override

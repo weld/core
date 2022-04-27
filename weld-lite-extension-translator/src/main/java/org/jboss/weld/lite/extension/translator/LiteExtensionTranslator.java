@@ -7,6 +7,7 @@ import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanDisposer;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserver;
+import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.lang.annotation.Annotation;
@@ -145,7 +146,14 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
         new ExtensionPhaseSynthesis(bm, util, errors, syntheticBeans, syntheticObservers).run();
 
         for (SyntheticBeanBuilderImpl<?> syntheticBean : syntheticBeans) {
-            jakarta.enterprise.inject.spi.configurator.BeanConfigurator<Object> configurator = abd.addBean();
+            jakarta.enterprise.inject.spi.configurator.BeanConfigurator<Object> configurator;
+            if (abd instanceof AfterBeanDiscoveryImpl) {
+                // specify the receiver class to be the BCE extension, linking the bean to it
+                // in EE env this affects the BM used for dynamic resolution inside bean creation method
+                configurator = ((AfterBeanDiscoveryImpl)abd).addBean(syntheticBean.extensionClass);
+            } else {
+                configurator = abd.addBean();
+            }
             configurator.beanClass(syntheticBean.implementationClass);
             configurator.types(syntheticBean.types);
             configurator.qualifiers(syntheticBean.qualifiers);
