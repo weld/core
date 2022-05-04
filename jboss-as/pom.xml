@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>5.0.1-SNAPSHOT</version>
+        <version>5.0.0.SP1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -30,7 +30,7 @@
     <properties>
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
         as the release plugin won't deal with double evaluation -->
-        <weld.update.version>5.0.1-SNAPSHOT</weld.update.version>
+        <weld.update.version>5.0.0.SP1</weld.update.version>
     </properties>
 
     <dependencies>
