@@ -102,7 +102,9 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public <T> WeldBeanConfigurator<T> addBean() {
-        return addBean(getReceiver().getClass());
+        // null is only going to occur if the invocation is outside of OM in which case it will fail in the
+        // subsequent method inside checkWithinObserverNotification()
+        return addBean(getReceiver() != null ? getReceiver().getClass() : null);
     }
 
     /**
