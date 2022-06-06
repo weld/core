@@ -150,7 +150,7 @@ public class HttpContextLifecycle implements Service {
         servletContextService.contextInitialized(ctx);
         fireEventForApplicationScope(ctx, Initialized.Literal.APPLICATION);
         Environment env = Container.getEnvironment();
-        if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
+        if (module != null && env != null && env.automaticallyHandleStartupShutdownEvents()) {
             module.fireEvent(Startup.class, new Startup(), Any.Literal.INSTANCE);
         }
     }
@@ -158,7 +158,7 @@ public class HttpContextLifecycle implements Service {
     public void contextDestroyed(ServletContext ctx) {
         // firstly, fire Shutdown event
         Environment env = Container.getEnvironment();
-        if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
+        if (module != null && env != null && env.automaticallyHandleStartupShutdownEvents()) {
             module.fireEvent(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
         }
         // TODO WELD-2282 Firing these two right after each other does not really make sense
