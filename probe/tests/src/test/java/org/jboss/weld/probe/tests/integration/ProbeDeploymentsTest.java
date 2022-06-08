@@ -93,7 +93,7 @@ public class ProbeDeploymentsTest extends ProbeIntegrationTest {
     public void testDeploymentEndpointWithExplicitBeanArchive() throws IOException {
         JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, TEST_ARCHIVE_NAME, url);
         assertNotNull("Cannot find test archive in Probe deployments!", testArchive);
-        assertEquals("Another bean discovery mode expected!", BeanDiscoveryMode.ALL.name(), testArchive.getString(BEAN_DISCOVERY_MODE));
+        assertEquals("Another bean discovery mode expected!", BeanDiscoveryMode.ANNOTATED.name(), testArchive.getString(BEAN_DISCOVERY_MODE));
     }
 
     @Test

@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.probe.tests.integration.deployment.beans;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
 
+@Dependent
 public class TestProducer {
 
     @Produces
