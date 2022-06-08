@@ -16,5 +16,8 @@
  */
 package org.jboss.weld.probe.tests.integration.deployment.beans;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class DummyBean {
 }
