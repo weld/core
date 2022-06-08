@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-probe-parent</artifactId>
         <groupId>org.jboss.weld.probe</groupId>
-        <version>5.0.1-SNAPSHOT</version>
+        <version>5.0.0.SP2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
