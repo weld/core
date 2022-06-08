@@ -22,11 +22,13 @@ jobs:
         with:
           java-version: 11
       - name: Download WildFly
-        # TODO - wget link needs to eventually be replaced once there is a WFLY that we can use for EE 10
         run: |
-          wget https://download.jboss.org/wildfly/24.0.1.Final/wildfly-preview-24.0.1.Final.zip
+          wget https://ci.wildfly.org/guestAuth/repository/download/WF_WildflyPreviewNightly/latest.lastSuccessful/wildfly-preview-latest-SNAPSHOT.zip
+          unzip wildfly-preview-latest-SNAPSHOT.zip
+          # ZIP contains two more ZIPs, sources and actual WFLY
+          rm wildfly-*-src.zip
+          rm wildfly-preview-latest-SNAPSHOT.zip
           unzip wildfly-*.zip -d container
-          rm wildfly-preview-24.0.1.Final.zip
           cd container
           mv ./* wildfly/
       - name: Get Date
@@ -75,8 +77,6 @@ jobs:
   incontainer-tests:
     name: "Weld In-container Tests - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
-    # TODO temporarily force-skip any in-container testing until we have a WFLY version that can execute it
-    if: "false"
     needs: build-jdk11
     timeout-minutes: 120
     strategy:
@@ -140,8 +140,6 @@ jobs:
   CDI-TCK:
     name: "CDI TCK - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
-    # TODO temporarily force-skip any in-container testing until we have a WFLY version that can execute it
-    if: "false"
     needs: build-jdk11
     timeout-minutes: 120
     strategy:
@@ -252,8 +250,6 @@ jobs:
     name: "Weld Examples build and test - JDK 11}"
     runs-on: ubuntu-latest
     needs: build-jdk11
-    # TODO temporarily force-skip any in-container testing until we have a WFLY version that can execute it
-    if: "false"
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v2
@@ -351,8 +347,6 @@ jobs:
     name: "Weld SE-Servlet Cooperation"
     runs-on: ubuntu-latest
     needs: build-jdk11
-    # TODO temporarily force-skip due to JSF usage relying on now removed deprecated APIs
-    if: "false"
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v2
