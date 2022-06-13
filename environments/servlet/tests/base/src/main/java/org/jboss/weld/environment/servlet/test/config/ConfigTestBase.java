@@ -24,6 +24,7 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.shrinkwrap.impl.BeansXml.Exclude;
@@ -38,7 +39,7 @@ import org.junit.Test;
 public abstract class ConfigTestBase {
 
     public static WebArchive baseDeployment(final Package... excludedPackages) {
-        BeansXml beansXml = new BeansXml();
+        BeansXml beansXml = new BeansXml(BeanDiscoveryMode.ALL);
         ArrayList<Exclude> filters = new ArrayList<Exclude>();
         for (Package pckg : excludedPackages) {
             filters.add(Exclude.match(pckg.getName() + ".**"));

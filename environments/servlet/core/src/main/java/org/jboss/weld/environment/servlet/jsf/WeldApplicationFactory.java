@@ -26,16 +26,15 @@ import jakarta.faces.application.ApplicationFactory;
  */
 public class WeldApplicationFactory extends ApplicationFactory {
 
-    private final ApplicationFactory applicationFactory;
 
     private volatile Application application;
 
     public WeldApplicationFactory(ApplicationFactory applicationFactory) {
-        this.applicationFactory = applicationFactory;
+        super(applicationFactory);
     }
 
     protected ApplicationFactory delegate() {
-        return applicationFactory;
+        return getWrapped();
     }
 
     @Override
@@ -73,8 +72,4 @@ public class WeldApplicationFactory extends ApplicationFactory {
         return delegate().toString();
     }
 
-    @Override
-    public ApplicationFactory getWrapped() {
-        return delegate();
-    }
 }

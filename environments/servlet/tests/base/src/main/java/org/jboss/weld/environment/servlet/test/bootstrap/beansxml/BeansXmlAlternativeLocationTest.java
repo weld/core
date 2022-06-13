@@ -23,6 +23,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
@@ -41,7 +42,7 @@ public class BeansXmlAlternativeLocationTest {
     @Deployment
     public static WebArchive createTestArchive() {
         return ShrinkWrap.create(WebArchive.class).addClass(BeansXmlAlternativeLocationTest.class)
-                .add(new BeansXml(), "WEB-INF/classes/META-INF/beans.xml");
+                .add(new BeansXml(BeanDiscoveryMode.ALL), "WEB-INF/classes/META-INF/beans.xml");
     }
 
     @Test

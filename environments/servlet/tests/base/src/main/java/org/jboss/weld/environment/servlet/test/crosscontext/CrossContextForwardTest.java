@@ -29,6 +29,7 @@ import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
@@ -55,14 +56,16 @@ public class CrossContextForwardTest {
 
     @Deployment(name = CrossContextForwardTest.FIRST)
     public static WebArchive createFirstTestArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "app1.war").addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(FORWARDING_WEB_XML);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "app1.war")
+                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml").setWebXML(FORWARDING_WEB_XML);
         war.addClass(ForwardingServlet.class);
         return war;
     }
 
     @Deployment(name = CrossContextForwardTest.SECOND)
     public static WebArchive createSecondTestArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "app2.war").addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(INCLUDED_WEB_XML);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "app2.war")
+                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml").setWebXML(INCLUDED_WEB_XML);
         war.addClass(IncludedServlet.class);
         return war;
     }

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -22,7 +23,7 @@ public class LibrariesDiscoveredTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        JavaArchive library = ShrinkWrap.create(JavaArchive.class, "library.jar").addClass(Camel.class).addAsManifestResource(new BeansXml(), "beans.xml");
+        JavaArchive library = ShrinkWrap.create(JavaArchive.class, "library.jar").addClass(Camel.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml");
         log.fine(DELIMITER);
         log.fine("Library");
         log.fine(DELIMITER);

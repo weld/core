@@ -21,10 +21,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.environment.servlet.test.util.Deployments;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +44,7 @@ public class HSCycleTest {
         war.addPackage(HSCycleTest.class.getPackage());
         String webXml = Deployments.extendDefaultWebXml(Deployments.toListener(HSListener.class.getName()));
         war.setWebXML(new StringAsset(webXml));
-        war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        war.addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml");
         return war;
     }
 

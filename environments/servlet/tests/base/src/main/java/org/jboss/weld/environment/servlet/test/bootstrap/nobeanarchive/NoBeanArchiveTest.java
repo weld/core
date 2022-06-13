@@ -16,13 +16,16 @@
  */
 package org.jboss.weld.environment.servlet.test.bootstrap.nobeanarchive;
 
+import jakarta.enterprise.inject.spi.DefinitionException;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.environment.servlet.test.util.Deployments;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,12 +39,14 @@ public class NoBeanArchiveTest {
 
     public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
 
-    @Deployment
+    @ShouldThrowException(IllegalStateException.class)
+    @Deployment()
     public static WebArchive createTestArchive() {
         return ShrinkWrap.create(WebArchive.class).setWebXML(WEB_XML);
     }
 
     @Test
+    @Ignore
     public void testDeploymentDoesNotFail() {
     }
 

@@ -28,6 +28,7 @@ import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
@@ -46,7 +47,8 @@ public class ConflictingBeansXmlTest implements Marker {
     @Deployment
     public static WebArchive createTestArchive() {
         return ShrinkWrap.create(WebArchive.class).addClasses(ConflictingBeansXmlTest.class, Foo.class, VerifyExtension.class)
-                .add(new BeansXml(), "WEB-INF/classes/META-INF/beans.xml").add(new BeansXml().alternatives(Foo.class), "WEB-INF/beans.xml")
+                .add(new BeansXml(BeanDiscoveryMode.ALL), "WEB-INF/classes/META-INF/beans.xml")
+                .add(new BeansXml(BeanDiscoveryMode.ALL).alternatives(Foo.class), "WEB-INF/beans.xml")
                 .addAsServiceProvider(Extension.class, VerifyExtension.class);
     }
 
