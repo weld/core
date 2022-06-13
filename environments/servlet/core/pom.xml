@@ -143,9 +143,10 @@
         <!-- Undertow support -->
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet-jakartaee9</artifactId>
+            <artifactId>undertow-servlet</artifactId>
             <version>${undertow.version}</version>
             <scope>provided</scope>
+            <!-- TODO this might not be relevant anymore -->
             <!-- Undertow brings in a dependency that breaks jboss logging processor as it
             enforces usage of javax.annotation.Generated instead of javax.annotation.processing.Generated -->
             <exclusions>

@@ -36,6 +36,7 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -68,14 +69,17 @@ public class EnhancedListenerShutdownTest {
 
     @Deployment(name = TEST, managed = false)
     public static WebArchive createTestArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "app-test.war").addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(TEST_WEB_XML);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "app-test.war")
+                // BeanDiscoveryMode.ALL because many tests have 0 beans to discover and Weld would just skip initialization
+                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml").setWebXML(TEST_WEB_XML);
         war.addClasses(InitServlet.class, InfoClient.class, Foo.class, TestListener.class);
         return war;
     }
 
     @Deployment(name = ASSERT, managed = false)
     public static WebArchive createAssertArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "app-assert.war").addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(DEFAULT_WEB_XML);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "app-assert.war")
+                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml").setWebXML(DEFAULT_WEB_XML);
         war.addClasses(InfoServlet.class, ActionSequence.class);
         return war;
     }
@@ -86,7 +90,7 @@ public class EnhancedListenerShutdownTest {
     /**
      * This is not a real test method.
      *
-     * @see #testEnhancedListenerDoesNotDestroyWeldIfListenerRegistered(URL)
+     * @see #testEnhancedListenerNotDestroyingWeldIfListenerRegistered(URL, URL) (URL)
      */
     @Test
     @InSequence(1)

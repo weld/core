@@ -32,9 +32,8 @@ public abstract class ForwardingExpressionFactory extends ExpressionFactory {
 
     protected abstract ExpressionFactory delegate();
 
-
     @Override
-    public Object coerceToType(Object obj, Class<?> targetType) {
+    public <T> T coerceToType(Object obj, Class<T> targetType) {
         return delegate().coerceToType(obj, targetType);
     }
 

@@ -28,15 +28,11 @@
     </description>
 
     <properties>
-        <jsf.version>3.0.0</jsf.version>
-        <tomcat.version>10.0.16</tomcat.version>
+        <tomcat.version>10.1.0-M16</tomcat.version>
         <jetty.version>11.0.8</jetty.version>
         <jetty9.asm.version>7.0</jetty9.asm.version>
-        <websockets.api>2.0.0</websockets.api>
-        <!-- We need undertow which uses Jakarta 9 packages! -->
-        <undertow.version>2.2.13.Final</undertow.version>
-        <!-- Testing deps -->
-        <apache.httpclient.version>3.1</apache.httpclient.version>
+        <websockets.api>2.1.0</websockets.api>
+        <undertow.version>2.3.0.Alpha1</undertow.version>
     </properties>
 
     <!-- Import the BOMs -->
@@ -46,7 +42,7 @@
             <dependency>
                 <groupId>jakarta.faces</groupId>
                 <artifactId>jakarta.faces-api</artifactId>
-                <version>${jsf.version}</version>
+                <version>${jsf.api.version}</version>
             </dependency>
 
             <dependency>
@@ -58,6 +54,12 @@
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-jasper</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${tomcat.version}</version>
             </dependency>
 

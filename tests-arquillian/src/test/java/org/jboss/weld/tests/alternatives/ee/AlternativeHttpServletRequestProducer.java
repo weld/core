@@ -33,6 +33,7 @@ import jakarta.interceptor.Interceptor;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -178,11 +179,6 @@ public class AlternativeHttpServletRequestProducer {
 
             @Override
             public boolean isRequestedSessionIdFromURL() {
-                return false;
-            }
-
-            @Override
-            public boolean isRequestedSessionIdFromUrl() {
                 return false;
             }
 
@@ -337,11 +333,6 @@ public class AlternativeHttpServletRequestProducer {
             }
 
             @Override
-            public String getRealPath(String path) {
-                return null;
-            }
-
-            @Override
             public int getRemotePort() {
                 return 0;
             }
@@ -393,6 +384,21 @@ public class AlternativeHttpServletRequestProducer {
 
             @Override
             public DispatcherType getDispatcherType() {
+                return null;
+            }
+
+            @Override
+            public String getRequestId() {
+                return null;
+            }
+
+            @Override
+            public String getProtocolRequestId() {
+                return null;
+            }
+
+            @Override
+            public ServletConnection getServletConnection() {
                 return null;
             }
         };
