@@ -7,7 +7,6 @@ import java.util.Map;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.el.ValueBinding;
 import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.FacesEvent;
 import jakarta.faces.event.FacesListener;
@@ -120,11 +119,6 @@ public class Garply extends UIComponent {
     }
 
     @Override
-    public ValueBinding getValueBinding(String arg0) {
-        return null;
-    }
-
-    @Override
     public boolean isRendered() {
         return false;
     }
@@ -174,10 +168,6 @@ public class Garply extends UIComponent {
 
     @Override
     public void setRendererType(String arg0) {
-    }
-
-    @Override
-    public void setValueBinding(String arg0, ValueBinding arg1) {
     }
 
     public boolean isTransient() {
