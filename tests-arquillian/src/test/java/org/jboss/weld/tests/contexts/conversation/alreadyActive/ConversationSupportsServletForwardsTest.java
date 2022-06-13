@@ -48,7 +48,7 @@ public class ConversationSupportsServletForwardsTest
    {
       WebClient client = new WebClient();
       try {
-         client.getPage(new URL(baseURL, "conversations.jsf"));
+         client.getPage(new URL(baseURL, "conversations.xhtml"));
       }
       catch (FailingHttpStatusCodeException e) {
          Assert.fail("Expected HTTP status code 200 but was " + e.getStatusCode());
@@ -60,7 +60,7 @@ public class ConversationSupportsServletForwardsTest
    {
       WebClient client = new WebClient();
       try {
-         client.getPage(new URL(baseURL, "missing-page.jsf"));
+         client.getPage(new URL(baseURL, "missing-page.xhtml"));
       }
       catch (FailingHttpStatusCodeException e) {
          Assert.assertEquals(404, e.getStatusCode());
@@ -72,7 +72,7 @@ public class ConversationSupportsServletForwardsTest
    {
       WebClient client = new WebClient();
       try {
-         client.getPage(new URL(baseURL, "missing-page-error.jsf"));
+         client.getPage(new URL(baseURL, "missing-page-error.xhtml"));
       }
       catch (FailingHttpStatusCodeException e) {
          Assert.assertEquals(404, e.getStatusCode());
