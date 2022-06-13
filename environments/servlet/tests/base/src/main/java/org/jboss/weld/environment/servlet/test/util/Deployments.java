@@ -3,6 +3,7 @@ package org.jboss.weld.environment.servlet.test.util;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
@@ -45,12 +46,14 @@ public class Deployments {
         return baseDeployment(beansXml, DEFAULT_WEB_XML);
     }
 
+    // BeanDiscoveryMode.ALL because many tests have 0 beans to discover and Weld would just skip initialization
     public static WebArchive baseDeployment() {
-        return baseDeployment(new BeansXml(), DEFAULT_WEB_XML);
+        return baseDeployment(new BeansXml(BeanDiscoveryMode.ALL), DEFAULT_WEB_XML);
     }
 
+    // BeanDiscoveryMode.ALL because many tests have 0 beans to discover and Weld would just skip initialization
     public static WebArchive baseDeployment(Asset webXml) {
-        return baseDeployment(new BeansXml(), webXml);
+        return baseDeployment(new BeansXml(BeanDiscoveryMode.ALL), webXml);
     }
 
     public static String toListener(String listenerClassName) {

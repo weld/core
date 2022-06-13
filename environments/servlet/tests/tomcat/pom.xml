@@ -43,10 +43,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Used to use jboss version that doesn't yet exist for Jakarta 9
-        <groupId>org.jboss.spec.javax.faces</groupId>
-        <artifactId>jboss-jsf-api_2.3_spec</artifactId>
-        -->
         <dependency>
             <groupId>jakarta.faces</groupId>
             <artifactId>jakarta.faces-api</artifactId>
@@ -79,6 +75,13 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- TODO why do we need this dep now?! -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
             <scope>test</scope>
         </dependency>
 

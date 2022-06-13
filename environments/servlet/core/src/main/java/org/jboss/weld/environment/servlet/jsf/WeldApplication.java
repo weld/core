@@ -59,13 +59,12 @@ public class WeldApplication extends ApplicationWrapper {
         }
     }
 
-    private final Application application;
     private LazyBeanManagerIntegrationELResolver elResolver;
     private ExpressionFactory expressionFactory;
     private BeanManager beanManager;
 
     public WeldApplication(Application application) {
-        this.application = application;
+        super(application);
         super.addELContextListener(new WeldELContextListener());
         elResolver = new LazyBeanManagerIntegrationELResolver();
         super.addELResolver(elResolver);
@@ -114,11 +113,6 @@ public class WeldApplication extends ApplicationWrapper {
             }
         }
         return beanManager;
-    }
-
-    @Override
-    public Application getWrapped() {
-        return application;
     }
 
 }

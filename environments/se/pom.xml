@@ -24,7 +24,7 @@
     </description>
 
    <properties>
-      <undertow.version>2.2.16.Final</undertow.version>
+      <undertow.version>2.3.0.Alpha1</undertow.version>
    </properties>
 
    <dependencyManagement>

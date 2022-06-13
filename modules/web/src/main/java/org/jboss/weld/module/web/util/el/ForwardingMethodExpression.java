@@ -71,12 +71,6 @@ public abstract class ForwardingMethodExpression extends MethodExpression {
     }
 
     @Override
-    @Deprecated
-    public boolean isParmetersProvided() {
-        return delegate().isParametersProvided();
-    }
-
-    @Override
     public int hashCode() {
         return delegate().hashCode();
     }

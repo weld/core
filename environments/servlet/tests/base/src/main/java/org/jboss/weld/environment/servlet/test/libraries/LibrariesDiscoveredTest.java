@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,7 +28,7 @@ public class LibrariesDiscoveredTest {
         log.fine("Library");
         log.fine(DELIMITER);
         log.fine(library.toString(true));
-        return baseDeployment().addClasses(Needle.class, LibrariesDiscoveredTest.class).addAsLibrary(library);
+        return baseDeployment(new BeansXml(BeanDiscoveryMode.ANNOTATED)).addClasses(Needle.class, LibrariesDiscoveredTest.class).addAsLibrary(library);
     }
 
     @Test

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.junit.Test;
@@ -31,7 +32,8 @@ public class MockExampleTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return baseDeployment(new BeansXml().alternatives(MockSentenceTranslator.class)).addPackage(MockExampleTest.class.getPackage());
+        // BeanDiscoveryMode.ALL because many tests have 0 beans to discover and Weld would just skip initialization
+        return baseDeployment(new BeansXml(BeanDiscoveryMode.ALL).alternatives(MockSentenceTranslator.class)).addPackage(MockExampleTest.class.getPackage());
     }
 
     @Test

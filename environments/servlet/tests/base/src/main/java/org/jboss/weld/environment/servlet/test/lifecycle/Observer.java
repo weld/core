@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.servlet.test.lifecycle;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +25,7 @@ import jakarta.servlet.http.HttpSession;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Dependent
 public class Observer {
     @Inject
     Pinger pinger;
