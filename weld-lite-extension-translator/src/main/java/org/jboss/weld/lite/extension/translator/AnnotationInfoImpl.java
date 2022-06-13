@@ -45,7 +45,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
         } catch (NoSuchMethodException e) {
             return null;
         } catch (ReflectiveOperationException e) {
-            throw LiteExtensionTranslatorLogger.LOG.unableToAccessAnnotationMembers(annotation, e.toString());
+            throw LiteExtensionTranslatorLogger.LOG.unableToAccessAnnotationMembers(annotation, e.toString(), e);
         }
     }
 
@@ -62,7 +62,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
             }
             return result;
         } catch (ReflectiveOperationException e) {
-            throw LiteExtensionTranslatorLogger.LOG.unableToAccessAnnotationMembers(annotation, e.toString());
+            throw LiteExtensionTranslatorLogger.LOG.unableToAccessAnnotationMembers(annotation, e.toString(), e);
         }
     }
 

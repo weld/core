@@ -1,5 +1,6 @@
 package org.jboss.weld.examples.pastecode.session;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.util.logging.Logger;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
  *
  * @author Pete Muir
  */
+@Dependent
 public class LogManager {
 
     @Produces

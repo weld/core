@@ -7,6 +7,7 @@ import jakarta.interceptor.Interceptor;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,8 +34,10 @@ class ExtensionInvoker {
                 BuildCompatibleExtension extensionInstance = SecurityActions.getConstructor(extensionClass).newInstance();
                 extensionClasses.put(extensionClass.getName(), extensionClass);
                 extensionClassInstances.put(extensionClass, extensionInstance);
+            } catch (InvocationTargetException e) {
+                throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(extensionClass, e.getCause().toString(), e);
             } catch (ReflectiveOperationException e) {
-                throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(extensionClass, e.toString());
+                throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(extensionClass, e.toString(), e);
             }
 
         }

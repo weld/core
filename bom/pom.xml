@@ -4,7 +4,7 @@
     <groupId>org.jboss.weld</groupId>
     <artifactId>weld-core-bom</artifactId>
     <packaging>pom</packaging>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.1-SNAPSHOT</version>
 
     <name>Weld Core BOM</name>
 
@@ -30,7 +30,7 @@
     </developers>
 
     <properties>
-        <weld.api.bom.version>5.0.CR1</weld.api.bom.version>
+        <weld.api.bom.version>5.0.Final</weld.api.bom.version>
         <gpg.plugin.version>3.0.1</gpg.plugin.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>

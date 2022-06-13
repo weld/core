@@ -4,7 +4,7 @@
 = A note about this document
 
 This document is meant as a complimentary source of information to the
-https://jakarta.ee/specifications/cdi/3.0/jakarta-cdi-spec-3.0.html[CDI specification].
+https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html[CDI specification].
 It doesn't cover all general parts of CDI, instead it goes more in-depth in certain areas
 and also explains many areas in which Weld offers certain non-portable configurations and
 behavior on top of what CDI defines.

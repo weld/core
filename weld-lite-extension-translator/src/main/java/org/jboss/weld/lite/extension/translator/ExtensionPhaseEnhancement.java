@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -164,8 +165,10 @@ class ExtensionPhaseEnhancement extends ExtensionPhaseBase {
             for (List<Object> arguments : argumentsForAllInvocations) {
                 try {
                     util.callExtensionMethod(method, arguments);
+                } catch (InvocationTargetException e) {
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString());
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString(), e);
                 }
             }
         };

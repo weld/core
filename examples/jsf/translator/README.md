@@ -1,8 +1,7 @@
 Weld Translator Example
 =======================
 
-This example demonstrates the use of Weld in a Servlet container (Tomcat)
-or as a non-EJB application for a Java EE server (WildFly). 
+This example demonstrates the use of Weld in a Jakarta EE container (WildFly).
 No alterations are expected to be made to the container. All services are 
 self-contained within the deployment.
 

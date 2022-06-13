@@ -4,7 +4,7 @@ Weld SE Numberguess example (Swing)
 Running the Example
 -------------------
 To start this Weld SE application you can either choose to start it with `org.jboss.weld.environment.se.StartMain` or `org.jboss.weld.environment.se.example.numberguess.Main`.
-The former is a well known defualt which attempts to discover beans on classpath and then boots the application.
+The former is a well known default which attempts to discover beans on classpath and then boots the application.
 The latter is a synthetic archive which has defined components and disables discovery leading to a minimal, quickly booting application.
 Of course you will need all of the relevant jar dependencies
 on your classpath, which is most easily done by loading the project into your
@@ -45,21 +45,12 @@ To run the example in this configuration, run:
 In the log, you should see a confirmation that existing Jandex index was found and used.
 Note that in order for Jandex to be leveraged, you need to start your application with bean discovery enabled (e.g. via `org.jboss.weld.environment.se.StartMain`).
 
-Running the Example with SecurityManager enabled
-------------------------------------------------
-
-There is a simple ready-made policy file named numberguess.policy
-To run the example with SecurityManager enabled, run:
-
-        mvn clean package dependency:copy-dependencies -Dmdep.stripVersion
-        java -Djava.security.manager -Djava.security.policy=target/numberguess.policy -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar org.jboss.weld.environment.se.example.numberguess.Main
-
-Runnig the Example with shaded maven plugin (fat-jar)
+Running the Example with shaded maven plugin (fat-jar)
 -----------------------------------------------------
 
 This profile provides the capability to package the artifact in a fat-jar (single jar), including all dependencies:
 
-        mvn clean package -P shaded
+        mvn clean package -Pshaded
         java -jar ./target/weld-se-numberguess.jar
 
 Swing Example: Number Guess

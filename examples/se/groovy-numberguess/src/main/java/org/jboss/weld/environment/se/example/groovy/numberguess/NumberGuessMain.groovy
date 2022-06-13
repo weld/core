@@ -23,6 +23,7 @@ import java.awt.BorderLayout
 import java.awt.CardLayout
 import java.awt.GridLayout
 
+import jakarta.enterprise.context.Dependent
 import jakarta.enterprise.event.Event
 import jakarta.enterprise.event.Observes
 import jakarta.inject.Inject
@@ -48,6 +49,7 @@ class Model {
  * @author Matej Briskar
  */
 
+@Dependent
 class NumberGuessMain {
     @Inject
     Game game;

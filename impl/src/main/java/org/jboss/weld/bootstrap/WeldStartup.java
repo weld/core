@@ -35,6 +35,8 @@ import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.event.Startup;
+import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Model;
 import jakarta.enterprise.inject.Stereotype;
 import jakarta.enterprise.inject.spi.Bean;
@@ -574,6 +576,11 @@ public class WeldStartup {
             for (BeanDeploymentModule module : modules) {
                 if (!module.isWebModule()) {
                     module.fireEvent(Object.class, ContextEvent.APPLICATION_INITIALIZED, Initialized.Literal.APPLICATION);
+                    // Fire Startup event for all non-web modules if required
+                    // web modules have to be handled alongside @Initialized(AppScoped) fired there to make sure the ordering fits
+                    if (environment.automaticallyHandleStartupShutdownEvents()) {
+                        module.fireEvent(Startup.class, new Startup(), Any.Literal.INSTANCE);
+                    }
                 }
             }
         }

@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.environment.se.example.groovy.numberguess
 
+import jakarta.enterprise.context.Dependent
 import jakarta.inject.Inject
 
-
-
+@Dependent
 class MessageGenerator {
 
     @Inject

@@ -7,9 +7,11 @@ import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanDisposer;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserver;
+import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +71,10 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             if (scopeAnnotation == null) {
                 try {
                     scopeAnnotation = SecurityActions.getConstructor(context.contextClass).newInstance().getScope();
+                } catch (InvocationTargetException e) {
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(context.contextClass, e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(context.contextClass, e.toString());
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(context.contextClass, e.toString(), e);
                 }
             }
 
@@ -129,8 +133,10 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
         for (Class<? extends jakarta.enterprise.context.spi.AlterableContext> contextClass : contextsToRegister) {
             try {
                 abd.addContext(SecurityActions.getConstructor(contextClass).newInstance());
+            } catch (InvocationTargetException e) {
+                throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(contextClass, e.getCause().toString(), e);
             } catch (ReflectiveOperationException e) {
-                throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(contextClass, e.toString());
+                throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(contextClass, e.toString(), e);
             }
         }
 
@@ -140,7 +146,14 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
         new ExtensionPhaseSynthesis(bm, util, errors, syntheticBeans, syntheticObservers).run();
 
         for (SyntheticBeanBuilderImpl<?> syntheticBean : syntheticBeans) {
-            jakarta.enterprise.inject.spi.configurator.BeanConfigurator<Object> configurator = abd.addBean();
+            jakarta.enterprise.inject.spi.configurator.BeanConfigurator<Object> configurator;
+            if (abd instanceof AfterBeanDiscoveryImpl) {
+                // specify the receiver class to be the BCE extension, linking the bean to it
+                // in EE env this affects the BM used for dynamic resolution inside bean creation method
+                configurator = ((AfterBeanDiscoveryImpl)abd).addBean(syntheticBean.extensionClass);
+            } else {
+                configurator = abd.addBean();
+            }
             configurator.beanClass(syntheticBean.implementationClass);
             configurator.types(syntheticBean.types);
             configurator.qualifiers(syntheticBean.qualifiers);
@@ -155,8 +168,10 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                 try {
                     SyntheticBeanCreator creator = SecurityActions.getConstructor(syntheticBean.creatorClass).newInstance();
                     return creator.create(lookup, new ParametersImpl(syntheticBean.params));
+                } catch (InvocationTargetException e) {
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass, e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass, e.toString());
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass, e.toString(), e);
                 }
             });
             if (syntheticBean.disposerClass != null) {
@@ -164,8 +179,10 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                     try {
                         SyntheticBeanDisposer disposer = SecurityActions.getConstructor(syntheticBean.disposerClass).newInstance();
                         disposer.dispose(object, lookup, new ParametersImpl(syntheticBean.params));
+                    } catch (InvocationTargetException e) {
+                        throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass, e.getCause().toString(), e);
                     } catch (ReflectiveOperationException e) {
-                        throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass, e.toString());
+                        throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass, e.toString(), e);
                     }
                 });
             }
@@ -184,8 +201,10 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                 try {
                     SyntheticObserver observer = SecurityActions.getConstructor(syntheticObserver.observerClass).newInstance();
                     observer.observe(eventContext, new ParametersImpl(syntheticObserver.params));
+                } catch (InvocationTargetException e) {
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass, e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass, e.toString());
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass, e.toString(), e);
                 }
             });
         }
