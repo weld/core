@@ -21,8 +21,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ForkJoinPool;
 
-import jakarta.inject.Inject;
+import jakarta.enterprise.inject.spi.CDI;
 
+import org.jboss.weld.manager.api.WeldManager;
 import org.junit.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -32,7 +33,6 @@ import org.jboss.weld.bootstrap.ConcurrentValidator;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.executor.CommonForkJoinPoolExecutorServices;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
@@ -40,9 +40,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class CommonExecutorServicesConfigurationTest {
-
-    @Inject
-    private BeanManagerImpl manager;
 
     @Deployment
     public static Archive<?> getDeployment() {
@@ -57,6 +54,10 @@ public class CommonExecutorServicesConfigurationTest {
 
     @Test
     public void testServices() throws Exception {
+        // NOTE - this test cannot @Inject BeanManagerImpl due to different CL loading the BM class and injecting
+        // this test. Hence, we use WeldManager resolved in this way.
+        // see https://issues.redhat.com/browse/WELD-2519?focusedCommentId=13625216&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-13625216
+        WeldManager manager = CDI.current().select(WeldManager.class).get();
         assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
         assertTrue(manager.getServices().get(ContainerLifecycleEvents.class).isPreloaderEnabled());
         assertTrue(manager.getServices().get(ExecutorServices.class) instanceof CommonForkJoinPoolExecutorServices);
