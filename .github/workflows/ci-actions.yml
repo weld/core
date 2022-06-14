@@ -364,7 +364,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn clean verify -Dincontainer=weld-se-coop -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f environments/servlet/tests/jetty/pom.xml
+          mvn clean verify -Dincontainer=weld-se-coop -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f environments/servlet/tests/tomcat/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
