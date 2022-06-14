@@ -201,8 +201,6 @@
                             <excludes>
                                 <!-- https://issues.apache.org/bugzilla/show_bug.cgi?id=57314 -->
                                 <exclude>**/ListenerSymmetryTest.java</exclude>
-                                <!-- https://issues.jboss.org/browse/WELD-2527 -->
-                                <exclude>**/CommonExecutorServicesConfigurationTest.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
