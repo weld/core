@@ -25,6 +25,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
@@ -78,7 +83,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- TODO why do we need this dep now?! -->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-websocket</artifactId>
@@ -154,6 +158,13 @@
                     <name>incontainer</name>
                 </property>
             </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-embedded-10</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -169,39 +180,88 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
-            <id>tomcat10</id>
+            <!-- This profile tests weld-se and weld-servlet cooperation -->
+            <!-- weld-se bootstraps the container and weld-servlet is reusing the existing BeanManager -->
+            <!-- See also WELD-1665 -->
+            <id>weld-se-coop</id>
+
             <activation>
+                <activeByDefault>false</activeByDefault>
                 <property>
                     <name>incontainer</name>
+                    <value>weld-se-coop</value>
                 </property>
             </activation>
 
+            <properties>
+                <test.src.dir>src/test/weld-se-coop</test.src.dir>
+            </properties>
+
             <dependencies>
+
                 <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-tomcat-embedded-10</artifactId>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet-core</artifactId>
                     <scope>test</scope>
                 </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.weld.se</groupId>
+                    <artifactId>weld-se-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>jakarta.servlet.jsp</groupId>
+                    <artifactId>jakarta.servlet.jsp-api</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
             </dependencies>
-        </profile>
-        <profile>
-            <id>jdk9</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
 
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-test-resource</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>add-test-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/test/weld-se-coop-resources</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${test.src.dir}</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <excludes>
-                                <!-- https://issues.apache.org/bugzilla/show_bug.cgi?id=57314 -->
-                                <exclude>**/ListenerSymmetryTest.java</exclude>
-                            </excludes>
+                            <includes>
+                                <include>org.jboss.weld.environment.servlet.test.se.coop.BootstrapNotNeededTest</include>
+                                <include>org.jboss.weld.environment.servlet.test.se.coop.builder.WeldSeBuilderTest</include>
+                            </includes>
                         </configuration>
                     </plugin>
                 </plugins>
