@@ -25,8 +25,6 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionContext;
-
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.web.logging.ServletLogger;
@@ -40,7 +38,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Jozef Hartinger
  * @author Martin Kouba
  */
-@SuppressWarnings("deprecation")
 public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<HttpSession> {
 
     public HttpSessionBean(BeanManagerImpl manager) {
@@ -99,18 +96,8 @@ public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<Http
         }
 
         @Override
-        public HttpSessionContext getSessionContext() {
-            return session().getSessionContext();
-        }
-
-        @Override
         public Object getAttribute(String name) {
             return session().getAttribute(name);
-        }
-
-        @Override
-        public Object getValue(String name) {
-            return session().getValue(name);
         }
 
         @Override
@@ -119,28 +106,13 @@ public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<Http
         }
 
         @Override
-        public String[] getValueNames() {
-            return session().getValueNames();
-        }
-
-        @Override
         public void setAttribute(String name, Object value) {
             session().setAttribute(name, value);
         }
 
         @Override
-        public void putValue(String name, Object value) {
-            session().putValue(name, value);
-        }
-
-        @Override
         public void removeAttribute(String name) {
             session().removeAttribute(name);
-        }
-
-        @Override
-        public void removeValue(String name) {
-            session().removeValue(name);
         }
 
         @Override
