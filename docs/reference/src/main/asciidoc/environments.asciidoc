@@ -15,7 +15,7 @@ ifdef::generate-index-link[link:configure.html[additional configuration settings
 
 === GlassFish
 
-Weld is also built into GlassFish from V3 onwards. Since GlassFish is
+Weld is also built into GlassFish. Since GlassFish is
 the Jakarta EE compatible implementation, it supports all features of
 CDI. What better way for GlassFish to support these features than to use
 Weld, the CDI compatible implementation? Just package up your CDI
@@ -25,15 +25,15 @@ application and deploy.
 === Servlet containers (such as Tomcat or Jetty)
 
 While CDI does not require support for servlet environments, Weld can be
-used in a servlet container, such as Tomcat or Jetty.
+used in a servlet container, such as Tomcat, Undertow or Jetty.
 
 NOTE: There is a major limitation to using a servlet container; Weld doesn't
 support deploying session beans, injection using `@EJB`
 or `@PersistenceContext`, or using transactional events in servlet
 containers. For enterprise features such as these, you should really be
-looking at a Java EE application server.
+looking at a Jakarta EE application server.
 
-Weld can be used as a library in an web application that is deployed to
+Weld can be used as a library in a web application that is deployed to
 a Servlet container. You should add the `weld-servlet-core` as a dependency
 to your project:
 
@@ -56,12 +56,12 @@ jar file which is available as:
     <version>{weldVersion}</version>
 </dependency>
 
-In general, weld-servlet uses link:http://docs.oracle.com/javaee/7/api/javax/servlet/ServletContainerInitializer.html[ServletContainerInitializer]
-mechanism to hook into the life cycle of Servlet 3.x compatible containers.
+In general, weld-servlet uses link:https://javadoc.io/static/jakarta.servlet/jakarta.servlet-api/5.0.0/jakarta/servlet/ServletContainerInitializer.html[ServletContainerInitializer]
+mechanism to hook into the life cycle of Servlet 5.x compatible containers.
 
 In special cases when your Servlet container does not support `ServletContainerInitializer`
-or you need more control over the ordering of listeners (e.g. move Weld's listener)
-to the beginning of the list so that CDI context are active during invocation of other listeners)
+or you need more control over the ordering of listeners (e.g. move Weld's listener
+to the beginning of the list so that CDI context are active during invocation of other listeners),
 you can register Weld's listener manually in the `WEB-INF/web.xml` file of the application:
 
 [source.XML, xml]
@@ -82,7 +82,7 @@ listeners are notified in reverse order when a session is being
 destroyed).
 
 When working with multiple deployments in servlet environment, Weld Servlet
-allows to define context identifier per application deployed. Each different
+allows defining context identifier per application deployed. Each different
 context identifier will create a new Weld container instance. If not specified,
 Weld falls back to the default value - `STATIC_INSTANCE`. While using custom
 identifiers is neither required nor commonly used, it certainly has some use-cases.
@@ -100,7 +100,7 @@ Setting the identifier is as simple as adding one context parameter into `web.xm
 [[tomcat]]
 ==== Tomcat
 
-Tomcat 9, which implements Servlet 4.0 specification, is supported.
+Tomcat 10.1, which implements Servlet 5.0 specification, is supported.
 
 ===== Binding BeanManager to JNDI
 
@@ -151,8 +151,9 @@ public class Main {
         Tomcat.addServlet(ctx, "hello", HelloWorldServlet.class.getName());
         ctx.addServletMapping("/*", "hello");
 
-        // ctx.addApplicationListener(Listener.class.getName()); # <1>
+        ctx.addApplicationListener(Listener.class.getName()); # <1>
 
+        tomcat.getConnector();
         tomcat.start();
         tomcat.getServer().await();
     }
@@ -175,17 +176,18 @@ public class Main {
 [[jetty]]
 ==== Jetty
 
-Jetty 9.4.14 and newer are supported. Context activation/deactivation and dependency
-injection into Servlets and Filters works out of the box. Injection into Servlet listeners works on
-Jetty 9.1.1 and newer.
+NOTE: At the time of release of Weld 5.0.1.Final, there is currently no testing for Jetty 11. Therefore, take
+the information provided here with a pinch of salt.
+
+Jetty 11 and newer are supported. Context activation/deactivation and dependency
+injection into Servlets, Filters and Servlet listeners works out of the box.
 
 No further configuration is needed when starting Jetty as an embedded webapp server from within another Java program.
-However, if you’re using a Jetty standalone instance one more configuration step is required, one of the
-jetty modules listed below needs to be enabled.
+However, if you’re using a Jetty standalone instance, there is one more configuration step that is required.
 
 ===== Jetty `cdi-decorate` Module
 
-Since Jetty-9.4.20 and Weld 3.1.2.Final, the Weld/Jetty integration uses the jetty `cdi-decorate` module.
+The Weld/Jetty integration uses the jetty `cdi-decorate` module.
 To activate this module in jetty the argument `--module=cdi-decorate` needs to be added to the
 command line, which can be done for a standard distribution by running the commands:
 
@@ -193,50 +195,6 @@ command line, which can be done for a standard distribution by running the comma
 cd $JETTY_BASE
 java -jar $JETTY_HOME/start.jar --add-to-start=cdi-decorate
 -------------------------
-
-===== Jetty `cdi2` Module
-
-Prior to Jetty-9.4.20 and Weld 3.1.2, the Weld/Jetty integration required some internal jetty APIs
-to be made visible to the web application.  This can be done using the deprecated `cdi2` module
-either by including `--module=cdi2` on the command line or by running the commands:
-
--------------------------
-cd $JETTY_BASE
-java -jar $JETTY_HOME/start.jar --add-to-start=cdi2
--------------------------
-
-If this module is not available in the jetty distribution you are using, then equivalent behaviour can
-be achieved by creating a `jetty-web.xml` descriptor (see also https://www.eclipse.org/jetty/documentation/current/jetty-web-xml-config.html[Jetty XML Reference]):
-
-[source.XML, xml]
--------------------------------------------------------------
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
-<Configure class="org.eclipse.jetty.webapp.WebAppContext">
-   <Call name="prependServerClass">
-      <Arg>-org.eclipse.jetty.util.Decorator</Arg>
-   </Call>
-   <Call name="prependServerClass">
-      <Arg>-org.eclipse.jetty.util.DecoratedObjectFactory</Arg>
-   </Call>
-   <Call name="prependServerClass">
-      <Arg>-org.eclipse.jetty.server.handler.ContextHandler.</Arg>
-   </Call>
-   <Call name="prependServerClass">
-      <Arg>-org.eclipse.jetty.server.handler.ContextHandler</Arg>
-   </Call>
-   <Call name="prependServerClass">
-      <Arg>-org.eclipse.jetty.servlet.ServletContextHandler</Arg>
-   </Call>
-</Configure>
--------------------------------------------------------------
-
-TIP: Directly modifying the web application classpath via `jetty-web.xml` will not work for Jetty-10.0.0 and later.
-
-===== Jetty `cdi-spi` Module
-Since Jetty-9.4.20 the Jetty `cdi-spi` module has been available that integrates any compliant CDI implementation
-by directly calling the CDI SPI.  Since Weld support specific Jetty integration, it is not recommended to use
-this module with Weld.
 
 ===== Binding BeanManager to Jetty JNDI
 
@@ -253,7 +211,7 @@ To bind the BeanManager into JNDI, you should either populate
         <Arg> <Ref id="webAppCtx"/> </Arg>
         <Arg>BeanManager</Arg>
         <Arg>
-            <New class="javax.naming.Reference">
+            <New class="jakarta.naming.Reference">
                 <Arg>jakarta.enterprise.inject.spi.BeanManager</Arg>
                 <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
                 <Arg/>
@@ -325,13 +283,12 @@ public class Main {
     }
 }
 -------------------------------------------------------------
-<1> Jetty's `org.eclipse.jetty.webapp.DecoratingListener` registered programmatically (since Jetty-9.4.20)
+<1> Jetty's `org.eclipse.jetty.webapp.DecoratingListener` registered programmatically
 <2> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically
 
 ==== Undertow
 
 Weld supports context activation/deactivation and dependency injection into Servlets when running on Undertow.
-Injection into Filters and Servlet listeners is not currently supported.
 Weld's listener needs to be registered programmatically:
 
 [source.JAVA, java]
@@ -370,13 +327,6 @@ public class Main {
 -------------------------------------------------------------
 <1> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically:
 
-==== WildFly Web
-
-WildFly Web is a lightweight Servlet container that uses Undertow.
-Weld supports context activation/deactivation and dependency injection into Servlets.
-Injection into Filters and Servlet listeners is not currently supported.
-Weld integration is started automatically when weld-servlet is part of your application.
-
 ==== Bean Archive Isolation
 
 By default, bean archive isolation is enabled. It means that alternatives, interceptors and decorators can be selected/enabled for a bean archive by using a beans.xml descriptor.
@@ -384,24 +334,22 @@ By default, bean archive isolation is enabled. It means that alternatives, inter
 This behaviour can be changed by setting the servlet initialization parameter `org.jboss.weld.environment.servlet.archive.isolation` to false.
 In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application.
 
-NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.5.Final. Previous versions only operated with the "flat" deployment structure.
-
 ==== Implicit Bean Archive Support
 
-CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also
+CDI 4 changed the default discovery mode to `annotated` (see also
 ifndef::generate-index-link[<<packaging-and-deployment>>]
 ifdef::generate-index-link[link:ee.html#packaging-and-deployment[Packaging and deployment]]
 .
-This mode may bring additional overhead during container bootstrap. Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
+In order to help with performance during bootstrap, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
 In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld Servlet, i.e. it's excluded from discovery.
 
-NOTE: The bean discovery mode of `annotated` is supported from version 2.2.5.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
+NOTE: The bean discovery mode of `annotated` is the default mode since Weld 5/CDI 4. Previous versions of Weld/CDI defaulted to `all` discovery mode.
 
 ==== Servlet Container Detection
 
-Weld servlet container integration is delivered as a single artifact, so that it's possible to include this artifact in a war and deploy the application to any of the suported servlet containers.
+Weld servlet container integration is delivered as a single artifact, so that it's possible to include this artifact in a war and deploy the application to any of the supported servlet containers.
 This approach has advantages but also drawbacks.
 One of them is the fact that Weld attempts to detect the servlet container automatically.
 While this works most of the time, there are few rare cases, when it might be necessary to specify the container manually by setting the servlet initialization parameter `org.jboss.weld.environment.container.class` to:
@@ -743,25 +691,23 @@ It means that alternatives, interceptors and decorators can be selected/enabled 
 This behaviour can be changed by setting a system property `org.jboss.weld.se.archive.isolation` to `false` or through the `Weld.property()` method.
 In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application.
 
-NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.0.Final. Previous versions only operated with the "flat" deployment structure.
-
-TIP: All Weld SE specific configuration properties could be also set through CDI 2.0 API, i.e. using `SeContainerInitializer.addProperty()` and `SeContainerInitializer.setProperties()` methods.
+TIP: All Weld SE specific configuration properties could be also set through CDI API, i.e. using `SeContainerInitializer.addProperty()` and `SeContainerInitializer.setProperties()` methods.
 
 ==== Implicit Bean Archive Support
 
-CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also
+CDI 4 changed the default discovery mode to `annotated` (see also
 ifndef::generate-index-link[<<packaging-and-deployment>>]
 ifdef::generate-index-link[link:ee.html#packaging-and-deployment[Packaging and deployment]]
 . This mode may bring additional overhead during container bootstrap.
-Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
+In order to help with performance during bootstrap, Weld supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
 By default, an implicit bean archive that does not contain a beans.xml descriptor is excluded from discovery.
 However, it is possible to instruct Weld to scan all class path entries and discover such archive.
-You can do so by setting Weld system property `org.jboss.weld.se.scan.classpath.entries` or CDI 2.0 system property `jakarta.enterprise.inject.scan.implicit` to `true`.
+You can do so by setting Weld system property `org.jboss.weld.se.scan.classpath.entries` or CDI system property `jakarta.enterprise.inject.scan.implicit` to `true`.
 Another approach is to use `Weld.property()` and `SeContainerInitializer.addProperty()` methods.
 
-NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
+NOTE: The bean discovery mode of `annotated` is the default mode since Weld 5/CDI 4. Previous versions of Weld/CDI defaulted to `all` discovery mode.
 
 ==== Extending Bean Defining Annotations
 
@@ -775,28 +721,33 @@ Just note that added annotations are ignored if you are also using `<trim/>` opt
 
 Sometimes it could be convenient to start Servlet container programmatically.
 In this case a cooperation with Weld SE might come handy.
-This cooperation is based on passing `Weld`, `WeldContainer` or `BeanManager` instance to `ServletContextHandler` (in case of Jetty).
+This cooperation is based on passing `Weld`, `WeldContainer` or `BeanManager` instance to `ServletContext`.
 You can either set a context attribute or use `org.jboss.weld.environment.servlet.Listener`.
-Check following examples.
+Check following examples; some of them are using Tomcat syntax, others are using Jetty.
+Not all approaches might be supported by all servlets.
+For instance, not all servlets might allow to register an already instantiated listener.
 
-Adding `WeldContainer` instance as a context attribute:
+Adding `WeldContainer` instance as a context attribute on Tomcat Embedded:
 
 [source.JAVA, java]
 -----------------------------------------------------------------
         try (WeldContainer weld = new Weld().disableDiscovery().beanClasses(Cat.class).initialize()) {
-              ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-              context.addEventListener(new Listener());
-              context.setAttribute(Listener.CONTAINER_ATTRIBUTE_NAME, weld);
-
-              Server server = new Server(8080);
-              context.setContextPath("/");
-              server.setHandler(context);
-              context.addServlet(TestServlet.class, "/test");
-              server.start();
+            // start the servlet in some basic configuration
+            Tomcat tomcat = new Tomcat();
+            tomcat.getConnector();
+            Context context = tomcat.addContext("", new File(".").getAbsolutePath());
+            String servletName = TestServlet.class.getSimpleName();
+            tomcat.addServlet("", servletName, TestServlet.class.getName());
+            context.addServletMappingDecoded("/test", servletName);
+            // register Weld Listener and set Container instance as an attribute
+            context.addApplicationListener(Listener.class.getName());
+            context.getServletContext().setAttribute(Listener.CONTAINER_ATTRIBUTE_NAME, container);
+            // start the server
+            tomcat.start();
         }
 -----------------------------------------------------------------
 
-Adding `BeanManager` instance as a context attribute:
+Adding `BeanManager` instance as a context attribute using Jetty:
 
 [source.JAVA, java]
 -----------------------------------------------------------------
