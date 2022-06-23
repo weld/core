@@ -10,11 +10,11 @@ Weld comes with a number of examples. We recommend you start with
 a web (war) example containing only non-transactional managed beans.
 This example can be run on a wide range of servers, including WildFly,
 GlassFish, Apache Tomcat, Jetty, and any compliant
-Java EE 8 container. Translator is an enterprise (ear) example that
-contains session beans. This example must be run on WildFly 14 or better,
-GlassFish 5.1 or better, or any compliant Java EE 8 container.
+Jakarta EE 10 container. Translator is an enterprise (ear) example that
+contains session beans. This example must be run on WildFly 27 or better,
+GlassFish 7 or better, or any compliant Jakarta EE 10 container.
 
-Both examples use JSF 2.3 as the web framework and, as such, can be
+Both examples use JSF 4.0.0 as the web framework and, as such, can be
 found in the `examples/jsf` directory of the Weld distribution.
 
 === Prerequisites
@@ -25,16 +25,16 @@ following:
 * the latest release of Weld, which contains the examples
 * Maven 3, to build and deploy the examples
 * optionally, a supported runtime environment (minimum versions shown)
-** WildFly 14 (14.0.1.Final recommended),
-** GlassFish 5.1.0 or better,
-** Apache Tomcat 9 or better (war example only), or
-** Jetty 9 or better (war example only)
+** WildFly 27,
+** GlassFish 7 or better,
+** Apache Tomcat 10.1 or better (war example only), or
+** Jetty 11 or better (war example only)
 
 In the next few sections, you'll be using the Maven command (`mvn`) to
 invoke the Maven project file in each example to compile, assemble and
 deploy the example to WildFly and, for the war example, Apache Tomcat.
 You can also deploy the generated artifact (war or ear) to any other
-container that supports Java EE 8, such as GlassFish 5.
+container that supports Jakarta EE 10, such as GlassFish 7.
 
 The sections below cover the steps for deploying with Maven in detail.
 
@@ -64,8 +64,8 @@ installation directory, or `JBOSS_HOME`.
 
 [source, console]
 --------------------------------
-$> unzip wildfly-14.0.1.Final.zip
-$> mv wildfly-14.*/ wildfly-14
+$> unzip wildfly-27.x.y.Final.zip
+$> mv wildfly-27.*/ wildfly-27
 --------------------------------
 
 In order for the build scripts to know where to deploy the example, you
@@ -75,7 +75,7 @@ e.g.:
 
 [source, console]
 -------------------------------------
-$> export JBOSS_HOME=/path/to/wildfly-14
+$> export JBOSS_HOME=/path/to/wildfly-27
 -------------------------------------
 
 You're now ready to run your first example!
@@ -91,7 +91,7 @@ $> mvn wildfly:deploy
 
 NOTE: If you are using Eclipse, you should seriously consider installing the
 http://tools.jboss.org[JBoss Tools] add-ons, which include a wide
-variety of tooling for CDI and Java EE development, as well as an
+variety of tooling for CDI and Jakarta EE development, as well as an
 enhanced WildFly server view.
 
 Wait a few seconds for the application to deploy (or the application
@@ -112,7 +112,7 @@ instance
 * `mvn wildfly:redeploy` - redeploys the example
 
 For more information on the WildFly Maven plugin see the
-https://docs.jboss.org/wildfly/plugins/maven/latest/[plugin
+https://docs.wildfly.org/wildfly-maven-plugin/[plugin
 documentation].
 ====
 
@@ -165,7 +165,7 @@ it's the Jakarta EE compatible implementation and Weld is the CDI
 compatible implementation, meaning Weld gets bundled with GlassFish. So
 yes, it's all quite easy and familiar.
 
-To deploy the examples to GlassFish, you'll need a GlassFish 5.1.0 release. Extract
+To deploy the examples to GlassFish, you'll need a GlassFish 7 release. Extract
 the zip to a directory of your choice and set the `GLASSFISH_HOME` environment
 variable. Switch to the `GLASSFISH_HOME` directory and start the server:
 
@@ -191,13 +191,13 @@ platform it has become!
 
 === Deploying to Apache Tomcat
 
-Servlet containers are not required to support Java EE services like
+Servlet containers are not required to support Jakarta EE services like
 CDI. However, you can use CDI in a servlet container like Tomcat by
 embedding a standalone CDI implementation such as Weld.
 
 Weld comes with servlet integration extension which bootstraps the CDI
 environment and provides injection into servlets components. Basically,
-it emulates some of the work done by the Java EE container, but you
+it emulates some of the work done by the Jakarta EE container, but you
 don't get the enterprise features such as session beans and
 container-managed transactions.
 
@@ -212,13 +212,13 @@ ifdef::generate-index-link[link:environments.html#jetty[Jetty]]
 for more info).
 
 Let's give the Weld servlet extension a spin on Apache Tomcat. First,
-you'll need to download Tomcat 9.0.11 or later from
-http://tomcat.apache.org/download-90.cgi[tomcat.apache.org] and extract
+you'll need to download Tomcat 10.1 or later from
+https://tomcat.apache.org/download-10.cgi[tomcat.apache.org] and extract
 it.
 
 [source, console]
 ---------------------------------
-$> unzip apache-tomcat-9.0.11.zip
+$> unzip apache-tomcat-10.1.x.zip
 ---------------------------------
 
 The Maven plugin communicates with Tomcat over HTTP, so it doesn't care
@@ -232,7 +232,7 @@ You can either start Tomcat from a Linux shell:
 
 [source, console]
 ------------------------------
-$> cd /path/to/apache-tomcat-9
+$> cd /path/to/apache-tomcat-10.1
 $> ./bin/startup.sh
 ------------------------------
 
