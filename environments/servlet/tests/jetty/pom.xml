@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-servlet-parent</artifactId>
         <groupId>org.jboss.weld.servlet</groupId>
-        <version>5.0.0-SNAPSHOT</version>
+        <version>5.0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-test-base</artifactId>
-            <scope>test</scope>
+<!--            <scope>test</scope>-->
         </dependency>
 
         <dependency>
@@ -79,7 +79,6 @@
                     <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
                     <outputName>test-report</outputName>
                 </configuration>
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -95,49 +94,18 @@
                     <dependenciesToScan>
                         <dependency>org.jboss.weld.servlet:weld-servlet-test-base</dependency>
                     </dependenciesToScan>
-                    <!-- WELD-2101 enable when new version of Arquillian container jetty is released -->
-                    <excludes>
-                        <exclude>**/CrossContextForwardTest.java</exclude>
-                    </excludes>
                 </configuration>
-
             </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>jdk11-test-deps</id>
-            <activation>
-                <jdk>[11,)</jdk>
-            </activation>
-            <dependencies>
-                <!-- Dependencies below are a workaround because htmlunit 2.37.0 dep brings in
-                org.eclipse.jetty.websocket:websocket-client in version 9.x while we are running on Jetty 11. Version
-                for 11 has changed GAV (presumably due to Jakarta namespace changes), so we just replace it. -->
-                <dependency>
-                    <groupId>net.sourceforge.htmlunit</groupId>
-                    <artifactId>htmlunit</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.eclipse.jetty.websocket</groupId>
-                            <artifactId>websocket-client</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.jetty.websocket</groupId>
-                    <artifactId>websocket-jetty-client</artifactId>
-                    <version>${jetty.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <!-- Prevents execution of tests when -Dincontainer parameter is not specified -->
             <id>default</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!incontainer</name>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -157,13 +125,41 @@
             <activation>
                 <property>
                     <name>incontainer</name>
-                    <value>true</value>
                 </property>
-                <!-- Jetty for EE 9 requires JDK 11, but we still need to be able to compile servlet core against JDK 8 -->
-                <!-- Therefore we override the version in this profile and only execute Jetty tests on JDK 11 -->
-                <jdk>[11,)</jdk>
             </activation>
             <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-jetty-embedded-11</artifactId>
+                    <scope>test</scope>
+                    <!-- We need to exclude otherwise this overrides the Junit 4 dep we have with version 5 -->
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <!-- Dependencies below are a workaround because htmlunit 2.62.0 dep brings in
+                org.eclipse.jetty.websocket:websocket-client in version 9.x while we are running on Jetty 11. Version
+                for 11 has changed GAV (presumably due to Jakarta namespace changes), so we just replace it. -->
+                <dependency>
+                    <groupId>net.sourceforge.htmlunit</groupId>
+                    <artifactId>htmlunit</artifactId>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.jetty.websocket</groupId>
+                            <artifactId>websocket-client</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.jetty.websocket</groupId>
+                    <artifactId>websocket-jetty-client</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
 
                 <!-- plus and naming requires for using JNDI -->
                 <dependency>
@@ -205,8 +201,8 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.el</artifactId>
                     <scope>test</scope>
                 </dependency>
 
@@ -215,153 +211,8 @@
                     <artifactId>jakarta.servlet.jsp-api</artifactId>
                     <scope>test</scope>
                 </dependency>
-
             </dependencies>
-
         </profile>
-        <profile>
-
-            <id>jetty-embedded-9</id>
-
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer</name>
-                </property>
-                <!-- Jetty for EE 9 requires JDK 11, but we still need to be able to compile servlet core against JDK 8 -->
-                <!-- Therefore we override the version in this profile and only execute Jetty tests on JDK 11 -->
-                <jdk>[11,)</jdk>
-            </activation>
-
-            <properties>
-                <jetty.version>11.0.0.beta1</jetty.version>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jetty-embedded-9</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-annotations</artifactId>
-                    <scope>test</scope>
-                    <!-- excluding asm version 4.x and adding asm 5 version below because of problems on JDK 8 -->
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm-commons</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm</artifactId>
-                    <version>${jetty9.asm.version}</version>
-                </dependency>
-            </dependencies>
-
-        </profile>
-
-        <profile>
-            <!-- This profile tests weld-se and weld-servlet cooperation -->
-            <!-- weld-se bootstraps the container and weld-servlet is reusing the existing BeanManager -->
-            <!-- See also WELD-1665 -->
-            <id>weld-se-coop</id>
-
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer</name>
-                    <value>weld-se-coop</value>
-                </property>
-                <!-- Jetty for EE 9 requires JDK 11, but we still need to be able to compile servlet core against JDK 8 -->
-                <!-- Therefore we override the version in this profile and only execute Jetty tests on JDK 11 -->
-                <jdk>[11,)</jdk>
-            </activation>
-
-            <properties>
-                <test.src.dir>src/test/weld-se-coop</test.src.dir>
-                <jetty.version>11.0.0.beta1</jetty.version>
-            </properties>
-
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.jboss.weld.servlet</groupId>
-                    <artifactId>weld-servlet-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld.se</groupId>
-                    <artifactId>weld-se-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>jakarta.servlet.jsp</groupId>
-                    <artifactId>jakarta.servlet.jsp-api</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-            </dependencies>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>add-test-resource</id>
-                                <phase>generate-test-resources</phase>
-                                <goals>
-                                    <goal>add-test-resource</goal>
-                                </goals>
-                                <configuration>
-                                    <resources>
-                                        <resource>
-                                            <directory>src/test/weld-se-coop-resources</directory>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>add-test-source</id>
-                                <phase>generate-test-sources</phase>
-                                <goals>
-                                    <goal>add-test-source</goal>
-                                </goals>
-                                <configuration>
-                                <sources>
-                                  <source>${test.src.dir}</source>
-                                </sources>
-                              </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <includes>
-                                <include>org.jboss.weld.environment.servlet.test.se.coop.BootstrapNotNeededTest</include>
-                                <include>org.jboss.weld.environment.servlet.test.se.coop.builder.WeldSeBuilderTest</include>
-                            </includes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-
-        </profile>
-
     </profiles>
 
 </project>

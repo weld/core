@@ -1,13 +1,13 @@
 Tomcat profiles
 ===============
 
-Tomcat 9.x - the default profile
+Tomcat 10.1.x - the default profile
 --------------------------------
 
-By default **tomcat9** profile is used:
+By default **tomcat10** profile is used:
 
         mvn clean test -Dincontainer
 
-To override the default Tomcat 9 version:
+To override the default Tomcat 10.1 version:
 
-        mvn clean test -Dincontainer -Dtomcat.version=9.0.0
+        mvn clean test -Dincontainer -Dtomcat.version=10.1.x

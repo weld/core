@@ -58,8 +58,7 @@
         <arquillian.weld.version>3.0.2.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Final</arquillian.tomcat.version>
-        <arquillian.jetty.version>1.0.0.CR3</arquillian.jetty.version>
-        <arquillian.glassfish.version>1.0.2</arquillian.glassfish.version>
+        <arquillian.jetty.version>1.0.0.Final</arquillian.jetty.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
@@ -69,7 +68,7 @@
         <spotbugs-maven-plugin.version>4.5.3.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.5.3</spotbugs-annotations-version>
         <groovy.version>3.0.9</groovy.version>
-        <htmlunit.version>2.58.0</htmlunit.version>
+        <htmlunit.version>2.62.0</htmlunit.version>
         <jacoco.version>0.8.7</jacoco.version>
         <jandex.version>2.4.2.Final</jandex.version>
         <jakarta.activation.version>2.1.0</jakarta.activation.version>
@@ -268,26 +267,8 @@
 
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-jetty-embedded-7</artifactId>
+                <artifactId>arquillian-jetty-embedded-11</artifactId>
                 <version>${arquillian.jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-jetty-embedded-9</artifactId>
-                <version>${arquillian.jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
-                <version>${arquillian.glassfish.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-glassfish-remote-3.1</artifactId>
-                <version>${arquillian.glassfish.version}</version>
             </dependency>
 
             <dependency>

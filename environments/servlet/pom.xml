@@ -18,9 +18,9 @@
         <module>build</module>
         <module>tests/base</module>
         <module>tests/tomcat</module>
-        <!-- Jetty tests cannot be executed until there is new Arq. Jetty adapter -->
-        <!-- See https://github.com/arquillian/arquillian-container-jetty/issues/43 -->
-        <!--<module>tests/jetty</module>-->
+        <!-- Arquillian Jetty container doesn't seem to be EE 10 ready ATM -->
+        <!-- See https://github.com/arquillian/arquillian-container-jetty/issues/110#issuecomment-1164313289 -->
+        <!-- <module>tests/jetty</module>-->
     </modules>
 
     <description>
@@ -29,7 +29,7 @@
 
     <properties>
         <tomcat.version>10.1.0-M16</tomcat.version>
-        <jetty.version>11.0.8</jetty.version>
+        <jetty.version>11.0.11</jetty.version>
         <jetty9.asm.version>7.0</jetty9.asm.version>
         <websockets.api>2.1.0</websockets.api>
         <undertow.version>2.3.0.Alpha1</undertow.version>
@@ -109,11 +109,6 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-util</artifactId>
                 <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.glassfish.web</groupId>
-                <artifactId>el-impl</artifactId>
             </dependency>
 
             <dependency>
