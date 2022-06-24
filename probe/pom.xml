@@ -10,7 +10,7 @@
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>5.0.1.Final</version>
+        <version>5.0.2-SNAPSHOT</version>
     </parent>
 
     <description>Weld's inspection and debugging support</description>
