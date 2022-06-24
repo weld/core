@@ -139,7 +139,7 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
 
             try{
                 // Detecting if running inside icedtea-web JNLP runtime
-                if (jnlpClClass.getName().equals("net.sourceforge.jnlp.runtime.JNLPClassLoader")) {
+                if (jnlpClClass.getName().equals("net.sourceforge.jnlp.runtime.classloader.JNLPClassLoader")) {
                     // Try to get field net.sourceforge.jnlp.runtime.JNLPClassLoader#tracker from icedtea-web 1.5
                     Field f = jnlpClassLoader.getClass().getDeclaredField("tracker");
                     f.setAccessible(true);
