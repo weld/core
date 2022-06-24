@@ -72,7 +72,7 @@
         <jacoco.version>0.8.7</jacoco.version>
         <jandex.version>2.4.2.Final</jandex.version>
         <jakarta.activation.version>2.1.0</jakarta.activation.version>
-        <jakarta.el.version>5.0.0</jakarta.el.version>
+        <jakarta.el.version>5.0.1</jakarta.el.version>
         <glassfish.jakarta.el.version>5.0.0-M1</glassfish.jakarta.el.version>
         <jakarta.jms.api.version>3.1.0</jakarta.jms.api.version>
         <jsf.api.version>4.0.1</jsf.api.version>
