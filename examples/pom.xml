@@ -102,7 +102,7 @@
     </modules>
 
     <properties>
-        <servlet.api.version>5.0.0</servlet.api.version>
+        <servlet.api.version>6.0.0</servlet.api.version>
         <jsf.api.version>3.0.0</jsf.api.version>
         <facelets.version>1.1.15</facelets.version>
         <wildfly.plugin.version>2.1.0.Final</wildfly.plugin.version>
