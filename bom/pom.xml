@@ -4,7 +4,7 @@
     <groupId>org.jboss.weld</groupId>
     <artifactId>weld-core-bom</artifactId>
     <packaging>pom</packaging>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.0.1.Final</version>
 
     <name>Weld Core BOM</name>
 
@@ -126,7 +126,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>HEAD</tag>
+        <tag>5.0.1.Final</tag>
     </scm>
 
     <profiles>
