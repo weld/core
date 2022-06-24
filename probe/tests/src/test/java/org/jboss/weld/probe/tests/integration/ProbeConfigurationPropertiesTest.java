@@ -43,8 +43,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.probe.ProbeFilter;
@@ -75,7 +77,7 @@ public class ProbeConfigurationPropertiesTest extends ProbeIntegrationTest {
     public static WebArchive deployFirst() {
         return ShrinkWrap.create(WebArchive.class, TEST_ARCHIVE_NAME + ".war")
                 .addAsWebInfResource(ProbeBeansTest.class.getPackage(), "web.xml", "web.xml")
-                .addAsWebInfResource(ProbeBeansTest.class.getPackage(), "beans.xml", "beans.xml")
+                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClass(InvokingServlet.class)
                 .addPackage(TestInterceptor.class.getPackage())
                 .addPackage(TestExtension.class.getPackage())
