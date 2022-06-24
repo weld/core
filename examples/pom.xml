@@ -95,18 +95,17 @@
         <module>jsf/numberguess</module>
         <module>jsf/translator</module>
         <module>jsf/login</module>
-        <!-- TODO Doesn't compile due to lack of JEE 9 version of hibernate-jpamodelgen-->
-        <!-- <module>jsf/pastecode</module>-->
+        <module>jsf/pastecode</module>
         <module>se/numberguess</module>
         <module>se/groovy-numberguess</module>
     </modules>
 
     <properties>
-        <servlet.api.version>5.0.0</servlet.api.version>
-        <jsf.api.version>3.0.0</jsf.api.version>
+        <servlet.api.version>6.0.0</servlet.api.version>
+        <jsf.api.version>4.0.1</jsf.api.version>
         <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>2.1.0.Final</wildfly.plugin.version>
-        <uel.version>4.0.2</uel.version>
+        <wildfly.plugin.version>4.0.0.Alpha2</wildfly.plugin.version>
+        <uel.version>5.0.0-M1</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
     </properties>
