@@ -38,7 +38,7 @@
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
         <surefire.plugin.jdk17.args />
         <!-- Jakarta JAX/JWS api and implementation -->
-        <jax.api.version>3.0.1</jax.api.version>
+        <jax.api.version>4.0.0</jax.api.version>
         <jws.api.version>3.0.0</jws.api.version>
         <jax.artifacts.version>3.0.2</jax.artifacts.version>
 
