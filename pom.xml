@@ -40,7 +40,7 @@
         <!-- Jakarta JAX/JWS api and implementation -->
         <jax.api.version>3.0.1</jax.api.version>
         <jws.api.version>3.0.0</jws.api.version>
-        <jax.artifacts.version>3.0.2</jax.artifacts.version>
+        <jax.artifacts.version>4.0.0</jax.artifacts.version>
 
         <!-- A property which is handed over to WFLY container through Arquillian, allows to pass on JVM options -->
         <additional.vm.args />
@@ -63,7 +63,7 @@
         <!-- Might be used to override the version declared in weld-parent -->
         <!-- build.config.version>9</build.config.version-->
         <!-- Version of the CDI 4.x release TCK -->
-        <cdi.tck-4-0.version>4.0.4</cdi.tck-4-0.version>
+        <cdi.tck-4-0.version>4.0.5</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.5.3.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.5.3</spotbugs-annotations-version>
