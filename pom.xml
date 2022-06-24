@@ -66,7 +66,7 @@
         <cdi.tck-4-0.version>4.0.5</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.7.0.0</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>4.5.3</spotbugs-annotations-version>
+        <spotbugs-annotations-version>4.7.0</spotbugs-annotations-version>
         <groovy.version>3.0.11</groovy.version>
         <htmlunit.version>2.62.0</htmlunit.version>
         <jacoco.version>0.8.8</jacoco.version>
