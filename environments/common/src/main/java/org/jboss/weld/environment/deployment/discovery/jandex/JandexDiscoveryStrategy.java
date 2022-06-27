@@ -146,7 +146,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
     }
 
     private boolean containsBeanDefiningAnnotation(ClassInfo cinfo, String className) {
-        for (Entry<DotName, List<AnnotationInstance>> entry : cinfo.annotations().entrySet()) {
+        for (Entry<DotName, List<AnnotationInstance>> entry : cinfo.annotationsMap().entrySet()) {
             if (beanDefiningAnnotations.contains(entry.getKey())) {
                 return true;
             }
