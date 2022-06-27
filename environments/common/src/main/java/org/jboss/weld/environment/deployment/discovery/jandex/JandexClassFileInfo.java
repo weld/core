@@ -158,7 +158,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
     }
 
     private boolean isAnnotationDeclared(ClassInfo classInfo, DotName requiredAnnotationName) {
-        Map<DotName, List<AnnotationInstance>> annotationsMap = classInfo.annotations();
+        Map<DotName, List<AnnotationInstance>> annotationsMap = classInfo.annotationsMap();
         List<AnnotationInstance> annotations = annotationsMap.get(requiredAnnotationName);
         if (annotations != null) {
             for (AnnotationInstance annotationInstance : annotations) {
@@ -171,7 +171,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
     }
 
     private boolean hasInjectConstructor() {
-        List<AnnotationInstance> annotationInstances = classInfo.annotations().get(DOT_NAME_INJECT);
+        List<AnnotationInstance> annotationInstances = classInfo.annotationsMap().get(DOT_NAME_INJECT);
         if (annotationInstances != null) {
             for (AnnotationInstance instance : annotationInstances) {
                 AnnotationTarget target = instance.target();
@@ -264,11 +264,11 @@ public class JandexClassFileInfo implements ClassFileInfo {
 
     private boolean containsAnnotation(ClassInfo classInfo, DotName requiredAnnotationName, Class<? extends Annotation> requiredAnnotation) {
         // Type and members
-        if (classInfo.annotations().containsKey(requiredAnnotationName)) {
+        if (classInfo.annotationsMap().containsKey(requiredAnnotationName)) {
             return true;
         }
         // Meta-annotations
-        for (DotName annotation : classInfo.annotations().keySet()) {
+        for (DotName annotation : classInfo.annotationsMap().keySet()) {
             if (annotationClassAnnotationsCache.getValue(annotation).contains(requiredAnnotationName.toString())) {
                 return true;
             }

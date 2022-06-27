@@ -50,7 +50,7 @@ public class JandexClassFileServices implements ClassFileServices {
             ClassInfo annotationClassInfo = index.getClassByName(name);
             ImmutableSet.Builder<String> builder = ImmutableSet.builder();
             if (annotationClassInfo != null) {
-                for (DotName annotationName : annotationClassInfo.annotations().keySet()) {
+                for (DotName annotationName : annotationClassInfo.annotationsMap().keySet()) {
                     builder.add(annotationName.toString());
                 }
             } else {
