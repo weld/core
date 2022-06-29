@@ -21,6 +21,17 @@ jobs:
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
+      - name: Checkout CDI TCK
+        uses: actions/checkout@v3
+        with:
+          repository: manovotn/cdi-tck
+          path: cdi-tck
+          ref: timeoutTest
+      - name: Build Custom TCK
+        run: |
+          cd cdi-tck/
+          mvn clean install -DtckAuditSourceGen
+          cd ..
       - name: Download WildFly
         run: |
           wget https://ci.wildfly.org/guestAuth/repository/download/WF_WildflyPreviewNightly/latest.lastSuccessful/wildfly-preview-latest-SNAPSHOT.zip
