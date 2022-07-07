@@ -357,7 +357,7 @@
             </build>
         </profile>
 
-        <!-- Run the TCK in the managed container (full Java EE platform) -->
+        <!-- Run the TCK in the managed container (Jakarta EE Full Platform) -->
         <profile>
             <id>incontainer</id>
             <activation>
@@ -635,7 +635,199 @@
                 <excluded.groups>javaee-full,se</excluded.groups>
             </properties>
         </profile>
+        
+        <!-- Run the TCK in the managed container (Jakarta EE Web Profile) -->
+        <profile>
+            <id>webprofileincontainer</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>incontainer</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <excluded.groups>javaee-full,se</excluded.groups>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-web-impl</artifactId>
+                    <version>${cdi.tck-4-0.version}</version>
+                    <type>xml</type>
+                    <classifier>suite</classifier>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>jakarta.el</groupId>
+                            <artifactId>jakarta.el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>container-se-api</artifactId>
+                            <groupId>org.jboss.arquillian.container</groupId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
 
+                <dependency>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>cdi-tck-web-impl</artifactId>
+                    <version>${cdi.tck-4-0.version}</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>jakarta.el</groupId>
+                            <artifactId>jakarta.el-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>jakarta.faces</groupId>
+                            <artifactId>jakarta.faces-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>container-se-api</artifactId>
+                            <groupId>org.jboss.arquillian.container</groupId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-spi</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.jboss.logmanager</groupId>
+                            <artifactId>log4j-jboss-logmanager</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
+                    <version>${arquillian.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/test/wildfly8</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-jboss-home-is-set</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireEnvironmentVariable>
+                                            <variableName>JBOSS_HOME</variableName>
+                                            <message>Environment variable "JBOSS_HOME" must be set in order to execute in-container tests. Please configure it so that it points to your WildFly installation.</message>
+                                        </requireEnvironmentVariable>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <!-- perform this any time before the tests are executed -->
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${JBOSS_HOME}/standalone/configuration</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${JBOSS_HOME}/docs/examples/configs</directory>
+                                            <includes>standalone-activemq-embedded.xml</includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.version}</version>
+                        <configuration>
+                            <excludedGroups>${excluded.groups}</excludedGroups>
+
+                            <argLine>
+                                --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+                                --add-opens=java.base/java.io=ALL-UNNAMED
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                                --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                                --add-opens=java.base/java.security=ALL-UNNAMED
+                                --add-opens=java.base/java.util=ALL-UNNAMED
+                                --add-opens=java.management/javax.management=ALL-UNNAMED
+                                --add-opens=java.naming/javax.naming=ALL-UNNAMED
+                            </argLine>
+                            <properties>
+                                <property>
+                                    <!-- Note a 7.4.0 issue results in NPEs and useless output if you go higher than 1 here -->
+                                    <name>surefire.testng.verbose</name>
+                                    <value>0</value>
+                                </property>
+                            </properties>
+                            <systemPropertyVariables>
+                                <!-- Silencing the broken code in getActiveConfiguration(),
+                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
+                                <arquillian.launch>wildfly-23</arquillian.launch>
+                                <!-- Specified system properties are not
+                                    available during in-container test execution -->
+                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
+                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
+                            </systemPropertyVariables>
+                            <systemProperties>
+                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                                <!-- Specifiy any garbage collection related args here -->
+                                <gc.args />
+                                <!-- This property propagates to the javaVmArguments in arquillian.xml -->
+                                <additional.vm.args>
+                                    ${surefire.plugin.jdk17.args}
+                                </additional.vm.args>
+                            </systemProperties>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>target/suites/tck-web-suite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
         <profile>
             <id>jacoco</id>
             <activation>
