@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Instance;
@@ -281,5 +282,10 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     @Override
     public Collection<Class<? extends Annotation>> getScopes() {
         return delegate().getScopes();
+    }
+
+    @Override
+    public Collection<Context> getContexts(Class<? extends Annotation> scopeType) {
+        return delegate().getContexts(scopeType);
     }
 }
