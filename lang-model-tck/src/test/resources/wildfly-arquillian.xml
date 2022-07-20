@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <defaultProtocol type="jmx-as7" />
+
+    <engine>
+        <!--property name="deploymentExportPath">target/</property-->
+    </engine>
+
+    <container qualifier="wildfly" default="true">
+        <configuration>
+            <!-- Standard setup should do the trick here -->
+            <property name="serverConfig">standalone-full.xml</property>
+            <!-- ARQ-649 workaround -->
+            <property name="outputToConsole">false</property>
+            <property name="allowConnectingToRunningServer">true</property>
+            <property name="javaVmArguments">-Xms128m -Xmx768m ${additional.vm.args} ${jacoco.agent}</property>
+            <property name="jbossArguments">${additional.jboss.args}</property>
+            <property name="managementAddress">${node.address}</property>
+        </configuration>
+    </container>
+</arquillian>

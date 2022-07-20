@@ -57,16 +57,118 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-weld-embedded</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-impl</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <!-- Weld Weld Arq. Container - embedded testing -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!incontainer</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-weld-embedded</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemProperties>
+                                <arquillian.xml>arquillian.xml</arquillian.xml>
+                            </systemProperties>
+                            <test>${test}</test>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- WildFly Managed -->
+        <profile>
+            <id>incontainer</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>incontainer</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <!-- Due to exclusion on wildfly-arquillian-common, we need to add enricher manually for WFLY tests -->
+                <dependency>
+                    <groupId>org.jboss.arquillian.testenricher</groupId>
+                    <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-jboss-home-is-set</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireEnvironmentVariable>
+                                            <variableName>JBOSS_HOME</variableName>
+                                            <message>Environment variable "JBOSS_HOME" must be set in order to execute in-container tests. Please configure it so that it points to your WildFly installation.</message>
+                                        </requireEnvironmentVariable>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <!-- jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name-->
+                            </systemPropertyVariables>
+                            <systemProperties>
+                                <arquillian.xml>wildfly-arquillian.xml</arquillian.xml>
+                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                                <node.address>127.0.0.1</node.address>
+                                <additional.vm.args>${surefire.plugin.jdk17.args}</additional.vm.args>
+                                <additional.jboss.args>${additional.jboss.args}</additional.jboss.args>
+                            </systemProperties>
+                            <test>${test}</test>
+                            <parallel>none</parallel>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
