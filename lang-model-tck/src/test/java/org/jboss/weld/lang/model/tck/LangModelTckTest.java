@@ -27,15 +27,14 @@ import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.weld.tests.util.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
  * <p>
- * Executes CDI TCK for language model used in CDI Lite, current setup requires discovery mode ALL plus adding
- * {@link LangModelVerifier} into the deployment to discover it as a bean. Alternatively, this could be added
- * synthetically inside {@link LangModelExtension}.
+ * Executes CDI TCK for language model used in CDI Lite.
+ * Current setup uses discovery mode ANNOTATED and registers {@link LangModelVerifier} as additional bean via extension.
  * </p>
  *
  * <p>
@@ -48,11 +47,12 @@ public class LangModelTckTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(WebArchive.class, LangModelTckTest.class.getSimpleName() + ".war")
-                // beans.xml with discovery mode "all"
-                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+                // beans.xml with discovery mode "annotated"
+                .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
                 .addAsServiceProvider(BuildCompatibleExtension.class, LangModelExtension.class)
-                // add this class into the deployment so that it's subject to discovery
-                .addClasses(LangModelVerifier.class);
+                .addPackage(LangModelTckTest.class.getPackage())
+                // LangModelVerifier and any classes it references need to be part of the deployment as well
+                .addPackage(LangModelVerifier.class.getPackage());
     }
 
     @Test

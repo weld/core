@@ -18,7 +18,9 @@
 package org.jboss.weld.lang.model.tck;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+import jakarta.enterprise.inject.build.compatible.spi.Discovery;
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
+import jakarta.enterprise.inject.build.compatible.spi.ScannedClasses;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import org.jboss.cdi.lang.model.tck.LangModelVerifier;
 
@@ -30,5 +32,14 @@ public class LangModelExtension implements BuildCompatibleExtension {
     public void run(ClassInfo clazz) {
         ENHANCEMENT_INVOKED++;
         LangModelVerifier.verify(clazz);
+    }
+
+    /**
+     * {@link LangModelVerifier} doesn't have any bean defining annotation and wouldn't be discovered while usingg
+     * annotated discovery mode
+     */
+    @Discovery
+    public void addClass(ScannedClasses sc) {
+        sc.add(LangModelVerifier.class.getName());
     }
 }
