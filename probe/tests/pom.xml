@@ -15,7 +15,7 @@
     <properties>
         <json.version>1.1.4</json.version>
         <json.path.version>2.7.0</json.path.version>
-        <tomcat.version>10.1.0-M16</tomcat.version>
+        <tomcat.version>10.1.0-M17</tomcat.version>
     </properties>
 
     <dependencies>
