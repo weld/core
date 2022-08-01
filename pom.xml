@@ -65,7 +65,7 @@
         <!-- Version of the CDI 4.x release TCK -->
         <cdi.tck-4-0.version>4.0.6</cdi.tck-4-0.version>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
-        <spotbugs-maven-plugin.version>4.7.0.0</spotbugs-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.7.1.1</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.7.0</spotbugs-annotations-version>
         <groovy.version>3.0.11</groovy.version>
         <htmlunit.version>2.62.0</htmlunit.version>
