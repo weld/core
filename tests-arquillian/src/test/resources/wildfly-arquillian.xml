@@ -12,7 +12,7 @@
 
     <container qualifier="jboss-as-7" default="true">
         <configuration>
-            <!-- This config file includes embedded JMS broker and is copied into WFLY dir from ${JBOSS_HOME}/standalone/configuration  -->
+            <!-- This config file includes embedded JMS broker -->
             <property name="serverConfig">standalone-full.xml</property>
             <!-- ARQ-649 workaround -->
             <property name="outputToConsole">false</property>
