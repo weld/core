@@ -490,8 +490,8 @@
                                     <outputDirectory>${JBOSS_HOME}/standalone/configuration</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${JBOSS_HOME}/docs/examples/configs</directory>
-                                            <includes>standalone-activemq-embedded.xml</includes>
+                                            <directory>${JBOSS_HOME}/standalone/configuration</directory>
+                                            <includes>standalone-full.xml</includes>
                                         </resource>
                                     </resources>
                                 </configuration>
