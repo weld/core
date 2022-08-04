@@ -10,7 +10,7 @@
 
     <container qualifier="wildfly-23" default="true">
         <configuration>
-            <!-- This config file includes embedded JMS broker and is copied into WFLY dir from ${JBOSS_HOME}/standalone/configuration -->
+            <!-- This config file includes embedded JMS broker -->
             <property name="serverConfig">standalone-full.xml</property>
             <property name="javaVmArguments">-Xms128m -Xmx1g -ea -DcdiTckExcludeDummy=true ${gc.args} ${additional.vm.args} ${jacoco.agent}</property>
             <property name="outputToConsole">false</property>

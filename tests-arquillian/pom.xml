@@ -301,29 +301,6 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-resources</id>
-                                <!-- perform this any time before the tests are executed -->
-                                <phase>validate</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${JBOSS_HOME}/standalone/configuration</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${JBOSS_HOME}/standalone/configuration</directory>
-                                            <includes>standalone-full.xml</includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludedGroups>org.jboss.weld.tests.category.Broken,org.jboss.weld.tests.category.Performance,org.jboss.weld.tests.category.EmbeddedContainer</excludedGroups>
