@@ -134,14 +134,6 @@
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-common</artifactId>
-            <exclusions>
-                <!-- This dep brings in Arq. testenricher for CDI in the non-jakarta version
-                which causes issues in embedded tests -->
-                <exclusion>
-                    <groupId>org.jboss.arquillian.testenricher</groupId>
-                    <artifactId>arquillian-testenricher-cdi</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Jakarta JAX/JWS are needed in jdk8+ -->
@@ -268,11 +260,6 @@
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
                     <scope>test</scope>
-                </dependency>
-                <!-- Due to exclusion on wildfly-arquillian-common, we need to add enricher manually for WFLY tests -->
-                <dependency>
-                    <groupId>org.jboss.arquillian.testenricher</groupId>
-                    <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
                 </dependency>
             </dependencies>
 
