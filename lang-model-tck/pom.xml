@@ -118,11 +118,6 @@
                     <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
                     <scope>test</scope>
                 </dependency>
-                <!-- Due to exclusion on wildfly-arquillian-common, we need to add enricher manually for WFLY tests -->
-                <dependency>
-                    <groupId>org.jboss.arquillian.testenricher</groupId>
-                    <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
-                </dependency>
             </dependencies>
 
             <build>

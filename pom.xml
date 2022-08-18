@@ -248,12 +248,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.arquillian.testenricher</groupId>
-                <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
-                <version>${arquillian.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-weld-embedded</artifactId>
                 <version>${arquillian.weld.version}</version>
