@@ -22,18 +22,18 @@ public class ManagedBeanUserManager implements UserManager {
     @Inject
     private UserTransaction utx;
 
-    private User newUser = new User();
+    private Person newUser = new Person();
 
     @Override
     @SuppressWarnings("unchecked")
     @Produces
     @Named
     @RequestScoped
-    public List<User> getUsers() throws Exception {
+    public List<Person> getUsers() throws Exception {
         try {
             try {
                 utx.begin();
-                return userDatabase.createQuery("select u from User u").getResultList();
+                return userDatabase.createQuery("select u from Person u").getResultList();
             } finally {
                 utx.commit();
             }
@@ -64,12 +64,12 @@ public class ManagedBeanUserManager implements UserManager {
     }
 
     @Override
-    public User getNewUser() {
+    public Person getNewUser() {
         return newUser;
     }
 
     @Override
-    public void setNewUser(User newUser) {
+    public void setNewUser(Person newUser) {
         this.newUser = newUser;
     }
 

@@ -52,9 +52,9 @@
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.5.0</apache.bcel.version>
-        <arquillian.version>1.7.0.Alpha10</arquillian.version>
-        <arquillian.drone.version>2.5.5</arquillian.drone.version>
-        <arquillian.graphene.version>2.5.4</arquillian.graphene.version>
+        <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <arquillian.drone.version>3.0.0-alpha.5</arquillian.drone.version>
+        <arquillian.graphene.version>3.0.0-alpha.3</arquillian.graphene.version>
         <arquillian.weld.version>3.0.2.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Final</arquillian.tomcat.version>
@@ -274,6 +274,11 @@
             <dependency>
                 <groupId>org.wildfly.arquillian</groupId>
                 <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>${wildfly.arquillian.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-container-remote</artifactId>
                 <version>${wildfly.arquillian.version}</version>
             </dependency>
             <dependency>

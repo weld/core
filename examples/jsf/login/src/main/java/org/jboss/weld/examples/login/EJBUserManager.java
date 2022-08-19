@@ -22,13 +22,13 @@ public class EJBUserManager implements UserManager {
     @Inject
     private EntityManager userDatabase;
 
-    private User newUser = new User();
+    private Person newUser = new Person();
 
     @SuppressWarnings("unchecked")
     @Produces
     @Named
     @RequestScoped
-    public List<User> getUsers() throws Exception {
+    public List<Person> getUsers() throws Exception {
         return userDatabase.createQuery("select u from User u").getResultList();
     }
 
@@ -41,11 +41,11 @@ public class EJBUserManager implements UserManager {
         return "/users.xhtml?faces-redirect=true";
     }
 
-    public User getNewUser() {
+    public Person getNewUser() {
         return newUser;
     }
 
-    public void setNewUser(User newUser) {
+    public void setNewUser(Person newUser) {
         this.newUser = newUser;
     }
 

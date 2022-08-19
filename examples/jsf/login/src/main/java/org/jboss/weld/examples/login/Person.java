@@ -4,13 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class User {
+public class Person {
     @Id
     private String username;
     private String name;
     private String password;
 
-    public User() {
+    public Person() {
     }
 
     public String getUsername() {

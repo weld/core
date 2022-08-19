@@ -4,12 +4,12 @@ import java.util.List;
 
 public interface UserManager {
 
-    List<User> getUsers() throws Exception;
+    List<Person> getUsers() throws Exception;
 
     String addUser() throws Exception;
 
-    User getNewUser();
+    Person getNewUser();
 
-    void setNewUser(User newUser);
+    void setNewUser(Person newUser);
 
 }
