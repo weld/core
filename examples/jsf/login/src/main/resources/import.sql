@@ -1,1 +1,1 @@
-insert into User (username, name, password) values ('demo', 'Demo User', 'demo') 
+insert into Person (username, name, password) values ('demo', 'Demo User', 'demo')

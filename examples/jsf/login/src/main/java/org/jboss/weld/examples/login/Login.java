@@ -23,12 +23,12 @@ public class Login implements Serializable {
     @PersistenceContext
     private EntityManager userDatabase;
 
-    private User currentUser;
+    private Person currentUser;
 
     @SuppressWarnings("unchecked")
     public void login() {
 
-        List<User> results = userDatabase.createQuery("select u from User u where u.username=:username and u.password=:password").setParameter("username", credentials.getUsername()).setParameter("password", credentials.getPassword()).getResultList();
+        List<Person> results = userDatabase.createQuery("select u from Person u where u.username=:username and u.password=:password").setParameter("username", credentials.getUsername()).setParameter("password", credentials.getPassword()).getResultList();
 
         if (!results.isEmpty()) {
             currentUser = results.get(0);
@@ -48,7 +48,7 @@ public class Login implements Serializable {
 
     @Produces
     @LoggedIn
-    public User getCurrentUser() {
+    public Person getCurrentUser() {
         return currentUser;
     }
 
