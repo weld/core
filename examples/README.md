@@ -6,7 +6,6 @@ Weld currently comes with a number of examples:
 * `jsf/numberguess` (a simple war example for JSF; can be deployed to various servers/servlets)
 * `jsf/login` (a simple war example for JSF)
 * `jsf/translator` (a simple EJB example for JSF; uses EAR)
-* `jsf/pastecode` (a more complex EJB example for JSF)
 * `se/numberguess` (the numberguess example for Java SE using Swing)
 * `se/groovy-numberguess` (the numberguess in Groovy leveraging Swing)
 

@@ -95,7 +95,6 @@
         <module>jsf/numberguess</module>
         <module>jsf/translator</module>
         <module>jsf/login</module>
-        <module>jsf/pastecode</module>
         <module>se/numberguess</module>
         <module>se/groovy-numberguess</module>
     </modules>
