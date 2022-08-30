@@ -65,6 +65,9 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     // The set of default binding types
     private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(Default.Literal.INSTANCE);
 
+    // Groovy object name, we ignore this interface type in AT tpe closure
+    private static final String GROOVY_OBJECT = "groovy.lang.GroovyObject";
+
     /**
      * Builds the annotation map (annotation type -> annotation)
      *
@@ -176,7 +179,8 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     public Set<Type> getInterfaceClosure() {
         Set<Type> interfaces = new HashSet<Type>();
         for (Type t : getTypeClosure()) {
-            if (Reflections.getRawType(t).isInterface()) {
+            // Add all found interfaces except groovy.lang.GroovyObject, see WELD-2713
+            if (Reflections.getRawType(t).isInterface() && !t.getTypeName().equals(GROOVY_OBJECT)) {
                 interfaces.add(t);
             }
         }
