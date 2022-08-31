@@ -61,10 +61,14 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
     @Override
     protected void initValid(EnhancedAnnotation<T> annotatedAnnotation) {
         super.initValid(annotatedAnnotation);
-        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : annotatedAnnotation.getMembers()) {
-            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !getNonBindingMembers().contains(annotatedMethod.slim())) {
-                MetadataLogger.LOG.nonBindingMemberType(annotatedMethod);
-                super.valid = false;
+        // The annotation either has @Qualifier or was registered via extension
+        // Only check annotation method in case the annotation itself is valid
+        if (isValid()) {
+            for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : annotatedAnnotation.getMembers()) {
+                if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !getNonBindingMembers().contains(annotatedMethod.slim())) {
+                    MetadataLogger.LOG.nonBindingMemberType(annotatedMethod);
+                    super.valid = false;
+                }
             }
         }
     }
