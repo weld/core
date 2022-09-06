@@ -53,4 +53,17 @@ public class WeldExpressionFactory extends ForwardingExpressionFactory {
         return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
     }
 
+    // Satisfy checkstyle requirement for a hashcode method when there's an equals method
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj) ||
+                (obj instanceof WeldExpressionFactory
+                        && delegate().equals(((WeldExpressionFactory) obj).delegate()));
+    }
+
 }
