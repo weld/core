@@ -953,7 +953,7 @@ Depending on how exactly you integrate Weld, you are likely using one of the fol
 With the addition of CDI Lite, the one big new feature are so-called Build Compatible Extensions (BCE).
 Their purpose is very similar to that of Portable Extensions (PE) - synthetic alteration of the bean model.
 Unlike PE which are inherently runtime oriented, BCE can be used in more restricted environments while retaining portability.
-If you want to learn more, take a look at https://eclipse-ee4j.github.io/cdi/2021/12/03/you-know-build-compatible-extensions.html[this article].
+If you want to learn more, take a look at https://jakartaee.github.io/cdi/2021/12/03/you-know-build-compatible-extensions.html[this article].
 
 ====== How to make Weld understand Build Compatible Extensions?
 
@@ -989,7 +989,7 @@ Integrators can then instantiate `LiteExtensionTranslator` via a constructor tha
 ===== Deprecations and removals
 
 This section mostly focuses on removals in Weld itself.
-If you are looking for deprecation removals in CDI API, take a look at https://github.com/eclipse-ee4j/cdi/issues/472[this GH issue].
+If you are looking for deprecation removals in CDI API, take a look at https://github.com/jakartaee/cdi/issues/472[this GH issue].
 
 * Multiple methods from `org.jboss.weld.serialization.spi.ProxyServices` were removed.
 ** If you are an integrator, you probably implemented this interface at some point in time; these methods weren’t used by Weld anyway, so they are now gone for good.
@@ -998,5 +998,5 @@ If you are looking for deprecation removals in CDI API, take a look at https://g
 ** Note that this method was redundant and can be replaced by `getClassNestingType()`.
 * `WeldInstance.Handler` class is now deprecated and so are multiple methods returning this type from `WeldInstance`
 ** The reason for this removal is that the very same feature was accepted into CDI specification so you can now use CDI API interfaces to achieve the same.
-** For more information, take a look at https://github.com/eclipse-ee4j/cdi/blob/master/api/src/main/java/jakarta/enterprise/inject/Instance.java#L266-L315[`Instance.Handle` class from CDI API].
+** For more information, take a look at https://github.com/jakartaee/cdi/blob/master/api/src/main/java/jakarta/enterprise/inject/Instance.java#L266-L315[`Instance.Handle` class from CDI API].
 
