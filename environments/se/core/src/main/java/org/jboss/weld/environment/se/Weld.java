@@ -86,7 +86,6 @@ import org.jboss.weld.environment.se.ContainerLifecycleObserver.ContainerLifecyc
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.util.BeanArchives;
-import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.lite.extension.translator.BuildCompatibleExtensionLoader;
@@ -195,10 +194,10 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
 
     /**
-     * By default, the development mode is disabled. If set to true, the development mode is activated
-     * <p>
-     * This key can be also used through {@link #property(String, Object)}.
+     * Since Weld 5.1.0.Final, this property is deprecated and serves no purpose.
+     * It will be removed in future versions.
      */
+    @Deprecated(since = "5.1.0.Final")
     public static final String DEV_MODE_SYSTEM_PROPERTY = "org.jboss.weld.development";
 
     /**
@@ -639,7 +638,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * @return self
      * @see #ARCHIVE_ISOLATION_SYSTEM_PROPERTY
      * @see #SHUTDOWN_HOOK_SYSTEM_PROPERTY
-     * @see #DEV_MODE_SYSTEM_PROPERTY
      * @see ConfigurationKey
      */
     public Weld property(String key, Object value) {
@@ -806,7 +804,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
                 .add(ConfigurationKey.ALLOW_OPTIMIZED_CLEANUP.get(), isEnabled(ALLOW_OPTIMIZED_CLEANUP, true));
         for (Entry<String, Object> property : properties.entrySet()) {
             String key = property.getKey();
-            if (SHUTDOWN_HOOK_SYSTEM_PROPERTY.equals(key) || ARCHIVE_ISOLATION_SYSTEM_PROPERTY.equals(key) || DEV_MODE_SYSTEM_PROPERTY.equals(key)
+            if (SHUTDOWN_HOOK_SYSTEM_PROPERTY.equals(key) || ARCHIVE_ISOLATION_SYSTEM_PROPERTY.equals(key)
                     || SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY.equals(key) || JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT.equals(key)
                     || ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY.equals(key)) {
                 continue;
@@ -903,11 +901,13 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Enable the development mode.
+     * Since Weld 5.1.0.Final, this method is deprecated and became no-op.
+     * It will be removed in future versions.
      *
      * @return self
      * @see #DEV_MODE_SYSTEM_PROPERTY
      */
+    @Deprecated(since = "5.1.0.Final")
     public Weld enableDevMode() {
         return property(DEV_MODE_SYSTEM_PROPERTY, true);
     }
@@ -1088,10 +1088,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
-        if (isEnabled(DEV_MODE_SYSTEM_PROPERTY, false)) {
-            // The development mode is enabled - register the Probe extension
-            result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
         }
         // Register org.jboss.weld.lite.extension.translator.LiteExtensionTranslator in order to be able to execute build compatible extensions
         // Note that we only register this if we detect any BuildCompatibleExtension implementations

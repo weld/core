@@ -45,11 +45,6 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.weld.probe</groupId>
-            <artifactId>weld-probe-core</artifactId>
-            <version>${weld.update.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.weld.module</groupId>
             <artifactId>weld-ejb</artifactId>
             <version>${weld.update.version}</version>
@@ -118,7 +113,6 @@
                                         <property name="jsf.injection.dir" value="${module.dir}/../as/jsf-injection/main" />
 
                                         <property name="weld.core.file" value="weld-core-impl-${weld.update.version}.jar" />
-                                        <property name="weld.probe.file" value="weld-probe-core-${weld.update.version}.jar" />
                                         <property name="weld.ejb.file" value="weld-ejb-${weld.update.version}.jar" />
                                         <property name="weld.jsf.file" value="weld-jsf-${weld.update.version}.jar" />
                                         <property name="weld.jta.file" value="weld-jta-${weld.update.version}.jar" />
@@ -131,12 +125,10 @@
                                             <fileset dir="${module.dir}/spi/main" includes="*.jar" />
                                             <fileset dir="${module.dir}/api/main" includes="*.jar" />
                                             <fileset dir="${jsf.injection.dir}" includes="weld-*jsf*.jar" />
-                                            <fileset dir="${module.dir}/probe/main" includes="*.jar" />
                                             <fileset dir="${module.dir}/core/main" includes="*.index" />
                                             <fileset dir="${module.dir}/spi/main" includes="*.index" />
                                             <fileset dir="${module.dir}/api/main" includes="*.index" />
                                             <fileset dir="${jsf.injection.dir}" includes="weld-*jsf*.index" />
-                                            <fileset dir="${module.dir}/probe/main" includes="*.index" />
                                         </delete>
 
                                         <copy todir="${module.dir}/core/main" overwrite="true">
@@ -156,13 +148,6 @@
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-jta.*?&quot;" replace="path=&quot;${weld.jta.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-web.*?&quot;" replace="path=&quot;${weld.web.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-lite-extension-translator.*?&quot;" replace="path=&quot;${weld.lite-extension.file}&quot;" byline="true" />
-
-                                        <copy todir="${module.dir}/probe/main" overwrite="true">
-                                            <fileset dir="target/dependency/lib">
-                                                <include name="${weld.probe.file}" />
-                                            </fileset>
-                                        </copy>
-                                        <replaceregexp file="${module.dir}/probe/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
@@ -254,7 +239,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>

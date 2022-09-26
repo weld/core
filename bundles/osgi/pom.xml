@@ -66,9 +66,6 @@
                             org.jboss.weld.interceptor;
                             org.jboss.weld.proxy;
 
-                            <!-- Probe development tool -->
-                            org.jboss.weld.probe;
-
                             <!-- Weld Lite Extension Translator module -->
                             org.jboss.weld.lite.extension.*;
 
@@ -160,7 +157,7 @@
                             <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                             <outputDirectory>${project.build.directory}/sources</outputDirectory>
                             <excludeGroupIds>*</excludeGroupIds>
-                            <includeGroupIds>org.jboss.weld,org.jboss.weld.probe</includeGroupIds>
+                            <includeGroupIds>org.jboss.weld</includeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -287,11 +284,6 @@
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-spi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.weld.probe</groupId>
-            <artifactId>weld-probe-core</artifactId>
         </dependency>
 
         <dependency>

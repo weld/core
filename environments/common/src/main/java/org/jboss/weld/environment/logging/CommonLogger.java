@@ -146,11 +146,8 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 36, value = "Weld cannot read the java class path system property!", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotReadJavaClassPathSystemProperty();
 
-    @Message(id = 37, value = "Unable to initialize the Probe component: {0}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToInitializeProbeComponent(Object component, @Cause Throwable cause);
-
-    @Message(id = 38, value = "Development mode is enabled but the following Probe component is not found on the classpath: {0}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException probeComponentNotFoundOnClasspath(Object component);
+    // id = 37 was previously used for Probe logging
+    // id = 38 was previously used for Probe logging
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 39, value = "Bean archive reference {0} handled by {1}", format = Format.MESSAGE_FORMAT)
