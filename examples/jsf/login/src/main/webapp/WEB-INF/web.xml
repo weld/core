@@ -7,11 +7,6 @@
 
    <display-name>Web Beans Login example</display-name>
 
-   <context-param>
-      <param-name>org.jboss.weld.development</param-name>
-      <param-value>true</param-value>
-   </context-param>
-
    <!-- JSF -->
 
    <servlet>
