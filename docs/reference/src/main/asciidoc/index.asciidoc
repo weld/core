@@ -41,6 +41,5 @@ Below are the links to them.
 .. link:configure.html[Weld configuration]
 .. link:logging.html[Logging]
 .. link:weldmanager.html[`WeldManager` interface]
-.. link:developmentmode.html[Development Mode]
 .. link:contexts.html[Context Management]
 .. link:ri-spi.html[Integrating Weld into other environments]

@@ -850,28 +850,6 @@ See link:http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/construc
 and link:http://docs.jboss.org/weld/javadoc/3.0/weld-spi/org/jboss/weld/construction/api/WeldCreationalContext.html#registerAroundConstructCallback-org.jboss.weld.construction.api.AroundConstructCallback-[WeldCreationalContext.registerAroundConstructCallback()]
 for more details.
 
-==== Probe Development Tool (Optional)
-
-Optionally, an integrator may register the following
-ifndef::generate-index-link[<<probe,Probe Development Tool>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe Development Tool]]
-components in order to enable its functionality. Note that these components should only be registered if the development mode is enabled - see also
-ifndef::generate-index-link[<<devmode-enable>>]
-ifdef::generate-index-link[link:developmentmode.html#devmode-enable[How to enable the development mode]]
-.
-
-.Probe components
-[cols="1,1,2",options="header"]
-|=======================================================================
-|Class|Type|Description
-|`org.jboss.weld.probe.ProbeFilter`|Servlet filter|An integrator is required to register this filter for every web application which should be a subject of inspection. The filter should only be mapped to a single URL pattern of value `/*`.
-|`org.jboss.weld.probe.ProbeExtension`|CDI extension|An integrator is required to register this extension for every application which should be a subject of inspection.
-|=======================================================================
-
-NOTE: Probe classes reside in a separate module with the following coordinates: `org.jboss.weld.probe:weld-probe-core`. This module is a dependency of a Weld Servlet integration module and it's also a part of the `weld-servlet-shaded` artifact and Weld OSGi bundle.
-
-NOTE: Probe REST API is implemented using a servlet filter. However, not all servlet containers trigger filters when recieving a request to a path which is not mapped to any servlet (although most of them define a "default" servlet for each application). In this case, an integrator should register a "dummy" servlet (its methods will never be invoked) mapped to the URL pattern `/weld-probe/*`.
-
 [[allow-optimized-cleanup]]
 ==== Optimized cleanup after bootstrap
 
@@ -977,7 +955,7 @@ An example of this would be https://github.com/arquillian/arquillian-container-w
 As you can see from https://github.com/arquillian/arquillian-container-weld/pull/114/files[this pull request], it basically adds a `META-INF` entry which is sufficient to support new extension model. Since it a test tool, the extension is always registered without any attempt to optimize it.
 
 The above solution is nice and clean, but won’t cut it for any EE integrators.
-Instead, EE integrators will want to register this extension very similarly to how they currently register `ProbeExtension` - add it programmatically as part of the CDI deployment.
+Instead, EE integrators will want to register this extension by adding it programmatically as part of the CDI deployment.
 This extension should to be registered at most once per deployment.
 It is therefore recommended to put it directly into `org.jboss.weld.bootstrap.spi.CDI11Deployment` implementation.
 

@@ -228,50 +228,6 @@ Using this configuration option with delimiter "pass:[_]pass:[_]" will allow Wel
 
 WARNING: Bean archive identifiers are provided by integrators. Therefore, the abbreviation algorithm may not always function properly.
 
-[[config-dev-mode]]
-==== Development Mode
-
-Some features of the
-ifndef::generate-index-link[<<devmode,development mode>>]
-ifdef::generate-index-link[link:developmentmode.html[development mode]]
-may have negative impact on the performance and/or functionality of the application. The following configuration properties allow to tune or disable these features, e.g. to specify the set of components which will be monitored.
-
-.Supported configuration properties
-[cols="1,1,1,2",options="header"]
-|=======================================================================
-|Configuration key|Tool|Default value |Description
-|`org.jboss.weld.probe.invocationMonitor.excludeType`|
-ifndef::generate-index-link[<<probe,Probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-|'' |A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the type is excluded from monitoring.
-|`org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties`|
-ifndef::generate-index-link[<<probe,Probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-|'true' |If set to `true`, the JavaBean accessor methods are not monitored.
-|`org.jboss.weld.probe.eventMonitor.excludeType`|
-ifndef::generate-index-link[<<probe,Probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-|'' |A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
-|`org.jboss.weld.probe.eventMonitor.containerLifecycleEvents`|
-ifndef::generate-index-link[<<probe,Probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-|'false'|If set to `true` all the container lifecycle events are monitored during bootstrap.
-|`org.jboss.weld.probe.embedInfoSnippet`|
-ifndef::generate-index-link[<<probe,Probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-|'true' | If set to `true` an informative HTML snippet will be added to every HTTP response with Content-Type of value `text/html`.
-|`org.jboss.weld.probe.jmxSupport`|
-ifndef::generate-index-link[<<probe,Probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-|'false' | If set to `true` one or more MBean components may be registered so that it's possible to use JMX to access the Probe development tool data.
-|`org.jboss.weld.probe.exportDataAfterDeployment`|
-ifndef::generate-index-link[<<probe,Probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-|'' | If a non-empty string the Probe data will be automatically exported after deployment validation. The value represents the path of the directory where to export the data file.
-|=======================================================================
-
-TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.
-
 [[config-conversation-timeout]]
 ==== Conversation timeout and Conversation concurrent access timeout
 
@@ -328,11 +284,6 @@ An _unused_ bean:
 * is not eligible for injection to any injection point,
 * does not declare a producer which is eligible for injection to any injection point,
 * is not eligible for injection into any `Instance<X>` injection point.
-
-TIP: If you run
-ifndef::generate-index-link[<<probe>>]
-ifdef::generate-index-link[link:developmentmode.html#probe[Probe]]
-and list all the beans in your application, you will almost certainly notice some of them coming from 3rd party libraries which you never use (marked with a trash icon). Those are candidates for _unused beans_ as you can be sure you are not using them.
 
 NOTE: As usual, there is a trade-off between memory consumption and bootstrap time. The results may vary depending on the application, but you should always expect (most probably negligible) increase of the bootstrap time.
 
