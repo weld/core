@@ -1,6 +1,0 @@
-<FindBugsFilter>
-  <Match>
-    <Class name="~.*_\$logger$" />
-    <Bug pattern="NM_CLASS_NAMING_CONVENTION" />
-  </Match>
-</FindBugsFilter>

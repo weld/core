@@ -90,15 +90,6 @@
                         <excludes>
                         </excludes>
                     </artifactSet>
-                    <filters>
-                        <!-- Do not include the default probe HTML client -->
-                        <filter>
-                            <artifact>org.jboss.weld.probe:weld-probe-core</artifact>
-                            <excludes>
-                                <exclude>META-INF/client/**</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
                 </configuration>
             </plugin>
             <plugin>

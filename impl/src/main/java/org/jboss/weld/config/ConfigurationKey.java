@@ -144,22 +144,27 @@ public enum ConfigurationKey {
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
 
     /**
-     * A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the
-     * type is excluded from monitoring, i.e. the invocation monitor interceptor is not associated.
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("<strong>DEVELOPMENT MODE</strong> - a bean whose bean class is matching this regular expression is excluded from monitoring")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.invocationMonitor.excludeType", ""),
 
     /**
-     * If set to <code>true</code> the JavaBean accessor methods are not monitored.
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> the JavaBean accessor methods are not monitored.")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES("org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties", true),
 
     /**
-     * A regular expression. If a non-empty string and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("<strong>DEVELOPMENT MODE</strong> - an event class matching this regular expression is excluded from monitoring.")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_EVENT_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.eventMonitor.excludeType", ""),
 
     /**
@@ -170,9 +175,11 @@ public enum ConfigurationKey {
     BEAN_IDENTIFIER_INDEX_OPTIMIZATION("org.jboss.weld.serialization.beanIdentifierIndexOptimization", true),
 
     /**
-     * If set to <code>true</code> an informative HTML snippet will be added to every response with Content-Type of value <code>text/html</code>.
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> an informative HTML snippet will be added to every response with Content-Type of value <code>text/html</code>.")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_EMBED_INFO_SNIPPET("org.jboss.weld.probe.embedInfoSnippet", true),
 
     /**
@@ -183,31 +190,27 @@ public enum ConfigurationKey {
     CONTEXT_ATTRIBUTES_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
 
     /**
-     * If set to <code>true</code> one or more MBean components may be registered so that it is possible to use JMX to access the Probe development tool data.
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> one or more MBean components may be registered so that it is possible to use JMX to access the Probe development tool data.")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_JMX_SUPPORT("org.jboss.weld.probe.jmxSupport", false),
 
     /**
-     * If set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the bootstrap performance.
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> all the container lifecycle events are monitored during bootstrap. Note that this feature has negative impact on the <strong>bootstrap performance</strong>.")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_EVENT_MONITOR_CONTAINER_LIFECYCLE_EVENTS("org.jboss.weld.probe.eventMonitor.containerLifecycleEvents", false),
 
     /**
-     * A regular expression used to limit access to the Probe REST API. The default value attempts to match connections from localhost only, i.e. it's matching the
-     * following addresses:
-     * <ul>
-     * <li><code>127.0.0.1</code></li>
-     * <li><code>::1</code>, incl. zone indices (e.g. <code>::1%0</code>)</li>
-     * <li><code>0:0:0:0:0:0:0:1</code>, incl. zone indices (e.g. <code>0:0:0:0:0:0:0:1%eth0</code>)</li>
-     * </ul>
-     *
-     * Note that this might not work properly for an application behind a reverse-proxy or a load balancer. In such case we assume the web container involves
-     * some technique of overridding the client IP address with a value from the request headers (e.g.
-     * <code>io.undertow.server.handlers.ProxyPeerAddressHandler</code>, <code>org.apache.catalina.valves.RemoteIpValve</code>, etc.).
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("<strong>DEVELOPMENT MODE</strong> - a regular expression used to limit access to Probe REST API. Matches connections from localhost by default. Might not work properly for an application behind a reverse proxy or a load balancer.")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_ALLOW_REMOTE_ADDRESS("org.jboss.weld.probe.allowRemoteAddress", "127.0.0.1|::1|::1%.+|0:0:0:0:0:0:0:1|0:0:0:0:0:0:0:1%.+"),
 
     /**
@@ -259,9 +262,11 @@ public enum ConfigurationKey {
     VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation", ""),
 
     /**
-     * If a non-empty string and development mode is enabled, the Probe data will be automatically exported after deployment validation. The value represents a path of the directory where to export the data file.
+     * This option is deprecated and has no function since Weld 5.1.0.Final.
+     * It will be removed in upcoming versions.
      */
-    @Description("If a non-empty string and development mode is enabled, the Probe data will be automatically exported after deployment validation. The value represents a path of the directory where to export the data file.")
+    @Deprecated(since = "5.1.0.Final")
+    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
     PROBE_EXPORT_DATA_AFTER_DEPLOYMENT("org.jboss.weld.probe.exportDataAfterDeployment", ""),
 
     /**

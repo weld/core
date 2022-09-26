@@ -19,15 +19,12 @@ package org.jboss.weld.environment.servlet;
 import static org.jboss.weld.config.ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION;
 
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.jsp.JspApplicationContext;
 import jakarta.servlet.jsp.JspFactory;
@@ -68,7 +65,6 @@ import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.environment.undertow.UndertowContainer;
-import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
@@ -101,9 +97,6 @@ public class WeldServletLifecycle {
     // allows to handle empty beans.xml as having discovery mode ALL
     private static final String LEGACY_EMPTY_BEANS_XML_TREATMENT = WeldServletLifecycle.class.getPackage().getName() + ".emptyBeansXmlModeAll";
 
-    // This context param is used to activate the development mode
-    private static final String CONTEXT_PARAM_DEV_MODE = "org.jboss.weld.development";
-
     private static final String JSP_FACTORY_CLASS_NAME = "jakarta.servlet.jsp.JspFactory";
 
     private Runnable shutdownAction;
@@ -117,8 +110,6 @@ public class WeldServletLifecycle {
     // WELD-1665 Bootstrap might be already performed
     private boolean isBootstrapNeeded = true;
 
-    private boolean isDevModeEnabled;
-
     WeldServletLifecycle() {
         resourceLoader = new WeldResourceLoader();
         weldListener = new WeldInitialListener();
@@ -130,9 +121,6 @@ public class WeldServletLifecycle {
      * @return <code>true</code> if initialized properly, <code>false</code> otherwise
      */
     boolean initialize(ServletContext context) {
-
-        isDevModeEnabled = Boolean.valueOf(context.getInitParameter(CONTEXT_PARAM_DEV_MODE));
-
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
             isBootstrapNeeded = false;
@@ -238,13 +226,7 @@ public class WeldServletLifecycle {
         }
 
         if (isBootstrapNeeded) {
-
             bootstrap.deployBeans().validateBeans().endInitialization();
-
-            if (isDevModeEnabled) {
-                FilterRegistration.Dynamic filterDynamic = context.addFilter("Weld Probe Filter", DevelopmentMode.PROBE_FILTER_CLASS_NAME);
-                filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
-            }
             this.shutdownAction = () -> bootstrap.shutdown();
         }
         return true;
@@ -282,9 +264,6 @@ public class WeldServletLifecycle {
     protected CDI11Deployment createDeployment(ServletContext context, CDI11Bootstrap bootstrap) {
         ImmutableSet.Builder<Metadata<Extension>> extensionsBuilder = ImmutableSet.builder();
         extensionsBuilder.addAll(bootstrap.loadExtensions(WeldResourceLoader.getClassLoader()));
-        if (isDevModeEnabled) {
-            extensionsBuilder.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
-        }
 
         // Register org.jboss.weld.lite.extension.translator.LiteExtensionTranslator in order to be able to execute build compatible extensions
         // Note that we only register this if we discovered at least one implementation of BuildCompatibleExtension
