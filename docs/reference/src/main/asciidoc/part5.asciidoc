@@ -27,8 +27,6 @@ include::logging.asciidoc[]
 
 include::weldmanager.asciidoc[]
 
-include::developmentmode.asciidoc[]
-
 include::contexts.asciidoc[]
 
 include::ri-spi.asciidoc[]
