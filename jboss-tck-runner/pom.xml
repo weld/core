@@ -431,6 +431,12 @@
                             <groupId>org.jboss.logmanager</groupId>
                             <artifactId>log4j-jboss-logmanager</artifactId>
                         </exclusion>
+                        <!-- Needs to be excluded, otherwise needs an extra dependency on org.slf4j:slf4j-api -->
+                        <!-- Future versions of wildfly-arquillian-container-managed will no longer need this exclusion, see https://issues.redhat.com/browse/WFARQ-119 -->
+                        <exclusion>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>jcl-over-slf4j</artifactId>
+                        </exclusion>
                     </exclusions>
                 </dependency>
                 <dependency>
