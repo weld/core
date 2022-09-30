@@ -90,7 +90,7 @@
         <testng.version>7.4.0</testng.version>
         <weld.api.version>5.0.SP3</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
-        <wildfly.arquillian.version>5.0.0.Alpha3</wildfly.arquillian.version>
+        <wildfly.arquillian.version>5.0.0.Alpha5</wildfly.arquillian.version>
     </properties>
 
     <modules>
