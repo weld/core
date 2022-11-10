@@ -32,7 +32,7 @@ This code of conduct applies both within project spaces and in public spaces
 when an individual is representing the project or its community.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by 
-contacting the Weld project lead, Matej Novotny <xxx@redhat.com>.
+contacting the Weld project lead, Matej Novotny <manovotn@redhat.com>.
 
 
 This Code of Conduct is adapted from the [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md) which is 
