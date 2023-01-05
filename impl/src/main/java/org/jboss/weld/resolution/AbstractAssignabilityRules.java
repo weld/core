@@ -54,7 +54,7 @@ public abstract class AbstractAssignabilityRules implements AssignabilityRules {
      * Standard Java covariant assignability rules are applied to all other types of bounds.
      * This is not explicitly mentioned in the specification but is implied.
      */
-    protected Type[] getUppermostTypeVariableBounds(TypeVariable<?> bound) {
+    static Type[] getUppermostTypeVariableBounds(TypeVariable<?> bound) {
         if (bound.getBounds()[0] instanceof TypeVariable<?>) {
             return getUppermostTypeVariableBounds((TypeVariable<?>) bound.getBounds()[0]);
         }
