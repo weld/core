@@ -226,12 +226,38 @@ public class CovariantTypes {
             throw ReflectionLogger.LOG.invalidTypeArgumentCombination(type1, type2);
         }
         for (int i = 0; i < type1.getActualTypeArguments().length; i++) {
+            // if it's recursive generics, we treat them as assignable
+            if (isResursiveGenericType(type1, types1[i])) {
+                return true;
+            }
             // Generics are invariant
             if (!InvariantTypes.isAssignableFrom(types1[i], types2[i])) {
                 return false;
             }
         }
         return true;
+    }
+
+    // used to try and detect recursive generic types such as <T extends Comparable<T> List<T>
+    private static boolean isResursiveGenericType(ParameterizedType originalType, Type typeToSearch) {
+        if (typeToSearch instanceof TypeVariable) {
+            for (Type singleType : AbstractAssignabilityRules.getUppermostTypeVariableBounds((TypeVariable<?>) typeToSearch)) {
+                if (singleType instanceof ParameterizedType) {
+                    if (originalType.equals(singleType)) {
+                        // found type equal to original type, this is recursive generic type
+                        return true;
+                    } else {
+                        // recursive search through all found type args
+                        for (Type typeArg : ((ParameterizedType) singleType).getActualTypeArguments()) {
+                            if (isResursiveGenericType(originalType, typeArg)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean isAssignableFrom(ParameterizedType type1, TypeVariable<?> type2) {
