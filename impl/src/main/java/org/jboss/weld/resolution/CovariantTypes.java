@@ -226,9 +226,10 @@ public class CovariantTypes {
             throw ReflectionLogger.LOG.invalidTypeArgumentCombination(type1, type2);
         }
         for (int i = 0; i < type1.getActualTypeArguments().length; i++) {
-            // if it's recursive generics, we treat them as assignable
-            if (isResursiveGenericType(type1, types1[i])) {
-                return true;
+            // if `type1` is recursive in its type argument `types1[i]`, we treat types1[i] and types2[i] as assignable
+            // (checking the same for type2 doesn't seem necessary)
+            if (types1[i] instanceof TypeVariable && isTypeRecursiveIn(type1, (TypeVariable<?>) types1[i])) {
+                continue;
             }
             // Generics are invariant
             if (!InvariantTypes.isAssignableFrom(types1[i], types2[i])) {
@@ -238,20 +239,26 @@ public class CovariantTypes {
         return true;
     }
 
-    // used to try and detect recursive generic types such as <T extends Comparable<T> List<T>
-    private static boolean isResursiveGenericType(ParameterizedType originalType, Type typeToSearch) {
-        if (typeToSearch instanceof TypeVariable) {
-            for (Type singleType : AbstractAssignabilityRules.getUppermostTypeVariableBounds((TypeVariable<?>) typeToSearch)) {
-                if (singleType instanceof ParameterizedType) {
-                    if (originalType.equals(singleType)) {
-                        // found type equal to original type, this is recursive generic type
-                        return true;
-                    } else {
-                        // recursive search through all found type args
-                        for (Type typeArg : ((ParameterizedType) singleType).getActualTypeArguments()) {
-                            if (isResursiveGenericType(originalType, typeArg)) {
-                                return true;
-                            }
+    /**
+     * Determines if given parameterized type is recursive in given type variable, which is
+     * a type argument of the parameterized type.
+     *
+     * @param type a parameterized type
+     * @param typeArgument a type variable which is a type argument of {@code type}
+     * @return whether {@code type} is recursive in {@code typeArgument}
+     */
+    private static boolean isTypeRecursiveIn(ParameterizedType type, TypeVariable<?> typeArgument) {
+        for (Type bound : AbstractAssignabilityRules.getUppermostTypeVariableBounds(typeArgument)) {
+            if (bound instanceof ParameterizedType) {
+                if (type.equals(bound)) {
+                    // found bound equal to original type, this is recursive generic type
+                    return true;
+                } else {
+                    ParameterizedType castBound = (ParameterizedType) bound;
+                    // recursive search through all found type args
+                    for (Type typeArg : castBound.getActualTypeArguments()) {
+                        if (typeArg instanceof TypeVariable && isTypeRecursiveIn(castBound, (TypeVariable<?>) typeArg)) {
+                            return true;
                         }
                     }
                 }
