@@ -23,12 +23,14 @@ import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 
 public class VerifyingExtension implements Extension {
 
     private BeanAttributes<Alpha> alpha;
     private BeanAttributes<Bravo> bravo;
     private BeanAttributes<Charlie> charlie;
+    private int bravoPitInvocations = 0;
 
     public void alpha(@Observes ProcessBeanAttributes<Alpha> event) {
         Set<Type> types = event.getBeanAttributes().getTypes();
@@ -50,6 +52,10 @@ public class VerifyingExtension implements Extension {
         }
     }
 
+    public void pitBravo(@Observes ProcessInjectionTarget<Bravo> bravoPit) {
+        bravoPitInvocations++;
+    }
+
     public BeanAttributes<Alpha> getAlpha() {
         return alpha;
     }
@@ -60,5 +66,9 @@ public class VerifyingExtension implements Extension {
 
     public BeanAttributes<Charlie> getCharlie() {
         return charlie;
+    }
+
+    public int getBravoPitInvocations() {
+        return bravoPitInvocations;
     }
 }

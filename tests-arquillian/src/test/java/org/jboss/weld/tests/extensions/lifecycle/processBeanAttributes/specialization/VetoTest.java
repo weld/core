@@ -63,5 +63,8 @@ public class VetoTest {
         assertNull(extension.getAlpha());
         assertNotNull(extension.getBravo());
         assertNotNull(extension.getCharlie());
+
+        // verify that PIT<Bravo> is only fired once even during specialization, see WELD-2742
+        assertEquals(1, extension.getBravoPitInvocations());
     }
 }

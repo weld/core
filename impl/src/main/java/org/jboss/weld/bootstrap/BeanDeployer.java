@@ -317,6 +317,13 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         processBeanAttributes(beans);
     }
 
+    private void processSpecializingBeans(Iterable<? extends AbstractBean<?, ?>> previouslySpecializedBeans) {
+        // For a set of previously specialized beans that are re-enabled, we need to fire PP followed by PBA
+        // Note that this is intentionally different from processBeans() method which also contains PIT event
+        processProducerEvents(previouslySpecializedBeans);
+        processBeanAttributes(previouslySpecializedBeans);
+    }
+
     protected void processBeanAttributes(Iterable<? extends AbstractBean<?, ?>> beans) {
         if (!containerLifecycleEvents.isProcessBeanAttributesObserved()) {
             return;
@@ -344,7 +351,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             getEnvironment().vetoBean(bean);
         }
         // if a specializing bean was vetoed, let's process the specializing bean now
-        processBeans(previouslySpecializedBeans);
+        processSpecializingBeans(previouslySpecializedBeans);
     }
 
     public void createProducersAndObservers() {
