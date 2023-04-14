@@ -17,6 +17,7 @@
 package org.jboss.weld.bootstrap.events;
 
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
@@ -43,7 +44,12 @@ public abstract class AbstractDefinitionContainerEvent extends AbstractContainer
     public void fire() {
         super.fire();
         if (!getErrors().isEmpty()) {
-            throw new DefinitionException(getErrors());
+            if (getErrors().size() == 1 && getErrors().get(0) instanceof DeploymentException) {
+                // if the throwable was deployment exception, rethrow that
+                    throw (DeploymentException) getErrors().get(0);
+            } else {
+                throw new DefinitionException(getErrors());
+            }
         }
     }
 }

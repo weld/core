@@ -103,7 +103,7 @@ public interface BootstrapLogger extends WeldLogger {
     IllegalStateException unspecifiedRequiredService(Object service, Object target);
 
     @Message(id = 118, value = "Only normal scopes can be passivating. Scope {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException passivatingNonNormalScopeIllegal(Object param1);
+    DeploymentException passivatingNonNormalScopeIllegal(Object param1);
 
     @LogMessage(level = Level.INFO)
     @Message(id = 119, value = "Not generating any bean definitions from {0} because of underlying class loading error: Type {1} not found.  If this is unexpected, enable DEBUG logging to see the full error.", format = Format.MESSAGE_FORMAT)
