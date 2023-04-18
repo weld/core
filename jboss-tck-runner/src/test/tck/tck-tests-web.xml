@@ -1,0 +1,45 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<!-- CDI TCK TestNG configuration for Weld -->
+<!-- Used mainly for WeldMethodInterceptor in combination with relaxed construction mode -->
+<!-- This version is for the web profile of TCKs (with EJB tests and other EE deps) -->
+<suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
+
+    <listeners>
+        <listener class-name="org.jboss.cdi.tck.impl.testng.ConfigurationLoggingListener"/>
+        <listener class-name="org.jboss.weld.tck.WeldMethodInterceptor"/>
+        <listener class-name="org.jboss.cdi.tck.impl.testng.ProgressLoggingTestListener"/>
+        <!-- The default JUnit XML reporter is disabled -->
+        <listener class-name="org.testng.reporters.SuiteHTMLReporter"/>
+        <listener class-name="org.testng.reporters.FailedReporter"/>
+        <listener class-name="org.testng.reporters.XMLReporter"/>
+        <listener class-name="org.testng.reporters.EmailableReporter"/>
+        <listener class-name="org.testng.reporters.TestHTMLReporter" />
+    </listeners>
+
+    <test name="CDI TCK">
+
+        <packages>
+            <package name="org.jboss.cdi.tck.tests.*" />
+            <package name="org.jboss.cdi.tck.interceptors.tests.*" />
+        </packages>
+
+        <classes>
+
+            <!-- Issues in the spec -->
+
+            <!-- Issues in the TCK -->
+            <!-- CDITCK-597; test is only part of web profile of TCK and excluded there as well -->
+            <class name="org.jboss.cdi.tck.tests.deployment.packaging.ejb.EJBJarDeploymentTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
+            <!-- Issues in Weld (the RI) -->
+
+            <!-- Issues in WildFly -->
+
+        </classes>
+    </test>
+
+</suite>
