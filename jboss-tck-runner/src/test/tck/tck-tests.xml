@@ -1,5 +1,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <!-- CDI TCK TestNG configuration for Weld -->
+<!-- Used mainly for WeldMethodInterceptor in combination with relaxed construction mode -->
+<!-- This version is for the no-container TCKs (no EJB tests and other EE deps) -->
 <suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
 
     <listeners>

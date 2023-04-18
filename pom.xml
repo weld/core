@@ -60,10 +60,12 @@
         <arquillian.tomcat.version>1.2.0.Final</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.Final</arquillian.jetty.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
-        <!-- Might be used to override the version declared in weld-parent -->
-        <!-- build.config.version>9</build.config.version-->
         <!-- Version of the CDI 4.x release TCK -->
         <cdi.tck-4-0.version>4.0.9</cdi.tck-4-0.version>
+        <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
+        <!-- We can also use our own file, needed for relaxed mode testing (see WeldMethodInterceptor) -->
+        <!-- Our variant is under src/test/tck/tck-tests.xml -->
+        <cdi.tck.suite.xml.file></cdi.tck.suite.xml.file>
         <classfilewriter.version>1.2.5.Final</classfilewriter.version>
         <spotbugs-maven-plugin.version>4.7.2.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.7.2</spotbugs-annotations-version>

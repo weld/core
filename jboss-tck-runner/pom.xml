@@ -293,6 +293,9 @@
                     <name>!incontainer</name>
                 </property>
             </activation>
+            <properties>
+                <cdi.tck.suite.xml.file>target/suites/tck-core-suite.xml</cdi.tck.suite.xml.file>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
@@ -349,7 +352,7 @@
                                 <argLine>${travis.surefire.argLine}</argLine>
                             </systemPropertyVariables>
                             <suiteXmlFiles>
-                                <suiteXmlFile>target/suites/tck-core-suite.xml</suiteXmlFile>
+                                <suiteXmlFile>${cdi.tck.suite.xml.file}</suiteXmlFile>
                             </suiteXmlFiles>
                         </configuration>
                     </plugin>
@@ -369,6 +372,7 @@
             </activation>
             <properties>
                 <excluded.groups>se</excluded.groups>
+                <cdi.tck.suite.xml.file>target/suites/tck-web-suite.xml</cdi.tck.suite.xml.file>
             </properties>
             <dependencies>
                 <dependency>
@@ -524,7 +528,7 @@
                                 </additional.vm.args>
                             </systemProperties>
                             <suiteXmlFiles>
-                                <suiteXmlFile>target/suites/tck-web-suite.xml</suiteXmlFile>
+                                <suiteXmlFile>${cdi.tck.suite.xml.file}</suiteXmlFile>
                             </suiteXmlFiles>
                         </configuration>
                     </plugin>
@@ -541,6 +545,9 @@
                     <value>se</value>
                 </property>
             </activation>
+            <properties>
+                <cdi.tck.suite.xml.file>target/suites/tck-core-suite.xml</cdi.tck.suite.xml.file>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
@@ -596,7 +603,7 @@
                                 <libPath>${project.build.outputDirectory}</libPath>
                             </systemPropertyVariables>
                             <suiteXmlFiles>
-                                <suiteXmlFile>target/suites/tck-core-suite.xml</suiteXmlFile>
+                                <suiteXmlFile>${cdi.tck.suite.xml.file}</suiteXmlFile>
                             </suiteXmlFiles>
                         </configuration>
                     </plugin>

@@ -201,6 +201,78 @@ jobs:
           name: server-log-cdi-tck-jdk${{matrix.java.name}}
           path: 'server-log.tgz'
 
+  # relaxed mode, w/ and w/o Wildfly, single JDK version
+  relaxed-mode-test:
+    name: "Relaxed mode testing - JDK ${{matrix.java.name}}"
+    runs-on: ubuntu-latest
+    needs: build-jdk11
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        java:
+          - { name: "11",
+              java-version: 11,
+          }
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.java.name }}
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: ${{ matrix.java.java-version }}
+
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
+      - name: Download Patched WildFly
+        uses: actions/download-artifact@v1
+        with:
+          name: wildfly-patched-zip
+          path: .
+      - name: Extract WildFly
+        run: unzip wildfly.zip
+      - name: Build with Maven w/ WildFly
+        run: |
+          JBOSS_HOME=`pwd`'/wildfly'
+          export JBOSS_HOME=`echo $JBOSS_HOME`
+          mvn clean verify -Dincontainer -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests-web.xml -Dadditional.vm.args="-Dorg.jboss.weld.construction.relaxed=true" -f jboss-tck-runner/pom.xml
+      - name: Prepare failure archive (if maven failed)
+        if: failure()
+        shell: bash
+        run: |
+          find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
+          find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: test-reports-cdi-tck-jdk${{matrix.java.name}}-incontainer-relaxed
+          path: 'test-reports.tgz'
+      - name: Upload server log artifact (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: server-log-cdi-tck-jdk${{matrix.java.name}}
+          path: 'server-log.tgz'
+      - name: Build with Maven, no WildFly
+        run: |
+          mvn clean verify -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests.xml -Dorg.jboss.weld.construction.relaxed=true
+      - name: Prepare failure archive (if maven failed)
+        if: failure()
+        shell: bash
+        run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: test-reports-cdi-tck-jdk${{matrix.java.name}}-relaxed
+          path: 'test-reports.tgz'
+
   # Weld no-container tests, includes junit, Weld SE tests plus CDI TCKs and integration tests that don't require EE container
   no-container-tests:
     name: "Weld Tests w/o Container - JDK ${{matrix.java.name}}"
