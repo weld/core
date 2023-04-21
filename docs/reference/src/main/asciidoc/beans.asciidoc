@@ -407,20 +407,22 @@ out-of-the-box.
 ==== Managed beans
 
 A managed bean is a Java class. The basic lifecycle and semantics of a
-managed bean are defined by the Managed Beans specification. You can
-explicitly declare a managed bean by annotating the bean class
-`@ManagedBean`, but in CDI you don't need to. According to the
-specification, the CDI container treats any class that satisfies the
-following conditions as a managed bean:
+managed bean are defined by the Managed Beans specification.
+According to the specification, the CDI container treats any class that satisfies the following conditions as a managed bean:
 
-* It is not a non-static inner class.
-* It is a concrete class, or is annotated `@Decorator`.
-* It is not annotated with an EJB component-defining annotation or
-declared as an EJB bean class in `ejb-jar.xml`.
-* It does not implement `jakarta.enterprise.inject.spi.Extension`.
-* It has an appropriate constructor—either:
-** the class has a constructor with no parameters, or
-** the class declares a constructor annotated `@Inject`.
+* It is either:
+** an abstract or non-abstract class annotated @Decorator, or
+** a non-abstract class.
+* It declares either:
+** a constructor with no parameters, or
+** a constructor annotated @Inject
+* It is not an inner class.
+* It does not implement jakarta.enterprise.inject.spi.Extension
+* It does not implement jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension.
+* It is not annotated @Vetoed
+* It is not in a package annotated @Vetoed
+* It is not annotated with an EJB component-defining annotation
+* It is not declared as an EJB bean class in ejb-jar.xml.
 
 NOTE: According to this definition, JPA entities are technically managed
 beans. However, entities have their own special lifecycle, state and
