@@ -74,7 +74,7 @@ public class BuiltinMetadataBeanTest {
 
         Bean<Yoghurt> probioticYoghurtBean = cast(manager.resolve(manager.getBeans(Yoghurt.class, new Probiotic.Literal())));
         CreationalContext<Yoghurt> probioticCtx = manager.createCreationalContext(probioticYoghurtBean);
-        Yoghurt probioticYoghurt = cast(manager.getReference(probioticYoghurtBean, Yoghurt.class, fruitCtx));
+        Yoghurt probioticYoghurt = cast(manager.getReference(probioticYoghurtBean, Yoghurt.class, probioticCtx));
         assertEquals(probioticYoghurtBean, factory.getProbioticYoghurtBean());
     }
 
