@@ -48,8 +48,8 @@ public class Weld1178Test {
                 .addClasses(DefectiveBean.class, MyExceptionHandler.class, MyExceptionHandlerFactory.class)
                 .addAsWebInfResource(currentPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(currentPackage(), "faces-config.xml", "faces-config.xml")
-                .addAsWebResource(currentPackage(), "exceptionInRenderResponse.jsf", "exceptionInRenderResponse.jspx")
-                .addAsWebResource(currentPackage(), "error.jsf", "error.jspx")
+                .addAsWebResource(currentPackage(), "exceptionInRenderResponse.xhtml", "exceptionInRenderResponse.xhtml")
+                .addAsWebResource(currentPackage(), "error.xhtml", "error.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
@@ -60,7 +60,7 @@ public class Weld1178Test {
     @Test
     public void testExceptionInRenderResponse() throws Exception {
         WebClient client = new WebClient();
-        client.getPage(getPath("/exceptionInRenderResponse.jsf"));
+        client.getPage(getPath("/exceptionInRenderResponse.xhtml"));
     }
 
     protected String getPath(String page) {

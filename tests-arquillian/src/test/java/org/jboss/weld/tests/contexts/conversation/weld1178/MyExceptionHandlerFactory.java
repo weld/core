@@ -27,6 +27,7 @@ public class MyExceptionHandlerFactory extends ExceptionHandlerFactory {
     private ExceptionHandlerFactory parent;
 
     public MyExceptionHandlerFactory(ExceptionHandlerFactory parent) {
+        super(parent);
         this.parent = parent;
     }
 
