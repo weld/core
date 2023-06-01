@@ -192,7 +192,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ear-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <!-- Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187
                     during release -->
