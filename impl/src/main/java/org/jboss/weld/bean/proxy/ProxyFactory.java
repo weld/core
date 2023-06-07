@@ -499,7 +499,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
         try {
-            return new ClassFile(name, accessFlags, superclass, interfaces);
+            // We need to use a (non-deprecated) method that avoids instantiating DefaultClassFactory.INSTANCE
+            // If that happens, we will have module accessibility issues and the need to use --add-opens clausules
+            // NOTE: the CL and ClassFactory are never really used to define the class, see WeldDefaultProxyServices
+            return new ClassFile(name, accessFlags, superclass, ProxyFactory.class.getClassLoader(), DummyClassFactoryImpl.INSTANCE, interfaces);
         } catch (Exception e) {
             throw BeanLogger.LOG.unableToCreateClassFile(name, e.getCause());
         }

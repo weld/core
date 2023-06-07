@@ -46,7 +46,7 @@ public class WeldDefaultProxyServices implements ProxyServices {
         ClassLoader originalLoader = originalClass.getClassLoader();
         if (originalLoader == null) {
             originalLoader = Thread.currentThread().getContextClassLoader();
-            // is it's still null we cannot solve this issue and we need to throw an exception
+            // if it's still null we cannot solve this issue, and we need to throw an exception
             if (originalLoader == null) {
                 throw BeanLogger.LOG.cannotDetermineClassLoader(className, originalClass);
             }
