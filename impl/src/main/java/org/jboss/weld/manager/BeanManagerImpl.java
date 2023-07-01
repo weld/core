@@ -663,11 +663,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
-        return getReference(bean, requestedType, creationalContext, noProxy, true);
-    }
-
-    private Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy, boolean createChildCc) {
-        if (creationalContext instanceof CreationalContextImpl<?> && createChildCc) {
+        if (creationalContext instanceof CreationalContextImpl<?>) {
             creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
         }
         if (!noProxy && isProxyRequired(bean)) {
@@ -704,7 +700,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         // Ensure that there is no injection point associated
         final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
         try {
-            return getReference(bean, requestedType, creationalContext, false, false);
+            return getReference(bean, requestedType, creationalContext, false);
         } finally {
             stack.pop();
         }
