@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -57,9 +56,8 @@ public class Weld1234Test {
         } catch (Exception e) {
         }
 
-        // check if toString() still works
-        String toString = exceptionGenerator.toString();
-        assertTrue(toString.contains("REMOVED"));
+        // Verify that toString() still works
+        exceptionGenerator.toString();
 
         try {
             // check if other methods throw NoSuchEJBException

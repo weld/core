@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jakarta.ejb.EJBException;
+import jakarta.ejb.NoSuchEJBException;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -123,17 +124,21 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
             throw BeanLogger.LOG.invalidRemoveMethodInvocation(method);
         }
         Class<?> businessInterface = getBusinessInterface(method);
-        if (reference.isRemoved() && isToStringMethod(method)) {
-            return businessInterface.getName() + " [REMOVED]";
-        }
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
 
         if (!Modifier.isPublic(method.getModifiers())) {
             throw new EJBException("Not a business method " + method.toString() +". Do not call non-public methods on EJB's.");
         }
-        Object returnValue = Reflections.invokeAndUnwrap(proxiedInstance, method, args);
-        BeanLogger.LOG.callProxiedMethod(method, proxiedInstance, args, returnValue);
-        return returnValue;
+        try {
+            Object returnValue = Reflections.invokeAndUnwrap(proxiedInstance, method, args);
+            BeanLogger.LOG.callProxiedMethod(method, proxiedInstance, args, returnValue);
+            return returnValue;
+        } catch (NoSuchEJBException e) {
+            if (isToStringMethod(method)) {
+                return businessInterface.getName() + " [REMOVED]";
+            }
+            throw e;
+        }
     }
 
     private boolean isRemoveMethod(Method method) {
