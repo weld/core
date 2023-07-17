@@ -7,10 +7,12 @@ import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.DisposerInfo;
 import jakarta.enterprise.inject.build.compatible.spi.InjectionPointInfo;
+import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.build.compatible.spi.ScopeInfo;
 import jakarta.enterprise.inject.build.compatible.spi.StereotypeInfo;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.invoke.InvokerBuilder;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
@@ -143,6 +145,18 @@ class BeanInfoImpl implements BeanInfo {
                 .stream()
                 .map((InjectionPoint cdiInjectionPoint) -> new InjectionPointInfoImpl(cdiInjectionPoint, bm))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<MethodInfo> invokableMethods() {
+        // TODO implement, mostly empty set, only for class based bean we need to delegate
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
+    public InvokerBuilder<InvokerInfo> createInvoker(MethodInfo methodInfo) {
+        // TODO implement, probably throw an error for any non class-based bean?
+        throw new UnsupportedOperationException("not working yet");
     }
 
     @Override

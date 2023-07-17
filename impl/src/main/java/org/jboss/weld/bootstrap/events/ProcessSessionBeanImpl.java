@@ -17,12 +17,17 @@
 package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessSessionBean;
 import jakarta.enterprise.inject.spi.SessionBeanType;
 
+import jakarta.enterprise.invoke.Invoker;
+import jakarta.enterprise.invoke.InvokerBuilder;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.invokable.InvokerBuilderImpl;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -63,4 +68,14 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
         return getBean().getAnnotated();
     }
 
+    @Override
+    public Collection<AnnotatedMethod<? super Object>> getInvokableMethods() {
+        return getBean().getInvokableMethods();
+    }
+
+    @Override
+    public InvokerBuilder<Invoker<Object, ?>> createInvoker(AnnotatedMethod<? super Object> annotatedMethod) {
+        checkWithinObserverNotification();
+        return new InvokerBuilderImpl<>(getBean(), annotatedMethod);
+    }
 }

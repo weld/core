@@ -124,6 +124,19 @@ public class MetaAnnotationStore implements Service {
 
     }
 
+    private static class InvokableFunction extends AbstractMetaAnnotationFunction<InvokableModel<Annotation>> {
+
+        public InvokableFunction(ClassTransformer classTransformer) {
+            super(classTransformer);
+        }
+
+        @Override
+        public InvokableModel<Annotation> apply(Class<Annotation> from) {
+            return new InvokableModel<>(getClassTransformer().getEnhancedAnnotation(from));
+        }
+
+    }
+
     // The stereotype models
     private final ComputingCache<Class<Annotation>, StereotypeModel<Annotation>> stereotypes;
     // The scope models
@@ -132,6 +145,8 @@ public class MetaAnnotationStore implements Service {
     private final ComputingCache<Class<Annotation>, QualifierModel<Annotation>> qualifiers;
     // the interceptor bindings
     private final ComputingCache<Class<Annotation>, InterceptorBindingModel<Annotation>> interceptorBindings;
+    // The invokable models
+    private final ComputingCache<Class<Annotation>, InvokableModel<Annotation>> invokables;
 
     private final ComputingCache<Annotation, QualifierInstance> qualifierInstanceCache;
 
@@ -143,6 +158,7 @@ public class MetaAnnotationStore implements Service {
         this.scopes = cacheBuilder.build(new ScopeFunction(classTransformer));
         this.qualifiers = cacheBuilder.build(new QualifierFunction(classTransformer));
         this.interceptorBindings = cacheBuilder.build(new InterceptorBindingFunction(classTransformer));
+        this.invokables = cacheBuilder.build(new InvokableFunction(classTransformer));
         this.qualifierInstanceCache = cacheBuilder.build(new QualifierInstanceFunction(this));
         this.sharedObjectCache = classTransformer.getSharedObjectCache();
     }
@@ -204,6 +220,19 @@ public class MetaAnnotationStore implements Service {
      */
     public <T extends Annotation> InterceptorBindingModel<T> getInterceptorBindingModel(final Class<T> interceptorBinding) {
         return interceptorBindings.getCastValue(interceptorBinding);
+    }
+
+    /**
+     * Gets an invokable model.
+     * <p/>
+     * Adds the model if it is not present.
+     *
+     * @param <T>         The type
+     * @param annotation The annotation class
+     * @return The invokable model
+     */
+    public <T extends Annotation> InvokableModel<T> getInvokableModel(final Class<T> annotation) {
+        return invokables.getCastValue(annotation);
     }
 
     /**

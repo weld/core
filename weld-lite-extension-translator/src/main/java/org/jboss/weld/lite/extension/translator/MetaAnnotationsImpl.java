@@ -51,6 +51,12 @@ class MetaAnnotationsImpl implements MetaAnnotations {
     }
 
     @Override
+    public void addInvokable(Class<? extends Annotation> aClass) {
+        // TODO implement
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
     public void addContext(Class<? extends Annotation> scopeAnnotation,
             Class<? extends jakarta.enterprise.context.spi.AlterableContext> contextClass) {
         contexts.add(new ContextData(scopeAnnotation, null, contextClass));
