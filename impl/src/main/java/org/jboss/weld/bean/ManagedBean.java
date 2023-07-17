@@ -18,12 +18,14 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.bean.BeanIdentifiers.forManagedBean;
 
+import java.util.Collection;
 import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.Decorator;
@@ -307,5 +309,10 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
         // otherwise we assume there is a post construct callback, just to be safe
         return true;
+    }
+
+    @Override
+    public Collection<AnnotatedMethod<? super T>> getInvokableMethods() {
+        return invokableMethods;
     }
 }

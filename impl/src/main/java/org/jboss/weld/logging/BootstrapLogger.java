@@ -344,4 +344,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 183, value = "Multiple different @Priority values derived from stereotype annotations for annotated type - {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException multiplePriorityValuesDeclared(Object annotatedType);
 
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 184, value = "BeforeBeanDiscovery.addInvokable() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
+    void addInvokableCalled(Object extensionName, Object type);
+
 }

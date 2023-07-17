@@ -25,6 +25,7 @@ import java.util.Set;
 import jakarta.decorator.Decorator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.interceptor.Interceptor;
 
@@ -301,5 +302,10 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
             getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(),
                     new InterceptorBindingsAdapter(model));
         }
+    }
+
+    @Override
+    public Collection<AnnotatedMethod<? super T>> getInvokableMethods() {
+        return invokableMethods;
     }
 }
