@@ -70,7 +70,7 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
         this.parameters = parameters;
         this.timer = timer;
         this.contextData = contextData;
-        this.interceptorBindings = interceptorBindings;
+        this.interceptorBindings = interceptorBindings != null ? interceptorBindings : Collections.emptySet();
     }
 
     @Override
