@@ -103,7 +103,7 @@
         <servlet.api.version>6.0.0</servlet.api.version>
         <jsf.api.version>4.0.1</jsf.api.version>
         <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>4.1.0.Beta5</wildfly.plugin.version>
+        <wildfly.plugin.version>4.2.0.Final</wildfly.plugin.version>
         <uel.version>5.0.0-M1</uel.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
