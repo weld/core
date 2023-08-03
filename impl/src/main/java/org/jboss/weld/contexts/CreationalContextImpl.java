@@ -21,12 +21,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -62,7 +62,12 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private final CreationalContextImpl<?> parentCreationalContext;
 
-    // Precondition for access when non-null: synchronized (dependentInstances)
+    /**
+     * Needs to be always initialized as a Set that managed WeakReferences to avoid cyclic references and leaks.
+     * Precondition for access when non-null: synchronized (dependentInstances).
+     *
+     * @see #initDestroyedIfNeeded()
+     */
     private transient Set<ContextualInstance<?>> destroyed;
 
     private transient List<ResourceReference<?>> resourceReferences;
@@ -149,9 +154,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private <T> void destroy(ContextualInstance<T> beanInstance) {
         // Precondition: synchronized (dependentInstances)
-        if (this.destroyed == null) {
-            this.destroyed = new HashSet<>();
-        }
+        initDestroyedIfNeeded();
         if (this.destroyed.add(beanInstance)) {
             beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
         }
@@ -159,9 +162,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private <T> void release(ContextualInstance<T> beanInstance) {
         // Precondition: synchronized (dependentInstances)
-        if (this.destroyed == null) {
-            this.destroyed = new HashSet<>();
-        }
+        initDestroyedIfNeeded();
         if (this.destroyed.add(beanInstance)) {
             CreationalContext<T> cc = beanInstance.getCreationalContext();
             if (cc instanceof CreationalContextImpl<?>) {
@@ -309,6 +310,13 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             return new CreationalContextImpl();
         }
 
+    }
+
+    private void initDestroyedIfNeeded() {
+        // we need to use WeakReference set so that we avoid cyclic references and memory leaks
+        if (this.destroyed == null) {
+            this.destroyed = Collections.newSetFromMap(new WeakHashMap<>());
+        }
     }
 
 }

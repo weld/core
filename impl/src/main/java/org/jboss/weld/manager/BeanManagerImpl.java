@@ -777,7 +777,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                     }
                 }
             }
-            return getReference(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
+            // #getReference always creates a child CC and links it to the CC we pass an argument
+            // This is exactly what we want for dependent beans but all other beans shouldn't have that
+            if (Dependent.class.equals(resolvedBean.getScope())) {
+                return getReference(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
+            } else {
+                return getReference(resolvedBean, requestedType, createCreationalContext(null), delegateInjectionPoint);
+            }
 
         } finally {
             stack.pop();
