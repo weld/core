@@ -663,18 +663,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
-        if (creationalContext instanceof CreationalContextImpl<?>) {
+        if (creationalContext == null) {
+            // null CC indicates we need to create a new one that has no parent linked to it
+            creationalContext = createCreationalContext(null);
+        } else if (creationalContext instanceof CreationalContextImpl<?>) {
             creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
         }
         if (!noProxy && isProxyRequired(bean)) {
-            if (creationalContext != null || ContextualInstance.getIfExists(bean, this) != null) {
-                if (requestedType == null) {
-                    return clientProxyProvider.getClientProxy(bean);
-                } else {
-                    return clientProxyProvider.getClientProxy(bean, requestedType);
-                }
+            if (requestedType == null) {
+                return clientProxyProvider.getClientProxy(bean);
             } else {
-                return null;
+                return clientProxyProvider.getClientProxy(bean, requestedType);
             }
         } else {
             return ContextualInstance.get(bean, this, creationalContext);
@@ -782,7 +781,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             if (Dependent.class.equals(resolvedBean.getScope())) {
                 return getReference(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
             } else {
-                return getReference(resolvedBean, requestedType, createCreationalContext(null), delegateInjectionPoint);
+                return getReference(resolvedBean, requestedType, null, delegateInjectionPoint);
             }
 
         } finally {
