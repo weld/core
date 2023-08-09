@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>5.1.1.SP2</version>
+    <version>5.1.2-SNAPSHOT</version>
 
     <name>Weld Parent</name>
 
@@ -527,7 +527,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>5.1.1.SP2</tag>
+        <tag>5.0.0-SNAPSHOT</tag>
     </scm>
 
 
