@@ -8,6 +8,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.invokable.metadata.common.UnannotatedBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ public class InvokableMethodDetectionTest {
     public static Archive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvokableMethodDetectionTest.class))
                 .addPackage(InvokableMethodDetectionTest.class.getPackage())
+                .addPackage(UnannotatedBean.class.getPackage())
                 .addAsServiceProvider(Extension.class, ObservingExtension.class);
     }
 
@@ -44,10 +46,5 @@ public class InvokableMethodDetectionTest {
 
         // test using extension to programatically add annotation which already is @Invokable
         Assert.assertEquals(2, extension.getUnannotatedBeanMethods().size());
-
-        // TODO also add test with BCE
-
     }
-
-    // TODO test for hierarchies once we know if the annotation is inherited and how what should behave
 }

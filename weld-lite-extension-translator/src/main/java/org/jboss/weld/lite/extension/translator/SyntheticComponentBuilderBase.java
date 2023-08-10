@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-class SyntheticComponentBuilderBase<THIS extends SyntheticComponentBuilderBase<THIS>> {
+public class SyntheticComponentBuilderBase<THIS extends SyntheticComponentBuilderBase<THIS>> {
     final Map<String, Object> params = new HashMap<>();
 
     @SuppressWarnings("unchecked")

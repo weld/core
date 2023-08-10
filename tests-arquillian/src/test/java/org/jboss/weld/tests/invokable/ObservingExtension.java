@@ -5,6 +5,15 @@ import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
+import org.jboss.weld.tests.invokable.common.ArgTransformer;
+import org.jboss.weld.tests.invokable.common.ExceptionTransformer;
+import org.jboss.weld.tests.invokable.common.FooArg;
+import org.jboss.weld.tests.invokable.common.InstanceTransformer;
+import org.jboss.weld.tests.invokable.common.InvocationWrapper;
+import org.jboss.weld.tests.invokable.common.ReturnValueTransformer;
+import org.jboss.weld.tests.invokable.common.SimpleBean;
+import org.jboss.weld.tests.invokable.common.TransformableBean;
+import org.jboss.weld.tests.invokable.common.TrulyExceptionalBean;
 import org.junit.Assert;
 
 import java.util.Collection;

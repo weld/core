@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable.metadata;
+package org.jboss.weld.tests.invokable.metadata.common;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -11,6 +11,6 @@ public class ClassLevelViaExtension {
     }
 
     public String pong() {
-        return ClassLevelDirectDeclaration.class.getSimpleName();
+        return this.getClass().getSimpleName();
     }
 }
