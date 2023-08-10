@@ -76,6 +76,6 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
     @Override
     public InvokerBuilder<Invoker<Object, ?>> createInvoker(AnnotatedMethod<? super Object> annotatedMethod) {
         checkWithinObserverNotification();
-        return new InvokerBuilderImpl<>(getBean(), annotatedMethod);
+        return new InvokerBuilderImpl<>(getBean().getEjbDescriptor().getBeanClass(), annotatedMethod.getJavaMember());
     }
 }

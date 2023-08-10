@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable;
+package org.jboss.weld.tests.invokable.common;
 
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;

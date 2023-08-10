@@ -2,11 +2,10 @@ package org.jboss.weld.invokable;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
-import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.DeploymentException;
 import jakarta.enterprise.invoke.Invoker;
-import org.jboss.weld.bean.ClassBean;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -14,68 +13,69 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class InvokerImpl<T, R> implements Invoker<T, R> {
+public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
 
     // method handle for the bean method, including all applied transformers
     private final MethodHandle beanMethodHandle;
     private final MethodHandle invocationWrapper;
-    private final AnnotatedMethod<? super T> annotatedMethod;
+    private final Method method;
     private final boolean instanceLookup;
     private final boolean[] argLookup;
     private final boolean hasInstanceTransformer;
-    private final ClassBean<T> beanMetadata;
+    private final Class<T> beanClass;
     private final InvokerCleanupActions cleanupActions;
 
     // this variant is only used for invocation wrapper and assumes fully-initialized state
     private InvokerImpl(MethodHandle beanMethodHandle, boolean instanceLookup, boolean[] argLookup,
                         boolean hasInstanceTransformer, InvokerCleanupActions cleanupActions,
-                        ClassBean<T> beanMetadata, AnnotatedMethod<? super T> annotatedMethod) {
+                        Class<T> beanClass, Method method) {
         this.beanMethodHandle = beanMethodHandle;
         this.instanceLookup = instanceLookup;
         this.argLookup = argLookup;
         this.hasInstanceTransformer = hasInstanceTransformer;
         this.cleanupActions = cleanupActions;
-        this.beanMetadata = beanMetadata;
-        this.annotatedMethod = annotatedMethod;
+        this.beanClass = beanClass;
+        this.method = method;
         this.invocationWrapper = null;
     }
 
-    protected InvokerImpl(InvokerBuilderImpl<T> builder) {
+    protected InvokerImpl(AbstractInvokerBuilder<T> builder) {
         // needs to be initialized first, as can be used when creating method handles
         this.cleanupActions = new InvokerCleanupActions();
 
         this.instanceLookup = builder.instanceLookup;
         this.argLookup = builder.argLookup;
-        this.beanMetadata = builder.classBean;
-        this.annotatedMethod = builder.method;
+        this.beanClass = builder.beanClass;
+        this.method = builder.method;
 
         // handles transformers
         MethodHandle[] argTransformers = new MethodHandle[builder.argTransformers.length];
         for (int i = 0; i < builder.argTransformers.length; i++) {
             if (builder.argTransformers[i] != null) {
-                argTransformers[i] = createMethodHandleFromTransformer(builder.argTransformers[i], builder.method.getParameters().get(i).getJavaParameter().getType());
+                argTransformers[i] = createMethodHandleFromTransformer(builder.argTransformers[i], builder.method.getParameters()[i].getType());
             }
         }
         this.hasInstanceTransformer = builder.instanceTransformer != null;
-        MethodHandle instanceTransformer = !hasInstanceTransformer ? null : createMethodHandleFromTransformer(builder.instanceTransformer, builder.classBean.getBeanClass());
-        MethodHandle returnValueTransformer = builder.returnValueTransformer == null ? null : createMethodHandleFromTransformer(builder.returnValueTransformer, builder.method.getJavaMember().getReturnType());
+        MethodHandle instanceTransformer = !hasInstanceTransformer ? null : createMethodHandleFromTransformer(builder.instanceTransformer, builder.beanClass);
+        MethodHandle returnValueTransformer = builder.returnValueTransformer == null ? null : createMethodHandleFromTransformer(builder.returnValueTransformer, builder.method.getReturnType());
         MethodHandle exceptionTransformer = builder.exceptionTransformer == null ? null : createMethodHandleFromTransformer(builder.exceptionTransformer, Throwable.class);
         // resolve invocation wrapper and save separately
-        this.invocationWrapper = builder.invocationWrapper == null ? null : createMethodHandleFromTransformer(builder.invocationWrapper, beanMetadata.getBeanClass());
+        this.invocationWrapper = builder.invocationWrapper == null ? null : createMethodHandleFromTransformer(builder.invocationWrapper, beanClass);
 
 
-        MethodHandle finalMethodHandle = getMethodHandle(builder.method.getJavaMember(),
-                builder.method.getParameters().stream().map(p -> p.getJavaParameter().getType()).toArray(Class<?>[]::new));
+        MethodHandle finalMethodHandle = getMethodHandle(builder.method,
+                Arrays.stream(builder.method.getParameters()).map(p -> p.getType()).toArray(Class<?>[]::new));
         // handle instance transformer, instance is the first arg
-        if (!annotatedMethod.isStatic() && instanceTransformer != null) {
+        if (!Modifier.isStatic(method.getModifiers()) && instanceTransformer != null) {
             finalMethodHandle = MethodHandles.filterArguments(finalMethodHandle, 0, instanceTransformer);
         }
 
         // handle method argument transformations - passed null values are treated as an identity function
-        finalMethodHandle = MethodHandles.filterArguments(finalMethodHandle, annotatedMethod.isStatic() ? 0 : 1, argTransformers);
+        finalMethodHandle = MethodHandles.filterArguments(finalMethodHandle, Modifier.isStatic(method.getModifiers()) ? 0 : 1, argTransformers);
 
         // handle return type transformer
         if (returnValueTransformer != null) {
@@ -126,7 +126,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R> {
             result = result.asType(result.type().changeParameterType(0, transformationArgType));
         } else if (TransformerType.EXCEPTION.equals(transformer.getType()) && !result.type().returnType().equals(transformationArgType)) {
             // exception handlers can return a subtype of original class and that should still be OK
-            result = result.asType(result.type().changeReturnType(annotatedMethod.getJavaMember().getReturnType()));
+            result = result.asType(result.type().changeReturnType(this.method.getReturnType()));
         }
         return result;
     }
@@ -184,7 +184,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R> {
                 }
                 // TODO this isn't currently defined in the API proposal but it looks like it's a limitation of method handles
                 if (TransformerType.EXCEPTION.equals(transformer.getType())
-                        && !annotatedMethod.getJavaMember().getReturnType().isAssignableFrom(m.getReturnType())) {
+                        && !method.getReturnType().isAssignableFrom(m.getReturnType())) {
                     // TODO better exception
                     throw new DeploymentException("Exception transformer return type must be equal to or a subclass of the original method return type! Transformer: " + transformer);
                 }
@@ -237,7 +237,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R> {
         if (this.invocationWrapper != null) {
             try {
                 return (R) invocationWrapper.invoke(instance, arguments, new InvokerImpl<>(beanMethodHandle, instanceLookup,
-                        argLookup, hasInstanceTransformer, cleanupActions, beanMetadata, annotatedMethod));
+                        argLookup, hasInstanceTransformer, cleanupActions, beanClass, method));
             } catch (Throwable e) {
                 // invocation wrapper or the method itself threw an exception, we just rethrow
                 throw new RuntimeException(e);
@@ -254,10 +254,10 @@ public class InvokerImpl<T, R> implements Invoker<T, R> {
         if (instanceLookup) {
             // instance lookup set, ignore the parameter we got and lookup the instance
             // standard CDI resolution errors can occur
-            beanInstance = getInstance(cdiLookup, beanMetadata.getAnnotated().getJavaClass());
+            beanInstance = getInstance(cdiLookup, beanClass);
         } else {
             // arg should not be null unless the method is (a) static, (b) has instance transformer, (c) has instance lookup
-            if (beanInstance == null && !annotatedMethod.isStatic() && !hasInstanceTransformer) {
+            if (beanInstance == null && !Modifier.isStatic(method.getModifiers()) && !hasInstanceTransformer) {
                 // TODO better exception
                 throw new IllegalArgumentException("Invoker target instance cannot be null unless it's static method or set for CDI lookup!");
             }
@@ -266,14 +266,14 @@ public class InvokerImpl<T, R> implements Invoker<T, R> {
         List<Object> methodArgs = new ArrayList<>(argLookup.length + 1);
         for (int i = 0; i < argLookup.length; i++) {
             if (argLookup[i]) {
-                methodArgs.add(i, getInstance(cdiLookup, beanMethodHandle.type().parameterType(annotatedMethod.isStatic() ? i : i + 1)));
+                methodArgs.add(i, getInstance(cdiLookup, beanMethodHandle.type().parameterType(Modifier.isStatic(method.getModifiers()) ? i : i + 1)));
             } else {
                 methodArgs.add(i, arguments[i]);
             }
         }
 
         // for non-static methods, first arg is the instance to invoke it on
-        if (!annotatedMethod.isStatic()) {
+        if (!Modifier.isStatic(method.getModifiers())) {
             methodArgs.add(0, beanInstance);
         }
 

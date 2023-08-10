@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable.metadata;
+package org.jboss.weld.tests.invokable.metadata.common;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

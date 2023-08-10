@@ -18,8 +18,11 @@ import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.types.Type;
-
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
+import org.jboss.weld.bean.ClassBean;
+import org.jboss.weld.invokable.InvokerInfoBuilder;
+
+import java.util.Collections;
 
 class BeanInfoImpl implements BeanInfo {
     final jakarta.enterprise.inject.spi.Bean<?> cdiBean;
@@ -149,14 +152,29 @@ class BeanInfoImpl implements BeanInfo {
 
     @Override
     public Collection<MethodInfo> invokableMethods() {
-        // TODO implement, mostly empty set, only for class based bean we need to delegate
-        throw new UnsupportedOperationException("not yet implemented");
+        // delegate for class beans, empty collection otherwise
+        if (cdiBean instanceof ClassBean) {
+            return ((ClassBean<?>) cdiBean).getInvokableMethods()
+                    .stream()
+                    .map(annotatedMethod -> new MethodInfoImpl(annotatedMethod, bm)).collect(Collectors.toList());
+        } else {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     @Override
     public InvokerBuilder<InvokerInfo> createInvoker(MethodInfo methodInfo) {
-        // TODO implement, probably throw an error for any non class-based bean?
-        throw new UnsupportedOperationException("not working yet");
+        if (methodInfo.isConstructor()) {
+            // TODO better exception
+            throw new IllegalArgumentException("Constructor methods are not valid candidates for Invokers. MethodInfo: " + methodInfo);
+        }
+        if (methodInfo instanceof MethodInfoImpl) {
+            // at this point we can be sure it is a Method, not a Constructor, so we cast it
+            return new InvokerInfoBuilder(cdiBean.getBeanClass(), (java.lang.reflect.Method)((MethodInfoImpl) methodInfo).cdiDeclaration.getJavaMember());
+        } else {
+            // TODO better exception
+            throw new IllegalArgumentException("Custom implementations of MethodInfo are not supported!");
+        }
     }
 
     @Override

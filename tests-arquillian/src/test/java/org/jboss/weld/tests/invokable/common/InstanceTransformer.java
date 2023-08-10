@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable;
+package org.jboss.weld.tests.invokable.common;
 
 import java.util.function.Consumer;
 

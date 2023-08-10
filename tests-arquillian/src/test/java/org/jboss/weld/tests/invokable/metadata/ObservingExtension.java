@@ -6,6 +6,15 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import org.jboss.weld.tests.invokable.metadata.common.ClassLevelDirectDeclaration;
+import org.jboss.weld.tests.invokable.metadata.common.ClassLevelIndirectDeclaration;
+import org.jboss.weld.tests.invokable.metadata.common.ClassLevelViaExtension;
+import org.jboss.weld.tests.invokable.metadata.common.DefinitelyNotInvokable;
+import org.jboss.weld.tests.invokable.metadata.common.MethodLevelDirectDeclaration;
+import org.jboss.weld.tests.invokable.metadata.common.MethodLevelIndirectDeclaration;
+import org.jboss.weld.tests.invokable.metadata.common.MethodLevelViaExtension;
+import org.jboss.weld.tests.invokable.metadata.common.TransitivelyInvokable;
+import org.jboss.weld.tests.invokable.metadata.common.UnannotatedBean;
 
 import java.util.Collection;
 

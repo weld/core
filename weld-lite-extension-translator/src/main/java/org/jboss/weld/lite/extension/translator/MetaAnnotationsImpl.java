@@ -52,8 +52,7 @@ class MetaAnnotationsImpl implements MetaAnnotations {
 
     @Override
     public void addInvokable(Class<? extends Annotation> aClass) {
-        // TODO implement
-        throw new UnsupportedOperationException("Not yet implemented");
+        bbd.addInvokable(aClass);
     }
 
     @Override

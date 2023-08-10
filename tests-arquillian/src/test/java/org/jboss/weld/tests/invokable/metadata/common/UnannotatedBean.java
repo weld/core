@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable.metadata;
+package org.jboss.weld.tests.invokable.metadata.common;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -12,6 +12,6 @@ public class UnannotatedBean {
 
     @TransitivelyInvokable
     public String pong(int i) {
-        return ClassLevelDirectDeclaration.class.getSimpleName();
+        return this.getClass().getSimpleName();
     }
 }

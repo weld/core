@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable.metadata;
+package org.jboss.weld.tests.invokable.metadata.common;
 
 import jakarta.enterprise.invoke.Invokable;
 import jakarta.enterprise.util.AnnotationLiteral;

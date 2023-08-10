@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable;
+package org.jboss.weld.tests.invokable.common;
 
 // servers as transformable arg of a bean method
 public class FooArg {
