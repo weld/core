@@ -19,6 +19,9 @@ package org.jboss.weld.environment.jetty;
 
 import jakarta.servlet.ServletContext;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.jboss.weld.environment.servlet.Container;
 import org.jboss.weld.environment.servlet.ContainerContext;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
@@ -43,16 +46,37 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class JettyContainer extends AbstractJettyContainer {
     public static final Container INSTANCE = new JettyContainer();
-    public static final String JETTY_CDI_ATTRIBUTE = "org.eclipse.jetty.cdi";
     public static final String CDI_SPI_DECORATOR_MODE = "CdiSpiDecorator";
     public static final String CDI_DECORATING_LISTENER_MODE = "CdiDecoratingListener";
-    public static final String CDI_DECORATING_LISTENER_ATTRIBUTE = "org.eclipse.jetty.cdi.decorator";
     public static final String DECORATING_LISTENER_MODE = "DecoratingListener";
     public static final String DECORATING_LISTENER_ATTRIBUTE = "org.eclipse.jetty.webapp.DecoratingListener";
+    public static final Map<String, String> CDI_DECORATING_LISTENER_ATTRIBUTE_MAP = Map.of(
+        "org.eclipse.jetty.cdi", "org.eclipse.jetty.cdi.decorator",
+        "org.eclipse.jetty.ee9.cdi", "org.eclipse.jetty.ee9.cdi.decorator",
+        "org.eclipse.jetty.ee10.cdi" ,"org.eclipse.jetty.ee10.cdi.decorator");
 
     protected String classToCheck() {
         // Never called because touch is overridden below.
         throw new UnsupportedOperationException("touch method reimplemented in JettyContainer");
+    }
+
+    protected String getCdiAttribute(ServletContext servletContext) {
+        for(Entry<String, String> entry : CDI_DECORATING_LISTENER_ATTRIBUTE_MAP.entrySet()) {
+            Object value = servletContext.getAttribute(entry.getKey());
+            if(value instanceof String) {
+                return (String) value;
+            }
+        }
+        return null;
+    }
+
+    protected String getCdiDecoratingListenerAttribute(ServletContext servletContext) {
+        for(Entry<String, String> entry : CDI_DECORATING_LISTENER_ATTRIBUTE_MAP.entrySet()) {
+            if(servletContext.getAttribute(entry.getKey()) instanceof String) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -61,7 +85,7 @@ public class JettyContainer extends AbstractJettyContainer {
         // The jetty cdi modules from 9.4.20 sets JETTY_CDI_ATTRIBUTE to indicate that a
         // DecoratingListener is registered. Weld-3.1.2.Final documented that the decorate module
         // could be used directly, which sets DECORATING_LISTENER_ATTRIBUTE
-        return servletContext.getAttribute(JETTY_CDI_ATTRIBUTE) instanceof String ||
+        return getCdiAttribute(servletContext) instanceof String ||
             servletContext.getAttribute(DECORATING_LISTENER_ATTRIBUTE) instanceof String;
     }
 
@@ -69,7 +93,7 @@ public class JettyContainer extends AbstractJettyContainer {
     public void initialize(ContainerContext context) {
         try {
             ServletContext servletContext = context.getServletContext();
-            String mode = (String)servletContext.getAttribute(JETTY_CDI_ATTRIBUTE);
+            String mode = getCdiAttribute(servletContext);
             if (mode == null) {
                 mode = DECORATING_LISTENER_MODE;
             }
@@ -84,7 +108,7 @@ public class JettyContainer extends AbstractJettyContainer {
                     // For use with the cdi-decorate module
                     // Initialize a JettyWeldInjector and create WeldDecorator for it
                     super.initialize(context);
-                    servletContext.setAttribute(CDI_DECORATING_LISTENER_ATTRIBUTE, new WeldDecorator(servletContext));
+                    servletContext.setAttribute(getCdiDecoratingListenerAttribute(servletContext), new WeldDecorator(servletContext));
                     JettyLogger.LOG.jettyCdiDecorationIsSupported();
                     break;
 
