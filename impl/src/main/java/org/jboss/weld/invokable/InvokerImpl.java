@@ -124,9 +124,26 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         } else if (transformer.isOutputTransformer() && result.type().parameterCount() > 0
                 && !result.type().parameterType(0).equals(transformationArgType)) {
             result = result.asType(result.type().changeParameterType(0, transformationArgType));
-        } else if (TransformerType.EXCEPTION.equals(transformer.getType()) && !result.type().returnType().equals(transformationArgType)) {
-            // exception handlers can return a subtype of original class and that should still be OK
-            result = result.asType(result.type().changeReturnType(this.method.getReturnType()));
+        } else if (TransformerType.EXCEPTION.equals(transformer.getType())) {
+            // if assignable, then just alter return type
+            if (this.method.getReturnType().isAssignableFrom(result.type().returnType())) {
+                // exception handlers can return a subtype of original class
+                //so long as it is assignable, just cast it to the required/expected type
+                result = result.asType(result.type().changeReturnType(this.method.getReturnType()));
+            } else {
+                // if not assignable, then we need to apply a return value transformer which hides the value in an exception
+                try {
+                    MethodHandle hideReturnValue = getMethodHandle(ValueCarryingException.class.getDeclaredMethod("hideReturnValue", Object.class), Object.class);
+                    // cast return value of the custom method we use to whatever the original method expects - we'll never use it anyway
+                    hideReturnValue = hideReturnValue.asType(hideReturnValue.type().changeReturnType(this.method.getReturnType()));
+                    // adapt the parameter type as well, we don't really care what it is, we just store it and throw it
+                    hideReturnValue = hideReturnValue.asType(hideReturnValue.type().changeParameterType(0, result.type().returnType()));
+                    result = MethodHandles.filterReturnValue(result, hideReturnValue);
+                } catch (NoSuchMethodException e) {
+                    // should never happen
+                    throw new IllegalStateException("Unable to locate Weld internal helper method");
+                }
+            }
         }
         return result;
     }
@@ -181,12 +198,6 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
                 if (!m.getParameters()[0].getType().isAssignableFrom(transformationArgType)) {
                     // TODO better exception
                     throw new DeploymentException("Output transformer " + transformer + " parameter is not assignable to the expected type " + transformationArgType);
-                }
-                // TODO this isn't currently defined in the API proposal but it looks like it's a limitation of method handles
-                if (TransformerType.EXCEPTION.equals(transformer.getType())
-                        && !method.getReturnType().isAssignableFrom(m.getReturnType())) {
-                    // TODO better exception
-                    throw new DeploymentException("Exception transformer return type must be equal to or a subclass of the original method return type! Transformer: " + transformer);
                 }
                 methodHandleArgs.add(m.getParameters()[0].getType());
             }
@@ -280,6 +291,9 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         try {
             // TODO the need to cast is weird, shouldn't this method just return Object, assuming user knows?
             return (R) beanMethodHandle.invokeWithArguments(methodArgs);
+        } catch (ValueCarryingException e) {
+            // there was an exception transformer which we wrapped, just return what was inside
+            return (R) e.getMethodReturnValue();
         } catch (Throwable e) {
             // TODO at this point there might have been exception transformer invoked as well, guess we just rethrow?
             // we just rethrow the original exception

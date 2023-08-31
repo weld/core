@@ -28,4 +28,9 @@ public class Transformer {
     public static Gamma transformException2(Throwable t) {
         return new Gamma(42, 42);
     }
+
+    // return type is completely different
+    public static String transformException3(Throwable t) {
+        return "foobar";
+    }
 }
