@@ -16,6 +16,7 @@ public class ObservingExtension implements Extension {
     Invoker<ActualBean, ?> transformReturnType2;
     Invoker<ExceptionalBean, ?> transformException1;
     Invoker<ExceptionalBean, ?> transformException2;
+    Invoker<ExceptionalBean, ?> transformException3;
 
     public Invoker<ActualBean, ?> getTransformReturnType1() {
         return transformReturnType1;
@@ -31,6 +32,9 @@ public class ObservingExtension implements Extension {
 
     public Invoker<ExceptionalBean, ?> getTransformException2() {
         return transformException2;
+    }
+    public Invoker<ExceptionalBean, ?> getTransformException3() {
+        return transformException3;
     }
 
     public Invoker<ActualBean, ?> getNoTransformer() {
@@ -60,6 +64,9 @@ public class ObservingExtension implements Extension {
                 .build();
         transformException2 = pmb.createInvoker(invokableMethod)
                 .setExceptionTransformer(Transformer.class, "transformException2")
+                .build();
+        transformException3 = pmb.createInvoker(invokableMethod)
+                .setExceptionTransformer(Transformer.class, "transformException3")
                 .build();
     }
 }

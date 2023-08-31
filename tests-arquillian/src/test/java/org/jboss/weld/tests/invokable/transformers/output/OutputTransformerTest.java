@@ -52,15 +52,20 @@ public class OutputTransformerTest {
 
     @Test
     public void testExceptionTransformerAssignability() {
-        // apply transformers, first one swallows exception and returns Beta, the other just String
+        // apply transformers, first one swallows exception and returns Beta
         Object result;
         result = extension.getTransformException1().invoke(exceptionalBean, new Object[]{10});
         Assert.assertTrue(result instanceof Beta);
         Assert.assertEquals("42", ((Beta)result).ping());
         Assert.assertEquals(Integer.valueOf(42), ((Beta)result).getInteger());
+        // second transformer returns a subclas
         result = extension.getTransformException2().invoke(exceptionalBean, new Object[]{23});
         Assert.assertTrue(result instanceof Gamma);
         Assert.assertEquals("42", ((Gamma)result).ping());
         Assert.assertEquals(Integer.valueOf(42), ((Gamma)result).getInteger());
+        // third transformer returns a completely different type
+        result = extension.getTransformException3().invoke(exceptionalBean, new Object[]{23});
+        Assert.assertTrue(result instanceof String);
+        Assert.assertEquals("foobar", result);
     }
 }
