@@ -110,7 +110,10 @@ public class WeldInitialListener extends AbstractServletListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        lifecycle.contextDestroyed(sce.getServletContext());
+        // null means an error while starting the app; for instance and exception in ServletContainerInitializer#onStartup
+        if (this.lifecycle != null) {
+            lifecycle.contextDestroyed(sce.getServletContext());
+        }
     }
 
     @Override
