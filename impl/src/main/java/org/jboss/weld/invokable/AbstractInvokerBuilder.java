@@ -1,5 +1,6 @@
 package org.jboss.weld.invokable;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.invoke.InvokerBuilder;
 
 import java.lang.reflect.Method;
@@ -13,6 +14,7 @@ abstract class AbstractInvokerBuilder<T> implements InvokerBuilder<T> {
 
     boolean instanceLookup;
     boolean[] argLookup;
+    BeanManager beanManager;
     TransformerMetadata instanceTransformer;
     TransformerMetadata returnValueTransformer;
     TransformerMetadata exceptionTransformer;
@@ -20,11 +22,12 @@ abstract class AbstractInvokerBuilder<T> implements InvokerBuilder<T> {
     final TransformerMetadata[] argTransformers;
 
     // TODO Class is rawtype otherwise we cannot use it from InvokerInfoBuilder, can we improve this?
-    public AbstractInvokerBuilder(Class beanClass, Method method) {
+    public AbstractInvokerBuilder(Class beanClass, Method method, BeanManager beanManager) {
         this.beanClass = beanClass;
         this.method = method;
         this.argLookup = new boolean[method.getParameters().length];
         this.argTransformers = new TransformerMetadata[method.getParameters().length];
+        this.beanManager = beanManager;
     }
 
 

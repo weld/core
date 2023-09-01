@@ -170,7 +170,7 @@ class BeanInfoImpl implements BeanInfo {
         }
         if (methodInfo instanceof MethodInfoImpl) {
             // at this point we can be sure it is a Method, not a Constructor, so we cast it
-            return new InvokerInfoBuilder(cdiBean.getBeanClass(), (java.lang.reflect.Method)((MethodInfoImpl) methodInfo).cdiDeclaration.getJavaMember());
+            return new InvokerInfoBuilder(cdiBean.getBeanClass(), (java.lang.reflect.Method)((MethodInfoImpl) methodInfo).cdiDeclaration.getJavaMember(), bm);
         } else {
             // TODO better exception
             throw new IllegalArgumentException("Custom implementations of MethodInfo are not supported!");
