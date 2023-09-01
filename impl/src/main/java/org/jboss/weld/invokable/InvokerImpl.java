@@ -1,17 +1,22 @@
 package org.jboss.weld.invokable;
 
 import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.DeploymentException;
 import jakarta.enterprise.invoke.Invoker;
+import jakarta.inject.Named;
 
+import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,19 +28,20 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
     private final MethodHandle beanMethodHandle;
     private final MethodHandle invocationWrapper;
     private final Method method;
-    private final boolean instanceLookup;
-    private final boolean[] argLookup;
+    // null if no lookup is to be done
+    private final Annotation[] instanceLookupQualifiers;
+    private final Annotation[][] argLookupQualifiers;
     private final boolean hasInstanceTransformer;
     private final Class<T> beanClass;
     private final InvokerCleanupActions cleanupActions;
 
     // this variant is only used for invocation wrapper and assumes fully-initialized state
-    private InvokerImpl(MethodHandle beanMethodHandle, boolean instanceLookup, boolean[] argLookup,
+    private InvokerImpl(MethodHandle beanMethodHandle, Annotation[] instanceLookupQualifiers, Annotation[][] argLookupQualifiers,
                         boolean hasInstanceTransformer, InvokerCleanupActions cleanupActions,
                         Class<T> beanClass, Method method) {
         this.beanMethodHandle = beanMethodHandle;
-        this.instanceLookup = instanceLookup;
-        this.argLookup = argLookup;
+        this.instanceLookupQualifiers = instanceLookupQualifiers;
+        this.argLookupQualifiers = argLookupQualifiers;
         this.hasInstanceTransformer = hasInstanceTransformer;
         this.cleanupActions = cleanupActions;
         this.beanClass = beanClass;
@@ -46,11 +52,21 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
     protected InvokerImpl(AbstractInvokerBuilder<T> builder) {
         // needs to be initialized first, as can be used when creating method handles
         this.cleanupActions = new InvokerCleanupActions();
-
-        this.instanceLookup = builder.instanceLookup;
-        this.argLookup = builder.argLookup;
         this.beanClass = builder.beanClass;
         this.method = builder.method;
+        if (builder.instanceLookup) {
+            this.instanceLookupQualifiers = extractInstanceQualifiers(beanClass, builder.beanManager);
+        } else {
+            this.instanceLookupQualifiers = null;
+        }
+        this.argLookupQualifiers = new Annotation[builder.argLookup.length][];
+        for (int i = 0; i < builder.argLookup.length; i++) {
+            // positions that remain null are those for which we don't perform lookup
+            if (builder.argLookup[i]) {
+                this.argLookupQualifiers[i] = extractParamQualifiers(method.getParameters()[i], builder.beanManager);
+            }
+        }
+
 
         // handles transformers
         MethodHandle[] argTransformers = new MethodHandle[builder.argTransformers.length];
@@ -247,8 +263,8 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         // if there is an invocation wrapper, just invoke the wrapper immediately
         if (this.invocationWrapper != null) {
             try {
-                return (R) invocationWrapper.invoke(instance, arguments, new InvokerImpl<>(beanMethodHandle, instanceLookup,
-                        argLookup, hasInstanceTransformer, cleanupActions, beanClass, method));
+                return (R) invocationWrapper.invoke(instance, arguments, new InvokerImpl<>(beanMethodHandle, instanceLookupQualifiers,
+                        argLookupQualifiers, hasInstanceTransformer, cleanupActions, beanClass, method));
             } catch (Throwable e) {
                 // invocation wrapper or the method itself threw an exception, we just rethrow
                 throw new RuntimeException(e);
@@ -256,16 +272,16 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         }
 
         // TODO do we want to verify that the T instance is the exact class of the bean?
-        if (arguments.length != argLookup.length) {
+        if (arguments.length != method.getParameterCount()) {
             // TODO better exception
-            throw new IllegalArgumentException("Wrong number of args for invoker! Expected: " + argLookup.length + " Provided: " + arguments);
+            throw new IllegalArgumentException("Wrong number of args for invoker! Expected: " + method.getParameterCount() + " Provided: " + arguments.length);
         }
         T beanInstance = instance;
         Instance<Object> cdiLookup = CDI.current().getBeanManager().createInstance();
-        if (instanceLookup) {
+        if (instanceLookupQualifiers != null) {
             // instance lookup set, ignore the parameter we got and lookup the instance
             // standard CDI resolution errors can occur
-            beanInstance = getInstance(cdiLookup, beanClass);
+            beanInstance = getInstance(cdiLookup, beanClass, instanceLookupQualifiers);
         } else {
             // arg should not be null unless the method is (a) static, (b) has instance transformer, (c) has instance lookup
             if (beanInstance == null && !Modifier.isStatic(method.getModifiers()) && !hasInstanceTransformer) {
@@ -274,10 +290,10 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             }
         }
 
-        List<Object> methodArgs = new ArrayList<>(argLookup.length + 1);
-        for (int i = 0; i < argLookup.length; i++) {
-            if (argLookup[i]) {
-                methodArgs.add(i, getInstance(cdiLookup, beanMethodHandle.type().parameterType(Modifier.isStatic(method.getModifiers()) ? i : i + 1)));
+        List<Object> methodArgs = new ArrayList<>(argLookupQualifiers.length + 1);
+        for (int i = 0; i < argLookupQualifiers.length; i++) {
+            if (argLookupQualifiers[i] != null) {
+                methodArgs.add(i, getInstance(cdiLookup, beanMethodHandle.type().parameterType(Modifier.isStatic(method.getModifiers()) ? i : i + 1), argLookupQualifiers[i]));
             } else {
                 methodArgs.add(i, arguments[i]);
             }
@@ -304,10 +320,32 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         }
     }
 
-    private <TYPE> TYPE getInstance(Instance<Object> lookup, Class<TYPE> classToLookup) {
-        Instance.Handle<TYPE> handle = lookup.select(classToLookup).getHandle();
+    private <TYPE> TYPE getInstance(Instance<Object> lookup, Class<TYPE> classToLookup, Annotation... qualifiers) {
+        Instance.Handle<TYPE> handle = lookup.select(classToLookup, qualifiers).getHandle();
         this.cleanupActions.addInstanceHandle(handle);
         return handle.get();
+    }
+
+    private Annotation[] extractInstanceQualifiers(Class<?> beanClass, BeanManager bm) {
+        return extractQualifiers(beanClass.getAnnotations(), bm);
+    }
+
+    private Annotation[] extractParamQualifiers(Parameter parameter, BeanManager bm) {
+        return extractQualifiers(parameter.getAnnotations(), bm);
+    }
+
+    private Annotation[] extractQualifiers(Annotation[] annotations, BeanManager bm) {
+        List<Annotation> qualifiers = new ArrayList<>();
+        for (Annotation a : annotations) {
+            if (bm.isQualifier(a.annotationType())) {
+                qualifiers.add(a);
+            }
+        }
+        // add default when there are no qualifiers or just @Named
+        if (qualifiers.size() == 0 || (qualifiers.size() == 1 && qualifiers.get(0).annotationType().equals(Named.class))) {
+            qualifiers.add(Default.Literal.INSTANCE);
+        }
+        return qualifiers.toArray(new Annotation[]{});
     }
 
     private class InvokerCleanupActions implements Consumer<Runnable> {

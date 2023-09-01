@@ -54,7 +54,7 @@ public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, Manag
     @Override
     public InvokerBuilder<Invoker<X, ?>> createInvoker(AnnotatedMethod<? super X> annotatedMethod) {
         checkWithinObserverNotification();
-        return new InvokerBuilderImpl<>(getBean().getType(), annotatedMethod.getJavaMember());
+        return new InvokerBuilderImpl<>(getBean().getType(), annotatedMethod.getJavaMember(), getBeanManager());
     }
 
 }
