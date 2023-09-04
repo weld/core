@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -49,7 +48,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         this.invocationWrapper = null;
     }
 
-    protected InvokerImpl(AbstractInvokerBuilder<T> builder) {
+    InvokerImpl(AbstractInvokerBuilder<T, ?> builder) {
         // needs to be initialized first, as can be used when creating method handles
         this.cleanupActions = new InvokerCleanupActions();
         this.beanClass = builder.beanClass;
@@ -67,24 +66,22 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             }
         }
 
-
         // handles transformers
+        this.hasInstanceTransformer = builder.instanceTransformer != null;
+        MethodHandle instanceTransformer = !hasInstanceTransformer ? null : createMethodHandleFromTransformer(builder.instanceTransformer, builder.beanClass);
         MethodHandle[] argTransformers = new MethodHandle[builder.argTransformers.length];
         for (int i = 0; i < builder.argTransformers.length; i++) {
             if (builder.argTransformers[i] != null) {
                 argTransformers[i] = createMethodHandleFromTransformer(builder.argTransformers[i], builder.method.getParameters()[i].getType());
             }
         }
-        this.hasInstanceTransformer = builder.instanceTransformer != null;
-        MethodHandle instanceTransformer = !hasInstanceTransformer ? null : createMethodHandleFromTransformer(builder.instanceTransformer, builder.beanClass);
         MethodHandle returnValueTransformer = builder.returnValueTransformer == null ? null : createMethodHandleFromTransformer(builder.returnValueTransformer, builder.method.getReturnType());
         MethodHandle exceptionTransformer = builder.exceptionTransformer == null ? null : createMethodHandleFromTransformer(builder.exceptionTransformer, Throwable.class);
         // resolve invocation wrapper and save separately
         this.invocationWrapper = builder.invocationWrapper == null ? null : createMethodHandleFromTransformer(builder.invocationWrapper, beanClass);
 
+        MethodHandle finalMethodHandle = getMethodHandle(builder.method, builder.method.getParameterTypes());
 
-        MethodHandle finalMethodHandle = getMethodHandle(builder.method,
-                Arrays.stream(builder.method.getParameters()).map(p -> p.getType()).toArray(Class<?>[]::new));
         // handle instance transformer, instance is the first arg
         if (!Modifier.isStatic(method.getModifiers()) && instanceTransformer != null) {
             finalMethodHandle = MethodHandles.filterArguments(finalMethodHandle, 0, instanceTransformer);
@@ -135,12 +132,15 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         // for input transformers, we might need to change return type to whatever the original method expects
         // for output transformers, we might need to change their input params
         // this enables transformers to operate on subclasses (input tf) or superclasses (output tf)
-        if (transformer.isInputTransformer() && !result.type().returnType().equals(transformationArgType)) {
+        if (transformer.isInputTransformer()
+                && !result.type().returnType().equals(transformationArgType)) {
             result = result.asType(result.type().changeReturnType(transformationArgType));
-        } else if (transformer.isOutputTransformer() && result.type().parameterCount() > 0
+        } else if (transformer.isOutputTransformer()
+                && result.type().parameterCount() > 0
                 && !result.type().parameterType(0).equals(transformationArgType)) {
             result = result.asType(result.type().changeParameterType(0, transformationArgType));
-        } else if (TransformerType.EXCEPTION.equals(transformer.getType())) {
+        }
+        if (TransformerType.EXCEPTION.equals(transformer.getType())) {
             // if assignable, then just alter return type
             if (this.method.getReturnType().isAssignableFrom(result.type().returnType())) {
                 // exception handlers can return a subtype of original class
@@ -342,24 +342,25 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             }
         }
         // add default when there are no qualifiers or just @Named
-        if (qualifiers.size() == 0 || (qualifiers.size() == 1 && qualifiers.get(0).annotationType().equals(Named.class))) {
+        if (qualifiers.isEmpty() || (qualifiers.size() == 1 && qualifiers.get(0).annotationType().equals(Named.class))) {
             qualifiers.add(Default.Literal.INSTANCE);
         }
         return qualifiers.toArray(new Annotation[]{});
     }
 
-    private class InvokerCleanupActions implements Consumer<Runnable> {
-
-        private List<Runnable> cleanupTasks = new ArrayList<>();
-        private List<Instance.Handle<?>> instanceHandleList = new ArrayList<>();
+    private static class InvokerCleanupActions implements Consumer<Runnable> {
+        private final List<Runnable> cleanupTasks = new ArrayList<>();
+        private final List<Instance.Handle<?>> dependentInstances = new ArrayList<>();
 
         @Override
         public void accept(Runnable runnable) {
-            this.cleanupTasks.add(runnable);
+            cleanupTasks.add(runnable);
         }
 
         public void addInstanceHandle(Instance.Handle<?> handle) {
-            this.instanceHandleList.add(handle);
+            if (handle.getBean().getScope().equals(Dependent.class)) {
+                dependentInstances.add(handle);
+            }
         }
 
         public void cleanup() {
@@ -370,12 +371,10 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             cleanupTasks.clear();
 
             // destroy dependent beans we created
-            for (Instance.Handle<?> handle : instanceHandleList) {
-                if (handle.getBean().getScope().equals(Dependent.class)) {
-                    handle.destroy();
-                }
+            for (Instance.Handle<?> handle : dependentInstances) {
+                handle.destroy();
             }
-            instanceHandleList.clear();
+            dependentInstances.clear();
         }
     }
 }

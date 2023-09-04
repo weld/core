@@ -5,31 +5,29 @@ import jakarta.enterprise.invoke.InvokerBuilder;
 
 import java.lang.reflect.Method;
 
-// TODO add exception on repeated invocations of builder methods as per spec
-abstract class AbstractInvokerBuilder<T> implements InvokerBuilder<T> {
+abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
 
-    final Class<T> beanClass;
+    final Class<B> beanClass;
     // work with reflection representation so that we can re-use this logic from within BCE
     final Method method;
 
     boolean instanceLookup;
     boolean[] argLookup;
-    BeanManager beanManager;
     TransformerMetadata instanceTransformer;
+    TransformerMetadata[] argTransformers;
     TransformerMetadata returnValueTransformer;
     TransformerMetadata exceptionTransformer;
     TransformerMetadata invocationWrapper;
-    final TransformerMetadata[] argTransformers;
 
-    // TODO Class is rawtype otherwise we cannot use it from InvokerInfoBuilder, can we improve this?
-    public AbstractInvokerBuilder(Class beanClass, Method method, BeanManager beanManager) {
+    final BeanManager beanManager;
+
+    public AbstractInvokerBuilder(Class<B> beanClass, Method method, BeanManager beanManager) {
         this.beanClass = beanClass;
         this.method = method;
-        this.argLookup = new boolean[method.getParameters().length];
-        this.argTransformers = new TransformerMetadata[method.getParameters().length];
+        this.argLookup = new boolean[method.getParameterCount()];
+        this.argTransformers = new TransformerMetadata[method.getParameterCount()];
         this.beanManager = beanManager;
     }
-
 
     @Override
     public InvokerBuilder<T> setInstanceLookup() {
@@ -38,46 +36,66 @@ abstract class AbstractInvokerBuilder<T> implements InvokerBuilder<T> {
     }
 
     @Override
-    public InvokerBuilder<T> setArgumentLookup(int i) {
-        if (i >= argLookup.length) {
+    public InvokerBuilder<T> setArgumentLookup(int position) {
+        if (position >= argLookup.length) {
             // TODO better exception
-            throw new IllegalArgumentException("Error attempting to set CDI argument lookup for arg number " + i + " while the number of method args is " + argLookup.length);
+            throw new IllegalArgumentException("Error attempting to set CDI argument lookup for arg number " + position + " while the number of method args is " + argLookup.length);
         }
-        argLookup[i] = true;
+        argLookup[position] = true;
         return this;
     }
 
     @Override
-    public InvokerBuilder<T> setInstanceTransformer(Class<?> aClass, String s) {
-        this.instanceTransformer = new TransformerMetadata(aClass, s, TransformerType.INSTANCE);
-        return this;
-    }
-
-    @Override
-    public InvokerBuilder<T> setArgumentTransformer(int i, Class<?> aClass, String s) {
-        if (i >= argLookup.length) {
+    public InvokerBuilder<T> setInstanceTransformer(Class<?> clazz, String methodName) {
+        if (instanceTransformer != null) {
             // TODO better exception
-            throw new IllegalArgumentException("Error attempting to set an argument lookup. Number of method args: " + argLookup.length + " arg position: " + i);
+            throw new IllegalStateException("Instance transformer already set");
         }
-        this.argTransformers[i] = new TransformerMetadata(aClass, s, TransformerType.ARGUMENT);
+        this.instanceTransformer = new TransformerMetadata(clazz, methodName, TransformerType.INSTANCE);
         return this;
     }
 
     @Override
-    public InvokerBuilder<T> setReturnValueTransformer(Class<?> aClass, String s) {
-        this.returnValueTransformer = new TransformerMetadata(aClass, s, TransformerType.RETURN_VALUE);
+    public InvokerBuilder<T> setArgumentTransformer(int position, Class<?> clazz, String methodName) {
+        if (position >= argTransformers.length) {
+            // TODO better exception
+            throw new IllegalArgumentException("Error attempting to set an argument lookup. Number of method args: " + argLookup.length + " arg position: " + position);
+        }
+        if (argTransformers[position] != null) {
+            // TODO better exception
+            throw new IllegalStateException("Argument transformer " + position + " already set");
+        }
+        this.argTransformers[position] = new TransformerMetadata(clazz, methodName, TransformerType.ARGUMENT);
         return this;
     }
 
     @Override
-    public InvokerBuilder<T> setExceptionTransformer(Class<?> aClass, String s) {
-        this.exceptionTransformer = new TransformerMetadata(aClass, s, TransformerType.EXCEPTION);
+    public InvokerBuilder<T> setReturnValueTransformer(Class<?> clazz, String methodName) {
+        if (returnValueTransformer != null) {
+            // TODO better exception
+            throw new IllegalStateException("Return value transformer already set");
+        }
+        this.returnValueTransformer = new TransformerMetadata(clazz, methodName, TransformerType.RETURN_VALUE);
         return this;
     }
 
     @Override
-    public InvokerBuilder<T> setInvocationWrapper(Class<?> aClass, String s) {
-        this.invocationWrapper = new TransformerMetadata(aClass, s, TransformerType.WRAPPER);
+    public InvokerBuilder<T> setExceptionTransformer(Class<?> clazz, String methodName) {
+        if (exceptionTransformer != null) {
+            // TODO better exception
+            throw new IllegalStateException("Exception transformer already set");
+        }
+        this.exceptionTransformer = new TransformerMetadata(clazz, methodName, TransformerType.EXCEPTION);
+        return this;
+    }
+
+    @Override
+    public InvokerBuilder<T> setInvocationWrapper(Class<?> clazz, String methodName) {
+        if (invocationWrapper != null) {
+            // TODO better exception
+            throw new IllegalStateException("Invocation wrapper already set");
+        }
+        this.invocationWrapper = new TransformerMetadata(clazz, methodName, TransformerType.WRAPPER);
         return this;
     }
 }

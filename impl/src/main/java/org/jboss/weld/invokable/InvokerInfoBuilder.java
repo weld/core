@@ -5,9 +5,9 @@ import jakarta.enterprise.inject.spi.BeanManager;
 
 import java.lang.reflect.Method;
 
-public class InvokerInfoBuilder extends AbstractInvokerBuilder<InvokerInfo> {
+public class InvokerInfoBuilder<B> extends AbstractInvokerBuilder<B, InvokerInfo> {
 
-    public InvokerInfoBuilder(Class<?> beanClass, Method method, BeanManager beanManager) {
+    public InvokerInfoBuilder(Class<B> beanClass, Method method, BeanManager beanManager) {
         super(beanClass, method, beanManager);
     }
 

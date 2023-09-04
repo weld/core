@@ -5,14 +5,14 @@ import jakarta.enterprise.invoke.Invoker;
 
 import java.lang.reflect.Method;
 
-public class InvokerBuilderImpl<T> extends AbstractInvokerBuilder {
+public class InvokerBuilderImpl<B> extends AbstractInvokerBuilder<B, Invoker<B, ?>> {
 
-    public InvokerBuilderImpl(Class<T> beanClass, Method method, BeanManager beanManager) {
+    public InvokerBuilderImpl(Class<B> beanClass, Method method, BeanManager beanManager) {
         super(beanClass, method, beanManager);
     }
 
     @Override
-    public Invoker<T, ?> build() {
+    public Invoker<B, ?> build() {
         return new InvokerImpl<>(this);
     }
 }
