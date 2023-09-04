@@ -5,21 +5,21 @@ import org.jboss.weld.util.Preconditions;
 
 public class TransformerMetadata {
 
-    private Class<?> targetClass;
-    private String methodName;
-    private TransformerType type;
+    private final Class<?> declaringClass;
+    private final String methodName;
+    private final TransformerType type;
 
-    public TransformerMetadata(Class<?> clazz, String methodName, TransformerType type) {
-        Preconditions.checkArgumentNotNull(clazz);
+    public TransformerMetadata(Class<?> declaringClass, String methodName, TransformerType type) {
+        Preconditions.checkArgumentNotNull(declaringClass);
         Preconditions.checkArgumentNotNull(methodName);
         Preconditions.checkArgumentNotNull(type);
-        this.targetClass = clazz;
+        this.declaringClass = declaringClass;
         this.methodName = methodName;
         this.type = type;
     }
 
-    public Class<?> getTargetClass() {
-        return targetClass;
+    public Class<?> getDeclaringClass() {
+        return declaringClass;
     }
 
     public String getMethodName() {
@@ -60,6 +60,6 @@ public class TransformerMetadata {
             default:
                 throw new IllegalStateException("Unknown transformer " + type);
         }
-        return kind + targetClass + "#" + methodName + "()";
+        return kind + declaringClass + "#" + methodName + "()";
     }
 }
