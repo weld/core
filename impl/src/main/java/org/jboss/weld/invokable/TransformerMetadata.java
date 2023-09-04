@@ -46,20 +46,20 @@ public class TransformerMetadata {
                 kind = "Invocation wrapper ";
                 break;
             case INSTANCE:
-                kind = "Target instance ";
+                kind = "Target instance transformer ";
                 break;
             case ARGUMENT:
-                kind = "Argument ";
+                kind = "Argument transformer ";
                 break;
             case RETURN_VALUE:
-                kind = "Return value ";
+                kind = "Return value transformer ";
                 break;
             case EXCEPTION:
-                kind = "Exception ";
+                kind = "Exception transformer ";
                 break;
             default:
-                throw new IllegalStateException("Unknown TransformerType " + type);
+                throw new IllegalStateException("Unknown transformer " + type);
         }
-        return kind + "transformer " + targetClass + " with method name " + methodName;
+        return kind + targetClass + "#" + methodName + "()";
     }
 }

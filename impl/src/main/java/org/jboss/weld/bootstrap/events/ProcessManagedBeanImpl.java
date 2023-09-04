@@ -54,6 +54,10 @@ public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, Manag
     @Override
     public InvokerBuilder<Invoker<X, ?>> createInvoker(AnnotatedMethod<? super X> annotatedMethod) {
         checkWithinObserverNotification();
+        if (!getBean().getInvokableMethods().contains(annotatedMethod)) {
+            // TODO better exception
+            throw new IllegalArgumentException("Not an invokable method: " + annotatedMethod);
+        }
         return new InvokerBuilderImpl<>(getBean().getType(), annotatedMethod.getJavaMember(), getBeanManager());
     }
 

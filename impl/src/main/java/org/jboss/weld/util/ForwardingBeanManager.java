@@ -19,6 +19,7 @@ package org.jboss.weld.util;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -144,6 +145,11 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
+    public boolean isInvokableMarker(Class<? extends Annotation> annotationType) {
+        return delegate().isInvokableMarker(annotationType);
+    }
+
+    @Override
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
         return delegate().getInterceptorBindingDefinition(bindingType);
     }
@@ -176,6 +182,11 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     @Override
     public Context getContext(Class<? extends Annotation> scopeType) {
         return delegate().getContext(scopeType);
+    }
+
+    @Override
+    public Collection<Context> getContexts(Class<? extends Annotation> scopeType) {
+        return delegate().getContexts(scopeType);
     }
 
     @Override

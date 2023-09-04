@@ -10,6 +10,7 @@ import jakarta.enterprise.inject.build.compatible.spi.InjectionPointInfo;
 import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.build.compatible.spi.ScopeInfo;
 import jakarta.enterprise.inject.build.compatible.spi.StereotypeInfo;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.invoke.InvokerBuilder;
@@ -170,7 +171,12 @@ class BeanInfoImpl implements BeanInfo {
         }
         if (methodInfo instanceof MethodInfoImpl) {
             // at this point we can be sure it is a Method, not a Constructor, so we cast it
-            return new InvokerInfoBuilder(cdiBean.getBeanClass(), (java.lang.reflect.Method)((MethodInfoImpl) methodInfo).cdiDeclaration.getJavaMember(), bm);
+            AnnotatedMethod<?> cdiMethod = (AnnotatedMethod<?>) ((MethodInfoImpl) methodInfo).cdiDeclaration;
+            if (!((ClassBean<?>) cdiBean).getInvokableMethods().contains(cdiMethod)) {
+                // TODO better exception
+                throw new IllegalArgumentException("Not an invokable method: " + methodInfo);
+            }
+            return new InvokerInfoBuilder<>(cdiBean.getBeanClass(), cdiMethod.getJavaMember(), bm);
         } else {
             // TODO better exception
             throw new IllegalArgumentException("Custom implementations of MethodInfo are not supported!");
