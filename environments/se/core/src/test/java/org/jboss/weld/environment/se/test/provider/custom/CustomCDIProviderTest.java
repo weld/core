@@ -31,6 +31,9 @@ public class CustomCDIProviderTest extends WeldSETest {
 
     @Test
     public void testCustomCDIProvider() {
+        // Other tests running prior to this one might have set the provider already
+        // repeated set invocation leads to an exception, so we do a cautious unset
+        TestCDI.unsetCDIProvider();
         try {
             CustomCDIProvider.reset();
             CDI.setCDIProvider(new CustomCDIProvider());
