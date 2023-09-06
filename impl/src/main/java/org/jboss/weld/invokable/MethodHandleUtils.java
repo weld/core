@@ -27,7 +27,7 @@ class MethodHandleUtils {
         }
     }
 
-    static MethodHandle createMethodHandleFromTransformer(Method targetMethod, TransformerMetadata transformer, Class<?> transformationArgType, Consumer<Runnable> cleanupActions) {
+    static MethodHandle createMethodHandleFromTransformer(Method targetMethod, TransformerMetadata transformer, Class<?> transformationArgType) {
         List<Method> matchingMethods = new ArrayList<>();
         // transformers must be `public` and may be inherited (if not `static`)
         for (Method m : transformer.getDeclaringClass().getMethods()) {
@@ -54,16 +54,7 @@ class MethodHandleUtils {
         // validate method
         validateTransformerMethod(method, transformer, transformationArgType);
 
-        boolean hasCleanup = transformer.isInputTransformer()
-                && Modifier.isStatic(method.getModifiers())
-                && method.getParameterCount() == 2;
-
         MethodHandle result = createMethodHandle(method);
-
-        // if there was an extra Consumer<Runnable> param (param count == 2), we now want to insert that argument
-        if (hasCleanup) {
-            result = MethodHandles.insertArguments(result, result.type().parameterCount() - 1, cleanupActions);
-        }
 
         // for input transformers, we might need to change return type to whatever the original method expects
         // for output transformers, we might need to change their input params
