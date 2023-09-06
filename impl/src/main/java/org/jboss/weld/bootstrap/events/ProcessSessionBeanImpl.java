@@ -76,6 +76,10 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
     @Override
     public InvokerBuilder<Invoker<Object, ?>> createInvoker(AnnotatedMethod<? super Object> annotatedMethod) {
         checkWithinObserverNotification();
+        if (!getBean().getInvokableMethods().contains(annotatedMethod)) {
+            // TODO better exception
+            throw new IllegalArgumentException("Not an invokable method: " + annotatedMethod);
+        }
         return new InvokerBuilderImpl<>(getBean().getEjbDescriptor().getBeanClass(), annotatedMethod.getJavaMember(), getBeanManager());
     }
 }

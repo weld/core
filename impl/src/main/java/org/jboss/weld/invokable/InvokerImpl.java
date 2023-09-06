@@ -150,10 +150,10 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         {
             MethodHandle cleanupMethod;
             try {
-                //String runName = "run"; // to appease a silly checkstyle rule
+                String runName = "run"; // to appease a silly checkstyle rule
                 cleanupMethod = finalMethodHandle.type().returnType() == void.class
-                        ? MethodHandleUtils.createMethodHandle(CleanupActions.class.getMethod("run", Throwable.class, CleanupActions.class))
-                        : MethodHandleUtils.createMethodHandle(CleanupActions.class.getMethod("run", Throwable.class, Object.class, CleanupActions.class));
+                        ? MethodHandleUtils.createMethodHandle(CleanupActions.class.getMethod(runName, Throwable.class, CleanupActions.class))
+                        : MethodHandleUtils.createMethodHandle(CleanupActions.class.getMethod(runName, Throwable.class, Object.class, CleanupActions.class));
             } catch (NoSuchMethodException e) {
                 // should never happen
                 throw new IllegalStateException("Unable to locate Weld internal helper method");
