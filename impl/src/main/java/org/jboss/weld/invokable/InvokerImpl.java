@@ -123,7 +123,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         MethodHandle lookupMethod;
         try {
             lookupMethod = MethodHandleUtils.createMethodHandle(LookupUtils.class.getDeclaredMethod("lookup",
-                    Object.class, CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
+                    CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
         } catch (NoSuchMethodException e) {
             // should never happen
             throw unableToLocateWeldInternalHelperMethod();
@@ -136,13 +136,15 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         }
 
         // instance lookup
-        if (builder.instanceLookup) {
+        if (builder.instanceLookup && !isStaticMethod) {
             Type type = builder.beanClass;
             Class<?> parameterType = typeBeforeLookups.parameterType(1);
             Annotation[] qualifiers = LookupUtils.classQualifiers(builder.beanClass, builder.beanManager);
-            MethodHandle instanceLookupMethod = MethodHandles.insertArguments(lookupMethod, 2, builder.beanManager, type, qualifiers);
-            finalMethodHandle = MethodHandles.collectArguments(finalMethodHandle, 1, instanceLookupMethod.asType(
-                    instanceLookupMethod.type().changeReturnType(parameterType).changeParameterType(0, parameterType)));
+            MethodHandle instanceLookupMethod = lookupMethod;
+            instanceLookupMethod = MethodHandles.insertArguments(instanceLookupMethod, 1, builder.beanManager, type, qualifiers);
+            instanceLookupMethod = instanceLookupMethod.asType(instanceLookupMethod.type().changeReturnType(parameterType));
+            instanceLookupMethod = MethodHandles.dropArguments(instanceLookupMethod, 0, parameterType);
+            finalMethodHandle = MethodHandles.collectArguments(finalMethodHandle, 1, instanceLookupMethod);
             positionsBeforeArguments++; // second `CleanupActions`
         }
 
@@ -157,9 +159,11 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             Type type = parameter.getParameterizedType();
             Class<?> parameterType = typeBeforeLookups.parameterType(i + (isStaticMethod ? 1 : 2));
             Annotation[] qualifiers = LookupUtils.parameterQualifiers(parameter, builder.beanManager);
-            MethodHandle argumentLookupMethod = MethodHandles.insertArguments(lookupMethod, 2, builder.beanManager, type, qualifiers);
-            finalMethodHandle = MethodHandles.collectArguments(finalMethodHandle, position, argumentLookupMethod.asType(
-                    argumentLookupMethod.type().changeReturnType(parameterType).changeParameterType(0, parameterType)));
+            MethodHandle argumentLookupMethod = lookupMethod;
+            argumentLookupMethod = MethodHandles.insertArguments(argumentLookupMethod, 1, builder.beanManager, type, qualifiers);
+            argumentLookupMethod = argumentLookupMethod.asType(argumentLookupMethod.type().changeReturnType(parameterType));
+            argumentLookupMethod = MethodHandles.dropArguments(argumentLookupMethod, 0, parameterType);
+            finalMethodHandle = MethodHandles.collectArguments(finalMethodHandle, position, argumentLookupMethod);
         }
 
         // argument reshuffling to support cleanup tasks for input lookups
@@ -218,6 +222,22 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             MethodHandle invoker = MethodHandles.spreadInvoker(finalMethodHandle.type(), 2);
             invoker = MethodHandles.insertArguments(invoker, 0, finalMethodHandle);
             finalMethodHandle = invoker;
+        }
+
+        // replace `null` values in the arguments array with zero values
+        // on positions where the method accepts a primitive type
+        Class<?>[] parameterTypes = builder.method.getParameterTypes();
+        if (PrimitiveUtils.hasPrimitive(parameterTypes)) {
+            MethodHandle replacePrimitiveNulls = null;
+            try {
+                replacePrimitiveNulls = MethodHandleUtils.createMethodHandle(PrimitiveUtils.class.getDeclaredMethod(
+                        "replacePrimitiveNulls", Object[].class, Class[].class));
+            } catch (NoSuchMethodException e) {
+                // should never happen
+                throw unableToLocateWeldInternalHelperMethod();
+            }
+            replacePrimitiveNulls = MethodHandles.insertArguments(replacePrimitiveNulls, 1, (Object) parameterTypes);
+            finalMethodHandle = MethodHandles.filterArguments(finalMethodHandle, 2, replacePrimitiveNulls);
         }
 
         // instantiate `CleanupActions`
