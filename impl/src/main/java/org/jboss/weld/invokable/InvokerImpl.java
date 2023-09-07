@@ -220,6 +220,18 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             finalMethodHandle = invoker;
         }
 
+        // instantiate `CleanupActions`
+        {
+            MethodHandle cleanupActions;
+            try {
+                cleanupActions = MethodHandleUtils.createMethodHandle(CleanupActions.class.getDeclaredConstructor());
+            } catch (NoSuchMethodException e) {
+                // should never happen
+                throw unableToLocateWeldInternalHelperMethod();
+            }
+            finalMethodHandle = MethodHandles.foldArguments(finalMethodHandle, cleanupActions);
+        }
+
         // assign the bean method handle after applying all transformers
         this.beanMethodHandle = finalMethodHandle;
     }
@@ -240,8 +252,6 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             }
         }
 
-        CleanupActions cleanup = new CleanupActions();
-
         // TODO do we want to verify that the T instance is the exact class of the bean?
         if (arguments.length != method.getParameterCount()) {
             // TODO per spec, excess arguments should be dropped
@@ -249,7 +259,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         }
 
         try {
-            return (R) beanMethodHandle.invoke(cleanup, instance, arguments);
+            return (R) beanMethodHandle.invoke(instance, arguments);
         } catch (ValueCarryingException e) {
             // exception transformer may return a value by throwing a special exception
             return (R) e.getMethodReturnValue();
