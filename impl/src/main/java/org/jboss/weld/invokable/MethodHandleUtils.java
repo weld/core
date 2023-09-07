@@ -5,6 +5,7 @@ import jakarta.enterprise.invoke.Invoker;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -21,6 +22,18 @@ class MethodHandleUtils {
 
         try {
             return lookup.unreflect(method);
+        } catch (ReflectiveOperationException e) {
+            // TODO proper exception handling
+            throw new RuntimeException(e);
+        }
+    }
+
+    static MethodHandle createMethodHandle(Constructor<?> constructor) {
+        MethodHandles.Lookup lookup = Modifier.isPublic(constructor.getModifiers()) && Modifier.isPublic(constructor.getDeclaringClass().getModifiers())
+                ? MethodHandles.publicLookup() : MethodHandles.lookup();
+
+        try {
+            return lookup.unreflectConstructor(constructor);
         } catch (ReflectiveOperationException e) {
             // TODO proper exception handling
             throw new RuntimeException(e);
