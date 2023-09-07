@@ -1,12 +1,8 @@
 package org.jboss.weld.invokable;
 
-import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.invoke.Invoker;
-import jakarta.inject.Named;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
@@ -15,8 +11,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Type;
 
 public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
 
@@ -24,19 +19,11 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
     private final MethodHandle beanMethodHandle;
     private final MethodHandle invocationWrapper;
     private final Method method;
-    // null if no lookup is to be done
-    private final Annotation[] instanceLookupQualifiers;
-    private final Annotation[][] argLookupQualifiers;
-    private final boolean hasInstanceTransformer;
     private final Class<T> beanClass;
 
     // this variant is only used for invocation wrapper and assumes fully-initialized state
-    private InvokerImpl(MethodHandle beanMethodHandle, Annotation[] instanceLookupQualifiers, Annotation[][] argLookupQualifiers,
-                        boolean hasInstanceTransformer, Class<T> beanClass, Method method) {
+    private InvokerImpl(MethodHandle beanMethodHandle, Class<T> beanClass, Method method) {
         this.beanMethodHandle = beanMethodHandle;
-        this.instanceLookupQualifiers = instanceLookupQualifiers;
-        this.argLookupQualifiers = argLookupQualifiers;
-        this.hasInstanceTransformer = hasInstanceTransformer;
         this.beanClass = beanClass;
         this.method = method;
         this.invocationWrapper = null;
@@ -45,19 +32,6 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
     InvokerImpl(AbstractInvokerBuilder<T, ?> builder) {
         this.beanClass = builder.beanClass;
         this.method = builder.method;
-        if (builder.instanceLookup) {
-            this.instanceLookupQualifiers = extractInstanceQualifiers(builder.beanClass, builder.beanManager);
-        } else {
-            this.instanceLookupQualifiers = null;
-        }
-        this.argLookupQualifiers = new Annotation[builder.argLookup.length][];
-        for (int i = 0; i < builder.argLookup.length; i++) {
-            // positions that remain null are those for which we don't perform lookup
-            if (builder.argLookup[i]) {
-                this.argLookupQualifiers[i] = extractParamQualifiers(builder.method.getParameters()[i], builder.beanManager);
-            }
-        }
-        this.hasInstanceTransformer = builder.instanceTransformer != null;
 
         // resolve invocation wrapper and save separately
         this.invocationWrapper = builder.invocationWrapper == null ? null : MethodHandleUtils.createMethodHandleFromTransformer(
@@ -146,6 +120,70 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             finalMethodHandle = MethodHandles.permuteArguments(finalMethodHandle, incomingType, reordering);
         }
 
+        MethodHandle lookupMethod;
+        try {
+            lookupMethod = MethodHandleUtils.createMethodHandle(LookupUtils.class.getDeclaredMethod("lookup",
+                    Object.class, CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
+        } catch (NoSuchMethodException e) {
+            // should never happen
+            throw unableToLocateWeldInternalHelperMethod();
+        }
+
+        MethodType typeBeforeLookups = finalMethodHandle.type();
+        int positionsBeforeArguments = 1; // first `CleanupActions` we need to preserve for transformations
+        if (!isStaticMethod) {
+            positionsBeforeArguments++; // the target instance
+        }
+
+        // instance lookup
+        if (builder.instanceLookup) {
+            Type type = builder.beanClass;
+            Class<?> parameterType = typeBeforeLookups.parameterType(1);
+            Annotation[] qualifiers = LookupUtils.classQualifiers(builder.beanClass, builder.beanManager);
+            MethodHandle instanceLookupMethod = MethodHandles.insertArguments(lookupMethod, 2, builder.beanManager, type, qualifiers);
+            finalMethodHandle = MethodHandles.collectArguments(finalMethodHandle, 1, instanceLookupMethod.asType(
+                    instanceLookupMethod.type().changeReturnType(parameterType).changeParameterType(0, parameterType)));
+            positionsBeforeArguments++; // second `CleanupActions`
+        }
+
+        // arguments lookup
+        // backwards iteration for correct construction of the resulting parameter list
+        for (int i = builder.argLookup.length - 1; i >= 0; i--) {
+            if (!builder.argLookup[i]) {
+                continue;
+            }
+            int position = positionsBeforeArguments + i;
+            Parameter parameter = builder.method.getParameters()[i];
+            Type type = parameter.getParameterizedType();
+            Class<?> parameterType = typeBeforeLookups.parameterType(i + (isStaticMethod ? 1 : 2));
+            Annotation[] qualifiers = LookupUtils.parameterQualifiers(parameter, builder.beanManager);
+            MethodHandle argumentLookupMethod = MethodHandles.insertArguments(lookupMethod, 2, builder.beanManager, type, qualifiers);
+            finalMethodHandle = MethodHandles.collectArguments(finalMethodHandle, position, argumentLookupMethod.asType(
+                    argumentLookupMethod.type().changeReturnType(parameterType).changeParameterType(0, parameterType)));
+        }
+
+        // argument reshuffling to support cleanup tasks for input lookups
+        //
+        // for each input that has a lookup, the corresponding argument
+        // has a second argument inserted immediately after it, the `CleanupActions` instance;
+        // application of the lookup replaces the two arguments with the result
+        //
+        // inputs without lookup are left intact and application of the transformer
+        // only replaces the single argument
+        {
+            int[] reordering = new int[finalMethodHandle.type().parameterCount()];
+            int paramCounter = 1;
+            for (int i = 0; i < reordering.length; i++) {
+                if (finalMethodHandle.type().parameterType(i) == CleanupActions.class) {
+                    reordering[i] = 0;
+                } else {
+                    reordering[i] = paramCounter;
+                    paramCounter++;
+                }
+            }
+            finalMethodHandle = MethodHandles.permuteArguments(finalMethodHandle, typeBeforeLookups, reordering);
+        }
+
         // cleanup
         {
             MethodHandle cleanupMethod;
@@ -156,7 +194,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
                         : MethodHandleUtils.createMethodHandle(CleanupActions.class.getMethod(runName, Throwable.class, Object.class, CleanupActions.class));
             } catch (NoSuchMethodException e) {
                 // should never happen
-                throw new IllegalStateException("Unable to locate Weld internal helper method");
+                throw unableToLocateWeldInternalHelperMethod();
             }
 
             if (finalMethodHandle.type().returnType() != void.class) {
@@ -186,14 +224,16 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         this.beanMethodHandle = finalMethodHandle;
     }
 
+    private static IllegalStateException unableToLocateWeldInternalHelperMethod() {
+        return new IllegalStateException("Unable to locate Weld internal helper method");
+    }
 
     @Override
     public R invoke(T instance, Object[] arguments) {
         // if there is an invocation wrapper, just invoke the wrapper immediately
         if (this.invocationWrapper != null) {
             try {
-                return (R) invocationWrapper.invoke(instance, arguments, new InvokerImpl<>(beanMethodHandle, instanceLookupQualifiers,
-                        argLookupQualifiers, hasInstanceTransformer, beanClass, method));
+                return (R) invocationWrapper.invoke(instance, arguments, new InvokerImpl<>(beanMethodHandle, beanClass, method));
             } catch (Throwable e) {
                 // invocation wrapper or the method itself threw an exception, we just rethrow
                 throw new RuntimeException(e);
@@ -207,64 +247,19 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
             // TODO per spec, excess arguments should be dropped
             throw new IllegalArgumentException("Wrong number of args for invoker! Expected: " + method.getParameterCount() + " Provided: " + arguments.length);
         }
-        Instance<Object> cdiLookup = CDI.current().getBeanManager().createInstance();
-        if (instanceLookupQualifiers != null) {
-            // instance lookup set, ignore the parameter we got and lookup the instance
-            // standard CDI resolution errors can occur
-            instance = getInstance(cleanup, cdiLookup, beanClass, instanceLookupQualifiers);
-        } else {
-            // arg should not be null unless the method is (a) static, (b) has instance transformer, (c) has instance lookup
-            if (instance == null && !Modifier.isStatic(method.getModifiers()) && !hasInstanceTransformer) {
-                // TODO better exception
-                throw new IllegalArgumentException("Invoker target instance cannot be null unless it's static method or set for CDI lookup!");
-            }
-        }
-
-        for (int i = 0; i < argLookupQualifiers.length; i++) {
-            if (argLookupQualifiers[i] != null) {
-                // TODO what if parameter type is generic?
-                arguments[i] = getInstance(cleanup, cdiLookup, method.getParameterTypes()[i], argLookupQualifiers[i]);
-            }
-        }
 
         try {
             return (R) beanMethodHandle.invoke(cleanup, instance, arguments);
         } catch (ValueCarryingException e) {
             // exception transformer may return a value by throwing a special exception
             return (R) e.getMethodReturnValue();
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Throwable e) {
             // TODO at this point there might have been exception transformer invoked as well, guess we just rethrow?
             // we just rethrow the original exception
             throw new RuntimeException(e);
         }
-    }
-
-    private <TYPE> TYPE getInstance(CleanupActions cleanup, Instance<Object> lookup, Class<TYPE> classToLookup, Annotation... qualifiers) {
-        Instance.Handle<TYPE> handle = lookup.select(classToLookup, qualifiers).getHandle();
-        cleanup.addInstanceHandle(handle);
-        return handle.get();
-    }
-
-    private Annotation[] extractInstanceQualifiers(Class<?> beanClass, BeanManager bm) {
-        return extractQualifiers(beanClass.getAnnotations(), bm);
-    }
-
-    private Annotation[] extractParamQualifiers(Parameter parameter, BeanManager bm) {
-        return extractQualifiers(parameter.getAnnotations(), bm);
-    }
-
-    private Annotation[] extractQualifiers(Annotation[] annotations, BeanManager bm) {
-        List<Annotation> qualifiers = new ArrayList<>();
-        for (Annotation a : annotations) {
-            if (bm.isQualifier(a.annotationType())) {
-                qualifiers.add(a);
-            }
-        }
-        // add default when there are no qualifiers or just @Named
-        if (qualifiers.isEmpty() || (qualifiers.size() == 1 && qualifiers.get(0).annotationType().equals(Named.class))) {
-            qualifiers.add(Default.Literal.INSTANCE);
-        }
-        return qualifiers.toArray(new Annotation[]{});
     }
 
 }
