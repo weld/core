@@ -42,7 +42,7 @@ public class InvokableMethodLookupTest {
     }
 
     @Test
-    public void testCorrectArqLookupWithQualifiers() {
+    public void testCorrectArgLookupWithQualifiers() {
         Object invokerResult = extension.getCorrectLookupInvoker().invoke(bean, new Object[]{null, null});
         assertTrue(invokerResult instanceof String);
         assertEquals(MyQualifier1.class.getSimpleName() + MyQualifier4.class.getSimpleName() + MyQualifier2.class.getSimpleName(), invokerResult);
