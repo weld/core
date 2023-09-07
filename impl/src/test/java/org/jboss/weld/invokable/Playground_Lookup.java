@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class Playground_Lookup {
     public static void main(String[] args) throws Throwable {
-        MethodHandle lookupMethod = MethodHandleUtils.createMethodHandle(Playground_Lookup.class.getMethod("lookup", Object.class, CleanupActions.class));
+        MethodHandle lookupMethod = MethodHandleUtils.createMethodHandle(Playground_Lookup.class.getMethod("lookup", CleanupActions.class));
 
         Method targetMethod = Playground_Lookup.class.getMethod("hello", CleanupActions.class, Playground_Lookup.class, int.class, long.class, char.class);
         boolean isStaticMethod = false;
@@ -17,7 +17,7 @@ public class Playground_Lookup {
         MethodHandle mh = MethodHandleUtils.createMethodHandle(targetMethod);
         System.out.println("!!!!!!! 1 " + mh.type());
 
-        MethodType bagrType = mh.type();
+        MethodType originalType = mh.type();
 
         int positionsBeforeArguments = 1; // first `CleanupActions` we need to preserve for transformations
         if (!isStaticMethod) {
@@ -27,9 +27,12 @@ public class Playground_Lookup {
         // instance lookup
         boolean instanceLookup = true;
         if (instanceLookup && !isStaticMethod) {
-            Class<?> type = bagrType.parameterType(1);
-            mh = MethodHandles.collectArguments(mh, 1, lookupMethod.asType(
-                    lookupMethod.type().changeReturnType(type).changeParameterType(0, type)));
+            Class<?> type = originalType.parameterType(1);
+            MethodHandle instanceLookupMethod = lookupMethod;
+            instanceLookupMethod = instanceLookupMethod.asType(instanceLookupMethod.type()
+                    .changeReturnType(type));
+            instanceLookupMethod = MethodHandles.dropArguments(instanceLookupMethod, 0, type);
+            mh = MethodHandles.collectArguments(mh, 1, instanceLookupMethod);
             positionsBeforeArguments++; // second `CleanupActions`
         }
         System.out.println("!!!!!!! 2 " + mh.type());
@@ -39,10 +42,13 @@ public class Playground_Lookup {
         boolean[] argumentsLookup = {true, false, true};
         for (int i = argumentsLookup.length - 1; i >= 0; i--) {
             if (argumentsLookup[i]) {
-                Class<?> type = bagrType.parameterType(i + (isStaticMethod ? 1 : 2));
+                Class<?> type = originalType.parameterType(i + (isStaticMethod ? 1 : 2));
                 int position = positionsBeforeArguments + i;
-                mh = MethodHandles.collectArguments(mh, position, lookupMethod.asType(
-                        lookupMethod.type().changeReturnType(type).changeParameterType(0, type)));
+                MethodHandle argumentLookupMethod = lookupMethod;
+                argumentLookupMethod = argumentLookupMethod.asType(argumentLookupMethod.type()
+                        .changeReturnType(type));
+                argumentLookupMethod = MethodHandles.dropArguments(argumentLookupMethod, 0, type);
+                mh = MethodHandles.collectArguments(mh, position, argumentLookupMethod);
             }
         }
         System.out.println("!!!!!!! 3 " + mh.type());
@@ -66,17 +72,36 @@ public class Playground_Lookup {
                     paramCounter++;
                 }
             }
-            mh = MethodHandles.permuteArguments(mh, bagrType, reordering);
+            mh = MethodHandles.permuteArguments(mh, originalType, reordering);
         }
 
         System.out.println("!!!!!!! 4 " + mh.type());
 
         CleanupActions cleanup = new CleanupActions();
-        System.out.println(mh.invoke(cleanup, new Playground_Lookup(), 42, 13L, 'x'));
+        System.out.println(mh.invoke(cleanup, new Playground_Lookup(), 0, 13L, '\0'));
     }
 
-    public static Object lookup(Object previous, CleanupActions cleanup) {
-        return previous;
+    // this is a little crazy, but good enough for a playground
+    //
+    // due to how the method handle tree is constructed, the `lookup` method
+    // is called in the following order:
+    // - arguments first, from left to right
+    // - target instance last
+    //
+    // note that this only applies here; in general, the order of lookups is not specified
+    private static int lookupCounter = -1;
+
+    public static Object lookup(CleanupActions cleanup) {
+        lookupCounter++;
+        if (lookupCounter == 0) {
+            return 42;
+        } else if (lookupCounter == 1) {
+            return 'x';
+        } else if (lookupCounter == 2) {
+            return new Playground_Lookup();
+        } else {
+            throw new AssertionError();
+        }
     }
 
     public static String hello(CleanupActions cleanup, Playground_Lookup instance, int param1, long param2, char param3) {

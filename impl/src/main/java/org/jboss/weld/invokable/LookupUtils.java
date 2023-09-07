@@ -16,9 +16,7 @@ class LookupUtils {
     private LookupUtils() {
     }
 
-    // the `previousValue` parameter only exists so that the signature fits into
-    // the `MethodHandles.collectArguments()` combinator and is not used otherwise
-    static Object lookup(Object previousValue, CleanupActions cleanup, BeanManager beanManager, Type type, Annotation[] qualifiers) {
+    static Object lookup(CleanupActions cleanup, BeanManager beanManager, Type type, Annotation[] qualifiers) {
         WeldInstance<Object> lookup = (WeldInstance<Object>) beanManager.createInstance();
         Instance.Handle<Object> result = lookup.select(type, qualifiers).getHandle();
         cleanup.addInstanceHandle(result);

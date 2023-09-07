@@ -70,7 +70,8 @@ public class InvokableMethodTest {
         Assert.assertEquals("bar42", extension.getLookupAllInvoker().invoke(new SimpleBean(), new Object[]{"blah", null}));
         Assert.assertEquals(2, SimpleBean.preDestroyInvoked);
         Assert.assertEquals(2, HelperBean.timesStringDestroyed);
-        Assert.assertEquals(2, HelperBean.timesIntDestroyed);    }
+        Assert.assertEquals(2, HelperBean.timesIntDestroyed);
+    }
 
     @Test
     public void testSimpleStaticInvokableMethod() {
@@ -83,21 +84,21 @@ public class InvokableMethodTest {
         Assert.assertEquals(0, HelperBean.timesStringDestroyed);
         Assert.assertEquals(0, HelperBean.timesIntDestroyed);
 
-        // no transformation, instance lookup
+        // no transformation, no instance lookup (configured but skipped, it is a static method)
         Assert.assertEquals("foo1", extension.getStaticInstanceLookupInvoker().invoke(null, new Object[]{"foo", 1}));
-        Assert.assertEquals(1, SimpleBean.preDestroyInvoked);
+        Assert.assertEquals(0, SimpleBean.preDestroyInvoked);
         Assert.assertEquals(0, HelperBean.timesStringDestroyed);
         Assert.assertEquals(0, HelperBean.timesIntDestroyed);
 
         // no transformation, arg lookup (all)
         Assert.assertEquals("bar42", extension.getStaticArgLookupInvoker().invoke(simpleBean, new Object[]{"blah", null}));
-        Assert.assertEquals(1, SimpleBean.preDestroyInvoked);
+        Assert.assertEquals(0, SimpleBean.preDestroyInvoked);
         Assert.assertEquals(1, HelperBean.timesStringDestroyed);
         Assert.assertEquals(1, HelperBean.timesIntDestroyed);
 
-        // no transformation, instance lookup and arg lookup (all)
+        // no transformation, no instance lookup (configured but skipped) and arg lookup (all)
         Assert.assertEquals("bar42", extension.getStaticLookupAllInvoker().invoke(new SimpleBean(), new Object[]{"blah", null}));
-        Assert.assertEquals(2, SimpleBean.preDestroyInvoked);
+        Assert.assertEquals(0, SimpleBean.preDestroyInvoked);
         Assert.assertEquals(2, HelperBean.timesStringDestroyed);
         Assert.assertEquals(2, HelperBean.timesIntDestroyed);
     }
