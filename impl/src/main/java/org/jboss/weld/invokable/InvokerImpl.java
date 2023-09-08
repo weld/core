@@ -19,12 +19,8 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
         } catch (ValueCarryingException e) {
             // exception transformer may return a value by throwing a special exception
             return (R) e.getMethodReturnValue();
-        } catch (RuntimeException e) {
-            throw e;
         } catch (Throwable e) {
-            // TODO at this point there might have been exception transformer invoked as well, guess we just rethrow?
-            // we just rethrow the original exception
-            throw new RuntimeException(e);
+            throw SneakyThrow.sneakyThrow(e);
         }
     }
 }
