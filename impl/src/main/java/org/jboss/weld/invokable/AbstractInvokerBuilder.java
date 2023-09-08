@@ -191,15 +191,6 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
             mh = MethodHandles.permuteArguments(mh, incomingType, reordering);
         }
 
-        MethodHandle lookupMethod;
-        try {
-            lookupMethod = MethodHandleUtils.createMethodHandle(LookupUtils.class.getDeclaredMethod("lookup",
-                    CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
-        } catch (NoSuchMethodException e) {
-            // should never happen
-            throw unableToLocateWeldInternalHelperMethod();
-        }
-
         MethodType typeBeforeLookups = mh.type();
         int positionsBeforeArguments = 1; // first `CleanupActions` we need to preserve for transformations
         if (!isStaticMethod) {
@@ -211,7 +202,7 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
             Type type = beanClass;
             Class<?> parameterType = typeBeforeLookups.parameterType(1);
             Annotation[] qualifiers = LookupUtils.classQualifiers(beanClass, beanManager);
-            MethodHandle instanceLookupMethod = lookupMethod;
+            MethodHandle instanceLookupMethod = MethodHandleUtils.LOOKUP;
             instanceLookupMethod = MethodHandles.insertArguments(instanceLookupMethod, 1, beanManager, type, qualifiers);
             instanceLookupMethod = instanceLookupMethod.asType(instanceLookupMethod.type().changeReturnType(parameterType));
             instanceLookupMethod = MethodHandles.dropArguments(instanceLookupMethod, 0, parameterType);
@@ -230,7 +221,7 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
             Type type = parameter.getParameterizedType();
             Class<?> parameterType = typeBeforeLookups.parameterType(i + (isStaticMethod ? 1 : 2));
             Annotation[] qualifiers = LookupUtils.parameterQualifiers(parameter, beanManager);
-            MethodHandle argumentLookupMethod = lookupMethod;
+            MethodHandle argumentLookupMethod = MethodHandleUtils.LOOKUP;
             argumentLookupMethod = MethodHandles.insertArguments(argumentLookupMethod, 1, beanManager, type, qualifiers);
             argumentLookupMethod = argumentLookupMethod.asType(argumentLookupMethod.type().changeReturnType(parameterType));
             argumentLookupMethod = MethodHandles.dropArguments(argumentLookupMethod, 0, parameterType);
@@ -261,16 +252,9 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
 
         // cleanup
         {
-            MethodHandle cleanupMethod;
-            try {
-                String runName = "run"; // to appease a silly checkstyle rule
-                cleanupMethod = mh.type().returnType() == void.class
-                        ? MethodHandleUtils.createMethodHandle(CleanupActions.class.getMethod(runName, Throwable.class, CleanupActions.class))
-                        : MethodHandleUtils.createMethodHandle(CleanupActions.class.getMethod(runName, Throwable.class, Object.class, CleanupActions.class));
-            } catch (NoSuchMethodException e) {
-                // should never happen
-                throw unableToLocateWeldInternalHelperMethod();
-            }
+            MethodHandle cleanupMethod = mh.type().returnType() == void.class
+                    ? MethodHandleUtils.CLEANUP_FOR_VOID
+                    : MethodHandleUtils.CLEANUP_FOR_NONVOID;
 
             if (mh.type().returnType() != void.class) {
                 cleanupMethod = cleanupMethod.asType(cleanupMethod.type()
@@ -299,28 +283,14 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         // on positions where the method accepts a primitive type
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (PrimitiveUtils.hasPrimitive(parameterTypes)) {
-            MethodHandle replacePrimitiveNulls = null;
-            try {
-                replacePrimitiveNulls = MethodHandleUtils.createMethodHandle(PrimitiveUtils.class.getDeclaredMethod(
-                        "replacePrimitiveNulls", Object[].class, Class[].class));
-            } catch (NoSuchMethodException e) {
-                // should never happen
-                throw unableToLocateWeldInternalHelperMethod();
-            }
+            MethodHandle replacePrimitiveNulls = MethodHandleUtils.REPLACE_PRIMITIVE_NULLS;
             replacePrimitiveNulls = MethodHandles.insertArguments(replacePrimitiveNulls, 1, (Object) parameterTypes);
             mh = MethodHandles.filterArguments(mh, 2, replacePrimitiveNulls);
         }
 
         // instantiate `CleanupActions`
         {
-            MethodHandle cleanupActions;
-            try {
-                cleanupActions = MethodHandleUtils.createMethodHandle(CleanupActions.class.getDeclaredConstructor());
-            } catch (NoSuchMethodException e) {
-                // should never happen
-                throw unableToLocateWeldInternalHelperMethod();
-            }
-            mh = MethodHandles.foldArguments(mh, cleanupActions);
+            mh = MethodHandles.foldArguments(mh, MethodHandleUtils.CLEANUP_ACTIONS_CTOR);
         }
 
         // create an inner invoker and pass it to wrapper
@@ -334,9 +304,5 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         }
 
         return new InvokerImpl<>(mh);
-    }
-
-    private static IllegalStateException unableToLocateWeldInternalHelperMethod() {
-        return new IllegalStateException("Unable to locate Weld internal helper method");
     }
 }
