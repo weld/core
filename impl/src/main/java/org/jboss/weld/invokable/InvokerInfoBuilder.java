@@ -13,6 +13,6 @@ public class InvokerInfoBuilder<B> extends AbstractInvokerBuilder<B, InvokerInfo
 
     @Override
     public InvokerInfo build() {
-        return new InvokerImpl<>(this);
+        return doBuild();
     }
 }
