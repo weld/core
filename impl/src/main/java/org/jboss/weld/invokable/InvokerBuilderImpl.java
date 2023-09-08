@@ -13,6 +13,6 @@ public class InvokerBuilderImpl<B> extends AbstractInvokerBuilder<B, Invoker<B, 
 
     @Override
     public Invoker<B, ?> build() {
-        return new InvokerImpl<>(this);
+        return doBuild();
     }
 }
