@@ -1,19 +1,49 @@
 package org.jboss.weld.invokable;
 
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.DeploymentException;
 import jakarta.enterprise.invoke.Invoker;
 
+import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 class MethodHandleUtils {
     private MethodHandleUtils() {
+    }
+
+    static final MethodHandle CLEANUP_ACTIONS_CTOR;
+    static final MethodHandle CLEANUP_FOR_VOID;
+    static final MethodHandle CLEANUP_FOR_NONVOID;
+    static final MethodHandle LOOKUP;
+    static final MethodHandle REPLACE_PRIMITIVE_NULLS;
+    static final MethodHandle THROW_VALUE_CARRYING_EXCEPTION;
+
+    static {
+        try {
+            CLEANUP_ACTIONS_CTOR = createMethodHandle(CleanupActions.class.getDeclaredConstructor());
+            String runName = "run";
+            CLEANUP_FOR_VOID = createMethodHandle(CleanupActions.class.getMethod(
+                    runName, Throwable.class, CleanupActions.class));
+            CLEANUP_FOR_NONVOID = createMethodHandle(CleanupActions.class.getMethod(
+                    runName, Throwable.class, Object.class, CleanupActions.class));
+            LOOKUP = createMethodHandle(LookupUtils.class.getDeclaredMethod(
+                    "lookup", CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
+            REPLACE_PRIMITIVE_NULLS = MethodHandleUtils.createMethodHandle(PrimitiveUtils.class.getDeclaredMethod(
+                    "replacePrimitiveNulls", Object[].class, Class[].class));
+            THROW_VALUE_CARRYING_EXCEPTION = createMethodHandle(ValueCarryingException.class.getDeclaredMethod(
+                    "throwReturnValue", Object.class));
+        } catch (NoSuchMethodException e) {
+            // should never happen
+            throw new IllegalStateException("Unable to locate Weld internal helper method", e);
+        }
     }
 
     static MethodHandle createMethodHandle(Method method) {
@@ -88,17 +118,12 @@ class MethodHandleUtils {
                 result = result.asType(result.type().changeReturnType(targetMethod.getReturnType()));
             } else {
                 // if not assignable, then we need to apply a return value transformer which hides the value in an exception
-                try {
-                    MethodHandle throwReturnValue = createMethodHandle(ValueCarryingException.class.getDeclaredMethod("throwReturnValue", Object.class));
-                    // cast return value of the custom method we use to whatever the original method expects - we'll never use it anyway
-                    throwReturnValue = throwReturnValue.asType(throwReturnValue.type().changeReturnType(targetMethod.getReturnType()));
-                    // adapt the parameter type as well, we don't really care what it is, we just store it and throw it
-                    throwReturnValue = throwReturnValue.asType(throwReturnValue.type().changeParameterType(0, result.type().returnType()));
-                    result = MethodHandles.filterReturnValue(result, throwReturnValue);
-                } catch (NoSuchMethodException e) {
-                    // should never happen
-                    throw new IllegalStateException("Unable to locate Weld internal helper method");
-                }
+                MethodHandle throwReturnValue = THROW_VALUE_CARRYING_EXCEPTION;
+                // cast return value of the custom method we use to whatever the original method expects - we'll never use it anyway
+                throwReturnValue = throwReturnValue.asType(throwReturnValue.type().changeReturnType(targetMethod.getReturnType()));
+                // adapt the parameter type as well, we don't really care what it is, we just store it and throw it
+                throwReturnValue = throwReturnValue.asType(throwReturnValue.type().changeParameterType(0, result.type().returnType()));
+                result = MethodHandles.filterReturnValue(result, throwReturnValue);
             }
         }
         return result;
