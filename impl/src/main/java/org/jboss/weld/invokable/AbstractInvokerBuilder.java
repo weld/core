@@ -107,9 +107,31 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         return this;
     }
 
+    private boolean requiresCleanup() {
+        boolean isStaticMethod = Modifier.isStatic(method.getModifiers());
+        if (instanceTransformer != null && !isStaticMethod) {
+            return true;
+        }
+        for (int i = 0; i < argTransformers.length; i++) {
+            if (argTransformers[i] != null) {
+                return true;
+            }
+        }
+        if (instanceLookup && !isStaticMethod) {
+            return true;
+        }
+        for (int i = 0; i < argLookup.length; i++) {
+            if (argLookup[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     InvokerImpl<B, ?> doBuild() {
         boolean isStaticMethod = Modifier.isStatic(method.getModifiers());
         int instanceArguments = isStaticMethod ? 0 : 1;
+        boolean requiresCleanup = requiresCleanup();
 
         MethodHandle mh = MethodHandleUtils.createMethodHandle(method);
 
@@ -171,7 +193,7 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         //
         // inputs without transformations, or with transformations without cleanup, are left
         // intact and application of the transformer only replaces the single argument
-        {
+        if (requiresCleanup) {
             MethodType incomingType = MethodType.methodType(mh.type().returnType(), CleanupActions.class);
             for (Class<?> paramType : mh.type().parameterArray()) {
                 if (paramType != CleanupActions.class) {
@@ -236,7 +258,7 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         //
         // inputs without lookup are left intact and application of the transformer
         // only replaces the single argument
-        {
+        if (requiresCleanup) {
             int[] reordering = new int[mh.type().parameterCount()];
             int paramCounter = 1;
             for (int i = 0; i < reordering.length; i++) {
@@ -251,7 +273,7 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         }
 
         // cleanup
-        {
+        if (requiresCleanup) {
             MethodHandle cleanupMethod = mh.type().returnType() == void.class
                     ? MethodHandleUtils.CLEANUP_FOR_VOID
                     : MethodHandleUtils.CLEANUP_FOR_NONVOID;
@@ -266,15 +288,15 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         }
 
         // spread argument array into individual arguments
+        // keep leading arguments:   `CleanupAction` if needed   target instance if exists
+        int leadingArgumentsToKeep = (requiresCleanup ? 1 : 0) + (isStaticMethod ? 0 : 1);
         if (isStaticMethod) {
-            // keep 1 leading argument, CleanupActions
-            MethodHandle invoker = MethodHandles.spreadInvoker(mh.type(), 1);
+            MethodHandle invoker = MethodHandles.spreadInvoker(mh.type(), leadingArgumentsToKeep);
             invoker = MethodHandles.insertArguments(invoker, 0, mh);
-            invoker = MethodHandles.dropArguments(invoker, 1, Object.class);
+            invoker = MethodHandles.dropArguments(invoker, requiresCleanup ? 1 : 0, Object.class);
             mh = invoker;
         } else {
-            // keep 2 leading arguments, CleanupActions and the target instance
-            MethodHandle invoker = MethodHandles.spreadInvoker(mh.type(), 2);
+            MethodHandle invoker = MethodHandles.spreadInvoker(mh.type(), leadingArgumentsToKeep);
             invoker = MethodHandles.insertArguments(invoker, 0, mh);
             mh = invoker;
         }
@@ -285,11 +307,11 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         if (PrimitiveUtils.hasPrimitive(parameterTypes)) {
             MethodHandle replacePrimitiveNulls = MethodHandleUtils.REPLACE_PRIMITIVE_NULLS;
             replacePrimitiveNulls = MethodHandles.insertArguments(replacePrimitiveNulls, 1, (Object) parameterTypes);
-            mh = MethodHandles.filterArguments(mh, 2, replacePrimitiveNulls);
+            mh = MethodHandles.filterArguments(mh, requiresCleanup ? 2 : 1, replacePrimitiveNulls);
         }
 
         // instantiate `CleanupActions`
-        {
+        if (requiresCleanup) {
             mh = MethodHandles.foldArguments(mh, MethodHandleUtils.CLEANUP_ACTIONS_CTOR);
         }
 
