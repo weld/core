@@ -16,6 +16,17 @@
  */
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
+import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.DuplicateMemberException;
@@ -33,17 +44,6 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.reflection.Reflections;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
-import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
 
 /**
  * Generates proxies used to apply interceptors to custom bean instances and return values of producer methods.
@@ -69,7 +69,8 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
     private final boolean builtFromInterface;
     private Set<Class<?>> interfacesToInspect;
 
-    public InterceptedProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Set<MethodSignature> enhancedMethodSignatures,
+    public InterceptedProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure,
+            Set<MethodSignature> enhancedMethodSignatures,
             Set<MethodSignature> interceptedMethodSignatures, String suffix) {
         super(contextId, proxiedBeanType, typeClosure, null);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
@@ -173,10 +174,12 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
 
     @Override
     protected boolean isMethodAccepted(Method method, Class<?> proxySuperclass) {
-        return super.isMethodAccepted(method, proxySuperclass) && CommonProxiedMethodFilters.NON_PRIVATE.accept(method, proxySuperclass) && !method.isBridge();
+        return super.isMethodAccepted(method, proxySuperclass)
+                && CommonProxiedMethodFilters.NON_PRIVATE.accept(method, proxySuperclass) && !method.isBridge();
     }
 
-    private void createNotInterceptedMethod(ClassMethod classMethod, final MethodInformation methodInfo, Method method, ClassMethod staticConstructor) {
+    private void createNotInterceptedMethod(ClassMethod classMethod, final MethodInformation methodInfo, Method method,
+            ClassMethod staticConstructor) {
         // we only care about default and intercepted methods now
         final CodeAttribute b = classMethod.getCodeAttribute();
 
@@ -211,7 +214,8 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
         }
 
         b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
-                new String[] { LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
+                new String[] { LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD,
+                        "[" + LJAVA_LANG_OBJECT });
 
         if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
             b.returnInstruction();
@@ -224,14 +228,16 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
         }
     }
 
-    private void createInterceptedMethod(ClassMethod classMethod, final MethodInformation methodInfo, Method method, ClassMethod staticConstructor) {
+    private void createInterceptedMethod(ClassMethod classMethod, final MethodInformation methodInfo, Method method,
+            ClassMethod staticConstructor) {
         final CodeAttribute b = classMethod.getCodeAttribute();
 
         b.aload(0);
         getMethodHandlerField(classMethod.getClassFile(), b);
 
         // get the Stack
-        b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack", "()" + DescriptorUtils.makeDescriptor(Stack.class));
+        b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack",
+                "()" + DescriptorUtils.makeDescriptor(Stack.class));
 
         b.aload(0);
         DEFAULT_METHOD_RESOLVER.getDeclaredMethod(classMethod, methodInfo.getDeclaringClass(), method.getName(),

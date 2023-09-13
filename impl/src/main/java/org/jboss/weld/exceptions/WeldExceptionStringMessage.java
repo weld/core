@@ -50,9 +50,11 @@ public class WeldExceptionStringMessage implements Serializable, WeldExceptionMe
         this.message = message;
     }
 
-    /* (non-Javadoc)
-    * @see org.jboss.weld.exceptions.WeldExceptionMessage#getAsString()
-    */
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.weld.exceptions.WeldExceptionMessage#getAsString()
+     */
     public String getAsString() {
         return message;
     }

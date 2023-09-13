@@ -58,6 +58,7 @@ class DynamicInjectionPoint extends ForwardingInjectionPoint implements Serializ
     }
 
     private Object readResolve() throws ObjectStreamException {
-        return new DynamicInjectionPoint(Container.instance(contextId).services().get(CurrentInvocationInjectionPoint.class) , contextId);
+        return new DynamicInjectionPoint(Container.instance(contextId).services().get(CurrentInvocationInjectionPoint.class),
+                contextId);
     }
 }

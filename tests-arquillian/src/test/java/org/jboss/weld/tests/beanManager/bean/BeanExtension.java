@@ -143,7 +143,7 @@ public class BeanExtension implements Extension {
 
     private static BeanManagerImpl getManagerImpl(BeanManager manager) {
         if (manager instanceof BeanManagerProxy) {
-            manager = Reflections.<BeanManagerProxy>cast(manager).delegate();
+            manager = Reflections.<BeanManagerProxy> cast(manager).delegate();
         }
         return cast(manager);
     }

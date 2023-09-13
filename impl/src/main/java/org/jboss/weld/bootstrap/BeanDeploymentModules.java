@@ -27,7 +27,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.WeldCollections;
 
 /**
- * Repository for {@link BeanDeploymentModule}s. It is an optional per-deployment service, i.e. it does not make sense for all environments (e.g. Weld SE).
+ * Repository for {@link BeanDeploymentModule}s. It is an optional per-deployment service, i.e. it does not make sense for all
+ * environments (e.g. Weld SE).
  *
  * @author Jozef Hartinger
  *
@@ -38,7 +39,8 @@ public final class BeanDeploymentModules implements Service, Iterable<BeanDeploy
     private final BeanDeploymentModule defaultModule;
 
     BeanDeploymentModules(String contextId, ServiceRegistry services) {
-        this.defaultModule = new BeanDeploymentModule(BeanDeploymentModules.class.getSimpleName() + ".DEFAULT", contextId, false, services);
+        this.defaultModule = new BeanDeploymentModule(BeanDeploymentModules.class.getSimpleName() + ".DEFAULT", contextId,
+                false, services);
         this.modules = new ConcurrentHashMap<>();
     }
 
@@ -52,7 +54,8 @@ public final class BeanDeploymentModules implements Service, Iterable<BeanDeploy
         }
         BeanDeploymentModule module = modules.get(descriptor.getId());
         if (module == null) {
-            module = new BeanDeploymentModule(descriptor.getId(), manager.getContextId(), descriptor.getType() == EEModuleDescriptor.ModuleType.WEB, manager.getServices());
+            module = new BeanDeploymentModule(descriptor.getId(), manager.getContextId(),
+                    descriptor.getType() == EEModuleDescriptor.ModuleType.WEB, manager.getServices());
             module = WeldCollections.putIfAbsent(modules, descriptor.getId(), module);
         }
         module.addManager(manager);

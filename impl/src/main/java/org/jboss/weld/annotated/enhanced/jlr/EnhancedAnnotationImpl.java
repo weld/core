@@ -40,7 +40,8 @@ import org.jboss.weld.util.collections.SetMultimap;
  * @param <T>
  * @author Pete Muir
  */
-public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnotatedTypeImpl<T> implements EnhancedAnnotation<T> {
+public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnotatedTypeImpl<T>
+        implements EnhancedAnnotation<T> {
 
     // The annotated members map (annotation -> member with annotation)
     private final SetMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ?>> annotatedMembers;
@@ -50,7 +51,8 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
     private final Set<EnhancedAnnotatedMethod<?, ?>> members;
 
     //we can't call this method 'of', cause it won't compile on JDK7
-    public static <A extends Annotation> EnhancedAnnotation<A> create(SlimAnnotatedType<A> annotatedType, ClassTransformer classTransformer) {
+    public static <A extends Annotation> EnhancedAnnotation<A> create(SlimAnnotatedType<A> annotatedType,
+            ClassTransformer classTransformer) {
 
         Class<A> annotationType = annotatedType.getJavaClass();
 
@@ -68,13 +70,16 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
      *
      * @param annotationType The annotation type
      */
-    protected EnhancedAnnotationImpl(SlimAnnotatedType<T> annotatedType, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
+    protected EnhancedAnnotationImpl(SlimAnnotatedType<T> annotatedType,
+            Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
         super(annotatedType, annotationMap, declaredAnnotationMap, classTransformer);
         this.clazz = annotatedType.getJavaClass();
         members = new HashSet<EnhancedAnnotatedMethod<?, ?>>();
         annotatedMembers = SetMultimap.newSetMultimap();
         for (AnnotatedMethod<? super T> annotatedMethod : annotatedType.getMethods()) {
-            EnhancedAnnotatedMethod<?, ? super T> enhancedAnnotatedMethod = EnhancedAnnotatedMethodImpl.of(annotatedMethod, this, classTransformer);
+            EnhancedAnnotatedMethod<?, ? super T> enhancedAnnotatedMethod = EnhancedAnnotatedMethodImpl.of(annotatedMethod,
+                    this, classTransformer);
             members.add(enhancedAnnotatedMethod);
             for (Annotation annotation : enhancedAnnotatedMethod.getAnnotations()) {
                 annotatedMembers.put(annotation.annotationType(), enhancedAnnotatedMethod);
@@ -83,7 +88,8 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
     }
 
     @Override
-    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
+            Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
         return Collections.emptySet();
     }
 

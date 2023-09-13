@@ -32,7 +32,8 @@ public class WeldFilterImpl extends FilterImpl implements WeldFilter {
 
     private final String pattern;
 
-    public WeldFilterImpl(String name, Collection<Metadata<SystemPropertyActivation>> systemPropertyActivation, Collection<Metadata<ClassAvailableActivation>> classAvailableActivation, String pattern) {
+    public WeldFilterImpl(String name, Collection<Metadata<SystemPropertyActivation>> systemPropertyActivation,
+            Collection<Metadata<ClassAvailableActivation>> classAvailableActivation, String pattern) {
         super(name, systemPropertyActivation, classAvailableActivation);
         this.pattern = pattern;
     }

@@ -21,6 +21,7 @@ import jakarta.enterprise.inject.spi.BeanAttributes;
 
 /**
  * Used within {@link IsolatedForwardingBean} and its subclasses as a value holder.
+ *
  * @author Jozef Hartinger
  *
  * @param <T> type of the bean class

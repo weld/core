@@ -37,12 +37,13 @@ public class GenericProducerMethodRawSpecializationTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericProducerMethodRawSpecializationTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericProducerMethodRawSpecializationTest.class))
                 .addClasses(SpecializingProducerBean2.class, ProducerBean2.class);
     }
 
     @Test
     public void testDeploymentWithSpecializationOfRawType() {
         // should throw definition exception
-     }
+    }
 }

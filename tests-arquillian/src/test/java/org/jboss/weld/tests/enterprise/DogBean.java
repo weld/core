@@ -18,7 +18,6 @@ package org.jboss.weld.tests.enterprise;
 
 import jakarta.ejb.Stateless;
 
-
 @Stateless
 public class DogBean implements Dog {
 

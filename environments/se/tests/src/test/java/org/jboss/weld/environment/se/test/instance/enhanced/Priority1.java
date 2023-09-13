@@ -26,7 +26,6 @@ import jakarta.enterprise.context.Dependent;
 @Priority(1)
 public class Priority1 extends Base implements WithPriority {
 
-
     @Override
     String getId() {
         return Priority1.class.getName();

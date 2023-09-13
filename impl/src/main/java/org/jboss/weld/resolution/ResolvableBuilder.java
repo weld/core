@@ -51,7 +51,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public class ResolvableBuilder {
 
     private static final Class<?>[] FACADE_TYPES = new Class<?>[] { Event.class, Instance.class, WeldEvent.class,
-        WeldInstance.class, Provider.class, InterceptionFactory.class };
+            WeldInstance.class, Provider.class, InterceptionFactory.class };
     private static final Class<?>[] METADATA_TYPES = new Class<?>[] { Interceptor.class, Decorator.class, Bean.class };
     private static final Set<QualifierInstance> ANY_SINGLETON = Collections.singleton(QualifierInstance.ANY);
 
@@ -134,13 +134,13 @@ public class ResolvableBuilder {
     }
 
     private Resolvable createFacade(Class<?> rawType) {
-        Set<Type> types = Collections.<Type>singleton(rawType);
+        Set<Type> types = Collections.<Type> singleton(rawType);
         return new ResolvableImpl(rawType, types, declaringBean, ANY_SINGLETON, delegate);
     }
 
     // just as facade but we keep the qualifiers so that we can recognize Bean from @Intercepted Bean.
     private Resolvable createMetadataProvider(Class<?> rawType) {
-        Set<Type> types = Collections.<Type>singleton(rawType);
+        Set<Type> types = Collections.<Type> singleton(rawType);
         return new ResolvableImpl(rawType, types, declaringBean, qualifierInstances, delegate);
     }
 
@@ -205,7 +205,8 @@ public class ResolvableBuilder {
         return this;
     }
 
-    protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance, Class<? extends Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance,
+            Class<? extends Annotation> annotationType) {
         if (!store.getBindingTypeModel(annotationType).isValid()) {
             throw BeanManagerLogger.LOG.invalidQualifier(qualifierInstance);
         }
@@ -227,7 +228,8 @@ public class ResolvableBuilder {
         private final boolean delegate;
         private final int hashCode;
 
-        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances, boolean delegate) {
+        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Bean<?> declaringBean,
+                final Set<QualifierInstance> qualifierInstances, boolean delegate) {
             this.typeClosure = typeClosure;
             this.rawType = rawType;
             this.declaringBean = declaringBean;

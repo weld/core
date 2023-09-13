@@ -26,7 +26,8 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X> {
+public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>>
+        implements ProcessSessionBean<X> {
 
     protected static <X> void fire(BeanManagerImpl beanManager, SessionBean<Object> bean) {
         if (beanManager.isBeanEnabled(bean)) {
@@ -36,7 +37,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
     }
 
     private ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean) {
-        super(beanManager, ProcessSessionBean.class, new Type[]{bean.getAnnotated().getBaseType()}, bean);
+        super(beanManager, ProcessSessionBean.class, new Type[] { bean.getAnnotated().getBaseType() }, bean);
     }
 
     public String getEjbName() {

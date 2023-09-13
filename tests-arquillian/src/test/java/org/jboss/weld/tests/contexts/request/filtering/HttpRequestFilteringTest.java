@@ -37,9 +37,14 @@ public class HttpRequestFilteringTest {
     public static Archive<?> getDeployment() {
         JavaArchive library = ShrinkWrap.create(JavaArchive.class).addClass(Foo.class);
         WebArchive foo = ShrinkWrap.create(WebArchive.class, "foo.war").addClass(FooServlet.class)
-                .addAsWebInfResource(HttpRequestFilteringTest.class.getPackage(), "web.xml", "web.xml").addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        WebArchive bar = ShrinkWrap.create(WebArchive.class, "bar.war").addClass(BarServlet.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(HttpRequestFilteringTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(foo, bar).addAsLibrary(library);
+                .addAsWebInfResource(HttpRequestFilteringTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        WebArchive bar = ShrinkWrap.create(WebArchive.class, "bar.war").addClass(BarServlet.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(HttpRequestFilteringTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModules(foo, bar).addAsLibrary(library);
     }
 
     @Test

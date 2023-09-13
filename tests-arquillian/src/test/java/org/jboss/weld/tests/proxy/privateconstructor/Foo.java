@@ -18,7 +18,6 @@ package org.jboss.weld.tests.proxy.privateconstructor;
 
 import jakarta.enterprise.context.RequestScoped;
 
-
 @RequestScoped
 public class Foo {
     public Foo() {

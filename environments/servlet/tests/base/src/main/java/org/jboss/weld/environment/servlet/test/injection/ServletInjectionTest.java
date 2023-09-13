@@ -41,7 +41,10 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ServletInjectionTest {
 
-    public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<servlet><servlet-name>Rat Servlet</servlet-name><servlet-class>" + RatServlet.class.getName() + "</servlet-class></servlet> <servlet-mapping><servlet-name>Rat Servlet</servlet-name><url-pattern>/rat</url-pattern></servlet-mapping>").getBytes());
+    public static final Asset WEB_XML = new ByteArrayAsset(
+            extendDefaultWebXml("<servlet><servlet-name>Rat Servlet</servlet-name><servlet-class>" + RatServlet.class.getName()
+                    + "</servlet-class></servlet> <servlet-mapping><servlet-name>Rat Servlet</servlet-name><url-pattern>/rat</url-pattern></servlet-mapping>")
+                    .getBytes());
 
     @Deployment
     public static WebArchive createTestArchive() {

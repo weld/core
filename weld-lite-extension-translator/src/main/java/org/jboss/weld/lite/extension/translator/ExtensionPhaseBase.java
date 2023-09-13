@@ -1,12 +1,13 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.DefinitionException;
-import jakarta.enterprise.inject.spi.DeploymentException;
-import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.DeploymentException;
+
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 abstract class ExtensionPhaseBase {
     private final ExtensionPhase phase;
@@ -33,7 +34,8 @@ abstract class ExtensionPhaseBase {
             } catch (DefinitionException | DeploymentException e) {
                 throw e;
             } catch (InvocationTargetException e) {
-                throw LiteExtensionTranslatorLogger.LOG.problemExecutingExtensionMethod(method, phase, e.getCause().toString(), e);
+                throw LiteExtensionTranslatorLogger.LOG.problemExecutingExtensionMethod(method, phase, e.getCause().toString(),
+                        e);
             } catch (Exception e) {
                 // we treat every other error as deployment error
                 throw LiteExtensionTranslatorLogger.LOG.problemExecutingExtensionMethod(method, phase, e.toString(), e);
@@ -69,6 +71,7 @@ abstract class ExtensionPhaseBase {
             return new MessagesImpl(errors);
         }
 
-        throw LiteExtensionTranslatorLogger.LOG.invalidExtensionMethodParameterType(type, method.getDeclaringClass(), method.getName());
+        throw LiteExtensionTranslatorLogger.LOG.invalidExtensionMethodParameterType(type, method.getDeclaringClass(),
+                method.getName());
     }
 }

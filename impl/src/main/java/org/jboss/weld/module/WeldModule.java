@@ -30,8 +30,10 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * A Weld module is a unit of code that extends capabilities of Weld. This is done mainly by registering services, beans, contexts and validators.
- * Unlike CDI portable extensions, this SPI is consumed by a limited set of Weld's internal modules that provide integration with Java EE technologies.
+ * A Weld module is a unit of code that extends capabilities of Weld. This is done mainly by registering services, beans,
+ * contexts and validators.
+ * Unlike CDI portable extensions, this SPI is consumed by a limited set of Weld's internal modules that provide integration
+ * with Java EE technologies.
  * WeldModules are discovered using {@link ServiceLoader}.
  * This API may change and is for internal use only.
  *
@@ -42,6 +44,7 @@ public interface WeldModule {
 
     /**
      * The name of the module.
+     *
      * @return
      */
     String getName();
@@ -49,6 +52,7 @@ public interface WeldModule {
     /**
      * This hook is called once Weld registered {@link Service}s from the deployment and added its own internal Services.
      * A module may use this hook to discover registered per-deployment services and to register additional services.
+     *
      * @param ctx context
      */
     default void postServiceRegistration(PostServiceRegistrationContext ctx) {
@@ -61,16 +65,21 @@ public interface WeldModule {
 
         /**
          * Returns the container id of the running container
+         *
          * @return the container id
          */
         String getContextId();
+
         /**
          * A mutable service registry. Existing services may be replaced and additional services may be registered by a module.
+         *
          * @return services
          */
         ServiceRegistry getServices();
+
         /**
          * Registers an additional validator to be used for bean validation
+         *
          * @param validator
          */
         void registerPlugableValidator(PlugableValidator validator);
@@ -78,6 +87,7 @@ public interface WeldModule {
 
     /**
      * This hook is called once Weld registered built-in contexts. A module may register additional contexts.
+     *
      * @param ctx context
      */
     default void postContextRegistration(PostContextRegistrationContext ctx) {
@@ -90,16 +100,21 @@ public interface WeldModule {
 
         /**
          * Returns the container id of the running container
+         *
          * @return the container id
          */
         String getContextId();
+
         /**
          * An immutable view on per-deployment services
+         *
          * @return services
          */
         ServiceRegistry getServices();
+
         /**
          * Register an additional context. A built-in bean is automatically registered for each context.
+         *
          * @param context CDI context
          */
         void addContext(ContextHolder<? extends Context> context);
@@ -109,6 +124,7 @@ public interface WeldModule {
      * This hook is called once Weld registered {@link Service}s for deployment of a particular bean archive.
      * A module may use this hook to discover services for a particular archive and to register additional services.
      * This method is called for each bean archive that is processed.
+     *
      * @param ctx context
      */
     default void postBeanArchiveServiceRegistration(PostBeanArchiveServiceRegistrationContext ctx) {
@@ -116,19 +132,23 @@ public interface WeldModule {
 
     interface PostBeanArchiveServiceRegistrationContext {
         /**
-         * A mutable service registry for a given bean archive. Existing services may be replaced and additional services may be registered by a module.
+         * A mutable service registry for a given bean archive. Existing services may be replaced and additional services may be
+         * registered by a module.
+         *
          * @return services
          */
         ServiceRegistry getServices();
 
         /**
          * Returns the {@link BeanManagerImpl} for the given bean archive deployment.
+         *
          * @return bean manager
          */
         BeanManagerImpl getBeanManager();
 
         /**
          * Returns the {@link BeanDeploymentArchive} the services are associated with
+         *
          * @return the bean deployment archive
          */
         BeanDeploymentArchive getBeanDeploymentArchive();
@@ -137,6 +157,7 @@ public interface WeldModule {
     /**
      * This hook is called by Weld before it starts deploying beans. A module may register additional built-in beans.
      * This callback is called for each {@link BeanDeployment} separately.
+     *
      * @param ctx context
      */
     default void preBeanRegistration(PreBeanRegistrationContext ctx) {
@@ -148,21 +169,28 @@ public interface WeldModule {
     interface PreBeanRegistrationContext {
         /**
          * The environment in which Weld is run.
+         *
          * @return the environment
          */
         Environment getEnvironment();
+
         /**
          * Returns {@link BeanDeploymentArchive} represented by this bean archive deployment.
+         *
          * @return bda
          */
         BeanDeploymentArchive getBeanDeploymentArchive();
+
         /**
          * Returns the {@link BeanManagerImpl} for the given bean archive deployment.
+         *
          * @return bean manager
          */
         BeanManagerImpl getBeanManager();
+
         /**
          * Register an additional built-in bean with the given bean archive deployment.
+         *
          * @param additional built-in bean
          */
         void registerBean(AbstractBuiltInBean<?> bean);

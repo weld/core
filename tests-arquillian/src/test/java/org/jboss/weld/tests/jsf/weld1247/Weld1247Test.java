@@ -17,9 +17,10 @@
 
 package org.jboss.weld.tests.jsf.weld1247;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URL;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -34,7 +35,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
@@ -66,6 +67,5 @@ public class Weld1247Test {
     public void testPreRenderViewExecutedExactlyOnce() throws Exception {
         assertEquals(1, Bean.invocationCount);
     }
-
 
 }

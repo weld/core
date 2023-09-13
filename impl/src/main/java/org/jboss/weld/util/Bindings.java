@@ -79,7 +79,8 @@ public class Bindings {
         }
     }
 
-    public static boolean areInterceptorBindingsEquivalent(Annotation qualifier1, Annotation qualifier2, MetaAnnotationStore store) {
+    public static boolean areInterceptorBindingsEquivalent(Annotation qualifier1, Annotation qualifier2,
+            MetaAnnotationStore store) {
         checkInterceptorBinding(qualifier1, store);
         checkInterceptorBinding(qualifier2, store);
 

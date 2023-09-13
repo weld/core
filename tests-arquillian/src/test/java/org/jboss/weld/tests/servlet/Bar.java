@@ -16,7 +16,8 @@ public class Bar implements Filter {
     public void destroy() {
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {

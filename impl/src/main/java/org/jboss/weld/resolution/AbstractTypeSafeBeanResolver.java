@@ -56,7 +56,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author alesj
  */
-public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends Collection<T>> extends TypeSafeResolver<Resolvable, T, C, C> {
+public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends Collection<T>>
+        extends TypeSafeResolver<Resolvable, T, C, C> {
 
     private final BeanManagerImpl beanManager;
     private final ComputingCache<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
@@ -91,7 +92,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                     return allBeans.build();
                 } else {
                     if (priorityBeans.size() == 1) {
-                        return Collections.<Bean<?>>singleton(priorityBeans.iterator().next());
+                        return Collections.<Bean<?>> singleton(priorityBeans.iterator().next());
                     } else {
                         return resolveAlternatives(priorityBeans);
                     }
@@ -206,13 +207,13 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
     @Override
     protected Iterable<? extends T> getAllBeans(Resolvable resolvable) {
         if (resolvable.getTypes().contains(Object.class)
-            || Instance.class.equals(resolvable.getJavaClass())
-            || Event.class.equals(resolvable.getJavaClass())
-            || Provider.class.equals(resolvable.getJavaClass())
-            || InterceptionFactory.class.equals(resolvable.getJavaClass())
-            || WeldInstance.class.equals(resolvable.getJavaClass())
-            || WeldEvent.class.equals(resolvable.getJavaClass())
-            || resolvable.getTypes().contains(Serializable.class)) {
+                || Instance.class.equals(resolvable.getJavaClass())
+                || Event.class.equals(resolvable.getJavaClass())
+                || Provider.class.equals(resolvable.getJavaClass())
+                || InterceptionFactory.class.equals(resolvable.getJavaClass())
+                || WeldInstance.class.equals(resolvable.getJavaClass())
+                || WeldEvent.class.equals(resolvable.getJavaClass())
+                || resolvable.getTypes().contains(Serializable.class)) {
             return super.getAllBeans(resolvable);
         }
         Set<T> beans = new HashSet<T>();
@@ -239,7 +240,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     private List<T> getBeans(Type type) {
         List<T> beansForType = beansByType.get().get(type);
-        return beansForType == null ? Collections.<T>emptyList() : beansForType;
+        return beansForType == null ? Collections.<T> emptyList() : beansForType;
     }
 
     /**
@@ -259,9 +260,9 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
             return beans;
         }
         /*
-        * We need to defensively copy the beans set as it can be provided by
-        * the user in which case this algorithm will have thread safety issues
-        */
+         * We need to defensively copy the beans set as it can be provided by
+         * the user in which case this algorithm will have thread safety issues
+         */
         //noinspection unchecked
         beans = ImmutableSet.copyOf(beans);
         //noinspection SuspiciousMethodCalls

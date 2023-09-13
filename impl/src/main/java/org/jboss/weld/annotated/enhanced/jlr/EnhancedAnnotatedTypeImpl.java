@@ -83,9 +83,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @SuppressFBWarnings("unchecked")
-    private static final Set<Class<? extends Annotation>> MAPPED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Observes.class, ObservesAsync.class);
+    private static final Set<Class<? extends Annotation>> MAPPED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Observes.class,
+            ObservesAsync.class);
     @SuppressFBWarnings("unchecked")
-    private static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Disposes.class);
+    private static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet
+            .of(Disposes.class);
 
     // Class attributes
     private final EnhancedAnnotatedType<? super T> superclass;
@@ -128,17 +130,22 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     private final SlimAnnotatedType<T> slim;
 
-
     public static <T> EnhancedAnnotatedType<T> of(SlimAnnotatedType<T> annotatedType, ClassTransformer classTransformer) {
         if (annotatedType instanceof BackedAnnotatedType<?>) {
-            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(classTransformer.getReflectionCache().getDeclaredAnnotations(annotatedType.getJavaClass())), classTransformer);
+            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()),
+                    buildAnnotationMap(
+                            classTransformer.getReflectionCache().getDeclaredAnnotations(annotatedType.getJavaClass())),
+                    classTransformer);
         } else {
-            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(annotatedType.getAnnotations()), classTransformer);
+            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()),
+                    buildAnnotationMap(annotatedType.getAnnotations()), classTransformer);
         }
     }
 
     @SuppressWarnings("unchecked")
-    protected EnhancedAnnotatedTypeImpl(SlimAnnotatedType<T> annotatedType, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
+    protected EnhancedAnnotatedTypeImpl(SlimAnnotatedType<T> annotatedType,
+            Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
         super(annotatedType, annotationMap, declaredAnnotationMap, classTransformer);
         this.slim = annotatedType;
         discovered = annotatedType instanceof BackedAnnotatedType<?>;
@@ -166,7 +173,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             if (javaClass != Object.class) {
                 for (AnnotatedField<? super T> field : annotatedType.getFields()) {
                     if (field.getJavaMember().getDeclaringClass().equals(javaClass)) {
-                        EnhancedAnnotatedField<?, ? super T> annotatedField = EnhancedAnnotatedFieldImpl.of(field, this, classTransformer);
+                        EnhancedAnnotatedField<?, ? super T> annotatedField = EnhancedAnnotatedFieldImpl.of(field, this,
+                                classTransformer);
                         declaredFieldsTemp.add(annotatedField);
                         for (Annotation annotation : annotatedField.getAnnotations()) {
                             declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
@@ -175,7 +183,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 }
                 fieldsTemp = new HashSet<EnhancedAnnotatedField<?, ? super T>>(declaredFieldsTemp);
                 if ((superclass != null) && (superclass.getJavaClass() != Object.class)) {
-                    fieldsTemp = Sets.union(fieldsTemp, Reflections.<Set<EnhancedAnnotatedField<?, ? super T>>>cast(superclass.getFields()));
+                    fieldsTemp = Sets.union(fieldsTemp,
+                            Reflections.<Set<EnhancedAnnotatedField<?, ? super T>>> cast(superclass.getFields()));
                 }
             }
             this.declaredFields = new HashSet<EnhancedAnnotatedField<?, ? super T>>(declaredFieldsTemp);
@@ -183,7 +192,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>> annotatedFields = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>>();
             fieldsTemp = new HashSet<EnhancedAnnotatedField<?, ? super T>>();
             for (AnnotatedField<? super T> annotatedField : annotatedType.getFields()) {
-                EnhancedAnnotatedField<?, ? super T> weldField = EnhancedAnnotatedFieldImpl.of(annotatedField, this, classTransformer);
+                EnhancedAnnotatedField<?, ? super T> weldField = EnhancedAnnotatedFieldImpl.of(annotatedField, this,
+                        classTransformer);
                 fieldsTemp.add(weldField);
                 if (annotatedField.getDeclaringType().getJavaClass().equals(javaClass)) {
                     declaredFieldsTemp.add(weldField);
@@ -206,7 +216,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
         this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, EnhancedAnnotatedConstructor<?>>();
         for (AnnotatedConstructor<T> constructor : annotatedType.getConstructors()) {
-            EnhancedAnnotatedConstructor<T> weldConstructor = EnhancedAnnotatedConstructorImpl.of(constructor, this, classTransformer);
+            EnhancedAnnotatedConstructor<T> weldConstructor = EnhancedAnnotatedConstructorImpl.of(constructor, this,
+                    classTransformer);
             this.constructors.add(weldConstructor);
             this.declaredConstructorsBySignature.put(weldConstructor.getSignature(), weldConstructor);
         }
@@ -215,13 +226,14 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredAnnotatedMethods = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>>();
         Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> declaredMethodsByAnnotatedParameters = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>>();
 
-        Set<EnhancedAnnotatedMethod<?, ? super T>> methodsTemp = new HashSet<EnhancedAnnotatedMethod<?,? super T>>();
+        Set<EnhancedAnnotatedMethod<?, ? super T>> methodsTemp = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
         ArrayList<EnhancedAnnotatedMethod<?, ? super T>> declaredMethodsTemp = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
         if (discovered) {
             if (!(javaClass.equals(Object.class))) {
                 for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
                     if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
-                        EnhancedAnnotatedMethod<?, ? super T> weldMethod = EnhancedAnnotatedMethodImpl.of(method, this, classTransformer);
+                        EnhancedAnnotatedMethod<?, ? super T> weldMethod = EnhancedAnnotatedMethodImpl.of(method, this,
+                                classTransformer);
                         declaredMethodsTemp.add(weldMethod);
                         for (Annotation annotation : weldMethod.getAnnotations()) {
                             declaredAnnotatedMethods.put(annotation.annotationType(), weldMethod);
@@ -237,16 +249,18 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 if (superclass != null) {
                     EnhancedAnnotatedType<?> current = superclass;
                     while (current.getJavaClass() != Object.class) {
-                        Set<EnhancedAnnotatedMethod<?, ? super T>> superClassMethods = Reflections.cast(current.getDeclaredEnhancedMethods());
+                        Set<EnhancedAnnotatedMethod<?, ? super T>> superClassMethods = Reflections
+                                .cast(current.getDeclaredEnhancedMethods());
                         methodsTemp.addAll(superClassMethods);
                         current = current.getEnhancedSuperclass();
                     }
                 }
                 // Also add default methods
                 for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(javaClass)) {
-                    EnhancedAnnotatedType<?> interfaceType = classTransformer.getEnhancedAnnotatedType(interfaceClazz, slim.getIdentifier().getBdaId());
+                    EnhancedAnnotatedType<?> interfaceType = classTransformer.getEnhancedAnnotatedType(interfaceClazz,
+                            slim.getIdentifier().getBdaId());
                     for (EnhancedAnnotatedMethod<?, ?> interfaceMethod : interfaceType.getEnhancedMethods()) {
-                        if(Reflections.isDefault(interfaceMethod.getJavaMember())) {
+                        if (Reflections.isDefault(interfaceMethod.getJavaMember())) {
                             methodsTemp.add((EnhancedAnnotatedMethod<?, ? super T>) interfaceMethod);
                         }
                     }
@@ -256,7 +270,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             this.declaredMethods = new HashSet<>(declaredMethodsTemp);
         } else {
             for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
-                EnhancedAnnotatedMethod<?, ? super T> enhancedMethod = EnhancedAnnotatedMethodImpl.of(method, this, classTransformer);
+                EnhancedAnnotatedMethod<?, ? super T> enhancedMethod = EnhancedAnnotatedMethodImpl.of(method, this,
+                        classTransformer);
                 methodsTemp.add(enhancedMethod);
                 if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
                     declaredMethodsTemp.add(enhancedMethod);
@@ -301,14 +316,16 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
      *
      * @param annotatedType
      * @param methods
-     * @param skipOverridingBridgeMethods If set to <code>true</code> the returning set will not contain methods overriden by a bridge method
+     * @param skipOverridingBridgeMethods If set to <code>true</code> the returning set will not contain methods overriden by a
+     *        bridge method
      * @return the set of overriden methods
      */
     protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
             Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
         Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
         Multimap<MethodSignature, Package> seenMethods = SetMultimap.newSetMultimap();
-        for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+        for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null
+                && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
                 if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
                     if (skipOverridingBridgeMethods && method.getJavaMember().isBridge()) {
@@ -324,7 +341,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         return immutableSetView(overriddenMethods);
     }
 
-    protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
+    protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(
+            Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
         Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = SetMultimap.newSetMultimap();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
             for (Class<? extends Annotation> annotation : MAPPED_METHOD_ANNOTATIONS) {
@@ -336,7 +354,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         return Multimaps.unmodifiableMultimap(result);
     }
 
-    protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedParameterMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
+    protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedParameterMethodMultimap(
+            Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
         Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = SetMultimap.newSetMultimap();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
             for (Class<? extends Annotation> annotation : MAPPED_METHOD_PARAMETER_ANNOTATIONS) {
@@ -405,7 +424,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public Collection<EnhancedAnnotatedField<?, ? super T>> getDeclaredEnhancedFields(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedField<?, ? super T>> getDeclaredEnhancedFields(
+            Class<? extends Annotation> annotationType) {
         return declaredAnnotatedFields.get(annotationType);
     }
 
@@ -426,7 +446,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     public Collection<EnhancedAnnotatedField<?, ?>> getEnhancedFields(Class<? extends Annotation> annotationType) {
         if (annotatedFields == null) {
             // Build collection from class hierarchy
-            ArrayList<EnhancedAnnotatedField<?, ?>> aggregatedFields = new ArrayList<EnhancedAnnotatedField<?, ?>>(this.declaredAnnotatedFields.get(annotationType));
+            ArrayList<EnhancedAnnotatedField<?, ?>> aggregatedFields = new ArrayList<EnhancedAnnotatedField<?, ?>>(
+                    this.declaredAnnotatedFields.get(annotationType));
             if ((superclass != null) && (superclass.getJavaClass() != Object.class)) {
                 aggregatedFields.addAll(superclass.getEnhancedFields(annotationType));
             }
@@ -483,7 +504,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethods(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethods(
+            Class<? extends Annotation> annotationType) {
         return Collections.unmodifiableCollection(declaredAnnotatedMethods.get(annotationType));
     }
 
@@ -518,7 +540,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(
+            Class<? extends Annotation> annotationType) {
         return Collections.unmodifiableCollection(declaredMethodsByAnnotatedParameters.get(annotationType));
     }
 
@@ -646,12 +669,12 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @Override
     public <S> S cast(Object object) {
-        return Reflections.<S>cast(object);
+        return Reflections.<S> cast(object);
     }
 
     @Override
     public Set<AnnotatedConstructor<T>> getConstructors() {
-        return Collections.unmodifiableSet(Reflections.<Set<AnnotatedConstructor<T>>>cast(constructors));
+        return Collections.unmodifiableSet(Reflections.<Set<AnnotatedConstructor<T>>> cast(constructors));
     }
 
     @Override
@@ -666,7 +689,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @Override
     public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
-        return declaredMetaAnnotationMap.containsKey(metaAnnotationType) ? ImmutableSet.copyOf(declaredMetaAnnotationMap.get(metaAnnotationType))
+        return declaredMetaAnnotationMap.containsKey(metaAnnotationType)
+                ? ImmutableSet.copyOf(declaredMetaAnnotationMap.get(metaAnnotationType))
                 : Collections.emptySet();
     }
 
@@ -681,7 +705,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(
+            Class<? extends Annotation> annotationType) {
         return annotatedMethodsByAnnotatedParameters.get(annotationType);
     }
 

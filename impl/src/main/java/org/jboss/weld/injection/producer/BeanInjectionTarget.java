@@ -43,18 +43,21 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
-    public static <T> BeanInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    public static <T> BeanInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean,
+            BeanManagerImpl beanManager) {
         return new BeanInjectionTarget<T>(type, bean, beanManager);
     }
 
-    public static <T> BeanInjectionTarget<T> forCdiInterceptor(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl manager) {
-        return new BeanInjectionTarget<T>(type, bean, manager, ResourceInjector.of(type, bean, manager), NoopLifecycleCallbackInvoker.<T>getInstance());
+    public static <T> BeanInjectionTarget<T> forCdiInterceptor(EnhancedAnnotatedType<T> type, Bean<T> bean,
+            BeanManagerImpl manager) {
+        return new BeanInjectionTarget<T>(type, bean, manager, ResourceInjector.of(type, bean, manager),
+                NoopLifecycleCallbackInvoker.<T> getInstance());
     }
 
     private final Bean<T> bean;
 
-
-    public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+    public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector,
+            LifecycleCallbackInvoker<T> invoker) {
         super(type, bean, beanManager, injector, invoker);
         this.bean = bean;
     }
@@ -91,7 +94,9 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected void buildInterceptionModel(EnhancedAnnotatedType<T> annotatedType, AbstractInstantiator<T> instantiator) {
-        new InterceptionModelInitializer<T>(beanManager, annotatedType, annotatedType.getDeclaredEnhancedConstructor(instantiator.getConstructorInjectionPoint().getSignature()), getBean()).init();
+        new InterceptionModelInitializer<T>(beanManager, annotatedType,
+                annotatedType.getDeclaredEnhancedConstructor(instantiator.getConstructorInjectionPoint().getSignature()),
+                getBean()).init();
     }
 
     @Override
@@ -102,7 +107,9 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         if (isInterceptionCandidate()) {
             interceptionModel = beanManager.getInterceptorModelRegistry().get(getType());
         }
-        boolean hasNonConstructorInterceptors = interceptionModel != null && (interceptionModel.hasExternalNonConstructorInterceptors() || interceptionModel.hasTargetClassInterceptors());
+        boolean hasNonConstructorInterceptors = interceptionModel != null
+                && (interceptionModel.hasExternalNonConstructorInterceptors()
+                        || interceptionModel.hasTargetClassInterceptors());
 
         List<Decorator<?>> decorators = null;
         if (getBean() != null && isInterceptionCandidate()) {
@@ -118,9 +125,11 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
                 throw new java.lang.IllegalStateException("Unexpected instantiator " + getInstantiator());
             }
             DefaultInstantiator<T> delegate = (DefaultInstantiator<T>) getInstantiator();
-            setInstantiator(SubclassedComponentInstantiator.forInterceptedDecoratedBean(annotatedType, getBean(), delegate, beanManager));
+            setInstantiator(SubclassedComponentInstantiator.forInterceptedDecoratedBean(annotatedType, getBean(), delegate,
+                    beanManager));
             if (hasDecorators) {
-                setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), getInstantiator(), getBean(), decorators));
+                setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), getInstantiator(),
+                        getBean(), decorators));
             }
             if (hasNonConstructorInterceptors) {
                 setInstantiator(new InterceptorApplyingInstantiator<T>(getInstantiator(), interceptionModel, getType()));
@@ -151,7 +160,8 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         } else {
             if (constructor.isPrivate()) {
                 // Private no-arg constructor is a problem while creating the decorator and we have to blow up
-                throw BeanLogger.LOG.decoratedNoargsConstructorIsPrivate(this, Formats.formatAsStackTraceElement(constructor.getJavaMember()));
+                throw BeanLogger.LOG.decoratedNoargsConstructorIsPrivate(this,
+                        Formats.formatAsStackTraceElement(constructor.getJavaMember()));
             }
         }
     }
@@ -165,7 +175,8 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
             EnhancedAnnotatedType<?> decoratorClass;
             if (decorator instanceof DecoratorImpl<?>) {
                 DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
-                decoratorClass = decoratorBean.getBeanManager().getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(decoratorBean.getAnnotated());
+                decoratorClass = decoratorBean.getBeanManager().getServices().get(ClassTransformer.class)
+                        .getEnhancedAnnotatedType(decoratorBean.getAnnotated());
             } else if (decorator instanceof CustomDecoratorWrapper<?>) {
                 decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getEnhancedAnnotated();
             } else {

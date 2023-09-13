@@ -25,7 +25,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.config.ConfigurationKey;
-import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,11 +39,11 @@ public class NonPortableModeInjectionPointBeanTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(BeanArchive.class)
-            .addClasses(Bloom.class, Fig.class, FlowerExtension.class)
-            .addAsServiceProvider(Extension.class, FlowerExtension.class).addAsResource(
-                PropertiesBuilder.newBuilder()
-                .set(ConfigurationKey.NON_PORTABLE_MODE.get(), "true").build(),
-                "weld.properties");
+                .addClasses(Bloom.class, Fig.class, FlowerExtension.class)
+                .addAsServiceProvider(Extension.class, FlowerExtension.class).addAsResource(
+                        PropertiesBuilder.newBuilder()
+                                .set(ConfigurationKey.NON_PORTABLE_MODE.get(), "true").build(),
+                        "weld.properties");
     }
 
     @Inject

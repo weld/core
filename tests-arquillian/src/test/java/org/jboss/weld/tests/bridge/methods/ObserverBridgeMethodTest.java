@@ -30,16 +30,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
-*
-* @author Martin Kouba
-* @see WELD-1577
-*/
+ *
+ * @author Martin Kouba
+ * @see WELD-1577
+ */
 @RunWith(Arquillian.class)
 public class ObserverBridgeMethodTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ObserverBridgeMethodTest.class)).addClasses(Foo.class, Bar.class, CharlieObserver.class, BasicObserver.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ObserverBridgeMethodTest.class))
+                .addClasses(Foo.class, Bar.class, CharlieObserver.class, BasicObserver.class);
     }
 
     @Test

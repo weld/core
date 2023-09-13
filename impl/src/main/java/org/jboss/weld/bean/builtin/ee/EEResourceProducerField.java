@@ -55,7 +55,8 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         private transient T instance;
         private final CreationalContext<T> creationalContext;
 
-        private EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext, T instance) {
+        private EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField,
+                CreationalContext<T> creationalContext, T instance) {
             super(beanManager);
             this.beanId = producerField.getIdentifier();
             this.creationalContext = creationalContext;
@@ -64,9 +65,11 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
         public T call() throws Exception {
             if (instance == null) {
-                Contextual<T> contextual = getBeanManager().getServices().get(ContextualStore.class).<Contextual<T>, T>getContextual(beanId);
+                Contextual<T> contextual = getBeanManager().getServices().get(ContextualStore.class)
+                        .<Contextual<T>, T> getContextual(beanId);
                 if (contextual instanceof EEResourceProducerField<?, ?>) {
-                    this.instance = Reflections.<EEResourceProducerField<?, T>>cast(contextual).createUnderlying(creationalContext);
+                    this.instance = Reflections.<EEResourceProducerField<?, T>> cast(contextual)
+                            .createUnderlying(creationalContext);
                 } else {
                     throw BeanLogger.LOG.beanNotEeResourceProducer(contextual);
                 }
@@ -84,12 +87,14 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
     /**
      * Creates an EE resource producer field
      *
-     * @param field         The underlying method abstraction
+     * @param field The underlying method abstraction
      * @param declaringBean The declaring bean abstraction
-     * @param manager       the current manager
+     * @param manager the current manager
      * @return A producer field
      */
-    public static <X, T> EEResourceProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
+    public static <X, T> EEResourceProducerField<X, T> of(BeanAttributes<T> attributes,
+            EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod,
+            BeanManagerImpl manager, ServiceRegistry services) {
         return new EEResourceProducerField<X, T>(attributes, field, declaringBean, disposalMethod, manager, services);
     }
 
@@ -113,7 +118,9 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     private final Class<T> rawType;
 
-    protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
+    protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field,
+            AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager,
+            ServiceRegistry services) {
         super(attributes, field, declaringBean, disposalMethod, manager, services);
         this.rawType = field.getJavaClass();
     }
@@ -143,8 +150,9 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         if (Reflections.isFinal(rawType) || Serializable.class.isAssignableFrom(beanInstance.getClass())) {
             return checkReturnValue(beanInstance);
         } else {
-            BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(),
-                    this, creationalContext, beanInstance)));
+            BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(),
+                    new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(),
+                            this, creationalContext, beanInstance)));
             return checkReturnValue(proxyFactory.create(proxyBeanInstance));
         }
     }

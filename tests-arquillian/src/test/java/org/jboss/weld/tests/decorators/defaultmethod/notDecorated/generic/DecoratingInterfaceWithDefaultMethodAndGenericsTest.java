@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.decorators.defaultmethod.notDecorated.generic;
 
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -36,7 +37,9 @@ public class DecoratingInterfaceWithDefaultMethodAndGenericsTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratingInterfaceWithDefaultMethodAndGenericsTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(DecoratingInterfaceWithDefaultMethodAndGenericsTest.class))
                 .decorate(DecoratorClass.class)
                 .addPackage(DecoratingInterfaceWithDefaultMethodAndGenericsTest.class.getPackage());
     }

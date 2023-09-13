@@ -31,7 +31,7 @@ public class Servlet extends HttpServlet {
 
     @Inject
     private ServletBuiltinBeanInjectingBean bean;
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getRequestURI().contains("/request")) {

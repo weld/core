@@ -25,7 +25,7 @@ public interface AssignabilityRules {
      * Check whether at least one of the requiredTypes matches a type in beanTypes
      *
      * @param requiredTypes the requiredTypes
-     * @param beanTypes     the beanTypes
+     * @param beanTypes the beanTypes
      * @return can we assign some type from requiredTypes to some type in beanTypes
      */
     boolean matches(Set<Type> requiredTypes, Set<Type> beanTypes);
@@ -34,7 +34,7 @@ public interface AssignabilityRules {
      * Check whether requiredType matches a type in beanTypes
      *
      * @param requiredType the requiredType
-     * @param beanTypes    the beanTypes
+     * @param beanTypes the beanTypes
      * @return can we assign requiredType to some type in beanTypes
      */
     boolean matches(Type requiredType, Set<? extends Type> beanTypes);

@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.contexts.session.availability;
 
 import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
@@ -25,7 +26,7 @@ public class SessionScopedBean implements Serializable {
     private int number = 0;
 
     public void increment() {
-        number ++;
+        number++;
     }
 
     public int getNumber() {

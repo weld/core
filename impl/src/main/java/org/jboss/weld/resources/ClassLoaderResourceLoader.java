@@ -1,6 +1,5 @@
 package org.jboss.weld.resources;
 
-
 /**
  * A (@link ResourceLoader} implementation that uses a specific @{link ClassLoader}
  *

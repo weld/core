@@ -21,14 +21,17 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Delays thread execution for specified time or unless stop conditions are satisfied according to the actual {@link ResolutionLogic}. This class is not
+ * Delays thread execution for specified time or unless stop conditions are satisfied according to the actual
+ * {@link ResolutionLogic}. This class is not
  * thread-safe.
  * <p>
- * Setting the sleep interval to the value less than 15 ms is questionable since some operating systems do not provide such precision. Moreover such values may
+ * Setting the sleep interval to the value less than 15 ms is questionable since some operating systems do not provide such
+ * precision. Moreover such values may
  * impact test performance.
  * </p>
  * <p>
- * In case of no stop conditions are specified (not recommended), the timer logic corresponds to the regular {@link Thread#sleep(long)} execution.
+ * In case of no stop conditions are specified (not recommended), the timer logic corresponds to the regular
+ * {@link Thread#sleep(long)} execution.
  * </p>
  */
 public class Timer {
@@ -68,7 +71,8 @@ public class Timer {
     }
 
     /**
-     * Set the delay value. The value is automatically adjusted according to the {@link Configuration#getTestTimeoutFactor()} so that it's possible to configure
+     * Set the delay value. The value is automatically adjusted according to the {@link Configuration#getTestTimeoutFactor()} so
+     * that it's possible to configure
      * timeouts according to the testing runtime performance and throughput.
      *
      * @param delay The delay in milliseconds
@@ -79,7 +83,8 @@ public class Timer {
     }
 
     /**
-     * Set the delay value. The value is automatically adjusted according to the {@link Configuration#getTestTimeoutFactor()} so that it's possible to configure
+     * Set the delay value. The value is automatically adjusted according to the {@link Configuration#getTestTimeoutFactor()} so
+     * that it's possible to configure
      * timeouts according to the testing runtime performance and throughput.
      *
      * @param delay
@@ -190,7 +195,8 @@ public class Timer {
     }
 
     /**
-     * @return <code>true</code> if stop conditions are satisfied according to actual {@link #resolutionLogic} before timeout occurs, <code>false</code>
+     * @return <code>true</code> if stop conditions are satisfied according to actual {@link #resolutionLogic} before timeout
+     *         occurs, <code>false</code>
      *         otherwise
      */
     public boolean isStopConditionsSatisfiedBeforeTimeout() {
@@ -305,7 +311,7 @@ public class Timer {
         /**
          * All conditions must be satisfied
          */
-        CONJUNCTION, ;
+        CONJUNCTION,;
 
     }
 

@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.tests.ejb.mdb;
 
+import javax.naming.InitialContext;
+
 import jakarta.jms.Queue;
 import jakarta.jms.QueueConnection;
 import jakarta.jms.QueueConnectionFactory;
 import jakarta.jms.QueueSender;
 import jakarta.jms.QueueSession;
 import jakarta.jms.Session;
-import javax.naming.InitialContext;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -48,8 +49,7 @@ public class EJBTest {
         return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EJBTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModule(
                         ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EJBTest.class))
-                                .addPackage(EJBTest.class.getPackage())
-                );
+                                .addPackage(EJBTest.class.getPackage()));
     }
 
     @Test

@@ -43,7 +43,9 @@ public class SingleInterceptorInstancePerBeanInstanceTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SingleInterceptorInstancePerBeanInstanceTest.class)).intercept(LionInterceptor.class, TigerInterceptor.class)
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(SingleInterceptorInstancePerBeanInstanceTest.class))
+                .intercept(LionInterceptor.class, TigerInterceptor.class)
                 .addPackage(SingleInterceptorInstancePerBeanInstanceTest.class.getPackage());
     }
 

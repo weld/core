@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.decorators.defaultmethod.notDecorated;
 
-public interface InterfaceWithDefaultMethod extends PlainInterface{
+public interface InterfaceWithDefaultMethod extends PlainInterface {
 
     default String defaultPing() {
         return InterfaceWithDefaultMethod.class.getSimpleName();

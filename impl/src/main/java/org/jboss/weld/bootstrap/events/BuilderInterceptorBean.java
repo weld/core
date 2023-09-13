@@ -59,7 +59,8 @@ class BuilderInterceptorBean implements Interceptor<BuilderInterceptorInstance>,
 
     private final BeanManagerImpl beanManager;
 
-    private BuilderInterceptorBean(Set<Annotation> interceptorBindings, InterceptionType type, int priority, BeanManagerImpl beanManager,
+    private BuilderInterceptorBean(Set<Annotation> interceptorBindings, InterceptionType type, int priority,
+            BeanManagerImpl beanManager,
             Function<InvocationContext, Object> interceptorFunction,
             BiFunction<InvocationContext, Bean<?>, Object> interceptorMetadataFunction) {
         this.interceptorFunction = interceptorFunction;
@@ -70,12 +71,14 @@ class BuilderInterceptorBean implements Interceptor<BuilderInterceptorInstance>,
         this.beanManager = beanManager;
     }
 
-    public BuilderInterceptorBean(Set<Annotation> interceptorBindings, InterceptionType type, int priority, BeanManagerImpl beanManager,
+    public BuilderInterceptorBean(Set<Annotation> interceptorBindings, InterceptionType type, int priority,
+            BeanManagerImpl beanManager,
             Function<InvocationContext, Object> interceptorFunction) {
         this(interceptorBindings, type, priority, beanManager, interceptorFunction, null);
     }
 
-    public BuilderInterceptorBean(Set<Annotation> interceptorBindings, InterceptionType type, int priority, BeanManagerImpl beanManager,
+    public BuilderInterceptorBean(Set<Annotation> interceptorBindings, InterceptionType type, int priority,
+            BeanManagerImpl beanManager,
             BiFunction<InvocationContext, Bean<?>, Object> interceptorFunction) {
         this(interceptorBindings, type, priority, beanManager, null, interceptorFunction);
     }
@@ -91,7 +94,8 @@ class BuilderInterceptorBean implements Interceptor<BuilderInterceptorInstance>,
     }
 
     @Override
-    public Object intercept(InterceptionType type, BuilderInterceptorInstance builderInterceptorInstance, InvocationContext ctx) throws Exception {
+    public Object intercept(InterceptionType type, BuilderInterceptorInstance builderInterceptorInstance, InvocationContext ctx)
+            throws Exception {
         if (interceptorMetadataFunction != null) {
             return interceptorMetadataFunction.apply(ctx, builderInterceptorInstance.getInterceptedBean());
         } else {

@@ -40,7 +40,7 @@ public class MyExtension implements Extension {
     }
 
     private Parent createParent(final BeanManager bm, final CreationalContext<Parent> cc) {
-        final Parent p = new Parent((Child)bm.getReference(bm.resolve(bm.getBeans(Child.class)), Child.class, cc));
+        final Parent p = new Parent((Child) bm.getReference(bm.resolve(bm.getBeans(Child.class)), Child.class, cc));
         this.parentCreated = true;
         return p;
     }

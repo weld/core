@@ -63,7 +63,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotated<T, S> {
 
     // The set of default binding types
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(Default.Literal.INSTANCE);
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation> singleton(Default.Literal.INSTANCE);
 
     // Groovy object name, we ignore this interface type in AT tpe closure
     private static final String GROOVY_OBJECT = "groovy.lang.GroovyObject";
@@ -82,15 +82,18 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         return annotationMap;
     }
 
-    protected static void addMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared) {
+    protected static void addMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap,
+            Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared) {
         for (Annotation metaAnnotation : metaAnnotations) {
             addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType(), declared);
         }
     }
 
-    private static void addMetaAnnotation(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared) {
+    private static void addMetaAnnotation(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap,
+            Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared) {
         // Only map meta-annotations we are interested in
-        if (declared ? MAPPED_DECLARED_METAANNOTATIONS.contains(metaAnnotationType) : MAPPED_METAANNOTATIONS.contains(metaAnnotationType)) {
+        if (declared ? MAPPED_DECLARED_METAANNOTATIONS.contains(metaAnnotationType)
+                : MAPPED_METAANNOTATIONS.contains(metaAnnotationType)) {
             metaAnnotationMap.put(metaAnnotationType, annotation);
         }
     }
@@ -114,10 +117,11 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
      *
      * @param annotationMap A map of annotation to register
      */
-    public AbstractEnhancedAnnotated(Annotated annotated, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
+    public AbstractEnhancedAnnotated(Annotated annotated, Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
         this.delegate = annotated;
         if (annotated instanceof AnnotatedType<?>) {
-            this.rawType = Reflections.<AnnotatedType<T>>cast(annotated).getJavaClass();
+            this.rawType = Reflections.<AnnotatedType<T>> cast(annotated).getJavaClass();
         } else {
             this.rawType = Reflections.getRawType(annotated.getBaseType());
         }
@@ -141,31 +145,39 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         this.annotations = ImmutableSet.copyOf(this.annotationMap.values());
     }
 
-    protected void processMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Collection<Annotation> annotations, ClassTransformer classTransformer, boolean declared) {
+    protected void processMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap,
+            Collection<Annotation> annotations, ClassTransformer classTransformer, boolean declared) {
         for (Annotation annotation : annotations) {
             processMetaAnnotations(metaAnnotationMap, annotation, classTransformer, declared);
         }
     }
 
-    protected void processMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation[] annotations, ClassTransformer classTransformer, boolean declared) {
+    protected void processMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap,
+            Annotation[] annotations, ClassTransformer classTransformer, boolean declared) {
         for (Annotation annotation : annotations) {
             processMetaAnnotations(metaAnnotationMap, annotation, classTransformer, declared);
         }
     }
 
-    protected void processMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, ClassTransformer classTransformer, boolean declared) {
+    protected void processMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap,
+            Annotation annotation, ClassTransformer classTransformer, boolean declared) {
         // WELD-1310 Include synthetic annotations
-        SlimAnnotatedType<?> syntheticAnnotationAnnotatedType = classTransformer.getSyntheticAnnotationAnnotatedType(annotation.annotationType());
+        SlimAnnotatedType<?> syntheticAnnotationAnnotatedType = classTransformer
+                .getSyntheticAnnotationAnnotatedType(annotation.annotationType());
         if (syntheticAnnotationAnnotatedType != null) {
             addMetaAnnotations(metaAnnotationMap, annotation, syntheticAnnotationAnnotatedType.getAnnotations(), declared);
         } else {
-            addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), declared);
-            ReflectionCache.AnnotationClass<?> annotationClass = classTransformer.getReflectionCache().getAnnotationClass(annotation.annotationType());
+            addMetaAnnotations(metaAnnotationMap, annotation,
+                    classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), declared);
+            ReflectionCache.AnnotationClass<?> annotationClass = classTransformer.getReflectionCache()
+                    .getAnnotationClass(annotation.annotationType());
             if (annotationClass.isRepeatableAnnotationContainer()) {
-                processMetaAnnotations(metaAnnotationMap, annotationClass.getRepeatableAnnotations(annotation), classTransformer, declared);
+                processMetaAnnotations(metaAnnotationMap, annotationClass.getRepeatableAnnotations(annotation),
+                        classTransformer, declared);
             }
         }
-        addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), declared);
+        addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()),
+                declared);
     }
 
     public Class<T> getJavaClass() {

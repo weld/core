@@ -55,5 +55,4 @@ public class Foo {
         bar.increment();
     }
 
-
 }

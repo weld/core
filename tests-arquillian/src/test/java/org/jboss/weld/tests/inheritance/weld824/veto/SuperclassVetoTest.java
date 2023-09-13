@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.inheritance.weld824.veto;
 
+import static org.junit.Assert.assertTrue;
+
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -29,10 +33,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import jakarta.inject.Inject;
-
-import static org.junit.Assert.assertTrue;
-
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class SuperclassVetoTest {
@@ -44,7 +44,8 @@ public class SuperclassVetoTest {
      */
     @Deployment
     public static WebArchive createWebArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SuperclassVetoTest.class, Utils.ARCHIVE_TYPE.WAR));
+        WebArchive war = ShrinkWrap.create(WebArchive.class,
+                Utils.getDeploymentNameAsHash(SuperclassVetoTest.class, Utils.ARCHIVE_TYPE.WAR));
         war.addAsLibrary(createJavaArchive());
         war.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         return war;
@@ -58,7 +59,8 @@ public class SuperclassVetoTest {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
         jar.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         jar.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-        jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/veto/SimpleExtension", "services/jakarta.enterprise.inject.spi.Extension");
+        jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/veto/SimpleExtension",
+                "services/jakarta.enterprise.inject.spi.Extension");
         return jar;
     }
 

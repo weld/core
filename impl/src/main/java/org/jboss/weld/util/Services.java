@@ -39,14 +39,16 @@ public final class Services {
     }
 
     /**
-     * Identifies service views for a service implementation class. A service view is either: - an interface that directly extends {@link Service} or
+     * Identifies service views for a service implementation class. A service view is either: - an interface that directly
+     * extends {@link Service} or
      * {@link BootstrapService} - a clazz that directly implements {@link Service} or {@link BootstrapService}
      *
      * @param clazz the given class
      * @param serviceInterfaces a set that this method populates with service views
      * @return serviceInterfaces
      */
-    public static Set<Class<? extends Service>> identifyServiceInterfaces(Class<?> clazz, Set<Class<? extends Service>> serviceInterfaces) {
+    public static Set<Class<? extends Service>> identifyServiceInterfaces(Class<?> clazz,
+            Set<Class<? extends Service>> serviceInterfaces) {
         if (clazz == null || Object.class.equals(clazz) || BootstrapService.class.equals(clazz)) {
             return serviceInterfaces;
         }
@@ -68,7 +70,9 @@ public final class Services {
             BootstrapLogger.LOG.debugv("Installing additional service {0} ({1})", key.getName(), value.getClass());
             registry.add(key, Reflections.cast(value));
         } else if (shouldOverride(key, previous, value)) {
-            BootstrapLogger.LOG.debugv("Overriding service implementation for {0}. Previous implementation {1} is replaced with {2}", key.getName(),
+            BootstrapLogger.LOG.debugv(
+                    "Overriding service implementation for {0}. Previous implementation {1} is replaced with {2}",
+                    key.getName(),
                     previous.getClass().getName(), value.getClass().getName());
             registry.add(key, Reflections.cast(value));
         }

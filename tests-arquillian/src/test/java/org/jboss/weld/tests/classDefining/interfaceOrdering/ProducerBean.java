@@ -19,6 +19,7 @@ package org.jboss.weld.tests.classDefining.interfaceOrdering;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
+
 import org.jboss.weld.tests.classDefining.interfaceOrdering.b.B;
 import org.jboss.weld.tests.classDefining.interfaceOrdering.b.Two;
 

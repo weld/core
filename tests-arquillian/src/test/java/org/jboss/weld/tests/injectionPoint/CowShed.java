@@ -29,7 +29,7 @@ public class CowShed {
     @Produces
     public Cow get(InjectionPoint ip) {
         assert ip.getAnnotated() instanceof AnnotatedField<?>;
-        assert Reflections.<AnnotatedField<?>>cast(ip.getAnnotated()).getDeclaringType().getJavaClass().equals(Field.class);
+        assert Reflections.<AnnotatedField<?>> cast(ip.getAnnotated()).getDeclaringType().getJavaClass().equals(Field.class);
         return new Cow("daisy");
     }
 

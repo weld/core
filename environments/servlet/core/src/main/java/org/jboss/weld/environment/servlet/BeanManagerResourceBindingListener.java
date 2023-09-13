@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.environment.servlet;
 
-import jakarta.enterprise.inject.spi.BeanManager;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.Reference;
+
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 

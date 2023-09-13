@@ -37,12 +37,15 @@ public class ApplicationScopeEventTest {
 
     @Inject
     private Observer1 observer;
-    
+
     @Deployment
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ApplicationScopeEventTest.class, Utils.ARCHIVE_TYPE.WAR)).addClass(Observer1.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ApplicationScopeEventTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClass(Observer1.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-    
+
     @Test
     public void testServletContextInitializedInvoked() {
         assertTrue(observer.isObserved());

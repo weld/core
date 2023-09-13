@@ -46,5 +46,5 @@ public class NonDependentInterceptorTest {
     @Test
     public void testDeploymentWithScopedInterceptor() {
         // should throw definition exception
-     }
+    }
 }

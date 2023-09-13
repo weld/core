@@ -22,7 +22,7 @@ import jakarta.enterprise.context.Dependent;
 @Dependent
 public class Gama {
 
-    public void ping(){
+    public void ping() {
 
     }
 

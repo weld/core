@@ -28,23 +28,28 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link EnhancedAnnotatedParameter}.
+ * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading
+ * {@link EnhancedAnnotatedParameter}.
  *
  * @author Jozef Hartinger
  *
  */
-public class InferringParameterInjectionPointAttributes<T, X> extends AbstractInferringInjectionPointAttributes<T, Object> implements ParameterInjectionPointAttributes<T, X> {
+public class InferringParameterInjectionPointAttributes<T, X> extends AbstractInferringInjectionPointAttributes<T, Object>
+        implements ParameterInjectionPointAttributes<T, X> {
 
     private static final long serialVersionUID = 1237037554422642608L;
 
-    public static <T, X> InferringParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    public static <T, X> InferringParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter,
+            Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
         return new InferringParameterInjectionPointAttributes<T, X>(parameter, bean, declaringComponentClass, manager);
     }
 
     private final AnnotatedParameter<X> parameter;
 
-    protected InferringParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        super(parameter, manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
+    protected InferringParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean,
+            Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        super(parameter, manager.getContextId(), bean,
+                SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
         this.parameter = parameter.slim();
     }
 
@@ -66,7 +71,8 @@ public class InferringParameterInjectionPointAttributes<T, X> extends AbstractIn
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof InferringParameterInjectionPointAttributes<?, ?>) {
-            AnnotatedParameter<?> parameter = Reflections.<InferringParameterInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
+            AnnotatedParameter<?> parameter = Reflections.<InferringParameterInjectionPointAttributes<?, ?>> cast(obj)
+                    .getAnnotated();
             return AnnotatedTypes.compareAnnotatedParameters(getAnnotated(), parameter);
         }
         return false;

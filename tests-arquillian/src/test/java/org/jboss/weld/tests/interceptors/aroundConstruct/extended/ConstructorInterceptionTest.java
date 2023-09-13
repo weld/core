@@ -37,7 +37,9 @@ public class ConstructorInterceptionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ConstructorInterceptionTest.class)).intercept(AlphaInterceptor1.class, AlphaInterceptor2.class, BravoInterceptor.class).addPackage(ConstructorInterceptionTest.class.getPackage()).addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ConstructorInterceptionTest.class))
+                .intercept(AlphaInterceptor1.class, AlphaInterceptor2.class, BravoInterceptor.class)
+                .addPackage(ConstructorInterceptionTest.class.getPackage()).addClass(ActionSequence.class);
     }
 
     @Test
@@ -58,7 +60,8 @@ public class ConstructorInterceptionTest {
     public void testTypeLevelAndConstructorLevelBinding(Instance<BeanWithConstructorLevelAndTypeLevelBinding> instance) {
         ActionSequence.reset();
         instance.get();
-        assertSequenceEquals(AlphaInterceptor1.class, BravoInterceptor.class, BeanWithConstructorLevelAndTypeLevelBinding.class);
+        assertSequenceEquals(AlphaInterceptor1.class, BravoInterceptor.class,
+                BeanWithConstructorLevelAndTypeLevelBinding.class);
     }
 
     @Test

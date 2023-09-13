@@ -24,6 +24,7 @@ package org.jboss.weld.tests.ws.interceptors;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
+
 import jakarta.xml.ws.Service;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -50,7 +51,7 @@ import org.junit.runner.RunWith;
 @RunAsClient
 @Category(Integration.class)
 public class WebServiceInterceptorTest {
-    
+
     @ArquillianResource
     URL baseUrl;
 
@@ -59,7 +60,8 @@ public class WebServiceInterceptorTest {
 
     @Deployment
     public static Archive<?> archive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(WebServiceInterceptorTest.class, Utils.ARCHIVE_TYPE.WAR));
+        WebArchive war = ShrinkWrap.create(WebArchive.class,
+                Utils.getDeploymentNameAsHash(WebServiceInterceptorTest.class, Utils.ARCHIVE_TYPE.WAR));
         war.addPackage(WebServiceInterceptorTest.class.getPackage());
         war.addAsWebInfResource(new StringAsset(BEANS_CONFIG), "beans.xml");
         return war;

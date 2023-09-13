@@ -26,17 +26,21 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * Jetty Container.
- * <p>This container requires that the jetty server register DecoratingListener
+ * <p>
+ * This container requires that the jetty server register DecoratingListener
  * to dynamically register a decorator instance that wraps the {@link WeldDecorator}
- * added as an attribute.   The jetty <code>decorate</code> module does this and indicates it's
+ * added as an attribute. The jetty <code>decorate</code> module does this and indicates it's
  * availability by setting the "org.eclipse.jetty.webapp.DecoratingListener" to the
- * name of the watched attribute.</p>
+ * name of the watched attribute.
+ * </p>
  *
- * <p>Jetty also provides the <code>cdi-spi</code> module that may directly invoke the
- * CDI SPI.  This module indicates it's availability by setting the "org.eclipse.jetty.cdi"
- * context attribute to "CdiDecorator".  If this module is used, then this JettyContainer
+ * <p>
+ * Jetty also provides the <code>cdi-spi</code> module that may directly invoke the
+ * CDI SPI. This module indicates it's availability by setting the "org.eclipse.jetty.cdi"
+ * context attribute to "CdiDecorator". If this module is used, then this JettyContainer
  * only logs a message and does no further integration.
  * </p>
+ *
  * @since Jetty 9.4.20
  * @see JettyLegacyContainer
  * @author <a href="mailto:gregw@webtide.com">Greg Wilkins</a>
@@ -62,14 +66,14 @@ public class JettyContainer extends AbstractJettyContainer {
         // DecoratingListener is registered. Weld-3.1.2.Final documented that the decorate module
         // could be used directly, which sets DECORATING_LISTENER_ATTRIBUTE
         return servletContext.getAttribute(JETTY_CDI_ATTRIBUTE) instanceof String ||
-            servletContext.getAttribute(DECORATING_LISTENER_ATTRIBUTE) instanceof String;
+                servletContext.getAttribute(DECORATING_LISTENER_ATTRIBUTE) instanceof String;
     }
 
     @Override
     public void initialize(ContainerContext context) {
         try {
             ServletContext servletContext = context.getServletContext();
-            String mode = (String)servletContext.getAttribute(JETTY_CDI_ATTRIBUTE);
+            String mode = (String) servletContext.getAttribute(JETTY_CDI_ATTRIBUTE);
             if (mode == null) {
                 mode = DECORATING_LISTENER_MODE;
             }

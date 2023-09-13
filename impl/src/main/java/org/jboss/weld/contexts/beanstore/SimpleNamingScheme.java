@@ -30,9 +30,9 @@ public class SimpleNamingScheme extends AbstractNamingScheme {
     /**
      * Create a new Prefixer.
      *
-     * @param prefix    The prefix
+     * @param prefix The prefix
      * @param delimiter The delimiter to use between the prefix and the
-     *                  identifier.
+     *        identifier.
      */
     public SimpleNamingScheme(String prefix) {
         super("#");

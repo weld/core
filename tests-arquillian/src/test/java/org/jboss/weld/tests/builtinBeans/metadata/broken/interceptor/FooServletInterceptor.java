@@ -42,7 +42,7 @@ public class FooServletInterceptor {
     @AroundInvoke
     public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
         called = true;
-        if(bean != null) {
+        if (bean != null) {
             throw new IllegalStateException();
         }
         return ctx.proceed();

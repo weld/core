@@ -130,7 +130,6 @@ public class Garply extends UIComponent {
     @Override
     public void processRestoreState(FacesContext arg0, Object arg1) {
 
-
     }
 
     @Override

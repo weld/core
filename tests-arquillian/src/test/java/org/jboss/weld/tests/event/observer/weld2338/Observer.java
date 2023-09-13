@@ -30,14 +30,14 @@ public class Observer implements Extension {
 
     public static final AtomicInteger timesNonCleNotified = new AtomicInteger(0);
     public static final AtomicBoolean nonCleFooInjected = new AtomicBoolean(false);
-    
+
     public static final AtomicInteger timesCleNotified = new AtomicInteger(0);
 
     public void observeNonCLE(@Observes @Experimental Object o, Foo foo) {
         timesNonCleNotified.incrementAndGet();
         nonCleFooInjected.set(foo != null);
     }
-    
+
     /**
      * This should be considered a container lifecycle event(CLE) observer.
      * E.g. it should be notified many times over.

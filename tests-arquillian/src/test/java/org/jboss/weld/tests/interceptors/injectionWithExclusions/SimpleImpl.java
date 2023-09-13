@@ -27,17 +27,16 @@ import jakarta.interceptor.Interceptors;
  */
 @Stateless
 @ExcludeDefaultInterceptors
-@Interceptors({EjbInterceptor.class, EjbInterceptor2.class})
+@Interceptors({ EjbInterceptor.class, EjbInterceptor2.class })
 public class SimpleImpl implements Simple {
     @Inject
     Helper helper;
-
 
     public Helper getHelper() {
         return helper;
     }
 
-    @Interceptors({EjbInterceptor3.class, EjbInterceptor4.class})
+    @Interceptors({ EjbInterceptor3.class, EjbInterceptor4.class })
     public void doSomething() {
 
     }

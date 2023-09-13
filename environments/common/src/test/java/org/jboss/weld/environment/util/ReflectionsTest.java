@@ -40,9 +40,12 @@ public class ReflectionsTest {
     @Test
     public void testHasMetaAnnotationSpecified() {
         assertFalse(Reflections.hasBeanDefiningMetaAnnotationSpecified(new Annotation[] {}, NormalScope.class));
-        assertTrue(Reflections.hasBeanDefiningMetaAnnotationSpecified(new Annotation[] {NamedLiteral.DEFAULT, FooStereotype.LITERAL}, Stereotype.class));
-        assertFalse(Reflections.hasBeanDefiningMetaAnnotationSpecified(new Annotation[] {NamedLiteral.DEFAULT, FooStereotype.LITERAL}, NormalScope.class));
-        assertTrue(Reflections.hasBeanDefiningMetaAnnotationSpecified(new Annotation[] {NamedLiteral.DEFAULT, FooNormalScoped.LITERAL}, NormalScope.class));
+        assertTrue(Reflections.hasBeanDefiningMetaAnnotationSpecified(
+                new Annotation[] { NamedLiteral.DEFAULT, FooStereotype.LITERAL }, Stereotype.class));
+        assertFalse(Reflections.hasBeanDefiningMetaAnnotationSpecified(
+                new Annotation[] { NamedLiteral.DEFAULT, FooStereotype.LITERAL }, NormalScope.class));
+        assertTrue(Reflections.hasBeanDefiningMetaAnnotationSpecified(
+                new Annotation[] { NamedLiteral.DEFAULT, FooNormalScoped.LITERAL }, NormalScope.class));
     }
 
     @Stereotype

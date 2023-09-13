@@ -29,7 +29,7 @@ public class Zoo {
     @Produces
     @SuppressWarnings("unused")
     private Lion lion = new Lion();
-    
+
     @Produces
     @RequestScoped
     public Tiger getTiger(Lion lion, BeanManager manager) {

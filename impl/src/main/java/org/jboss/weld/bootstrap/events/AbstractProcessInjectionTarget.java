@@ -16,14 +16,15 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.manager.BeanManagerImpl;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
-import java.lang.reflect.Type;
-import java.util.List;
+
+import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefinitionContainerEvent {
 
@@ -34,8 +35,10 @@ public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefiniti
         }
     }
 
-    protected static <X> InjectionTarget<X> fire(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
-        ProcessSimpleInjectionTarget<X> processSimpleInjectionTarget = new ProcessSimpleInjectionTarget<X>(beanManager, annotatedType, injectionTarget) {
+    protected static <X> InjectionTarget<X> fire(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType,
+            InjectionTarget<X> injectionTarget) {
+        ProcessSimpleInjectionTarget<X> processSimpleInjectionTarget = new ProcessSimpleInjectionTarget<X>(beanManager,
+                annotatedType, injectionTarget) {
         };
         processSimpleInjectionTarget.fire();
         return processSimpleInjectionTarget.getInjectionTargetInternal();
@@ -44,7 +47,7 @@ public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefiniti
     protected final AnnotatedType<T> annotatedType;
 
     protected AbstractProcessInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType) {
-        super(beanManager, ProcessInjectionTarget.class, new Type[]{annotatedType.getBaseType()});
+        super(beanManager, ProcessInjectionTarget.class, new Type[] { annotatedType.getBaseType() });
         this.annotatedType = annotatedType;
     }
 

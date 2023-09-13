@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata;
 
-
 public interface MilkProduct {
 
     MilkProductDecorator getDecoratorInstance();

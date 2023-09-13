@@ -17,6 +17,11 @@
 
 package org.jboss.weld.tests.interceptors.ejb3model;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -25,12 +30,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
-
 
 /**
  * @author Marius Bogoevici
@@ -66,7 +65,6 @@ public class Ejb3InterceptionModelTest {
         assert !Goalkeeper.caught;
         assert Ball.aroundInvoke;
     }
-
 
     @Test
     public void testSimpleInterceptor2() {

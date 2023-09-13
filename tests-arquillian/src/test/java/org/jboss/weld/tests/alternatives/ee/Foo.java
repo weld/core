@@ -20,7 +20,6 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 
-
 @Dependent
 public class Foo {
 

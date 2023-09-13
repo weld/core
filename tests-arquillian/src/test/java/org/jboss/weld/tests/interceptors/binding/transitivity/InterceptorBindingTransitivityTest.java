@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.tests.interceptors.binding.transitivity;
 
+import static org.jboss.weld.tests.interceptors.binding.transitivity.Secure.SecureLiteral;
+import static org.jboss.weld.tests.interceptors.binding.transitivity.Synchronized.SynchronizedLiteral;
+import static org.jboss.weld.tests.interceptors.binding.transitivity.Transactional.TransactionalLiteral;
+import static org.jboss.weld.tests.interceptors.binding.transitivity.UltraSecure.UltraSecureLiteral;
+import static org.jboss.weld.tests.interceptors.binding.transitivity.UltraSynchronized.UltraSynchronizedLiteral;
+import static org.jboss.weld.tests.interceptors.binding.transitivity.UltraTransactional.UltraTransactionalLiteral;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -34,16 +40,9 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.jboss.weld.tests.interceptors.binding.transitivity.Secure.SecureLiteral;
-import static org.jboss.weld.tests.interceptors.binding.transitivity.Synchronized.SynchronizedLiteral;
-import static org.jboss.weld.tests.interceptors.binding.transitivity.Transactional.TransactionalLiteral;
-import static org.jboss.weld.tests.interceptors.binding.transitivity.UltraSecure.UltraSecureLiteral;
-import static org.jboss.weld.tests.interceptors.binding.transitivity.UltraSynchronized.UltraSynchronizedLiteral;
-import static org.jboss.weld.tests.interceptors.binding.transitivity.UltraTransactional.UltraTransactionalLiteral;
-
 /**
  * Tests interceptor binding transitivity for both normal and extension-provided interceptor bindings.
- * 
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
  * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
  */
@@ -82,8 +81,12 @@ public class InterceptorBindingTransitivityTest {
         // transitive bindings
         assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSynchronizedLiteral()).size());
         // transitive bindings
-        assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSynchronizedLiteral(), new SynchronizedLiteral()).size());
-        assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<UltraSynchronized>() {}, new AnnotationLiteral<Synchronized>() {}).size());
+        assertEquals(2, manager
+                .resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSynchronizedLiteral(), new SynchronizedLiteral())
+                .size());
+        assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<UltraSynchronized>() {
+        }, new AnnotationLiteral<Synchronized>() {
+        }).size());
         // should resolve UltraSecureInterceptor and transitively also SecureInterceptor
         assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSecureLiteral()).size());
         // should resolve UltraTransactionalInterceptor and transitively also TransactionalInterceptor
@@ -103,7 +106,6 @@ public class InterceptorBindingTransitivityTest {
         interceptedBean.transactional();
         assertEquals(1, TransactionalInterceptor.invocationCount);
 
-        
         resetAllCounters();
 
         interceptedBean.ultraSynchronized();

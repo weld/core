@@ -56,7 +56,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Ales Justin
  * @author Marko Luksa
  * @author <a href="https://about.me/lairdnelson"
- * target="_parent">Laird Nelson</a>
+ *         target="_parent">Laird Nelson</a>
  */
 public class ManagedBean<T> extends AbstractClassBean<T> {
 
@@ -73,12 +73,13 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     /**
      * Creates a simple, annotation defined Web Bean
      *
-     * @param <T>         The type
-     * @param clazz       The class
+     * @param <T> The type
+     * @param clazz The class
      * @param beanManager the current manager
      * @return A Web Bean
      */
-    public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
+    public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz,
+            BeanManagerImpl beanManager) {
         return new ManagedBean<T>(attributes, clazz, createId(attributes, clazz), beanManager);
     }
 
@@ -93,13 +94,15 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     /**
      * Constructor
      *
-     * @param type        The type of the bean
+     * @param type The type of the bean
      * @param beanManager The Bean manager
      */
-    protected ManagedBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanIdentifier identifier, BeanManagerImpl beanManager) {
+    protected ManagedBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanIdentifier identifier,
+            BeanManagerImpl beanManager) {
         super(attributes, type, identifier, beanManager);
         this.proxiable = Proxies.isTypesProxyable(getTypes(), beanManager.getServices());
-        setProducer(beanManager.getLocalInjectionTargetFactory(getEnhancedAnnotated()).createInjectionTarget(getEnhancedAnnotated(), this, false));
+        setProducer(beanManager.getLocalInjectionTargetFactory(getEnhancedAnnotated())
+                .createInjectionTarget(getEnhancedAnnotated(), this, false));
     }
 
     @Override
@@ -142,7 +145,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     private InterceptorClassMetadata<?> getFirstNonPassivationCapableInterceptor() {
-        for (InterceptorClassMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getAnnotated()).getAllInterceptors()) {
+        for (InterceptorClassMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry()
+                .get(getAnnotated()).getAllInterceptors()) {
             if (!Reflections.isSerializable(interceptorMetadata.getJavaClass())) {
                 return interceptorMetadata;
             }
@@ -219,9 +223,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             if (!getEnhancedAnnotated().isSerializable()) {
                 throw BeanLogger.LOG.passivatingBeanNeedsSerializableImpl(this);
             } else if (hasDecorators() && !allDecoratorsArePassivationCapable()) {
-                throw BeanLogger.LOG.passivatingBeanHasNonPassivationCapableDecorator(this, getFirstNonPassivationCapableDecorator());
+                throw BeanLogger.LOG.passivatingBeanHasNonPassivationCapableDecorator(this,
+                        getFirstNonPassivationCapableDecorator());
             } else if (hasInterceptors() && !allInterceptorsArePassivationCapable()) {
-                throw BeanLogger.LOG.passivatingBeanHasNonPassivationCapableInterceptor(this, getFirstNonPassivationCapableInterceptor());
+                throw BeanLogger.LOG.passivatingBeanHasNonPassivationCapableInterceptor(this,
+                        getFirstNonPassivationCapableInterceptor());
             }
         }
     }
@@ -258,7 +264,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     @Override
     public String toString() {
-        return "Managed Bean [" + getBeanClass().toString() + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "]";
+        return "Managed Bean [" + getBeanClass().toString() + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers())
+                + "]";
     }
 
     @Override

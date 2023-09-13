@@ -47,7 +47,8 @@ public class SecurityContextPropagationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SecurityContextPropagationTest.class)).addPackage(SecurityContextPropagationTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SecurityContextPropagationTest.class))
+                .addPackage(SecurityContextPropagationTest.class.getPackage());
     }
 
     @Test

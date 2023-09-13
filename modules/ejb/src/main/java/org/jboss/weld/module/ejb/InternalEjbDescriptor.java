@@ -106,7 +106,7 @@ class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
 
     public Class<? extends T> getImplementationClass() {
         if (delegate instanceof SubclassedComponentDescriptor) {
-            SubclassedComponentDescriptor<T> descriptor = Reflections.<SubclassedComponentDescriptor<T>>cast(delegate);
+            SubclassedComponentDescriptor<T> descriptor = Reflections.<SubclassedComponentDescriptor<T>> cast(delegate);
             Class<? extends T> implementationClass = descriptor.getComponentSubclass();
             if (implementationClass != null) {
                 return implementationClass;

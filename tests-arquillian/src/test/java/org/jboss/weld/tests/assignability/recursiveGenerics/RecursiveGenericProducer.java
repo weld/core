@@ -1,14 +1,15 @@
 package org.jboss.weld.tests.assignability.recursiveGenerics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
+
 import org.jboss.weld.tests.assignability.recursiveGenerics.DuplicateRecursion.FooBar;
 import org.jboss.weld.tests.assignability.recursiveGenerics.MutualRecursion.Edge;
 import org.jboss.weld.tests.assignability.recursiveGenerics.MutualRecursion.Graph;
 import org.jboss.weld.tests.assignability.recursiveGenerics.MutualRecursion.Node;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Dependent
 public class RecursiveGenericProducer {

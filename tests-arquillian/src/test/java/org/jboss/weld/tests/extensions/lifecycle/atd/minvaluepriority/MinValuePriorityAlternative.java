@@ -24,5 +24,5 @@ import jakarta.enterprise.inject.Alternative;
 @Priority(Integer.MIN_VALUE)
 @Dependent
 public class MinValuePriorityAlternative {
-	
+
 }

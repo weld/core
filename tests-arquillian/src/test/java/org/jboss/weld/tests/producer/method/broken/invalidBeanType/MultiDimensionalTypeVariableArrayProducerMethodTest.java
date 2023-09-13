@@ -37,12 +37,14 @@ public class MultiDimensionalTypeVariableArrayProducerMethodTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MultiDimensionalTypeVariableArrayProducerMethodTest.class))
-            .addClass(MultiDimensionalTypeVariableArrayProducer.class);
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(MultiDimensionalTypeVariableArrayProducerMethodTest.class))
+                .addClass(MultiDimensionalTypeVariableArrayProducer.class);
     }
 
     @Test
     public void testDeploymentWithMultiDimensionalVariableArrayProducerMethod() {
         // should throw definition exception
-     }
+    }
 }

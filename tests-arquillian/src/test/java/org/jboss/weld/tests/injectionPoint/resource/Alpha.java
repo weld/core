@@ -18,8 +18,8 @@ package org.jboss.weld.tests.injectionPoint.resource;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
-
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.test.util.ActionSequence;
 
 @Dependent
@@ -31,14 +31,14 @@ public class Alpha extends Bravo {
 
     @Resource
     public void setGreeting(String greeting) {
-       this.greeting = greeting;
-       ActionSequence.addAction(Alpha.class.getName()+String.class.getName());
+        this.greeting = greeting;
+        ActionSequence.addAction(Alpha.class.getName() + String.class.getName());
     }
 
     @EJB
     public void setSessionBean(SessionBean sessionBean) {
         this.sessionBean = sessionBean;
-        ActionSequence.addAction(Alpha.class.getName()+SessionBean.class.getName());
+        ActionSequence.addAction(Alpha.class.getName() + SessionBean.class.getName());
     }
 
     public String getGreeting() {

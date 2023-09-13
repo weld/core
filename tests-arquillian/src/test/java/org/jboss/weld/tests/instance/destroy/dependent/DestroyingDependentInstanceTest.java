@@ -35,6 +35,7 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
 /**
  * Test for CDI-139. It verifies that Instance.destroy() can be used to destroy a dependent bean instance.
  *
@@ -46,7 +47,8 @@ public class DestroyingDependentInstanceTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DestroyingDependentInstanceTest.class)).intercept(Interceptor.class).addPackage(DestroyingDependentInstanceTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DestroyingDependentInstanceTest.class))
+                .intercept(Interceptor.class).addPackage(DestroyingDependentInstanceTest.class.getPackage());
     }
 
     @Test

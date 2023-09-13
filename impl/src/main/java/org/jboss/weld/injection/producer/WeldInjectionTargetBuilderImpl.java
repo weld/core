@@ -36,7 +36,8 @@ import org.jboss.weld.util.InjectionTargets;
  *
  * @param <T>
  */
-public class WeldInjectionTargetBuilderImpl<T> implements WeldInjectionTargetBuilder<T>, PrivilegedAction<BasicInjectionTarget<T>> {
+public class WeldInjectionTargetBuilderImpl<T>
+        implements WeldInjectionTargetBuilder<T>, PrivilegedAction<BasicInjectionTarget<T>> {
 
     private final InjectionTargetService injectionTargetService;
 
@@ -104,7 +105,8 @@ public class WeldInjectionTargetBuilderImpl<T> implements WeldInjectionTargetBui
     private BasicInjectionTarget<T> buildInternal() {
         final Injector<T> injector = buildInjector();
         final LifecycleCallbackInvoker<T> invoker = buildInvoker();
-        NonProducibleInjectionTarget<T> nonProducible = InjectionTargets.createNonProducibleInjectionTarget(type, bean, injector, invoker, manager);
+        NonProducibleInjectionTarget<T> nonProducible = InjectionTargets.createNonProducibleInjectionTarget(type, bean,
+                injector, invoker, manager);
         if (nonProducible != null) {
             return nonProducible;
         }
@@ -114,7 +116,8 @@ public class WeldInjectionTargetBuilderImpl<T> implements WeldInjectionTargetBui
             return new BeanInjectionTarget<T>(type, bean, manager, injector, invoker);
         }
         throw new IllegalStateException(
-                "Unsupported combination: [interceptorsEnabled=" + interceptorsEnabled + ", decorationEnabled=" + decorationEnabled + "]");
+                "Unsupported combination: [interceptorsEnabled=" + interceptorsEnabled + ", decorationEnabled="
+                        + decorationEnabled + "]");
     }
 
     private Injector<T> buildInjector() {
@@ -129,7 +132,7 @@ public class WeldInjectionTargetBuilderImpl<T> implements WeldInjectionTargetBui
         if (targetClassLifecycleCallbacksEnabled) {
             return DefaultLifecycleCallbackInvoker.of(type);
         } else {
-            return NoopLifecycleCallbackInvoker.<T>getInstance();
+            return NoopLifecycleCallbackInvoker.<T> getInstance();
         }
     }
 

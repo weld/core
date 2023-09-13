@@ -1,5 +1,10 @@
 package org.jboss.weld.tests.metadata.scanning;
 
+import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
+import static org.jboss.weld.tests.metadata.scanning.Utils.escapePackageName;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -11,11 +16,6 @@ import org.jboss.weld.tests.metadata.scanning.jboss.Baz;
 import org.jboss.weld.tests.metadata.scanning.jboss.Garply;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.BeanManager;
-
-import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
-import static org.jboss.weld.tests.metadata.scanning.Utils.escapePackageName;
 
 @RunWith(Arquillian.class)
 public class PackagePatternIncludeExcludeTest {

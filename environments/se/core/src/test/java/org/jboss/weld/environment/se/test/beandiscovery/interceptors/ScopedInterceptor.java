@@ -26,6 +26,7 @@ import jakarta.interceptor.InvocationContext;
 @Dependent
 public class ScopedInterceptor {
     public static int called = 0;
+
     @AroundInvoke
     public Object saveMethodEntry(InvocationContext invocationContext) throws Exception {
         called++;

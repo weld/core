@@ -46,7 +46,8 @@ public class MultipleInjectionPointsSameDependentBeanTest {
                 .addClasses(FooRequest.class, FooApplication.class, Bar.class)
                 .addAsResource(
                         PropertiesBuilder.newBuilder().set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true")
-                                .build(), "weld.properties");
+                                .build(),
+                        "weld.properties");
     }
 
     @Test

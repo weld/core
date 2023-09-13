@@ -51,7 +51,7 @@ class DeferredEventNotification<T> implements Runnable {
      * Creates a new deferred event notifier.
      *
      * @param observer The observer to be notified
-     * @param metadata    The event being fired
+     * @param metadata The event being fired
      */
     public DeferredEventNotification(String contextId, T event, EventMetadata metadata, ObserverMethod<? super T> observer,
             CurrentEventMetadata currentEventMetadata, Status status, boolean before) {
@@ -115,7 +115,8 @@ class DeferredEventNotification<T> implements Runnable {
             if (isRequestContextActive()) {
                 execute();
             } else {
-                RequestContext requestContext = Container.instance(contextId).deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
+                RequestContext requestContext = Container.instance(contextId).deploymentManager().instance()
+                        .select(RequestContext.class, UnboundLiteral.INSTANCE).get();
                 try {
                     requestContext.activate();
                     execute();

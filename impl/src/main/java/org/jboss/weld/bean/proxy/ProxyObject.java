@@ -7,7 +7,7 @@ package org.jboss.weld.bean.proxy;
  */
 public interface ProxyObject {
     /**
-     * Sets a handler.  It can be used for changing handlers
+     * Sets a handler. It can be used for changing handlers
      * during runtime.
      */
     void weld_setHandler(MethodHandler mi);

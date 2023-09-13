@@ -24,11 +24,11 @@ import jakarta.faces.application.ApplicationWrapper;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
 
-import org.jboss.weld.module.web.el.WeldELContextListener;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
 import org.jboss.weld.environment.servlet.util.TransparentELResolver;
+import org.jboss.weld.module.web.el.WeldELContextListener;
 
 /**
  * @author Pete Muir
@@ -73,7 +73,8 @@ public class WeldApplication extends ApplicationWrapper {
     private void init() {
         ExpressionFactory expressionFactory = this.expressionFactory;
         BeanManager beanManager = null;
-        if (expressionFactory == null && (expressionFactory = super.getExpressionFactory()) != null && (beanManager = beanManager()) != null) {
+        if (expressionFactory == null && (expressionFactory = super.getExpressionFactory()) != null
+                && (beanManager = beanManager()) != null) {
             elResolver.beanManagerReady(beanManager);
             this.expressionFactory = beanManager.wrapExpressionFactory(expressionFactory);
         }

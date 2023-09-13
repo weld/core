@@ -49,7 +49,8 @@ public class ProfilingExecutorServices implements ExecutorServices {
             final long current = System.currentTimeMillis();
             final long time = current - start;
             StackTraceElement myCaller = (Thread.currentThread().getStackTrace())[CALLER_STACK_TRACE_ORDER];
-            BootstrapLogger.LOG.infov("ThreadPool task execution with ID #{0} called by {1}.{2}()  took {3} ms", id, myCaller.getClassName(),
+            BootstrapLogger.LOG.infov("ThreadPool task execution with ID #{0} called by {1}.{2}()  took {3} ms", id,
+                    myCaller.getClassName(),
                     myCaller.getMethodName(), time);
             start = 0L;
             executionTimeSum.addAndGet(time);

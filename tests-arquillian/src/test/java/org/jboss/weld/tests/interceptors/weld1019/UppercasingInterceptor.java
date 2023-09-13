@@ -1,9 +1,10 @@
 package org.jboss.weld.tests.interceptors.weld1019;
 
+import java.io.Serializable;
+
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
-import java.io.Serializable;
 
 /**
  *

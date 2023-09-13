@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.contexts.conversation.nonexistant;
 
 import java.io.IOException;
+
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

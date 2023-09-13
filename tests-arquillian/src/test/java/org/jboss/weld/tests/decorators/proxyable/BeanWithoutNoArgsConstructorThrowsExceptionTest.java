@@ -43,7 +43,8 @@ public class BeanWithoutNoArgsConstructorThrowsExceptionTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanWithoutNoArgsConstructorThrowsExceptionTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanWithoutNoArgsConstructorThrowsExceptionTest.class))
                 .decorate(DecoratorBean.class)
                 .addClass(DecoratedBean.class)
                 .addClass(Foo.class)
@@ -51,11 +52,12 @@ public class BeanWithoutNoArgsConstructorThrowsExceptionTest {
                 .addAsResource(
                         PropertiesBuilder.newBuilder()
                                 .set(ConfigurationKey.PROXY_INSTANTIATOR.get(), DefaultProxyInstantiator.class.getName())
-                                .build(), "weld.properties");
+                                .build(),
+                        "weld.properties");
     }
 
     @Test
     public void testDeploymentWithoutNoArgsConstructor() {
         // should throw deployment exception
-     }
+    }
 }

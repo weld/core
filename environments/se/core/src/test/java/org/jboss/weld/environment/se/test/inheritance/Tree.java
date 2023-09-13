@@ -21,8 +21,8 @@ import jakarta.inject.Singleton;
 @Singleton
 public class Tree extends Plant {
 
-	public Tree() {
-		super();
-	}
+    public Tree() {
+        super();
+    }
 
 }

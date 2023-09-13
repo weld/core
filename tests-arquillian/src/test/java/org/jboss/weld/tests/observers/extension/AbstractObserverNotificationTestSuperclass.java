@@ -42,7 +42,9 @@ public abstract class AbstractObserverNotificationTestSuperclass {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AbstractObserverNotificationTestSuperclass.class)).addPackage(Giraffe.class.getPackage())
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AbstractObserverNotificationTestSuperclass.class))
+                .addPackage(Giraffe.class.getPackage())
                 .addAsServiceProvider(Extension.class, ObserverExtension.class);
     }
 

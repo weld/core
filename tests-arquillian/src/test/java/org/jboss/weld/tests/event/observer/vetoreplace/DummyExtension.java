@@ -73,8 +73,6 @@ public class DummyExtension implements Extension {
         event.setObserverMethod(replacement);
     }
 
-
-
     private boolean checkExperimentalObserver(Set<Annotation> qualifiers) {
         return qualifiers.stream().filter((a) -> a.annotationType().equals(Experimental.class)).findFirst().isPresent();
     }

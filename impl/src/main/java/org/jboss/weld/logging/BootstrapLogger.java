@@ -341,7 +341,7 @@ public interface BootstrapLogger extends WeldLogger {
 
     // id 182 was used in Weld 3 and 4 and removed for Weld 5
 
-    @Message(id = 183, value= "Multiple different @Priority values derived from stereotype annotations for annotated type - {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 183, value = "Multiple different @Priority values derived from stereotype annotations for annotated type - {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException multiplePriorityValuesDeclared(Object annotatedType);
 
 }

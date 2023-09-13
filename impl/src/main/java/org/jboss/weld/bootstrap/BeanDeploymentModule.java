@@ -38,12 +38,15 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.util.collections.Iterables;
 
-
 /**
- * Represents an EE module that holds bean archives. This is a war, ejb jar, ear/lib or possibly a different module. This construct allows a given event to be
- * delivered to observers in the given module only. This is used for handling of {@link Initialized} and {@link Destroyed} events for the application context.
- * This is a special case since the payload of this particular event is module specific (ServletContext for web modules, Object otherwise).
- * This does not apply to other {@link Initialized} and {@link Destroyed} events which are delivered using an accessible notifier.
+ * Represents an EE module that holds bean archives. This is a war, ejb jar, ear/lib or possibly a different module. This
+ * construct allows a given event to be
+ * delivered to observers in the given module only. This is used for handling of {@link Initialized} and {@link Destroyed}
+ * events for the application context.
+ * This is a special case since the payload of this particular event is module specific (ServletContext for web modules, Object
+ * otherwise).
+ * This does not apply to other {@link Initialized} and {@link Destroyed} events which are delivered using an accessible
+ * notifier.
  *
  * @author Jozef Hartinger
  *
@@ -61,13 +64,15 @@ public final class BeanDeploymentModule {
         this.managers = new CopyOnWriteArraySet<>();
         // create module-local observer notifier
         Iterable<ObserverMethod<?>> observers = flatMap(managers, BeanManagerImpl::getObservers);
-        final TypeSafeObserverResolver resolver = new TypeSafeObserverResolver(services.get(MetaAnnotationStore.class), observers,
+        final TypeSafeObserverResolver resolver = new TypeSafeObserverResolver(services.get(MetaAnnotationStore.class),
+                observers,
                 services.get(WeldConfiguration.class));
         this.notifier = DefaultObserverNotifierFactory.INSTANCE.create(contextId, resolver, services, false);
     }
 
     /**
      * Identifier of the module
+     *
      * @return the identifier
      */
     public String getId() {
@@ -76,6 +81,7 @@ public final class BeanDeploymentModule {
 
     /**
      * Indicates whether this module represents a web module
+     *
      * @return true iff this module is a web module
      */
     public boolean isWebModule() {
@@ -84,6 +90,7 @@ public final class BeanDeploymentModule {
 
     /**
      * Fire an event and notify observers that belong to this module.
+     *
      * @param eventType
      * @param event
      * @param qualifiers
@@ -101,6 +108,7 @@ public final class BeanDeploymentModule {
 
     @Override
     public String toString() {
-        return "BeanDeploymentModule [id=" + id + ", web=" + web + ", managers=" + Iterables.transform(managers, BeanManagerImpl::getId) + "]";
+        return "BeanDeploymentModule [id=" + id + ", web=" + web + ", managers="
+                + Iterables.transform(managers, BeanManagerImpl::getId) + "]";
     }
 }

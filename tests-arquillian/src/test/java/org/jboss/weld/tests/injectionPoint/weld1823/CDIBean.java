@@ -29,9 +29,9 @@ public class CDIBean {
 
     CDIBean2 beanManagerInstance;
 
-    public CDIBean(BeanManager manager){
+    public CDIBean(BeanManager manager) {
         Set<Bean<?>> beanList = manager.getBeans(CDIBean2.class);
-        if (beanList!=null && !beanList.isEmpty()){
+        if (beanList != null && !beanList.isEmpty()) {
             Bean<?> bean = beanList.iterator().next();
             CreationalContext<?> context = manager.createCreationalContext(bean);
             beanManagerInstance = (CDIBean2) manager.getReference(bean, CDIBean2.class, context);

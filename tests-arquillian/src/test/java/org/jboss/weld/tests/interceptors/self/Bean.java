@@ -7,15 +7,15 @@ import jakarta.enterprise.context.Dependent;
  */
 @Dependent
 public class Bean implements Decorated {
-    
+
     public void doUnintercepted() {
-       doIntercepted();
-       doDecorated();
+        doIntercepted();
+        doDecorated();
     }
 
     @Secured
     public void doIntercepted() {
-       // do nothing
+        // do nothing
     }
 
     public void doDecorated() {

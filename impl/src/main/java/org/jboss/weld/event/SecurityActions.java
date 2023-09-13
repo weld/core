@@ -17,10 +17,10 @@
 
 package org.jboss.weld.event;
 
+import java.security.AccessController;
+
 import org.jboss.weld.security.GetContextClassLoaderAction;
 import org.jboss.weld.security.SetContextClassLoaderAction;
-
-import java.security.AccessController;
 
 /**
  * @author Matej Novotny

@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.annotated.slim;
 
-
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

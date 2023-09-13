@@ -25,7 +25,8 @@ import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 
 /**
- * Verifies that interception works fine if an interceptor dispatches the invocation to a different thread and the rest of the chain is executed there.
+ * Verifies that interception works fine if an interceptor dispatches the invocation to a different thread and the rest of the
+ * chain is executed there.
  *
  * @author Jozef Hartinger
  *

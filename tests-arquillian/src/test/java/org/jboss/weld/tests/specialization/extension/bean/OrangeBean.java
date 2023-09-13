@@ -49,7 +49,7 @@ public class OrangeBean implements Bean<Orange> {
 
     @Override
     public Set<Type> getTypes() {
-        return this.<Type>immutableSet(Object.class, Orange.class);
+        return this.<Type> immutableSet(Object.class, Orange.class);
     }
 
     @Override

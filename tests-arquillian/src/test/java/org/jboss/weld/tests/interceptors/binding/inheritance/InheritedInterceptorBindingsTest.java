@@ -36,9 +36,9 @@ import org.junit.runner.RunWith;
 
 /**
  * @see CDI-2
- * 
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class InheritedInterceptorBindingsTest {
@@ -54,7 +54,8 @@ public class InheritedInterceptorBindingsTest {
         return ShrinkWrap
                 .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InheritedInterceptorBindingsTest.class))
                 .intercept(AlphaInterceptor.class, BravoInterceptor.class, CharlieInterceptor.class, DeltaInterceptor.class,
-                        EchoInterceptor.class).addPackage(InheritedInterceptorBindingsTest.class.getPackage());
+                        EchoInterceptor.class)
+                .addPackage(InheritedInterceptorBindingsTest.class.getPackage());
     }
 
     @Test

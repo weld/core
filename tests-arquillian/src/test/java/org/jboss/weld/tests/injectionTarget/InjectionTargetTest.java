@@ -44,7 +44,8 @@ import org.junit.runner.RunWith;
 public class InjectionTargetTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionTargetTest.class)).addPackage(InjectionTargetTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionTargetTest.class))
+                .addPackage(InjectionTargetTest.class.getPackage())
                 .addClass(Utils.class);
     }
 
@@ -63,7 +64,8 @@ public class InjectionTargetTest {
 
     @Test
     public void testObtainingInjectionTargetForAbstractClass(BeanManager beanManager) {
-        InjectionTarget<AbstractClass> it = beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(AbstractClass.class))
+        InjectionTarget<AbstractClass> it = beanManager
+                .getInjectionTargetFactory(beanManager.createAnnotatedType(AbstractClass.class))
                 .createInjectionTarget(null);
         CreationalContext<AbstractClass> ctx = beanManager.createCreationalContext(null);
         AbstractClass instance = new AbstractClass() {
@@ -81,7 +83,8 @@ public class InjectionTargetTest {
 
     @Test
     public void testObtainingInjectionTarget(BeanManager beanManager) {
-        InjectionTarget<NonStaticInnerClass> it = beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(NonStaticInnerClass.class))
+        InjectionTarget<NonStaticInnerClass> it = beanManager
+                .getInjectionTargetFactory(beanManager.createAnnotatedType(NonStaticInnerClass.class))
                 .createInjectionTarget(null);
         CreationalContext<NonStaticInnerClass> ctx = beanManager.createCreationalContext(null);
         NonStaticInnerClass instance = new NonStaticInnerClass();
@@ -98,7 +101,8 @@ public class InjectionTargetTest {
 
     @Test
     public void testNonProducibleInjectionTargetBuilderForClassWithoutBeanConstructor(BeanManagerImpl beanManager) {
-        WeldInjectionTargetBuilder<Bar> builder = beanManager.createInjectionTargetBuilder(beanManager.createAnnotatedType(Bar.class));
+        WeldInjectionTargetBuilder<Bar> builder = beanManager
+                .createInjectionTargetBuilder(beanManager.createAnnotatedType(Bar.class));
         InjectionTarget<Bar> injectionTarget = builder.build();
         CreationalContext<Bar> ctx = beanManager.createCreationalContext(null);
 
@@ -117,11 +121,13 @@ public class InjectionTargetTest {
 
     @Test
     public void testNonProducibleInjectionTargetBuilderForAbstractClass(BeanManagerImpl beanManager) {
-        WeldInjectionTargetBuilder<Baz> builder = beanManager.createInjectionTargetBuilder(beanManager.createAnnotatedType(Baz.class));
+        WeldInjectionTargetBuilder<Baz> builder = beanManager
+                .createInjectionTargetBuilder(beanManager.createAnnotatedType(Baz.class));
         InjectionTarget<Baz> injectionTarget = builder.build();
         CreationalContext<Baz> ctx = beanManager.createCreationalContext(null);
 
-        Baz instance = new Baz() {};
+        Baz instance = new Baz() {
+        };
         injectionTarget.postConstruct(instance);
         assertEquals("init", instance.getId());
         assertNull(instance.getBeanManager());

@@ -38,7 +38,9 @@ public class AroundConstructInterceptorWithObjectReturnTypeTest extends Abstract
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundConstructInterceptorWithObjectReturnTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(AroundConstructInterceptorWithObjectReturnTypeTest.class))
                 .intercept(MyInterceptor.class)
                 .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, LifecycleInterceptedBean.class);
     }

@@ -19,6 +19,6 @@ package org.jboss.weld.tests.decorators.broken;
 public class Foo {
 
     public void ping() {
-        
+
     }
 }

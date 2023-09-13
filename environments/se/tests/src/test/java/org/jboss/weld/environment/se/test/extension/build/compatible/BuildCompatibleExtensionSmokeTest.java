@@ -19,6 +19,7 @@ package org.jboss.weld.environment.se.test.extension.build.compatible;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -40,9 +41,11 @@ public class BuildCompatibleExtensionSmokeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuildCompatibleExtensionSmokeTest.class))
+        return ClassPath.builder().add(ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuildCompatibleExtensionSmokeTest.class))
                 .addPackage(BuildCompatibleExtensionSmokeTest.class.getPackage())
-                .addAsServiceProvider(BuildCompatibleExtension.class, StandardBuildCompatibleExtension.class, OverridenBuildCompatibleExtension.class)
+                .addAsServiceProvider(BuildCompatibleExtension.class, StandardBuildCompatibleExtension.class,
+                        OverridenBuildCompatibleExtension.class)
                 .addAsServiceProvider(Extension.class, OverridingPortableExtension.class, StandardPortableExtension.class))
                 .build();
     }

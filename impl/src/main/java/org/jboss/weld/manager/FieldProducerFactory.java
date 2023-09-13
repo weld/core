@@ -41,8 +41,10 @@ public class FieldProducerFactory<X> extends AbstractProducerFactory<X> {
      * Producers returned from this method are not validated. Internal use only.
      */
     @Override
-    public <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean, DisposalMethod<X, T> disposalMethod) {
-        EnhancedAnnotatedField<T, X> enhancedField = getManager().getServices().get(MemberTransformer.class).loadEnhancedMember(field, getManager().getId());
+    public <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean,
+            DisposalMethod<X, T> disposalMethod) {
+        EnhancedAnnotatedField<T, X> enhancedField = getManager().getServices().get(MemberTransformer.class)
+                .loadEnhancedMember(field, getManager().getId());
         return new ProducerFieldProducer<X, T>(enhancedField, disposalMethod) {
 
             @Override

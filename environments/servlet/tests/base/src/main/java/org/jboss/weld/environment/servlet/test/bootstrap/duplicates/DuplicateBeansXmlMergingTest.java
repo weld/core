@@ -40,7 +40,8 @@ public class DuplicateBeansXmlMergingTest {
     public static WebArchive createTestArchive() {
         BeansXml beansXml = new BeansXml();
         beansXml.interceptors(SimpleInterceptor.class);
-        WebArchive war = baseDeployment(beansXml).addClasses(DuplicateBeansXmlMergingTest.class, SimpleBinding.class, SimpleInterceptor.class);
+        WebArchive war = baseDeployment(beansXml).addClasses(DuplicateBeansXmlMergingTest.class, SimpleBinding.class,
+                SimpleInterceptor.class);
         JavaArchive library = ShrinkWrap.create(JavaArchive.class, "library.jar").addAsManifestResource(beansXml, "beans.xml");
         war.addAsLibrary(library);
         return war;
@@ -51,4 +52,3 @@ public class DuplicateBeansXmlMergingTest {
         // tests should not throw deployment error because of 2 definitions of the same interceptor
     }
 }
-

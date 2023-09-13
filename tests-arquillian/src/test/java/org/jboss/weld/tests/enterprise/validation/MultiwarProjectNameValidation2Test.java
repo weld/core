@@ -35,9 +35,9 @@ import org.junit.runner.RunWith;
 /**
  * Similar to {@link MultiwarProjectNameValidationTest}, but verifies that an ambiguous name is detected if the beans can access
  * each other.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -49,11 +49,14 @@ public class MultiwarProjectNameValidation2Test {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class).addClasses(Alpha.class, Bravo.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         WebArchive war2 = ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(MultiwarProjectNameValidation2Test.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(war1, war2);
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(MultiwarProjectNameValidation2Test.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModules(war1, war2);
     }
 
     @Test
     public void testDeploymentWithAmbiguousBeanName() {
         // should throw deployment exception
-     }
+    }
 }

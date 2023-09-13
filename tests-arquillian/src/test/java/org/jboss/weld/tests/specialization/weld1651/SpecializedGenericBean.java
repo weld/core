@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.util.Collection;
 import java.util.List;
+
+import jakarta.enterprise.context.Dependent;
 
 /**
  * @author Matus Abaffy

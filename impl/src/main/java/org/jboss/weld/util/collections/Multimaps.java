@@ -37,7 +37,8 @@ public class Multimaps {
     }
 
     /**
-     * Note that {@link Multimap#get(Object)} always returns unmodifiable collections. Moreover, it does not trigger initialization of a new value collection
+     * Note that {@link Multimap#get(Object)} always returns unmodifiable collections. Moreover, it does not trigger
+     * initialization of a new value collection
      * (i.e. when no collection of values for a given key exists).
      *
      * @param multimap
@@ -89,7 +90,8 @@ public class Multimaps {
         }
 
         /**
-         * Returns unmodifiable collections. Moreover, it does not trigger initialization of a new value collection (i.e. when no collection of values for a
+         * Returns unmodifiable collections. Moreover, it does not trigger initialization of a new value collection (i.e. when
+         * no collection of values for a
          * given key exists).
          */
         @Override

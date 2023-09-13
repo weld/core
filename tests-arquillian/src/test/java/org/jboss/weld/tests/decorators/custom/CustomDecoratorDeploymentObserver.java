@@ -23,7 +23,6 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
-
 public class CustomDecoratorDeploymentObserver implements Extension {
     public void addDecorators(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         event.addBean(new CustomDecorator(beanManager));

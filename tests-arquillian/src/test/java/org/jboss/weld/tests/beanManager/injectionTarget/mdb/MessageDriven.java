@@ -64,7 +64,7 @@ public class MessageDriven implements MessageListener {
     }
 
     @AroundInvokeBinding
-    public void ping(){
+    public void ping() {
 
     }
 

@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
 public class BeanDiscoveryWithoutIsolationTest {
     @Deployment
     public static Archive<?> getDeployment() {
-		oldArchiveIsolationProperty = System.getProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY);
-		System.setProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY, "false");
+        oldArchiveIsolationProperty = System.getProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY);
+        System.setProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY, "false");
 
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
@@ -31,19 +31,18 @@ public class BeanDiscoveryWithoutIsolationTest {
         return archives;
     }
 
-	private static String oldArchiveIsolationProperty;
+    private static String oldArchiveIsolationProperty;
 
-	@AfterClass
-	public static void destroy() {
-		if (oldArchiveIsolationProperty == null) {
-			System.clearProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY);
-		}
-		else {
-			System.setProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY, oldArchiveIsolationProperty);
-			oldArchiveIsolationProperty = null;
-		}
-	}
-	
+    @AfterClass
+    public static void destroy() {
+        if (oldArchiveIsolationProperty == null) {
+            System.clearProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY);
+        } else {
+            System.setProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY, oldArchiveIsolationProperty);
+            oldArchiveIsolationProperty = null;
+        }
+    }
+
     /**
      * Test bean discovery in SE with an empty beans XML.
      */

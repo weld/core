@@ -134,9 +134,9 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     @Override
     public <T> ContextualInstance<T> get(BeanIdentifier id) {
         ContextualInstance<T> instance = beanStore.get(id);
-        if(instance == null && isAttached() && isAttributeLazyFetchingEnabled()) {
+        if (instance == null && isAttached() && isAttributeLazyFetchingEnabled()) {
             instance = cast(getAttribute(namingScheme.prefix(id)));
-            if(instance != null) {
+            if (instance != null) {
                 beanStore.put(id, instance);
             }
         }
@@ -248,13 +248,13 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
      * Sets an instance under a key in the underlying storage
      *
      * @param prefixedId The (prefixed) id of the attribute to set
-     * @param instance   The instance
+     * @param instance The instance
      */
     protected abstract void setAttribute(String prefixedId, Object instance);
 
     public LockedBean lock(final BeanIdentifier id) {
         LockStore lockStore = getLockStore();
-        if(lockStore == null) {
+        if (lockStore == null) {
             //if the lockstore is null then no locking is necessary, as the underlying
             //context is single threaded
             return null;
@@ -266,7 +266,8 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
 
     /**
      *
-     * @return <code>true</code> if a bean store synchronization is required during {@link #attach()} invocation, <code>false</code> otherwise
+     * @return <code>true</code> if a bean store synchronization is required during {@link #attach()} invocation,
+     *         <code>false</code> otherwise
      */
     protected boolean isLocalBeanStoreSyncNeeded() {
         return true;

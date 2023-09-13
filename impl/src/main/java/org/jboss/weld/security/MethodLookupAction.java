@@ -37,7 +37,8 @@ public class MethodLookupAction extends GetDeclaredMethodAction implements Privi
         return lookupMethod(javaClass, methodName, parameterTypes);
     }
 
-    public static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException {
+    public static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes)
+            throws NoSuchMethodException {
         for (Class<?> inspectedClass = javaClass; inspectedClass != null; inspectedClass = inspectedClass.getSuperclass()) {
             for (Class<?> inspectedInterface : inspectedClass.getInterfaces()) {
                 try {
@@ -52,6 +53,7 @@ public class MethodLookupAction extends GetDeclaredMethodAction implements Privi
                 // Expected, nothing to see here.
             }
         }
-        throw new NoSuchMethodException(javaClass + ", method: " + methodName + ", paramTypes: " + Arrays.toString(parameterTypes));
+        throw new NoSuchMethodException(
+                javaClass + ", method: " + methodName + ", paramTypes: " + Arrays.toString(parameterTypes));
     }
 }

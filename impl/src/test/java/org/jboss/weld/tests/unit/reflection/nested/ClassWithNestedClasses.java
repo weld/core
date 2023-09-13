@@ -18,10 +18,10 @@ package org.jboss.weld.tests.unit.reflection.nested;
 
 public class ClassWithNestedClasses {
 
-    static ThreadLocal<String> anonymous = new ThreadLocal<String>(){
+    static ThreadLocal<String> anonymous = new ThreadLocal<String>() {
 
         @Override
-        protected String initialValue(){
+        protected String initialValue() {
             return "foo";
         }
     };

@@ -16,5 +16,5 @@
  */
 @Vetoed
 package org.jboss.weld.annotated.slim.unbacked;
-import jakarta.enterprise.inject.Vetoed;
 
+import jakarta.enterprise.inject.Vetoed;

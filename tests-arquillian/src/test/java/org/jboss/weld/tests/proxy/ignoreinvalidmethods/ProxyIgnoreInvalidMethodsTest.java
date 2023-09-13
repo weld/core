@@ -48,7 +48,8 @@ public class ProxyIgnoreInvalidMethodsTest {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProxyIgnoreInvalidMethodsTest.class))
                 .addPackage(ProxyIgnoreInvalidMethodsTest.class.getPackage()).addClasses(Utils.class, ActionSequence.class)
                 .addAsResource(PropertiesBuilder.newBuilder()
-                        .set(ConfigurationKey.PROXY_IGNORE_FINAL_METHODS.get(), HashMap.class.getName() + "|" + Alpha.class.getName())
+                        .set(ConfigurationKey.PROXY_IGNORE_FINAL_METHODS.get(),
+                                HashMap.class.getName() + "|" + Alpha.class.getName())
                         .build(), "weld.properties");
     }
 

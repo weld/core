@@ -38,7 +38,8 @@ public class NonPassivatingInterceptorOnPassivatingBeanTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingInterceptorOnPassivatingBeanTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingInterceptorOnPassivatingBeanTest.class))
                 .intercept(Defender.class)
                 .addPackage(NonPassivatingInterceptorOnPassivatingBeanTest.class.getPackage());
     }
@@ -46,5 +47,5 @@ public class NonPassivatingInterceptorOnPassivatingBeanTest {
     @Test
     public void testDeploymentWithNonPassivatingInterceptor() throws Exception {
         // should throw deployment exception
-     }
+    }
 }

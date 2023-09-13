@@ -29,9 +29,9 @@ import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Allows annotations of a type to be overriden easily.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  * @param <T>
  */
 public class WrappedAnnotatedType<T> extends ForwardingAnnotatedType<T> {

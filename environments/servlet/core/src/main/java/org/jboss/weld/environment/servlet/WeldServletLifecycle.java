@@ -44,10 +44,6 @@ import org.jboss.weld.bootstrap.spi.helpers.EEModuleDescriptorImpl;
 import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
-import org.jboss.weld.environment.jetty.JettyLegacyContainer;
-import org.jboss.weld.lite.extension.translator.BuildCompatibleExtensionLoader;
-import org.jboss.weld.lite.extension.translator.LiteExtensionTranslator;
-import org.jboss.weld.module.web.el.WeldELContextListener;
 import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -58,6 +54,7 @@ import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.jetty.JettyContainer;
+import org.jboss.weld.environment.jetty.JettyLegacyContainer;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.servlet.deployment.ServletContextBeanArchiveHandler;
 import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
@@ -67,12 +64,15 @@ import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.environment.undertow.UndertowContainer;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.lite.extension.translator.BuildCompatibleExtensionLoader;
+import org.jboss.weld.lite.extension.translator.LiteExtensionTranslator;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.module.web.el.WeldELContextListener;
+import org.jboss.weld.module.web.servlet.WeldInitialListener;
 import org.jboss.weld.resources.ManagerObjectFactory;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.module.web.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -84,18 +84,21 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class WeldServletLifecycle {
 
-    public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
+    public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "."
+            + BeanManager.class.getName();
 
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
-    private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
+    private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName()
+            + ".archive.isolation";
 
     private static final String JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER = "org.jboss.weld.environment.servlet.deployment.JandexServletContextBeanArchiveHandler";
 
     // allows to handle empty beans.xml as having discovery mode ALL
-    private static final String LEGACY_EMPTY_BEANS_XML_TREATMENT = WeldServletLifecycle.class.getPackage().getName() + ".emptyBeansXmlModeAll";
+    private static final String LEGACY_EMPTY_BEANS_XML_TREATMENT = WeldServletLifecycle.class.getPackage().getName()
+            + ".emptyBeansXmlModeAll";
 
     private static final String JSP_FACTORY_CLASS_NAME = "jakarta.servlet.jsp.JspFactory";
 
@@ -150,7 +153,8 @@ public class WeldServletLifecycle {
             final CDI11Deployment deployment = createDeployment(context, bootstrap);
 
             deployment.getServices().add(ExternalConfiguration.class,
-                    new ExternalConfigurationBuilder().add(BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), Boolean.FALSE.toString()).build());
+                    new ExternalConfigurationBuilder().add(BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), Boolean.FALSE.toString())
+                            .build());
 
             if (deployment.getBeanDeploymentArchives().isEmpty()) {
                 // Skip initialization - there is no bean archive in the deployment
@@ -178,13 +182,16 @@ public class WeldServletLifecycle {
             bootstrap.startInitialization();
 
             /*
-             * Determine the BeanManager used for example for EL resolution - this should work fine as all bean archives share the same classloader. The only
-             * difference this can make is per-BDA (CDI 1.0 style) enablement of alternatives, interceptors and decorators. Nothing we can do about that.
+             * Determine the BeanManager used for example for EL resolution - this should work fine as all bean archives share
+             * the same classloader. The only
+             * difference this can make is per-BDA (CDI 1.0 style) enablement of alternatives, interceptors and decorators.
+             * Nothing we can do about that.
              *
              * First try to find the bean archive for WEB-INF/classes. If not found, take the first one available.
              */
             for (BeanDeploymentArchive bda : deployment.getBeanDeploymentArchives()) {
-                if (bda.getId().contains(ManagerObjectFactory.WEB_INF_CLASSES_FILE_PATH) || bda.getId().contains(ManagerObjectFactory.WEB_INF_CLASSES)) {
+                if (bda.getId().contains(ManagerObjectFactory.WEB_INF_CLASSES_FILE_PATH)
+                        || bda.getId().contains(ManagerObjectFactory.WEB_INF_CLASSES)) {
                     manager = bootstrap.getManager(bda);
                     break;
                 }
@@ -208,7 +215,8 @@ public class WeldServletLifecycle {
             this.container = container;
         }
 
-        if (Reflections.isClassLoadable(WeldClassLoaderResourceLoader.INSTANCE, JSP_FACTORY_CLASS_NAME) && JspFactory.getDefaultFactory() != null) {
+        if (Reflections.isClassLoadable(WeldClassLoaderResourceLoader.INSTANCE, JSP_FACTORY_CLASS_NAME)
+                && JspFactory.getDefaultFactory() != null) {
             JspApplicationContext jspApplicationContext = JspFactory.getDefaultFactory().getJspApplicationContext(context);
 
             // Register the ELResolver with JSP
@@ -222,7 +230,8 @@ public class WeldServletLifecycle {
             }
 
             // Push the wrapped expression factory into the servlet context so that Tomcat or Jetty can hook it in using a container code
-            context.setAttribute(EXPRESSION_FACTORY_NAME, manager.wrapExpressionFactory(jspApplicationContext.getExpressionFactory()));
+            context.setAttribute(EXPRESSION_FACTORY_NAME,
+                    manager.wrapExpressionFactory(jspApplicationContext.getExpressionFactory()));
         }
 
         if (isBootstrapNeeded) {
@@ -280,16 +289,23 @@ public class WeldServletLifecycle {
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final EEModuleDescriptor eeModule = new EEModuleDescriptorImpl(context.getContextPath(), ModuleType.WEB);
 
-        final BeanDiscoveryMode emptyBeansXmlDiscoveryMode = Boolean.parseBoolean(context.getInitParameter(LEGACY_EMPTY_BEANS_XML_TREATMENT)) ? BeanDiscoveryMode.ALL : BeanDiscoveryMode.ANNOTATED;
-        final DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations(),
-            Boolean.parseBoolean(context.getInitParameter(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY)), emptyBeansXmlDiscoveryMode);
+        final BeanDiscoveryMode emptyBeansXmlDiscoveryMode = Boolean
+                .parseBoolean(context.getInitParameter(LEGACY_EMPTY_BEANS_XML_TREATMENT)) ? BeanDiscoveryMode.ALL
+                        : BeanDiscoveryMode.ANNOTATED;
+        final DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
+                typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations(),
+                Boolean.parseBoolean(context.getInitParameter(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY)),
+                emptyBeansXmlDiscoveryMode);
 
         if (Jandex.isJandexAvailable(resourceLoader)) {
             try {
-                Class<? extends BeanArchiveHandler> handlerClass = Reflections.loadClass(resourceLoader, JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER);
-                strategy.registerHandler((SecurityActions.newConstructorInstance(handlerClass, new Class<?>[] { ServletContext.class }, context)));
+                Class<? extends BeanArchiveHandler> handlerClass = Reflections.loadClass(resourceLoader,
+                        JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER);
+                strategy.registerHandler((SecurityActions.newConstructorInstance(handlerClass,
+                        new Class<?>[] { ServletContext.class }, context)));
             } catch (Exception e) {
-                throw CommonLogger.LOG.unableToInstantiate(JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER, Arrays.toString(new Object[] { context }), e);
+                throw CommonLogger.LOG.unableToInstantiate(JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER,
+                        Arrays.toString(new Object[] { context }), e);
             }
         } else {
             strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
@@ -355,7 +371,8 @@ public class WeldServletLifecycle {
             if (container == null) {
                 // 3. Built-in containers in predefined order
                 container = checkContainers(ctx, dump,
-                        Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, JettyLegacyContainer.INSTANCE, UndertowContainer.INSTANCE));
+                        Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, JettyLegacyContainer.INSTANCE,
+                                UndertowContainer.INSTANCE));
             }
         }
         return container;

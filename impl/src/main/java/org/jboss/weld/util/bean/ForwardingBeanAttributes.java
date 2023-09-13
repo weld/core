@@ -73,7 +73,7 @@ public abstract class ForwardingBeanAttributes<T> implements BeanAttributes<T> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ForwardingBeanAttributes<?>) {
-            return attributes().equals(Reflections.<ForwardingBeanAttributes<?>>cast(obj).attributes());
+            return attributes().equals(Reflections.<ForwardingBeanAttributes<?>> cast(obj).attributes());
         }
         return attributes().equals(obj);
     }

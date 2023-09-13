@@ -39,7 +39,7 @@ public abstract class AbstractWeldDeployment implements CDI11Deployment {
 
     public static final String BEANS_XML = "META-INF/beans.xml";
 
-    public static final String[] RESOURCES = {BEANS_XML};
+    public static final String[] RESOURCES = { BEANS_XML };
 
     private final ServiceRegistry serviceRegistry;
 
@@ -57,6 +57,5 @@ public abstract class AbstractWeldDeployment implements CDI11Deployment {
     public Iterable<Metadata<Extension>> getExtensions() {
         return extensions;
     }
-
 
 }

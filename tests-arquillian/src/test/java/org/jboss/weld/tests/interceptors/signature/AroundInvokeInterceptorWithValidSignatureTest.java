@@ -38,7 +38,8 @@ public class AroundInvokeInterceptorWithValidSignatureTest extends AbstractSigna
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundInvokeInterceptorWithValidSignatureTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundInvokeInterceptorWithValidSignatureTest.class))
                 .intercept(MyInterceptor.class)
                 .addClasses(AbstractSignatureTestBase.class, Intercept.class, MethodInterceptedBean.class);
     }

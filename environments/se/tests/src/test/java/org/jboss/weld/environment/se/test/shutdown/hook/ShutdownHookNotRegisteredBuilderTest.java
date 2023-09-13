@@ -36,7 +36,8 @@ public class ShutdownHookNotRegisteredBuilderTest extends ShutdownHookNotRegiste
     @Deployment(managed = false, name = DEPLOYMENT_NAME)
     public static Archive<?> createTestArchive() {
         return ClassPath.builder().add(
-                ShrinkWrap.create(BeanArchive.class).addClasses(ShutdownHookNotRegisteredTest.class, ShutdownHookNotRegisteredBuilderTest.class, Foo.class))
+                ShrinkWrap.create(BeanArchive.class).addClasses(ShutdownHookNotRegisteredTest.class,
+                        ShutdownHookNotRegisteredBuilderTest.class, Foo.class))
                 .build();
     }
 

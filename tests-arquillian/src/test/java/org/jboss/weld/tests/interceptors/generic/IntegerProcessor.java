@@ -23,7 +23,7 @@ package org.jboss.weld.tests.interceptors.generic;
 public class IntegerProcessor extends AbstractMessageProcessor<Integer> {
     @Override
     void process(Integer input) {
-        super.process(input);    //To change body of overridden methods use File | Settings | File Templates.
+        super.process(input); //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override

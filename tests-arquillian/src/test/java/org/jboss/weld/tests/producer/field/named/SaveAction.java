@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.producer.field.named;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
-import java.io.Serializable;
 
 @Named("save")
 @SessionScoped

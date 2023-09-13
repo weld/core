@@ -1,15 +1,15 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
-import jakarta.enterprise.inject.build.compatible.spi.MetaAnnotations;
-import jakarta.enterprise.inject.spi.BeanManager;
-
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
+import jakarta.enterprise.inject.build.compatible.spi.MetaAnnotations;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 class MetaAnnotationsImpl implements MetaAnnotations {
     private final jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd;
@@ -20,7 +20,7 @@ class MetaAnnotationsImpl implements MetaAnnotations {
     private final List<ContextData> contexts;
 
     MetaAnnotationsImpl(jakarta.enterprise.inject.spi.BeforeBeanDiscovery bbd, List<StereotypeConfigurator<?>> stereotypes,
-                        List<ContextData> contexts, BeanManager bm) {
+            List<ContextData> contexts, BeanManager bm) {
         this.bbd = bbd;
 
         this.stereotypes = stereotypes;
@@ -31,13 +31,15 @@ class MetaAnnotationsImpl implements MetaAnnotations {
 
     @Override
     public ClassConfig addQualifier(Class<? extends Annotation> annotation) {
-        jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<? extends Annotation> cfg = bbd.configureQualifier(annotation);
+        jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<? extends Annotation> cfg = bbd
+                .configureQualifier(annotation);
         return new ClassConfigImpl(cfg, bm);
     }
 
     @Override
     public ClassConfig addInterceptorBinding(Class<? extends Annotation> annotation) {
-        jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<? extends Annotation> cfg = bbd.configureInterceptorBinding(annotation);
+        jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<? extends Annotation> cfg = bbd
+                .configureInterceptorBinding(annotation);
         return new ClassConfigImpl(cfg, bm);
     }
 
@@ -75,7 +77,8 @@ class MetaAnnotationsImpl implements MetaAnnotations {
         }
     }
 
-    static final class StereotypeConfigurator<T extends Annotation> implements jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<T> {
+    static final class StereotypeConfigurator<T extends Annotation>
+            implements jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<T> {
         final Class<T> annotation;
         final Set<Annotation> annotations = new HashSet<>();
         final BeanManager bm;

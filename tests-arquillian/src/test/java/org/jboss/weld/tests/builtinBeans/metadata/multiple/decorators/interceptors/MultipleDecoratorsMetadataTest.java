@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.builtinBeans.metadata.multiple.decorators.interceptors;
 
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -41,7 +42,7 @@ public class MultipleDecoratorsMetadataTest {
     SomeInterface bean;
 
     @Test
-    public void beanMetadataAvailableTest(){
+    public void beanMetadataAvailableTest() {
         String beanClass = ActualBean.class.getSimpleName();
         String expected = beanClass + beanClass + "pong" + beanClass + beanClass;
         Assert.assertEquals(expected, bean.ping());

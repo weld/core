@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.observers.custom;
 
 import java.util.concurrent.CountDownLatch;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
@@ -29,6 +30,7 @@ public class CustomAsyncObserverExtension implements Extension {
     public static boolean NOTIFIED = false;
 
     private AnnotatedMethod<?> om = null;
+
     public void monitorOM(@Observes ProcessObserverMethod<CountDownLatch, FooBean> event) {
         if (om == null) {
             this.om = event.getAnnotatedMethod();
@@ -40,7 +42,7 @@ public class CustomAsyncObserverExtension implements Extension {
         if (om == null) {
             throw new IllegalStateException("Did not find observer method to read from!");
         } else {
-            event.<CountDownLatch>addObserverMethod().read(om).notifyWith(context -> {
+            event.<CountDownLatch> addObserverMethod().read(om).notifyWith(context -> {
                 NOTIFIED = true;
                 context.getEvent().countDown();
             });

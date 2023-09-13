@@ -38,8 +38,8 @@ public class Weld279Test {
     }
 
     /*
-    * description = "WELD-279"
-    */
+     * description = "WELD-279"
+     */
     @Test
     public void testLookupOfGenericTypeSubclass(SomeBean bean) {
         Assert.assertEquals(IntegerFactory.VALUE.toString(), bean.getObjectAsString());

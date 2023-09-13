@@ -16,19 +16,21 @@
  */
 package org.jboss.weld.tests.interceptors.extension;
 
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
-
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.InjectionPoint;
-import jakarta.enterprise.inject.spi.Interceptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.Interceptor;
+
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+
 /**
  * Utility class for extension-provided interceptor tests.
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
  *
  */

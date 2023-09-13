@@ -57,7 +57,8 @@ class SessionBeans {
     }
 
     /**
-     * Returns {@link EnhancedAnnotatedType} for the EJB implementation class. Throws {@link IllegalStateException} if called after bootstrap.
+     * Returns {@link EnhancedAnnotatedType} for the EJB implementation class. Throws {@link IllegalStateException} if called
+     * after bootstrap.
      *
      * @param bean
      * @throws IllegalStateException if called after bootstrap
@@ -75,7 +76,8 @@ class SessionBeans {
             return componentType;
         }
         ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
-        EnhancedAnnotatedType<T> implementationClass = cast(transformer.getEnhancedAnnotatedType(ejbDescriptor.getImplementationClass(), manager.getId()));
+        EnhancedAnnotatedType<T> implementationClass = cast(
+                transformer.getEnhancedAnnotatedType(ejbDescriptor.getImplementationClass(), manager.getId()));
         manager.getServices().get(SlimAnnotatedTypeStore.class).put(implementationClass.slim());
         return implementationClass;
     }
@@ -103,8 +105,10 @@ class SessionBeans {
     /**
      * Creates new {@link BeanAttributes} to represent a session bean.
      */
-    public static <T> BeanAttributes<T> createBeanAttributes(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
-        final Set<Type> types = SharedObjectCache.instance(manager).getSharedSet(getSessionBeanTypes(annotated, Reflections.<InternalEjbDescriptor<T>> cast(descriptor)));
+    public static <T> BeanAttributes<T> createBeanAttributes(EnhancedAnnotatedType<T> annotated,
+            InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
+        final Set<Type> types = SharedObjectCache.instance(manager)
+                .getSharedSet(getSessionBeanTypes(annotated, Reflections.<InternalEjbDescriptor<T>> cast(descriptor)));
         return new BeanAttributesBuilder<T>(annotated, types, manager).build();
     }
 
@@ -118,7 +122,8 @@ class SessionBeans {
         HierarchyDiscovery beanClassDiscovery = HierarchyDiscovery.forNormalizedType(ejbDescriptor.getBeanClass());
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
             // first we need to resolve the local interface
-            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor.getInterface()));
+            Type resolvedLocalInterface = beanClassDiscovery
+                    .resolveType(Types.getCanonicalType(businessInterfaceDescriptor.getInterface()));
             SessionBeanHierarchyDiscovery interfaceDiscovery = new SessionBeanHierarchyDiscovery(resolvedLocalInterface);
             if (beanClassDiscovery.getTypeMap().containsKey(businessInterfaceDescriptor.getInterface())) {
                 // WELD-1675 Only add types also included in Annotated.getTypeClosure()

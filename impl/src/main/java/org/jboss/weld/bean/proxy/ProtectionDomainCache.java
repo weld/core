@@ -31,7 +31,8 @@ import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
  * Holds enhanced protection domains for proxy classes.
  *
  * This is only useful when running under security manager. The enhanced protection domain contains all the permissions of the
- * original class plus the "accessDeclaredMembers" runtime permission. This is needed for the proxy class' static initializer block
+ * original class plus the "accessDeclaredMembers" runtime permission. This is needed for the proxy class' static initializer
+ * block
  * to be able to resolve methods using {@link Class#getDeclaredMethod(String, Class...)}.
  *
  * @see BytecodeMethodResolver
@@ -48,6 +49,7 @@ public class ProtectionDomainCache extends AbstractBootstrapService {
 
     /**
      * Gets an enhanced protection domain for a proxy based on the given protection domain.
+     *
      * @param domain the given protection domain
      * @return protection domain enhanced with "accessDeclaredMembers" runtime permission
      */

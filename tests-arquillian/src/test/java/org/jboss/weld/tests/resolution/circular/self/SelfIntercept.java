@@ -30,8 +30,8 @@ import jakarta.interceptor.InterceptorBinding;
  *
  */
 @InterceptorBinding
-@Target( {METHOD, TYPE} )
-@Retention( RUNTIME )
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
 public @interface SelfIntercept {
 
 }

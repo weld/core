@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.metadata.beanattributes;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.util.Comparator;
 import java.util.List;
+
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Foo implements Comparator<List<?>> {

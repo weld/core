@@ -45,8 +45,10 @@ public class WeldInstanceSelectTypeTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceSelectTypeTest.class))
-            .addPackage(WeldInstanceSelectTypeTest.class.getPackage())).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceSelectTypeTest.class))
+                        .addPackage(WeldInstanceSelectTypeTest.class.getPackage()))
+                .build();
     }
 
     @Test
@@ -55,7 +57,8 @@ public class WeldInstanceSelectTypeTest {
             // Class<T> implements Type, so let's make use of that
             Type firstType = SomeInterface.class;
             // Let's also grab a parameterized type
-            ParameterizedType pType = (ParameterizedType) new TypeLiteral<Foo<Bar>>() {}.getType();
+            ParameterizedType pType = (ParameterizedType) new TypeLiteral<Foo<Bar>>() {
+            }.getType();
 
             // Instance<Object> -> Instance<SomeInterface>
             WeldInstance<Object> instanceObject = container.select(firstType);
@@ -66,7 +69,7 @@ public class WeldInstanceSelectTypeTest {
             SomeInterface si = (SomeInterface) object;
             Assert.assertEquals(SomeOtherBean.class.getSimpleName(), si.ping());
 
-            WeldInstance<Foo<Bar>> parameterizedInstance = container.<Foo<Bar>>select(pType);
+            WeldInstance<Foo<Bar>> parameterizedInstance = container.<Foo<Bar>> select(pType);
             Foo<Bar> fooBar = parameterizedInstance.get();
             Assert.assertNotNull(fooBar);
         }
@@ -87,23 +90,23 @@ public class WeldInstanceSelectTypeTest {
             }
         }
     }
-    
+
     @Test
     public void testSelectOnTypedBean() {
         // typed bean has no Object type, from bean selection perspective, it isn't hierarchical select from WeldInstance<Object>
         Type type = TypedBean.class;
         try (WeldContainer container = new Weld().initialize()) {
             // should work
-            TypedBean bean = container.<TypedBean>select(type).get();
+            TypedBean bean = container.<TypedBean> select(type).get();
             Assert.assertNotNull(bean);
         }
     }
-    
+
     @Test
     public void testDestroy() {
         Type type = DestroyedBean.class;
         try (WeldContainer container = new Weld().initialize()) {
-            WeldInstance<DestroyedBean> instance = container.<DestroyedBean>select(type);
+            WeldInstance<DestroyedBean> instance = container.<DestroyedBean> select(type);
             DestroyedBean bean = instance.get();
             Assert.assertNotNull(bean);
             // destroy and verify

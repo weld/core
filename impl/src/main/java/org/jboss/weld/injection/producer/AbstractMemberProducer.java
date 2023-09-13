@@ -48,7 +48,8 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     private final DisposalMethod<?, ?> disposalMethod;
 
-    public AbstractMemberProducer(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, DisposalMethod<?, ?> disposalMethod) {
+    public AbstractMemberProducer(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember,
+            DisposalMethod<?, ?> disposalMethod) {
         this.disposalMethod = disposalMethod;
         checkDeclaringBean();
         checkProducerReturnType(enhancedMember);
@@ -64,7 +65,8 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, enhancedMember.getBaseType(), false);
     }
 
-    private void checkReturnTypeForWildcardsAndTypeVariables(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type,
+    private void checkReturnTypeForWildcardsAndTypeVariables(
+            EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type,
             boolean isParameterizedType) {
         if (type instanceof TypeVariable<?>) {
             if (isParameterizedType) {
@@ -91,21 +93,24 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     protected abstract DefinitionException producerWithInvalidWildcard(AnnotatedMember<?> member);
 
-    protected abstract DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(AnnotatedMember<?> member);
+    protected abstract DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(
+            AnnotatedMember<?> member);
 
     private boolean isDependent() {
         return getBean() != null && Dependent.class.equals(getBean().getScope());
     }
 
     /**
-     * Gets the receiver of the product. The two creational contexts need to be separated because the receiver only serves the product
+     * Gets the receiver of the product. The two creational contexts need to be separated because the receiver only serves the
+     * product
      * creation (it is not a dependent instance of the created instance).
      *
      * @param productCreationalContext the creational context of the produced instance
      * @param receiverCreationalContext the creational context of the receiver
      * @return The receiver
      */
-    protected Object getReceiver(CreationalContext<?> productCreationalContext, CreationalContext<?> receiverCreationalContext) {
+    protected Object getReceiver(CreationalContext<?> productCreationalContext,
+            CreationalContext<?> receiverCreationalContext) {
         // This is a bit dangerous, as it means that producer methods can end up
         // executing on partially constructed instances. Also, it's not required
         // by the spec...
@@ -137,7 +142,8 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
                     if (receiver == null) {
                         ctx = getBeanManager().createCreationalContext(null);
                         // Create child CC so that a dependent reciever may be destroyed after the disposer method completes
-                        receiver = ContextualInstance.get(getDeclaringBean(), getBeanManager(), ctx.getCreationalContext(getDeclaringBean()));
+                        receiver = ContextualInstance.get(getDeclaringBean(), getBeanManager(),
+                                ctx.getCreationalContext(getDeclaringBean()));
                     }
                     if (receiver != null) {
                         disposalMethod.invokeDisposeMethod(receiver, instance, ctx);
@@ -165,8 +171,8 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
     }
 
     private CreationalContext<X> getReceiverCreationalContext(CreationalContext<T> ctx) {
-        if(ctx instanceof WeldCreationalContext) {
-            return ((WeldCreationalContext<?>)ctx).getProducerReceiverCreationalContext(getDeclaringBean());
+        if (ctx instanceof WeldCreationalContext) {
+            return ((WeldCreationalContext<?>) ctx).getProducerReceiverCreationalContext(getDeclaringBean());
         } else {
             return getBeanManager().createCreationalContext(getDeclaringBean());
         }
@@ -198,7 +204,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         } else {
             if (getBean() == null) {
                 result.append(getAnnotated());
-        } else {
+            } else {
                 result.append(getBean());
             }
             result.append(" declared on ").append(getDeclaringBean());

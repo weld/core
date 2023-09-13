@@ -35,7 +35,8 @@ public interface ObserverNotifierFactory extends Service {
      * @param contextId the container id of the running container
      * @param resolver the given resolver
      * @param services
-     * @param strict true if this notifier should perform strict type checks, false if this notifier should be lenient (used internally only)
+     * @param strict true if this notifier should perform strict type checks, false if this notifier should be lenient (used
+     *        internally only)
      * @return
      */
     ObserverNotifier create(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict);

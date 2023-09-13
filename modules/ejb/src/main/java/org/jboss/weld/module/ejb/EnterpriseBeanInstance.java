@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.module.ejb;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.Marker;
-
-import jakarta.enterprise.context.spi.CreationalContext;
 
 /**
  * Interface implemented by all enterprise bean proxies to query/control the proxy

@@ -73,13 +73,16 @@ public class BeanIdentifiers {
 
     public static String forProducerMethod(EnhancedAnnotatedMethod<?, ?> method, AbstractClassBean<?> declaringBean) {
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
-            return forProducerMethod(declaringBean.getAnnotated().getIdentifier(), DeclaredMemberIndexer.getIndexForMethod(method.getJavaMember()));
+            return forProducerMethod(declaringBean.getAnnotated().getIdentifier(),
+                    DeclaredMemberIndexer.getIndexForMethod(method.getJavaMember()));
         }
-        return getPrefix(ProducerMethod.class).append(method.getDeclaringType().slim().getIdentifier()).append(AnnotatedTypes.createCallableId(method)).toString();
+        return getPrefix(ProducerMethod.class).append(method.getDeclaringType().slim().getIdentifier())
+                .append(AnnotatedTypes.createCallableId(method)).toString();
     }
 
     public static String forProducerMethod(AnnotatedTypeIdentifier identifier, int memberIndex) {
-        return getPrefix(ProducerMethod.class).append(identifier.asString()).append(BEAN_ID_SEPARATOR).append(memberIndex).toString();
+        return getPrefix(ProducerMethod.class).append(identifier.asString()).append(BEAN_ID_SEPARATOR).append(memberIndex)
+                .toString();
     }
 
     public static String forSyntheticBean(BeanAttributes<?> attributes, Class<?> beanClass) {
@@ -88,7 +91,8 @@ public class BeanIdentifiers {
     }
 
     public static String forBuiltInBean(BeanManagerImpl manager, Class<?> type, String suffix) {
-        StringBuilder builder = getPrefix(AbstractBuiltInBean.class).append(manager.getId()).append(BEAN_ID_SEPARATOR).append(type.getSimpleName());
+        StringBuilder builder = getPrefix(AbstractBuiltInBean.class).append(manager.getId()).append(BEAN_ID_SEPARATOR)
+                .append(type.getSimpleName());
         if (suffix != null) {
             builder.append(BEAN_ID_SEPARATOR).append(suffix);
         }

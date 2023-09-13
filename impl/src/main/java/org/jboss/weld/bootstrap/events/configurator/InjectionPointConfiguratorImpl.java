@@ -142,78 +142,78 @@ public class InjectionPointConfiguratorImpl implements InjectionPointConfigurato
     }
 
     /**
-    *
-    * @author Martin Kouba
-    */
-   static class ImmutableInjectionPoint implements InjectionPoint {
+     *
+     * @author Martin Kouba
+     */
+    static class ImmutableInjectionPoint implements InjectionPoint {
 
-       private final Type requiredType;
+        private final Type requiredType;
 
-       private final Set<Annotation> qualifiers;
+        private final Set<Annotation> qualifiers;
 
-       private final Bean<?> bean;
+        private final Bean<?> bean;
 
-       private final boolean isDelegate;
+        private final boolean isDelegate;
 
-       private final boolean isTransient;
+        private final boolean isTransient;
 
-       private final Member member;
+        private final Member member;
 
-       private final Annotated annotated;
+        private final Annotated annotated;
 
-       /**
-        *
-        * @param configurator
-        */
-       private ImmutableInjectionPoint(InjectionPointConfiguratorImpl configurator) {
-           this.requiredType = configurator.requiredType;
-           this.qualifiers = configurator.qualifiers;
-           this.bean = configurator.bean;
-           this.isDelegate = configurator.isDelegate;
-           this.isTransient = configurator.isTransient;
-           this.member = configurator.member;
-           this.annotated = configurator.annotated;
-       }
+        /**
+         *
+         * @param configurator
+         */
+        private ImmutableInjectionPoint(InjectionPointConfiguratorImpl configurator) {
+            this.requiredType = configurator.requiredType;
+            this.qualifiers = configurator.qualifiers;
+            this.bean = configurator.bean;
+            this.isDelegate = configurator.isDelegate;
+            this.isTransient = configurator.isTransient;
+            this.member = configurator.member;
+            this.annotated = configurator.annotated;
+        }
 
-       @Override
-       public Type getType() {
-           return requiredType;
-       }
+        @Override
+        public Type getType() {
+            return requiredType;
+        }
 
-       @Override
-       public Set<Annotation> getQualifiers() {
-           return qualifiers;
-       }
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return qualifiers;
+        }
 
-       @Override
-       public Bean<?> getBean() {
-           return bean;
-       }
+        @Override
+        public Bean<?> getBean() {
+            return bean;
+        }
 
-       @Override
-       public Member getMember() {
-           return member;
-       }
+        @Override
+        public Member getMember() {
+            return member;
+        }
 
-       @Override
-       public Annotated getAnnotated() {
-           return annotated;
-       }
+        @Override
+        public Annotated getAnnotated() {
+            return annotated;
+        }
 
-       @Override
-       public boolean isDelegate() {
-           return isDelegate;
-       }
+        @Override
+        public boolean isDelegate() {
+            return isDelegate;
+        }
 
-       @Override
-       public boolean isTransient() {
-           return isTransient;
-       }
+        @Override
+        public boolean isTransient() {
+            return isTransient;
+        }
 
-       @Override
-       public String toString() {
-           return "InjectionPoint with type=" + requiredType + ", qualifiers=" + qualifiers +
-               ", delegate=" + isDelegate + ", transient=" + isTransient + ".";
-       }
-   }
+        @Override
+        public String toString() {
+            return "InjectionPoint with type=" + requiredType + ", qualifiers=" + qualifiers +
+                    ", delegate=" + isDelegate + ", transient=" + isTransient + ".";
+        }
+    }
 }

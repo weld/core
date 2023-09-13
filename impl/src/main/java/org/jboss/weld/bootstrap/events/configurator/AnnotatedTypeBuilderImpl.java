@@ -86,9 +86,12 @@ class AnnotatedTypeBuilderImpl<T> {
         public AnnotatedTypeImpl(AnnotatedTypeConfiguratorImpl<X> configurator) {
             this.delegate = configurator.getAnnotated();
             this.annotations = new Annotations(configurator);
-            this.methods = configurator.getMethods().stream().map(m -> new AnnotatedMethodImpl<>(m)).collect(ImmutableSet.collector());
-            this.fields = configurator.getFields().stream().map(f -> new AnnotatedFieldImpl<>(f)).collect(ImmutableSet.collector());
-            this.constructors = configurator.getConstructors().stream().map(c -> new AnnotatedConstructorImpl<>(c)).collect(ImmutableSet.collector());
+            this.methods = configurator.getMethods().stream().map(m -> new AnnotatedMethodImpl<>(m))
+                    .collect(ImmutableSet.collector());
+            this.fields = configurator.getFields().stream().map(f -> new AnnotatedFieldImpl<>(f))
+                    .collect(ImmutableSet.collector());
+            this.constructors = configurator.getConstructors().stream().map(c -> new AnnotatedConstructorImpl<>(c))
+                    .collect(ImmutableSet.collector());
         }
 
         @Override
@@ -144,7 +147,8 @@ class AnnotatedTypeBuilderImpl<T> {
         AnnotatedMethodImpl(AnnotatedMethodConfiguratorImpl<X> configurator) {
             this.delegate = configurator.getAnnotated();
             this.annotations = new Annotations(configurator);
-            this.parameters = configurator.getParams().stream().map((c) -> new AnnotatedParameterImpl<X>(c)).collect(ImmutableList.collector());
+            this.parameters = configurator.getParams().stream().map((c) -> new AnnotatedParameterImpl<X>(c))
+                    .collect(ImmutableList.collector());
         }
 
         @Override
@@ -227,7 +231,8 @@ class AnnotatedTypeBuilderImpl<T> {
         AnnotatedConstructorImpl(AnnotatedConstructorConfiguratorImpl<X> configurator) {
             this.delegate = configurator.getAnnotated();
             this.annotations = new Annotations(configurator);
-            this.parameters = configurator.getParams().stream().map((c) -> new AnnotatedParameterImpl<X>(c)).collect(ImmutableList.collector());
+            this.parameters = configurator.getParams().stream().map((c) -> new AnnotatedParameterImpl<X>(c))
+                    .collect(ImmutableList.collector());
         }
 
         @Override
@@ -307,7 +312,8 @@ class AnnotatedTypeBuilderImpl<T> {
 
         private Annotations(AnnotatedConfigurator<?, ?, ?> configurator) {
             this.annotations = ImmutableSet.copyOf(configurator.getAnnotations());
-            this.annotationsMap = this.annotations.stream().collect(ImmutableMap.collector((a) -> a.annotationType(), Function.identity()));
+            this.annotationsMap = this.annotations.stream()
+                    .collect(ImmutableMap.collector((a) -> a.annotationType(), Function.identity()));
         }
 
         Set<Annotation> get() {

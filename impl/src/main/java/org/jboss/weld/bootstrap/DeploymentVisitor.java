@@ -30,8 +30,8 @@ public class DeploymentVisitor {
     private final Collection<ContextHolder<? extends Context>> contexts;
 
     public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment,
-                             Collection<ContextHolder<? extends Context>> contexts,
-                             BeanDeploymentArchiveMapping bdaMapping) {
+            Collection<ContextHolder<? extends Context>> contexts,
+            BeanDeploymentArchiveMapping bdaMapping) {
         this.deploymentManager = deploymentManager;
         this.environment = environment;
         this.deployment = deployment;
@@ -48,7 +48,8 @@ public class DeploymentVisitor {
         }
         // Alhough it's the responsibility of an integrator, check the uniqueness to avoid weird bugs
         if (bdaMapping.isNonuniqueIdentifierDetected()) {
-            throw BootstrapLogger.LOG.nonuniqueBeanDeploymentIdentifier(WeldCollections.toMultiRowString(bdaMapping.getBeanDeployments()));
+            throw BootstrapLogger.LOG
+                    .nonuniqueBeanDeploymentIdentifier(WeldCollections.toMultiRowString(bdaMapping.getBeanDeployments()));
         }
     }
 

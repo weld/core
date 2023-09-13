@@ -44,7 +44,8 @@ public abstract class AbstractShutdownHookTest {
         Foo.IS_FOO_DESTROYED.set(false);
         // Start embedded undertow to collect test results
         // We need to use reflection because ShutdownHookTest is a part of the test archive and testFooPing() is called in-container
-        ShutdownHookTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("start").invoke(null);
+        ShutdownHookTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("start")
+                .invoke(null);
         // Deploy the test archive - start SE app
         deployer.deploy(DEPLOYMENT_NAME);
     }
@@ -67,7 +68,8 @@ public abstract class AbstractShutdownHookTest {
             assertTrue(Foo.IS_FOO_DESTROYED.get());
         } finally {
             // Stop embedded undertow
-            ShutdownHookTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("stop").invoke(null);
+            ShutdownHookTest.class.getClassLoader().loadClass(Foo.UNDERTOW_TEST_SERVER_CLASS).getDeclaredMethod("stop")
+                    .invoke(null);
         }
     }
 }

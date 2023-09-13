@@ -1,20 +1,20 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.function.Predicate;
+
 import jakarta.enterprise.inject.build.compatible.spi.FieldConfig;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
-
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.function.Predicate;
 
 class FieldConfigImpl implements FieldConfig {
     private final jakarta.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator<?> configurator;
     private final BeanManager bm;
 
     FieldConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator<?> configurator,
-                    BeanManager bm) {
+            BeanManager bm) {
         this.configurator = configurator;
         this.bm = bm;
     }

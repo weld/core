@@ -36,7 +36,9 @@ import org.junit.runner.RunWith;
 public class SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest.class))
                 .decorate(
                         FrameWithInitializerMethodInjectedDelegateAndAbstractMethod.class,
                         FrameWithFieldInjectedDelegate.class)

@@ -35,7 +35,8 @@ public class DiscoveryStrategyTest {
     @Test
     public void testBeanArchiveHandlers() {
         AbstractDiscoveryStrategy strategy = (AbstractDiscoveryStrategy) DiscoveryStrategyFactory
-                .create(new ClassLoaderResourceLoader(getClass().getClassLoader()), null, Collections.emptySet(), true, BeanDiscoveryMode.ANNOTATED);
+                .create(new ClassLoaderResourceLoader(getClass().getClassLoader()), null, Collections.emptySet(), true,
+                        BeanDiscoveryMode.ANNOTATED);
         strategy.registerHandler(new TestHandler2());
         List<BeanArchiveHandler> handlers = strategy.initBeanArchiveHandlers();
         assertEquals(3, handlers.size());

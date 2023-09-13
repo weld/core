@@ -42,9 +42,12 @@ public class ImplicitScanSystemPropertySmokeTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        final JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class).addClasses(Foo.class, Bar.class).addAsManifestResource(new BeansXml(), "beans.xml");
-        final JavaArchive bda2 = ShrinkWrap.create(JavaArchive.class).addClasses(ImplicitScanSystemPropertySmokeTest.class, Baz.class);
-        return ClassPath.builder().add(bda1).add(bda2).addSystemProperty(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, "true").build();
+        final JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class).addClasses(Foo.class, Bar.class)
+                .addAsManifestResource(new BeansXml(), "beans.xml");
+        final JavaArchive bda2 = ShrinkWrap.create(JavaArchive.class).addClasses(ImplicitScanSystemPropertySmokeTest.class,
+                Baz.class);
+        return ClassPath.builder().add(bda1).add(bda2).addSystemProperty(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, "true")
+                .build();
     }
 
     @Test

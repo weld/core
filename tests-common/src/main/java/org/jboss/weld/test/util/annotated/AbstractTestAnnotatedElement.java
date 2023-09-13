@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import jakarta.enterprise.inject.spi.Annotated;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
+
+import jakarta.enterprise.inject.spi.Annotated;
 
 /**
  * The base class for all New Annotated types.

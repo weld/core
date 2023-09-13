@@ -29,10 +29,14 @@ import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.module.web.servlet.ConversationContextActivator;
 
 /**
- * An implementation of {@link HttpConversationContext} that is capable of lazy initialization. By default, the context is associated with a request and the
- * active flag is set to true in the beginning of the request processing but the context is not initialized (cid not read and the state not restored) until the
- * conversation context is first accessed. As a result, {@link BusyConversationException} or {@link NonexistentConversationException} may be thrown late in the
- * request processing and any component invoking methods on {@link ConversationScoped} beans should be ready to catch these exceptions.
+ * An implementation of {@link HttpConversationContext} that is capable of lazy initialization. By default, the context is
+ * associated with a request and the
+ * active flag is set to true in the beginning of the request processing but the context is not initialized (cid not read and
+ * the state not restored) until the
+ * conversation context is first accessed. As a result, {@link BusyConversationException} or
+ * {@link NonexistentConversationException} may be thrown late in the
+ * request processing and any component invoking methods on {@link ConversationScoped} beans should be ready to catch these
+ * exceptions.
  *
  * Lazy initialization is mostly a workaround for https://issues.jboss.org/browse/CDI-411.
  *

@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit;
 import org.jboss.weld.logging.BootstrapLogger;
 
 /**
- * Implementation of {@link ExtendedExecutorServices} that uses a fixed thread pool. However threads are terminated if no new tasks arrive within the keep-alive time.
+ * Implementation of {@link ExtendedExecutorServices} that uses a fixed thread pool. However threads are terminated if no new
+ * tasks arrive within the keep-alive time.
  *
  * @author Martin Kouba
  */

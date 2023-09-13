@@ -25,9 +25,9 @@ import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.ConversationScoped;
 import jakarta.inject.Inject;
 
-import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.ManagedConversation;
+import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -97,7 +97,6 @@ public class ConversationImpl implements ManagedConversation, Serializable {
             abstractConversationContext.conversationPromotedToLongRunning(this);
         }
     }
-
 
     @Override
     public void end() {

@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import java.io.Serializable;
 
 @ApplicationScoped
 public class CowEventObserver implements Serializable {

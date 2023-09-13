@@ -35,8 +35,8 @@ public class SimpleDecoratorTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleDecoratorTest.class))
-            .decorate(SimpleDecorator1.class, SimpleDecorator2.class)
-            .addPackage(SimpleDecoratorTest.class.getPackage());
+                .decorate(SimpleDecorator1.class, SimpleDecorator2.class)
+                .addPackage(SimpleDecoratorTest.class.getPackage());
     }
 
     @Test
@@ -73,7 +73,8 @@ public class SimpleDecoratorTest {
         SimpleDecorator2.reset();
     }
 
-    private void assertDecoratorsInvoked(boolean decorator1Echo1, boolean decorator1Echo3, boolean decorator2Echo2, boolean decorator2Echo3) {
+    private void assertDecoratorsInvoked(boolean decorator1Echo1, boolean decorator1Echo3, boolean decorator2Echo2,
+            boolean decorator2Echo3) {
         Assert.assertEquals(decorator1Echo1, SimpleDecorator1.echo1);
         Assert.assertEquals(decorator1Echo3, SimpleDecorator1.echo3);
         Assert.assertEquals(decorator2Echo2, SimpleDecorator2.echo2);

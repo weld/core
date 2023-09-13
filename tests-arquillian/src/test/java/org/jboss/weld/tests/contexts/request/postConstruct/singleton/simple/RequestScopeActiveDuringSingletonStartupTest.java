@@ -40,7 +40,9 @@ public class RequestScopeActiveDuringSingletonStartupTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RequestScopeActiveDuringSingletonStartupTest.class)).addPackage(RequestScopeActiveDuringSingletonStartupTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(RequestScopeActiveDuringSingletonStartupTest.class))
+                .addPackage(RequestScopeActiveDuringSingletonStartupTest.class.getPackage());
     }
 
     @Test

@@ -54,7 +54,9 @@ public class AdditionalBeanArchiveHandlerTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addPackage(AdditionalBeanArchiveHandlerTest.class.getPackage())).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addPackage(AdditionalBeanArchiveHandlerTest.class.getPackage()))
+                .build();
     }
 
     @Test
@@ -146,7 +148,8 @@ public class AdditionalBeanArchiveHandlerTest {
             if (url.toString().contains("beans.xml")) {
                 return new ByteArrayInputStream("".getBytes());
             } else if (url.toString().contains("services")) {
-                return new ByteArrayInputStream((TestBeanArchiveHandler1.class.getName() + "\n" + TestBeanArchiveHandler2.class.getName()).getBytes());
+                return new ByteArrayInputStream(
+                        (TestBeanArchiveHandler1.class.getName() + "\n" + TestBeanArchiveHandler2.class.getName()).getBytes());
             }
             return null;
         }

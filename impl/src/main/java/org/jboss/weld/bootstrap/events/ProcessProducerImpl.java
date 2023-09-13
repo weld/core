@@ -49,8 +49,10 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
     // we need this to ensure that configurator and set method are not invoked within one observer
     private boolean producerSet;
 
-    private ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean) {
-        super(beanManager, ProcessProducer.class, new Type[] { bean.getAnnotated().getDeclaringType().getBaseType(), bean.getAnnotated().getBaseType() });
+    private ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember,
+            AbstractProducerBean<T, X, ?> bean) {
+        super(beanManager, ProcessProducer.class,
+                new Type[] { bean.getAnnotated().getDeclaringType().getBaseType(), bean.getAnnotated().getBaseType() });
         this.bean = bean;
         this.annotatedMember = annotatedMember;
     }

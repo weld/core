@@ -40,12 +40,16 @@ import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * ProcessAnnotatedType observer method resolver. It uses {@link ClassFileServices} for resolution and thus entirely avoids loading the classes which speeds up
+ * ProcessAnnotatedType observer method resolver. It uses {@link ClassFileServices} for resolution and thus entirely avoids
+ * loading the classes which speeds up
  * especially large deployments.
  *
- * Although this resolver covers most of the possible PAT observer method types, there are several cases when {@link ClassFileInfo} used by this resolver is not
- * sufficient to perform observer method resolution correctly. If such observer method is present in the deployment, the constructor of this class throws
- * {@link UnsupportedObserverMethodException}. This exception is expected to be caught by the deployer and observer method resolution using the default
+ * Although this resolver covers most of the possible PAT observer method types, there are several cases when
+ * {@link ClassFileInfo} used by this resolver is not
+ * sufficient to perform observer method resolution correctly. If such observer method is present in the deployment, the
+ * constructor of this class throws
+ * {@link UnsupportedObserverMethodException}. This exception is expected to be caught by the deployer and observer method
+ * resolution using the default
  * {@link TypeSafeObserverResolver} is performed instead.
  *
  * @author Jozef Hartinger
@@ -118,14 +122,16 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
             if (o instanceof ContainerLifecycleEventObserverMethod<?>) {
                 final Set<Annotation> qualifiers = o.getObservedQualifiers();
                 // only process observer methods with no qualifiers or with @Any
-                if (qualifiers.isEmpty() || (qualifiers.size() == 1 && Any.class.equals(qualifiers.iterator().next().annotationType()))) {
+                if (qualifiers.isEmpty()
+                        || (qualifiers.size() == 1 && Any.class.equals(qualifiers.iterator().next().annotationType()))) {
                     process((ContainerLifecycleEventObserverMethod<?>) o, o.getObservedType());
                 }
             }
         }
     }
 
-    private void process(ContainerLifecycleEventObserverMethod<?> observer, Type observedType) throws UnsupportedObserverMethodException {
+    private void process(ContainerLifecycleEventObserverMethod<?> observer, Type observedType)
+            throws UnsupportedObserverMethodException {
         if (Object.class.equals(observedType)) {
             // void observe(Object event)
             catchAllObservers.add(observer);
@@ -143,7 +149,8 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
                      * The event type always has the form of ProcessAnnotatedType<X> where X is a raw type.
                      * Therefore, no event will ever match an observer with type ProcessAnnotatedType<Foo<Y>> no matter
                      * what Y is. This would be because primarily because parameterized are invariant. Event for an exact match
-                     * of the raw type, Foo raw event type is not assignable to Foo<?> parameterized type according to CDI assignability rules.
+                     * of the raw type, Foo raw event type is not assignable to Foo<?> parameterized type according to CDI
+                     * assignability rules.
                      */
                     return;
                 } else if (typeParameter instanceof WildcardType) {
@@ -163,7 +170,8 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
     }
 
-    private void checkBounds(ContainerLifecycleEventObserverMethod<?> observer, Type[] bounds) throws UnsupportedObserverMethodException {
+    private void checkBounds(ContainerLifecycleEventObserverMethod<?> observer, Type[] bounds)
+            throws UnsupportedObserverMethodException {
         for (Type type : bounds) {
             if (!(type instanceof Class<?>)) {
                 throw new UnsupportedObserverMethodException(observer);
@@ -171,7 +179,8 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
     }
 
-    private void defaultRules(ContainerLifecycleEventObserverMethod<?> observer, Type observedType) throws UnsupportedObserverMethodException {
+    private void defaultRules(ContainerLifecycleEventObserverMethod<?> observer, Type observedType)
+            throws UnsupportedObserverMethodException {
         if (ProcessAnnotatedType.class.equals(observedType)) {
             catchAllObservers.add(observer);
         } else if (observedType instanceof ParameterizedType) {
@@ -198,13 +207,15 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
     }
 
     /**
-     * Resolves a set of {@code ProcessAnnotatedType} observer methods for the specified class. If no observer methods are resolved, an
+     * Resolves a set of {@code ProcessAnnotatedType} observer methods for the specified class. If no observer methods are
+     * resolved, an
      * empty set is returned.
      *
      * @param className the specified class name
      * @return the set of resolved ProcessAnnotatedType observer methods
      */
-    public Set<ContainerLifecycleEventObserverMethod<?>> resolveProcessAnnotatedTypeObservers(ClassFileServices classFileServices, String className) {
+    public Set<ContainerLifecycleEventObserverMethod<?>> resolveProcessAnnotatedTypeObservers(
+            ClassFileServices classFileServices, String className) {
         Set<ContainerLifecycleEventObserverMethod<?>> result = new HashSet<ContainerLifecycleEventObserverMethod<?>>();
         result.addAll(catchAllObservers);
 

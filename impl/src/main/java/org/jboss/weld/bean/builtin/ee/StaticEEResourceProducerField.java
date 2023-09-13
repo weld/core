@@ -64,7 +64,8 @@ public class StaticEEResourceProducerField<X, T> extends EEResourceProducerField
         super(attributes, field, declaringBean, disposalMethod, manager, services);
         this.resourceInjection = getResourceInjection(field, declaringBean, manager);
         this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(field.getJavaMember()));
-        this.injectionContext = new InjectionContextImpl<X>(manager, declaringBean.getInjectionTarget(), declaringBean.getAnnotated(), null) {
+        this.injectionContext = new InjectionContextImpl<X>(manager, declaringBean.getInjectionTarget(),
+                declaringBean.getAnnotated(), null) {
             @Override
             public void proceed() {
             }
@@ -73,8 +74,10 @@ public class StaticEEResourceProducerField<X, T> extends EEResourceProducerField
 
     protected ResourceInjection<T> getResourceInjection(EnhancedAnnotatedField<T, ? super X> field,
             AbstractClassBean<X> declaringBean, BeanManagerImpl manager) {
-        FieldInjectionPoint<T, X> injectionPoint = cast(InjectionPointFactory.silentInstance().createFieldInjectionPoint(field, declaringBean, declaringBean.getBeanClass(), manager));
-        return manager.getServices().get(ResourceInjectionFactory.class).getStaticProducerFieldResourceInjection(injectionPoint, beanManager);
+        FieldInjectionPoint<T, X> injectionPoint = cast(InjectionPointFactory.silentInstance().createFieldInjectionPoint(field,
+                declaringBean, declaringBean.getBeanClass(), manager));
+        return manager.getServices().get(ResourceInjectionFactory.class).getStaticProducerFieldResourceInjection(injectionPoint,
+                beanManager);
     }
 
     @Override

@@ -44,9 +44,11 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
      * @param namingScheme
      * @param attributeLazyFetchingEnabled
      */
-    public AbstractSessionBeanStore(NamingScheme namingScheme, boolean attributeLazyFetchingEnabled, ServiceRegistry serviceRegistry) {
+    public AbstractSessionBeanStore(NamingScheme namingScheme, boolean attributeLazyFetchingEnabled,
+            ServiceRegistry serviceRegistry) {
         super(namingScheme, attributeLazyFetchingEnabled);
-        this.resetHttpSessionAttributeOnBeanAccess = serviceRegistry.get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS);
+        this.resetHttpSessionAttributeOnBeanAccess = serviceRegistry.get(WeldConfiguration.class)
+                .getBooleanProperty(ConfigurationKey.RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS);
     }
 
     protected Iterator<String> getAttributeNames() {
@@ -87,7 +89,7 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
             String prefixedId = getNamingScheme().prefix(id);
             instance = cast(getAttribute(prefixedId));
         }
-        if (resetHttpSessionAttributeOnBeanAccess && instance != null){
+        if (resetHttpSessionAttributeOnBeanAccess && instance != null) {
             put(id, instance);
         }
         return instance;
@@ -109,15 +111,15 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
             //needed to prevent some edge cases
             //where we would otherwise enter an infinite loop
             lockStore = CURRENT_LOCK_STORE.get();
-            if(lockStore != null) {
+            if (lockStore != null) {
                 return lockStore;
             }
             HttpSession session = getSession(false);
-            if(session == null) {
+            if (session == null) {
                 lockStore = new LockStore();
                 CURRENT_LOCK_STORE.set(lockStore);
                 try {
-                session = getSession(true);
+                    session = getSession(true);
                 } finally {
                     CURRENT_LOCK_STORE.remove();
                 }

@@ -50,12 +50,14 @@ public interface ClassBean<T> extends WeldBean<T> {
 
     /**
      * Returns the {@link BeanManager} used by this bean.
+     *
      * @return bean manager used by this bean
      */
     BeanManagerImpl getBeanManager();
 
     /**
      * Returns injection target used to produce instances of this bean
+     *
      * @return the injection target
      */
     InjectionTarget<T> getProducer();

@@ -19,10 +19,8 @@ package org.jboss.weld.tests.event.observer.validation.enterprise;
 import jakarta.ejb.Stateful;
 import jakarta.enterprise.event.Observes;
 
-public @Stateful class Farmer implements FarmerLocal
-{
-   public void observeEggLaying(@Observes Egg egg)
-   {
-     
-   }
+public @Stateful class Farmer implements FarmerLocal {
+    public void observeEggLaying(@Observes Egg egg) {
+
+    }
 }

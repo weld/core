@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata.broken.decorator;
 
-
 public interface MilkProduct {
 
     void foo();

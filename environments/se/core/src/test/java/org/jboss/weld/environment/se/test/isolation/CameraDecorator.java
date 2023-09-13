@@ -6,11 +6,11 @@ import jakarta.inject.Inject;
 
 @Decorator
 public class CameraDecorator implements Camera {
-    
+
     @Inject
     @Delegate
     private Camera delegate;
-    
+
     public static int invocations = 0;
 
     @Override
@@ -18,5 +18,5 @@ public class CameraDecorator implements Camera {
         invocations++;
         delegate.capture();
     }
-    
+
 }

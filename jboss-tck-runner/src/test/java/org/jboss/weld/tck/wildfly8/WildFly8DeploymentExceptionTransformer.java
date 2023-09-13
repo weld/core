@@ -25,7 +25,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 
 /**
- * TEMPORARY WORKAROUND - temporary replacement for NOOP {@link org.jboss.as.arquillian.container.ExceptionTransformer} used by JBoss AS7 managed container.
+ * TEMPORARY WORKAROUND - temporary replacement for NOOP {@link org.jboss.as.arquillian.container.ExceptionTransformer} used by
+ * JBoss AS7 managed container.
  *
  * See AS7-1197 for more details.
  *
@@ -39,7 +40,8 @@ public class WildFly8DeploymentExceptionTransformer implements DeploymentExcepti
             "org.jboss.weld.exceptions.InconsistentSpecializationException",
             "org.jboss.weld.exceptions.NullableDependencyException" };
 
-    private static final String[] DEFINITION_EXCEPTION_FRAGMENTS = new String[] { "org.jboss.weld.exceptions.DefinitionException" };
+    private static final String[] DEFINITION_EXCEPTION_FRAGMENTS = new String[] {
+            "org.jboss.weld.exceptions.DefinitionException" };
 
     public Throwable transform(Throwable throwable) {
 

@@ -43,7 +43,8 @@ class InjectionPointPropagatingEnterpriseTargetBeanInstance extends EnterpriseTa
     private final String contextId;
     private transient CurrentInvocationInjectionPoint currentInvocationInjectionPoint;
 
-    InjectionPointPropagatingEnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler, BeanManagerImpl manager) {
+    InjectionPointPropagatingEnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler,
+            BeanManagerImpl manager) {
         super(baseType, methodHandler);
         this.contextId = manager.getContextId();
         this.currentInvocationInjectionPoint = manager.getServices().get(CurrentInvocationInjectionPoint.class);
@@ -72,7 +73,8 @@ class InjectionPointPropagatingEnterpriseTargetBeanInstance extends EnterpriseTa
     }
 
     private Object readResolve() throws ObjectStreamException {
-        this.currentInvocationInjectionPoint = Container.instance(contextId).services().get(CurrentInvocationInjectionPoint.class);
+        this.currentInvocationInjectionPoint = Container.instance(contextId).services()
+                .get(CurrentInvocationInjectionPoint.class);
         return this;
     }
 }

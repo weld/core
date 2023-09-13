@@ -43,11 +43,12 @@ public class AmbiguousName1Test {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AmbiguousName1Test.class)).addPackage(AmbiguousName1Test.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AmbiguousName1Test.class))
+                .addPackage(AmbiguousName1Test.class.getPackage());
     }
 
     @Test
     public void testDeploymentWithAmbiguousBeanNames() {
         // should throw deployment exception
-     }
+    }
 }

@@ -21,7 +21,8 @@ public class SetupExtension implements Extension {
         final AnnotatedType<Box> original = manager.createAnnotatedType(Box.class);
 
         /*
-         * We wrap the annotated type. As a result it does not contain the interceptor binding but it does contain a new qualifier to distinguish it from the
+         * We wrap the annotated type. As a result it does not contain the interceptor binding but it does contain a new
+         * qualifier to distinguish it from the
          * default annotated type for Box.class
          */
         AnnotatedType<Box> modifiedType = new ForwardingAnnotatedType<Box>() {
@@ -41,7 +42,7 @@ public class SetupExtension implements Extension {
 
             @Override
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(Additional.Literal.INSTANCE);
+                return Collections.<Annotation> singleton(Additional.Literal.INSTANCE);
             }
 
             @Override

@@ -28,8 +28,8 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bootstrap.MissingDependenciesRegistry;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPointImpl;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
@@ -44,6 +44,7 @@ import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Helper class for {@link InjectionPoint} processing.
+ *
  * @author Jozef Hartinger
  *
  */
@@ -52,7 +53,8 @@ public class InjectionPoints {
     private InjectionPoints() {
     }
 
-    public static <T extends WeldInjectionPointAttributes<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
+    public static <T extends WeldInjectionPointAttributes<?, ?>> Set<T> flattenInjectionPoints(
+            List<? extends Set<T>> fieldInjectionPoints) {
         Set<T> injectionPoints = new HashSet<T>();
         for (Set<T> i : fieldInjectionPoints) {
             injectionPoints.addAll(i);
@@ -60,7 +62,8 @@ public class InjectionPoints {
         return injectionPoints;
     }
 
-    public static Set<ParameterInjectionPoint<?, ?>> flattenParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
+    public static Set<ParameterInjectionPoint<?, ?>> flattenParameterInjectionPoints(
+            List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
         Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?, ?>>();
         for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
             for (MethodInjectionPoint<?, ?> method : i) {
@@ -72,7 +75,8 @@ public class InjectionPoints {
         return injectionPoints;
     }
 
-    public static <X> Set<InjectionPoint> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {
+    public static <X> Set<InjectionPoint> filterOutSpecialParameterInjectionPoints(
+            List<ParameterInjectionPoint<?, X>> injectionPoints) {
         ImmutableSet.Builder<InjectionPoint> filtered = ImmutableSet.builder();
         for (ParameterInjectionPoint<?, X> parameter : injectionPoints) {
             if (parameter instanceof SpecialParameterInjectionPoint) {
@@ -88,9 +92,10 @@ public class InjectionPoints {
             return Reflections.cast(injectionPoint);
         }
         if (injectionPoint.getAnnotated() instanceof AnnotatedField<?>) {
-            return FieldInjectionPoint.<T, X>silent(ForwardingFieldInjectionPointAttributes.<T, X>of(injectionPoint));
+            return FieldInjectionPoint.<T, X> silent(ForwardingFieldInjectionPointAttributes.<T, X> of(injectionPoint));
         } else {
-            return ParameterInjectionPointImpl.<T, X>silent(ForwardingParameterInjectionPointAttributes.<T, X>of(injectionPoint));
+            return ParameterInjectionPointImpl
+                    .<T, X> silent(ForwardingParameterInjectionPointAttributes.<T, X> of(injectionPoint));
         }
     }
 
@@ -98,14 +103,16 @@ public class InjectionPoints {
      *
      * @param bean
      * @param resolvedBean
-     * @return <code>true</code> if the container is permitted to optimize an injectable reference lookup, <code>false</code> otherwise
+     * @return <code>true</code> if the container is permitted to optimize an injectable reference lookup, <code>false</code>
+     *         otherwise
      * @see http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#injectable_reference
      */
     public static boolean isInjectableReferenceLookupOptimizationAllowed(Bean<?> bean, Bean<?> resolvedBean) {
         Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
         return bean != null
-                && ((RequestScoped.class.equals(bean.getScope()) && Beans.hasBuiltinScope(resolvedBean)) || (ApplicationScoped.class.equals(bean.getScope()) && ApplicationScoped.class
-                        .equals(resolvedBean.getScope())));
+                && ((RequestScoped.class.equals(bean.getScope()) && Beans.hasBuiltinScope(resolvedBean))
+                        || (ApplicationScoped.class.equals(bean.getScope()) && ApplicationScoped.class
+                                .equals(resolvedBean.getScope())));
     }
 
     public static String getUnsatisfiedDependenciesAdditionalInfo(InjectionPoint ij, BeanManagerImpl beanManager) {
@@ -113,7 +120,8 @@ public class InjectionPoints {
         if (beansMatchedByType.isEmpty()) {
             Class<?> rawType = Reflections.getRawType(ij.getType());
             if (rawType != null) {
-                MissingDependenciesRegistry missingDependenciesRegistry = beanManager.getServices().get(MissingDependenciesRegistry.class);
+                MissingDependenciesRegistry missingDependenciesRegistry = beanManager.getServices()
+                        .get(MissingDependenciesRegistry.class);
                 String missingDependency = missingDependenciesRegistry.getMissingDependencyForClass(rawType.getName());
                 if (missingDependency != null) {
                     return ValidatorLogger.LOG.unsatisfiedDependencyBecauseClassIgnored(

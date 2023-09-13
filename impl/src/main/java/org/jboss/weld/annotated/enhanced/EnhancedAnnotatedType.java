@@ -38,7 +38,8 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     Collection<EnhancedAnnotatedField<?, ? super T>> getEnhancedFields();
 
     /**
-     * Gets all methods on the type including those declared on a superclass of {@link #getJavaClass()}. Overridden methods are not returned.
+     * Gets all methods on the type including those declared on a superclass of {@link #getJavaClass()}. Overridden methods are
+     * not returned.
      *
      * @return A set of abstracted methods
      */
@@ -54,7 +55,7 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     /**
      * Get a field by name
      *
-     * @param <F>       the expected type of the field
+     * @param <F> the expected type of the field
      * @param fieldName the field name
      * @return the field
      */
@@ -118,7 +119,8 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     EnhancedAnnotatedConstructor<T> getDeclaredEnhancedConstructor(ConstructorSignature signature);
 
     /**
-     * Gets all methods annotated with annotationType including those declared on a superclass of {@link #getJavaClass()}. Overridden methods are not returned.
+     * Gets all methods annotated with annotationType including those declared on a superclass of {@link #getJavaClass()}.
+     * Overridden methods are not returned.
      *
      * @param annotationType The annotation to match
      * @return A set of abstracted methods with the given annotation. Returns an
@@ -138,7 +140,7 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     /**
      * Get a method by name
      *
-     * @param <M>       the expected return type
+     * @param <M> the expected return type
      * @param signature the name of the method
      * @return the method, or null if it doesn't exist
      */
@@ -147,7 +149,7 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     /**
      * Get a method by name
      *
-     * @param <M>       the expected return type
+     * @param <M> the expected return type
      * @param signature the name of the method
      * @return the method, or null if it doesn't exist
      */
@@ -160,16 +162,19 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
      * @return A set of abstracted methods with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+    Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(
+            Class<? extends Annotation> annotationType);
 
     /**
-     * Gets all methods with parameters annotated with annotationType including those declared on a superclass of {@link #getJavaClass()}. Overridden methods are not returned.
+     * Gets all methods with parameters annotated with annotationType including those declared on a superclass of
+     * {@link #getJavaClass()}. Overridden methods are not returned.
      *
      * @param annotationType The annotation to match
      * @return A set of abstracted methods with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+    Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(
+            Class<? extends Annotation> annotationType);
 
     /**
      * Gets the superclass.
@@ -208,7 +213,6 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
 
     String getSimpleName();
 
-
     /**
      * Gets all annotations which are declared on this annotated item with the
      * given meta annotation type
@@ -221,6 +225,7 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
 
     /**
      * Returns a lightweight implementation of {@link AnnotatedType} with minimal memory footprint.
+     *
      * @return the slim version of this {@link AnnotatedType}
      */
     SlimAnnotatedType<T> slim();

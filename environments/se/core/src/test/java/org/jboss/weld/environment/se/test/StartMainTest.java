@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public class StartMainTest {
 
-    private static String[] ARGS = new String[]{"arg1", "arg2", "arg3"};
+    private static String[] ARGS = new String[] { "arg1", "arg2", "arg3" };
 
     private StartMain startMain;
 

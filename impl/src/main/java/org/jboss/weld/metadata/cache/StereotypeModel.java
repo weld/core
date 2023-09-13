@@ -47,7 +47,8 @@ import org.jboss.weld.util.collections.Arrays2;
  * @author Pete Muir
  */
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Stereotype.class);
+    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections
+            .<Class<? extends Annotation>> singleton(Stereotype.class);
 
     // Is the stereotype an alternative
     private boolean alternative;
@@ -155,9 +156,10 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
                         Arrays2.unorderedEquals(elementTypes, TYPE) ||
                         Arrays2.unorderedEquals(elementTypes, METHOD) ||
                         Arrays2.unorderedEquals(elementTypes, FIELD) ||
-                        Arrays2.unorderedEquals(elementTypes, METHOD, TYPE)
-                )) {
-                    ReflectionLogger.LOG.missingTargetMethodFieldTypeParameterOrTargetMethodTypeOrTargetMethodOrTargetTypeOrTargetField(annotatedAnnotation);
+                        Arrays2.unorderedEquals(elementTypes, METHOD, TYPE))) {
+                    ReflectionLogger.LOG
+                            .missingTargetMethodFieldTypeParameterOrTargetMethodTypeOrTargetMethodOrTargetTypeOrTargetField(
+                                    annotatedAnnotation);
                 }
             }
         }

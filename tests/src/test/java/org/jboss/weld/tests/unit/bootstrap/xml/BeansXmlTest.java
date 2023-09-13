@@ -151,8 +151,8 @@ public class BeansXmlTest {
     }
 
     /*
-    * https://jira.jboss.org/jira/browse/WELD-362
-    */
+     * https://jira.jboss.org/jira/browse/WELD-362
+     */
     @Test
     public void testNonPrettyPrintedXML() throws Exception {
         createRunner("nonPrettyPrinted.xml").run(new Runnable() {

@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.exceptions;
 
-
 /**
  * Thrown if a simple bean is dependent scoped and injected into a stateful
  * session bean, into a non-transient field, bean constructor parameter or

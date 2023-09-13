@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Verifies that vetoing a specializing bean correctly updated {@link SpecializationAndEnablementRegistry}.
+ *
  * @author Jozef Hartinger
  *
  */
@@ -44,7 +45,11 @@ public class UsingVetoToPreventInconsistentSpecializationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(UsingVetoToPreventInconsistentSpecializationTest.class)).addPackage(UsingVetoToPreventInconsistentSpecializationTest.class.getPackage()).addAsServiceProvider(Extension.class, VetoingExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(UsingVetoToPreventInconsistentSpecializationTest.class))
+                .addPackage(UsingVetoToPreventInconsistentSpecializationTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, VetoingExtension.class);
     }
 
     @Test

@@ -36,7 +36,8 @@ import org.junit.runner.RunWith;
 public class ProxyConstructorTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ProxyConstructorTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ProxyConstructorTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(ProxyConstructorTest.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies");

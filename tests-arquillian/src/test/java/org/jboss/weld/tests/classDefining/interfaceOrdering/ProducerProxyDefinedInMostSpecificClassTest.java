@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.classDefining.interfaceOrdering;
 
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -42,7 +43,8 @@ public class ProducerProxyDefinedInMostSpecificClassTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProducerProxyDefinedInMostSpecificClassTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProducerProxyDefinedInMostSpecificClassTest.class))
                 .addClass(ProducerProxyDefinedInMostSpecificClassTest.class)
                 .addClass(A.class)
                 .addClass(B.class)
@@ -63,7 +65,8 @@ public class ProducerProxyDefinedInMostSpecificClassTest {
         someB.pingB();
         // then assert its name up to the first occurrence of "$"
         // in this case, we want the package and class name to the that of B which is the most specific interface implemented
-        Assert.assertEquals(B.class.getName(), someB.getClass().getName().substring(0, someB.getClass().getName().indexOf("$")));
+        Assert.assertEquals(B.class.getName(),
+                someB.getClass().getName().substring(0, someB.getClass().getName().indexOf("$")));
     }
 
     @Test

@@ -71,7 +71,7 @@ public class BeanManagerTest {
 
     @Test
     public void testResolveWithEmptySet() {
-        assertNull(beanManager.resolve(Collections.<Bean<? extends Integer>>emptySet()));
+        assertNull(beanManager.resolve(Collections.<Bean<? extends Integer>> emptySet()));
         assertNull(beanManager.resolve(new HashSet<Bean<? extends Integer>>()));
     }
 }

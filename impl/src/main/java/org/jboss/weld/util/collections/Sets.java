@@ -68,7 +68,8 @@ public final class Sets {
 
             @Override
             public Iterator<E> iterator() {
-                final Iterator<E> iterator = Iterators.concat(ImmutableList.of(set1.iterator(), difference.iterator()).iterator());
+                final Iterator<E> iterator = Iterators
+                        .concat(ImmutableList.of(set1.iterator(), difference.iterator()).iterator());
                 // Remove operation is not supported by default
                 return new Iterator<E>() {
                     @Override

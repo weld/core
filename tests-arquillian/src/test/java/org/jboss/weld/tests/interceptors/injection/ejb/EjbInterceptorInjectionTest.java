@@ -40,7 +40,8 @@ public class EjbInterceptorInjectionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EjbInterceptorInjectionTest.class)).addPackage(EjbInterceptorInjectionTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EjbInterceptorInjectionTest.class))
+                .addPackage(EjbInterceptorInjectionTest.class.getPackage())
                 .addAsManifestResource(EjbInterceptorInjectionTest.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
     }
 

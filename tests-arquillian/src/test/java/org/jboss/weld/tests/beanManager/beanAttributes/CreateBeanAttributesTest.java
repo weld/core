@@ -57,7 +57,8 @@ public class CreateBeanAttributesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CreateBeanAttributesTest.class)).addPackage(Lake.class.getPackage()).addClass(BeanUtilities.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CreateBeanAttributesTest.class))
+                .addPackage(Lake.class.getPackage()).addClass(BeanUtilities.class);
     }
 
     @Test
@@ -106,13 +107,16 @@ public class CreateBeanAttributesTest {
         AnnotatedMethod<?> volumeMethod = null;
 
         for (AnnotatedMethod<?> method : type.getMethods()) {
-            if (method.getJavaMember().getName().equals("getFish") && method.getJavaMember().getDeclaringClass().equals(Dam.class)) {
+            if (method.getJavaMember().getName().equals("getFish")
+                    && method.getJavaMember().getDeclaringClass().equals(Dam.class)) {
                 damFishMethod = method;
             }
-            if (method.getJavaMember().getName().equals("getFish") && method.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+            if (method.getJavaMember().getName().equals("getFish")
+                    && method.getJavaMember().getDeclaringClass().equals(Lake.class)) {
                 lakeFishMethod = method;
             }
-            if (method.getJavaMember().getName().equals("getVolume") && method.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+            if (method.getJavaMember().getName().equals("getVolume")
+                    && method.getJavaMember().getDeclaringClass().equals(Lake.class)) {
                 volumeMethod = method;
             }
         }
@@ -137,10 +141,12 @@ public class CreateBeanAttributesTest {
             if (field.getJavaMember().getName().equals("fish") && field.getJavaMember().getDeclaringClass().equals(Dam.class)) {
                 damFishField = field;
             }
-            if (field.getJavaMember().getName().equals("fish") && field.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+            if (field.getJavaMember().getName().equals("fish")
+                    && field.getJavaMember().getDeclaringClass().equals(Lake.class)) {
                 lakeFishField = field;
             }
-            if (field.getJavaMember().getName().equals("volume") && field.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+            if (field.getJavaMember().getName().equals("volume")
+                    && field.getJavaMember().getDeclaringClass().equals(Lake.class)) {
                 volumeField = field;
             }
         }
@@ -182,7 +188,8 @@ public class CreateBeanAttributesTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidMember() {
-        AnnotatedConstructor<?> constructor = manager.createAnnotatedType(WrappedAnnotatedType.class).getConstructors().iterator().next();
+        AnnotatedConstructor<?> constructor = manager.createAnnotatedType(WrappedAnnotatedType.class).getConstructors()
+                .iterator().next();
         manager.createBeanAttributes(constructor);
     }
 }

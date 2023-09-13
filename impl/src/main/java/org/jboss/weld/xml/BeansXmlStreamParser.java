@@ -41,7 +41,6 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
@@ -56,6 +55,8 @@ import org.jboss.weld.metadata.ScanningImpl;
 import org.jboss.weld.metadata.SystemPropertyActivationImpl;
 import org.jboss.weld.metadata.WeldFilterImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Simple yet efficient parser for beans.xml. This class is not thread safe and instances cannot be reused.
@@ -130,14 +131,14 @@ public class BeansXmlStreamParser {
         this(beansXml, Function.identity(), emptyBeansXmlDiscoveryMode);
     }
 
-    public BeansXmlStreamParser(URL beansXml, Function<String, String> interpolator, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+    public BeansXmlStreamParser(URL beansXml, Function<String, String> interpolator,
+            BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         this.beansXml = beansXml;
         this.interpolator = interpolator;
         this.emptyBeansXmlDiscoveryMode = emptyBeansXmlDiscoveryMode;
     }
 
-    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
-            justification = "False positive, see https://github.com/spotbugs/spotbugs/issues/259")
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", justification = "False positive, see https://github.com/spotbugs/spotbugs/issues/259")
     public BeansXml parse() {
         if (beansXml == null) {
             throw XmlLogger.LOG.loadError("unknown", null);
@@ -183,13 +184,17 @@ public class BeansXmlStreamParser {
         } catch (XMLStreamException e) {
             throw XmlLogger.LOG.parsingError(beansXml, e);
         }
-        return new BeansXmlImpl(orEmpty(selectedAlternatives), orEmpty(selectedAlternativeStereotypes), orEmpty(enabledDecorators),
-                orEmpty(enabledInterceptors), new ScanningImpl(orEmpty(includes), orEmpty(excludes)), beansXml, discoveryMode, version, isTrimmed);
+        return new BeansXmlImpl(orEmpty(selectedAlternatives), orEmpty(selectedAlternativeStereotypes),
+                orEmpty(enabledDecorators),
+                orEmpty(enabledInterceptors), new ScanningImpl(orEmpty(includes), orEmpty(excludes)), beansXml, discoveryMode,
+                version, isTrimmed);
     }
 
-    private StartElement nextStartElement(XMLEventReader reader, String localName, Set<String> namespaces) throws XMLStreamException {
+    private StartElement nextStartElement(XMLEventReader reader, String localName, Set<String> namespaces)
+            throws XMLStreamException {
         StartElement startElement = nextStartElement(reader);
-        if (startElement != null && localName.equals(startElement.getName().getLocalPart()) && isInNamespace(startElement.getName(), namespaces)) {
+        if (startElement != null && localName.equals(startElement.getName().getLocalPart())
+                && isInNamespace(startElement.getName(), namespaces)) {
             return startElement;
         }
         return null;
@@ -237,11 +242,13 @@ public class BeansXmlStreamParser {
             } else if (event.isStartElement()) {
                 StartElement element = (StartElement) event;
                 if (isStartElement(element, CLASS)) {
-                    selectedAlternatives.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
-                            element.getLocation().getLineNumber()));
+                    selectedAlternatives
+                            .add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                                    element.getLocation().getLineNumber()));
                 } else if (isStartElement(element, STEREOTYPE)) {
-                    selectedAlternativeStereotypes.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
-                            element.getLocation().getLineNumber()));
+                    selectedAlternativeStereotypes
+                            .add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                                    element.getLocation().getLineNumber()));
                 }
             }
         }
@@ -259,8 +266,9 @@ public class BeansXmlStreamParser {
             } else if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
                 if (isStartElement(element, CLASS)) {
-                    enabledInterceptors.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
-                            element.getLocation().getLineNumber()));
+                    enabledInterceptors
+                            .add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                                    element.getLocation().getLineNumber()));
                 }
             }
         }
@@ -278,8 +286,9 @@ public class BeansXmlStreamParser {
             } else if (event.isStartElement()) {
                 StartElement element = event.asStartElement();
                 if (isStartElement(element, CLASS)) {
-                    enabledDecorators.add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
-                            element.getLocation().getLineNumber()));
+                    enabledDecorators
+                            .add(new XmlMetadata<String>(element.getName().toString(), getTrimmedElementText(reader), beansXml,
+                                    element.getLocation().getLineNumber()));
                 }
 
             }
@@ -307,7 +316,8 @@ public class BeansXmlStreamParser {
         }
     }
 
-    private void handleFilter(StartElement filterElement, XMLEventReader reader, Consumer<XmlMetadata<Filter>> consumer) throws XMLStreamException {
+    private void handleFilter(StartElement filterElement, XMLEventReader reader, Consumer<XmlMetadata<Filter>> consumer)
+            throws XMLStreamException {
         String name = getAttribute(filterElement, NAME_ATTRIBUTE_NAME);
         String pattern = name != null ? null : getAttribute(filterElement, PATTERN_ATTRIBUTE_NAME);
         if (name != null || pattern != null) {
@@ -322,7 +332,8 @@ public class BeansXmlStreamParser {
                     } else {
                         filter = new FilterImpl(name, systemPropertyActivations, classAvailableActivations);
                     }
-                    consumer.accept(new XmlMetadata<Filter>(filterElement.getName().toString(), filter, beansXml, filterElement.getLocation().getLineNumber()));
+                    consumer.accept(new XmlMetadata<Filter>(filterElement.getName().toString(), filter, beansXml,
+                            filterElement.getLocation().getLineNumber()));
                     return;
                 } else if (event.isStartElement()) {
                     StartElement element = (StartElement) event;
@@ -340,7 +351,8 @@ public class BeansXmlStreamParser {
 
     private void classAvailable(StartElement element, Consumer<Metadata<ClassAvailableActivation>> consumer, boolean inverse) {
         String className = getAttribute(element, NAME_ATTRIBUTE_NAME);
-        Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(element.getName().toString(),
+        Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(
+                element.getName().toString(),
                 new ClassAvailableActivationImpl(className, inverse), beansXml, element.getLocation().getLineNumber());
         consumer.accept(classAvailableActivation);
     }

@@ -47,17 +47,18 @@ public class WeldDeployment extends AbstractWeldDeployment {
      *
      * @param resourceLoader
      * @param bootstrap
-     * @param beanDeploymentArchives The set should be mutable so that additional bean deployment archives can be eventually added
+     * @param beanDeploymentArchives The set should be mutable so that additional bean deployment archives can be eventually
+     *        added
      * @param extensions
      */
-    public WeldDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<WeldBeanDeploymentArchive> beanDeploymentArchives,
+    public WeldDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap,
+            Set<WeldBeanDeploymentArchive> beanDeploymentArchives,
             Iterable<Metadata<Extension>> extensions) {
         super(bootstrap, extensions);
         this.beanDeploymentArchives = beanDeploymentArchives;
         setBeanDeploymentArchivesAccessibility();
         getServices().add(ResourceLoader.class, resourceLoader);
     }
-
 
     @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
@@ -74,7 +75,7 @@ public class WeldDeployment extends AbstractWeldDeployment {
     }
 
     @Override
-   public WeldBeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
+    public WeldBeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
         for (WeldBeanDeploymentArchive beanDeploymentArchive : beanDeploymentArchives) {
             if (beanDeploymentArchive.getKnownClasses().contains(beanClass.getName())) {
                 return beanDeploymentArchive;
@@ -96,13 +97,15 @@ public class WeldDeployment extends AbstractWeldDeployment {
     }
 
     /**
-     * Additional bean deployment archives are used for extentions, synthetic annotated types and beans which do not come from a bean archive.
+     * Additional bean deployment archives are used for extentions, synthetic annotated types and beans which do not come from a
+     * bean archive.
      *
      * @param beanClass
      * @return the additional bean deployment archive
      */
     protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive() {
-        WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(ADDITIONAL_BDA_ID, Collections.synchronizedSet(new HashSet<String>()), null);
+        WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(ADDITIONAL_BDA_ID,
+                Collections.synchronizedSet(new HashSet<String>()), null);
         additionalBda.getServices().addAll(getServices().entrySet());
         beanDeploymentArchives.add(additionalBda);
         setBeanDeploymentArchivesAccessibility();

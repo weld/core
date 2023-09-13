@@ -36,6 +36,6 @@ public class ShutdownHookTest extends AbstractShutdownHookTest {
     @Deployment(managed = false, name = DEPLOYMENT_NAME)
     public static Archive<?> createTestArchive() {
         return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(AbstractShutdownHookTest.class,
-            ShutdownHookTest.class, Foo.class)).build();
+                ShutdownHookTest.class, Foo.class)).build();
     }
 }

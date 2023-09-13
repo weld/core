@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
  *
  * @see https://issues.jboss.org/browse/WELD-1076
  *
- * Note: After CDI-141 has been reverted this test makes much less sense.
+ *      Note: After CDI-141 has been reverted this test makes much less sense.
  *
  * @author Jozef Hartinger
  *
@@ -46,7 +46,8 @@ public class PassivationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PassivationTest.class)).addClasses(Logger.class, NonSerializableLogger.class, ShoppingCart.class, OutputWriter.class, Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PassivationTest.class))
+                .addClasses(Logger.class, NonSerializableLogger.class, ShoppingCart.class, OutputWriter.class, Utils.class);
     }
 
     @Test

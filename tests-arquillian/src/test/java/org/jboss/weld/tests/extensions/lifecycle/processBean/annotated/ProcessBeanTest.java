@@ -48,7 +48,8 @@ public class ProcessBeanTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessBeanTest.class)).addPackage(ProcessBeanTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessBeanTest.class))
+                .addPackage(ProcessBeanTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

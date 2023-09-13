@@ -27,15 +27,13 @@ import jakarta.jws.WebService;
 /**
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-@WebService(name = "EJB3Endpoint", serviceName="EJB3EndpointService", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
+@WebService(name = "EJB3Endpoint", serviceName = "EJB3EndpointService", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
 @Stateless
-public class EJB3EndpointImpl implements EndpointIface
-{
-   static boolean interceptorCalled;
+public class EJB3EndpointImpl implements EndpointIface {
+    static boolean interceptorCalled;
 
-   @EJBInterceptor
-   public String echo(final String message)
-   {
-      return interceptorCalled ? message + " (including EJB interceptor)" : message;
-   }
+    @EJBInterceptor
+    public String echo(final String message) {
+        return interceptorCalled ? message + " (including EJB interceptor)" : message;
+    }
 }

@@ -36,7 +36,8 @@ public class SingletonStartupTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SingletonStartupTest.class)).addPackage(SingletonStartupTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SingletonStartupTest.class))
+                .addPackage(SingletonStartupTest.class.getPackage());
     }
 
     @Test

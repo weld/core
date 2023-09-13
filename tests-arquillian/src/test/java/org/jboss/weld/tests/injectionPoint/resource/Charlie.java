@@ -17,8 +17,8 @@
 package org.jboss.weld.tests.injectionPoint.resource;
 
 import jakarta.annotation.Resource;
-
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.test.util.ActionSequence;
 
 @Dependent

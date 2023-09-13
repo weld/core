@@ -26,9 +26,9 @@ import org.junit.Test;
 
 /**
  * This class tests non-portable behavior and thus should not be included in the TCK.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 public abstract class AbstractTestClass {
 
@@ -42,5 +42,5 @@ public abstract class AbstractTestClass {
     public void testDeploymentFails() {
         // should throw deployment exception
         // the reason for it differs based on implementing class
-     }
+    }
 }

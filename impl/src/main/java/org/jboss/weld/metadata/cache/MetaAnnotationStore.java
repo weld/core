@@ -94,7 +94,8 @@ public class MetaAnnotationStore implements Service {
 
     }
 
-    private static class InterceptorBindingFunction extends AbstractMetaAnnotationFunction<InterceptorBindingModel<Annotation>> {
+    private static class InterceptorBindingFunction
+            extends AbstractMetaAnnotationFunction<InterceptorBindingModel<Annotation>> {
 
         public InterceptorBindingFunction(ClassTransformer classTransformer) {
             super(classTransformer);
@@ -162,7 +163,7 @@ public class MetaAnnotationStore implements Service {
      * <p/>
      * Adds the model if it is not present.
      *
-     * @param <T>        The type
+     * @param <T> The type
      * @param stereotype The stereotype
      * @return The stereotype model
      */
@@ -175,7 +176,7 @@ public class MetaAnnotationStore implements Service {
      * <p/>
      * Adds the model if it is not present.
      *
-     * @param <T>   The type
+     * @param <T> The type
      * @param scope The scope type
      * @return The scope type model
      */
@@ -188,7 +189,7 @@ public class MetaAnnotationStore implements Service {
      * <p/>
      * Adds the model if it is not present.
      *
-     * @param <T>         The type
+     * @param <T> The type
      * @param bindingType The binding type
      * @return The binding type model
      */
@@ -211,7 +212,8 @@ public class MetaAnnotationStore implements Service {
      * @return the qualifier instance for the given annotation, uses cache if possible
      */
     public QualifierInstance getQualifierInstance(final Annotation annotation) {
-        return isCacheAllowed(annotation) ? qualifierInstanceCache.getValue(annotation) : QualifierInstance.of(annotation, this);
+        return isCacheAllowed(annotation) ? qualifierInstanceCache.getValue(annotation)
+                : QualifierInstance.of(annotation, this);
     }
 
     /**
@@ -278,7 +280,6 @@ public class MetaAnnotationStore implements Service {
         this.interceptorBindings.clear();
         this.qualifierInstanceCache.clear();
     }
-
 
     private static boolean isCacheAllowed(Annotation annotation) {
         if (annotation.annotationType().equals(Named.class)) {

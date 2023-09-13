@@ -27,7 +27,7 @@ import jakarta.enterprise.event.Observes;
  */
 @ApplicationScoped
 public class ObservingBean {
-    
+
     private boolean fooObserved = false;
     private boolean barObserved = false;
     private boolean listObserved = false;
@@ -84,7 +84,7 @@ public class ObservingBean {
     public boolean isSomeTypedBeanObserved() {
         return someTypedBeanObserved;
     }
-    
+
     public void reset() {
         // set all booleans to false
         fooObserved = false;
@@ -95,28 +95,28 @@ public class ObservingBean {
         someOtherBeanObserved = false;
         someTypedBeanObserved = false;
     }
-    
-    public void observeFoo (@Observes Foo foo) {
+
+    public void observeFoo(@Observes Foo foo) {
         fooObserved = true;
     }
-    
-    public void observeBar (@Observes @Dubious Bar bar) {
+
+    public void observeBar(@Observes @Dubious Bar bar) {
         barObserved = true;
     }
-    
-    public void observeList (@Observes List<Object> list) {
+
+    public void observeList(@Observes List<Object> list) {
         listObjectObserved = true;
     }
-    
-    public void observeListRaw (@Observes List list) {
+
+    public void observeListRaw(@Observes List list) {
         listObserved = true;
     }
-    
-    public void observeSomeInterface (@Observes SomeInterface some) {
+
+    public void observeSomeInterface(@Observes SomeInterface some) {
         someInterfaceObserved = true;
     }
-    
-    public void observeSomeBean (@Observes SomeOtherBean bean) {
+
+    public void observeSomeBean(@Observes SomeOtherBean bean) {
         someOtherBeanObserved = true;
     }
 }

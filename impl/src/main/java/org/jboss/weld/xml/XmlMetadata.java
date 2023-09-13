@@ -3,9 +3,9 @@
  */
 package org.jboss.weld.xml;
 
-import org.jboss.weld.metadata.FileMetadata;
-
 import java.net.URL;
+
+import org.jboss.weld.metadata.FileMetadata;
 
 public class XmlMetadata<T> extends FileMetadata<T> {
 

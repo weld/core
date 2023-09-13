@@ -47,8 +47,10 @@ public class WeldSEBeanRegistrant implements Extension {
         if (ignoreEvent(event)) {
             return;
         }
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager), ParametersFactory.class.getName());
-        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager), RunnableDecorator.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ParametersFactory.class, manager),
+                ParametersFactory.class.getName());
+        event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(RunnableDecorator.class, manager),
+                RunnableDecorator.class.getName());
         event.addAnnotatedType(VetoedSuppressedAnnotatedType.from(ActivateThreadScopeInterceptor.class, manager),
                 ActivateThreadScopeInterceptor.class.getName());
     }
@@ -69,7 +71,8 @@ public class WeldSEBeanRegistrant implements Extension {
     }
 
     /**
-     * Returns <tt>true</tt> if the specified event is not an instance of {@link AbstractContainerEvent}, i.e. was thrown by other CDI implementation than Weld.
+     * Returns <tt>true</tt> if the specified event is not an instance of {@link AbstractContainerEvent}, i.e. was thrown by
+     * other CDI implementation than Weld.
      */
     private static boolean ignoreEvent(Object event) {
         return !(event instanceof AbstractContainerEvent);

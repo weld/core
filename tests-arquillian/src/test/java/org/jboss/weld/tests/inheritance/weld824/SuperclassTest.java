@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.tests.inheritance.weld824;
 
+import static org.junit.Assert.assertTrue;
+
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -29,11 +34,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.inject.spi.Extension;
-import jakarta.inject.Inject;
-
-import static org.junit.Assert.assertTrue;
-
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class SuperclassTest {
@@ -45,7 +45,8 @@ public class SuperclassTest {
      */
     @Deployment
     public static WebArchive createWebArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SuperclassTest.class, Utils.ARCHIVE_TYPE.WAR));
+        WebArchive war = ShrinkWrap.create(WebArchive.class,
+                Utils.getDeploymentNameAsHash(SuperclassTest.class, Utils.ARCHIVE_TYPE.WAR));
         war.addAsLibrary(createJavaArchive());
         war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         return war;

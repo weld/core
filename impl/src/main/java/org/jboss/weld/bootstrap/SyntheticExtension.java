@@ -24,7 +24,8 @@ import jakarta.enterprise.inject.spi.Extension;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 
 /**
- * A synthetic extension. This extension is not registered as a bean, Weld only registers the synthetic container lifecycle observer methods.
+ * A synthetic extension. This extension is not registered as a bean, Weld only registers the synthetic container lifecycle
+ * observer methods.
  *
  * @author Martin Kouba
  */

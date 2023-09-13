@@ -38,8 +38,8 @@ public class EnterpriseBeanLifecycleTest {
     }
 
     /*
-    * description="WELD-290"
-    */
+     * description="WELD-290"
+     */
     @Test
     public void testSLSBInjectedIntoPassivatingManagedBean(SimpleBean bean) {
         Assert.assertEquals("This is my message from my stateless bean", bean.getMessage());

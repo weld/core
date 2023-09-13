@@ -40,7 +40,8 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collection<T>, F> {
 
-    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>, F> implements Function<R, F> {
+    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>, F>
+            implements Function<R, F> {
 
         private final TypeSafeResolver<R, T, C, F> resolver;
 
@@ -65,7 +66,8 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      */
     public TypeSafeResolver(Iterable<? extends T> allBeans, WeldConfiguration configuration) {
         this.resolverFunction = new ResolvableToBeanCollection<R, T, C, F>(this);
-        this.resolved = ComputingCacheBuilder.newBuilder().setMaxSize(configuration.getLongProperty(ConfigurationKey.RESOLUTION_CACHE_SIZE)).build(resolverFunction);
+        this.resolved = ComputingCacheBuilder.newBuilder()
+                .setMaxSize(configuration.getLongProperty(ConfigurationKey.RESOLUTION_CACHE_SIZE)).build(resolverFunction);
         this.allBeans = allBeans;
     }
 

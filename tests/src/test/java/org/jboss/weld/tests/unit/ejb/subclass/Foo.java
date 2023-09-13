@@ -19,7 +19,6 @@ package org.jboss.weld.tests.unit.ejb.subclass;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
-
 public class Foo {
 
     private final BeanManager manager;

@@ -34,13 +34,15 @@ public abstract class BackedAnnotatedMember<X> extends BackedAnnotated implement
         return getDeclaringType().getReflectionCache();
     }
 
-    protected abstract static class BackedAnnotatedMemberSerializationProxy<X, A extends AnnotatedMember<? super X>> implements Serializable {
+    protected abstract static class BackedAnnotatedMemberSerializationProxy<X, A extends AnnotatedMember<? super X>>
+            implements Serializable {
 
         private static final long serialVersionUID = 450947485748828056L;
         protected final BackedAnnotatedType<X> type;
         private final AbstractSerializableHolder<? extends Member> memberHolder;
 
-        public BackedAnnotatedMemberSerializationProxy(BackedAnnotatedType<X> type, AbstractSerializableHolder<? extends Member> memberHolder) {
+        public BackedAnnotatedMemberSerializationProxy(BackedAnnotatedType<X> type,
+                AbstractSerializableHolder<? extends Member> memberHolder) {
             this.type = type;
             this.memberHolder = memberHolder;
         }

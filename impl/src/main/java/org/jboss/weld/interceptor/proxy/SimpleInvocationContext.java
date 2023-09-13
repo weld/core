@@ -25,7 +25,8 @@ import java.util.Set;
 import jakarta.interceptor.InvocationContext;
 
 /**
- * Simple {@link InvocationContext} implementation whose {@link #proceed()} invokes the target method directly without calling any interceptors. If this is not
+ * Simple {@link InvocationContext} implementation whose {@link #proceed()} invokes the target method directly without calling
+ * any interceptors. If this is not
  * a method interception, a call to {@link #proceed()} always returns null.
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -33,11 +34,13 @@ import jakarta.interceptor.InvocationContext;
  */
 public class SimpleInvocationContext extends AbstractInvocationContext {
 
-    public SimpleInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, Set<Annotation> interceptorBindings) {
+    public SimpleInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters,
+            Set<Annotation> interceptorBindings) {
         super(target, targetMethod, proceed, null, parameters, null, null, interceptorBindings);
     }
 
-    public SimpleInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
+    public SimpleInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData,
+            Set<Annotation> interceptorBindings) {
         super(null, null, null, constructor, parameters, null, contextData, interceptorBindings);
     }
 

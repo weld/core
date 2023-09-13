@@ -16,21 +16,21 @@
  */
 package org.jboss.weld.tests.alternatives.accessible;
 
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -40,21 +40,24 @@ public class AccessibleAlternativesTest {
 
     private static StringAsset beansXml = new StringAsset(
             "<beans>"
-            + " <alternatives>"
-            + "   <class>" + BUser.class.getName() + "</class>"
-            + " </alternatives>"
-            + "</beans>");
+                    + " <alternatives>"
+                    + "   <class>" + BUser.class.getName() + "</class>"
+                    + " </alternatives>"
+                    + "</beans>");
 
     @Deployment
     public static Archive<?> deploy() {
         JavaArchive lib = ShrinkWrap.create(BeanArchive.class)
                 .addClasses(IUser.class, BUser.class);
 
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AccessibleAlternativesTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(AccessibleAlternativesTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addAsLibrary(lib)
                 .addAsWebInfResource(beansXml, "beans.xml")
                 .addClasses(AUser.class);
     }
+
     @Inject
     private BeanManager beanManager;
 

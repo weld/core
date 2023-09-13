@@ -9,7 +9,7 @@ import jakarta.enterprise.inject.spi.InjectionTarget;
 /**
  * @author Stuart Douglas
  */
-public abstract class ForwardingInjectionTarget<T> implements InjectionTarget<T>{
+public abstract class ForwardingInjectionTarget<T> implements InjectionTarget<T> {
 
     protected abstract InjectionTarget<T> delegate();
 

@@ -27,7 +27,8 @@ import org.jboss.weld.contexts.cache.RequestScopedItem;
 /**
  * A class that holds the interception (and decoration) contexts which are currently in progress.
  * <p/>
- * An interception context is a set of {@link CombinedInterceptorAndDecoratorStackMethodHandler} references for which interception is currently
+ * An interception context is a set of {@link CombinedInterceptorAndDecoratorStackMethodHandler} references for which
+ * interception is currently
  * suppressed (so that self-invocation is not possible).
  * Such references are added as soon as a CombinedMethodHandler is executed in an interception context that
  * does not hold it.
@@ -62,7 +63,9 @@ public class InterceptionDecorationContext {
 
         /**
          * Pushes the given context to the stack if the given context is not on top of the stack already.
-         * If push happens, the caller is responsible for calling {@link #endInterceptorContext()} after the invocation finishes.
+         * If push happens, the caller is responsible for calling {@link #endInterceptorContext()} after the invocation
+         * finishes.
+         *
          * @param context the given context
          * @return true if the given context was pushed to the top of the stack, false if the given context was on top already
          */
@@ -106,9 +109,11 @@ public class InterceptionDecorationContext {
         public void invalidate() {
             /*
              * This cached item is being invalidated.
-             * It does not necessarily mean that the request is being destroyed - it may just be the case that it is being flushed in the middle
+             * It does not necessarily mean that the request is being destroyed - it may just be the case that it is being
+             * flushed in the middle
              * of a request (e.g. for AlterableContext.destroy()).
-             * Therefore, we cannot remove IDC now but we just set removeWhenEmpty flag and let it remove itself once the stack gets empty.
+             * Therefore, we cannot remove IDC now but we just set removeWhenEmpty flag and let it remove itself once the stack
+             * gets empty.
              */
             removeWhenEmpty = true;
             removeIfEmpty();
@@ -137,6 +142,7 @@ public class InterceptionDecorationContext {
 
     /**
      * Peeks the current top of the stack.
+     *
      * @return the current top of the stack
      * @throws EmptyStackException
      */
@@ -146,6 +152,7 @@ public class InterceptionDecorationContext {
 
     /**
      * Peeks the current top of the stack or returns null if the stack is empty
+     *
      * @return the current top of the stack or returns null if the stack is empty
      */
     public static CombinedInterceptorAndDecoratorStackMethodHandler peekIfNotEmpty() {
@@ -163,18 +170,21 @@ public class InterceptionDecorationContext {
         return empty(interceptionContexts.get());
     }
 
-
     public static void endInterceptorContext() {
         pop(interceptionContexts.get());
     }
 
     /**
-     * This is called by client proxies. Calling a method on a client proxy means that we left the interception context of the calling bean. Therefore,
-     * client proxies call this method to start a new interception context of the called (possibly intercepted) bean. If however there is not interception context
-     * at the time the proxy is called (meaning the caller is not intercepted), there is no need to create new interception context. This is an optimization as the
+     * This is called by client proxies. Calling a method on a client proxy means that we left the interception context of the
+     * calling bean. Therefore,
+     * client proxies call this method to start a new interception context of the called (possibly intercepted) bean. If however
+     * there is not interception context
+     * at the time the proxy is called (meaning the caller is not intercepted), there is no need to create new interception
+     * context. This is an optimization as the
      * first startInterceptorContext call is expensive.
      *
-     * If this method returns a non-null value, the caller of this method is required to call {@link Stack#end()} on the returned value.
+     * If this method returns a non-null value, the caller of this method is required to call {@link Stack#end()} on the
+     * returned value.
      */
     public static Stack startIfNotEmpty() {
         Stack stack = getStack();
@@ -192,6 +202,7 @@ public class InterceptionDecorationContext {
      * Pushes the given context to the stack if the given context is not on top of the stack already.
      * If this method return a non-null value, the caller is responsible for calling {@link #endInterceptorContext()}
      * after the invocation finishes.
+     *
      * @param context the given context
      * @return true if the given context was pushed to the top of the stack, false if the given context was on top already
      */
@@ -205,6 +216,7 @@ public class InterceptionDecorationContext {
 
     /**
      * Gets the current Stack. If the stack is not set, a new empty instance is created and set.
+     *
      * @return
      */
     public static Stack getStack() {

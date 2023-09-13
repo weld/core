@@ -41,9 +41,10 @@ public class NoMetadataForAnonymousAndLocalClassesTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NoMetadataForAnonymousAndLocalClassesTest.class))
-            .addPackage(NoMetadataForAnonymousAndLocalClassesTest.class.getPackage())
-            .addAsServiceProvider(Extension.class, OmniseeingExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(NoMetadataForAnonymousAndLocalClassesTest.class))
+                .addPackage(NoMetadataForAnonymousAndLocalClassesTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, OmniseeingExtension.class);
     }
 
     @Test

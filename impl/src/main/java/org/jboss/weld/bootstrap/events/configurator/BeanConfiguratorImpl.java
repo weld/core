@@ -91,7 +91,7 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
     }
 
     @Override
-    public WeldBeanConfigurator<T> priority(int priority){
+    public WeldBeanConfigurator<T> priority(int priority) {
         this.priority = priority;
         return this;
     }
@@ -174,7 +174,8 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
     @Override
     public <U extends T> WeldBeanConfigurator<U> read(AnnotatedType<U> type) {
         checkArgumentNotNull(type);
-        final InjectionTarget<T> injectionTarget = cast(beanManager.getInjectionTargetFactory(type).createInjectionTarget(null));
+        final InjectionTarget<T> injectionTarget = cast(
+                beanManager.getInjectionTargetFactory(type).createInjectionTarget(null));
         addInjectionPoints(injectionTarget.getInjectionPoints());
         createWith(c -> {
             T instance = injectionTarget.produce(c);
@@ -326,8 +327,8 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         if (createCallback == null) {
             // not callback specified, Weld does not know how to instantiate this new custom bean
             throw BeanLogger.LOG.noCallbackSpecifiedForCustomBean("bean [" + beanClass.toString()
-                + ", with types: " + Formats.formatTypes(attributes.types)
-                + ", and qualifiers: " + Formats.formatAnnotations(attributes.qualifiers) + "]");
+                    + ", with types: " + Formats.formatTypes(attributes.types)
+                    + ", and qualifiers: " + Formats.formatAnnotations(attributes.qualifiers) + "]");
         }
         return new ImmutableBean<>(this);
     }
@@ -563,8 +564,9 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
 
         @Override
         public String toString() {
-            return "Configurator Bean [" + getBeanClass().toString() + ", types: " + Formats.formatTypes(getTypes()) + ", qualifiers: "
-                + Formats.formatAnnotations(getQualifiers()) + "]";
+            return "Configurator Bean [" + getBeanClass().toString() + ", types: " + Formats.formatTypes(getTypes())
+                    + ", qualifiers: "
+                    + Formats.formatAnnotations(getQualifiers()) + "]";
         }
 
     }

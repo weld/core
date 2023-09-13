@@ -30,7 +30,7 @@ import org.jboss.weld.tests.interceptors.extension.FooInterceptorBinding.FooInte
 /**
  * Extension-provided implementation of {@link Interceptor}. Delegates to FooInterceptor (which in real world could represent a
  * legacy-style interceptor - e.g. Seam 2 interceptor)
- * 
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
  */
 public class CustomInterceptor extends AbstractInterceptor<FooInterceptor> implements PassivationCapable {

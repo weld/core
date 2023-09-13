@@ -39,6 +39,7 @@ public class MultipleLocationsTest extends AbstractBeansXmlLocationTest {
     @Deployment
     public static WebArchive getDeployment() {
         Asset beans = getBeansXml();
-        return getBaseDeployment(MultipleLocationsTest.class).addAsWebInfResource(beans, "beans.xml").addAsResource(new BeansXml(), "META-INF/beans.xml");
+        return getBaseDeployment(MultipleLocationsTest.class).addAsWebInfResource(beans, "beans.xml")
+                .addAsResource(new BeansXml(), "META-INF/beans.xml");
     }
 }

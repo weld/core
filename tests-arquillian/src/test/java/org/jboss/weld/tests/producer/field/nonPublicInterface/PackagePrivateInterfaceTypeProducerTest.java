@@ -37,7 +37,8 @@ public class PackagePrivateInterfaceTypeProducerTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PackagePrivateInterfaceTypeProducerTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(PackagePrivateInterfaceTypeProducerTest.class))
                 .addPackage(PackagePrivateInterfaceTypeProducerTest.class.getPackage());
     }
 

@@ -27,7 +27,7 @@ import org.jboss.weld.exceptions.DeploymentException;
  */
 public class WeldExceptionTransformer implements DeploymentExceptionTransformer {
     public Throwable transform(final Throwable throwable) {
-        if(throwable == null) {
+        if (throwable == null) {
             return new DeploymentException(new Exception());
         }
         return throwable;

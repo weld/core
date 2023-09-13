@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.gargoylesoftware.htmlunit.TextPage;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -38,6 +37,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.TextPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -61,17 +61,22 @@ public class ClientConversationContextTest {
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ClientConversationContextTest.class, Utils.ARCHIVE_TYPE.WAR))
-                .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class,
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ClientConversationContextTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class,
+                        Hurricane.class, Snowstorm.class,
                         LockingIssueBean.class, Tornado.class, ExceptionWritingFilter.class)
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                 .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
                 .addAsWebResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
                 .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
-                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
+                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml",
+                        "/winter/snowstorm.xhtml")
                 .addAsWebResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
-                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
+                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml",
+                        "locking-issue.xhtml")
                 .addAsWebResource(ClientConversationContextTest.class.getPackage(), "blizzard.xhtml", "blizzard.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
@@ -140,11 +145,11 @@ public class ClientConversationContextTest {
     @Test
     public void testLockingIssue() throws Exception {
         /*
-        * click start
-        * click redirect
-        * click dummy
-        * refresh browser or retry url.
-        */
+         * click start
+         * click redirect
+         * click dummy
+         * refresh browser or retry url.
+         */
         WebClient client = new WebClient();
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page = client.getPage(getPath("/locking-issue.xhtml"));

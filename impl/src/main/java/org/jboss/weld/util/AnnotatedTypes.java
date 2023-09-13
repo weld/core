@@ -78,7 +78,8 @@ public class AnnotatedTypes {
 
     private static Set<Class<? extends Annotation>> META_ANNOTATIONS = ImmutableSet.of(Stereotype.class, NormalScope.class);
 
-    public static final Set<Class<? extends Annotation>> TRIM_META_ANNOTATIONS = ImmutableSet.of(Stereotype.class, NormalScope.class, Scope.class);
+    public static final Set<Class<? extends Annotation>> TRIM_META_ANNOTATIONS = ImmutableSet.of(Stereotype.class,
+            NormalScope.class, Scope.class);
 
     /**
      * Does the first stage of comparing AnnotatedCallables, however it cannot
@@ -93,7 +94,8 @@ public class AnnotatedTypes {
             if (result != 0) {
                 return result;
             }
-            result = arg0.getJavaMember().getDeclaringClass().getName().compareTo(arg1.getJavaMember().getDeclaringClass().getName());
+            result = arg0.getJavaMember().getDeclaringClass().getName()
+                    .compareTo(arg1.getJavaMember().getDeclaringClass().getName());
             if (result != 0) {
                 return result;
             }
@@ -178,7 +180,8 @@ public class AnnotatedTypes {
 
         public int compare(AnnotatedField<? super T> arg0, AnnotatedField<? super T> arg1) {
             if (arg0.getJavaMember().getName().equals(arg1.getJavaMember().getName())) {
-                return arg0.getJavaMember().getDeclaringClass().getName().compareTo(arg1.getJavaMember().getDeclaringClass().getName());
+                return arg0.getJavaMember().getDeclaringClass().getName()
+                        .compareTo(arg1.getJavaMember().getDeclaringClass().getName());
             }
             return arg0.getJavaMember().getName().compareTo(arg1.getJavaMember().getName());
         }
@@ -216,7 +219,8 @@ public class AnnotatedTypes {
      * @return hash of a signature for a concrete annotated type
      */
     public static <X> String createTypeId(AnnotatedType<X> annotatedType) {
-        String id = createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
+        String id = createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(),
+                annotatedType.getFields(), annotatedType.getConstructors());
         String hash = hash(id);
         MetadataLogger.LOG.tracef("Generated AnnotatedType id hash for %s: %s", id, hash);
         return hash;
@@ -240,7 +244,9 @@ public class AnnotatedTypes {
      * @param annotatedType
      * @return
      */
-    private static <X> String createTypeId(Class<X> clazz, Collection<Annotation> annotations, Collection<AnnotatedMethod<? super X>> methods, Collection<AnnotatedField<? super X>> fields, Collection<AnnotatedConstructor<X>> constructors) {
+    private static <X> String createTypeId(Class<X> clazz, Collection<Annotation> annotations,
+            Collection<AnnotatedMethod<? super X>> methods, Collection<AnnotatedField<? super X>> fields,
+            Collection<AnnotatedConstructor<X>> constructors) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(clazz.getName());
@@ -250,7 +256,7 @@ public class AnnotatedTypes {
         // now deal with the fields
         List<AnnotatedField<? super X>> sortedFields = new ArrayList<AnnotatedField<? super X>>();
         sortedFields.addAll(fields);
-        Collections.sort(sortedFields, AnnotatedFieldComparator.<X>instance());
+        Collections.sort(sortedFields, AnnotatedFieldComparator.<X> instance());
         for (AnnotatedField<? super X> field : sortedFields) {
             if (!field.getAnnotations().isEmpty()) {
                 builder.append(createFieldId(field));
@@ -261,7 +267,7 @@ public class AnnotatedTypes {
         // methods
         List<AnnotatedMethod<? super X>> sortedMethods = new ArrayList<AnnotatedMethod<? super X>>();
         sortedMethods.addAll(methods);
-        Collections.sort(sortedMethods, AnnotatedMethodComparator.<X>instance());
+        Collections.sort(sortedMethods, AnnotatedMethodComparator.<X> instance());
         for (AnnotatedMethod<? super X> method : sortedMethods) {
             if (!method.getAnnotations().isEmpty() || hasMethodParameters(method)) {
                 builder.append(createCallableId(method));
@@ -272,7 +278,7 @@ public class AnnotatedTypes {
         // constructors
         List<AnnotatedConstructor<? super X>> sortedConstructors = new ArrayList<AnnotatedConstructor<? super X>>();
         sortedConstructors.addAll(constructors);
-        Collections.sort(sortedConstructors, AnnotatedConstructorComparator.<X>instance());
+        Collections.sort(sortedConstructors, AnnotatedConstructorComparator.<X> instance());
         for (AnnotatedConstructor<? super X> constructor : sortedConstructors) {
             if (!constructor.getAnnotations().isEmpty() || hasMethodParameters(constructor)) {
                 builder.append(createCallableId(constructor));
@@ -368,7 +374,8 @@ public class AnnotatedTypes {
         return builder.toString();
     }
 
-    public static <X> String createMethodId(Method method, Set<Annotation> annotations, List<AnnotatedParameter<X>> parameters) {
+    public static <X> String createMethodId(Method method, Set<Annotation> annotations,
+            List<AnnotatedParameter<X>> parameters) {
         StringBuilder builder = new StringBuilder();
         builder.append(method.getDeclaringClass().getName());
         builder.append('.');
@@ -378,7 +385,8 @@ public class AnnotatedTypes {
         return builder.toString();
     }
 
-    public static <X> String createConstructorId(Constructor<X> constructor, Set<Annotation> annotations, List<AnnotatedParameter<X>> parameters) {
+    public static <X> String createConstructorId(Constructor<X> constructor, Set<Annotation> annotations,
+            List<AnnotatedParameter<X>> parameters) {
         StringBuilder builder = new StringBuilder();
         builder.append(constructor.getDeclaringClass().getName());
         builder.append('.');
@@ -432,7 +440,8 @@ public class AnnotatedTypes {
     /**
      * compares two annotated elements to see if they have the same annotations
      */
-    private static boolean compareAnnotatedParameters(List<? extends AnnotatedParameter<?>> p1, List<? extends AnnotatedParameter<?>> p2) {
+    private static boolean compareAnnotatedParameters(List<? extends AnnotatedParameter<?>> p1,
+            List<? extends AnnotatedParameter<?>> p2) {
         if (p1.size() != p2.size()) {
             return false;
         }
@@ -448,7 +457,8 @@ public class AnnotatedTypes {
      * Compares two annotated parameters and returns true if they are equal
      */
     public static boolean compareAnnotatedParameters(AnnotatedParameter<?> p1, AnnotatedParameter<?> p2) {
-        return compareAnnotatedCallable(p1.getDeclaringCallable(), p2.getDeclaringCallable()) && p1.getPosition() == p2.getPosition() && compareAnnotated(p1, p2);
+        return compareAnnotatedCallable(p1.getDeclaringCallable(), p2.getDeclaringCallable())
+                && p1.getPosition() == p2.getPosition() && compareAnnotated(p1, p2);
     }
 
     public static boolean compareAnnotatedField(AnnotatedField<?> f1, AnnotatedField<?> f2) {
@@ -536,7 +546,8 @@ public class AnnotatedTypes {
      * Returns the declaring {@link AnnotatedType} of a given annotated.
      *
      * For an {@link AnnotatedMember}, {@link AnnotatedMember#getDeclaringType()} is returned.
-     * For an {@link AnnotatedParameter}, the declaring annotated type of {@link AnnotatedParameter#getDeclaringCallable()} is returned.
+     * For an {@link AnnotatedParameter}, the declaring annotated type of {@link AnnotatedParameter#getDeclaringCallable()} is
+     * returned.
      * If the parameter is an {@link AnnotatedType}, it is returned.
      *
      * @throws IllegalArgumentException if the annotated parameter is an unknown non-standard {@link Annotated} subclass.
@@ -549,10 +560,10 @@ public class AnnotatedTypes {
             return cast(annotated);
         }
         if (annotated instanceof AnnotatedMember<?>) {
-            return Reflections.<AnnotatedMember<?>>cast(annotated).getDeclaringType();
+            return Reflections.<AnnotatedMember<?>> cast(annotated).getDeclaringType();
         }
         if (annotated instanceof AnnotatedParameter<?>) {
-            return getDeclaringAnnotatedType(Reflections.<AnnotatedParameter<?>>cast(annotated).getDeclaringCallable());
+            return getDeclaringAnnotatedType(Reflections.<AnnotatedParameter<?>> cast(annotated).getDeclaringCallable());
         }
         throw new IllegalArgumentException("Unrecognized annotated " + annotated);
     }
@@ -564,7 +575,8 @@ public class AnnotatedTypes {
         return hasBeanDefiningAnnotation(annotatedType, META_ANNOTATIONS);
     }
 
-    public static boolean hasBeanDefiningAnnotation(AnnotatedType<?> annotatedType, Set<Class<? extends Annotation>> metaAnnotations) {
+    public static boolean hasBeanDefiningAnnotation(AnnotatedType<?> annotatedType,
+            Set<Class<? extends Annotation>> metaAnnotations) {
         for (Class<? extends Annotation> beanDefiningAnnotation : BEAN_DEFINING_ANNOTATIONS) {
             if (annotatedType.isAnnotationPresent(beanDefiningAnnotation)) {
                 return true;
@@ -579,7 +591,8 @@ public class AnnotatedTypes {
         return false;
     }
 
-    private static boolean hasBeanDefiningMetaAnnotationSpecified(Set<Annotation> annotations, Class<? extends Annotation> metaAnnotationType) {
+    private static boolean hasBeanDefiningMetaAnnotationSpecified(Set<Annotation> annotations,
+            Class<? extends Annotation> metaAnnotationType) {
         for (Annotation annotation : annotations) {
             if (annotation.annotationType().isAnnotationPresent(metaAnnotationType)) {
                 return true;

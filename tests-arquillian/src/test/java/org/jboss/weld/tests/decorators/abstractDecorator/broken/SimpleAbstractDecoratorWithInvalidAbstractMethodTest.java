@@ -38,7 +38,9 @@ public class SimpleAbstractDecoratorWithInvalidAbstractMethodTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleAbstractDecoratorWithInvalidAbstractMethodTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(SimpleAbstractDecoratorWithInvalidAbstractMethodTest.class))
                 .decorate(Frame.class)
                 .addPackage(SimpleAbstractDecoratorWithInvalidAbstractMethodTest.class.getPackage());
     }

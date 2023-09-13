@@ -27,7 +27,7 @@ import jakarta.interceptor.InterceptorBinding;
 
 @InterceptorBinding
 @Inherited
-@Target({ TYPE})
+@Target({ TYPE })
 @Retention(RUNTIME)
 public @interface Intercept {
 

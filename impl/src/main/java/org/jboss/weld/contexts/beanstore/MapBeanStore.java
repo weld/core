@@ -52,10 +52,10 @@ public class MapBeanStore extends AttributeBeanStore {
 
     public LockStore getLockStore() {
         LockStore lockStore = this.lockStore;
-        if(lockStore == null) {
+        if (lockStore == null) {
             synchronized (this) {
                 lockStore = this.lockStore;
-                if(lockStore == null) {
+                if (lockStore == null) {
                     this.lockStore = lockStore = new LockStore();
                 }
             }

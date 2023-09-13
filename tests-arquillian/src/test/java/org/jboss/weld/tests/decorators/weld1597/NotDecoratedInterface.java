@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.decorators.weld1597;
 
 public interface NotDecoratedInterface {
-    
+
     Object getBean();
-    
+
 }

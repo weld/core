@@ -34,7 +34,8 @@ public class TestDependentBeanProducer {
     public TestDependentBean createTestDependentBean() {
 
         @SuppressWarnings("unchecked")
-        Bean<TestDependentBean> bean = (Bean<TestDependentBean>) beanManager.getBeans(TestDependentBean.class).iterator().next();
+        Bean<TestDependentBean> bean = (Bean<TestDependentBean>) beanManager.getBeans(TestDependentBean.class).iterator()
+                .next();
         CreationalContext<TestDependentBean> creationalContextForBean = beanManager.createCreationalContext(bean);
         TestDependentBean beanInstance = bean.create(creationalContextForBean);
         beanInstance.dummyMethod();

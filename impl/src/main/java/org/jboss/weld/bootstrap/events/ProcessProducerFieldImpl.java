@@ -26,7 +26,8 @@ import jakarta.enterprise.inject.spi.ProcessProducerField;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerField<T, X>> implements ProcessProducerField<T, X> {
+public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerField<T, X>>
+        implements ProcessProducerField<T, X> {
 
     protected static <T, X> void fire(BeanManagerImpl beanManager, ProducerField<T, X> bean) {
         if (beanManager.isBeanEnabled(bean)) {
@@ -36,7 +37,8 @@ public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<
     }
 
     private ProcessProducerFieldImpl(BeanManagerImpl beanManager, ProducerField<T, X> bean) {
-        super(beanManager, ProcessProducerField.class, new Type[]{bean.getAnnotated().getBaseType(), bean.getAnnotated().getDeclaringType().getBaseType()}, bean);
+        super(beanManager, ProcessProducerField.class,
+                new Type[] { bean.getAnnotated().getBaseType(), bean.getAnnotated().getDeclaringType().getBaseType() }, bean);
     }
 
     public AnnotatedField<T> getAnnotatedProducerField() {

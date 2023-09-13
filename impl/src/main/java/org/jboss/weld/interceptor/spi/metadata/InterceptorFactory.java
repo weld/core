@@ -31,6 +31,7 @@ public interface InterceptorFactory<T> {
 
     /**
      * Create a new instance of the interceptor
+     *
      * @param ctx
      * @param manager
      * @return

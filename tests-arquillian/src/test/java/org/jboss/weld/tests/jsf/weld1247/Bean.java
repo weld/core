@@ -29,7 +29,7 @@ public class Bean {
 
     public static int invocationCount = 0;
 
-    public void doAction(){
+    public void doAction() {
         invocationCount++;
     }
 

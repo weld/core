@@ -41,16 +41,18 @@ public class PostConstructInterceptorWithInvalidReturnTypeTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PostConstructInterceptorWithInvalidReturnTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(PostConstructInterceptorWithInvalidReturnTypeTest.class))
                 .intercept(MyInterceptor.class)
-                .addClass(PostConstructInterceptorWithInvalidReturnTypeTest.class)  // must add so MyInterceptor is detected properly
+                .addClass(PostConstructInterceptorWithInvalidReturnTypeTest.class) // must add so MyInterceptor is detected properly
                 .addClasses(Lifecycle.class, LifecycleInterceptedBean.class);
     }
 
     @Test
     public void testDeploymentInterceptorWithInvalidReturnType() {
         // should throw exception, either IllegalArg or Definition
-     }
+    }
 
     @Lifecycle
     @Interceptor

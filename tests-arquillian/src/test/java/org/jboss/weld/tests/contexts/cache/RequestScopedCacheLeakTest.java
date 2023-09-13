@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -30,6 +28,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -46,7 +45,10 @@ public class RequestScopedCacheLeakTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RequestScopedCacheLeakTest.class, Utils.ARCHIVE_TYPE.WAR)).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(RequestScopedCacheLeakTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(SimpleServlet.class, ConversationScopedBean.class);
     }
 
@@ -66,7 +68,8 @@ public class RequestScopedCacheLeakTest {
         }
     }
 
-    private String sendRequest(WebClient webClient, int sequence, boolean poison) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+    private String sendRequest(WebClient webClient, int sequence, boolean poison)
+            throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         final String path = getPath("getAndSet", sequence, poison);
         return webClient.getPage(path).getWebResponse().getContentAsString().trim();
     }

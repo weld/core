@@ -61,7 +61,8 @@ public class FireAsyncWithExecutorTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(FireAsyncWithExecutorTest.class)).addPackage(FireAsyncWithExecutorTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(FireAsyncWithExecutorTest.class))
+                .addPackage(FireAsyncWithExecutorTest.class.getPackage());
     }
 
     @Test

@@ -18,7 +18,6 @@ package org.jboss.weld.tests.alternatives.ee;
 
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,6 +27,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -47,18 +47,16 @@ public class AlternativeEEComponentTest {
         JavaArchive lib = ShrinkWrap.create(BeanArchive.class, "test.jar")
                 .addClasses(Foo.class);
 
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AlternativeEEComponentTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(AlternativeEEComponentTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addAsLibrary(lib)
                 .addClasses(AlternativeHttpServletRequestProducer.class);
     }
 
     @Test
-    public void testAlternativeHttpServletRequestIsAvailable(){
+    public void testAlternativeHttpServletRequestIsAvailable() {
         Assert.assertEquals(AlternativeHttpServletRequestProducer.PROTOCOL, foo.getServletRequest().getProtocol());
     }
-
-
-
-
 
 }

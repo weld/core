@@ -1,5 +1,8 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Reception;
 import jakarta.enterprise.event.TransactionPhase;
@@ -11,11 +14,9 @@ import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.declarations.ParameterInfo;
 import jakarta.enterprise.lang.model.types.Type;
+
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 class ObserverInfoImpl implements ObserverInfo {
     final jakarta.enterprise.inject.spi.ObserverMethod<?> cdiObserver;
@@ -24,7 +25,7 @@ class ObserverInfoImpl implements ObserverInfo {
 
     ObserverInfoImpl(jakarta.enterprise.inject.spi.ObserverMethod<?> cdiObserver,
             jakarta.enterprise.inject.spi.AnnotatedMethod<?> cdiDeclaration,
-                     BeanManager bm) {
+            BeanManager bm) {
         this.cdiObserver = cdiObserver;
         this.cdiDeclaration = cdiDeclaration;
         this.bm = bm;

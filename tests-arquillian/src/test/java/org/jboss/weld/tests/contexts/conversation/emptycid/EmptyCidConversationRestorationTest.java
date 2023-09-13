@@ -52,7 +52,10 @@ public class EmptyCidConversationRestorationTest {
 
     @Deployment(testable = false)
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(EmptyCidConversationRestorationTest.class, Utils.ARCHIVE_TYPE.WAR)).addClass(EchoServlet.class)
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(EmptyCidConversationRestorationTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClass(EchoServlet.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 

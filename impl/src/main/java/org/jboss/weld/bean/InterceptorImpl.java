@@ -56,7 +56,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     private final boolean serializable;
 
-    public static <T> InterceptorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+    public static <T> InterceptorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type,
+            BeanManagerImpl beanManager) {
         return new InterceptorImpl<T>(attributes, type, beanManager);
     }
 
@@ -64,14 +65,16 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         super(attributes, type, new StringBeanIdentifier(forInterceptor(type)), beanManager);
         this.interceptorMetadata = initInterceptorMetadata();
         this.serializable = type.isSerializable();
-        this.interceptorBindingTypes = Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).uniqueValues();
+        this.interceptorBindingTypes = Interceptors
+                .mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).uniqueValues();
     }
 
     @SuppressWarnings("unchecked")
     private InterceptorClassMetadata<T> initInterceptorMetadata() {
         CdiInterceptorFactory<T> reference = new CdiInterceptorFactory<T>(this);
-        return new InterceptorMetadataImpl<T>((Class<T>) getBeanClass(), reference, InterceptorMetadataUtils.buildMethodMap(getEnhancedAnnotated(), false,
-                getBeanManager()));
+        return new InterceptorMetadataImpl<T>((Class<T>) getBeanClass(), reference,
+                InterceptorMetadataUtils.buildMethodMap(getEnhancedAnnotated(), false,
+                        getBeanManager()));
     }
 
     @Override
@@ -85,22 +88,27 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     @Override
     public Object intercept(InterceptionType type, T instance, final InvocationContext ctx) {
-        final org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type
-                .name());
-        final List<InterceptorMethodInvocation> methodInvocations = interceptorMetadata.getInterceptorInvocation(instance, interceptionType)
+        final org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType
+                .valueOf(type
+                        .name());
+        final List<InterceptorMethodInvocation> methodInvocations = interceptorMetadata
+                .getInterceptorInvocation(instance, interceptionType)
                 .getInterceptorMethodInvocations();
 
         Set<Annotation> interceptorBindings = null;
         if (ctx instanceof org.jboss.weld.interceptor.WeldInvocationContext) {
-            interceptorBindings = Reflections.<org.jboss.weld.interceptor.WeldInvocationContext> cast(ctx).getInterceptorBindings();
+            interceptorBindings = Reflections.<org.jboss.weld.interceptor.WeldInvocationContext> cast(ctx)
+                    .getInterceptorBindings();
         }
 
         try {
             /*
-             * Calling Interceptor.intercept() may result in multiple interceptor method invocations (provided the interceptor class interceptor methods on
+             * Calling Interceptor.intercept() may result in multiple interceptor method invocations (provided the interceptor
+             * class interceptor methods on
              * superclasses). This requires cooperation with InvocationContext.
              *
-             * We use a wrapper InvocationContext for the purpose of executing the chain of interceptor methods of this interceptor.
+             * We use a wrapper InvocationContext for the purpose of executing the chain of interceptor methods of this
+             * interceptor.
              */
             return new WeldInvocationContextImpl(ctx, methodInvocations, interceptorBindings, null).proceed();
         } catch (RuntimeException e) {
@@ -133,7 +141,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
             for (Annotation interceptorBindingType : interceptorBindingTypes) {
                 Target target = interceptorBindingType.annotationType().getAnnotation(Target.class);
                 if (target == null || hasInvalidTargetType(target.value())) {
-                    ReflectionLogger.LOG.lifecycleCallbackInterceptorWithInvalidBindingTarget(this, interceptorBindingType.annotationType().getName(),
+                    ReflectionLogger.LOG.lifecycleCallbackInterceptorWithInvalidBindingTarget(this,
+                            interceptorBindingType.annotationType().getName(),
                             target != null ? Arrays.toString(target.value()) : "Target meta-annotation is not present");
                 }
             }

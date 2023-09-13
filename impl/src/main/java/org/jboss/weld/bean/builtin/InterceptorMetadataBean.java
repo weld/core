@@ -41,7 +41,8 @@ import org.jboss.weld.util.reflection.Reflections;
 public class InterceptorMetadataBean extends AbstractBuiltInMetadataBean<Interceptor<?>> {
 
     public InterceptorMetadataBean(BeanManagerImpl beanManager) {
-        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Interceptor.class, null)), Reflections.<Class<Interceptor<?>>> cast(Interceptor.class), beanManager);
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Interceptor.class, null)),
+                Reflections.<Class<Interceptor<?>>> cast(Interceptor.class), beanManager);
     }
 
     @Override

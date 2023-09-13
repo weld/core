@@ -32,7 +32,7 @@ public class CDIInterceptor {
 
     @AroundInvoke
     public Object aroundInvoke(InvocationContext ic) throws Exception {
-        INVOKED ++;
+        INVOKED++;
         return ic.proceed();
     }
 

@@ -39,8 +39,8 @@ public class InterceptorsWithHierarchyTest {
     }
 
     /*
-    * description = "WELD-568"
-    */
+     * description = "WELD-568"
+     */
     @Test
     public void testInterceptorsWithHierarchy(Attacker player) {
         Defender.invocationsCount = 0;

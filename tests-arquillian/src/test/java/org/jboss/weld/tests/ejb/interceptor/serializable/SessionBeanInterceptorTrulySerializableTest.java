@@ -39,7 +39,9 @@ public class SessionBeanInterceptorTrulySerializableTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SessionBeanInterceptorTrulySerializableTest.class)).addPackage(SessionBeanInterceptorTrulySerializableTest.class.getPackage())
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(SessionBeanInterceptorTrulySerializableTest.class))
+                .addPackage(SessionBeanInterceptorTrulySerializableTest.class.getPackage())
                 .addClass(Utils.class);
     }
 

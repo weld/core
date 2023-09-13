@@ -26,9 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * Test that a disabled alternative is not validated.
- * 
+ *
  * @author Matus Abaffy
  */
 @RunWith(Arquillian.class)

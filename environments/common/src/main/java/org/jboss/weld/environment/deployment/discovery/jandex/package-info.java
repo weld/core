@@ -16,5 +16,5 @@
  */
 @Vetoed
 package org.jboss.weld.environment.deployment.discovery.jandex;
-import jakarta.enterprise.inject.Vetoed;
 
+import jakarta.enterprise.inject.Vetoed;

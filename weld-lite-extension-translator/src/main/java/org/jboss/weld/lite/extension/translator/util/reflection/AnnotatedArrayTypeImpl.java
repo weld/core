@@ -14,8 +14,8 @@ final class AnnotatedArrayTypeImpl extends AbstractEmptyAnnotatedType implements
 
     // added in Java 9
     /*
-    @Override
-    */
+     * @Override
+     */
     public java.lang.reflect.AnnotatedType getAnnotatedOwnerType() {
         return null;
     }

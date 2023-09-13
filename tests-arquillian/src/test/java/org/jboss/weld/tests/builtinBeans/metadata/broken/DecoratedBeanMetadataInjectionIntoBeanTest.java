@@ -38,13 +38,15 @@ public class DecoratedBeanMetadataInjectionIntoBeanTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratedBeanMetadataInjectionIntoBeanTest.class)).addClass(DecoratedBeanMetadataInjectionIntoBeanTest.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratedBeanMetadataInjectionIntoBeanTest.class))
+                .addClass(DecoratedBeanMetadataInjectionIntoBeanTest.class);
     }
 
     @Test
     public void testBrokenDecoratedInjection() {
         // should throw definition exception
-     }
+    }
 
     @Dependent
     public static class BrokenBean {

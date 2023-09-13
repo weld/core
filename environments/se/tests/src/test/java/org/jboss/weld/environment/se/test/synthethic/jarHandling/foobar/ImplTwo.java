@@ -18,6 +18,7 @@
 package org.jboss.weld.environment.se.test.synthethic.jarHandling.foobar;
 
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.environment.se.test.synthethic.jarHandling.SomeInterface;
 
 @Dependent

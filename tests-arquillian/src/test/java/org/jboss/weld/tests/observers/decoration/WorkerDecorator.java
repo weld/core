@@ -29,16 +29,16 @@ import org.jboss.weld.test.util.ActionSequence;
  */
 @Decorator
 @Priority(100)
-public class WorkerDecorator implements Worker{
+public class WorkerDecorator implements Worker {
 
     @Inject
     @Delegate
     Worker worker;
-    
+
     @Override
     public void doStuff() {
         worker.doStuff();
         ActionSequence.addAction(WorkerDecorator.class.getName());
     }
-    
+
 }

@@ -54,7 +54,8 @@ public class CreateInjectionPointTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CreateInjectionPointTest.class)).addPackage(Book.class.getPackage()).addClass(BeanUtilities.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CreateInjectionPointTest.class))
+                .addPackage(Book.class.getPackage()).addClass(BeanUtilities.class);
     }
 
     @Test

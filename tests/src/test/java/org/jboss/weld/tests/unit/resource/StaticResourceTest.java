@@ -69,7 +69,8 @@ public class StaticResourceTest {
         };
 
         final WeldBootstrap bootstrap = new WeldBootstrap();
-        bootstrap.startContainer(Environments.EE, deployment).startInitialization().deployBeans().validateBeans().endInitialization();
+        bootstrap.startContainer(Environments.EE, deployment).startInitialization().deployBeans().validateBeans()
+                .endInitialization();
 
         try {
             final BeanManagerImpl manager = bootstrap.getManager(bda);

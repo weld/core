@@ -50,11 +50,14 @@ public class TransactionalObserverRollbackTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(TransactionalObserverRollbackTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(TransactionalObserverRollbackTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(TransactionalObserverRollbackTest.class.getPackage())
                 .addClass(ActionSequence.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource(TransactionalObserverRollbackTest.class.getPackage(), "persistence.xml", "META-INF/persistence.xml");
+                .addAsResource(TransactionalObserverRollbackTest.class.getPackage(), "persistence.xml",
+                        "META-INF/persistence.xml");
     }
 
     @Test

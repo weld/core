@@ -41,7 +41,8 @@ public class TomcatContainer extends AbstractContainer {
     public void initialize(ContainerContext context) {
         try {
             WeldForwardingInstanceManager.replaceInstanceManager(context.getServletContext(), context.getManager());
-            if(Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
+            if (Boolean.TRUE
+                    .equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
                 TomcatLogger.LOG.allInjectionsAvailable();
             } else {
                 TomcatLogger.LOG.listenersInjectionsNotAvailable();

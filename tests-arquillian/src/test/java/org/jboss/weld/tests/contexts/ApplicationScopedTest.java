@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -24,8 +26,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.concurrent.CountDownLatch;
 
 @RunWith(Arquillian.class)
 public class ApplicationScopedTest {

@@ -96,8 +96,10 @@ public class BuilderExtension implements Extension {
 
         // Test default scopes
         event.addBean().addQualifier(Bla.Literal.of("dependent")).addType(Integer.class).createWith((ctx) -> 1);
-        event.addBean().addQualifier(Bla.Literal.of("model")).addStereotype(Model.class).addType(Integer.class).createWith((ctx) -> 2);
-        event.addBean().addQualifier(Bla.Literal.of("more")).addStereotype(Model.class).addStereotype(SuperCoolStereotype.class).addType(Integer.class).createWith((ctx) -> 3);
+        event.addBean().addQualifier(Bla.Literal.of("model")).addStereotype(Model.class).addType(Integer.class)
+                .createWith((ctx) -> 2);
+        event.addBean().addQualifier(Bla.Literal.of("more")).addStereotype(Model.class).addStereotype(SuperCoolStereotype.class)
+                .addType(Integer.class).createWith((ctx) -> 3);
 
         // add a bean testing that when a bean has @Named and @Any, @Default will be added automatically
         event.addBean()

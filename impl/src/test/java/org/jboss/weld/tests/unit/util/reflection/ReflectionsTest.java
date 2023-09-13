@@ -43,7 +43,7 @@ public class ReflectionsTest {
         assertEquals("FOO", Reflections.decapitalize("FOO"));
         assertEquals("fooBar", Reflections.decapitalize("FooBar"));
     }
-    
+
     @Test
     public void getInterfaceClosureTest() {
         Set<Class<?>> fooInterfaceClosure = Reflections.getInterfaceClosure(Foo.class);
@@ -51,12 +51,12 @@ public class ReflectionsTest {
         Assert.assertTrue(fooInterfaceClosure.contains(SecondaryFooInterface.class));
         Assert.assertTrue(fooInterfaceClosure.contains(BaseInterface.class));
         Assert.assertEquals(3, fooInterfaceClosure.size());
-        
+
         Set<Class<?>> barInterfaceClosure = Reflections.getInterfaceClosure(ActualBar.class);
         Assert.assertTrue(barInterfaceClosure.contains(BarInterface.class));
         Assert.assertTrue(barInterfaceClosure.contains(AnotherBarInterface.class));
         Assert.assertTrue(barInterfaceClosure.contains(BaseInterface.class));
         assertEquals(3, barInterfaceClosure.size());
-        
+
     }
 }

@@ -15,7 +15,6 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
 
-
     public static <T extends Context> ContextBean<T> of(ContextHolder<T> context, BeanManagerImpl beanManager) {
         return new ContextBean<T>(context, beanManager);
     }
@@ -25,7 +24,8 @@ public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
     private final Set<Annotation> qualifiers;
 
     public ContextBean(ContextHolder<T> contextHolder, BeanManagerImpl beanManager) {
-        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, contextHolder.getType(), null)), beanManager, contextHolder.getType());
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, contextHolder.getType(), null)), beanManager,
+                contextHolder.getType());
         this.context = contextHolder.getContext();
         this.types = HierarchyDiscovery.forNormalizedType(contextHolder.getType()).getTypeClosure();
         this.qualifiers = contextHolder.getQualifiers();

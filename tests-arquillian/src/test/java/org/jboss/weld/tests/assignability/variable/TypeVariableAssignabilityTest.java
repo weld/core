@@ -35,7 +35,8 @@ public class TypeVariableAssignabilityTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeVariableAssignabilityTest.class)).addPackage(TypeVariableAssignabilityTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeVariableAssignabilityTest.class))
+                .addPackage(TypeVariableAssignabilityTest.class.getPackage());
     }
 
     @Inject

@@ -21,14 +21,14 @@ import java.lang.annotation.Annotation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.contexts.AbstractBoundContext;
 import org.jboss.weld.contexts.beanstore.BoundBeanStore;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.contexts.beanstore.SimpleNamingScheme;
-import org.jboss.weld.module.web.context.beanstore.http.RequestBeanStore;
-import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.logging.ContextLogger;
+import org.jboss.weld.module.web.context.beanstore.http.RequestBeanStore;
 import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -50,7 +50,8 @@ public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequ
         if (beanStore != null) {
             ContextLogger.LOG.beanStoreLeakDuringAssociation(this.getClass().getName(), request);
             if (ContextLogger.LOG.isDebugEnabled()) {
-                ContextLogger.LOG.beanStoreLeakAffectedBeanIdentifiers(this.getClass().getName(), Iterables.toMultiRowString(beanStore));
+                ContextLogger.LOG.beanStoreLeakAffectedBeanIdentifiers(this.getClass().getName(),
+                        Iterables.toMultiRowString(beanStore));
             }
         }
         // We always associate a new bean store to avoid possible leaks (security threats)
@@ -81,7 +82,7 @@ public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequ
 
     public HttpServletRequest getHttpServletRequest() {
         if (getBeanStore() instanceof RequestBeanStore) {
-            return Reflections.<RequestBeanStore>cast(getBeanStore()).getRequest();
+            return Reflections.<RequestBeanStore> cast(getBeanStore()).getRequest();
         }
         return null;
     }

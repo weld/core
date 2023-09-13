@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.test.injection;
 
-
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

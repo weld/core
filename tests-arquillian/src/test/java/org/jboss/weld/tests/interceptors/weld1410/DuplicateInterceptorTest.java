@@ -41,7 +41,8 @@ public class DuplicateInterceptorTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DuplicateInterceptorTest.class)).addPackage(DuplicateInterceptorTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DuplicateInterceptorTest.class))
+                .addPackage(DuplicateInterceptorTest.class.getPackage())
                 .addClass(ActionSequence.class);
     }
 

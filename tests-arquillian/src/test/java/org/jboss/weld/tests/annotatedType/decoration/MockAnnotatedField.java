@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
-import jakarta.enterprise.inject.spi.AnnotatedField;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Set;
+
+import jakarta.enterprise.inject.spi.AnnotatedField;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>

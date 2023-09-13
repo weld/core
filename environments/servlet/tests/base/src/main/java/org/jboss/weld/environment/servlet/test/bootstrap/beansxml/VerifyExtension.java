@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.test.bootstrap.beansxml;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -34,6 +34,7 @@ public class BrokenExtension implements Extension {
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
-        event.addBean().addStereotype(Model.class).addStereotype(CoolStereotype.class).addType(Integer.class).createWith((ctx) -> 3);
+        event.addBean().addStereotype(Model.class).addStereotype(CoolStereotype.class).addType(Integer.class)
+                .createWith((ctx) -> 3);
     }
 }

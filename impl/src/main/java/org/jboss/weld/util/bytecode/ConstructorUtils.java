@@ -40,8 +40,10 @@ public class ConstructorUtils {
     /**
      * adds a constructor that calls super()
      */
-    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
-        addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, new String[0], new String[0], file, initialValueBytecode, useUnsafeInstantiators);
+    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode,
+            final boolean useUnsafeInstantiators) {
+        addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, new String[0], new String[0], file, initialValueBytecode,
+                useUnsafeInstantiators);
     }
 
     /**
@@ -51,19 +53,20 @@ public class ConstructorUtils {
      * value. As the object is not properly constructed at this point this
      * bytecode may not reference this (i.e. the variable at location 0)
      *
-     * @param returnType           the constructor descriptor
-     * @param exceptions           any exceptions that are thrown
-     * @param file                 the classfile to add the constructor to
+     * @param returnType the constructor descriptor
+     * @param exceptions any exceptions that are thrown
+     * @param file the classfile to add the constructor to
      * @param initialValueBytecode bytecode that can be used to set initial values
      */
-    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
+    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file,
+            List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
         try {
 
             final String initMethodName = "<init>";
             final ClassMethod ctor = file.addMethod(AccessFlag.PUBLIC, initMethodName, returnType, params);
             ctor.addCheckedExceptions(exceptions);
             final CodeAttribute b = ctor.getCodeAttribute();
-            for(final DeferredBytecode iv : initialValueBytecode) {
+            for (final DeferredBytecode iv : initialValueBytecode) {
                 iv.apply(b);
             }
             // we need to generate a constructor with a single invokespecial call
@@ -75,14 +78,14 @@ public class ConstructorUtils {
             b.loadMethodParameters();
             // now we have the parameters on the stack
             b.invokespecial(file.getSuperclass(), initMethodName, methodDescriptor(params, returnType));
-            if(!useUnsafeInstantiators) {
+            if (!useUnsafeInstantiators) {
                 // now set constructed to true
                 b.aload(0);
                 b.iconst(1);
                 b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
             }
             b.returnInstruction();
-        }  catch (DuplicateMemberException e) {
+        } catch (DuplicateMemberException e) {
             throw new RuntimeException(e);
         }
     }

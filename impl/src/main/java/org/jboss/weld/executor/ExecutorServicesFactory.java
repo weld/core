@@ -33,7 +33,8 @@ public class ExecutorServicesFactory {
         final int threadPoolSize = configuration.getIntegerProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_SIZE);
         final boolean debug = configuration.getBooleanProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_DEBUG);
         final ThreadPoolType threadPoolType = initThreadPoolType(configuration);
-        final long threadPoolKeepAliveTime = configuration.getLongProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_KEEP_ALIVE_TIME);
+        final long threadPoolKeepAliveTime = configuration
+                .getLongProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_KEEP_ALIVE_TIME);
 
         if (debug) {
             return enableDebugMode(constructExecutorServices(threadPoolType, threadPoolSize, threadPoolKeepAliveTime));
@@ -42,7 +43,8 @@ public class ExecutorServicesFactory {
         }
     }
 
-    private static ExecutorServices constructExecutorServices(ThreadPoolType type, int threadPoolSize, long threadPoolKeepAliveTime) {
+    private static ExecutorServices constructExecutorServices(ThreadPoolType type, int threadPoolSize,
+            long threadPoolKeepAliveTime) {
         switch (type) {
             case NONE:
                 return null;
@@ -90,6 +92,10 @@ public class ExecutorServicesFactory {
      * @author Martin Kouba
      */
     public enum ThreadPoolType {
-        FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD, COMMON
+        FIXED,
+        FIXED_TIMEOUT,
+        NONE,
+        SINGLE_THREAD,
+        COMMON
     }
 }

@@ -84,19 +84,27 @@ public class WeldWebModule implements WeldModule {
     public void postContextRegistration(PostContextRegistrationContext ctx) {
         final BeanIdentifierIndex index = ctx.getServices().get(BeanIdentifierIndex.class);
         final String contextId = ctx.getContextId();
-        if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
+        if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME,
+                WeldClassLoaderResourceLoader.INSTANCE)) {
             // Register the Http contexts if not in
-            Set<Annotation> httpQualifiers = ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(HttpLiteral.INSTANCE).build();
-            ctx.addContext(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, index), HttpSessionContext.class, httpQualifiers));
-            ctx.addContext(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, index), HttpSessionDestructionContext.class, httpQualifiers));
-            ctx.addContext(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId, ctx.getServices()), HttpConversationContext.class, httpQualifiers));
-            ctx.addContext(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, httpQualifiers));
+            Set<Annotation> httpQualifiers = ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS)
+                    .add(HttpLiteral.INSTANCE).build();
+            ctx.addContext(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, index),
+                    HttpSessionContext.class, httpQualifiers));
+            ctx.addContext(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, index),
+                    HttpSessionDestructionContext.class, httpQualifiers));
+            ctx.addContext(new ContextHolder<HttpConversationContext>(
+                    new LazyHttpConversationContextImpl(contextId, ctx.getServices()), HttpConversationContext.class,
+                    httpQualifiers));
+            ctx.addContext(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId),
+                    HttpRequestContext.class, httpQualifiers));
         }
     }
 
     @Override
     public void preBeanRegistration(PreBeanRegistrationContext ctx) {
-        if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
+        if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME,
+                WeldClassLoaderResourceLoader.INSTANCE)) {
             ctx.registerBean(new HttpServletRequestBean(ctx.getBeanManager()));
             ctx.registerBean(new HttpSessionBean(ctx.getBeanManager()));
             ctx.registerBean(new ServletContextBean(ctx.getBeanManager()));

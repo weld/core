@@ -24,5 +24,5 @@ import jakarta.enterprise.inject.Alternative;
 @Priority(100)
 @Dependent
 public class NormalAlternative {
-	
+
 }

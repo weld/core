@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.interceptors.visibility.packagePrivate.pack1;
 
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.tests.interceptors.visibility.packagePrivate.pack2.Foo;
 
 @VeryImportantBinding

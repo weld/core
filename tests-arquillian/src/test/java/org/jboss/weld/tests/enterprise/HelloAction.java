@@ -27,7 +27,6 @@ public class HelloAction {
     @Inject
     private IHelloBean helloBean;
 
-    
     private String hello;
     private String goodBye;
 
@@ -37,8 +36,8 @@ public class HelloAction {
             byte[] passivated = BeanPassivator.passivate(helloBean);
             Object activated = BeanPassivator.activate(passivated);
             goodBye = ((IHelloBean) activated).sayGoodbye();
-            
-        // following exception are rethrown as they basically mean test failure!
+
+            // following exception are rethrown as they basically mean test failure!
         } catch (IOException ex) {
             throw new IllegalStateException("There was a problem with passivation!" + ex.getMessage());
         } catch (ClassNotFoundException ex) {

@@ -64,7 +64,8 @@ public class InterceptorBuilderTest {
         Assert.assertNotNull(extension.getInjectedBean());
         Assert.assertEquals(Foo.class, extension.getInjectedBean().getBeanClass());
         Assert.assertTrue(extension.getInterceptedWithMetadata().get());
-        List<Interceptor<?>> interceptorList = bm.resolveInterceptors(InterceptionType.AROUND_INVOKE, TypeBinding.TypeBindingLiteral.INSTANCE);
+        List<Interceptor<?>> interceptorList = bm.resolveInterceptors(InterceptionType.AROUND_INVOKE,
+                TypeBinding.TypeBindingLiteral.INSTANCE);
         Assert.assertEquals(1, interceptorList.size());
         Assert.assertEquals(BuilderInterceptorInstance.class, interceptorList.get(0).getBeanClass());
     }
@@ -73,7 +74,8 @@ public class InterceptorBuilderTest {
     public void testMethodLevelInterceptorFromBuilder() {
         foo.methodLevel();
         Assert.assertTrue(extension.getIntercepted().get());
-        List<Interceptor<?>> interceptorList = bm.resolveInterceptors(InterceptionType.AROUND_INVOKE, MethodBinding.MethodBindingLiteral.INSTANCE);
+        List<Interceptor<?>> interceptorList = bm.resolveInterceptors(InterceptionType.AROUND_INVOKE,
+                MethodBinding.MethodBindingLiteral.INSTANCE);
         Assert.assertEquals(1, interceptorList.size());
         Assert.assertEquals(BuilderInterceptorInstance.class, interceptorList.get(0).getBeanClass());
     }

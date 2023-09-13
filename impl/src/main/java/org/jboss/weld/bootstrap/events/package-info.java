@@ -16,5 +16,5 @@
  */
 @Vetoed
 package org.jboss.weld.bootstrap.events;
-import jakarta.enterprise.inject.Vetoed;
 
+import jakarta.enterprise.inject.Vetoed;

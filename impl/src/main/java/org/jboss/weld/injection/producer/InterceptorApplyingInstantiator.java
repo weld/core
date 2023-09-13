@@ -57,7 +57,8 @@ public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T
         }
         if (interceptionContext == null) {
             // There is no interception context to reuse
-            interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager, annotatedType);
+            interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager,
+                    annotatedType);
         }
         T instance = delegate().newInstance(ctx, manager);
         applyInterceptors(instance, interceptionContext);
@@ -67,7 +68,8 @@ public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T
     protected T applyInterceptors(T instance, InterceptionContext interceptionContext) {
         try {
             InterceptorMethodHandler methodHandler = new InterceptorMethodHandler(interceptionContext);
-            CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).weld_getHandler();
+            CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance)
+                    .weld_getHandler();
             wrapperMethodHandler.setInterceptorMethodHandler(methodHandler);
         } catch (Exception e) {
             throw new DeploymentException(e);

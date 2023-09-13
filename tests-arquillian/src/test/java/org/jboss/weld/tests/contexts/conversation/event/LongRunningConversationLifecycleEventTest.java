@@ -44,7 +44,11 @@ public class LongRunningConversationLifecycleEventTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(LongRunningConversationLifecycleEventTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Servlet.class, ObservingBean.class, ConversationScopedBean.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(LongRunningConversationLifecycleEventTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Servlet.class, ObservingBean.class, ConversationScopedBean.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test
@@ -56,25 +60,25 @@ public class LongRunningConversationLifecycleEventTest {
             assertTrue(page.getContent(), page.getContent().contains("Initialized conversations:1")); // the current transient conversation
             assertTrue(page.getContent(), page.getContent().contains("Destroyed conversations:0")); // not destroyed yet
         }
-        
+
         {
             TextPage page = client.getPage(url + "/display?cid=org.jboss.weld");
             assertTrue(page.getContent(), page.getContent().contains("Initialized conversations:1"));
             assertTrue(page.getContent(), page.getContent().contains("Destroyed conversations:0"));
         }
-        
+
         {
             TextPage page = client.getPage(url + "/display?cid=org.jboss.weld");
             assertTrue(page.getContent(), page.getContent().contains("Initialized conversations:1"));
             assertTrue(page.getContent(), page.getContent().contains("Destroyed conversations:0"));
         }
-        
+
         {
             TextPage page = client.getPage(url + "/end?cid=org.jboss.weld");
             assertTrue(page.getContent(), page.getContent().contains("Initialized conversations:1"));
             assertTrue(page.getContent(), page.getContent().contains("Destroyed conversations:0"));
         }
-        
+
         {
             TextPage page = client.getPage(url + "/display");
             assertTrue(page.getContent(), page.getContent().contains("Initialized conversations:2"));

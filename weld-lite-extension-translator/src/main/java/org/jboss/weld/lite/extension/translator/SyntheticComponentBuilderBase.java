@@ -1,11 +1,11 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.lang.model.AnnotationInfo;
-import jakarta.enterprise.lang.model.declarations.ClassInfo;
-
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+
+import jakarta.enterprise.lang.model.AnnotationInfo;
+import jakarta.enterprise.lang.model.declarations.ClassInfo;
 
 class SyntheticComponentBuilderBase<THIS extends SyntheticComponentBuilderBase<THIS>> {
     final Map<String, Object> params = new HashMap<>();

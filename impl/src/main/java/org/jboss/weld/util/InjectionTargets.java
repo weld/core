@@ -43,7 +43,8 @@ public class InjectionTargets {
      * @param beanManager
      * @return a {@link NonProducibleInjectionTarget} instance if necessary, <code>null</code> otherwise
      */
-    public static <T> NonProducibleInjectionTarget<T> createNonProducibleInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean,
+    public static <T> NonProducibleInjectionTarget<T> createNonProducibleInjectionTarget(EnhancedAnnotatedType<T> type,
+            Bean<T> bean,
             BeanManagerImpl beanManager) {
         return createNonProducibleInjectionTarget(type, bean, null, null, beanManager);
     }
@@ -57,7 +58,8 @@ public class InjectionTargets {
      * @param beanManager
      * @return a {@link NonProducibleInjectionTarget} instance if necessary, <code>null</code> otherwise
      */
-    public static <T> NonProducibleInjectionTarget<T> createNonProducibleInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, Injector<T> injector,
+    public static <T> NonProducibleInjectionTarget<T> createNonProducibleInjectionTarget(EnhancedAnnotatedType<T> type,
+            Bean<T> bean, Injector<T> injector,
             LifecycleCallbackInvoker<T> invoker, BeanManagerImpl beanManager) {
         try {
             if (type.isAbstract()) {
@@ -73,7 +75,8 @@ public class InjectionTargets {
             }
             if (Beans.getBeanConstructor(type) == null) {
                 if (bean != null) {
-                    throw BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructorException(type.getJavaClass());
+                    throw BeanLogger.LOG
+                            .injectionTargetCreatedForClassWithoutAppropriateConstructorException(type.getJavaClass());
                 }
                 BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructor(type.getJavaClass());
                 return NonProducibleInjectionTarget.create(type, null, injector, invoker, beanManager);

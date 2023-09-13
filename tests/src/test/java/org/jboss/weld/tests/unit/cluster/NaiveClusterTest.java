@@ -37,8 +37,9 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
     @BeforeMethod
     public void reset() {
-        System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.getDefaultValue()
-                .toString());
+        System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(),
+                ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.getDefaultValue()
+                        .toString());
     }
 
     @Test(description = "A simple test to check session replication, doesn't carefully check if a bean ids are correct")
@@ -138,7 +139,7 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
     @Test
     public void testMultipleDependentObjectsSessionReplication() throws Exception {
-        Collection<Class<?>> classes = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class);
         TestContainer container1 = bootstrapContainer(1, classes);
         BeanManagerImpl beanManager1 = getBeanManager(container1);
         Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
@@ -149,7 +150,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
         // Set a value into Foo1
-        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class,
+                beanManager1.createCreationalContext(stableBean1));
         stable1.getFodder().setAmount(10);
         stable1.getHorse().setName("George");
 
@@ -157,7 +159,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(2);
 
-        Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class, beanManager2.createCreationalContext(stableBean2));
+        Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class,
+                beanManager2.createCreationalContext(stableBean2));
         assert stable2.getFodder().getAmount() == stable1.getFodder().getAmount();
         assert stable2.getHorse().getName() == null;
 
@@ -184,8 +187,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
     @Test(expectedExceptions = IllegalStateException.class)
     public void testVariableBeanDeploymentStructure() throws Exception {
-        Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
-        Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
+        Collection<Class<?>> classes1 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes2 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class, Foo.class);
         TestContainer container1 = bootstrapContainer(1, classes1);
         BeanManagerImpl beanManager1 = getBeanManager(container1);
         Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
@@ -193,7 +196,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
         // Set a value into Foo1
-        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class,
+                beanManager1.createCreationalContext(stableBean1));
         stable1.getFodder().setAmount(10);
         stable1.getHorse().setName("George");
 
@@ -209,8 +213,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
     @Test
     public void testSessionReplication() throws Exception {
-        Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
-        Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes1 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes2 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class);
         TestContainer container1 = bootstrapContainer(1, classes1);
         BeanManagerImpl beanManager1 = getBeanManager(container1);
         Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
@@ -221,7 +225,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
         // Set a value into Foo1
-        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class,
+                beanManager1.createCreationalContext(stableBean1));
         stable1.getFodder().setAmount(10);
         stable1.getHorse().setName("George");
 
@@ -229,7 +234,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(2);
 
-        Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class, beanManager2.createCreationalContext(stableBean2));
+        Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class,
+                beanManager2.createCreationalContext(stableBean2));
         assert stable2.getFodder().getAmount() == stable1.getFodder().getAmount();
         assert stable2.getHorse().getName() == null;
         use(1);
@@ -240,8 +246,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
     @Test
     public void testVariableBeanDeploymentStructureNotVerified() throws Exception {
-        Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
-        Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
+        Collection<Class<?>> classes1 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes2 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class, Foo.class);
         System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), "false");
         TestContainer container1 = bootstrapContainer(1, classes1);
         BeanManagerImpl beanManager1 = getBeanManager(container1);
@@ -250,7 +256,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
         // Set a value into Foo1
-        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class,
+                beanManager1.createCreationalContext(stableBean1));
         stable1.getFodder().setAmount(10);
         stable1.getHorse().setName("George");
 
@@ -266,8 +273,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
     @Test
     public void testSessionReplicationWorksIfBeanIdIndexDisabled() throws Exception {
-        Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
-        Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes1 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes2 = Arrays.<Class<?>> asList(Stable.class, Horse.class, Fodder.class);
         System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), "false");
         TestContainer container1 = bootstrapContainer(1, classes1);
         BeanManagerImpl beanManager1 = getBeanManager(container1);
@@ -279,7 +286,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
         // Set a value into Foo1
-        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class,
+                beanManager1.createCreationalContext(stableBean1));
         stable1.getFodder().setAmount(10);
         stable1.getHorse().setName("George");
 
@@ -287,7 +295,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(2);
 
-        Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class, beanManager2.createCreationalContext(stableBean2));
+        Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class,
+                beanManager2.createCreationalContext(stableBean2));
         assert stable2.getFodder().getAmount() == stable1.getFodder().getAmount();
         assert stable2.getHorse().getName() == null;
         use(1);

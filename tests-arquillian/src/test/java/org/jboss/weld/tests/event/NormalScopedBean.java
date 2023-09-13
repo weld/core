@@ -17,10 +17,11 @@
 
 package org.jboss.weld.tests.event;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
-import java.io.Serializable;
 
 @SessionScoped
 public class NormalScopedBean implements Serializable {

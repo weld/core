@@ -42,14 +42,14 @@ public abstract class DecoratorOverridingDefaultMethod implements BeanInterface 
     }
 
     @Override
-    public void methodOne(String a, String b){
-       decoratedInvocationCount ++;
-       delegate.methodOne(a, b);
+    public void methodOne(String a, String b) {
+        decoratedInvocationCount++;
+        delegate.methodOne(a, b);
     }
-    
+
     @Override
     public void methodTwo(String string, Integer integer) {
-    	decoratedInvocationCount++;
-    	delegate.methodTwo(string, integer);
+        decoratedInvocationCount++;
+        delegate.methodTwo(string, integer);
     }
 }

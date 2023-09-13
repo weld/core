@@ -29,9 +29,9 @@ import jakarta.servlet.http.HttpSessionListener;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.context.http.HttpSessionContext;
-import org.jboss.weld.module.web.context.http.HttpSessionDestructionContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
+import org.jboss.weld.module.web.context.http.HttpSessionDestructionContext;
 
 /**
  * This listener activates the HttpSessionDestructionContext in sessionDestroyed(), but only if HttpSessionContext is not
@@ -71,7 +71,8 @@ public class WeldTerminalListener implements HttpSessionListener {
                 if (beanManager == null) {
                     String contextId = ctx.getInitParameter(Container.CONTEXT_ID_KEY);
                     if (contextId != null) {
-                        List<BeanManagerImpl> managers = new ArrayList<BeanManagerImpl>(Container.instance(contextId).beanDeploymentArchives().values());
+                        List<BeanManagerImpl> managers = new ArrayList<BeanManagerImpl>(
+                                Container.instance(contextId).beanDeploymentArchives().values());
                         Collections.sort(managers, BeanManagers.ID_COMPARATOR);
                         beanManager = managers.get(0);
                     }

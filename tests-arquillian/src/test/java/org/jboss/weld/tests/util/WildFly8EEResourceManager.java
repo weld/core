@@ -43,7 +43,8 @@ public class WildFly8EEResourceManager {
                 messaging.checkJmsTopic(client);
             } else {
                 /*
-                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml) If this happens, do not attempt to install Queue/Topic as
+                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml) If this happens, do not
+                 * attempt to install Queue/Topic as
                  * that always fails
                  */
                 logger.log(Level.WARNING, "JMS subsystem not installed. Skipping test Queue/Topic installation.");

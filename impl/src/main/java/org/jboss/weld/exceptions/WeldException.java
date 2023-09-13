@@ -40,7 +40,7 @@ public class WeldException extends RuntimeException {
     }
 
     /**
-     * Creates a new exception based on a list of throwables.  The throwables are not
+     * Creates a new exception based on a list of throwables. The throwables are not
      * used as the cause, but the message from each throwable is included as the message
      * for this exception.
      *

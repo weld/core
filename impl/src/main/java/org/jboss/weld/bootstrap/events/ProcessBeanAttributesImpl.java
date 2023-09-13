@@ -37,14 +37,16 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEvent implements ProcessBeanAttributes<T> {
 
-    protected static <T> ProcessBeanAttributesImpl<T> fire(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated, Type type) {
+    protected static <T> ProcessBeanAttributesImpl<T> fire(BeanManagerImpl beanManager, BeanAttributes<T> attributes,
+            Annotated annotated, Type type) {
         ProcessBeanAttributesImpl<T> event = new ProcessBeanAttributesImpl<T>(beanManager, attributes, annotated, type) {
         };
         event.fire();
         return event;
     }
 
-    private ProcessBeanAttributesImpl(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated, Type type) {
+    private ProcessBeanAttributesImpl(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated,
+            Type type) {
         super(beanManager, ProcessBeanAttributes.class, new Type[] { type });
         this.attributes = attributes;
         this.annotated = annotated;
@@ -79,7 +81,8 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     @Override
     public void setBeanAttributes(BeanAttributes<T> beanAttributes) {
         if (configurator != null) {
-            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessBeanAttributes.class.getSimpleName(), getReceiver());
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessBeanAttributes.class.getSimpleName(),
+                    getReceiver());
         }
         checkWithinObserverNotification();
         BootstrapLogger.LOG.setBeanAttributesCalled(getReceiver(), attributes, beanAttributes);
@@ -91,7 +94,8 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
     @Override
     public BeanAttributesConfigurator<T> configureBeanAttributes() {
         if (beanAttributesSet) {
-            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessBeanAttributes.class.getSimpleName(), getReceiver());
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessBeanAttributes.class.getSimpleName(),
+                    getReceiver());
         }
         checkWithinObserverNotification();
         if (configurator == null) {

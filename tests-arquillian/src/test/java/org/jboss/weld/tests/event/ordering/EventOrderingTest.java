@@ -18,7 +18,8 @@ public class EventOrderingTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventOrderingTest.class)).addPackage(EventOrderingTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventOrderingTest.class))
+                .addPackage(EventOrderingTest.class.getPackage());
     }
 
     @Inject

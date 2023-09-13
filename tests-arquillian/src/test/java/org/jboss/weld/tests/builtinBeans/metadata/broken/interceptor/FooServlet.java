@@ -39,5 +39,4 @@ public class FooServlet extends HttpServlet {
         resp.getWriter().println(FooServletInterceptor.called ? "OK" : "NOK");
     }
 
-
 }

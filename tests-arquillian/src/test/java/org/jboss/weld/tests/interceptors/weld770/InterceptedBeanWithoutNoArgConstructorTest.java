@@ -34,7 +34,8 @@ import org.junit.runner.RunWith;
 public class InterceptedBeanWithoutNoArgConstructorTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedBeanWithoutNoArgConstructorTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedBeanWithoutNoArgConstructorTest.class))
                 .intercept(TransactionalInterceptor.class)
                 .addPackage(InterceptedBeanWithoutNoArgConstructorTest.class.getPackage());
     }

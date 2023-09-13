@@ -1,15 +1,16 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.AnnotationInfo;
-import jakarta.enterprise.lang.model.AnnotationMember;
-import jakarta.enterprise.lang.model.declarations.ClassInfo;
-import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
-
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.AnnotationInfo;
+import jakarta.enterprise.lang.model.AnnotationMember;
+import jakarta.enterprise.lang.model.declarations.ClassInfo;
+
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 class AnnotationInfoImpl implements AnnotationInfo {
     final Annotation annotation;

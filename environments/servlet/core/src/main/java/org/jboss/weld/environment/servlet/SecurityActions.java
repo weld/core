@@ -16,15 +16,15 @@
  */
 package org.jboss.weld.environment.servlet;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.security.ConstructorNewInstanceAction;
+import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.security.NewInstanceAction;
 
 /**
@@ -77,11 +77,13 @@ final class SecurityActions {
         }
     }
 
-    static <T> T newConstructorInstance(Class<T> javaClass, Class<?>[] constructorParamTypes, Object... constructorParamInstances)
+    static <T> T newConstructorInstance(Class<T> javaClass, Class<?>[] constructorParamTypes,
+            Object... constructorParamInstances)
             throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if (System.getSecurityManager() != null) {
             try {
-                return AccessController.doPrivileged(ConstructorNewInstanceAction.of(javaClass, constructorParamTypes, constructorParamInstances));
+                return AccessController.doPrivileged(
+                        ConstructorNewInstanceAction.of(javaClass, constructorParamTypes, constructorParamInstances));
             } catch (PrivilegedActionException e) {
                 throw new WeldException(e.getCause());
             }

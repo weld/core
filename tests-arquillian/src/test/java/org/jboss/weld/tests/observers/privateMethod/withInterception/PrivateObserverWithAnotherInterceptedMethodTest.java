@@ -37,8 +37,9 @@ public class PrivateObserverWithAnotherInterceptedMethodTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PrivateObserverWithAnotherInterceptedMethodTest.class))
-            .addPackage(PrivateObserverWithAnotherInterceptedMethodTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(PrivateObserverWithAnotherInterceptedMethodTest.class))
+                .addPackage(PrivateObserverWithAnotherInterceptedMethodTest.class.getPackage());
     }
 
     @Test

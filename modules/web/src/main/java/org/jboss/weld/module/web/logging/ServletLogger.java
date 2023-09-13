@@ -68,7 +68,7 @@ public interface ServletLogger extends WeldLogger {
     @Message(id = 712, value = "Unable to dissociate context {0} from the storage {1}", format = Format.MESSAGE_FORMAT)
     void unableToDissociateContext(Object context, Object storage);
 
-    @SuppressWarnings({"weldlog:method-interface","weldlog:method-sig"})
+    @SuppressWarnings({ "weldlog:method-interface", "weldlog:method-sig" })
     @Message(id = 713, value = "Unable to inject ServletContext. None is associated with {0}, {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotInjectServletContext(ClassLoader classLoader, ServletContextService service);
 

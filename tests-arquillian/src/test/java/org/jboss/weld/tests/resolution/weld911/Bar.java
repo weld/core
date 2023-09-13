@@ -24,4 +24,3 @@ package org.jboss.weld.tests.resolution.weld911;
 public interface Bar {
     Foo foo();
 }
-

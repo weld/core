@@ -23,5 +23,4 @@ public interface Fedora {
 
     void causeRuntimeException();
 
-
 }

@@ -42,8 +42,8 @@ public class ProducerBeanInvocationTest {
     }
 
     /*
-    * description = "WELD-546"
-    */
+     * description = "WELD-546"
+     */
     @Test
     public void test(Qux bar, QuxProducer producer, @Baz Qux bazBar) {
         Assert.assertEquals("qux", bar.getBar());

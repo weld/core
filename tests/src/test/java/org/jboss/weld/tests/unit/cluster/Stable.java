@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
-import java.io.Serializable;
 
 @SessionScoped
 public class Stable implements Serializable {

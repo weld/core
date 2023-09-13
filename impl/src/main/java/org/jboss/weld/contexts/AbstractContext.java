@@ -95,7 +95,8 @@ public abstract class AbstractContext implements AlterableContext {
                 }
                 T instance = contextual.create(creationalContext);
                 if (instance != null) {
-                    beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, serviceRegistry.get(ContextualStore.class));
+                    beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance,
+                            creationalContext, serviceRegistry.get(ContextualStore.class));
                     beanStore.put(id, beanInstance);
                 }
                 return instance;
@@ -175,7 +176,7 @@ public abstract class AbstractContext implements AlterableContext {
     }
 
     protected static <T> Contextual<T> getContextual(String contextId, String id) {
-        return Container.instance(contextId).services().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
+        return Container.instance(contextId).services().get(ContextualStore.class).<Contextual<T>, T> getContextual(id);
     }
 
     protected BeanIdentifier getId(Contextual<?> contextual) {

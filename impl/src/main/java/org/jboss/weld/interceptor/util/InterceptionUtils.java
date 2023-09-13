@@ -75,7 +75,8 @@ public class InterceptionUtils {
     }
 
     static boolean isAnnotationClassExpected(InterceptionType interceptionType) {
-        if (InterceptionType.POST_ACTIVATE.equals(interceptionType) || InterceptionType.PRE_PASSIVATE.equals(interceptionType)) {
+        if (InterceptionType.POST_ACTIVATE.equals(interceptionType)
+                || InterceptionType.PRE_PASSIVATE.equals(interceptionType)) {
             Environment environment = Container.getEnvironment();
             if (environment != null && (Environments.SE.equals(environment) || Environments.SERVLET.equals(environment))) {
                 return false;

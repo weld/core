@@ -16,12 +16,13 @@
  */
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
+import java.io.IOException;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
 
 @Named
 @Dependent

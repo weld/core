@@ -42,11 +42,11 @@ public class Servlet extends HttpServlet {
                 out.println(conversation.getId());
                 logInfo("sending cid to client: cid=" + conversation.getId());
                 out.flush();
-                sleep(req.getParameter("sleep") == null ? 3000 : Integer.parseInt(req.getParameter("sleep")));    // keep request open, so another request can be made while this one is still open
+                sleep(req.getParameter("sleep") == null ? 3000 : Integer.parseInt(req.getParameter("sleep"))); // keep request open, so another request can be made while this one is still open
 
             } else if (req.getPathInfo().startsWith("/getValue")) {
                 logInfo("conversation.getId() = " + conversation.getId());
-                out.println((Object)someBean.getValue());
+                out.println((Object) someBean.getValue());
             } else {
                 out.println("");
             }

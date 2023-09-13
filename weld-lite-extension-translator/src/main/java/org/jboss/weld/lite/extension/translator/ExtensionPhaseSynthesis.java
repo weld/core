@@ -1,8 +1,8 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
-
 import java.util.List;
+
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 
 class ExtensionPhaseSynthesis extends ExtensionPhaseBase {
     private final List<SyntheticBeanBuilderImpl<?>> syntheticBeans;
@@ -20,7 +20,8 @@ class ExtensionPhaseSynthesis extends ExtensionPhaseBase {
     Object argumentForExtensionMethod(ExtensionMethodParameterType type, java.lang.reflect.Method method) {
         switch (type) {
             case SYNTHETIC_COMPONENTS:
-                return new SyntheticComponentsImpl(syntheticBeans, syntheticObservers, (Class<? extends BuildCompatibleExtension>) method.getDeclaringClass());
+                return new SyntheticComponentsImpl(syntheticBeans, syntheticObservers,
+                        (Class<? extends BuildCompatibleExtension>) method.getDeclaringClass());
             case TYPES:
                 return new TypesImpl(beanManager);
 

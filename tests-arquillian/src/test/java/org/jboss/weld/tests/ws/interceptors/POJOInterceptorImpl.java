@@ -27,11 +27,9 @@ import jakarta.interceptor.InvocationContext;
 
 @POJOInterceptor
 @Interceptor
-public class POJOInterceptorImpl
-{
+public class POJOInterceptorImpl {
     @AroundInvoke
-    public Object intercept(final InvocationContext ic) throws Exception
-    {
+    public Object intercept(final InvocationContext ic) throws Exception {
         POJOEndpointImpl.interceptorCalled = true;
         return ic.proceed();
     }

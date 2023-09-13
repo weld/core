@@ -39,6 +39,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
 /**
  * Tests for https://issues.jboss.org/browse/CDI-139
  *
@@ -52,7 +53,8 @@ public class DestroyingNormalScopedInstanceTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DestroyingNormalScopedInstanceTest.class)).addPackage(DestroyingNormalScopedInstanceTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DestroyingNormalScopedInstanceTest.class))
+                .addPackage(DestroyingNormalScopedInstanceTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, CustomScopeExtension.class);
     }
 
@@ -103,7 +105,8 @@ public class DestroyingNormalScopedInstanceTest {
     }
 
     @Test
-    public void testUnsupportedOperationExceptionThrownIfUnderlyingContextNotAlterable(Instance<CustomScopedComponent> instance, CustomScopeExtension extension) {
+    public void testUnsupportedOperationExceptionThrownIfUnderlyingContextNotAlterable(Instance<CustomScopedComponent> instance,
+            CustomScopeExtension extension) {
         try {
             extension.switchToNonAlterable();
             CustomScopedComponent component = instance.get();

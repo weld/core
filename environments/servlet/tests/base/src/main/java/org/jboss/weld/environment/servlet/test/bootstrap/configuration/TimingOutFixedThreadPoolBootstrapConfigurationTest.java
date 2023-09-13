@@ -44,7 +44,8 @@ public class TimingOutFixedThreadPoolBootstrapConfigurationTest {
     @Deployment
     public static WebArchive createTestArchive() {
         return baseDeployment()
-                .addAsResource(new StringAsset("threadPoolSize=3\nthreadPoolType=FIXED_TIMEOUT\nthreadPoolKeepAliveTime=5"), "org.jboss.weld.executor.properties")
+                .addAsResource(new StringAsset("threadPoolSize=3\nthreadPoolType=FIXED_TIMEOUT\nthreadPoolKeepAliveTime=5"),
+                        "org.jboss.weld.executor.properties")
                 .addClass(TimingOutFixedThreadPoolBootstrapConfigurationTest.class);
     }
 
@@ -53,7 +54,8 @@ public class TimingOutFixedThreadPoolBootstrapConfigurationTest {
         assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
         assertTrue(manager.getServices().get(ContainerLifecycleEvents.class).isPreloaderEnabled());
         assertTrue(manager.getServices().get(ExecutorServices.class) instanceof TimingOutFixedThreadPoolExecutorServices);
-        TimingOutFixedThreadPoolExecutorServices executorServices = (TimingOutFixedThreadPoolExecutorServices) manager.getServices().get(ExecutorServices.class);
+        TimingOutFixedThreadPoolExecutorServices executorServices = (TimingOutFixedThreadPoolExecutorServices) manager
+                .getServices().get(ExecutorServices.class);
         // Use full capaticy of the pool
         assertEquals(3, executorServices.getPoolSize());
         Thread.sleep(7000l);

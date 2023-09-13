@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
-import java.io.Serializable;
 
 @Named
 @SessionScoped

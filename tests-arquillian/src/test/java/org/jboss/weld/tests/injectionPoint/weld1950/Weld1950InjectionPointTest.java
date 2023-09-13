@@ -21,7 +21,8 @@ public class Weld1950InjectionPointTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(Weld1950InjectionPointTest.class)).addPackage(Weld1950InjectionPointTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(Weld1950InjectionPointTest.class))
+                .addPackage(Weld1950InjectionPointTest.class.getPackage());
     }
 
     @Test

@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.specialization;
 
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,9 +28,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
 
 @RunWith(Arquillian.class)
 public class SpecializationTest {

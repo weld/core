@@ -41,18 +41,21 @@ public class BeanWithPrivateNoArgsConstructorThrowsExceptionTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanWithPrivateNoArgsConstructorThrowsExceptionTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(BeanWithPrivateNoArgsConstructorThrowsExceptionTest.class))
                 .decorate(DecoratorBean.class)
                 .addClass(DecoratedBean.class)
                 .addClass(BeanWithPrivateNoArgsConstructor.class)
                 .addAsResource(
                         PropertiesBuilder.newBuilder()
                                 .set(ConfigurationKey.PROXY_INSTANTIATOR.get(), DefaultProxyInstantiator.class.getName())
-                                .build(), "weld.properties");
+                                .build(),
+                        "weld.properties");
     }
 
     @Test
     public void testDeploymentWithPrivateConstructor() {
         // should throw deployment exception
-     }
+    }
 }

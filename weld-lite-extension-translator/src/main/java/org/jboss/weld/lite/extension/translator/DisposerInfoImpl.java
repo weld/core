@@ -11,7 +11,7 @@ class DisposerInfoImpl implements DisposerInfo {
 
     DisposerInfoImpl(jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDeclaration, BeanManager bm) {
         this.cdiDeclaration = cdiDeclaration;
-        this. bm = bm;
+        this.bm = bm;
     }
 
     @Override

@@ -28,14 +28,14 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
 import org.jboss.weld.tests.proxy.signed.insideJar.Alpha;
 import org.jboss.weld.tests.proxy.signed.insideJar.Beta;
 import org.jboss.weld.tests.proxy.signed.insideJar.CharlieFace;
 import org.jboss.weld.tests.proxy.signed.insideJar.CharlieImpl;
 import org.junit.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 /**
  * IMPORTANT: The classes under package "org.jboss.weld.tests.proxy.signed.insideJar" have been MANUALLY put into a JAR, which
@@ -51,14 +51,18 @@ public class ProxyCreationForSignedClassesTest {
     @Deployment
     public static WebArchive deploy() {
         // prepare file containing signed JAR, the path should be OS agnostic
-        File signedJar = Paths.get("src", "test", "resources", "org", "jboss", "weld", "tests", "proxy", "signed", "signed-test.jar").toFile();
+        File signedJar = Paths
+                .get("src", "test", "resources", "org", "jboss", "weld", "tests", "proxy", "signed", "signed-test.jar")
+                .toFile();
 
         // WAR with singed JAR as a library
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ProxyCreationForSignedClassesTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addPackage(ProxyCreationForSignedClassesTest.class.getPackage())
-            // add previously created signed JAR
-            .addAsLibrary(signedJar)
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ProxyCreationForSignedClassesTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(ProxyCreationForSignedClassesTest.class.getPackage())
+                // add previously created signed JAR
+                .addAsLibrary(signedJar)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Inject

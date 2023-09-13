@@ -44,7 +44,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @param <T>
  * @author Pete Muir
  */
-public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotatedCallable<T, X, Method> implements EnhancedAnnotatedMethod<T, X> {
+public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotatedCallable<T, X, Method>
+        implements EnhancedAnnotatedMethod<T, X> {
 
     // The abstracted parameters
     private final List<EnhancedAnnotatedParameter<?, X>> parameters;
@@ -56,9 +57,11 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
 
     private final AnnotatedMethod<X> slim;
 
-    public static <T, X, Y extends X> EnhancedAnnotatedMethodImpl<T, X> of(AnnotatedMethod<X> annotatedMethod, EnhancedAnnotatedType<Y> declaringClass, ClassTransformer classTransformer) {
+    public static <T, X, Y extends X> EnhancedAnnotatedMethodImpl<T, X> of(AnnotatedMethod<X> annotatedMethod,
+            EnhancedAnnotatedType<Y> declaringClass, ClassTransformer classTransformer) {
         EnhancedAnnotatedType<X> downcastDeclaringType = Reflections.cast(declaringClass);
-        return new EnhancedAnnotatedMethodImpl<T, X>(annotatedMethod, buildAnnotationMap(annotatedMethod.getAnnotations()), buildAnnotationMap(annotatedMethod.getAnnotations()), downcastDeclaringType, classTransformer);
+        return new EnhancedAnnotatedMethodImpl<T, X>(annotatedMethod, buildAnnotationMap(annotatedMethod.getAnnotations()),
+                buildAnnotationMap(annotatedMethod.getAnnotations()), downcastDeclaringType, classTransformer);
     }
 
     /**
@@ -67,17 +70,22 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
      * Initializes the superclass with the built annotation map, sets the method
      * and declaring class abstraction and detects the actual type arguments
      *
-     * @param method         The underlying method
+     * @param method The underlying method
      * @param declaringClass The declaring class abstraction
      */
-    private EnhancedAnnotatedMethodImpl(AnnotatedMethod<X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, EnhancedAnnotatedType<X> declaringClass, ClassTransformer classTransformer) {
+    private EnhancedAnnotatedMethodImpl(AnnotatedMethod<X> annotatedMethod,
+            Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, EnhancedAnnotatedType<X> declaringClass,
+            ClassTransformer classTransformer) {
         super(annotatedMethod, annotationMap, declaredAnnotationMap, classTransformer, declaringClass);
         this.slim = annotatedMethod;
 
-        ArrayList<EnhancedAnnotatedParameter<?, X>> parameters = new ArrayList<EnhancedAnnotatedParameter<?, X>>(annotatedMethod.getParameters().size());
+        ArrayList<EnhancedAnnotatedParameter<?, X>> parameters = new ArrayList<EnhancedAnnotatedParameter<?, X>>(
+                annotatedMethod.getParameters().size());
         validateParameterCount(annotatedMethod);
         for (AnnotatedParameter<X> annotatedParameter : annotatedMethod.getParameters()) {
-            EnhancedAnnotatedParameter<?, X> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this, classTransformer);
+            EnhancedAnnotatedParameter<?, X> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this,
+                    classTransformer);
             parameters.add(parameter);
         }
         this.parameters = immutableListView(parameters);
@@ -116,9 +124,9 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     }
 
     public boolean isEquivalent(Method method) {
-        return this.getDeclaringType().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName()) && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
+        return this.getDeclaringType().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName())
+                && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
     }
-
 
     public String getPropertyName() {
         return propertyName;
@@ -134,7 +142,7 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     }
 
     public List<AnnotatedParameter<X>> getParameters() {
-        return Reflections.<List<AnnotatedParameter<X>>>cast(parameters);
+        return Reflections.<List<AnnotatedParameter<X>>> cast(parameters);
     }
 
     public boolean isGeneric() {

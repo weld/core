@@ -56,7 +56,8 @@ public class CreateAnnotatedTypeWithIdTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CreateAnnotatedTypeWithIdTest.class)).addClass(Component.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CreateAnnotatedTypeWithIdTest.class))
+                .addClass(Component.class);
     }
 
     @Test
@@ -73,13 +74,16 @@ public class CreateAnnotatedTypeWithIdTest {
         };
         // Create a different class with the same name
         // we need to define this class in a new CL to avoid duplicate declaration - hence we use CFW way to define it
-        ClassFile componentClassFile = new ClassFile(Component.class.getName(), Object.class.getName(), new SimpleClassLoader(Component.class.getClassLoader()), factory, new String[]{});
+        ClassFile componentClassFile = new ClassFile(Component.class.getName(), Object.class.getName(),
+                new SimpleClassLoader(Component.class.getClassLoader()), factory, new String[] {});
         // Add void pong()
-        CodeAttribute b = componentClassFile.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.SYNTHETIC), "pong", "V").getCodeAttribute();
+        CodeAttribute b = componentClassFile.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.SYNTHETIC), "pong", "V")
+                .getCodeAttribute();
         b.returnInstruction();
         Class<?> componentClass = componentClassFile.define();
         @SuppressWarnings("unchecked")
-        BackedAnnotatedType<Component> newAnnotatedType = (BackedAnnotatedType<Component>) beanManager.createAnnotatedType(componentClass,
+        BackedAnnotatedType<Component> newAnnotatedType = (BackedAnnotatedType<Component>) beanManager.createAnnotatedType(
+                componentClass,
                 componentClass.getName() + componentClass.getClassLoader().hashCode());
         assertFalse(newAnnotatedType.isAnnotationPresent(Dependent.class));
         assertTrue(hasPongMethod(newAnnotatedType));
@@ -99,7 +103,6 @@ public class CreateAnnotatedTypeWithIdTest {
     }
 
     private static class SimpleClassLoader extends ClassLoader {
-
 
         SimpleClassLoader(ClassLoader parent) {
             super(parent);

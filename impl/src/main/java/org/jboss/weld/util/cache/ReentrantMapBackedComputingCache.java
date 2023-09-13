@@ -29,7 +29,8 @@ import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.ValueHolder;
 
 /**
- * A {@link ComputingCache} backed by a {@link ConcurrentHashMap} which intentionally does not use {@link Map#computeIfAbsent(Object, Function)}
+ * A {@link ComputingCache} backed by a {@link ConcurrentHashMap} which intentionally does not use
+ * {@link Map#computeIfAbsent(Object, Function)}
  * and is reentrant.
  *
  * @author Jozef Hartinger
@@ -49,7 +50,8 @@ class ReentrantMapBackedComputingCache<K, V> implements ComputingCache<K, V>, It
         this(computingFunction, LazyValueHolder::forSupplier, maxSize);
     }
 
-    ReentrantMapBackedComputingCache(Function<K, V> computingFunction, Function<Supplier<V>, ValueHolder<V>> valueHolderFunction, Long maxSize) {
+    ReentrantMapBackedComputingCache(Function<K, V> computingFunction,
+            Function<Supplier<V>, ValueHolder<V>> valueHolderFunction, Long maxSize) {
         this.map = new ConcurrentHashMap<>();
         this.maxSize = maxSize;
         this.function = (key) -> valueHolderFunction.apply(() -> computingFunction.apply(key));

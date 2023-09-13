@@ -30,6 +30,6 @@ import jakarta.enterprise.inject.Alternative;
 @jakarta.enterprise.inject.Stereotype
 @Alternative
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
 public @interface Stereo {
 }

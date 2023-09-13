@@ -31,12 +31,12 @@ public class Weld1192Test {
 
     @Inject
     BeanManager manager;
-    
+
     @Test
     public void testTypedBeanDeployment() {
         // tests that typed bean can be deployed
         Set<Bean<?>> beans = manager.getBeans(StringFoo.class);
         assertTrue(beans.size() == 1);
-     }
+    }
 
 }

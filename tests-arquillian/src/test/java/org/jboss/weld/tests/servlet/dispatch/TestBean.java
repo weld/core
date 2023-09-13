@@ -19,6 +19,7 @@ package org.jboss.weld.tests.servlet.dispatch;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

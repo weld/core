@@ -1,5 +1,9 @@
 package org.jboss.weld.tests.metadata.scanning;
 
+import static org.jboss.weld.tests.metadata.scanning.SystemPropertyExtension.*;
+import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
+import static org.junit.Assert.assertEquals;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 
@@ -13,22 +17,19 @@ import org.jboss.weld.tests.metadata.Qux;
 import org.jboss.weld.tests.metadata.scanning.jboss.Baz;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.assertEquals;
-import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
-import static org.jboss.weld.tests.metadata.scanning.SystemPropertyExtension.*;
 
 @RunWith(Arquillian.class)
 public class SystemPropertyActivationTest {
 
     public static final Asset BEANS_XML = createBeansXml(
             "<weld:scan>"
-                + "<weld:include name=\"" + Bar.class.getName() + "\">"
+                    + "<weld:include name=\"" + Bar.class.getName() + "\">"
                     + "<weld:if-system-property name=\"" + SET_PROPERTY_1 + "\" />"
-                + "</weld:include>"
-                + "<weld:include name=\"" + Foo.class.getName() + "\">"
+                    + "</weld:include>"
+                    + "<weld:include name=\"" + Foo.class.getName() + "\">"
                     + "<weld:if-system-property name=\"" + UNSET_PROPERTY_1 + "\" />"
-                + "</weld:include>"
-            + "</weld:scan>");
+                    + "</weld:include>"
+                    + "</weld:scan>");
 
     @Deployment
     public static Archive<?> deployment() {

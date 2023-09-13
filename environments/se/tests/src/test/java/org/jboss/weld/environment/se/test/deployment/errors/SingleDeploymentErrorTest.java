@@ -41,7 +41,8 @@ public class SingleDeploymentErrorTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addPackage(SingleDeploymentErrorTest.class.getPackage())).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addPackage(SingleDeploymentErrorTest.class.getPackage())).build();
     }
 
     @Test

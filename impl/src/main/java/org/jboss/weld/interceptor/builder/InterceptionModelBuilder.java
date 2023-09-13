@@ -38,7 +38,6 @@ import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
 
-
 /**
  * This builder shouldn't be reused.
  *
@@ -66,7 +65,6 @@ public class InterceptionModelBuilder {
 
     private Set<Annotation> classInterceptorBindings;
 
-
     public InterceptionModelBuilder() {
         this.methodsIgnoringGlobalInterceptors = ImmutableSet.builder();
         this.allInterceptors = ImmutableSet.builder();
@@ -84,7 +82,8 @@ public class InterceptionModelBuilder {
         return new InterceptionModelImpl(this);
     }
 
-    public void interceptMethod(jakarta.enterprise.inject.spi.InterceptionType interceptionType, Method method, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
+    public void interceptMethod(jakarta.enterprise.inject.spi.InterceptionType interceptionType, Method method,
+            Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
         checkModelNotBuilt();
         InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
         if (weldInterceptionType.isLifecycleCallback()) {
@@ -107,7 +106,8 @@ public class InterceptionModelBuilder {
         }
     }
 
-    public void interceptGlobal(jakarta.enterprise.inject.spi.InterceptionType interceptionType, Constructor<?> constructor, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
+    public void interceptGlobal(jakarta.enterprise.inject.spi.InterceptionType interceptionType, Constructor<?> constructor,
+            Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
         checkModelNotBuilt();
         InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
 
@@ -165,7 +165,8 @@ public class InterceptionModelBuilder {
             return Collections.emptyMap();
         }
         ImmutableMap.Builder<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> builder = ImmutableMap.builder();
-        for (Entry<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> entry : methodBoundInterceptors.entrySet()) {
+        for (Entry<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> entry : methodBoundInterceptors
+                .entrySet()) {
             ImmutableMap.Builder<Method, List<InterceptorClassMetadata<?>>> metadataBuilder = ImmutableMap.builder();
             for (Entry<Method, List<InterceptorClassMetadata<?>>> metadataEntry : entry.getValue().entrySet()) {
                 metadataBuilder.put(metadataEntry.getKey(), ImmutableList.copyOf(metadataEntry.getValue()));

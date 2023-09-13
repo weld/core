@@ -34,11 +34,11 @@ public class ConflictingInterceptorBindingTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ConflictingInterceptorBindingTest.class)).addPackage(ConflictingInterceptorBindingTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ConflictingInterceptorBindingTest.class))
+                .addPackage(ConflictingInterceptorBindingTest.class.getPackage());
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
     }
 }

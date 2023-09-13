@@ -39,12 +39,15 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class BootstrapOrderingTest {
 
-    public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<listener><listener-class>" + MyServletContextListener.class.getName() + "</listener-class></listener>").getBytes());
+    public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml(
+            "<listener><listener-class>" + MyServletContextListener.class.getName() + "</listener-class></listener>")
+            .getBytes());
     public static final Asset EXTENSION = new ByteArrayAsset(MyExtension.class.getName().getBytes());
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTest.class.getPackage()).addAsWebInfResource(EXTENSION, "classes/META-INF/services/" + Extension.class.getName());
+        return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTest.class.getPackage()).addAsWebInfResource(EXTENSION,
+                "classes/META-INF/services/" + Extension.class.getName());
     }
 
     @Test

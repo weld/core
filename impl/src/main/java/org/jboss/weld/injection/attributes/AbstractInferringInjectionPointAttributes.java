@@ -32,7 +32,8 @@ import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public abstract class AbstractInferringInjectionPointAttributes<T, S> implements WeldInjectionPointAttributes<T, S>, Serializable {
+public abstract class AbstractInferringInjectionPointAttributes<T, S>
+        implements WeldInjectionPointAttributes<T, S>, Serializable {
 
     private static final long serialVersionUID = 7820718127728549436L;
 
@@ -41,7 +42,8 @@ public abstract class AbstractInferringInjectionPointAttributes<T, S> implements
     private final TypeAttribute typeAttribute;
     private final boolean delegate;
 
-    public AbstractInferringInjectionPointAttributes(EnhancedAnnotated<?, ?> annotatedElement, String contextId, Bean<?> bean, Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
+    public AbstractInferringInjectionPointAttributes(EnhancedAnnotated<?, ?> annotatedElement, String contextId, Bean<?> bean,
+            Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
         this.bean = BeanHolder.of(contextId, bean);
         this.qualifiers = qualifiers;
         if (bean == null) {

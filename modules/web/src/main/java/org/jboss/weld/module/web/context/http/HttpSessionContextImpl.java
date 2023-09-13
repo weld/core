@@ -10,16 +10,16 @@ import jakarta.servlet.http.HttpSession;
 import org.jboss.weld.Container;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.context.http.HttpConversationContext;
+import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.contexts.AbstractBoundContext;
 import org.jboss.weld.contexts.beanstore.AttributeBeanStore;
 import org.jboss.weld.contexts.beanstore.BoundBeanStore;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.contexts.beanstore.SimpleBeanIdentifierIndexNamingScheme;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.module.web.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.module.web.context.beanstore.http.LazySessionBeanStore;
-import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.context.http.HttpSessionContext;
-import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 
 public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
@@ -44,8 +44,10 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
             ContextLogger.LOG.beanStoreLeakDuringAssociation(this.getClass().getName(), request);
         }
         // We always associate a new bean store to avoid possible leaks (security threats)
-        setBeanStore(new LazySessionBeanStore(request, namingScheme, getServiceRegistry().getRequired(WeldConfiguration.class).getBooleanProperty(
-                ConfigurationKey.CONTEXT_ATTRIBUTES_LAZY_FETCH), getServiceRegistry()));
+        setBeanStore(new LazySessionBeanStore(request, namingScheme,
+                getServiceRegistry().getRequired(WeldConfiguration.class).getBooleanProperty(
+                        ConfigurationKey.CONTEXT_ATTRIBUTES_LAZY_FETCH),
+                getServiceRegistry()));
         checkBeanIdentifierIndexConsistency(request);
         return true;
     }

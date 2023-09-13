@@ -55,5 +55,4 @@ public class FooExtension implements Extension {
         return unbackedAnnotatedType;
     }
 
-
 }

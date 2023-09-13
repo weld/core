@@ -25,16 +25,15 @@ import jakarta.inject.Inject;
 @RequestScoped
 @Digital
 public class Telephone {
-    
+
     @Inject
     private TelephoneLine line;
-    
+
     public TelephoneLine getLine() {
         return line;
     }
 
     @Remove
-    public void remove()
-    {
+    public void remove() {
     }
 }

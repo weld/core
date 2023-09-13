@@ -69,7 +69,8 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackA
         }
     }
 
-    public Object invoke(Stack stack, Object self, Method thisMethod, Method proceed, Object[] args, boolean intercept, boolean popStack) throws Throwable {
+    public Object invoke(Stack stack, Object self, Method thisMethod, Method proceed, Object[] args, boolean intercept,
+            boolean popStack) throws Throwable {
         if (intercept) {
             try {
                 if (interceptorMethodHandler != null) {

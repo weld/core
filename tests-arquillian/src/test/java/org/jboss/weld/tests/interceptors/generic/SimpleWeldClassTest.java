@@ -19,8 +19,6 @@ package org.jboss.weld.tests.interceptors.generic;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -36,6 +34,7 @@ import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.Beans;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,22 +42,22 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class SimpleWeldClassTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleWeldClassTest.class))
-         .addPackage(SimpleWeldClassTest.class.getPackage());
-   }
+public class SimpleWeldClassTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleWeldClassTest.class))
+                .addPackage(SimpleWeldClassTest.class.getPackage());
+    }
 
-   /*
-    * description = "WELD-568"
-    */
+    /*
+     * description = "WELD-568"
+     */
     @Test
     public void testWeldClassForGenericSuperclass() {
         TypeStore ts = new TypeStore();
-        EnhancedAnnotatedType<StringProcessor> weldClass = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts), RegistrySingletonProvider.STATIC_INSTANCE).getEnhancedAnnotatedType(StringProcessor.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+        EnhancedAnnotatedType<StringProcessor> weldClass = new ClassTransformer(ts, new SharedObjectCache(),
+                ReflectionCacheFactory.newInstance(ts), RegistrySingletonProvider.STATIC_INSTANCE)
+                .getEnhancedAnnotatedType(StringProcessor.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
         Collection<EnhancedAnnotatedMethod<?, ? super StringProcessor>> methods = weldClass.getEnhancedMethods();
         //assert methods.size() == 2;
         List<EnhancedAnnotatedMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);

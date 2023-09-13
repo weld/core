@@ -25,10 +25,10 @@ import jakarta.inject.Inject;
  */
 @Dependent
 public class DuckLake {
-    
+
     @Inject
     private Duck duck;
-    
+
     public boolean isEmpty() {
         return duck == null;
     }

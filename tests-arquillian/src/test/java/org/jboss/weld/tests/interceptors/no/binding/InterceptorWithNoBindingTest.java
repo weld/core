@@ -20,26 +20,25 @@ import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.Interceptors;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Verifies, that it is OK for an interceptor bound using the {@link Interceptors} annotation 
+ * Verifies, that it is OK for an interceptor bound using the {@link Interceptors} annotation
  * to be also annotated with {@link Interceptor} and declare no interceptor bindings.
- * 
+ *
  * @see WELD-1668
  * @see INTERCEPTORS_SPEC-27
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class InterceptorWithNoBindingTest {
@@ -49,7 +48,8 @@ public class InterceptorWithNoBindingTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorWithNoBindingTest.class)).addPackage(InterceptorWithNoBindingTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorWithNoBindingTest.class))
+                .addPackage(InterceptorWithNoBindingTest.class.getPackage());
     }
 
     @Test

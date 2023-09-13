@@ -41,7 +41,6 @@ public class BravoInterceptor extends AbstractInterceptor {
         ctx.getContextData().put(BravoInterceptor.class.getName(), this);
         ctx.getContextData().put("foo", BravoInterceptor.class.getName());
 
-
         proceed(ctx);
 
         // test context data after construction

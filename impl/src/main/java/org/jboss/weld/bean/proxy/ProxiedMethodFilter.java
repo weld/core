@@ -37,6 +37,7 @@ public interface ProxiedMethodFilter {
 
     /**
      * Determines whether this filter is enabled. E.g. GroovyMethodFilter is only enabled in Groovy environment
+     *
      * @return true if this method filter should be used
      */
     default boolean isEnabled() {
@@ -45,6 +46,7 @@ public interface ProxiedMethodFilter {
 
     /**
      * Determines, whether the given method should be implemented by the proxy / subclass or not.
+     *
      * @param method the given method
      * @param proxySuperclass the class the proxy extends directly
      * @return true iff the method filter does not ban the given method from being implemented

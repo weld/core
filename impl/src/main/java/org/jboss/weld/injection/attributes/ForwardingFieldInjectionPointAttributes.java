@@ -31,7 +31,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class ForwardingFieldInjectionPointAttributes<T, X> extends AbstractForwardingInjectionPointAttributes<T, Field> implements FieldInjectionPointAttributes<T, X> {
+public class ForwardingFieldInjectionPointAttributes<T, X> extends AbstractForwardingInjectionPointAttributes<T, Field>
+        implements FieldInjectionPointAttributes<T, X> {
 
     public static <T, X> FieldInjectionPointAttributes<T, X> of(InjectionPoint ip) {
         if (ip instanceof FieldInjectionPointAttributes<?, ?>) {

@@ -22,8 +22,8 @@ import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
-
 import jakarta.enterprise.inject.spi.ProcessSyntheticBean;
+
 import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
 
 /**
@@ -37,13 +37,13 @@ public class MyExtension implements Extension {
     public void observe(@Observes WeldAfterBeanDiscovery abd, BeanManager bm) {
         // register an alternative bean via configurator with priority
         abd.addBean()
-            .beanClass(FooAlternative.class)
-            .types(Object.class, FooAlternative.class, PlainFoo.class)
-            .createWith((ctx) -> new FooAlternative())
-            .alternative(true)
-            .priority(100)
-            .qualifiers(Any.Literal.INSTANCE, Default.Literal.INSTANCE)
-            .scope(Dependent.class);
+                .beanClass(FooAlternative.class)
+                .types(Object.class, FooAlternative.class, PlainFoo.class)
+                .createWith((ctx) -> new FooAlternative())
+                .alternative(true)
+                .priority(100)
+                .qualifiers(Any.Literal.INSTANCE, Default.Literal.INSTANCE)
+                .scope(Dependent.class);
     }
 
     public void observeProcessBean(@Observes ProcessSyntheticBean<FooAlternative> psb) {

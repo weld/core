@@ -55,7 +55,8 @@ public interface Multimap<K, V> {
      *
      * @param key
      * @param value
-     * @return <code>true</code> if the the size of the collection associated with the given key increased, <code>false</code> otherwise (e.g. if the collection
+     * @return <code>true</code> if the the size of the collection associated with the given key increased, <code>false</code>
+     *         otherwise (e.g. if the collection
      *         of values doesn't allow duplicates)
      */
     boolean put(K key, V value);
@@ -64,13 +65,15 @@ public interface Multimap<K, V> {
      *
      * @param key
      * @param values
-     * @return <code>true</code> if the the size of the collection associated with the given key increased, <code>false</code> otherwise (e.g. if the collection
+     * @return <code>true</code> if the the size of the collection associated with the given key increased, <code>false</code>
+     *         otherwise (e.g. if the collection
      *         of values doesn't allow duplicates)
      */
     boolean putAll(K key, Collection<? extends V> values);
 
     /**
-     * Note that the original collection of values is completely replaced by a new collection which contains all elements from the given iterable. If the
+     * Note that the original collection of values is completely replaced by a new collection which contains all elements from
+     * the given iterable. If the
      * collection of values doesn't allow duplicates, these elements are removed.
      *
      * @param key
@@ -93,7 +96,8 @@ public interface Multimap<K, V> {
     Set<K> keySet();
 
     /**
-     * The list may include the same value multiple times if it occurs in multiple mappings or if the collection of values for the mapping allows duplicate
+     * The list may include the same value multiple times if it occurs in multiple mappings or if the collection of values for
+     * the mapping allows duplicate
      * elements.
      *
      * @return an immutable list of all the values in the multimap
@@ -107,7 +111,8 @@ public interface Multimap<K, V> {
     Set<V> uniqueValues();
 
     /**
-     * {@link Entry#getValue()} always returns an unmodifiable collection. {@link Entry#setValue(Object)} operation is not supported.
+     * {@link Entry#getValue()} always returns an unmodifiable collection. {@link Entry#setValue(Object)} operation is not
+     * supported.
      *
      * @return an immutable set of all key-value pairs
      */

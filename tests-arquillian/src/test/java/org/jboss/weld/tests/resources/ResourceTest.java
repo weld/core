@@ -40,8 +40,8 @@ public class ResourceTest {
     }
 
     /*
-    * description = "WELD-385"
-    */
+     * description = "WELD-385"
+     */
     @Test
     public void testUTInjectedByResource(UTConsumer consumer) {
         Assert.assertNotNull(consumer.getUserTransaction());

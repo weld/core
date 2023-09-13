@@ -20,7 +20,6 @@ public class BeanDeploymentArchiveMapping {
     private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments = new HashMap<BeanDeploymentArchive, BeanDeployment>();
     private final ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> beanManagers = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
 
-
     public void put(BeanDeploymentArchive bda, BeanDeployment beanDeployment) {
         beanDeployments.put(bda, beanDeployment);
         beanManagers.put(bda, beanDeployment.getBeanManager());
@@ -42,7 +41,8 @@ public class BeanDeploymentArchiveMapping {
         Set<String> beanDeploymentArchiveIds = new HashSet<>();
         Set<String> beanManagerIds = new HashSet<>();
         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-            if (!beanDeploymentArchiveIds.add(entry.getKey().getId()) || !beanManagerIds.add(entry.getValue().getBeanManager().getId())) {
+            if (!beanDeploymentArchiveIds.add(entry.getKey().getId())
+                    || !beanManagerIds.add(entry.getValue().getBeanManager().getId())) {
                 return true;
             }
         }

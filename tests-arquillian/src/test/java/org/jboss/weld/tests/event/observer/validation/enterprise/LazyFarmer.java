@@ -18,6 +18,5 @@ package org.jboss.weld.tests.event.observer.validation.enterprise;
 
 import jakarta.ejb.Stateful;
 
-public @Stateful class LazyFarmer extends Farmer implements LazyFarmerLocal
-{
+public @Stateful class LazyFarmer extends Farmer implements LazyFarmerLocal {
 }

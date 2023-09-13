@@ -27,9 +27,9 @@ import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * Verifies that we there's only one instance of a given extension.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 public class VerifyingExtension implements Extension {
 
@@ -42,7 +42,7 @@ public class VerifyingExtension implements Extension {
     public void abd(@Observes AfterBeanDiscovery event, BeanManager manager) {
         assertEquals(STATE, manager.getExtension(AlphaExtension.class).getState());
     }
-    
+
     public void adv(@Observes AfterDeploymentValidation event, BeanManager manager) {
         assertEquals(STATE, manager.getExtension(AlphaExtension.class).getState());
     }

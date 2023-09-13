@@ -76,14 +76,16 @@ public class ContainerLifecyleObserverTest {
         ActionSequence.reset();
 
         Extension myExtension = ContainerLifecycleObserver.extensionBuilder()
-                .add(beforeBeanDiscovery((e) -> addAction(BeforeBeanDiscovery.class.getSimpleName()))).add(afterTypeDiscovery().notify((e, b) -> {
+                .add(beforeBeanDiscovery((e) -> addAction(BeforeBeanDiscovery.class.getSimpleName())))
+                .add(afterTypeDiscovery().notify((e, b) -> {
                     addAction(AfterTypeDiscovery.class.getSimpleName());
                     e.addAnnotatedType(b.createAnnotatedType(Charlie.class), Charlie.class.getName());
                 })).add(afterBeanDiscovery((e) -> {
                     addAction(AfterBeanDiscovery.class.getSimpleName());
                     e.addObserverMethod().beanClass(Foo.class).observedType(Foo.class).notifyWith((ctx) -> {
                     });
-                    e.addBean().beanClass(Integer.class).addType(Integer.class).addQualifier(Juicy.Literal.INSTANCE).createWith((ctx) -> Integer.valueOf(10));
+                    e.addBean().beanClass(Integer.class).addType(Integer.class).addQualifier(Juicy.Literal.INSTANCE)
+                            .createWith((ctx) -> Integer.valueOf(10));
                 })).add(afterDeploymentValidation((e) -> addAction(AfterDeploymentValidation.class.getSimpleName())))
                 .add(beforeShutdown((e) -> addAction(BeforeShutdown.class.getSimpleName()))).build();
 
@@ -96,33 +98,42 @@ public class ContainerLifecyleObserverTest {
                 .add(processProducer().notify((e) -> addAction(ProcessProducer.class.getSimpleName())))
                 .add(processBean().notify((e) -> addAction(ProcessBean.class.getSimpleName())))
                 .add(processManagedBean().notify((e) -> addAction(ProcessManagedBean.class.getSimpleName())))
-                .add(processProducerField().notify((e) -> addAction(ProcessProducerField.class.getSimpleName()))).add(processProducerMethod().notify((e) -> {
+                .add(processProducerField().notify((e) -> addAction(ProcessProducerField.class.getSimpleName())))
+                .add(processProducerMethod().notify((e) -> {
                     // Weld SE defines some producer methods, e.g. ParametersFactory
                     addAction(ProcessProducerMethod.class.getSimpleName());
                 })).add(processBeanAttributes().notify((e) -> addAction(ProcessBeanAttributes.class.getSimpleName())))
                 .add(processObserverMethod().notify((e) -> addAction(ProcessObserverMethod.class.getSimpleName())))
                 .add(processObserverMethod(new TypeLiteral<ProcessObserverMethod<String, ?>>() {
-                }.getType()).notify((e) -> addAction(ProcessObserverMethod.class.getSimpleName() + String.class.getSimpleName())))
+                }.getType())
+                        .notify((e) -> addAction(ProcessObserverMethod.class.getSimpleName() + String.class.getSimpleName())))
                 .add(processSyntheticObserverMethod(new TypeLiteral<ProcessSyntheticObserverMethod<Foo, ?>>() {
-                }.getType()).notify((e) -> addAction(ProcessSyntheticObserverMethod.class.getSimpleName() + Foo.class.getSimpleName())))
+                }.getType()).notify(
+                        (e) -> addAction(ProcessSyntheticObserverMethod.class.getSimpleName() + Foo.class.getSimpleName())))
                 .add(processSyntheticBean(new TypeLiteral<ProcessSyntheticBean<Integer>>() {
-                }.getType()).notify((e) -> addAction(ProcessSyntheticBean.class.getSimpleName() + Integer.class.getSimpleName()))).build();
+                }.getType())
+                        .notify((e) -> addAction(ProcessSyntheticBean.class.getSimpleName() + Integer.class.getSimpleName())))
+                .build();
 
-        try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class, Bravo.class).addExtension(myExtension).addExtension(myExtension2)
+        try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class, Bravo.class)
+                .addExtension(myExtension).addExtension(myExtension2)
                 .initialize()) {
             assertTrue(container.select(Foo.class).isUnsatisfied());
             assertFalse(container.select(Bravo.class).isUnsatisfied());
             Assert.assertEquals(Integer.valueOf(10), container.select(Integer.class, Juicy.Literal.INSTANCE).get());
         }
 
-        ActionSequence.assertSequenceDataContainsAll(BeforeBeanDiscovery.class, AfterTypeDiscovery.class, AfterBeanDiscovery.class,
+        ActionSequence.assertSequenceDataContainsAll(BeforeBeanDiscovery.class, AfterTypeDiscovery.class,
+                AfterBeanDiscovery.class,
                 AfterDeploymentValidation.class, BeforeShutdown.class);
-        ActionSequence.assertSequenceDataContainsAll(ProcessBeanAttributes.class, ProcessSyntheticAnnotatedType.class, ProcessInjectionPoint.class,
+        ActionSequence.assertSequenceDataContainsAll(ProcessBeanAttributes.class, ProcessSyntheticAnnotatedType.class,
+                ProcessInjectionPoint.class,
                 ProcessObserverMethod.class, ProcessBeanAttributes.class, ProcessProducer.class);
         ActionSequence.assertSequenceDataContainsAll(ProcessObserverMethod.class.getSimpleName() + String.class.getSimpleName(),
                 ProcessSyntheticObserverMethod.class.getSimpleName() + Foo.class.getSimpleName(),
                 ProcessSyntheticBean.class.getSimpleName() + Integer.class.getSimpleName());
-        ActionSequence.assertSequenceDataContainsAll(ProcessBean.class, ProcessManagedBean.class, ProcessProducerMethod.class, ProcessProducerField.class);
+        ActionSequence.assertSequenceDataContainsAll(ProcessBean.class, ProcessManagedBean.class, ProcessProducerMethod.class,
+                ProcessProducerField.class);
 
     }
 
@@ -132,7 +143,8 @@ public class ContainerLifecyleObserverTest {
         final AtomicBoolean called = new AtomicBoolean(false);
         try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class)
                 .addContainerLifecycleObserver(processAnnotatedType(new TypeLiteral<ProcessAnnotatedType<Foo>>() {
-                }.getType()).notify((e) -> e.veto())).addContainerLifecycleObserver(afterBeanDiscovery((e) -> called.set(true))).initialize()) {
+                }.getType()).notify((e) -> e.veto())).addContainerLifecycleObserver(afterBeanDiscovery((e) -> called.set(true)))
+                .initialize()) {
             assertTrue(called.get());
             assertTrue(container.select(Foo.class).isUnsatisfied());
         }

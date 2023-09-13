@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import jakarta.enterprise.inject.Default;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
 @jakarta.inject.Qualifier
 @Default
 public @interface My {

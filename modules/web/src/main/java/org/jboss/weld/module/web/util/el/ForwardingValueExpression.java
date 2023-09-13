@@ -29,13 +29,13 @@ public abstract class ForwardingValueExpression extends ValueExpression {
 
     protected abstract ValueExpression delegate();
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Class getExpectedType() {
         return delegate().getExpectedType();
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Class getType(ELContext context) {
         return delegate().getType(context);

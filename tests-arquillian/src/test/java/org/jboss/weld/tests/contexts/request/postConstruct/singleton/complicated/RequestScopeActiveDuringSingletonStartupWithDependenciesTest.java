@@ -43,7 +43,10 @@ public class RequestScopeActiveDuringSingletonStartupWithDependenciesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RequestScopeActiveDuringSingletonStartupWithDependenciesTest.class)).addPackage(RequestScopeActiveDuringSingletonStartupWithDependenciesTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(RequestScopeActiveDuringSingletonStartupWithDependenciesTest.class))
+                .addPackage(RequestScopeActiveDuringSingletonStartupWithDependenciesTest.class.getPackage());
     }
 
     @Test

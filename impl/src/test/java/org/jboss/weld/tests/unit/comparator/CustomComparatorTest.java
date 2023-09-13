@@ -17,17 +17,18 @@
 
 package org.jboss.weld.tests.unit.comparator;
 
-import foo.bar.Foo;
-import foo.bar.quax.Quax;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.jboss.weld.SimpleCDI;
 import org.jboss.weld.util.CustomClassComparator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import foo.bar.Foo;
+import foo.bar.quax.Quax;
 
 /**
  * Tests sorting collections with {@link CustomClassComparator}.

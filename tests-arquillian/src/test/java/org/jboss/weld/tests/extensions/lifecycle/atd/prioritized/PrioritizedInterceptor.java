@@ -26,7 +26,8 @@ import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.test.util.ActionSequence;
 
-public class PrioritizedInterceptor extends AbstractInterceptor<PrioritizedInterceptor> implements PassivationCapable, Prioritized {
+public class PrioritizedInterceptor extends AbstractInterceptor<PrioritizedInterceptor>
+        implements PassivationCapable, Prioritized {
 
     private final int priority;
 
@@ -67,6 +68,5 @@ public class PrioritizedInterceptor extends AbstractInterceptor<PrioritizedInter
     protected PrioritizedInterceptor createInstance() {
         return new PrioritizedInterceptor(priority, bindings);
     }
-
 
 }

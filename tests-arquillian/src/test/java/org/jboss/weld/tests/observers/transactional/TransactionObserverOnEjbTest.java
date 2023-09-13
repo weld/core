@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import jakarta.inject.Inject;
 import jakarta.transaction.UserTransaction;
 
@@ -54,7 +55,6 @@ public class TransactionObserverOnEjbTest {
 
     @Inject
     private Ostrich ostrich;
-
 
     @Test
     public void testTransactionalObserver() throws ExecutionException, TimeoutException, InterruptedException {

@@ -26,17 +26,17 @@ import org.jboss.weld.test.util.ActionSequence;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
-public class ProtectedWorker implements Worker{
+public class ProtectedWorker implements Worker {
 
     private int hiddenField = 0;
-    
+
     @Override
     public void doStuff() {
         ActionSequence.addAction(ProtectedWorker.class.getName());
-        hiddenField ++;
+        hiddenField++;
     }
-    
-    protected void observeProtected(@Observes Job event){
+
+    protected void observeProtected(@Observes Job event) {
         ActionSequence.addAction(ProtectedWorker.class.getName() + "-" + hiddenField);
     }
 }

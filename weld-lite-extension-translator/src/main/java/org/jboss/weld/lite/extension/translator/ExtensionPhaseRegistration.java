@@ -1,14 +1,15 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.build.compatible.spi.Registration;
-import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
+
+import jakarta.enterprise.inject.build.compatible.spi.Registration;
+
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 class ExtensionPhaseRegistration extends ExtensionPhaseBase {
     private final List<ExtensionPhaseRegistrationAction> actions;
@@ -37,7 +38,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
         }
 
         if (numQueryParameters == 0 || numQueryParameters > 1) {
-            throw LiteExtensionTranslatorLogger.LOG.incorrectParameterCount("BeanInfo or ObserverInfo", method, method.getDeclaringClass());
+            throw LiteExtensionTranslatorLogger.LOG.incorrectParameterCount("BeanInfo or ObserverInfo", method,
+                    method.getDeclaringClass());
         }
 
         ExtensionMethodParameterType query = parameters.stream()
@@ -53,9 +55,11 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                     if (parameter.isQuery()) {
                         jakarta.enterprise.inject.spi.AnnotatedParameter<?> disposer = null;
                         if (pb instanceof jakarta.enterprise.inject.spi.ProcessProducerField) {
-                            disposer = ((jakarta.enterprise.inject.spi.ProcessProducerField<?, ?>) pb).getAnnotatedDisposedParameter();
+                            disposer = ((jakarta.enterprise.inject.spi.ProcessProducerField<?, ?>) pb)
+                                    .getAnnotatedDisposedParameter();
                         } else if (pb instanceof jakarta.enterprise.inject.spi.ProcessProducerMethod) {
-                            disposer = ((jakarta.enterprise.inject.spi.ProcessProducerMethod<?, ?>) pb).getAnnotatedDisposedParameter();
+                            disposer = ((jakarta.enterprise.inject.spi.ProcessProducerMethod<?, ?>) pb)
+                                    .getAnnotatedDisposedParameter();
                         }
 
                         argument = new BeanInfoImpl(pb.getBean(), pb.getAnnotated(), disposer, beanManager);
@@ -68,7 +72,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 try {
                     util.callExtensionMethod(method, arguments);
                 } catch (InvocationTargetException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.getCause().toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments,
+                            e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString(), e);
                 }
@@ -83,7 +88,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                     return;
                 }
 
-                jakarta.enterprise.inject.spi.Interceptor<?> cdiInterceptor = (jakarta.enterprise.inject.spi.Interceptor<?>) pb.getBean();
+                jakarta.enterprise.inject.spi.Interceptor<?> cdiInterceptor = (jakarta.enterprise.inject.spi.Interceptor<?>) pb
+                        .getBean();
 
                 List<Object> arguments = new ArrayList<>(numParameters);
                 for (ExtensionMethodParameterType parameter : parameters) {
@@ -99,7 +105,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 try {
                     util.callExtensionMethod(method, arguments);
                 } catch (InvocationTargetException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.getCause().toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments,
+                            e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString(), e);
                 }
@@ -115,7 +122,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                     Object argument;
                     if (parameter.isQuery()) {
                         boolean isSynthetic = pom instanceof jakarta.enterprise.inject.spi.ProcessSyntheticObserverMethod;
-                        argument = new ObserverInfoImpl(pom.getObserverMethod(), isSynthetic ? null : pom.getAnnotatedMethod(), beanManager);
+                        argument = new ObserverInfoImpl(pom.getObserverMethod(), isSynthetic ? null : pom.getAnnotatedMethod(),
+                                beanManager);
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
@@ -125,7 +133,8 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                 try {
                     util.callExtensionMethod(method, arguments);
                 } catch (InvocationTargetException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.getCause().toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments,
+                            e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInvokeExtensionMethod(method, arguments, e.toString(), e);
                 }

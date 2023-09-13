@@ -37,7 +37,6 @@ public class SimpleBean {
         return invocationsCounter.getCount();
     }
 
-
     @Transactional
     public void intercepted() {
         invocationsCounter.increment();

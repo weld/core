@@ -56,14 +56,15 @@ public class MessageDrivenInjectionTargetTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MessageDrivenInjectionTargetTest.class)).addPackage(MessageDrivenInjectionTargetTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MessageDrivenInjectionTargetTest.class))
+                .addPackage(MessageDrivenInjectionTargetTest.class.getPackage());
     }
 
     @Test
     public void testInjectionTargetCreatedForMessageDrivenBean() {
         InjectionTarget<MessageDriven> it = manager.createInjectionTarget(createEjbDescriptor());
 
-        CreationalContext<MessageDriven> ctx = manager.<MessageDriven>createCreationalContext(null);
+        CreationalContext<MessageDriven> ctx = manager.<MessageDriven> createCreationalContext(null);
         AroundInvokeInterceptor.reset();
 
         MessageDriven instance = it.produce(ctx);
@@ -107,7 +108,7 @@ public class MessageDrivenInjectionTargetTest {
     public void testInjectionTargetCreatedForMessageDrivenBeanWithNoAroundConstruct() {
         InjectionTarget<MessageDriven> it = manager.createInjectionTarget(createEjbDescriptor());
 
-        CreationalContext<MessageDriven> ctx = manager.<MessageDriven>createCreationalContext(null);
+        CreationalContext<MessageDriven> ctx = manager.<MessageDriven> createCreationalContext(null);
         // use Weld CC to disable around construct
         WeldCreationalContext<MessageDriven> weldCC = (WeldCreationalContext<MessageDriven>) ctx;
         weldCC.setConstructorInterceptionSuppressed(true);
@@ -122,7 +123,7 @@ public class MessageDrivenInjectionTargetTest {
         assertNotNull(instance.getConstructor());
         // @AroundConstruct should NOT be invoked here
         assertFalse(AroundConstructInterceptor.aroundConstructCalled);
-        
+
         it.dispose(instance);
         weldCC.release();
     }

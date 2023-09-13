@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.stereotypes.priority.conflicting;
 
 import jakarta.enterprise.inject.spi.DefinitionException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -34,7 +35,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ConflictingPriorityStereotypesTest {
-
 
     @Deployment
     @ShouldThrowException(DefinitionException.class)

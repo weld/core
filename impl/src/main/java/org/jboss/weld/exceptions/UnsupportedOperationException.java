@@ -33,7 +33,7 @@ public class UnsupportedOperationException extends java.lang.UnsupportedOperatio
     private final WeldExceptionMessage message;
 
     /**
-     * Creates a new exception with no message.  Here the stacktrace serves as the
+     * Creates a new exception with no message. Here the stacktrace serves as the
      * main information since it has the method which was invoked causing this
      * exception.
      */

@@ -42,7 +42,8 @@ public class RawEventTypeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RawEventTypeTest.class)).addPackage(RawEventTypeTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RawEventTypeTest.class))
+                .addPackage(RawEventTypeTest.class.getPackage());
     }
 
     @Test(expected = IllegalArgumentException.class)

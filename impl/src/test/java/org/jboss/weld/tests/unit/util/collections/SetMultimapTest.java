@@ -88,7 +88,7 @@ public class SetMultimapTest {
     @Test
     public void testSetMultimapFromMultimap() {
         SetMultimap<String, Integer> setMultimap = SetMultimap.newSetMultimap();
-        setMultimap.putAll("foo", Arrays.asList(1,2,3,4));
+        setMultimap.putAll("foo", Arrays.asList(1, 2, 3, 4));
         assertEquals(4, setMultimap.values().size());
         SetMultimap<String, Integer> copy = SetMultimap.newSetMultimap(setMultimap);
         assertEquals(4, copy.values().size());

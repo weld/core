@@ -29,7 +29,7 @@ public class Beta {
 
     @Inject
     PackagePrivateStorage packPrivateStore;
-    
+
     public String ping() {
         return packPrivateStore.getPackagePrivateInfo();
     }

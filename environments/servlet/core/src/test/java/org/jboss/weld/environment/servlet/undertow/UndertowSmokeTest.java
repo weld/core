@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import jakarta.servlet.ServletException;
 
 import org.jboss.weld.environment.servlet.Container;
@@ -38,6 +37,7 @@ import io.undertow.server.handlers.resource.ClassPathResourceManager;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.ServletContainerInitializerInfo;
 
 /**
  * Smoke test for Undertow integration. More sophisticated tests should be added to a separate undertow test project.
@@ -52,16 +52,17 @@ public class UndertowSmokeTest {
     @Test
     public void testUndertow() throws ServletException, InterruptedException {
         DeploymentInfo servletBuilder = Servlets.deployment().setClassLoader(UndertowSmokeTest.class.getClassLoader())
-                .setResourceManager(new ClassPathResourceManager(UndertowSmokeTest.class.getClassLoader())).setContextPath("/").setDeploymentName("test.war")
+                .setResourceManager(new ClassPathResourceManager(UndertowSmokeTest.class.getClassLoader())).setContextPath("/")
+                .setDeploymentName("test.war")
                 // register Weld EnhancedListener
-                .addServletContainerInitializers(new ServletContainerInitializerInfo(EnhancedListener.class, Collections.<Class<?>>emptySet()))
+                .addServletContainerInitializers(
+                        new ServletContainerInitializerInfo(EnhancedListener.class, Collections.<Class<?>> emptySet()))
                 // application components
                 .addServlet(Servlets.servlet(InjectedServlet.class).addMapping("/*").setLoadOnStartup(1))
                 .addListener(Servlets.listener(InjectedListener.class))
                 .addFilter(Servlets.filter(InjectedFilter.class))
                 .setEagerFilterInit(true)
                 .addInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS, UndertowContainer.class.getName());
-
 
         DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
         manager.deploy();

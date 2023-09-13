@@ -38,10 +38,11 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * Test for specializing {@link Alternative}. Verifies that a bean is only specialized in the BDA where the specializing alternative is enabled.
- * 
+ * Test for specializing {@link Alternative}. Verifies that a bean is only specialized in the BDA where the specializing
+ * alternative is enabled.
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
@@ -59,9 +60,13 @@ public class Specialization04Test {
     @Deployment
     public static Archive<?> getDeployment() {
         JavaArchive jar = ShrinkWrap.create(BeanArchive.class).alternate(AlternativeSpecializedFactory.class)
-                .addClasses(Factory.class, AlternativeSpecializedFactory.class, Product.class, InjectedBean2.class, FactoryEvent.class);
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Specialization04Test.class, Utils.ARCHIVE_TYPE.WAR)).addClass(InjectedBean1.class)
-                .addAsWebInfResource(new BeansXml().alternatives(AlternativeSpecializedFactory.class), "beans.xml").addAsLibrary(jar);
+                .addClasses(Factory.class, AlternativeSpecializedFactory.class, Product.class, InjectedBean2.class,
+                        FactoryEvent.class);
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(Specialization04Test.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClass(InjectedBean1.class)
+                .addAsWebInfResource(new BeansXml().alternatives(AlternativeSpecializedFactory.class), "beans.xml")
+                .addAsLibrary(jar);
     }
 
     @Test

@@ -1,12 +1,11 @@
 package org.jboss.weld.metadata;
 
+import java.util.Collection;
+
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
-
-import java.util.Collection;
-
 
 public class FilterImpl implements Filter {
 
@@ -14,7 +13,8 @@ public class FilterImpl implements Filter {
     private final Collection<Metadata<SystemPropertyActivation>> systemPropertyActivation;
     private final Collection<Metadata<ClassAvailableActivation>> classAvailableActivation;
 
-    public FilterImpl(String name, Collection<Metadata<SystemPropertyActivation>> systemPropertyActivation, Collection<Metadata<ClassAvailableActivation>> classAvailableActivation) {
+    public FilterImpl(String name, Collection<Metadata<SystemPropertyActivation>> systemPropertyActivation,
+            Collection<Metadata<ClassAvailableActivation>> classAvailableActivation) {
         this.name = name;
         this.systemPropertyActivation = systemPropertyActivation;
         this.classAvailableActivation = classAvailableActivation;

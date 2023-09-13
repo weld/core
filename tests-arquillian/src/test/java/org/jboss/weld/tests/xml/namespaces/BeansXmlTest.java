@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.xml.namespaces;
 
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,9 +30,6 @@ import org.jboss.weld.tests.xml.namespaces.excluded.FooExcluded;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
 
 /**
  * Tests that parsing beans.xml with weld namespace correctly searches for end tags.

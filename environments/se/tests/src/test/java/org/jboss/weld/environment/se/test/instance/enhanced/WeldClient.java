@@ -17,11 +17,12 @@
 
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
+import java.math.BigDecimal;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import org.jboss.weld.inject.WeldInstance;
 
-import java.math.BigDecimal;
+import org.jboss.weld.inject.WeldInstance;
 
 @Dependent
 public class WeldClient {

@@ -23,7 +23,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Foo {
 
-    public void ping(){
-      // empty
+    public void ping() {
+        // empty
     }
 }

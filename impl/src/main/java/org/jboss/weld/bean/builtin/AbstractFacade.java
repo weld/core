@@ -52,7 +52,8 @@ public abstract class AbstractFacade<T, X> {
     // This allows us to propagate the CreationalContext when get() is called
     private final CreationalContext<? super T> creationalContext;
 
-    protected AbstractFacade(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager) {
+    protected AbstractFacade(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext,
+            BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.injectionPoint = injectionPoint;
         this.creationalContext = creationalContext;
@@ -125,6 +126,5 @@ public abstract class AbstractFacade<T, X> {
         }
 
     }
-
 
 }

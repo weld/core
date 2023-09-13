@@ -30,10 +30,11 @@ import org.jboss.weld.util.collections.Arrays2;
 
 public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerProxy> {
 
-    private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanContainer.class, BeanManager.class);
+    private static final Set<Type> TYPES = Arrays2.<Type> asSet(Object.class, BeanContainer.class, BeanManager.class);
 
     public BeanManagerBean(BeanManagerImpl manager) {
-        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(manager, BeanManager.class, null)), manager, BeanManagerProxy.class);
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(manager, BeanManager.class, null)), manager,
+                BeanManagerProxy.class);
     }
 
     public BeanManagerProxy create(CreationalContext<BeanManagerProxy> creationalContext) {

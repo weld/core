@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "FailingServlet", urlPatterns = { "/FailingServlet" }, asyncSupported = true)
 public class FailingServlet extends HttpServlet {
 
-
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         throw new ServletException();

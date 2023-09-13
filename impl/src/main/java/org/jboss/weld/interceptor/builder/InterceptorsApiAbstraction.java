@@ -36,7 +36,8 @@ public class InterceptorsApiAbstraction extends ApiAbstraction implements Servic
     public InterceptorsApiAbstraction(ResourceLoader resourceLoader) {
         super(resourceLoader);
         this.INTERCEPTORS_ANNOTATION_CLASS = annotationTypeForName("jakarta.interceptor.Interceptors");
-        this.EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS = annotationTypeForName("jakarta.interceptor.ExcludeClassInterceptors");
+        this.EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS = annotationTypeForName(
+                "jakarta.interceptor.ExcludeClassInterceptors");
         if (DummyAnnotation.class.isAssignableFrom(INTERCEPTORS_ANNOTATION_CLASS)) {
             this.interceptorsValueMethod = null;
         } else {

@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.tests.event.observer.superclass;
 
+import static org.junit.Assert.assertNotNull;
+
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,16 +31,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.event.Event;
-import jakarta.inject.Inject;
-
-import static org.junit.Assert.assertNotNull;
-
 @RunWith(Arquillian.class)
 public class SuperclassObserversTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SuperclassObserversTest.class)).addPackage(SuperclassObserversTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SuperclassObserversTest.class))
+                .addPackage(SuperclassObserversTest.class.getPackage());
     }
 
     @Inject

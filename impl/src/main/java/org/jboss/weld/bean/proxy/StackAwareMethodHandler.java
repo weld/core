@@ -29,13 +29,16 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 public interface StackAwareMethodHandler extends MethodHandler {
 
     /**
-     * Is called when a method is invoked on a proxy instance associated with this handler. This method must process that method invocation.
+     * Is called when a method is invoked on a proxy instance associated with this handler. This method must process that method
+     * invocation.
      *
      * @param the current {@link InterceptionDecorationContext} stack
      * @param self the proxy instance.
      * @param thisMethod the overridden method declared in the super class or interface.
-     * @param proceed the forwarder method for invoking the overridden method. It is null if the overridden method is abstract or declared in the interface.
-     * @param args an array of objects containing the values of the arguments passed in the method invocation on the proxy instance. If a parameter type is a
+     * @param proceed the forwarder method for invoking the overridden method. It is null if the overridden method is abstract
+     *        or declared in the interface.
+     * @param args an array of objects containing the values of the arguments passed in the method invocation on the proxy
+     *        instance. If a parameter type is a
      *        primitive type, the type of the array element is a wrapper class.
      * @return the resulting value of the method invocation.
      *

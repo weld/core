@@ -5,8 +5,8 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.interceptor.InvocationContext;
 
 /**
-* @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
-*/
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
+ */
 @Dependent
 public class TargetClassWithPostConstructWithInvalidParameterCount {
     public boolean postConstructInvoked;

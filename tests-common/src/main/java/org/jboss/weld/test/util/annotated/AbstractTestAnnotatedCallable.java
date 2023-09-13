@@ -16,23 +16,27 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import jakarta.enterprise.inject.spi.AnnotatedCallable;
-import jakarta.enterprise.inject.spi.AnnotatedParameter;
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+
 /**
  * @author Stuart Douglas
  */
-abstract class AbstractTestAnnotatedCallable<X, Y extends Member> extends AbstractTestAnnotatedMember<X, Y> implements AnnotatedCallable<X> {
+abstract class AbstractTestAnnotatedCallable<X, Y extends Member> extends AbstractTestAnnotatedMember<X, Y>
+        implements AnnotatedCallable<X> {
 
     private final List<AnnotatedParameter<X>> parameters;
 
-    protected AbstractTestAnnotatedCallable(AnnotatedType<X> declaringType, Y member, Class<?> memberType, Class<?>[] parameterTypes, TestAnnotationStore annotations, Map<Integer, TestAnnotationStore> parameterAnnotations) {
+    protected AbstractTestAnnotatedCallable(AnnotatedType<X> declaringType, Y member, Class<?> memberType,
+            Class<?>[] parameterTypes, TestAnnotationStore annotations,
+            Map<Integer, TestAnnotationStore> parameterAnnotations) {
         super(declaringType, member, memberType, annotations);
         this.parameters = getAnnotatedParameters(this, parameterTypes, parameterAnnotations);
     }
@@ -46,7 +50,9 @@ abstract class AbstractTestAnnotatedCallable<X, Y extends Member> extends Abstra
 
     }
 
-    private static <X, Y extends Member> List<AnnotatedParameter<X>> getAnnotatedParameters(AbstractTestAnnotatedCallable<X, Y> callable, Class<?>[] parameterTypes, Map<Integer, TestAnnotationStore> parameterAnnotations) {
+    private static <X, Y extends Member> List<AnnotatedParameter<X>> getAnnotatedParameters(
+            AbstractTestAnnotatedCallable<X, Y> callable, Class<?>[] parameterTypes,
+            Map<Integer, TestAnnotationStore> parameterAnnotations) {
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>();
         int len = parameterTypes.length;
         for (int i = 0; i < len; ++i) {

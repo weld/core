@@ -36,13 +36,14 @@ public class BeanManagerLookupService implements Service {
     private final CDI11Deployment deployment;
     private final ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
 
-    public BeanManagerLookupService(CDI11Deployment deployment, ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
+    public BeanManagerLookupService(CDI11Deployment deployment,
+            ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
         this.deployment = deployment;
         this.bdaToBeanManagerMap = bdaToBeanManagerMap;
     }
 
     private BeanManagerImpl lookupBeanManager(Class<?> javaClass) {
-        if (deployment  == null) {
+        if (deployment == null) {
             return null;
         }
         BeanDeploymentArchive archive = deployment.getBeanDeploymentArchive(javaClass);

@@ -25,7 +25,8 @@ import org.jboss.weld.util.Beans;
 /**
  * @author pmuir
  */
-public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>, Set<DisposalMethod<?, ?>>, Set<DisposalMethod<?, ?>>> {
+public class TypeSafeDisposerResolver
+        extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>, Set<DisposalMethod<?, ?>>, Set<DisposalMethod<?, ?>>> {
 
     private final AssignabilityRules rules;
 
@@ -36,7 +37,9 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
 
     @Override
     protected boolean matches(Resolvable resolvable, DisposalMethod<?, ?> disposer) {
-        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && rules.matches(disposer.getGenericType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getRequiredQualifiers(), resolvable.getQualifiers());
+        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean())
+                && rules.matches(disposer.getGenericType(), resolvable.getTypes())
+                && Beans.containsAllQualifiers(disposer.getRequiredQualifiers(), resolvable.getQualifiers());
     }
 
     @Override

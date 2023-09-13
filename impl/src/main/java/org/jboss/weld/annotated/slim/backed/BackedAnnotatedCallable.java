@@ -27,12 +27,14 @@ import jakarta.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.resources.SharedObjectCache;
 
-public abstract class BackedAnnotatedCallable<X, E extends Executable> extends BackedAnnotatedMember<X> implements AnnotatedCallable<X> {
+public abstract class BackedAnnotatedCallable<X, E extends Executable> extends BackedAnnotatedMember<X>
+        implements AnnotatedCallable<X> {
 
     private final List<AnnotatedParameter<X>> parameters;
     private final E executable;
 
-    public BackedAnnotatedCallable(E executable, Type baseType, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+    public BackedAnnotatedCallable(E executable, Type baseType, BackedAnnotatedType<X> declaringType,
+            SharedObjectCache sharedObjectCache) {
         super(baseType, declaringType, sharedObjectCache);
         this.executable = executable;
         this.parameters = initParameters(executable, sharedObjectCache);

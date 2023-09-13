@@ -30,7 +30,7 @@ import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
  * Message IDs: 001100 - 001199
  *
  * @author Kirill Gaevskii
-*/
+ */
 @MessageLogger(projectCode = WeldEnvironmentLogger.WELD_ENV_PROJECT_CODE)
 public interface TomcatLogger extends WeldEnvironmentLogger {
     TomcatLogger LOG = Logger.getMessageLogger(TomcatLogger.class, Category.TOMCAT.getName());

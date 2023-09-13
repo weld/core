@@ -44,8 +44,6 @@ public class RunnableDecorator implements Runnable {
         this.threadContext = extension.getThreadContext();
     }
 
-
-
     /**
      * Set up the ThreadContext and delegate.
      */
@@ -61,6 +59,5 @@ public class RunnableDecorator implements Runnable {
         }
 
     }
-
 
 }

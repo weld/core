@@ -30,15 +30,17 @@ public class BeansXmlImpl implements BeansXml {
     private final List<Metadata<String>> interceptors;
     private final Scanning scanning;
 
-
-    public BeansXmlImpl(List<String> alternativeClasses, List<String> alternativeStereotypes, List<String> decorators, List<String> interceptors) {
+    public BeansXmlImpl(List<String> alternativeClasses, List<String> alternativeStereotypes, List<String> decorators,
+            List<String> interceptors) {
         if (alternativeClasses != null) {
-            this.alternativeClasses = alternativeClasses.stream().map(new AddMetadataFunction<String>()).collect(Collectors.toList());
+            this.alternativeClasses = alternativeClasses.stream().map(new AddMetadataFunction<String>())
+                    .collect(Collectors.toList());
         } else {
             this.alternativeClasses = emptyList();
         }
         if (alternativeStereotypes != null) {
-            this.alternativeStereotypes = alternativeStereotypes.stream().map(new AddMetadataFunction<String>()).collect(Collectors.toList());
+            this.alternativeStereotypes = alternativeStereotypes.stream().map(new AddMetadataFunction<String>())
+                    .collect(Collectors.toList());
         } else {
             this.alternativeStereotypes = emptyList();
         }

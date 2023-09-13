@@ -30,7 +30,6 @@ import org.jboss.weld.util.collections.Multimap;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.junit.Test;
 
-
 /**
  *
  * @author Martin Kouba
@@ -91,7 +90,7 @@ public class ListMultimapTest {
     @Test
     public void testMultimapFromMultimap() {
         Multimap<String, Integer> multimap = SetMultimap.newSetMultimap();
-        multimap.putAll("foo", Arrays.asList(1,2,3,4));
+        multimap.putAll("foo", Arrays.asList(1, 2, 3, 4));
         assertEquals(4, multimap.values().size());
         ListMultimap<String, Integer> copy = new ListMultimap<>(multimap);
         assertEquals(4, copy.values().size());

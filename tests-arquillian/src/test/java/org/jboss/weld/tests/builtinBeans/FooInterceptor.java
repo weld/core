@@ -18,8 +18,8 @@ package org.jboss.weld.tests.builtinBeans;
 
 import java.io.Serializable;
 
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.Intercepted;
+import jakarta.enterprise.inject.spi.Bean;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;

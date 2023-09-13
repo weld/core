@@ -35,8 +35,8 @@ public class NullProducerTest {
     }
 
     /*
-    * description = "WBRI-276"
-    */
+     * description = "WBRI-276"
+     */
     @Test
     public void testProducerMethodReturnsNull(Government government) {
         government.destabilize();

@@ -1,11 +1,12 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Objects;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.PackageInfo;
 
-import java.util.Objects;
-
-class PackageInfoImpl extends DeclarationInfoImpl<Package, /*always null*/ jakarta.enterprise.inject.spi.Annotated> implements PackageInfo {
+class PackageInfoImpl extends DeclarationInfoImpl<Package, /* always null */ jakarta.enterprise.inject.spi.Annotated>
+        implements PackageInfo {
     // only for equals/hashCode
     private final String name;
 

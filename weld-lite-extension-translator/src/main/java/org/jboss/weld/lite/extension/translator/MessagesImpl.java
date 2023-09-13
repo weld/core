@@ -4,6 +4,7 @@ import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.Messages;
 import jakarta.enterprise.inject.build.compatible.spi.ObserverInfo;
 import jakarta.enterprise.lang.model.AnnotationTarget;
+
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 

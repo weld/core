@@ -32,21 +32,22 @@ import org.junit.runner.RunWith;
 public class EnterpriseBeanProxyTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanProxyTest.class, Utils.ARCHIVE_TYPE.EAR))
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(EnterpriseBeanProxyTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModule(
                         ShrinkWrap.create(JavaArchive.class)
                                 .addPackage(EnterpriseBeanProxyTest.class.getPackage())
                                 .addClass(Utils.class)
                                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                                .addClass(Utils.class)
-                );
+                                .addClass(Utils.class));
     }
 
     /*
-    * description = "WBRI-109"
-    *
-    * <a href="https://jira.jboss.org/jira/browse/WBRI-109">WBRI-109</a>
-    */
+     * description = "WBRI-109"
+     *
+     * <a href="https://jira.jboss.org/jira/browse/WBRI-109">WBRI-109</a>
+     */
     // WELDINT-45
     @Test
     public void testNoInterfaceView(Mouse mouse) throws Exception {

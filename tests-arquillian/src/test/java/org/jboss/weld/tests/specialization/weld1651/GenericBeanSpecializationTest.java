@@ -18,8 +18,6 @@ package org.jboss.weld.tests.specialization.weld1651;
 
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -27,6 +25,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,14 +41,15 @@ public class GenericBeanSpecializationTest {
 
     @Deployment
     public static WebArchive createWebArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(GenericBeanSpecializationTest.class, Utils.ARCHIVE_TYPE.WAR));
+        WebArchive war = ShrinkWrap.create(WebArchive.class,
+                Utils.getDeploymentNameAsHash(GenericBeanSpecializationTest.class, Utils.ARCHIVE_TYPE.WAR));
         war.addClasses(GenericBeanSpecializationTest.class, Fan.class, MetalFan.class, Music.class);
         war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         return war;
     }
 
     @Test
-    public void testGenericBeanSpecialization(){
+    public void testGenericBeanSpecialization() {
         Assert.assertNotNull(fan);
     }
 

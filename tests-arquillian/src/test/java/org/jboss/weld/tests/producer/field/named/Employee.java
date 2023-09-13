@@ -18,7 +18,6 @@ package org.jboss.weld.tests.producer.field.named;
 
 import java.io.Serializable;
 
-
 public class Employee implements Serializable {
 
     private String name;

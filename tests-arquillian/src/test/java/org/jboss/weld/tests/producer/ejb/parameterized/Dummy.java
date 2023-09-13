@@ -31,7 +31,7 @@ import jakarta.inject.Qualifier;
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({FIELD, METHOD, TYPE})
+@Target({ FIELD, METHOD, TYPE })
 public @interface Dummy {
 
     boolean nonStatic();

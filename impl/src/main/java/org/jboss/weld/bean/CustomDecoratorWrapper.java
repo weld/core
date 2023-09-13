@@ -45,7 +45,8 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
 
     private CustomDecoratorWrapper(Decorator<T> delegate, BeanManagerImpl beanManager) {
         this.delegate = delegate;
-        this.weldClass = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.<Class<T>>cast(delegate.getBeanClass()), beanManager.getId());
+        this.weldClass = beanManager.getServices().get(ClassTransformer.class)
+                .getEnhancedAnnotatedType(Reflections.<Class<T>> cast(delegate.getBeanClass()), beanManager.getId());
         this.decoratedMethods = new DecoratedMethods(beanManager, this);
     }
 

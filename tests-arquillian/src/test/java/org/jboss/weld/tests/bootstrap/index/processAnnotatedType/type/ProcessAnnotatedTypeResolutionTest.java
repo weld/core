@@ -40,7 +40,8 @@ public class ProcessAnnotatedTypeResolutionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessAnnotatedTypeResolutionTest.class)).addPackage(ProcessAnnotatedTypeResolutionTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessAnnotatedTypeResolutionTest.class))
+                .addPackage(ProcessAnnotatedTypeResolutionTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class, ProcessAnnotatedTypeObservers.class);
     }
 

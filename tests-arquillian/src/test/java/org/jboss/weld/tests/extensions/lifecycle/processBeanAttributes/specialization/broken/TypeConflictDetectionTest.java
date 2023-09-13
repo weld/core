@@ -35,12 +35,13 @@ public class TypeConflictDetectionTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeConflictDetectionTest.class)).addClasses(Specialized.class, Specializing.class, TypeExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeConflictDetectionTest.class))
+                .addClasses(Specialized.class, Specializing.class, TypeExtension.class)
                 .addAsServiceProvider(Extension.class, TypeExtension.class);
     }
 
     @Test
     public void testDeploymentWithTypeConflict() {
         // should throw deployment exception
-     }
+    }
 }

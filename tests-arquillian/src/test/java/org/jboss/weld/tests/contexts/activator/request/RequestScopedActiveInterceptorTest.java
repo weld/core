@@ -43,7 +43,8 @@ public class RequestScopedActiveInterceptorTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(RequestScopedActiveInterceptorTest.class, Foo.class, Bar.class, Baz.class);
+        return ShrinkWrap.create(BeanArchive.class).addClasses(RequestScopedActiveInterceptorTest.class, Foo.class, Bar.class,
+                Baz.class);
     }
 
     private ExecutorService executorService;
@@ -71,7 +72,8 @@ public class RequestScopedActiveInterceptorTest {
     }
 
     @Test
-    public void requestScopedActiveInNestedInvocation(final Foo foo) throws InterruptedException, ExecutionException, TimeoutException {
+    public void requestScopedActiveInNestedInvocation(final Foo foo)
+            throws InterruptedException, ExecutionException, TimeoutException {
         Future<Integer> future = executorService.submit(new Callable<Integer>() {
 
             @Override
@@ -83,7 +85,8 @@ public class RequestScopedActiveInterceptorTest {
     }
 
     @Test
-    public void requestScopedActiveForAllMethodsInInterceptedClass(final Baz baz) throws InterruptedException, ExecutionException, TimeoutException {
+    public void requestScopedActiveForAllMethodsInInterceptedClass(final Baz baz)
+            throws InterruptedException, ExecutionException, TimeoutException {
         Future<Integer> future = executorService.submit(new Callable<Integer>() {
 
             @Override

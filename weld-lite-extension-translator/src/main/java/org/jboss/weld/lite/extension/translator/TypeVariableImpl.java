@@ -1,13 +1,14 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.types.Type;
-import jakarta.enterprise.lang.model.types.TypeVariable;
-import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.types.Type;
+import jakarta.enterprise.lang.model.types.TypeVariable;
+
+import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 
 class TypeVariableImpl extends TypeImpl<java.lang.reflect.AnnotatedTypeVariable> implements TypeVariable {
     TypeVariableImpl(java.lang.reflect.AnnotatedTypeVariable reflectionType, BeanManager bm) {
@@ -15,7 +16,7 @@ class TypeVariableImpl extends TypeImpl<java.lang.reflect.AnnotatedTypeVariable>
     }
 
     TypeVariableImpl(java.lang.reflect.AnnotatedTypeVariable reflectionType, AnnotationOverrides overrides,
-                     BeanManager bm) {
+            BeanManager bm) {
         super(reflectionType, overrides, bm);
     }
 

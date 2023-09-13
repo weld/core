@@ -17,7 +17,8 @@ public class WeldInstanceManager extends AbstractInjector implements InstanceMan
     public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException {
     }
 
-    public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException {
+    public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException,
+            InstantiationException, ClassNotFoundException {
         return null;
     }
 
@@ -25,11 +26,13 @@ public class WeldInstanceManager extends AbstractInjector implements InstanceMan
         inject(o);
     }
 
-    public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException {
+    public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException,
+            NamingException, InstantiationException, ClassNotFoundException {
         return null;
     }
 
-    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException {
+    public Object newInstance(Class<?> clazz)
+            throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException {
         return null;
     }
 

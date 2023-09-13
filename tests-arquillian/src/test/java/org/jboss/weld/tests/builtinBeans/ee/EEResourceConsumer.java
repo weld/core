@@ -16,19 +16,20 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee;
 
-import org.junit.Assert;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManager;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManagerFactory;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkRemoteEjb;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkUserTransaction;
+
+import java.io.Serializable;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.UserTransaction;
-import java.io.Serializable;
 
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManager;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManagerFactory;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkRemoteEjb;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkUserTransaction;
+import org.junit.Assert;
 
 @SessionScoped
 public class EEResourceConsumer implements Serializable {

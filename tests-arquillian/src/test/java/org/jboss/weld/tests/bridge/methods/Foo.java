@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.bridge.methods;
 
-
 public class Foo {
-
 
 }

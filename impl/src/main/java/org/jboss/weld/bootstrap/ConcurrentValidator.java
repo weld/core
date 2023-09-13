@@ -49,7 +49,8 @@ public class ConcurrentValidator extends Validator {
 
     private final ExecutorServices executor;
 
-    public ConcurrentValidator(Set<PlugableValidator> plugableValidators, ExecutorServices executor, ConcurrentMap<Bean<?>, Boolean> resolvedInjectionPoints) {
+    public ConcurrentValidator(Set<PlugableValidator> plugableValidators, ExecutorServices executor,
+            ConcurrentMap<Bean<?>, Boolean> resolvedInjectionPoints) {
         super(plugableValidators, resolvedInjectionPoints);
         this.executor = executor;
     }
@@ -95,7 +96,8 @@ public class ConcurrentValidator extends Validator {
     }
 
     @Override
-    protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers, final BeanManagerImpl beanManager) {
+    protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers,
+            final BeanManagerImpl beanManager) {
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<ObserverInitializationContext<?, ?>>(observers) {
             protected void doWork(ObserverInitializationContext<?, ?> observerMethod) {
                 for (InjectionPoint ip : observerMethod.getObserver().getInjectionPoints()) {

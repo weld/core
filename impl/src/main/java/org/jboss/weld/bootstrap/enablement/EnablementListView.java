@@ -96,7 +96,8 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
     public Class<?> remove(int index) {
         Item removedItem = getDelegate().remove(index);
         if (getExtension() != null) {
-            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), removedItem.getClass(), REMOVE_OPERATION, getViewType());
+            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), removedItem.getClass(), REMOVE_OPERATION,
+                    getViewType());
         }
         return toView(removedItem);
     }
@@ -130,7 +131,8 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
     @Override
     public void clear() {
         if (getExtension() != null) {
-            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), "", REMOVE_OPERATION + " all classes", getViewType());
+            BootstrapLogger.LOG.typeModifiedInAfterTypeDiscovery(getExtension(), "", REMOVE_OPERATION + " all classes",
+                    getViewType());
         }
         getDelegate().clear();
     }
@@ -256,7 +258,8 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
         public void remove() {
             if (getExtension() != null) {
                 BootstrapLogger.LOG
-                    .typeModifiedInAfterTypeDiscovery(getExtension(), getDelegate().get(delegate.nextIndex()).getJavaClass(), REMOVE_OPERATION, getViewType());
+                        .typeModifiedInAfterTypeDiscovery(getExtension(),
+                                getDelegate().get(delegate.nextIndex()).getJavaClass(), REMOVE_OPERATION, getViewType());
             }
             delegate.remove();
         }

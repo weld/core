@@ -40,7 +40,8 @@ class TransactionalObserverNotifier extends ObserverNotifier {
 
     static final ObserverNotifierFactory FACTORY = new ObserverNotifierFactory() {
         @Override
-        public ObserverNotifier create(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+        public ObserverNotifier create(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services,
+                boolean strict) {
             return new TransactionalObserverNotifier(contextId, resolver, services, strict);
         }
     };
@@ -48,7 +49,8 @@ class TransactionalObserverNotifier extends ObserverNotifier {
     private final TransactionServices transactionServices;
     private final String contextId;
 
-    TransactionalObserverNotifier(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+    TransactionalObserverNotifier(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services,
+            boolean strict) {
         super(contextId, resolver, services, strict);
         this.contextId = contextId;
         this.transactionServices = services.get(TransactionServices.class);
@@ -65,7 +67,8 @@ class TransactionalObserverNotifier extends ObserverNotifier {
         TransactionPhase transactionPhase = observer.getTransactionPhase();
         boolean before = transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION);
         Status status = Status.valueOf(transactionPhase);
-        notifications.add(new DeferredEventNotification<T>(contextId, event, metadata, observer, currentEventMetadata, status, before));
+        notifications.add(
+                new DeferredEventNotification<T>(contextId, event, metadata, observer, currentEventMetadata, status, before));
     }
 
     @Override
@@ -87,7 +90,8 @@ class TransactionalObserverNotifier extends ObserverNotifier {
             } catch (Exception e) {
                 if (e.getCause() instanceof RollbackException || e.getCause() instanceof IllegalStateException) {
                     List<ObserverMethod<? super T>> filteredObservers = observers.stream()
-                            .filter(observerMethod -> !observerMethod.getTransactionPhase().equals(TransactionPhase.AFTER_SUCCESS))
+                            .filter(observerMethod -> !observerMethod.getTransactionPhase()
+                                    .equals(TransactionPhase.AFTER_SUCCESS))
                             .sorted((o1, o2) -> {
                                 // using descending order since we only need to ensure that BEFORE_COMPLETION precedes AFTER_COMPLETION
                                 return o2.getTransactionPhase().toString().compareTo(o1.getTransactionPhase().toString());

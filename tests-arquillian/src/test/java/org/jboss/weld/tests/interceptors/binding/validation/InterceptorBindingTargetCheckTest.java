@@ -30,7 +30,8 @@ public class InterceptorBindingTargetCheckTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorBindingTargetCheckTest.class)).addPackage(InterceptorBindingTargetCheckTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorBindingTargetCheckTest.class))
+                .addPackage(InterceptorBindingTargetCheckTest.class.getPackage());
     }
 
     @Test

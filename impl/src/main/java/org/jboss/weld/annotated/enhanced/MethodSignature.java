@@ -27,6 +27,7 @@ public interface MethodSignature extends Serializable {
 
     /**
      * Determines whether this method signature matches the signature of the given method
+     *
      * @param method the given method
      * @return true iff the method signature represented by this object matches the signature of the given method
      */

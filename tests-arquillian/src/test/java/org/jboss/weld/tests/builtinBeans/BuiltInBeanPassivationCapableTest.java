@@ -49,15 +49,16 @@ import org.junit.runner.RunWith;
 public class BuiltInBeanPassivationCapableTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltInBeanPassivationCapableTest.class)).intercept(FooInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltInBeanPassivationCapableTest.class))
+                .intercept(FooInterceptor.class)
                 // WELD-1048
-                 .decorate(AnimalDecorator.class)
+                .decorate(AnimalDecorator.class)
                 .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
                 .addClass(Utils.class);
     }
 
     @Test
-    @Category({Integration.class, Broken.class})
+    @Category({ Integration.class, Broken.class })
     public void testPrincipal(Principal principal) throws Throwable {
         Principal principal1 = Utils.deserialize(Utils.serialize(principal));
         Assert.assertTrue(checkPrincipal(principal1));
@@ -66,7 +67,8 @@ public class BuiltInBeanPassivationCapableTest {
     @Test
     public void testUserTransactionBean(UserTransaction userTransaction) throws Throwable {
         // proxy for this class will be declared using our CL hence the deserialization also needs to use the same CL
-        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction), userTransaction.getClass().getClassLoader());
+        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction),
+                userTransaction.getClass().getClassLoader());
         Assert.assertTrue(checkUserTransaction(userTransaction1));
     }
 

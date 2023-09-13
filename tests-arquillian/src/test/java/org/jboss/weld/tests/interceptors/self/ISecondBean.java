@@ -21,5 +21,6 @@ public interface ISecondBean {
 
     void ping();
 
-    default void defaultPing(){};
+    default void defaultPing() {
+    };
 }

@@ -4,8 +4,8 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
 /**
-* @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
-*/
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
+ */
 @Dependent
 public class MultiDimensionalWildcardTypeArrayProducer {
     @Produces

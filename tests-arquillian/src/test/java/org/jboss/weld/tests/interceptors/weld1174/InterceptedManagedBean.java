@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.interceptors.weld1174;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.interceptor.Interceptors;
-import java.io.Serializable;
 
 /**
  * @author <a href="ron.sigal@jboss.com">Ron Sigal</a>
@@ -27,11 +28,11 @@ import java.io.Serializable;
  *          Copyright May 7, 2012
  */
 @RequestScoped
-@Interceptors({Interceptor0.class})
+@Interceptors({ Interceptor0.class })
 @ClassTestBinding
 public class InterceptedManagedBean implements Serializable {
 
-    @Interceptors({Interceptor1.class})
+    @Interceptors({ Interceptor1.class })
     @MethodTestBinding
     public String test() {
         return null;

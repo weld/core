@@ -45,8 +45,9 @@ public class ContextPropagationSETest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
-            .add(ShrinkWrap.create(BeanArchive.class)
-                .addPackage(ContextPropagationSETest.class.getPackage())).build();
+                .add(ShrinkWrap.create(BeanArchive.class)
+                        .addPackage(ContextPropagationSETest.class.getPackage()))
+                .build();
     }
 
     @Test

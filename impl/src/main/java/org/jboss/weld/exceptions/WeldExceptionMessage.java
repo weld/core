@@ -18,7 +18,7 @@
 package org.jboss.weld.exceptions;
 
 /**
- * Interface for all exception messages in Weld.  This replaces the simple
+ * Interface for all exception messages in Weld. This replaces the simple
  * String used by default in JVM exceptions and allows more complex forms
  * of messages.
  *

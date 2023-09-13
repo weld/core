@@ -31,7 +31,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * The <code>WEB-INF/classes</code> directory of a war is a bean archive if there is a file named beans.xml in the <code>WEB-INF/classes/META-INF</code>
+ * The <code>WEB-INF/classes</code> directory of a war is a bean archive if there is a file named beans.xml in the
+ * <code>WEB-INF/classes/META-INF</code>
  * directory of the war.
  *
  * @author Martin Kouba

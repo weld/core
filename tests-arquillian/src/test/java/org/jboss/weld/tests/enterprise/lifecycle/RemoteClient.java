@@ -1,8 +1,11 @@
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.test.util.Utils;
+import static org.jboss.weld.test.util.Utils.getActiveContext;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
@@ -12,12 +15,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-import static org.jboss.weld.test.util.Utils.getActiveContext;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 
 @WebServlet("/")
 public class RemoteClient extends HttpServlet {

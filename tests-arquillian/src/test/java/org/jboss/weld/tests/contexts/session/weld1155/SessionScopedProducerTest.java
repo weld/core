@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import com.gargoylesoftware.htmlunit.util.Cookie;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -42,6 +41,7 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.Cookie;
 
 /**
  * @see https://issues.jboss.org/browse/WELD-1155
@@ -62,7 +62,10 @@ public class SessionScopedProducerTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SessionScopedProducerTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Producer.class, Product.class, TestServlet.class, SessionScopedBean.class)
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(SessionScopedProducerTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Producer.class, Product.class, TestServlet.class, SessionScopedBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 

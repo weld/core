@@ -9,8 +9,8 @@ import jakarta.inject.Inject;
 @Dependent
 public class CdiTest1 {
 
-	@Inject
-	private SomeInjectedBean someInjectedBean1;
+    @Inject
+    private SomeInjectedBean someInjectedBean1;
 
     public SomeInjectedBean getSomeInjectedBean1() {
         return someInjectedBean1;

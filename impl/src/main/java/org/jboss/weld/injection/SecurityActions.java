@@ -53,7 +53,6 @@ final class SecurityActions {
         }
     }
 
-
     /**
      * Does not perform {@link PrivilegedAction} unless necessary.
      *

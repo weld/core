@@ -30,7 +30,7 @@ public class ActualInterceptedService extends AbstractService<Foo> {
     public Foo serviceDoSomething(final Foo param) {
         return param;
     }
-    
+
     @Override
     public Foo getParam() {
         return new Foo();

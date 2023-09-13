@@ -6,16 +6,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.contexts.beanstore.BoundBeanStore;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.module.web.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.module.web.context.beanstore.http.LazySessionBeanStore;
-import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.module.web.servlet.SessionHolder;
 import org.jboss.weld.util.collections.EnumerationIterator;
 
-public class HttpConversationContextImpl extends AbstractConversationContext<HttpServletRequest, HttpSession> implements HttpConversationContext {
+public class HttpConversationContextImpl extends AbstractConversationContext<HttpServletRequest, HttpSession>
+        implements HttpConversationContext {
 
     // There is no need to store FQCN in a session key
     private static final String NAMING_SCHEME_PREFIX = "WELD_C";

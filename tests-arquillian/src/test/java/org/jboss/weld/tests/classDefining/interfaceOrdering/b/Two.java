@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.classDefining.interfaceOrdering.b;
 
 import jakarta.enterprise.inject.Vetoed;
+
 import org.jboss.weld.tests.classDefining.interfaceOrdering.a.One;
 
 @Vetoed

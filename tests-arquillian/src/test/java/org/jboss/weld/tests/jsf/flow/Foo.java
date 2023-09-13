@@ -22,6 +22,6 @@ import jakarta.faces.flow.FlowScoped;
 
 @SuppressWarnings("serial")
 @FlowScoped("simple-flow")
-public class Foo implements Serializable{
+public class Foo implements Serializable {
 
 }

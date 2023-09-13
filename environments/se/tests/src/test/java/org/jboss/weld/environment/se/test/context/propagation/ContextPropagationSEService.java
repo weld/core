@@ -44,7 +44,8 @@ public class ContextPropagationSEService {
     public static <T> Future<T> propagateContextsAndSubmitTask(Callable<T> task) {
         // gather all the contexts we want to propagate and the instances in them
         Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances = new HashMap<>();
-        for (WeldAlterableContext context : WeldContainer.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()) {
+        for (WeldAlterableContext context : WeldContainer.current().select(WeldManager.class).get()
+                .getActiveWeldAlterableContexts()) {
             scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances());
         }
         // We create a task wrapper which will make sure we have contexts propagated
@@ -54,7 +55,8 @@ public class ContextPropagationSEService {
             public T call() throws Exception {
                 WeldContainer container = WeldContainer.current();
                 WeldManager weldManager = container.select(WeldManager.class).get();
-                BoundRequestContext requestContext = weldManager.instance().select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
+                BoundRequestContext requestContext = weldManager.instance()
+                        .select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
 
                 // we will be using bound context, prepare backing map
                 Map<String, Object> requestMap = new HashMap<>();

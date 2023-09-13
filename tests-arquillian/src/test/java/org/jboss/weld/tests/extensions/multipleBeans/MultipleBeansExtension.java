@@ -16,7 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
-import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
@@ -27,8 +28,8 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Inject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 /**
  * Extension that registers addition types via the SPI
@@ -39,7 +40,8 @@ public class MultipleBeansExtension implements Extension {
 
     private boolean addedBlogFormatterSeen = false;
 
-    public void addNewAnnotatedTypes(@Observes BeforeBeanDiscovery event) throws SecurityException, NoSuchFieldException, NoSuchMethodException {
+    public void addNewAnnotatedTypes(@Observes BeforeBeanDiscovery event)
+            throws SecurityException, NoSuchFieldException, NoSuchMethodException {
         TestAnnotatedTypeBuilder<BlogFormatter> formatter = new TestAnnotatedTypeBuilder<BlogFormatter>(BlogFormatter.class);
         Field content = BlogFormatter.class.getField("content");
         formatter.addToField(content, new InjectLiteral());
@@ -75,7 +77,6 @@ public class MultipleBeansExtension implements Extension {
             }
         }
     }
-
 
     public boolean isAddedBlogFormatterSeen() {
         return addedBlogFormatterSeen;

@@ -17,6 +17,12 @@
 
 package org.jboss.weld.tests.interceptors.weld783;
 
+import java.util.Set;
+
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,11 +33,6 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
-import java.util.Set;
 
 /**
  * @author Ales Justin
@@ -54,7 +55,8 @@ public class IgnoredAtEJBTest {
         if (beans.isEmpty())
             throw new IllegalArgumentException("Empty beans");
 
-        MyController controller = (MyController) manager.getReference(beans.iterator().next(), MyController.class, manager.createCreationalContext(null));
+        MyController controller = (MyController) manager.getReference(beans.iterator().next(), MyController.class,
+                manager.createCreationalContext(null));
         controller.control();
     }
 }

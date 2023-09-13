@@ -1,5 +1,8 @@
 package org.jboss.weld.tests.interceptors.bridgemethods.managed;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -14,10 +17,6 @@ import org.jboss.weld.tests.interceptors.bridgemethods.common.SpecialService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 
 /**
  *

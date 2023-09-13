@@ -1,16 +1,15 @@
 package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 
+import java.beans.ConstructorProperties;
 
 import jakarta.enterprise.context.Dependent;
-
-import java.beans.ConstructorProperties;
 
 @Dependent
 public class Group {
 
     private final String name;
 
-    @ConstructorProperties({"name"})
+    @ConstructorProperties({ "name" })
     Group(String name) {
         this.name = name;
     }

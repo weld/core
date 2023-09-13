@@ -40,8 +40,10 @@ public class BeanMetadataAvailableForTransientReferenceTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanMetadataAvailableForTransientReferenceTest.class)).addPackage(
-                BeanMetadataAvailableForTransientReferenceTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanMetadataAvailableForTransientReferenceTest.class))
+                .addPackage(
+                        BeanMetadataAvailableForTransientReferenceTest.class.getPackage());
     }
 
     @Test

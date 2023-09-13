@@ -38,12 +38,14 @@ public class NonPassivatingDecoratorConstructorParameterTest extends TestClasses
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingDecoratorConstructorParameterTest.class)).intercept(BioInterceptor.class).decorate(AnimalDecoratorBroken1.class)
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingDecoratorConstructorParameterTest.class))
+                .intercept(BioInterceptor.class).decorate(AnimalDecoratorBroken1.class)
                 .addClasses(getCommonClasses()).addClasses(Farm.class);
     }
 
     @Test
     public void testDeploymentWithNonPassivatingDecoratorConstructor() {
         // should throw deployment exception
-     }
+    }
 }

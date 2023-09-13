@@ -55,17 +55,23 @@ public class IsolationDisabledTest {
     public static WebArchive createTestArchive() {
 
         WebArchive testArchive = Deployments.baseDeployment(
-                new StringAsset(extendDefaultWebXml(toContextParam("org.jboss.weld.environment.servlet.archive.isolation", "false")))).addClass(
-                IsolationDisabledTest.class);
+                new StringAsset(
+                        extendDefaultWebXml(toContextParam("org.jboss.weld.environment.servlet.archive.isolation", "false"))))
+                .addClass(
+                        IsolationDisabledTest.class);
 
         JavaArchive archive01 = ShrinkWrap
                 .create(BeanArchive.class)
                 .addAsManifestResource(
-                        new BeansXml(BeanDiscoveryMode.ALL).interceptors(ZoomInterceptor.class).decorators(CameraDecorator.class)
-                                .alternatives(RangefinderCamera.class).excludeFilters(Exclude.exact(PinholeCamera.class).ifClassAvailable(DSLR.class)),
-                        "beans.xml").addClasses(ZoomInterceptor.class, CameraDecorator.class, RangefinderCamera.class);
+                        new BeansXml(BeanDiscoveryMode.ALL).interceptors(ZoomInterceptor.class)
+                                .decorators(CameraDecorator.class)
+                                .alternatives(RangefinderCamera.class)
+                                .excludeFilters(Exclude.exact(PinholeCamera.class).ifClassAvailable(DSLR.class)),
+                        "beans.xml")
+                .addClasses(ZoomInterceptor.class, CameraDecorator.class, RangefinderCamera.class);
 
-        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClasses(Zoom.class, Camera.class, DSLR.class, PinholeCamera.class);
 
         testArchive.addAsLibraries(archive01, archive02);

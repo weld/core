@@ -38,8 +38,8 @@ import org.jboss.weld.util.reflection.Reflections;
 /**
  * Basic {@link InjectionTarget} implementation. The implementation supports:
  * <ul>
- *  <li>@Inject injection + initializers</li>
- *  <li>@PostConstruct/@PreDestroy callbacks</li>
+ * <li>@Inject injection + initializers</li>
+ * <li>@PostConstruct/@PreDestroy callbacks</li>
  * </ul>
  *
  * Interception and decoration is not supported but can be added using extension points.
@@ -49,20 +49,25 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class BasicInjectionTarget<T> extends AbstractProducer<T> implements WeldInjectionTarget<T> {
 
-    public static <T> BasicInjectionTarget<T> create(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+    public static <T> BasicInjectionTarget<T> create(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
         return new BasicInjectionTarget<T>(type, bean, beanManager, injector, invoker);
     }
 
-    public static <T> BasicInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Instantiator<T> instantiator) {
+    public static <T> BasicInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean,
+            BeanManagerImpl beanManager, Instantiator<T> instantiator) {
         return new BasicInjectionTarget<T>(type, bean, beanManager, instantiator);
     }
 
     /**
-     * Creates {@link InjectionTarget} for interceptors which do not have associated {@link Interceptor}. These interceptors are a
+     * Creates {@link InjectionTarget} for interceptors which do not have associated {@link Interceptor}. These interceptors are
+     * a
      * result of using {@link Interceptors} annotation directly on the target class.
      */
-    public static <T> BasicInjectionTarget<T> createNonCdiInterceptor(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
-        return new BasicInjectionTarget<T>(type, null, beanManager, DefaultInjector.of(type, null, beanManager), NoopLifecycleCallbackInvoker.<T>getInstance());
+    public static <T> BasicInjectionTarget<T> createNonCdiInterceptor(EnhancedAnnotatedType<T> type,
+            BeanManagerImpl beanManager) {
+        return new BasicInjectionTarget<T>(type, null, beanManager, DefaultInjector.of(type, null, beanManager),
+                NoopLifecycleCallbackInvoker.<T> getInstance());
     }
 
     protected final BeanManagerImpl beanManager;
@@ -74,11 +79,13 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
     private final Injector<T> injector;
     private final LifecycleCallbackInvoker<T> invoker;
 
-    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
         this(type, bean, beanManager, injector, invoker, null);
     }
 
-    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker, Instantiator<T> instantiator) {
+    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Injector<T> injector, LifecycleCallbackInvoker<T> invoker, Instantiator<T> instantiator) {
         this.beanManager = beanManager;
         this.type = type.slim();
         this.injector = injector;
@@ -97,8 +104,10 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
         checkDelegateInjectionPoints();
     }
 
-    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Instantiator<T> instantiator) {
-        this(type, bean, beanManager, DefaultInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type), instantiator);
+    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Instantiator<T> instantiator) {
+        this(type, bean, beanManager, DefaultInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type),
+                instantiator);
     }
 
     protected void checkType(EnhancedAnnotatedType<T> type) {
@@ -170,7 +179,8 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
      * {@link #initInstantiator(EnhancedAnnotatedType, Bean, BeanManagerImpl, Set)} method is supposed to register all these
      * injection points within the injectionPoints set passed in as a parameter.
      */
-    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
+    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Set<InjectionPoint> injectionPoints) {
         DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
         injectionPoints.addAll(instantiator.getParameterInjectionPoints());
         return instantiator;

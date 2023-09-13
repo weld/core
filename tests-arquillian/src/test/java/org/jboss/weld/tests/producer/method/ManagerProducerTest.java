@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,8 +28,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.inject.Inject;
 
 @RunWith(Arquillian.class)
 public class ManagerProducerTest {
@@ -42,8 +42,8 @@ public class ManagerProducerTest {
     private BeanManagerImpl beanManager;
 
     /*
-    * description = "WBRI-183"
-    */
+     * description = "WBRI-183"
+     */
     @Test
     public void testInjectManagerProducer() {
         ManagerProducer.setInjectionPointInjected(false);

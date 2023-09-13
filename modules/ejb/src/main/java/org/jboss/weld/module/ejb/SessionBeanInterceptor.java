@@ -36,7 +36,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @author Pete Muir
  */
-public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationInterceptor implements Serializable {
+public class SessionBeanInterceptor extends AbstractEJBRequestScopeActivationInterceptor implements Serializable {
 
     private static final long serialVersionUID = 2658712435730329384L;
 
@@ -75,4 +75,3 @@ public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationIn
         return new SessionBeanInterceptor();
     }
 }
-

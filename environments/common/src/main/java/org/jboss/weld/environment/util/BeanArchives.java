@@ -13,7 +13,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package org.jboss.weld.environment.util;
+ */
+package org.jboss.weld.environment.util;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,7 +45,8 @@ public final class BeanArchives {
      * @param beanArchives
      * @return a {@link Multimap} that maps problematic bean class to the set of bean archives where it is deployed
      */
-    public static <B extends BeanDeploymentArchive> Multimap<String, BeanDeploymentArchive> findBeanClassesDeployedInMultipleBeanArchives(Set<B> beanArchives) {
+    public static <B extends BeanDeploymentArchive> Multimap<String, BeanDeploymentArchive> findBeanClassesDeployedInMultipleBeanArchives(
+            Set<B> beanArchives) {
 
         if (beanArchives.size() == 1) {
             return Multimaps.emptyMultimap();
@@ -90,7 +92,8 @@ public final class BeanArchives {
      * <li>First, the windows file separators found in beanArchiveRef are converted to slashes</li>
      * <li>{@code base} value is appended</li>
      * <li>{@link BeanArchives#BEAN_ARCHIVE_ID_BASE_DELIMITER} is appended</li>
-     * <li>If the {@code beanArchiveRef} contains the separator, the substring (beginning at the separator index) is appended</li>
+     * <li>If the {@code beanArchiveRef} contains the separator, the substring (beginning at the separator index) is
+     * appended</li>
      * <li>Otherwise, the whole {@code beanArchiveRef} value is appended</li>
      * </ol>
      * The id should be consistent between multiple occurrences of the deployment.

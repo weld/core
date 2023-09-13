@@ -30,7 +30,7 @@ public class Weld1834Test {
 
     @Test
     public void testDeployment() {
-        for(Foo foo: instance) {
+        for (Foo foo : instance) {
             foo.getName();
         }
     }

@@ -27,10 +27,10 @@ import jakarta.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
@@ -64,7 +64,8 @@ public class DefaultInjector<T> implements Injector<T> {
     }
 
     @Override
-    public void inject(final T instance, final CreationalContext<T> ctx, final BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget) {
+    public void inject(final T instance, final CreationalContext<T> ctx, final BeanManagerImpl manager,
+            SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget) {
         new InjectionContextImpl<T>(manager, injectionTarget, type, instance) {
             @Override
             public void proceed() {

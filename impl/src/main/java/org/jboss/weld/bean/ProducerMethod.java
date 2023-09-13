@@ -51,16 +51,20 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     /**
      * Creates a producer method Web Bean
      *
-     * @param method        The underlying method abstraction
+     * @param method The underlying method abstraction
      * @param declaringBean The declaring bean abstraction
-     * @param beanManager   the current manager
+     * @param beanManager the current manager
      * @return A producer Web Bean
      */
-    public static <X, T> ProducerMethod<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager, ServiceRegistry services) {
-        return new ProducerMethod<X, T>(createId(attributes, method, declaringBean), attributes, method, declaringBean, disposalMethod, beanManager, services);
+    public static <X, T> ProducerMethod<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method,
+            AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager,
+            ServiceRegistry services) {
+        return new ProducerMethod<X, T>(createId(attributes, method, declaringBean), attributes, method, declaringBean,
+                disposalMethod, beanManager, services);
     }
 
-    private static BeanIdentifier createId(BeanAttributes<?> attributes, EnhancedAnnotatedMethod<?, ?> method, AbstractClassBean<?> declaringBean) {
+    private static BeanIdentifier createId(BeanAttributes<?> attributes, EnhancedAnnotatedMethod<?, ?> method,
+            AbstractClassBean<?> declaringBean) {
         if (Dependent.class.equals(attributes.getScope()) || ApplicationScoped.class.equals(attributes.getScope())) {
             return new ProducerMethodIdentifier(method, declaringBean);
         } else {
@@ -68,7 +72,9 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         }
     }
 
-    protected ProducerMethod(BeanIdentifier identifier, BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager, ServiceRegistry services) {
+    protected ProducerMethod(BeanIdentifier identifier, BeanAttributes<T> attributes,
+            EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean,
+            DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, identifier, declaringBean, beanManager, services);
         this.enhancedAnnotatedMethod = method;
         this.annotatedMethod = method.slim();
@@ -117,13 +123,15 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     protected void specialize() {
         Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
         if (specializedBeans.isEmpty()) {
-            throw BeanLogger.LOG.producerMethodNotSpecializing(this, Formats.formatAsStackTraceElement(annotatedMethod.getJavaMember()));
+            throw BeanLogger.LOG.producerMethodNotSpecializing(this,
+                    Formats.formatAsStackTraceElement(annotatedMethod.getJavaMember()));
         }
     }
 
     @Override
     public String toString() {
-        return "Producer Method [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
+        return "Producer Method [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers ["
+                + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
     }
 
     @Override

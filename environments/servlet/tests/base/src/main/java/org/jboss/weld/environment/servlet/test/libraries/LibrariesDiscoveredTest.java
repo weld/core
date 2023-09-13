@@ -23,12 +23,14 @@ public class LibrariesDiscoveredTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        JavaArchive library = ShrinkWrap.create(JavaArchive.class, "library.jar").addClass(Camel.class).addAsManifestResource(new BeansXml(), "beans.xml");
+        JavaArchive library = ShrinkWrap.create(JavaArchive.class, "library.jar").addClass(Camel.class)
+                .addAsManifestResource(new BeansXml(), "beans.xml");
         log.fine(DELIMITER);
         log.fine("Library");
         log.fine(DELIMITER);
         log.fine(library.toString(true));
-        return baseDeployment(new BeansXml(BeanDiscoveryMode.ANNOTATED)).addClasses(Needle.class, LibrariesDiscoveredTest.class).addAsLibrary(library);
+        return baseDeployment(new BeansXml(BeanDiscoveryMode.ANNOTATED)).addClasses(Needle.class, LibrariesDiscoveredTest.class)
+                .addAsLibrary(library);
     }
 
     @Test

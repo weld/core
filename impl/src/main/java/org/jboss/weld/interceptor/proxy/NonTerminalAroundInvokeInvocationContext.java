@@ -28,9 +28,11 @@ import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandl
 import org.jboss.weld.interceptor.WeldInvocationContext;
 
 /**
- * The non-terminal {@link InvocationContext} in the interception chain. This implementation is used for the first n-1 interceptors of a interception chain of
+ * The non-terminal {@link InvocationContext} in the interception chain. This implementation is used for the first n-1
+ * interceptors of a interception chain of
  * n. When {@link #proceed()} is called this class invokes the next interceptor in the chain either passing in a next
- * {@link NonTerminalAroundInvokeInvocationContext} or {@link TerminalAroundInvokeInvocationContext} if the interceptor is the last one in the chain.
+ * {@link NonTerminalAroundInvokeInvocationContext} or {@link TerminalAroundInvokeInvocationContext} if the interceptor is the
+ * last one in the chain.
  *
  * @author Jozef Hartinger
  * @see TerminalAroundInvokeInvocationContext
@@ -42,17 +44,21 @@ class NonTerminalAroundInvokeInvocationContext extends AroundInvokeInvocationCon
     private final int position;
     private final List<InterceptorMethodInvocation> chain;
 
-    public NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters, Set<Annotation> interceptorBindings,
+    public NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
+            Set<Annotation> interceptorBindings,
             List<InterceptorMethodInvocation> chain, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
-        this(target, method, proceed, parameters, newContextData(interceptorBindings), interceptorBindings, 0, chain, currentHandler);
+        this(target, method, proceed, parameters, newContextData(interceptorBindings), interceptorBindings, 0, chain,
+                currentHandler);
     }
 
     public NonTerminalAroundInvokeInvocationContext(NonTerminalAroundInvokeInvocationContext ctx) {
-        this(ctx.getTarget(), ctx.getMethod(), ctx.getProceed(), ctx.getParameters(), ctx.contextData, ctx.getInterceptorBindings(), ctx.position + 1,
+        this(ctx.getTarget(), ctx.getMethod(), ctx.getProceed(), ctx.getParameters(), ctx.contextData,
+                ctx.getInterceptorBindings(), ctx.position + 1,
                 ctx.chain, ctx.currentHandler);
     }
 
-    private NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters, Map<String, Object> contextData,
+    private NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
+            Map<String, Object> contextData,
             Set<Annotation> interceptorBindings, int position, List<InterceptorMethodInvocation> chain,
             CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
         super(target, method, proceed, parameters, contextData, interceptorBindings, currentHandler);

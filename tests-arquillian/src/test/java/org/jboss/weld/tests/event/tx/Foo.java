@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.event.tx;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.Observes;
@@ -25,7 +27,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.UserTransaction;
-import java.io.Serializable;
 
 @Named
 @ApplicationScoped

@@ -28,7 +28,8 @@ public class GoalProducer {
         return new Goal();
     }
 
-    @Produces @Lead
+    @Produces
+    @Lead
     public Goal produceLeadGoal() {
         return new Goal();
     }

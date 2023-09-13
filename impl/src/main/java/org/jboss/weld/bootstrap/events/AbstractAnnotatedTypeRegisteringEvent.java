@@ -38,7 +38,9 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
 
     protected final List<AnnotatedTypeRegistration<?>> additionalAnnotatedTypes;
 
-    protected AbstractAnnotatedTypeRegisteringEvent(BeanManagerImpl beanManager, Type rawType, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
+    protected AbstractAnnotatedTypeRegisteringEvent(BeanManagerImpl beanManager, Type rawType,
+            BeanDeploymentArchiveMapping bdaMapping, Deployment deployment,
+            Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, rawType, bdaMapping, deployment, contexts);
         this.additionalAnnotatedTypes = new LinkedList<>();
     }

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 
-@Category(value = {Integration.class, Broken.class})
+@Category(value = { Integration.class, Broken.class })
 @RunWith(Arquillian.class)
 public class ApplicationExceptionTest {
     @Deployment

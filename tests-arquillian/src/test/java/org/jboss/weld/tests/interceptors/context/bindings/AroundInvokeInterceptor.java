@@ -42,8 +42,8 @@ public class AroundInvokeInterceptor {
     @AroundInvoke
     Object intercept(InvocationContext ctx) throws Exception {
         contextDataBindings = (Set<Annotation>) ctx.getContextData().get(KEY);
-        if(ctx instanceof WeldInvocationContext) {
-            contextBindings =  ((WeldInvocationContext)ctx).getInterceptorBindings();
+        if (ctx instanceof WeldInvocationContext) {
+            contextBindings = ((WeldInvocationContext) ctx).getInterceptorBindings();
         }
         return ctx.proceed();
     }
@@ -60,6 +60,5 @@ public class AroundInvokeInterceptor {
     static Set<Annotation> getContextBindings() {
         return contextBindings;
     }
-
 
 }

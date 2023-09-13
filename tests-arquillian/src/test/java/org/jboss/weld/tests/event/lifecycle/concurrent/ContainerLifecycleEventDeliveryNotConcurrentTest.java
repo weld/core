@@ -32,9 +32,9 @@ import org.junit.runner.RunWith;
 
 /**
  * Verifies that delivery of container lifecycle events is always sequential.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class ContainerLifecycleEventDeliveryNotConcurrentTest {
@@ -44,7 +44,10 @@ public class ContainerLifecycleEventDeliveryNotConcurrentTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContainerLifecycleEventDeliveryNotConcurrentTest.class)).addPackage(ContainerLifecycleEventDeliveryNotConcurrentTest.class.getPackage())
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(ContainerLifecycleEventDeliveryNotConcurrentTest.class))
+                .addPackage(ContainerLifecycleEventDeliveryNotConcurrentTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

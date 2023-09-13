@@ -17,7 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -32,7 +31,6 @@ public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implement
 
     private final Class<?> beanType;
     private final MethodHandler methodHandler;
-
 
     public EnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler) {
         this.beanType = baseType;
@@ -52,8 +50,8 @@ public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implement
     }
 
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
-         // Pass the invocation directly to the method handler
-         return methodHandler.invoke(null, method, method, arguments);
+        // Pass the invocation directly to the method handler
+        return methodHandler.invoke(null, method, method, arguments);
     }
 
 }

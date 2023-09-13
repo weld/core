@@ -23,7 +23,7 @@ import jakarta.enterprise.event.TransactionPhase;
 import jakarta.transaction.Synchronization;
 
 /**
- * An enumeration of the possible outcomes for a transaction.  This is used
+ * An enumeration of the possible outcomes for a transaction. This is used
  * to keep track of whether an observer wants to see all events regardless of
  * the outcome of the transaction or only those transactions which succeed or
  * fail.
@@ -31,7 +31,6 @@ import jakarta.transaction.Synchronization;
  * @author David Allen
  */
 enum Status {
-
 
     ALL {
         @Override
@@ -53,8 +52,10 @@ enum Status {
     };
 
     /**
-     * Indicates whether the given status code passed in during {@link Synchronization#beforeCompletion()} or {@link Synchronization#afterCompletion(int)}
+     * Indicates whether the given status code passed in during {@link Synchronization#beforeCompletion()} or
+     * {@link Synchronization#afterCompletion(int)}
      * matches this status.
+     *
      * @param status the given status code
      * @return true if the status code matches
      */

@@ -22,8 +22,8 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.servlet.http.HttpSession;
 
 import org.jboss.weld.contexts.AbstractBoundContext;
-import org.jboss.weld.contexts.beanstore.SimpleBeanIdentifierIndexNamingScheme;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.SimpleBeanIdentifierIndexNamingScheme;
 import org.jboss.weld.module.web.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 

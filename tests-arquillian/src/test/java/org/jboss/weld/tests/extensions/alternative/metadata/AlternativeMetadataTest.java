@@ -49,7 +49,8 @@ public class AlternativeMetadataTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AlternativeMetadataTest.class)).addAsServiceProvider(Extension.class, ModifyingExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AlternativeMetadataTest.class))
+                .addAsServiceProvider(Extension.class, ModifyingExtension.class)
                 .addPackage(Alpha.class.getPackage()).addClass(ForwardingAnnotatedType.class);
     }
 

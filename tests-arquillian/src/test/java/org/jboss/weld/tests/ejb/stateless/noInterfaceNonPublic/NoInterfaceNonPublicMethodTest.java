@@ -20,12 +20,10 @@ import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
@@ -36,6 +34,7 @@ import org.junit.runner.RunWith;
 /**
  * Test trying to invoke non-public method in no-interface view EJB - illegal according to EJB spec.
  * Weld should throw EJB exception.
+ *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @RunWith(Arquillian.class)
@@ -45,7 +44,7 @@ public class NoInterfaceNonPublicMethodTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NoInterfaceNonPublicMethodTest.class))
-            .addPackage(NoInterfaceNonPublicMethodTest.class.getPackage());
+                .addPackage(NoInterfaceNonPublicMethodTest.class.getPackage());
     }
 
     @Inject

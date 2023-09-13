@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.tests.extensions;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import jakarta.enterprise.inject.spi.Extension;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -24,12 +30,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Extension;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class ExtensionTest {
@@ -45,16 +45,16 @@ public class ExtensionTest {
     }
 
     /*
-    * description = "WELD-234"
-    */
+     * description = "WELD-234"
+     */
     @Test
     public void testExtensionInjectableAsBean(SimpleExtension extension) {
         assertTrue(extension.isObservedBeforeBeanDiscovery());
     }
 
     /*
-    * description = "WELD-572"
-    */
+     * description = "WELD-572"
+     */
     @Test
     public void testGetNonExistentDisposalMethod(ExtensionObserver extensionObserver) {
         assertNull(extensionObserver.getProducerMethodDisposerParameter());
@@ -70,8 +70,8 @@ public class ExtensionTest {
     }
 
     /*
-    * WELD-503
-    */
+     * WELD-503
+     */
     @Test
     public void testProcessStarOnlyCalledForEnabledManagedBeans(TrainlineExtension extension) {
         assertTrue(extension.isProcessTrainBean());
@@ -86,8 +86,8 @@ public class ExtensionTest {
     }
 
     /*
-    * WELD-503
-    */
+     * WELD-503
+     */
     @Test
     public void testProcessStarOnlyCalledForEnabledProducerMethods(TrainlineExtension extension) {
         assertTrue(extension.isProcessDriverBean());
@@ -109,8 +109,8 @@ public class ExtensionTest {
     }
 
     /*
-    * WELD-503
-    */
+     * WELD-503
+     */
     @Test
     public void testProcessStarOnlyCalledForEnabledProducerFields(TrainlineExtension extension) {
         assertTrue(extension.isProcessFerretBean());
@@ -132,8 +132,8 @@ public class ExtensionTest {
     }
 
     /*
-    * WELD-503
-    */
+     * WELD-503
+     */
     @Test
     public void testProcessStarOnlyCalledForEnabledObserverMethods(TrainlineExtension extension) {
         assertTrue(extension.isProcessObseversCoalSupply());
@@ -142,8 +142,8 @@ public class ExtensionTest {
     }
 
     /*
-    * WELD-503
-    */
+     * WELD-503
+     */
     @Test
     public void testProcessBeanOnlyCalledForEnabledInterceptorsAndDecorators(TrainlineExtension extension) {
         assertFalse(extension.isProcessSafetyInterceptor());

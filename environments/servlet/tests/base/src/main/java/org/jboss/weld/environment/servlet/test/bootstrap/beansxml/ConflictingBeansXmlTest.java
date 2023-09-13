@@ -36,7 +36,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * If a war has a file named beans.xml in both the WEB-INF directory and in the WEB-INF/classes/META-INF directory, then non-portable behavior results. Weld
+ * If a war has a file named beans.xml in both the WEB-INF directory and in the WEB-INF/classes/META-INF directory, then
+ * non-portable behavior results. Weld
  * simply ignores the descriptor from WEB-INF/classes/META-INF.
  *
  * @author Martin Kouba

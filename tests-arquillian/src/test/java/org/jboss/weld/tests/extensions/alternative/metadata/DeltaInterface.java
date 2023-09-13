@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.alternative.metadata;
 
-
 public interface DeltaInterface {
 
     public void pong();

@@ -38,10 +38,13 @@ import org.jboss.weld.util.reflection.Formats;
  * @param <T>
  * @author Pete Muir
  */
-public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnotated<T, Object> implements EnhancedAnnotatedParameter<T, X> {
+public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnotated<T, Object>
+        implements EnhancedAnnotatedParameter<T, X> {
 
-    public static <T, X> EnhancedAnnotatedParameter<T, X> of(AnnotatedParameter<X> annotatedParameter, EnhancedAnnotatedCallable<?, X, ?> declaringMember, ClassTransformer classTransformer) {
-        return new EnhancedAnnotatedParameterImpl<T, X>(annotatedParameter, declaringMember, buildAnnotationMap(annotatedParameter.getAnnotations()), classTransformer);
+    public static <T, X> EnhancedAnnotatedParameter<T, X> of(AnnotatedParameter<X> annotatedParameter,
+            EnhancedAnnotatedCallable<?, X, ?> declaringMember, ClassTransformer classTransformer) {
+        return new EnhancedAnnotatedParameterImpl<T, X>(annotatedParameter, declaringMember,
+                buildAnnotationMap(annotatedParameter.getAnnotations()), classTransformer);
     }
 
     private final EnhancedAnnotatedCallable<?, X, ?> declaringMember;
@@ -51,9 +54,11 @@ public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnota
      * Constructor
      *
      * @param annotations The annotations array
-     * @param type        The type of the parameter
+     * @param type The type of the parameter
      */
-    protected EnhancedAnnotatedParameterImpl(AnnotatedParameter<X> annotatedParameter, EnhancedAnnotatedCallable<?, X, ?> declaringMember, Map<Class<? extends Annotation>, Annotation> annotationMap, ClassTransformer classTransformer) {
+    protected EnhancedAnnotatedParameterImpl(AnnotatedParameter<X> annotatedParameter,
+            EnhancedAnnotatedCallable<?, X, ?> declaringMember, Map<Class<? extends Annotation>, Annotation> annotationMap,
+            ClassTransformer classTransformer) {
         super(annotatedParameter, annotationMap, annotationMap, classTransformer);
         this.slim = annotatedParameter;
         this.declaringMember = declaringMember;

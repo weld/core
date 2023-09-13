@@ -40,7 +40,10 @@ public class AfterBeanDiscoveryAddedBeanArchiveTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AfterBeanDiscoveryAddedBeanArchiveTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Foo.class, Bar.class, OrangeExtension.class)
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(AfterBeanDiscoveryAddedBeanArchiveTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Foo.class, Bar.class, OrangeExtension.class)
                 .addAsServiceProvider(Extension.class, OrangeExtension.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsLibrary(ShrinkWrap.create(JavaArchive.class).addClasses(Orange.class, OrangeBean.class));

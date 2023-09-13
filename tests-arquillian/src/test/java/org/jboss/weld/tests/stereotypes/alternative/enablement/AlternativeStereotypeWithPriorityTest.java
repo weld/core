@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Verify that a stereotype with @Alternative can be enabled by placing @Priority on the respective bean
+ *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @RunWith(Arquillian.class)
@@ -36,7 +37,7 @@ public class AlternativeStereotypeWithPriorityTest {
     @Deployment
     public static Archive<?> deployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AlternativeStereotypeWithPriorityTest.class))
-            .addPackage(AlternativeStereotypeWithPriorityTest.class.getPackage());
+                .addPackage(AlternativeStereotypeWithPriorityTest.class.getPackage());
     }
 
     @Test

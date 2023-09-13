@@ -20,7 +20,7 @@ package org.jboss.weld.tests.interceptors.producer;
 import jakarta.enterprise.inject.Vetoed;
 
 @Vetoed
-public class UnproxyableInterfaceWithClassAnnotationImpl implements ProxyableInterfaceWithClassAnnotation{
+public class UnproxyableInterfaceWithClassAnnotationImpl implements ProxyableInterfaceWithClassAnnotation {
 
     @Override
     public String ping() {

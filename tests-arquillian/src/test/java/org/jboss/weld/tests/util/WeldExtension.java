@@ -27,7 +27,7 @@ public class WeldExtension implements LoadableExtension {
                     WildFly8DeploymentExceptionTransformer.class);
         }
 
-        if(Validate.classExists(MANAGED_CONTAINER_CLASS)){
+        if (Validate.classExists(MANAGED_CONTAINER_CLASS)) {
             builder.observer(WildFly8EEResourceManager.class);
         }
     }

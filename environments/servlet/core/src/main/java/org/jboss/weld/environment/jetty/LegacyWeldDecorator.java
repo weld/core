@@ -27,12 +27,14 @@ import org.eclipse.jetty.util.Decorator;
 /**
  * Jetty Eclipse Weld support for jetty &gt;=9 and &lt;= 9.4.20
  *
- * <p>This decorator relies on the the following Jetty APIs to be exposed
- * to the webapp:<ul>
- *     <li>org.eclipse.jetty.server.handler.ContextHandler</li>
- *     <li>org.eclipse.jetty.servlet.ServletContextHandler</li>
- *     <li>org.eclipse.jetty.util.DecoratedObjectFactory</li>
- *     <li>org.eclipse.jetty.util.Decorator</li>
+ * <p>
+ * This decorator relies on the the following Jetty APIs to be exposed
+ * to the webapp:
+ * <ul>
+ * <li>org.eclipse.jetty.server.handler.ContextHandler</li>
+ * <li>org.eclipse.jetty.servlet.ServletContextHandler</li>
+ * <li>org.eclipse.jetty.util.DecoratedObjectFactory</li>
+ * <li>org.eclipse.jetty.util.Decorator</li>
  * </ul>
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

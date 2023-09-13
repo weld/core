@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.interceptors.annotated;
 
-
 import jakarta.enterprise.context.Dependent;
 
 @Slow

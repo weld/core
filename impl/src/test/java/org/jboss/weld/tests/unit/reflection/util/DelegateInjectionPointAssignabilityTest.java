@@ -20,10 +20,9 @@ import java.util.List;
 
 import jakarta.enterprise.util.TypeLiteral;
 
-import org.junit.Assert;
-
 import org.jboss.weld.resolution.AssignabilityRules;
 import org.jboss.weld.resolution.DelegateInjectionPointAssignabilityRules;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -46,19 +45,39 @@ public class DelegateInjectionPointAssignabilityTest {
      */
     @Test
     public <A, B, C extends Number, D extends Integer, E extends C, F extends Number & Comparable<Integer>, G extends Double> void testTypeVariableParameterWithTypeVariableParameter() {
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {}.getType(), new TypeLiteral<List<A>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {}.getType(), new TypeLiteral<List<B>>() {}.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {
+        }.getType(), new TypeLiteral<List<A>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {
+        }.getType(), new TypeLiteral<List<B>>() {
+        }.getType()));
 
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {}.getType(), new TypeLiteral<List<C>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {}.getType(), new TypeLiteral<List<D>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<E>>() {}.getType(), new TypeLiteral<List<D>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<E>>() {}.getType(), new TypeLiteral<List<E>>() {}.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {
+        }.getType(), new TypeLiteral<List<C>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {
+        }.getType(), new TypeLiteral<List<D>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<E>>() {
+        }.getType(), new TypeLiteral<List<D>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<E>>() {
+        }.getType(), new TypeLiteral<List<E>>() {
+        }.getType()));
 
-        Assert.assertFalse(getRules().matches(new TypeLiteral<List<D>>() {}.getType(), new TypeLiteral<List<E>>() {}.getType()));
-        Assert.assertFalse(getRules().matches(new TypeLiteral<List<D>>() {}.getType(), new TypeLiteral<List<B>>() {}.getType()));
+        Assert.assertFalse(getRules().matches(new TypeLiteral<List<D>>() {
+        }.getType(), new TypeLiteral<List<E>>() {
+        }.getType()));
+        Assert.assertFalse(getRules().matches(new TypeLiteral<List<D>>() {
+        }.getType(), new TypeLiteral<List<B>>() {
+        }.getType()));
 
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<F>>() {}.getType(), new TypeLiteral<List<D>>() {}.getType()));
-        Assert.assertFalse(getRules().matches(new TypeLiteral<List<F>>() {}.getType(), new TypeLiteral<List<G>>() {}.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<F>>() {
+        }.getType(), new TypeLiteral<List<D>>() {
+        }.getType()));
+        Assert.assertFalse(getRules().matches(new TypeLiteral<List<F>>() {
+        }.getType(), new TypeLiteral<List<G>>() {
+        }.getType()));
     }
 
     /*
@@ -67,18 +86,38 @@ public class DelegateInjectionPointAssignabilityTest {
      */
     @Test
     public <A, B extends Number, C extends B, D extends Number & Comparable<Integer>> void testTypeVariableParameterWithActualTypeParameter() {
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {}.getType(), new TypeLiteral<List<Object>>() {}.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {
+        }.getType(), new TypeLiteral<List<Number>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<A>>() {
+        }.getType(), new TypeLiteral<List<Object>>() {
+        }.getType()));
 
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<B>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<B>>() {}.getType(), new TypeLiteral<List<Integer>>() {}.getType()));
-        Assert.assertFalse(getRules().matches(new TypeLiteral<List<B>>() {}.getType(), new TypeLiteral<List<String>>() {}.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<B>>() {
+        }.getType(), new TypeLiteral<List<Number>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<B>>() {
+        }.getType(), new TypeLiteral<List<Integer>>() {
+        }.getType()));
+        Assert.assertFalse(getRules().matches(new TypeLiteral<List<B>>() {
+        }.getType(), new TypeLiteral<List<String>>() {
+        }.getType()));
 
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {}.getType(), new TypeLiteral<List<Integer>>() {}.getType()));
-        Assert.assertFalse(getRules().matches(new TypeLiteral<List<C>>() {}.getType(), new TypeLiteral<List<String>>() {}.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {
+        }.getType(), new TypeLiteral<List<Number>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<C>>() {
+        }.getType(), new TypeLiteral<List<Integer>>() {
+        }.getType()));
+        Assert.assertFalse(getRules().matches(new TypeLiteral<List<C>>() {
+        }.getType(), new TypeLiteral<List<String>>() {
+        }.getType()));
 
-        Assert.assertFalse(getRules().matches(new TypeLiteral<List<D>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
-        Assert.assertTrue(getRules().matches(new TypeLiteral<List<D>>() {}.getType(), new TypeLiteral<List<Integer>>() {}.getType()));
+        Assert.assertFalse(getRules().matches(new TypeLiteral<List<D>>() {
+        }.getType(), new TypeLiteral<List<Number>>() {
+        }.getType()));
+        Assert.assertTrue(getRules().matches(new TypeLiteral<List<D>>() {
+        }.getType(), new TypeLiteral<List<Integer>>() {
+        }.getType()));
     }
 }

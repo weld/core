@@ -31,7 +31,8 @@ import jakarta.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator
  *
  * @param <T>
  */
-public class AnnotatedMethodConfiguratorImpl<T> extends AnnotatedCallableConfigurator<T, AnnotatedMethod<T>, AnnotatedMethodConfiguratorImpl<T>>
+public class AnnotatedMethodConfiguratorImpl<T>
+        extends AnnotatedCallableConfigurator<T, AnnotatedMethod<T>, AnnotatedMethodConfiguratorImpl<T>>
         implements AnnotatedMethodConfigurator<T> {
 
     /**

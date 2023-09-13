@@ -42,7 +42,8 @@ public class AdvancedInterceptorDelegatingChainTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdvancedInterceptorDelegatingChainTest.class)).intercept(DispatchingInterceptor.class, AlphaInterceptor.class, BravoInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdvancedInterceptorDelegatingChainTest.class))
+                .intercept(DispatchingInterceptor.class, AlphaInterceptor.class, BravoInterceptor.class)
                 .addPackage(AdvancedInterceptorDelegatingChainTest.class.getPackage());
     }
 

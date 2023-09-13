@@ -73,7 +73,8 @@ import org.jboss.weld.util.collections.ImmutableList;
  * </pre>
  *
  * <p>
- * {@link #shutdown()} must be always called to shutdown the container properly. AutoCloseable is implemented, so the container is automatically shut down when
+ * {@link #shutdown()} must be always called to shutdown the container properly. AutoCloseable is implemented, so the container
+ * is automatically shut down when
  * leaving the try-with-resources block:
  * </p>
  *
@@ -88,7 +89,8 @@ import org.jboss.weld.util.collections.ImmutableList;
  * </p>
  *
  * <p>
- * Provides convenient access to beans, BeanManager and events, which is particularly helpful when bootstrapping an application in Java SE:
+ * Provides convenient access to beans, BeanManager and events, which is particularly helpful when bootstrapping an application
+ * in Java SE:
  * </p>
  *
  * <pre>
@@ -132,6 +134,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     /**
      * A convenient method for {@link CDI.current()}. Returns current {@link WeldContainer} instance
      * if there is exactly one instance running. Throws {@link IllegalStateException} in any other case.
+     *
      * @return Current {@link WeldContainer} instance if and only if exactly one instance exists
      * @throws {@link IllegalStateException} if there is 0 or more than 1 instance running
      */
@@ -237,7 +240,8 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     private void fireContainerInitializedEvent() {
         WeldSELogger.LOG.weldContainerInitialized(id);
-        beanManager().getEvent().select(ContainerInitialized.class, Initialized.Literal.APPLICATION).fire(new ContainerInitialized(id));
+        beanManager().getEvent().select(ContainerInitialized.class, Initialized.Literal.APPLICATION)
+                .fire(new ContainerInitialized(id));
         Environment env = Container.getEnvironment();
         if (env != null && env.automaticallyHandleStartupShutdownEvents()) {
             beanManager().getEvent().select(Startup.class, Any.Literal.INSTANCE).fire(new Startup());
@@ -308,12 +312,14 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
                 beanManager().getEvent().select(Shutdown.class, Any.Literal.INSTANCE).fire(new Shutdown());
             }
             // followed up by BeforeDestroyed for app scope
-            beanManager().getEvent().select(ContainerBeforeShutdown.class, BeforeDestroyed.Literal.APPLICATION).fire(new ContainerBeforeShutdown(id));
+            beanManager().getEvent().select(ContainerBeforeShutdown.class, BeforeDestroyed.Literal.APPLICATION)
+                    .fire(new ContainerBeforeShutdown(id));
         } finally {
             discard(id);
             // Destroy all the dependent beans correctly
             creationalContext.release();
-            beanManager().getEvent().select(ContainerShutdown.class, Destroyed.Literal.APPLICATION).fire(new ContainerShutdown(id));
+            beanManager().getEvent().select(ContainerShutdown.class, Destroyed.Literal.APPLICATION)
+                    .fire(new ContainerShutdown(id));
             bootstrap.shutdown();
             WeldSELogger.LOG.weldContainerShutdown(id);
         }
@@ -321,7 +327,8 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     /**
      *
-     * @return <code>true</code> if the container was initialized completely and is not shut down yet, <code>false</code> otherwise
+     * @return <code>true</code> if the container was initialized completely and is not shut down yet, <code>false</code>
+     *         otherwise
      */
     public boolean isRunning() {
         return SINGLETON.isSet(id) && instance != null;
@@ -379,7 +386,8 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     private void checkIsRunning() {
         if (!SINGLETON.isSet(id)) {
             if (WeldSELogger.LOG.isTraceEnabled()) {
-                WeldSELogger.LOG.tracev("Spurious call to shutdown from: {0}", (Object[]) Thread.currentThread().getStackTrace());
+                WeldSELogger.LOG.tracev("Spurious call to shutdown from: {0}",
+                        (Object[]) Thread.currentThread().getStackTrace());
             }
             throw WeldSELogger.LOG.weldContainerAlreadyShutDown(id);
         }
@@ -389,7 +397,8 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
         if (beanManager == null) {
             synchronized (this) {
                 if (beanManager == null) {
-                    beanManager = BeanManagerProxy.unwrap(bootstrap.getManager(getDeterminingBeanDeploymentArchive(deployment)));
+                    beanManager = BeanManagerProxy
+                            .unwrap(bootstrap.getManager(getDeterminingBeanDeploymentArchive(deployment)));
                 }
             }
         }

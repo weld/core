@@ -11,7 +11,8 @@ import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 
 /**
- * A source of localized log/bundle messages and exceptions. Note that this interface extends {@link WeldEnvironmentLogger} so that regular logger methods are
+ * A source of localized log/bundle messages and exceptions. Note that this interface extends {@link WeldEnvironmentLogger} so
+ * that regular logger methods are
  * available.
  *
  * Message IDs: 002000 - 002099
@@ -86,7 +87,8 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     IllegalArgumentException unexpectedValueForAdditionalBeanDefiningAnnotations(Class clazz);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 2018, value = "Skipping registration of additional bean defining annotation via `org.jboss.weld.se.additionalBeanDefiningAnnotations`. " +
+    @Message(id = 2018, value = "Skipping registration of additional bean defining annotation via `org.jboss.weld.se.additionalBeanDefiningAnnotations`. "
+            +
             "Only values of type Class<? extends Annotation> are valid. Found: {0}", format = Format.MESSAGE_FORMAT)
     void unexpectedItemsInValueCollection(Class clazz);
 

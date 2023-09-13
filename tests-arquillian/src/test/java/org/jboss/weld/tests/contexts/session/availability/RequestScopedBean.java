@@ -21,16 +21,16 @@ import jakarta.inject.Inject;
 
 @RequestScoped
 public class RequestScopedBean {
-    
+
     @Inject
     SessionScopedBean sessionScopedBean;
-    
-    public void increment(){
+
+    public void increment() {
         sessionScopedBean.increment();
     }
 
-    public int getDataFromSession(){
-       return sessionScopedBean.getNumber();
+    public int getDataFromSession() {
+        return sessionScopedBean.getNumber();
     }
-    
+
 }

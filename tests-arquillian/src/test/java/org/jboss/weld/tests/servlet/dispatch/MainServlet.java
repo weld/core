@@ -46,7 +46,8 @@ public class MainServlet extends HttpServlet {
             if (tester.isOk()) {
                 resp.getWriter().write(String.valueOf(tester.isOk()));
             } else {
-                resp.getWriter().write("constructions: " + tester.getConstructions() + ", destructions: " + tester.getDestructions());
+                resp.getWriter()
+                        .write("constructions: " + tester.getConstructions() + ", destructions: " + tester.getDestructions());
             }
         }
     }

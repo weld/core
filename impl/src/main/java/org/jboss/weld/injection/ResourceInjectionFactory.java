@@ -75,8 +75,9 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
         List<Set<ResourceInjection<?>>> result = new ArrayList<Set<ResourceInjection<?>>>();
 
         // Iterate through the type hierarchy
-        for (EnhancedAnnotatedType<?> actualType = type; actualType != null && !actualType.getJavaClass().equals(Object.class); actualType = actualType
-                .getEnhancedSuperclass()) {
+        for (EnhancedAnnotatedType<?> actualType = type; actualType != null
+                && !actualType.getJavaClass().equals(Object.class); actualType = actualType
+                        .getEnhancedSuperclass()) {
 
             Set<ResourceInjection<?>> resourceInjections = discoverType(declaringBean, actualType, manager);
             if (!resourceInjections.isEmpty()) {

@@ -38,13 +38,14 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 public interface InterceptionModel {
 
     /**
-     * Returns the interceptors applicable for the given interception type and method. For resolving {@link AroundConstruct} interceptors use {@link #getConstructorInvocationInterceptors(java.lang.reflect.Constructor)}.
+     * Returns the interceptors applicable for the given interception type and method. For resolving {@link AroundConstruct}
+     * interceptors use {@link #getConstructorInvocationInterceptors(java.lang.reflect.Constructor)}.
      *
      * @param interceptionType
-     * @param method           - null if the interception type is lifecycle
+     * @param method - null if the interception type is lifecycle
      * @return list of interceptors
      * @throws IllegalArgumentException if interceptionType is business method or around timeout
-     *                                  but method is null, as well as if interceptionType is callback and method is not null
+     *         but method is null, as well as if interceptionType is callback and method is not null
      */
     List<InterceptorClassMetadata<?>> getInterceptors(InterceptionType interceptionType, Method method);
 
@@ -77,6 +78,7 @@ public interface InterceptionModel {
 
     /**
      * Returns the interceptor metadata for the component class of this component.
+     *
      * @return interceptor metadata for the component class
      */
     TargetClassInterceptorMetadata getTargetClassInterceptorMetadata();

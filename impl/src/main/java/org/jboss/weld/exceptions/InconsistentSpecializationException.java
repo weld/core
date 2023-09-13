@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.exceptions;
 
-
 /**
  * @author Pete Muir
  */
@@ -41,7 +40,5 @@ public class InconsistentSpecializationException extends DeploymentException {
     public InconsistentSpecializationException(String message) {
         super(message);
     }
-
-
 
 }

@@ -22,14 +22,13 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,9 +36,9 @@ import org.junit.runner.RunWith;
  * Verifies that {@link ProcessAnnotatedType} is not fired for an annotation registered using
  * {@link BeforeBeanDiscovery#addAnnotatedType(jakarta.enterprise.inject.spi.AnnotatedType)} or
  * {@link AfterTypeDiscovery#addAnnotatedType(jakarta.enterprise.inject.spi.AnnotatedType, String)}
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  * @see CDI-320
  * @see WELD-1630
  */
@@ -51,7 +50,8 @@ public class SyntheticAnnotationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticAnnotationTest.class)).addPackage(SyntheticAnnotationTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticAnnotationTest.class))
+                .addPackage(SyntheticAnnotationTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, SyntheticAnnotationRegisteringExtension.class);
     }
 

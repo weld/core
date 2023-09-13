@@ -29,8 +29,8 @@ import org.testng.annotations.Test;
 
 public class NonBdaExtensionTest {
     /*
-    * description = "WELD-233"
-    */
+     * description = "WELD-233"
+     */
     @Test
     public void test() {
         // Create the BDA in which we will deploy Observer1 and Foo. This is equivalent to a war or ejb jar
@@ -41,7 +41,8 @@ public class NonBdaExtensionTest {
         final BeanDeploymentArchive bda2 = new BeanDeploymentArchiveImpl("2", Observer2.class);
 
         // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
-        Deployment deployment = new FlatDeployment(bda1, new Observer1(), new Observer2(), new CountingObserver1(), new CountingObserver2()) {
+        Deployment deployment = new FlatDeployment(bda1, new Observer1(), new Observer2(), new CountingObserver1(),
+                new CountingObserver2()) {
 
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 // Return bda2 if it is Observer2. Stick anything else which this test isn't about in bda1
@@ -88,8 +89,8 @@ public class NonBdaExtensionTest {
     }
 
     /*
-    * description = "WELD-258"
-    */
+     * description = "WELD-258"
+     */
     @Test
     public void testEventsSentOnceOnly() {
         // Create the BDA in which we will deploy Observer1 and Foo. This is equivalent to a war or ejb jar
@@ -100,7 +101,8 @@ public class NonBdaExtensionTest {
         final BeanDeploymentArchive bda2 = new BeanDeploymentArchiveImpl("2", CountingObserver2.class);
 
         // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
-        Deployment deployment = new FlatDeployment(bda1, new Observer1(), new Observer2(), new CountingObserver1(), new CountingObserver2()) {
+        Deployment deployment = new FlatDeployment(bda1, new Observer1(), new Observer2(), new CountingObserver1(),
+                new CountingObserver2()) {
 
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 // Return bda2 if it is Observer2. Stick anything else which this test isn't about in bda1

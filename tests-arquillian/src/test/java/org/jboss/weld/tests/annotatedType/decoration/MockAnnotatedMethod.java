@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
+import java.lang.reflect.Method;
+
 import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
-import java.lang.reflect.Method;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>

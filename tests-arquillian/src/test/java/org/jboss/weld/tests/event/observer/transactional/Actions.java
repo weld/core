@@ -45,7 +45,9 @@ public class Actions {
         boolean precedes = true;
         int i = 0;
         if (precedes = (Actions.contains(obj) && Actions.contains(otherObjects))) {
-            while (i < otherObjects.length && (precedes = precedes && actions.indexOf(obj.toString()) < actions.indexOf(otherObjects[i++].toString()))) ;
+            while (i < otherObjects.length
+                    && (precedes = precedes && actions.indexOf(obj.toString()) < actions.indexOf(otherObjects[i++].toString())))
+                ;
         }
         return precedes;
     }

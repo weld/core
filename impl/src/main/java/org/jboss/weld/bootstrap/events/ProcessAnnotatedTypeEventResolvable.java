@@ -49,7 +49,8 @@ import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
  */
 public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
 
-    public static ProcessAnnotatedTypeEventResolvable of(ProcessAnnotatedTypeImpl<?> event, RequiredAnnotationDiscovery discovery) {
+    public static ProcessAnnotatedTypeEventResolvable of(ProcessAnnotatedTypeImpl<?> event,
+            RequiredAnnotationDiscovery discovery) {
         if (event instanceof ProcessSyntheticAnnotatedType) {
             return forProcessSyntheticAnnotatedType(event.getOriginalAnnotatedType(), discovery);
         } else {
@@ -57,15 +58,21 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
         }
     }
 
-    public static ProcessAnnotatedTypeEventResolvable forProcessAnnotatedType(SlimAnnotatedType<?> annotatedType, RequiredAnnotationDiscovery discovery) {
-        ParameterizedType type = new ParameterizedTypeImpl(ProcessAnnotatedType.class, new Type[] { annotatedType.getJavaClass() }, null);
+    public static ProcessAnnotatedTypeEventResolvable forProcessAnnotatedType(SlimAnnotatedType<?> annotatedType,
+            RequiredAnnotationDiscovery discovery) {
+        ParameterizedType type = new ParameterizedTypeImpl(ProcessAnnotatedType.class,
+                new Type[] { annotatedType.getJavaClass() }, null);
         return new ProcessAnnotatedTypeEventResolvable(Sets.<Type> newHashSet(Object.class, type), annotatedType, discovery);
     }
 
-    public static ProcessAnnotatedTypeEventResolvable forProcessSyntheticAnnotatedType(SlimAnnotatedType<?> annotatedType, RequiredAnnotationDiscovery discovery) {
-        ParameterizedType type1 = new ParameterizedTypeImpl(ProcessAnnotatedType.class, new Type[] { annotatedType.getJavaClass() }, null);
-        ParameterizedType type2 = new ParameterizedTypeImpl(ProcessSyntheticAnnotatedType.class, new Type[] { annotatedType.getJavaClass() }, null);
-        return new ProcessAnnotatedTypeEventResolvable(Sets.<Type> newHashSet(Object.class, type1, type2), annotatedType, discovery);
+    public static ProcessAnnotatedTypeEventResolvable forProcessSyntheticAnnotatedType(SlimAnnotatedType<?> annotatedType,
+            RequiredAnnotationDiscovery discovery) {
+        ParameterizedType type1 = new ParameterizedTypeImpl(ProcessAnnotatedType.class,
+                new Type[] { annotatedType.getJavaClass() }, null);
+        ParameterizedType type2 = new ParameterizedTypeImpl(ProcessSyntheticAnnotatedType.class,
+                new Type[] { annotatedType.getJavaClass() }, null);
+        return new ProcessAnnotatedTypeEventResolvable(Sets.<Type> newHashSet(Object.class, type1, type2), annotatedType,
+                discovery);
     }
 
     private static final Set<QualifierInstance> QUALIFIERS = Collections.singleton(QualifierInstance.ANY);
@@ -73,7 +80,8 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
     private final SlimAnnotatedType<?> annotatedType;
     private final RequiredAnnotationDiscovery discovery;
 
-    protected ProcessAnnotatedTypeEventResolvable(Set<Type> types, SlimAnnotatedType<?> annotatedType, RequiredAnnotationDiscovery discovery) {
+    protected ProcessAnnotatedTypeEventResolvable(Set<Type> types, SlimAnnotatedType<?> annotatedType,
+            RequiredAnnotationDiscovery discovery) {
         this.types = types;
         this.annotatedType = annotatedType;
         this.discovery = discovery;
@@ -98,11 +106,13 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
         } else if (annotatedType instanceof UnbackedAnnotatedType<?>) {
             return containsAnnotation((UnbackedAnnotatedType<?>) annotatedType, requiredAnnotations);
         } else {
-            throw new IllegalArgumentException("Unknown SlimAnnotatedType implementation: " + annotatedType.getClass().toString());
+            throw new IllegalArgumentException(
+                    "Unknown SlimAnnotatedType implementation: " + annotatedType.getClass().toString());
         }
     }
 
-    protected boolean containsAnnotation(UnbackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
+    protected boolean containsAnnotation(UnbackedAnnotatedType<?> annotatedType,
+            Collection<Class<? extends Annotation>> requiredAnnotations) {
         for (final Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
             if (apply(annotatedType, requiredAnnotation)) {
                 return true;
@@ -112,14 +122,15 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
     }
 
     private static boolean isEqualOrAnnotated(Class<? extends Annotation> requiredAnnotation, Annotation annotation) {
-        return annotation.annotationType().equals(requiredAnnotation) || annotation.annotationType().isAnnotationPresent(requiredAnnotation);
+        return annotation.annotationType().equals(requiredAnnotation)
+                || annotation.annotationType().isAnnotationPresent(requiredAnnotation);
     }
 
     /**
      * @return true if predicate returns true for any annotation defined anywhere on the annotatedType
      */
     protected boolean apply(UnbackedAnnotatedType<?> annotatedType, Class<? extends Annotation> requiredAnnotation) {
-     // type annotations
+        // type annotations
         for (Annotation annotation : annotatedType.getAnnotations()) {
             if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
                 return true;
@@ -166,7 +177,8 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
         return false;
     }
 
-    protected boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
+    protected boolean containsAnnotation(BackedAnnotatedType<?> annotatedType,
+            Collection<Class<? extends Annotation>> requiredAnnotations) {
         for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
             if (discovery.containsAnnotation(annotatedType, requiredAnnotation)) {
                 return true;

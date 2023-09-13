@@ -34,11 +34,11 @@ import org.junit.runner.RunWith;
 /**
  * Registers an extension-provided implementation of the {@link Interceptor} interface and verifies that the implementation is
  * invoked upon invocation of an intercepted method.
- * 
+ *
  * @see WELD-997
- * 
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class CustomInterceptorInvocationTest {
@@ -53,7 +53,7 @@ public class CustomInterceptorInvocationTest {
                 .intercept(FooInterceptor.class)
                 .addClasses(AbstractInterceptor.class, CustomInterceptor.class, CustomInterceptorExtension.class,
                         FooInterceptor.class, FooInterceptorBinding.class, InterceptedBean.class) // do not bundle
-                                                                                                  // InterceptedSerializableBean
+                // InterceptedSerializableBean
                 .addAsServiceProvider(Extension.class, CustomInterceptorExtension.class);
     }
 

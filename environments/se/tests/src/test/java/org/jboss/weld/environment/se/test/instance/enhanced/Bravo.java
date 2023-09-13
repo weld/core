@@ -26,4 +26,3 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class Bravo extends Base {
 
 }
-

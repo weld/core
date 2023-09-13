@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import jakarta.enterprise.inject.build.compatible.spi.ScannedClasses;
+
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 class ScannedClassesImpl implements ScannedClasses {

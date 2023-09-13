@@ -62,7 +62,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
      * @param servletContext
      */
     public WebAppBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, ServletContext servletContext,
-                                    BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+            BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         super(resourceLoader, bootstrap, emptyBeansXmlDiscoveryMode);
         this.servletContext = servletContext;
     }
@@ -96,7 +96,8 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 if (accept(beansXml)) {
                     webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
                     if (webInfClasses != null) {
-                        webInfBeansXML = new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath, WEB_INF);
+                        webInfBeansXML = new ScanResult(beansXml, webInfClasses.getPath()).extractBeanArchiveId(contextPath,
+                                WEB_INF);
                     } else {
                         // The WAR is not extracted to the file system - make use of ServletContext.getResourcePaths()
                         webInfBeansXML = new ScanResult(beansXml, WEB_INF_CLASSES);
@@ -111,7 +112,8 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
         for (Iterator<ScanResult> iterator = results.iterator(); iterator.hasNext();) {
             ScanResult result = iterator.next();
             String path = result.getBeanArchiveRef().toString();
-            if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES) || new File(path).equals(webInfClasses)) {
+            if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES)
+                    || new File(path).equals(webInfClasses)) {
                 iterator.remove();
             } else {
                 result.extractBeanArchiveId(contextPath, WEB_INF);

@@ -48,13 +48,15 @@ public class SpecializingBeanQualifiersTest {
 
     @Deployment
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpecializingBeanQualifiersTest.class)).addPackage(
-                SpecializingBeanQualifiersTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpecializingBeanQualifiersTest.class))
+                .addPackage(
+                        SpecializingBeanQualifiersTest.class.getPackage());
     }
 
     @Test
     public void testQuailifiersOfSpecializingdNestedClass() {
-        testQualifiersOfSpecializedBean(StaticNestedClassesParent.StaticSpecializationBean.class, StaticNestedClassesParent.StaticMockSpecializationBean.class);
+        testQualifiersOfSpecializedBean(StaticNestedClassesParent.StaticSpecializationBean.class,
+                StaticNestedClassesParent.StaticMockSpecializationBean.class);
     }
 
     @Test

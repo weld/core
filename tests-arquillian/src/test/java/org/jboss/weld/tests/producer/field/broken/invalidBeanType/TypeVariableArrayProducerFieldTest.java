@@ -40,13 +40,13 @@ public class TypeVariableArrayProducerFieldTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeVariableArrayProducerFieldTest.class))
-            .addClass(TypeVariableArrayProducerFieldTest.class);
+                .addClass(TypeVariableArrayProducerFieldTest.class);
     }
 
     @Test
     public void testDeploymentWithVariableArrayProducerField() {
         // should throw definition exception
-     }
+    }
 
     @Dependent
     public static class Producer<T> {

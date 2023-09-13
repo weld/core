@@ -47,7 +47,8 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T> {
 
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Qualifier.class);
+    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections
+            .<Class<? extends Annotation>> singleton(Qualifier.class);
 
     /**
      * Constructor
@@ -65,7 +66,9 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
         // Only check annotation method in case the annotation itself is valid
         if (isValid()) {
             for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : annotatedAnnotation.getMembers()) {
-                if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !getNonBindingMembers().contains(annotatedMethod.slim())) {
+                if ((Reflections.isArrayType(annotatedMethod.getJavaClass())
+                        || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass()))
+                        && !getNonBindingMembers().contains(annotatedMethod.slim())) {
                     MetadataLogger.LOG.nonBindingMemberType(annotatedMethod);
                     super.valid = false;
                 }
@@ -82,7 +85,8 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
 
             if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
                 ReflectionLogger.LOG.missingTarget(annotatedAnnotation);
-            } else if (!Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE)) {
+            } else if (!Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD,
+                    PARAMETER, TYPE)) {
                 ReflectionLogger.LOG.missingTargetMethodFieldParameterType(annotatedAnnotation);
             }
         }
@@ -111,7 +115,7 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
      * Comparator for checking equality
      *
      * @param instance The instance to check against
-     * @param other    The other binding type
+     * @param other The other binding type
      * @return True if equal, false otherwise
      */
     public boolean isEqual(Annotation instance, Annotation other) {
@@ -147,7 +151,8 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
      */
     @Override
     public String toString() {
-        return (isValid() ? "Valid" : "Invalid") + " qualifier model for " + getRawType() + " with non-binding members " + getNonBindingMembers();
+        return (isValid() ? "Valid" : "Invalid") + " qualifier model for " + getRawType() + " with non-binding members "
+                + getNonBindingMembers();
     }
 
 }

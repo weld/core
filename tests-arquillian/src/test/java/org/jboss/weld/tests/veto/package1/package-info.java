@@ -20,4 +20,3 @@
 package org.jboss.weld.tests.veto.package1;
 
 import jakarta.enterprise.inject.Vetoed;
-

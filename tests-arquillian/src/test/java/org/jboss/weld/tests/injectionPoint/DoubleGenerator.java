@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import java.io.Serializable;
+import java.util.Timer;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
-import java.io.Serializable;
-import java.util.Timer;
 
 @ApplicationScoped
 public class DoubleGenerator implements Serializable {

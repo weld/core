@@ -27,6 +27,6 @@ import jakarta.enterprise.inject.Alternative;
 @Alternative
 @Priority(10)
 @ApplicationScoped
-public class FooAlt2 extends Foo{
+public class FooAlt2 extends Foo {
 
 }

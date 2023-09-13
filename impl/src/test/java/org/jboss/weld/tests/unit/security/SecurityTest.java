@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.unit.security;
 
+import java.lang.reflect.Field;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
 
 /**
  * @author pmuir

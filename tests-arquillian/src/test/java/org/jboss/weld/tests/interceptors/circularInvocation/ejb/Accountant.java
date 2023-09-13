@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import jakarta.interceptor.InterceptorBinding;
 
 /**
- *@author Kirill Gaevskii
+ * @author Kirill Gaevskii
  */
 @InterceptorBinding
 @Target({ METHOD, TYPE })

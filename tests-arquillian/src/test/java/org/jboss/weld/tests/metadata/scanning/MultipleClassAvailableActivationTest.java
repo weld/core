@@ -1,5 +1,9 @@
 package org.jboss.weld.tests.metadata.scanning;
 
+import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -14,10 +18,6 @@ import org.jboss.weld.tests.metadata.scanning.acme.corp.Wubble;
 import org.jboss.weld.tests.metadata.scanning.jboss.Baz;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.BeanManager;
-
-import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
 
 @RunWith(Arquillian.class)
 public class MultipleClassAvailableActivationTest {

@@ -43,8 +43,8 @@ public class CombinedInterceptorsOnEJBBeanTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CombinedInterceptorsOnEJBBeanTest.class))
-            .intercept(CDIInterceptor.class, EJBInterceptor.class)
-            .addPackage(CombinedInterceptorsOnEJBBeanTest.class.getPackage());
+                .intercept(CDIInterceptor.class, EJBInterceptor.class)
+                .addPackage(CombinedInterceptorsOnEJBBeanTest.class.getPackage());
     }
 
     @Inject

@@ -204,7 +204,8 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> injectionTargetFactory) {
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass,
+            InjectionTargetFactory<T> injectionTargetFactory) {
         return delegate().createBean(attributes, beanClass, injectionTargetFactory);
     }
 

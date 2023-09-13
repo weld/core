@@ -28,7 +28,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
-
 /**
  * Provides convenient way to access the CDI container.
  *

@@ -41,24 +41,31 @@ import org.junit.runner.RunWith;
 public class BeanDiscoveryDecorator03Test {
 
     /**
-     * Throw exception because of the decorator ClassicRepresentDecorator not discovered, because it has not a bean defining annotation.
+     * Throw exception because of the decorator ClassicRepresentDecorator not discovered, because it has not a bean defining
+     * annotation.
      */
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
+                .addAsManifestResource(
+                        new BeansXml(BeanDiscoveryMode.ALL).decorators(ClassicRepresentDecorator.class,
+                                ScopedRepresentDecorator.class),
                         "beans.xml")
-                        .addClasses(Dog.class, Cat.class);
+                .addClasses(Dog.class, Cat.class);
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
+                .addAsManifestResource(
+                        new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(ClassicRepresentDecorator.class,
+                                ScopedRepresentDecorator.class),
                         "beans.xml")
-                        .addClasses(Plant.class, Tree.class, Stone.class, ScopedRepresentDecorator.class);
+                .addClasses(Plant.class, Tree.class, Stone.class, ScopedRepresentDecorator.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
+                .addAsManifestResource(
+                        new BeansXml(BeanDiscoveryMode.NONE).decorators(ClassicRepresentDecorator.class,
+                                ScopedRepresentDecorator.class),
                         "beans.xml")
-                        .addClasses(Flat.class, House.class, ClassicRepresentDecorator.class);
+                .addClasses(Flat.class, House.class, ClassicRepresentDecorator.class);
         archives.add(archive01);
         archives.add(archive02);
         archives.add(archive03);

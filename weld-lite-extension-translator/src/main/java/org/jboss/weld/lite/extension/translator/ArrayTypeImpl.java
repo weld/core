@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.types.ArrayType;
 import jakarta.enterprise.lang.model.types.Type;
+
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 
 class ArrayTypeImpl extends TypeImpl<java.lang.reflect.AnnotatedArrayType> implements ArrayType {

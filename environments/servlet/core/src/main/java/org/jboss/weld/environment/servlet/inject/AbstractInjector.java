@@ -45,9 +45,9 @@ public abstract class AbstractInjector {
         this.cache = ComputingCacheBuilder.newBuilder().setWeakValues().build(clazz -> {
             AnnotatedType<?> type = manager.createAnnotatedType(clazz);
             return manager.createInjectionTargetBuilder(type)
-                .setResourceInjectionEnabled(false)
-                .setTargetClassLifecycleCallbacksEnabled(false)
-                .build();
+                    .setResourceInjectionEnabled(false)
+                    .setTargetClassLifecycleCallbacksEnabled(false)
+                    .build();
         });
     }
 

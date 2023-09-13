@@ -34,5 +34,5 @@ public @interface Secure {
     @SuppressWarnings("all")
     public static class SecureLiteral extends AnnotationLiteral<Secure> implements Secure {
     }
-    
+
 }

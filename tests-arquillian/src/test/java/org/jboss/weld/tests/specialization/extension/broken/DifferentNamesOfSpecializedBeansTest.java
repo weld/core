@@ -35,11 +35,13 @@ public class DifferentNamesOfSpecializedBeansTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DifferentNamesOfSpecializedBeansTest.class)).addPackage(DifferentNamesOfSpecializedBeansTest.class.getPackage()).addAsServiceProvider(Extension.class, ModifyingExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DifferentNamesOfSpecializedBeansTest.class))
+                .addPackage(DifferentNamesOfSpecializedBeansTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, ModifyingExtension.class);
     }
 
     @Test
     public void testDeploymentWithDifferentNamesOfSpecializedBeans() {
         // should throw definition exception
-     }
+    }
 }

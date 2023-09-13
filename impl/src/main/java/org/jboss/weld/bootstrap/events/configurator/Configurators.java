@@ -39,7 +39,8 @@ class Configurators {
     }
 
     static Set<Annotation> getQualifiers(Annotated annotated) {
-        return annotated.getAnnotations().stream().filter((a) -> a.annotationType().isAnnotationPresent(Qualifier.class)).collect(ImmutableSet.collector());
+        return annotated.getAnnotations().stream().filter((a) -> a.annotationType().isAnnotationPresent(Qualifier.class))
+                .collect(ImmutableSet.collector());
     }
 
     static Set<Annotation> getQualifiers(AnnotatedElement annotatedElement) {

@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 
 import org.jboss.weld.bean.proxy.MethodHandler;
 
-
 /**
  * @author Marius Bogoevici
  */

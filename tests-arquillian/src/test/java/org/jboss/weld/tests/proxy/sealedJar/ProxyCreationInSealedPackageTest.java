@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.proxy.sealed;
+package org.jboss.weld.tests.proxy.sealedJar;
 
 import jakarta.inject.Inject;
 
@@ -28,7 +28,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
-import org.jboss.weld.tests.proxy.sealed.library.SealedBean;
+import org.jboss.weld.tests.proxy.sealedJar.library.SealedBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -47,16 +47,18 @@ public class ProxyCreationInSealedPackageTest {
 
         // JAR contains SealedBean class in sealed package
         JavaArchive jar = ShrinkWrap.create(BeanArchive.class, "sealed.jar").addPackage(SealedBean.class.getPackage())
-            .addAsManifestResource(new StringAsset("Manifest-Version: 1.0\n"
-                    + "\n"
-                    + "Name: org/jboss/weld/tests/proxy/sealed/library/\n"
-                    + "Sealed: true\n"), "MANIFEST.MF");
+                .addAsManifestResource(new StringAsset("Manifest-Version: 1.0\n"
+                        + "\n"
+                        + "Name: org/jboss/weld/tests/proxy/sealedJar/library/\n"
+                        + "Sealed: true\n"), "MANIFEST.MF");
 
         // WAR contains this test class and ordinary bean class
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ProxyCreationInSealedPackageTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addPackage(ProxyCreationInSealedPackageTest.class.getPackage())
-            .addAsLibraries(jar)
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ProxyCreationInSealedPackageTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(ProxyCreationInSealedPackageTest.class.getPackage())
+                .addAsLibraries(jar)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Inject

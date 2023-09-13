@@ -14,18 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.proxy.sealed.library;
+package org.jboss.weld.tests.proxy.sealedJar.library;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
+ * This class is a part of the sealed JAR and is a CDI bean
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
-class PackagePrivateStorage {
-    
-    String getPackagePrivateInfo() {
-        return "Hush! Don't say this in public!";
+public class SealedBean {
+
+    @Inject
+    PackagePrivateStorage packPrivate;
+
+    public void ping() {
+        packPrivate.getPackagePrivateInfo();
     }
 }

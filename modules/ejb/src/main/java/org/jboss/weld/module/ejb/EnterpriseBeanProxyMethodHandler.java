@@ -71,7 +71,7 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
     /**
      * Constructor used directly by {@link #readResolve()}.
      *
-     * @param bean      the session bean
+     * @param bean the session bean
      * @param reference session object reference or {@code null} to create a new reference
      */
     private EnterpriseBeanProxyMethodHandler(SessionBeanImpl<T> bean, SessionObjectReference reference) {
@@ -96,16 +96,16 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
     /**
      * Looks up the EJB in the container and executes the method on it
      *
-     * @param self    the proxy instance.
-     * @param method  the overridden method declared in the super class or
-     *                interface.
+     * @param self the proxy instance.
+     * @param method the overridden method declared in the super class or
+     *        interface.
      * @param proceed the forwarder method for invoking the overridden method. It
-     *                is null if the overridden method is abstract or declared in the
-     *                interface.
-     * @param args    an array of objects containing the values of the arguments
-     *                passed in the method invocation on the proxy instance. If a
-     *                parameter type is a primitive type, the type of the array
-     *                element is a wrapper class.
+     *        is null if the overridden method is abstract or declared in the
+     *        interface.
+     * @param args an array of objects containing the values of the arguments
+     *        passed in the method invocation on the proxy instance. If a
+     *        parameter type is a primitive type, the type of the array
+     *        element is a wrapper class.
      * @return the resulting value of the method invocation.
      * @throws Throwable if the method invocation fails.
      */
@@ -127,7 +127,7 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
 
         if (!Modifier.isPublic(method.getModifiers())) {
-            throw new EJBException("Not a business method " + method.toString() +". Do not call non-public methods on EJB's.");
+            throw new EJBException("Not a business method " + method.toString() + ". Do not call non-public methods on EJB's.");
         }
         try {
             Object returnValue = Reflections.invokeAndUnwrap(proxiedInstance, method, args);
@@ -170,13 +170,15 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
         try {
-            return new EnterpriseBeanProxyMethodHandler<T>((SessionBeanImpl<T>) manager.getPassivationCapableBean(beanId), reference);
+            return new EnterpriseBeanProxyMethodHandler<T>((SessionBeanImpl<T>) manager.getPassivationCapableBean(beanId),
+                    reference);
         } catch (Exception e) {
             throw SerializationLogger.LOG.unableToDeserialize(beanId, e);
         }
     }
 
-    private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap, Set<Class<?>> businessInterfaces) {
+    private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap,
+            Set<Class<?>> businessInterfaces) {
         for (Class<?> businessInterfaceClass : businessInterfaces) {
             for (Class<?> type : HierarchyDiscovery.forNormalizedType(businessInterfaceClass).getTypeMap().keySet()) {
                 typeToBusinessInterfaceMap.put(type, businessInterfaceClass);

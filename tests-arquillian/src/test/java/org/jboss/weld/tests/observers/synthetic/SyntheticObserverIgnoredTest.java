@@ -42,7 +42,8 @@ public class SyntheticObserverIgnoredTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticObserverIgnoredTest.class)).addPackage(SyntheticObserverIgnoredTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticObserverIgnoredTest.class))
+                .addPackage(SyntheticObserverIgnoredTest.class.getPackage());
     }
 
     @Test

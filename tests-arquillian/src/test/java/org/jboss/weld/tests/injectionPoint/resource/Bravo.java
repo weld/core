@@ -17,8 +17,8 @@
 package org.jboss.weld.tests.injectionPoint.resource;
 
 import jakarta.ejb.EJB;
-
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.test.util.ActionSequence;
 
 @Dependent
@@ -33,7 +33,7 @@ public class Bravo extends Charlie {
     @EJB
     public void setAnotherSessionBean(SessionBean anotherSessionBean) {
         this.anotherSessionBean = anotherSessionBean;
-        ActionSequence.addAction(Bravo.class.getName()+SessionBean.class.getName());
+        ActionSequence.addAction(Bravo.class.getName() + SessionBean.class.getName());
     }
 
 }

@@ -81,11 +81,13 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     private final transient InjectionPoint ip;
     private final transient EjbSupport ejbSupport;
 
-    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager) {
+    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext,
+            BeanManagerImpl beanManager) {
         return new InstanceImpl<I>(injectionPoint, creationalContext, beanManager);
     }
 
-    private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager) {
+    private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext,
+            BeanManagerImpl beanManager) {
         super(injectionPoint, creationalContext, beanManager);
 
         if (injectionPoint.getQualifiers().isEmpty() && Object.class.equals(getType())) {
@@ -157,11 +159,12 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         }
         // This cast should be safe, we make sure that this method is only invoked on WeldInstance<Object>
         // and any type X will always extend Object
-        return (WeldInstance<X>)selectInstance(subtype, qualifiers);
+        return (WeldInstance<X>) selectInstance(subtype, qualifiers);
     }
 
     private <U extends T> WeldInstance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
-        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class, subtype, getQualifiers(),
+        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Instance.class,
+                subtype, getQualifiers(),
                 newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
@@ -249,7 +252,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
             return;
         } else if (isUnsatisfied()) {
             throw BeanManagerLogger.LOG.injectionPointHasUnsatisfiedDependencies(Formats.formatAnnotations(ip.getQualifiers()),
-                    Formats.formatInjectionPointType(ip.getType()), InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
+                    Formats.formatInjectionPointType(ip.getType()),
+                    InjectionPoints.getUnsatisfiedDependenciesAdditionalInfo(ip, getBeanManager()));
         } else {
             throw BeanManagerLogger.LOG.injectionPointHasAmbiguousDependencies(Formats.formatAnnotations(ip.getQualifiers()),
                     Formats.formatInjectionPointType(ip.getType()), WeldCollections.toMultiRowString(allBeans()));
@@ -257,7 +261,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     }
 
     private T getBeanInstance(Bean<?> bean) {
-        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(ip, isRegisterableInjectionPoint());
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(ip,
+                isRegisterableInjectionPoint());
         try {
             return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
         } finally {
@@ -276,7 +281,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     private Set<Bean<?>> resolveBeans() {
         // Perform typesafe resolution, and possibly attempt to resolve the ambiguity
         Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
-            .setDeclaringBean(getInjectionPoint().getBean()).create();
+                .setDeclaringBean(getInjectionPoint().getBean()).create();
         TypeSafeBeanResolver beanResolver = getBeanManager().getBeanResolver();
         return beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
     }

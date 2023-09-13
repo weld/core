@@ -26,7 +26,8 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.Unbound;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-/** Uses CDI API binding - @jakarta.enterprise.context.control.ActivateRequestContext.
+/**
+ * Uses CDI API binding - @jakarta.enterprise.context.control.ActivateRequestContext.
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */

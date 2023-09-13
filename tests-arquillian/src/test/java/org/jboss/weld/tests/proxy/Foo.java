@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.proxy;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
-import java.io.Serializable;
 
 @Named
 @RequestScoped

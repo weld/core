@@ -37,5 +37,5 @@ public @interface UltraSynchronized {
     @SuppressWarnings("all")
     public static class UltraSynchronizedLiteral extends AnnotationLiteral<UltraSynchronized> implements UltraSynchronized {
     }
-    
+
 }

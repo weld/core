@@ -22,7 +22,6 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.BeforeShutdown;
 import jakarta.enterprise.inject.spi.Extension;
 
-
 public class SimpleExtension implements Extension {
 
     private static boolean observedBeforeBeanDiscovery;

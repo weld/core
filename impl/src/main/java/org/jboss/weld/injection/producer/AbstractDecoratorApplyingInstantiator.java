@@ -48,7 +48,8 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> extends Forwardin
     private final Class<T> proxyClass;
     private final List<Decorator<?>> decorators;
 
-    public AbstractDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators, Class<? extends T> implementationClass) {
+    public AbstractDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean,
+            List<Decorator<?>> decorators, Class<? extends T> implementationClass) {
         super(delegate);
         this.bean = bean;
         this.decorators = decorators;
@@ -63,11 +64,14 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> extends Forwardin
         return applyDecorators(delegate().newInstance(ctx, manager), ctx, originalInjectionPoint, manager);
     }
 
-    protected abstract T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager);
+    protected abstract T applyDecorators(T instance, CreationalContext<T> creationalContext,
+            InjectionPoint originalInjectionPoint, BeanManagerImpl manager);
 
-    protected T getOuterDelegate(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager) {
+    protected T getOuterDelegate(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint,
+            BeanManagerImpl manager) {
         TargetBeanInstance beanInstance = new TargetBeanInstance(bean, instance);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, proxyClass, manager, manager.getServices().get(ContextualStore.class), decorators);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, proxyClass, manager,
+                manager.getServices().get(ContextualStore.class), decorators);
         DecorationHelper.push(decorationHelper);
         try {
             final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
@@ -81,7 +85,8 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> extends Forwardin
     }
 
     protected void registerOuterDecorator(ProxyObject instance, T outerDelegate) {
-        CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) instance.weld_getHandler();
+        CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) instance
+                .weld_getHandler();
         wrapperMethodHandler.setOuterDecorator(outerDelegate);
     }
 

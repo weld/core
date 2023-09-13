@@ -41,7 +41,8 @@ public class WildFly8DeploymentExceptionTransformer implements DeploymentExcepti
             "org.jboss.weld.exceptions.InconsistentSpecializationException",
             "org.jboss.weld.exceptions.NullableDependencyException" };
 
-    private static final String[] DEFINITION_EXCEPTION_FRAGMENTS = new String[] { "org.jboss.weld.exceptions.DefinitionException" };
+    private static final String[] DEFINITION_EXCEPTION_FRAGMENTS = new String[] {
+            "org.jboss.weld.exceptions.DefinitionException" };
 
     private static final String[] ISE_EXCEPTION_FRAGMENTS = new String[] { "org.jboss.weld.exceptions.IllegalStateException" };
 
@@ -62,7 +63,8 @@ public class WildFly8DeploymentExceptionTransformer implements DeploymentExcepti
             root = ExceptionUtils.getRootCause(throwable);
         }
 
-        if (root instanceof DeploymentException || root instanceof DefinitionException || root instanceof IllegalStateException) {
+        if (root instanceof DeploymentException || root instanceof DefinitionException
+                || root instanceof IllegalStateException) {
             return root;
         }
         if (isFragmentFound(DEPLOYMENT_EXCEPTION_FRAGMENTS, root)) {

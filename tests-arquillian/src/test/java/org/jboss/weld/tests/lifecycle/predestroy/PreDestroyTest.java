@@ -17,6 +17,10 @@
 
 package org.jboss.weld.tests.lifecycle.predestroy;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,10 +31,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanManager;
-
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
@@ -38,11 +38,12 @@ import jakarta.enterprise.inject.spi.BeanManager;
 public class PreDestroyTest {
     @Deployment
     public static Archive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PreDestroyTest.class)).addPackage(PreDestroyTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PreDestroyTest.class))
+                .addPackage(PreDestroyTest.class.getPackage());
     }
 
     @Test
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     public void testLifecycle(BeanManager bm) throws Exception {
         for (Bean b : bm.getBeans(TestBean.class)) {
             CreationalContext ctx = bm.createCreationalContext(null);

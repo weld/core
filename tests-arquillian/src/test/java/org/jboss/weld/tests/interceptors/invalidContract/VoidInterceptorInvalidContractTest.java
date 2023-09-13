@@ -53,9 +53,9 @@ public class VoidInterceptorInvalidContractTest {
 
     //WELD-580
     @Test
-         public void shouldHaveThrownDefinitionException() throws Exception {
+    public void shouldHaveThrownDefinitionException() throws Exception {
         // should throw deployment exception
         // currently does not works, see WELD-1401
-     }
+    }
 
 }

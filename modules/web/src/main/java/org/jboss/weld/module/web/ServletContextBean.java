@@ -25,10 +25,10 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
-import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.GetContextClassLoaderAction;
+import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.module.web.servlet.ServletContextService;
+import org.jboss.weld.security.GetContextClassLoaderAction;
 
 /**
  * Built-in bean exposing {@link ServletContext}.

@@ -27,7 +27,7 @@ public class Golf {
     @Inject
     Delta delta;
 
-    @PersistenceContext(unitName="myDb")
+    @PersistenceContext(unitName = "myDb")
     EntityManager entityManager;
 
     public Delta getDelta() {

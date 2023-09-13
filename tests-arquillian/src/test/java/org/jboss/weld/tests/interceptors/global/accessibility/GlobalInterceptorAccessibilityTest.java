@@ -37,9 +37,13 @@ public class GlobalInterceptorAccessibilityTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(FooInterceptor.class, VerifyingListener.class);
+        WebArchive war = ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addClasses(FooInterceptor.class, VerifyingListener.class);
         JavaArchive jar = ShrinkWrap.create(BeanArchive.class).addClasses(Foo.class, FooBinding.class);
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(GlobalInterceptorAccessibilityTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModule(war).addAsLibrary(jar);
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(GlobalInterceptorAccessibilityTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModule(war).addAsLibrary(jar);
     }
 
     @Test

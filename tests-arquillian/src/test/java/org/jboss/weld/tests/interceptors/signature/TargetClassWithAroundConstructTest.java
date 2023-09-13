@@ -45,9 +45,9 @@ public class TargetClassWithAroundConstructTest {
     }
 
     @Test
-         public void testDeploymentFails() {
+    public void testDeploymentFails() {
         // should throw deployment exception
         // currently does not works, see WELD-1401
-     }
+    }
 
 }

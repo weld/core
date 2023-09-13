@@ -32,12 +32,14 @@ import org.jboss.weld.util.reflection.Reflections;
 /**
  * Utility class that captures standard covariant Java assignability rules.
  *
- * This class operates on all the possible Type subtypes: Class, ParameterizedType, TypeVariable, WildcardType, GenericArrayType.
+ * This class operates on all the possible Type subtypes: Class, ParameterizedType, TypeVariable, WildcardType,
+ * GenericArrayType.
  * To make this class easier to understand and maintain, there is a separate isAssignableFrom method for each combination
  * of possible types. Each of these methods compares two type instances and determines whether the first one is assignable from
  * the other.
  *
- * TypeVariables are considered a specific unknown type restricted by the upper bound. No inference of type variables is performed.
+ * TypeVariables are considered a specific unknown type restricted by the upper bound. No inference of type variables is
+ * performed.
  *
  * @author Jozef Hartinger
  *
@@ -365,7 +367,8 @@ public class CovariantTypes {
      * GenericArrayType
      */
     private static boolean isAssignableFrom(GenericArrayType type1, Class<?> type2) {
-        return type2.isArray() && isAssignableFrom(Reflections.getRawType(type1.getGenericComponentType()), type2.getComponentType());
+        return type2.isArray()
+                && isAssignableFrom(Reflections.getRawType(type1.getGenericComponentType()), type2.getComponentType());
     }
 
     private static boolean isAssignableFrom(GenericArrayType type1, ParameterizedType type2) {

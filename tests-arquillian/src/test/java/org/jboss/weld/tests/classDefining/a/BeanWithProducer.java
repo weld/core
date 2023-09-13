@@ -17,12 +17,12 @@
 
 package org.jboss.weld.tests.classDefining.a;
 
-import org.jboss.weld.tests.classDefining.c.AppScopedBean;
-import org.jboss.weld.tests.classDefining.b.BeanInterface;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+
+import org.jboss.weld.tests.classDefining.b.BeanInterface;
+import org.jboss.weld.tests.classDefining.c.AppScopedBean;
 
 @ApplicationScoped
 public class BeanWithProducer {
@@ -38,7 +38,6 @@ public class BeanWithProducer {
     public BeanInterface createTestInterface() {
         return x -> number = x;
     }
-
 
     @Produces
     @ApplicationScoped

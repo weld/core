@@ -17,18 +17,18 @@
 
 package org.jboss.weld.bean.proxy.util;
 
-import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.serialization.spi.ProxyServices;
-
 import java.lang.invoke.MethodHandles;
 import java.security.ProtectionDomain;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.jboss.weld.bean.proxy.ProxyFactory;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.serialization.spi.ProxyServices;
+
 /**
  * This class is a default implementation of ProxyServices that will only be loaded if no other implementation is detected.
- * It supports class defining and attempts to use {@link MethodHandles.Lookup} if possible making it JDK  11+ friendly.
+ * It supports class defining and attempts to use {@link MethodHandles.Lookup} if possible making it JDK 11+ friendly.
  * For classes in signed JARs and classes from Java internal packages, we are forced to use custom class loader.
  */
 public class WeldDefaultProxyServices implements ProxyServices {
@@ -37,12 +37,14 @@ public class WeldDefaultProxyServices implements ProxyServices {
     private ConcurrentMap<ClassLoader, WeldProxyDeclaringCL> clMap = new ConcurrentHashMap<ClassLoader, WeldProxyDeclaringCL>();
 
     @Override
-    public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len) throws ClassFormatError {
+    public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len)
+            throws ClassFormatError {
         return defineClass(originalClass, className, classBytes, off, len, null);
     }
 
     @Override
-    public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
+    public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len,
+            ProtectionDomain protectionDomain) throws ClassFormatError {
         ClassLoader originalLoader = originalClass.getClassLoader();
         if (originalLoader == null) {
             originalLoader = Thread.currentThread().getContextClassLoader();
@@ -89,7 +91,7 @@ public class WeldDefaultProxyServices implements ProxyServices {
     }
 
     /**
-     *  Defines the proxy with {@link WeldProxyDeclaringCL}.
+     * Defines the proxy with {@link WeldProxyDeclaringCL}.
      *
      * @param classToDefineName name of the class to be defined
      * @param classBytes class bytes
@@ -98,7 +100,8 @@ public class WeldDefaultProxyServices implements ProxyServices {
      * @param domain {@link ProtectionDomain}
      * @return
      */
-    private Class<?> defineWithClassLoader(String classToDefineName, byte[] classBytes, int length, ClassLoader loader, ProtectionDomain domain) {
+    private Class<?> defineWithClassLoader(String classToDefineName, byte[] classBytes, int length, ClassLoader loader,
+            ProtectionDomain domain) {
         WeldProxyDeclaringCL delegatingClassLoader = returnWeldCL(loader);
         if (domain == null) {
             return delegatingClassLoader.publicDefineClass(classToDefineName, classBytes, 0, length);
@@ -129,7 +132,8 @@ public class WeldDefaultProxyServices implements ProxyServices {
      * @param loader class loader that loaded the original class
      * @return
      */
-    private Class<?> defineWithMethodLookup(String classToDefineName, byte[] classBytes, Class<?> originalClass, ClassLoader loader) {
+    private Class<?> defineWithMethodLookup(String classToDefineName, byte[] classBytes, Class<?> originalClass,
+            ClassLoader loader) {
         Module thisModule = WeldDefaultProxyServices.class.getModule();
         try {
             Class<?> lookupBaseClass;

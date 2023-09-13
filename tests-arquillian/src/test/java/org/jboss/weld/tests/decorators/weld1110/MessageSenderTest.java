@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -16,10 +14,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
 
 @RunWith(Arquillian.class)
 @Category(Integration.class)
@@ -27,7 +25,8 @@ public class MessageSenderTest {
 
     @Deployment(testable = false)
     public static WebArchive create() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(MessageSenderTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(MessageSenderTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(MessageSenderTest.class.getPackage())
                 .setWebXML(new StringAsset(
                         "<web-app>" +

@@ -52,7 +52,8 @@ public interface SlimAnnotatedType<T> extends AnnotatedType<T>, Identified<Annot
         }
 
         private Object readResolve() throws ObjectStreamException {
-            SlimAnnotatedType<?> type = Container.instance(identifier).services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
+            SlimAnnotatedType<?> type = Container.instance(identifier).services().get(ClassTransformer.class)
+                    .getSlimAnnotatedTypeById(identifier);
             if (type == null) {
                 type = tryToLoadUnknownBackedAnnotatedType();
             }
@@ -63,7 +64,8 @@ public interface SlimAnnotatedType<T> extends AnnotatedType<T>, Identified<Annot
         }
 
         /*
-         * It may in theory happen that an app calls BeanManager.createAnnotatedType() for a previously unknown class on node1 and then
+         * It may in theory happen that an app calls BeanManager.createAnnotatedType() for a previously unknown class on node1
+         * and then
          * stores this annotated type in session. On node2, this annotated type is not know. We'll try to load it.
          */
         private SlimAnnotatedType<?> tryToLoadUnknownBackedAnnotatedType() {

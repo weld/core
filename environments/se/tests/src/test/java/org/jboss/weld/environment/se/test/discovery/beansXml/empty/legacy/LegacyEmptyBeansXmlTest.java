@@ -42,9 +42,9 @@ public class LegacyEmptyBeansXmlTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder().add(ShrinkWrap.create(JavaArchive.class)
-                        .addPackage(LegacyEmptyBeansXmlTest.class.getPackage())
-                        // make sure we add empty beans.xml
-                        .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"))
+                .addPackage(LegacyEmptyBeansXmlTest.class.getPackage())
+                // make sure we add empty beans.xml
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"))
                 .build();
     }
 

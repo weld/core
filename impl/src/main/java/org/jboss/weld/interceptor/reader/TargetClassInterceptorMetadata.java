@@ -33,7 +33,8 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class TargetClassInterceptorMetadata extends AbstractInterceptorMetadata {
 
-    public static final TargetClassInterceptorMetadata EMPTY_INSTANCE = new TargetClassInterceptorMetadata(Collections.<InterceptionType, List<Method>>emptyMap());
+    public static final TargetClassInterceptorMetadata EMPTY_INSTANCE = new TargetClassInterceptorMetadata(
+            Collections.<InterceptionType, List<Method>> emptyMap());
 
     public static TargetClassInterceptorMetadata of(Map<InterceptionType, List<Method>> interceptorMethodMap) {
         if (interceptorMethodMap.isEmpty()) {

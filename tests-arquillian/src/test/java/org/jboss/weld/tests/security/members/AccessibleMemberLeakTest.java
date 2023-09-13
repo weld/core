@@ -71,7 +71,8 @@ public class AccessibleMemberLeakTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AccessibleMemberLeakTest.class)).decorate(SimpleDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AccessibleMemberLeakTest.class))
+                .decorate(SimpleDecorator.class)
                 .addPackage(AccessibleMemberLeakTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, SimpleExtension.class);
     }

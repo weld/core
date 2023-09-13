@@ -27,7 +27,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Jozef Hartinger
  *
  */
-public class ProcessSyntheticAnnotatedTypeImpl<T> extends ProcessAnnotatedTypeImpl<T> implements ProcessSyntheticAnnotatedType<T> {
+public class ProcessSyntheticAnnotatedTypeImpl<T> extends ProcessAnnotatedTypeImpl<T>
+        implements ProcessSyntheticAnnotatedType<T> {
 
     private Extension source;
 

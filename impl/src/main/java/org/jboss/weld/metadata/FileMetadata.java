@@ -1,8 +1,8 @@
 package org.jboss.weld.metadata;
 
-import org.jboss.weld.bootstrap.spi.Metadata;
-
 import java.net.URL;
+
+import org.jboss.weld.bootstrap.spi.Metadata;
 
 public class FileMetadata<T> implements Metadata<T> {
 

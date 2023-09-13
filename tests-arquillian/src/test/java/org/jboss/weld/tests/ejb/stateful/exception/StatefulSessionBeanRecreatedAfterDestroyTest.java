@@ -58,7 +58,9 @@ public class StatefulSessionBeanRecreatedAfterDestroyTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StatefulSessionBeanRecreatedAfterDestroyTest.class)).addPackage(StatefulSessionBeanRecreatedAfterDestroyTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(StatefulSessionBeanRecreatedAfterDestroyTest.class))
+                .addPackage(StatefulSessionBeanRecreatedAfterDestroyTest.class.getPackage());
     }
 
     @Test

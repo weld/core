@@ -27,7 +27,8 @@ import org.jboss.weld.exceptions.WeldException;
 import sun.reflect.ReflectionFactory;
 
 /**
- * {@link ProxyInstantiator} implementation that uses {@link ReflectionFactory#newConstructorForSerialization(Class, Constructor)} for creating instances of a
+ * {@link ProxyInstantiator} implementation that uses
+ * {@link ReflectionFactory#newConstructorForSerialization(Class, Constructor)} for creating instances of a
  * proxy class.
  *
  * @author Jozef Hartinger
@@ -69,7 +70,8 @@ class ReflectionFactoryProxyInstantiator implements ProxyInstantiator {
     }
 
     @Override
-    public <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz, Bean<?> declaringBean)
+    public <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz,
+            Bean<?> declaringBean)
             throws UnproxyableResolutionException {
         // noop - no constructor is fine
         return null;

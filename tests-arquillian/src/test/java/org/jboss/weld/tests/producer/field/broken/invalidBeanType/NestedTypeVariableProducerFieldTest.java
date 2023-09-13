@@ -41,13 +41,13 @@ public class NestedTypeVariableProducerFieldTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NestedTypeVariableProducerFieldTest.class))
-            .addClass(NestedTypeVariableProducerFieldTest.class);
+                .addClass(NestedTypeVariableProducerFieldTest.class);
     }
 
     @Test
     public void testDeploymentWithNestedTypeVariableProducerField() {
         // should throw definition exception
-     }
+    }
 
     private static class Foo<T> {
     }

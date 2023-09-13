@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.contexts.unbound;
 
-import org.jboss.weld.contexts.AbstractSharedContext;
-import org.jboss.weld.context.ApplicationContext;
-
 import jakarta.enterprise.context.ApplicationScoped;
+
+import org.jboss.weld.context.ApplicationContext;
+import org.jboss.weld.contexts.AbstractSharedContext;
 
 public class ApplicationContextImpl extends AbstractSharedContext implements ApplicationContext {
 

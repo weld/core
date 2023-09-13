@@ -51,13 +51,15 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> implements ContainerLifecycleEventObserverMethod<T> {
+public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
+        implements ContainerLifecycleEventObserverMethod<T> {
 
     private final Container containerLifecycleEventDeliveryLock;
     private final Set<Class<? extends Annotation>> requiredTypeAnnotations;
     private volatile Set<Class<? extends Annotation>> requiredScopeTypeAnnotations;
 
-    protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager, boolean isAsync) {
+    protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean,
+            BeanManagerImpl manager, boolean isAsync) {
         super(observer, declaringBean, manager, isAsync);
         this.containerLifecycleEventDeliveryLock = Container.instance(manager);
         this.requiredTypeAnnotations = initRequiredTypeAnnotations(observer);
@@ -67,34 +69,41 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = getEventParameter(observer);
         WithAnnotations annotation = eventParameter.getAnnotation(WithAnnotations.class);
         if (annotation != null) {
-            return ImmutableSet.<Class<? extends Annotation>>of(annotation.value());
+            return ImmutableSet.<Class<? extends Annotation>> of(annotation.value());
         }
         return Collections.emptySet();
     }
 
     @Override
-    protected <Y> void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter, EnhancedAnnotatedMethod<T, Y> annotated) {
+    protected <Y> void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter,
+            EnhancedAnnotatedMethod<T, Y> annotated) {
         Class<?> rawObserverType = Reflections.getRawType(getObservedType());
-        boolean isProcessAnnotatedType = rawObserverType.equals(ProcessAnnotatedType.class) || rawObserverType.equals(ProcessSyntheticAnnotatedType.class);
+        boolean isProcessAnnotatedType = rawObserverType.equals(ProcessAnnotatedType.class)
+                || rawObserverType.equals(ProcessSyntheticAnnotatedType.class);
         if (!isProcessAnnotatedType && !requiredTypeAnnotations.isEmpty()) {
             throw EventLogger.LOG
-                    .invalidWithAnnotations(this, Formats.formatAsStackTraceElement(eventParameter.getDeclaringEnhancedCallable().getJavaMember()));
+                    .invalidWithAnnotations(this,
+                            Formats.formatAsStackTraceElement(eventParameter.getDeclaringEnhancedCallable().getJavaMember()));
         }
         if (isProcessAnnotatedType && requiredTypeAnnotations.isEmpty()) {
             Type[] typeArguments = eventParameter.getActualTypeArguments();
-            if ((typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0]) || Reflections.isUnboundedTypeVariable(typeArguments[0])) &&
-                    // LiteExtensionTranslator is an exception because it is the only way to implement build compatible extensions via portable extensions
-                    // Not that we use hardcoded String because we want to avoid circular dependencies between weld-core-impl and weld-lite-extension-translator
-                    !annotated.getJavaMember().getDeclaringClass().getName().equals("org.jboss.weld.lite.extension.translator.LiteExtensionTranslator")) {
+            if ((typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0])
+                    || Reflections.isUnboundedTypeVariable(typeArguments[0])) &&
+            // LiteExtensionTranslator is an exception because it is the only way to implement build compatible extensions via portable extensions
+            // Not that we use hardcoded String because we want to avoid circular dependencies between weld-core-impl and weld-lite-extension-translator
+                    !annotated.getJavaMember().getDeclaringClass().getName()
+                            .equals("org.jboss.weld.lite.extension.translator.LiteExtensionTranslator")) {
                 EventLogger.LOG.unrestrictedProcessAnnotatedTypes(this);
             }
         }
     }
 
     @Override
-    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
+    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer,
+            RIBean<X> declaringBean, BeanManagerImpl manager) {
         // use silent creation of injection points for ProcessInjectionPoint events not to be fired for extension observer methods
-        return InjectionPointFactory.silentInstance().createMethodInjectionPoint(MethodInjectionPointType.OBSERVER, observer, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
+        return InjectionPointFactory.silentInstance().createMethodInjectionPoint(MethodInjectionPointType.OBSERVER, observer,
+                declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
     }
 
     @Override
@@ -112,7 +121,8 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     }
 
     /*
-     * Contexts may not be active during notification of container lifecycle events. Therefore, we invoke the methods directly on
+     * Contexts may not be active during notification of container lifecycle events. Therefore, we invoke the methods directly
+     * on
      * an extension instance.
      */
     @Override

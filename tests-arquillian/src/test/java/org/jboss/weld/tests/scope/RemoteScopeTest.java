@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.tests.scope;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -35,10 +39,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import jakarta.servlet.http.HttpServletResponse;
-import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 @RunWith(Arquillian.class)
 @Category(Integration.class)
@@ -47,14 +49,15 @@ public class RemoteScopeTest {
     @Deployment(testable = false)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RemoteScopeTest.class, Utils.ARCHIVE_TYPE.WAR))
-                .addClasses(Bar.class, Foo.class, RemoteClient.class, Special.class, Temp.class, TempConsumer.class, TempProducer.class, Useless.class)
+                .addClasses(Bar.class, Foo.class, RemoteClient.class, Special.class, Temp.class, TempConsumer.class,
+                        TempProducer.class, Useless.class)
                 .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     /*
-    * description = "WELD-311"
-    */
+     * description = "WELD-311"
+     */
     @Test
     public void testScopeOfProducerMethod(@ArquillianResource URL baseURL) throws Exception {
         WebClient client = new WebClient();

@@ -19,6 +19,6 @@ package org.jboss.weld.tests.beanManager.bean;
 public interface Vehicle {
 
     boolean decorated();
-    
+
     String foo();
 }

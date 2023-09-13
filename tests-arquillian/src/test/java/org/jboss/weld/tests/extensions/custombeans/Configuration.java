@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.custombeans;
 
-
 /**
  *
  * @author Martin Kouba

@@ -75,7 +75,7 @@ public abstract class ForwardingContext implements Context {
 
     public static Context unwrap(Context context) {
         if (context instanceof ForwardingContext) {
-            return Reflections.<ForwardingContext>cast(context).delegate();
+            return Reflections.<ForwardingContext> cast(context).delegate();
         }
         return context;
     }

@@ -16,7 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.ejb;
 
-import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
@@ -24,8 +25,8 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.util.AnnotationLiteral;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 public class AnnotatedTypeEjbExtension implements Extension {
     /**
@@ -45,8 +46,10 @@ public class AnnotatedTypeEjbExtension implements Extension {
     /**
      * Adds annotations to an EJB
      */
-    public void overrideLatheAnnotations(@Observes ProcessAnnotatedType<Lathe> event) throws SecurityException, NoSuchMethodException {
-        if (!event.getAnnotatedType().isAnnotationPresent(SmallLathe.class) && !event.getAnnotatedType().isAnnotationPresent(BigLathe.class)) {
+    public void overrideLatheAnnotations(@Observes ProcessAnnotatedType<Lathe> event)
+            throws SecurityException, NoSuchMethodException {
+        if (!event.getAnnotatedType().isAnnotationPresent(SmallLathe.class)
+                && !event.getAnnotatedType().isAnnotationPresent(BigLathe.class)) {
             TestAnnotatedTypeBuilder<Lathe> builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
             for (Annotation a : event.getAnnotatedType().getAnnotations()) {
                 builder.addToClass(a);

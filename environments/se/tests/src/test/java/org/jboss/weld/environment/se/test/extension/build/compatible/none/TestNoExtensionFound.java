@@ -17,10 +17,8 @@
 
 package org.jboss.weld.environment.se.test.extension.build.compatible.none;
 
-import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
-import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -44,9 +42,10 @@ public class TestNoExtensionFound {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TestNoExtensionFound.class))
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TestNoExtensionFound.class))
                         .addPackage(TestNoExtensionFound.class.getPackage()))
-                        .build();
+                .build();
     }
 
     @Test

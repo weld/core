@@ -26,7 +26,8 @@ import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
 
 /**
- * A source of localized log/bundle messages and exceptions. Note that this interface extends {@link BasicLogger} so that regular logger methods are available.
+ * A source of localized log/bundle messages and exceptions. Note that this interface extends {@link BasicLogger} so that
+ * regular logger methods are available.
  *
  * @author Martin Kouba
  */

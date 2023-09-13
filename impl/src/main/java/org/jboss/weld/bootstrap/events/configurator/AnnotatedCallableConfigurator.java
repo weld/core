@@ -38,7 +38,8 @@ abstract class AnnotatedCallableConfigurator<T, A extends AnnotatedCallable<T>, 
 
     AnnotatedCallableConfigurator(A annotatedCallable) {
         super(annotatedCallable);
-        this.params = annotatedCallable.getParameters().stream().map(p -> AnnotatedParameterConfiguratorImpl.from(p)).collect(ImmutableList.collector());
+        this.params = annotatedCallable.getParameters().stream().map(p -> AnnotatedParameterConfiguratorImpl.from(p))
+                .collect(ImmutableList.collector());
     }
 
     List<AnnotatedParameterConfiguratorImpl<T>> getParams() {

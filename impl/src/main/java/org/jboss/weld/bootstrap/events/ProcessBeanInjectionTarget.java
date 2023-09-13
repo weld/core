@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import jakarta.enterprise.inject.spi.InjectionTarget;
-import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 
 public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X> {
 

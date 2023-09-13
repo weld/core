@@ -63,12 +63,14 @@ class EjbSupportImpl implements EjbSupport {
     }
 
     @Override
-    public <T> BasicInjectionTarget<T> createSessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
+    public <T> BasicInjectionTarget<T> createSessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean,
+            BeanManagerImpl beanManager) {
         return SessionBeanInjectionTarget.of(type, bean, beanManager);
     }
 
     @Override
-    public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> d, BeanManagerImpl manager) {
+    public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> d,
+            BeanManagerImpl manager) {
         InternalEjbDescriptor<T> descriptor = InternalEjbDescriptor.of(d);
         EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass(descriptor, manager, type);
 
@@ -83,7 +85,8 @@ class EjbSupportImpl implements EjbSupport {
         if (interceptionModel != null) {
             if (interceptionModel.hasExternalNonConstructorInterceptors()) {
                 instantiator = SubclassedComponentInstantiator
-                        .forInterceptedDecoratedBean(implementationClass, null, (AbstractInstantiator<T>) instantiator, manager);
+                        .forInterceptedDecoratedBean(implementationClass, null, (AbstractInstantiator<T>) instantiator,
+                                manager);
                 instantiator = new InterceptorApplyingInstantiator<>(instantiator, interceptionModel, type.slim());
 
             }
@@ -101,12 +104,14 @@ class EjbSupportImpl implements EjbSupport {
         return createSessionBeanAttributes(annotated, descriptor, manager);
     }
 
-    private <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
+    private <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> annotated,
+            InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
         return SessionBeans.createBeanAttributes(annotated, descriptor, manager);
     }
 
     @Override
-    public void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> types, BeanManagerImpl manager) {
+    public void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> types,
+            BeanManagerImpl manager) {
         final ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
 
         for (InternalEjbDescriptor<?> ejbDescriptor : getEjbDescriptors()) {
@@ -126,15 +131,18 @@ class EjbSupportImpl implements EjbSupport {
         }
     }
 
-    private <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<?> descriptor, SlimAnnotatedType<T> slimType, BeanDeployerEnvironment environment, BeanManagerImpl manager, ClassTransformer transformer) {
+    private <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<?> descriptor, SlimAnnotatedType<T> slimType,
+            BeanDeployerEnvironment environment, BeanManagerImpl manager, ClassTransformer transformer) {
         final EnhancedAnnotatedType<T> type = transformer.getEnhancedAnnotatedType(slimType);
         final BeanAttributes<T> attributes = createSessionBeanAttributes(type, descriptor, manager);
-        final SessionBean<T> bean = SessionBeanImpl.of(attributes, Reflections.<InternalEjbDescriptor<T>>cast(descriptor), manager, type);
+        final SessionBean<T> bean = SessionBeanImpl.of(attributes, Reflections.<InternalEjbDescriptor<T>> cast(descriptor),
+                manager, type);
         environment.addSessionBean(bean);
         return bean;
     }
 
-    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, BeanDeployerEnvironment environment, BeanManagerImpl manager, ClassTransformer transformer) {
+    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, BeanDeployerEnvironment environment,
+            BeanManagerImpl manager, ClassTransformer transformer) {
         final SlimAnnotatedType<T> type = transformer.getBackedAnnotatedType(descriptor.getBeanClass(), manager.getId());
         manager.getServices().get(SlimAnnotatedTypeStore.class).put(type);
         return createSessionBean(descriptor, type, environment, manager, transformer);
@@ -148,7 +156,8 @@ class EjbSupportImpl implements EjbSupport {
     public void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
         for (InternalEjbDescriptor<?> descriptor : getEjbDescriptors()) {
             if (descriptor.isMessageDriven()) {
-                EnhancedAnnotatedType<?> type =  manager.getServices().getRequired(ClassTransformer.class).getEnhancedAnnotatedType(descriptor.getBeanClass(), manager.getId());
+                EnhancedAnnotatedType<?> type = manager.getServices().getRequired(ClassTransformer.class)
+                        .getEnhancedAnnotatedType(descriptor.getBeanClass(), manager.getId());
                 if (!manager.getInterceptorModelRegistry().containsKey(type.slim())) {
                     InterceptionModelInitializer.of(manager, type, null).init();
                 }
@@ -179,6 +188,5 @@ class EjbSupportImpl implements EjbSupport {
     public boolean isSessionBeanProxy(Object instance) {
         return instance instanceof EnterpriseBeanInstance;
     }
-
 
 }

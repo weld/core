@@ -47,7 +47,7 @@ public class AnnotatedTypeWrapper<T> extends ForwardingAnnotatedType<T> {
         for (Annotation annotation : annotations) {
             if (annotation.annotationType().equals(annotationType)) {
                 return Reflections.cast(annotation);
-                
+
             }
         }
         return null;

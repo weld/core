@@ -18,16 +18,18 @@ package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import org.jboss.weld.bean.AbstractProducerBean;
-import org.jboss.weld.injection.producer.AbstractMemberProducer;
-import org.jboss.weld.manager.BeanManagerImpl;
+import java.lang.reflect.Type;
 
 import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.ProcessBean;
-import java.lang.reflect.Type;
 
-public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProducerBean<T, X, ?>> extends AbstractDefinitionContainerEvent implements ProcessBean<X> {
+import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.injection.producer.AbstractMemberProducer;
+import org.jboss.weld.manager.BeanManagerImpl;
+
+public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProducerBean<T, X, ?>>
+        extends AbstractDefinitionContainerEvent implements ProcessBean<X> {
 
     private final B bean;
 

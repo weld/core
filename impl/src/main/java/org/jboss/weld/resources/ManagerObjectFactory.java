@@ -33,7 +33,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class ManagerObjectFactory implements ObjectFactory {
 
     /**
-     * The id of a bean deployment archive whose BeanManager should be used as a result of a JNDI "java:comp/env/BeanManager" lookup.
+     * The id of a bean deployment archive whose BeanManager should be used as a result of a JNDI "java:comp/env/BeanManager"
+     * lookup.
      */
     public static final String FLAT_BEAN_DEPLOYMENT_ID = "flat";
 
@@ -53,9 +54,11 @@ public class ManagerObjectFactory implements ObjectFactory {
 
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {
         if (Container.available(contextId)) {
-            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance(contextId).beanDeploymentArchives().entrySet()) {
+            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance(contextId).beanDeploymentArchives()
+                    .entrySet()) {
                 BeanDeploymentArchive bda = entry.getKey();
-                if (bda.getId().equals(FLAT_BEAN_DEPLOYMENT_ID) || bda.getId().contains(WEB_INF_CLASSES_FILE_PATH) || bda.getId().contains(WEB_INF_CLASSES)) {
+                if (bda.getId().equals(FLAT_BEAN_DEPLOYMENT_ID) || bda.getId().contains(WEB_INF_CLASSES_FILE_PATH)
+                        || bda.getId().contains(WEB_INF_CLASSES)) {
                     return entry.getValue();
                 }
             }

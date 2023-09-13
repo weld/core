@@ -143,7 +143,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
         for (AbstractBean<?, ?> bean : beans) {
             if (bean instanceof AbstractProducerBean<?, ?, ?>) {
-                containerLifecycleEvents.fireProcessProducer(getManager(), Reflections.<AbstractProducerBean<?, ?, Member>>cast(bean));
+                containerLifecycleEvents.fireProcessProducer(getManager(),
+                        Reflections.<AbstractProducerBean<?, ?, Member>> cast(bean));
             }
         }
     }
@@ -166,7 +167,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
             if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
                 BootstrapLogger.LOG.foundObserverMethod(observerInitializer.getObserver());
-                ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observerInitializer.getObserver());
+                ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager,
+                        observerInitializer.getObserver());
                 if (processedObserver != null) {
                     manager.addObserver(processedObserver);
                 }
@@ -193,7 +195,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X> DisposalMethod<X, ?> resolveDisposalMethod(BeanAttributes<?> attributes, AbstractClassBean<X> declaringBean) {
-        Set<DisposalMethod<X, ?>> disposalBeans = environment.<X>resolveDisposalBeans(attributes.getTypes(), attributes.getQualifiers(), declaringBean);
+        Set<DisposalMethod<X, ?>> disposalBeans = environment.<X> resolveDisposalBeans(attributes.getTypes(),
+                attributes.getQualifiers(), declaringBean);
 
         if (disposalBeans.size() == 1) {
             return disposalBeans.iterator().next();
@@ -204,7 +207,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> type) {
-        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.filterMethods(type.getDeclaredEnhancedMethods(Produces.class))) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods
+                .filterMethods(type.getDeclaredEnhancedMethods(Produces.class))) {
             // create method for now
             // specialization and PBA processing is handled later
             createProducerMethod(declaringBean, method);
@@ -219,12 +223,15 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
     }
 
-    protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> annotatedMethod) {
+    protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean,
+            EnhancedAnnotatedMethod<T, ? super X> annotatedMethod) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(annotatedMethod, getManager());
         DisposalMethod<X, ?> disposalMethod = resolveDisposalMethod(attributes, declaringBean);
-        ProducerMethod<? super X, T> bean = ProducerMethod.of(attributes, annotatedMethod, declaringBean, disposalMethod, manager, services);
+        ProducerMethod<? super X, T> bean = ProducerMethod.of(attributes, annotatedMethod, declaringBean, disposalMethod,
+                manager, services);
         containerLifecycleEvents.preloadProcessBeanAttributes(bean.getType());
-        containerLifecycleEvents.preloadProcessBean(ProcessProducerMethod.class, annotatedMethod.getBaseType(), bean.getBeanClass());
+        containerLifecycleEvents.preloadProcessBean(ProcessProducerMethod.class, annotatedMethod.getBaseType(),
+                bean.getBeanClass());
         containerLifecycleEvents.preloadProcessProducer(bean.getBeanClass(), annotatedMethod.getBaseType());
         getEnvironment().addProducerMethod(bean);
     }
@@ -254,7 +261,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
     }
 
-    protected <X> void createObserverMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<? super X> annotatedClass) {
+    protected <X> void createObserverMethods(AbstractClassBean<X> declaringBean,
+            EnhancedAnnotatedType<? super X> annotatedClass) {
         for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, method, false);
         }
@@ -263,7 +271,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
     }
 
-    protected <T, X> void createObserverMethod(AbstractClassBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> method, boolean isAsync) {
+    protected <T, X> void createObserverMethod(AbstractClassBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> method,
+            boolean isAsync) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, manager, isAsync);
         ObserverInitializationContext<T, ? super X> observerInitializer = ObserverInitializationContext.of(observer, method);
         containerLifecycleEvents.preloadProcessObserverMethod(observer.getObservedType(), declaringBean.getBeanClass());
@@ -306,7 +315,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             return false;
         }
 
-        ProcessBeanAttributesImpl<T> event = containerLifecycleEvents.fireProcessBeanAttributes(getManager(), bean, bean.getAnnotated(), bean.getType());
+        ProcessBeanAttributesImpl<T> event = containerLifecycleEvents.fireProcessBeanAttributes(getManager(), bean,
+                bean.getAnnotated(), bean.getType());
         if (event == null) {
             return false;
         }
@@ -314,7 +324,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             return true;
         }
         if (event.isDirty()) {
-            bean.setAttributes(ExternalBeanAttributesFactory.<T>of(event.getBeanAttributesInternal(), manager));
+            bean.setAttributes(ExternalBeanAttributesFactory.<T> of(event.getBeanAttributesInternal(), manager));
             bean.checkSpecialization();
         }
         if (event.isIgnoreFinalMethods()) {

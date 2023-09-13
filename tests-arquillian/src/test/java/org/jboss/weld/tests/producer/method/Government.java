@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
+
+import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
 public class Government implements Serializable {
@@ -30,6 +31,5 @@ public class Government implements Serializable {
     public void destabilize() {
 
     }
-
 
 }

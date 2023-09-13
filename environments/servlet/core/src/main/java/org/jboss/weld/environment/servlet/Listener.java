@@ -37,11 +37,14 @@ import org.jboss.weld.util.Preconditions;
 /**
  * This is the original listener which had to be defined in web.xml.
  *
- * It's not necessary to register this listener in Servlet 3.0 compliant containers unless there are listener ordering conflicts. E.g. if a user provides a
- * custom listener the request context will not be active during its notifications. In this case place this listener before any other listener definitions in
+ * It's not necessary to register this listener in Servlet 3.0 compliant containers unless there are listener ordering
+ * conflicts. E.g. if a user provides a
+ * custom listener the request context will not be active during its notifications. In this case place this listener before any
+ * other listener definitions in
  * web.xml.
  *
- * {@link ServletContextListener#contextInitialized(ServletContextEvent)} is no-op in case of the {@link EnhancedListener} is registered as well.
+ * {@link ServletContextListener#contextInitialized(ServletContextEvent)} is no-op in case of the {@link EnhancedListener} is
+ * registered as well.
  *
  * @author Pete Muir
  * @author Ales Justin
@@ -63,9 +66,12 @@ public class Listener extends ForwardingServletListener {
     }
 
     /**
-     * Creates a new Listener that uses the given {@link ContainerInstance} (e.g. {@link org.jboss.weld.environment.se.WeldContainer}) instead of initializing a
-     * new Weld container instance. The listener does not take over the responsibility for container instance lifecycle management. It is the caller's
-     * responsibility to shut down the container instance properly. The listener will not shut down the container instance when the Servlet context is
+     * Creates a new Listener that uses the given {@link ContainerInstance} (e.g.
+     * {@link org.jboss.weld.environment.se.WeldContainer}) instead of initializing a
+     * new Weld container instance. The listener does not take over the responsibility for container instance lifecycle
+     * management. It is the caller's
+     * responsibility to shut down the container instance properly. The listener will not shut down the container instance when
+     * the Servlet context is
      * destroyed.
      *
      * @param container the container instance to be used
@@ -76,8 +82,10 @@ public class Listener extends ForwardingServletListener {
     }
 
     /**
-     * Creates a new Listener that uses the given {@link ContainerInstanceFactory} for initializing Weld instance. A new Weld instance will be initialized using
-     * {@link ContainerInstanceFactory#initialize()} when the Servlet context is initialized. The Weld instance will be shut down when Servlet context is
+     * Creates a new Listener that uses the given {@link ContainerInstanceFactory} for initializing Weld instance. A new Weld
+     * instance will be initialized using
+     * {@link ContainerInstanceFactory#initialize()} when the Servlet context is initialized. The Weld instance will be shut
+     * down when Servlet context is
      * destroyed.
      *
      * @param container the container factory to be used
@@ -124,7 +132,8 @@ public class Listener extends ForwardingServletListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (lifecycle == null) {
-            if (!Boolean.TRUE.equals(sce.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
+            if (!Boolean.TRUE
+                    .equals(sce.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
                 // This should never happen
                 WeldServletLogger.LOG.noServletLifecycleToDestroy();
             }

@@ -16,12 +16,13 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.ManagedBean;
-import org.jboss.weld.manager.BeanManagerImpl;
+import java.lang.reflect.Type;
 
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
-import java.lang.reflect.Type;
+
+import org.jboss.weld.bean.ManagedBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, ManagedBean<X>> implements ProcessManagedBean<X> {
 
@@ -33,7 +34,7 @@ public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, Manag
     }
 
     public ProcessManagedBeanImpl(BeanManagerImpl beanManager, ManagedBean<X> bean) {
-        super(beanManager, ProcessManagedBean.class, new Type[]{bean.getAnnotated().getBaseType()}, bean);
+        super(beanManager, ProcessManagedBean.class, new Type[] { bean.getAnnotated().getBaseType() }, bean);
     }
 
     public AnnotatedType<X> getAnnotatedBeanClass() {

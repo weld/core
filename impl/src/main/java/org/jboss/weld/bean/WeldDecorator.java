@@ -24,7 +24,6 @@ import jakarta.enterprise.inject.spi.Decorator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 
-
 /**
  * Sub-interface of {@link Decorator} that contains metadata information about Weld-deployed
  * Decorators (including custom decorators).

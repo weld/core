@@ -40,22 +40,23 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
 
     private final SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance;
 
-    public DecoratorProxyMethodHandler(SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance, Object delegateInstance) {
+    public DecoratorProxyMethodHandler(SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance,
+            Object delegateInstance) {
         super(delegateInstance, delegateInstance.getClass());
         this.decoratorInstance = decoratorInstance;
     }
 
     /**
-     * @param self    the proxy instance.
-     * @param method  the overridden method declared in the super class or
-     *                interface.
+     * @param self the proxy instance.
+     * @param method the overridden method declared in the super class or
+     *        interface.
      * @param proceed the forwarder method for invoking the overridden method. It
-     *                is null if the overridden method is abstract or declared in the
-     *                interface.
-     * @param args    an array of objects containing the values of the arguments
-     *                passed in the method invocation on the proxy instance. If a
-     *                parameter type is a primitive type, the type of the array
-     *                element is a wrapper class.
+     *        is null if the overridden method is abstract or declared in the
+     *        interface.
+     * @param args an array of objects containing the values of the arguments
+     *        passed in the method invocation on the proxy instance. If a
+     *        parameter type is a primitive type, the type of the array
+     *        element is a wrapper class.
      * @return the resulting value of the method invocation.
      * @throws Throwable if the method invocation fails.
      */
@@ -70,7 +71,8 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
         }
     }
 
-    private Object doInvoke(WeldDecorator<?> weldDecorator, Object decoratorInstance, Method method, Object[] args) throws Throwable {
+    private Object doInvoke(WeldDecorator<?> weldDecorator, Object decoratorInstance, Method method, Object[] args)
+            throws Throwable {
         if (!method.isAnnotationPresent(Inject.class)) {
             InvokableAnnotatedMethod<?> decoratorMethod = weldDecorator.getDecoratorMethod(method);
             if (decoratorMethod != null) {

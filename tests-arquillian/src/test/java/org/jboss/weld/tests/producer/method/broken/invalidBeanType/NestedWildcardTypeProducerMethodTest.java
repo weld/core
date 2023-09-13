@@ -38,11 +38,11 @@ public class NestedWildcardTypeProducerMethodTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NestedWildcardTypeProducerMethodTest.class))
-            .addClasses(Foo.class, NestedWildcardTypeProducer.class);
+                .addClasses(Foo.class, NestedWildcardTypeProducer.class);
     }
 
     @Test
     public void testDeploymentWithNestedWildcardTypeProducerMethod() {
         // should throw definition exception
-     }
+    }
 }

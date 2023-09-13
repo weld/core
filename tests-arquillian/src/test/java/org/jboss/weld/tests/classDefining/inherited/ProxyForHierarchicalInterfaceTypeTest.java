@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.classDefining.inherited;
 
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,8 +30,6 @@ import org.jboss.weld.tests.classDefining.inherited.extending.MyInterface;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.inject.Inject;
 
 /**
  * Tests that you can create a proxy (specifically under JDK 11) from producer that returns a hierarchical interface
@@ -61,11 +61,13 @@ public class ProxyForHierarchicalInterfaceTypeTest {
         Assert.assertEquals(MyInterface.class.getSimpleName(), interfaceBean.anotherPing());
         Assert.assertEquals(AncestorInterface.class.getSimpleName(), interfaceBean.ping());
         // assert that the proxy from hierarchical interface starts with package and class of the most specific interface we know of
-        Assert.assertTrue(interfaceBean.getClass().getName().startsWith("org.jboss.weld.tests.classDefining.inherited.extending.MyInterface"));
+        Assert.assertTrue(interfaceBean.getClass().getName()
+                .startsWith("org.jboss.weld.tests.classDefining.inherited.extending.MyInterface"));
 
         AMuchBetterPrincipal principal = this.bean.getPrincipal();
         Assert.assertEquals(AMuchBetterPrincipal.class.getSimpleName(), principal.getName());
         // assert that the proxy created from Principal and custom class has the package of custom class
-        Assert.assertTrue(principal.getClass().getName().startsWith("org.jboss.weld.tests.classDefining.inherited.AMuchBetterPrincipal"));
+        Assert.assertTrue(
+                principal.getClass().getName().startsWith("org.jboss.weld.tests.classDefining.inherited.AMuchBetterPrincipal"));
     }
 }

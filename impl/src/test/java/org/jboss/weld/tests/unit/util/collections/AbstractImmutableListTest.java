@@ -63,7 +63,7 @@ public abstract class AbstractImmutableListTest extends AbstractImmutableCollect
         Assert.assertFalse(iterator.hasNext());
         Assert.assertEquals(!list.isEmpty(), iterator.hasPrevious()); // empty lists do not have previous value
         Assert.assertEquals(list.size(), iterator.nextIndex());
-        Assert.assertEquals(list.size() -1, iterator.previousIndex());
+        Assert.assertEquals(list.size() - 1, iterator.previousIndex());
         Assert.assertEquals(list.size(), i);
         while (iterator.hasPrevious()) {
             Assert.assertTrue(iterator.hasPrevious());

@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.extensions.custombeans.alternative;
 
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -27,9 +30,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.inject.spi.Extension;
-import jakarta.inject.Inject;
-
 /**
  * Tests that registering a synthetic enabled alternative via {@code Bean<T>} that implements {@code Prioritized} will
  * fire {@code ProcessBean} event.
@@ -39,7 +39,8 @@ public class CustomPrioritizedBeanFiresProcessBeanEventTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomPrioritizedBeanFiresProcessBeanEventTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomPrioritizedBeanFiresProcessBeanEventTest.class))
                 .addClasses(Foo.class, MyExtension.class, FooBean.class)
                 .addAsServiceProvider(Extension.class, MyExtension.class);
     }

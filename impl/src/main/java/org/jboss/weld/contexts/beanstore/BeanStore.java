@@ -63,6 +63,7 @@ public interface BeanStore extends Iterable<BeanIdentifier> {
 
     /**
      * Gets a creation lock for the given bean id.
+     *
      * @param id The bean id
      * @return A handle that must be used to unlock the bean
      */
@@ -70,6 +71,7 @@ public interface BeanStore extends Iterable<BeanIdentifier> {
 
     /**
      * Removes a bean instance identified by the given id.
+     *
      * @param id The bean id
      * @return the removed bean instance of null if there was no bean instance before
      */

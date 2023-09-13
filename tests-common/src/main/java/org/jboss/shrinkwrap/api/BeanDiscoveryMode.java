@@ -18,7 +18,9 @@ package org.jboss.shrinkwrap.api;
 
 public enum BeanDiscoveryMode {
 
-    NONE("none"), ANNOTATED("annotated"), ALL("all");
+    NONE("none"),
+    ANNOTATED("annotated"),
+    ALL("all");
 
     private final String value;
 

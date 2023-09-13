@@ -41,7 +41,12 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class FilterInjectionTest {
 
-    public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<filter><filter-name>Cat Filter</filter-name><filter-class>" + CatFilter.class.getName() + "</filter-class></filter><filter-mapping><filter-name>Cat Filter</filter-name><url-pattern>/cat</url-pattern></filter-mapping> <servlet><servlet-name>Wolverine Servlet</servlet-name><servlet-class>" + WolverineServlet.class.getName() + "</servlet-class></servlet> <servlet-mapping><servlet-name>Wolverine Servlet</servlet-name><url-pattern>/</url-pattern></servlet-mapping>").getBytes());
+    public static final Asset WEB_XML = new ByteArrayAsset(
+            extendDefaultWebXml("<filter><filter-name>Cat Filter</filter-name><filter-class>" + CatFilter.class.getName()
+                    + "</filter-class></filter><filter-mapping><filter-name>Cat Filter</filter-name><url-pattern>/cat</url-pattern></filter-mapping> <servlet><servlet-name>Wolverine Servlet</servlet-name><servlet-class>"
+                    + WolverineServlet.class.getName()
+                    + "</servlet-class></servlet> <servlet-mapping><servlet-name>Wolverine Servlet</servlet-name><url-pattern>/</url-pattern></servlet-mapping>")
+                    .getBytes());
 
     @Deployment
     public static WebArchive createTestArchive() {

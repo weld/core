@@ -48,7 +48,8 @@ import org.jboss.weld.util.Types;
 
 class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
 
-    public static <T> SessionBeanInjectionTarget<T> of(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
+    public static <T> SessionBeanInjectionTarget<T> of(EnhancedAnnotatedType<T> type, SessionBean<T> bean,
+            BeanManagerImpl beanManager) {
         LifecycleCallbackInvoker<T> invoker = DefaultLifecycleCallbackInvoker.of(type);
         Injector<T> injector;
         if (bean.getEjbDescriptor().isStateless() || bean.getEjbDescriptor().isSingleton()) {
@@ -61,7 +62,8 @@ class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
 
     private final SessionBean<T> bean;
 
-    private SessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+    private SessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager,
+            Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
         super(type, bean, beanManager, injector, invoker);
         this.bean = bean;
     }
@@ -72,7 +74,8 @@ class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     }
 
     @Override
-    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
+    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Set<InjectionPoint> injectionPoints) {
         if (bean instanceof SessionBean<?>) {
             EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass((SessionBean<T>) bean);
 
@@ -98,8 +101,10 @@ class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         if (!decorators.isEmpty()) {
             Instantiator<T> instantiator = getInstantiator();
             EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass(getBean());
-            instantiator = SubclassedComponentInstantiator.forInterceptedDecoratedBean(implementationClass, getBean(), (AbstractInstantiator<T>) instantiator, beanManager);
-            instantiator = new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), instantiator, getBean(), decorators, implementationClass.getJavaClass());
+            instantiator = SubclassedComponentInstantiator.forInterceptedDecoratedBean(implementationClass, getBean(),
+                    (AbstractInstantiator<T>) instantiator, beanManager);
+            instantiator = new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), instantiator,
+                    getBean(), decorators, implementationClass.getJavaClass());
             setInstantiator(instantiator);
         }
 
@@ -112,10 +117,12 @@ class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     @Override
     protected void buildInterceptionModel(EnhancedAnnotatedType<T> annotatedType, AbstractInstantiator<T> instantiator) {
         /*
-         * instantiator.getConstructorInjectionPoint() may represent the constructor of the SessionBean subclass which may not have annotations applied
+         * instantiator.getConstructorInjectionPoint() may represent the constructor of the SessionBean subclass which may not
+         * have annotations applied
          * Therefore, use the component class constructor instead of the one from subclass.
          */
-        EnhancedAnnotatedConstructor<T> constructor = annotatedType.getDeclaredEnhancedConstructor(instantiator.getConstructorInjectionPoint().getSignature());
+        EnhancedAnnotatedConstructor<T> constructor = annotatedType
+                .getDeclaredEnhancedConstructor(instantiator.getConstructorInjectionPoint().getSignature());
         new InterceptionModelInitializer<T>(beanManager, annotatedType, constructor, getBean()).init();
     }
 
@@ -126,7 +133,8 @@ class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         if (result instanceof ProxyObject) {
             // if decorators are applied, use SessionBeanViewMethodHandler
             ProxyObject proxy = (ProxyObject) result;
-            proxy.weld_setHandler(new SessionBeanViewMethodHandler(bean.getTypes(), (CombinedInterceptorAndDecoratorStackMethodHandler) proxy.weld_getHandler()));
+            proxy.weld_setHandler(new SessionBeanViewMethodHandler(bean.getTypes(),
+                    (CombinedInterceptorAndDecoratorStackMethodHandler) proxy.weld_getHandler()));
         }
         return result;
     }

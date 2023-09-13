@@ -36,7 +36,8 @@ public class ThreadContextImplicitBeanArchiveTest extends AbstractThreadContextT
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(RunnableDecorator.class), "beans.xml")
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(RunnableDecorator.class),
+                        "beans.xml")
                 .addClasses(Counter.class, SingletonCounter.class, ThreadCounter.class, ThreadRunner.class);
     }
 

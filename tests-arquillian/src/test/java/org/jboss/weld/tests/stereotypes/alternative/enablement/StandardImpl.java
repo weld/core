@@ -23,11 +23,11 @@ import jakarta.enterprise.context.ApplicationScoped;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
-public class StandardImpl implements SomeInterface{
+public class StandardImpl implements SomeInterface {
 
     @Override
     public String ping() {
         return StandardImpl.class.getSimpleName();
     }
-    
+
 }

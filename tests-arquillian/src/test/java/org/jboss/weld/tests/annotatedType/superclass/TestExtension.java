@@ -1,11 +1,11 @@
 package org.jboss.weld.tests.annotatedType.superclass;
 
-import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
-
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+
+import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
 /**
  * @author Gert Palok

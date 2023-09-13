@@ -23,7 +23,9 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.jboss.weld.serialization.spi.BeanIdentifier;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Helper class for bean store creation locking.
  *
@@ -40,7 +42,7 @@ public class LockStore implements Serializable {
     public LockedBean lock(BeanIdentifier id) {
         ReferenceCountedLock refLock;
         synchronized (this) {
-            if(locks == null) {
+            if (locks == null) {
                 locks = new HashMap<BeanIdentifier, ReferenceCountedLock>();
             }
             refLock = locks.get(id);
@@ -74,6 +76,5 @@ public class LockStore implements Serializable {
             }
         }
     }
-
 
 }

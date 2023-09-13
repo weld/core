@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Simple testcase for WELD-1793
+ *
  * @author Jozef Hartinger
  *
  */
@@ -47,7 +48,8 @@ public class FireAsyncTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(FireAsyncTest.class)).addPackage(FireAsyncTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(FireAsyncTest.class))
+                .addPackage(FireAsyncTest.class.getPackage());
     }
 
     @Inject
@@ -55,6 +57,7 @@ public class FireAsyncTest {
 
     private static class ThreadCapturingMessage implements Message {
         private Thread receivingThread;
+
         @Override
         public void receive() {
             receivingThread = Thread.currentThread();

@@ -62,12 +62,13 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
     public void createClassBeans() {
         final SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses = SetMultimap.newConcurrentSetMultimap();
 
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<SlimAnnotatedTypeContext<?>>(getEnvironment().getAnnotatedTypes()) {
-            @Override
-            protected void doWork(SlimAnnotatedTypeContext<?> ctx) {
-                createClassBean(ctx.getAnnotatedType(), otherWeldClasses);
-            }
-        });
+        executor.invokeAllAndCheckForExceptions(
+                new IterativeWorkerTaskFactory<SlimAnnotatedTypeContext<?>>(getEnvironment().getAnnotatedTypes()) {
+                    @Override
+                    protected void doWork(SlimAnnotatedTypeContext<?> ctx) {
+                        createClassBean(ctx.getAnnotatedType(), otherWeldClasses);
+                    }
+                });
 
         // create session beans
         ejbSupport.createSessionBeans(getEnvironment(), otherWeldClasses, getManager());
@@ -75,12 +76,13 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
     @Override
     public void createProducersAndObservers() {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AbstractClassBean<?>>(getEnvironment().getClassBeans()) {
-            @Override
-            protected void doWork(AbstractClassBean<?> bean) {
-                createObserversProducersDisposers(bean);
-            }
-        });
+        executor.invokeAllAndCheckForExceptions(
+                new IterativeWorkerTaskFactory<AbstractClassBean<?>>(getEnvironment().getClassBeans()) {
+                    @Override
+                    protected void doWork(AbstractClassBean<?> bean) {
+                        createObserversProducersDisposers(bean);
+                    }
+                });
     }
 
     @Override

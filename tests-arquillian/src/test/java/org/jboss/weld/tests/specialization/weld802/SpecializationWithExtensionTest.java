@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.tests.specialization.weld802;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -29,13 +36,6 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.Instance;
-import jakarta.enterprise.inject.spi.Extension;
-import jakarta.inject.Inject;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 /**
  * @author jharting
@@ -51,7 +51,8 @@ public class SpecializationWithExtensionTest {
      */
     @Deployment
     public static WebArchive createWebArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SpecializationWithExtensionTest.class, Utils.ARCHIVE_TYPE.WAR));
+        WebArchive war = ShrinkWrap.create(WebArchive.class,
+                Utils.getDeploymentNameAsHash(SpecializationWithExtensionTest.class, Utils.ARCHIVE_TYPE.WAR));
         war.addAsLibrary(createJavaArchive());
         war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         return war;

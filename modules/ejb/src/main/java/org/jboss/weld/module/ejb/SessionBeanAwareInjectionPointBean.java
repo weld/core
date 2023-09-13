@@ -85,7 +85,6 @@ class SessionBeanAwareInjectionPointBean extends InjectionPointBean {
         }
     };
 
-
     /**
      * Indicates that a contextual instance of a session bean is about to be constructed.
      */

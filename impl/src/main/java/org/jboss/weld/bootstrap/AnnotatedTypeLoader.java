@@ -44,7 +44,8 @@ class AnnotatedTypeLoader {
     static final String MODULEINFO_CLASS_NAME = "module-info";
     static final String MULTI_RELEASE_JAR_PATH = "META-INF.versions";
 
-    AnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ContainerLifecycleEvents containerLifecycleEvents) {
+    AnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer,
+            ContainerLifecycleEvents containerLifecycleEvents) {
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.classTransformer = transformer;
         this.missingDependenciesRegistry = manager.getServices().get(MissingDependenciesRegistry.class);
@@ -52,7 +53,8 @@ class AnnotatedTypeLoader {
     }
 
     /**
-     * Creates a new {@link SlimAnnotatedTypeContext} instance for a class with the specified class name. This method may return null if there is a problem
+     * Creates a new {@link SlimAnnotatedTypeContext} instance for a class with the specified class name. This method may return
+     * null if there is a problem
      * loading the class or this class is not needed for further processing (e.g. an annotation or a vetoed class).
      *
      * @param className the specified class name
@@ -64,7 +66,8 @@ class AnnotatedTypeLoader {
     }
 
     /**
-     * Creates a new {@link SlimAnnotatedTypeContext} instance for the given class. This method may return null if there is a problem
+     * Creates a new {@link SlimAnnotatedTypeContext} instance for the given class. This method may return null if there is a
+     * problem
      * loading the class or this class is not needed for further processing (e.g. an annotation or a vetoed class).
      *
      * @param clazz the given class

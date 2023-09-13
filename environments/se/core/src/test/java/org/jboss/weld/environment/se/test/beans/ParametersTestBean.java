@@ -17,14 +17,15 @@
 
 package org.jboss.weld.environment.se.test.beans;
 
-import org.jboss.weld.environment.se.bindings.Parameters;
+import static org.junit.Assert.assertNotNull;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+import org.jboss.weld.environment.se.bindings.Parameters;
 
 /**
  * @author Peter Royle

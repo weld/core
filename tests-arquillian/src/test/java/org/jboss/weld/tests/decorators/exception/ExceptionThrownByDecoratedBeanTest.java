@@ -36,7 +36,8 @@ public class ExceptionThrownByDecoratedBeanTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExceptionThrownByDecoratedBeanTest.class)).decorate(FooDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExceptionThrownByDecoratedBeanTest.class))
+                .decorate(FooDecorator.class)
                 .addPackage(ExceptionThrownByDecoratedBeanTest.class.getPackage());
     }
 

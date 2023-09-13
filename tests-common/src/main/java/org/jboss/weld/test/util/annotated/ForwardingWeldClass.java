@@ -81,7 +81,8 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
         return delegate().getEnhancedMethods();
     }
 
-    public Collection<EnhancedAnnotatedField<?, ? super T>> getDeclaredEnhancedFields(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedField<?, ? super T>> getDeclaredEnhancedFields(
+            Class<? extends Annotation> annotationType) {
         return delegate().getDeclaredEnhancedFields(annotationType);
     }
 
@@ -89,11 +90,13 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
         return delegate().getDeclaredEnhancedFields();
     }
 
-    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethods(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethods(
+            Class<? extends Annotation> annotationType) {
         return delegate().getDeclaredEnhancedMethods(annotationType);
     }
 
-    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(
+            Class<? extends Annotation> annotationType) {
         return delegate().getDeclaredEnhancedMethodsWithAnnotatedParameters(annotationType);
     }
 
@@ -142,7 +145,8 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
         return delegate().getDeclaredEnhancedField(fieldName);
     }
 
-    public <M> EnhancedAnnotatedMethod<M, ?> getDeclaredEnhancedMethod(MethodSignature signature, EnhancedAnnotatedType<M> expectedReturnType) {
+    public <M> EnhancedAnnotatedMethod<M, ?> getDeclaredEnhancedMethod(MethodSignature signature,
+            EnhancedAnnotatedType<M> expectedReturnType) {
         return delegate().getDeclaredEnhancedMethod(signature);
     }
 
@@ -155,7 +159,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     }
 
     public <S> S cast(Object object) {
-        return delegate().<S>cast(object);
+        return delegate().<S> cast(object);
     }
 
     public boolean isEquivalent(Class<?> clazz) {
@@ -180,7 +184,8 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     }
 
     @Override
-    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(
+            Class<? extends Annotation> annotationType) {
         return delegate().getEnhancedMethodsWithAnnotatedParameters(annotationType);
     }
 }

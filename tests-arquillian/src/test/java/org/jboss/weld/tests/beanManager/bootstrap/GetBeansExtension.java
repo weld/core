@@ -22,7 +22,6 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 
-
 @SuppressWarnings("unused")
 public class GetBeansExtension implements Extension {
 

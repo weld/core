@@ -17,11 +17,12 @@
 
 package org.jboss.weld.environment.se.test.interceptors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Peter Royle

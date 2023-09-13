@@ -3,11 +3,11 @@
  */
 package org.jboss.weld.metadata;
 
+import java.util.Collection;
+
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
-
-import java.util.Collection;
 
 public class ScanningImpl implements Scanning {
 

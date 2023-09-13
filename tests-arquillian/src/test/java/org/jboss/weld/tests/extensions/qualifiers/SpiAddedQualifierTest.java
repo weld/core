@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.qualifiers;
 
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,15 +30,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.Extension;
-import jakarta.inject.Inject;
-
 @RunWith(Arquillian.class)
 public class SpiAddedQualifierTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpiAddedQualifierTest.class)).addPackage(SpiAddedQualifierTest.class.getPackage()).addAsServiceProvider(Extension.class, QuickExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpiAddedQualifierTest.class))
+                .addPackage(SpiAddedQualifierTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, QuickExtension.class);
     }
 
     @Inject

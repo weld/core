@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.contexts.passivating.injection.broken;
 
-
 import jakarta.enterprise.inject.spi.DeploymentException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -39,12 +38,13 @@ public class NonPassivatingInitializerParameterTest extends TestClasses {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingInitializerParameterTest.class)).intercept(BioInterceptor.class).decorate(AnimalDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingInitializerParameterTest.class))
+                .intercept(BioInterceptor.class).decorate(AnimalDecorator.class)
                 .addClasses(getCommonClasses()).addClasses(FarmBroken2.class);
     }
 
     @Test
     public void testDeploymentWithNonPassivatingInitParameter() {
         // should throw deployment exception
-     }
+    }
 }

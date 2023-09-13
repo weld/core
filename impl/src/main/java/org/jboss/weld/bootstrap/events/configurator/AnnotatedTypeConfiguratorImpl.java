@@ -33,7 +33,8 @@ import org.jboss.weld.util.collections.ImmutableSet;
  *
  * @author Martin Kouba
  */
-public class AnnotatedTypeConfiguratorImpl<T> extends AnnotatedConfigurator<T, AnnotatedType<T>, AnnotatedTypeConfiguratorImpl<T>>
+public class AnnotatedTypeConfiguratorImpl<T>
+        extends AnnotatedConfigurator<T, AnnotatedType<T>, AnnotatedTypeConfiguratorImpl<T>>
         implements AnnotatedTypeConfigurator<T>, Configurator<AnnotatedType<T>> {
 
     private final Set<AnnotatedMethodConfiguratorImpl<? super T>> methods;
@@ -44,9 +45,12 @@ public class AnnotatedTypeConfiguratorImpl<T> extends AnnotatedConfigurator<T, A
 
     public AnnotatedTypeConfiguratorImpl(AnnotatedType<T> annotatedType) {
         super(annotatedType);
-        this.constructors = annotatedType.getConstructors().stream().map(c -> AnnotatedConstructorConfiguratorImpl.from(c)).collect(ImmutableSet.collector());
-        this.methods = annotatedType.getMethods().stream().map(m -> AnnotatedMethodConfiguratorImpl.from(m)).collect(ImmutableSet.collector());
-        this.fields = annotatedType.getFields().stream().map(f -> AnnotatedFieldConfiguratorImpl.from(f)).collect(ImmutableSet.collector());
+        this.constructors = annotatedType.getConstructors().stream().map(c -> AnnotatedConstructorConfiguratorImpl.from(c))
+                .collect(ImmutableSet.collector());
+        this.methods = annotatedType.getMethods().stream().map(m -> AnnotatedMethodConfiguratorImpl.from(m))
+                .collect(ImmutableSet.collector());
+        this.fields = annotatedType.getFields().stream().map(f -> AnnotatedFieldConfiguratorImpl.from(f))
+                .collect(ImmutableSet.collector());
     }
 
     @Override

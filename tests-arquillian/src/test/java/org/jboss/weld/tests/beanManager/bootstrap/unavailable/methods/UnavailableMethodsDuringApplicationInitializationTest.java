@@ -36,7 +36,9 @@ public class UnavailableMethodsDuringApplicationInitializationTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(UnavailableMethodsDuringApplicationInitializationTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(UnavailableMethodsDuringApplicationInitializationTest.class))
                 .addPackage(UnavailableMethodsDuringApplicationInitializationTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, WrongExtension.class);
     }

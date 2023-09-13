@@ -23,7 +23,7 @@ import jakarta.enterprise.context.Dependent;
  * href="https://issues.jboss.org/browse/WELD-2580">WELD-2580</a>.
  *
  * @author <a href="https://about.me/lairdnelson"
- * target="_parent">Laird Nelson</a>
+ *         target="_parent">Laird Nelson</a>
  */
 @Dependent
 final class Widget {
@@ -32,5 +32,6 @@ final class Widget {
         super();
     }
 
-    public void ping(){}
+    public void ping() {
+    }
 }

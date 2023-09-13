@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.tests.event.tx;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public abstract class AbstractHtmlUnit {
 

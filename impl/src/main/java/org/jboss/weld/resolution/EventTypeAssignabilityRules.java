@@ -51,7 +51,8 @@ public class EventTypeAssignabilityRules extends AbstractAssignabilityRules {
     public boolean matchesNoBoxing(Type observedType, Type eventType) {
         /*
          * Special handling for array event types as eventType closure does not contain the type closure of array component type
-         * this is here for backwards compatibility - see ObserverMethodWithParametertizedTypeTest.testObserverMethodCanObserveArrayWildcard()
+         * this is here for backwards compatibility - see
+         * ObserverMethodWithParametertizedTypeTest.testObserverMethodCanObserveArrayWildcard()
          */
         if (Types.isArray(observedType) && Types.isArray(eventType)) {
             final Type observedComponentType = Types.getArrayComponentType(observedType);
@@ -132,7 +133,8 @@ public class EventTypeAssignabilityRules extends AbstractAssignabilityRules {
         }
         if (observedParameter instanceof WildcardType && eventParameter instanceof WildcardType) {
             /*
-             * both the observed event type parameter and the event type parameter are wildcards, and the event type parameter is assignable to the observed event
+             * both the observed event type parameter and the event type parameter are wildcards, and the event type parameter
+             * is assignable to the observed event
              * type
              */
             return CovariantTypes.isAssignableFrom(observedParameter, eventParameter);

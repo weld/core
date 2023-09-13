@@ -29,7 +29,7 @@ import jakarta.inject.Qualifier;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE, ElementType.METHOD })
 @Qualifier
 public @interface Experimental {
 

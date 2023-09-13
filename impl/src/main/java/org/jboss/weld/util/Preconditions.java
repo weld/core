@@ -42,7 +42,8 @@ public class Preconditions {
     }
 
     /**
-     * Throws {@link IllegalArgumentException} if the reference is null. This method should only be used for methods with single argument.
+     * Throws {@link IllegalArgumentException} if the reference is null. This method should only be used for methods with single
+     * argument.
      *
      * @param reference the reference to be checked
      */

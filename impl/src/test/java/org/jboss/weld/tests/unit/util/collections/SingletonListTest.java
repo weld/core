@@ -47,7 +47,7 @@ public class SingletonListTest extends AbstractImmutableListTest {
         Assert.assertFalse(iterator.hasNext());
         Assert.assertTrue(iterator.hasPrevious());
         Assert.assertEquals(list.size(), iterator.nextIndex());
-        Assert.assertEquals(list.size() -1, iterator.previousIndex());
+        Assert.assertEquals(list.size() - 1, iterator.previousIndex());
         Assert.assertEquals(list.size(), i);
         while (iterator.hasPrevious()) {
             Assert.assertTrue(iterator.hasPrevious());

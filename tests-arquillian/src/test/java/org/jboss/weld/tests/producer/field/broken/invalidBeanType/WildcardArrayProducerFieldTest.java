@@ -40,13 +40,13 @@ public class WildcardArrayProducerFieldTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WildcardArrayProducerFieldTest.class))
-            .addClass(WildcardArrayProducerFieldTest.class);
+                .addClass(WildcardArrayProducerFieldTest.class);
     }
 
     @Test
     public void testDeploymentWithWildcardArrayProducerField() {
         // should throw definition exception
-     }
+    }
 
     private static class Foo<T> {
     }

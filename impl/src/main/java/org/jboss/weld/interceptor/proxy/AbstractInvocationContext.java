@@ -46,7 +46,8 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
 
     static {
         Map<Class<?>, Set<Class<?>>> wideningTable = new HashMap<Class<?>, Set<Class<?>>>();
-        wideningTable.put(byte.class, ImmutableSet.<Class<?>> of(short.class, int.class, long.class, float.class, double.class));
+        wideningTable.put(byte.class,
+                ImmutableSet.<Class<?>> of(short.class, int.class, long.class, float.class, double.class));
         wideningTable.put(short.class, ImmutableSet.<Class<?>> of(int.class, long.class, float.class, double.class));
         wideningTable.put(char.class, ImmutableSet.<Class<?>> of(int.class, long.class, float.class, double.class));
         wideningTable.put(int.class, ImmutableSet.<Class<?>> of(long.class, float.class, double.class));
@@ -55,11 +56,13 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
         WIDENING_TABLE = Collections.unmodifiableMap(wideningTable);
     }
 
-    protected AbstractInvocationContext(Object target, Method method, Method proceed, Object[] parameters,Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
+    protected AbstractInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
+            Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
         this(target, method, proceed, null, parameters, null, contextData, interceptorBindings);
     }
 
-    protected AbstractInvocationContext(Object target, Method method, Method proceed, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
+    protected AbstractInvocationContext(Object target, Method method, Method proceed, Constructor<?> constructor,
+            Object[] parameters, Object timer, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
         this.target = target;
         this.method = method;
         this.proceed = proceed;
@@ -128,8 +131,9 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
                 parameterTypes = constructor.getParameterTypes();
             }
             if (parameterTypes.length != newParametersCount) {
-                throw new IllegalArgumentException("Wrong number of parameters: method has " + parameterTypes.length + ", attempting to set "
-                        + newParametersCount + (params != null ? "" : " (argument was null)"));
+                throw new IllegalArgumentException(
+                        "Wrong number of parameters: method has " + parameterTypes.length + ", attempting to set "
+                                + newParametersCount + (params != null ? "" : " (argument was null)"));
             }
             if (params != null) {
                 for (int i = 0; i < params.length; i++) {
@@ -160,7 +164,8 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
                                 // unboxing+widening primitive
                                 Class<?> unboxedClass = Primitives.unwrap(newArgumentClass);
 
-                                if (!unboxedClass.equals(methodParameterClass) && !isWideningPrimitive(unboxedClass, methodParameterClass)) {
+                                if (!unboxedClass.equals(methodParameterClass)
+                                        && !isWideningPrimitive(unboxedClass, methodParameterClass)) {
                                     throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
                             } else {
@@ -173,7 +178,8 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
                     } else {
                         // null is never acceptable on a primitive type
                         if (parameterTypes[i].isPrimitive()) {
-                            throw new IllegalArgumentException("Trying to set a null value on a " + parameterTypes[i].getName());
+                            throw new IllegalArgumentException(
+                                    "Trying to set a null value on a " + parameterTypes[i].getName());
                         }
                     }
                 }
@@ -185,8 +191,9 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
     }
 
     private void throwIAE(int i, Class<?> methodParameterClass, Class<?> newArgumentClass) {
-        throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was "
-                + methodParameterClass.getName() + ")");
+        throw new IllegalArgumentException(
+                "Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was "
+                        + methodParameterClass.getName() + ")");
     }
 
     @Override

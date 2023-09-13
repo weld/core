@@ -21,7 +21,8 @@ public class BeansXmlImpl implements BeansXml {
     private final boolean isTrimmed;
 
     public BeansXmlImpl(List<Metadata<String>> enabledAlternatives, List<Metadata<String>> enabledAlternativeStereotypes,
-            List<Metadata<String>> enabledDecorators, List<Metadata<String>> enabledInterceptors, Scanning scanning, URL url, BeanDiscoveryMode discoveryMode,
+            List<Metadata<String>> enabledDecorators, List<Metadata<String>> enabledInterceptors, Scanning scanning, URL url,
+            BeanDiscoveryMode discoveryMode,
             String version, boolean isTrimmed) {
         this.enabledAlternatives = enabledAlternatives;
         this.enabledAlternativeStereotypes = enabledAlternativeStereotypes;

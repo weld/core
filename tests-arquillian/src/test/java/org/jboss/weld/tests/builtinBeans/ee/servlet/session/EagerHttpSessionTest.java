@@ -38,7 +38,8 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
- * Test that an invocation of an injected {@link HttpSession} (provided by {@link org.jboss.weld.module.web.HttpSessionBean}) triggers session creation.
+ * Test that an invocation of an injected {@link HttpSession} (provided by {@link org.jboss.weld.module.web.HttpSessionBean})
+ * triggers session creation.
  *
  * @author Martin Kouba
  * @see WELD-2346

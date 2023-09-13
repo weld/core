@@ -29,20 +29,20 @@ import org.junit.Test;
  */
 public class PostConstructInheritanceTest {
 
-	@Test
-	public void testPostConstructInherited() {
+    @Test
+    public void testPostConstructInherited() {
 
-		Weld weld = new Weld();
-		try {
+        Weld weld = new Weld();
+        try {
 
-			Plant.postConstructCalled = false;
-			WeldContainer weldContainer = weld.initialize();
-			weldContainer.instance().select(Tree.class).get();
-			assertTrue(Plant.postConstructCalled);
+            Plant.postConstructCalled = false;
+            WeldContainer weldContainer = weld.initialize();
+            weldContainer.instance().select(Tree.class).get();
+            assertTrue(Plant.postConstructCalled);
 
-		} finally {
-			weld.shutdown();
-		}
-	}
+        } finally {
+            weld.shutdown();
+        }
+    }
 
 }

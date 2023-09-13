@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 
 /**
  * Simple unit test to check conversation ID parameter detection/addition
+ *
  * @see WELD-2512
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
@@ -35,19 +36,19 @@ public class CidParamMatchingTest {
         String appendedString = "cid=" + cidValue;
 
         Assert.assertTrue(createTransformer("localhost:8080")
-            .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
+                .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
         Assert.assertTrue(createTransformer("localhost:8080?myparam=foo&bar=true&myowncid=5")
-            .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
+                .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
         Assert.assertTrue(createTransformer("localhost:8080?myParam=foo&bar=true")
-            .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
+                .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
         Assert.assertFalse(createTransformer("localhost:8080?myparam=foo&bar=true&cid=2")
-            .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
+                .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
         Assert.assertFalse(createTransformer("localhost:8080?cid=5&myparam=foo&bar=true")
-            .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
+                .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
         Assert.assertFalse(createTransformer("localhost:8080?myparam=foo;bar=true;cid=5")
-            .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
+                .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
         Assert.assertTrue(createTransformer("localhost:8080?myowncid=5;myparam=foo;bar=true")
-            .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
+                .appendConversationIdIfNecessary(cidParamName, cidValue).getUrl().contains(appendedString));
     }
 
     private FacesUrlTransformer createTransformer(String url) {

@@ -33,7 +33,8 @@ public abstract class AbstractEEBean<T> extends AbstractStaticallyDecorableBuilt
 
     protected AbstractEEBean(Class<T> type, Callable<T> callable, BeanManagerImpl beanManager) {
         super(beanManager, type);
-        this.proxy = new ProxyFactory<T>(beanManager.getContextId(), type, getTypes(), this).create(new EnterpriseTargetBeanInstance(type, new CallableMethodHandler(callable)));
+        this.proxy = new ProxyFactory<T>(beanManager.getContextId(), type, getTypes(), this)
+                .create(new EnterpriseTargetBeanInstance(type, new CallableMethodHandler(callable)));
     }
 
     @Override

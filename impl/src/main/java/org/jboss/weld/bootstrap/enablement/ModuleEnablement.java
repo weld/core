@@ -41,7 +41,9 @@ import org.jboss.weld.util.collections.ImmutableMap;
  */
 public class ModuleEnablement {
 
-    public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<Class<?>>emptyList(), Collections.<Class<?>>emptyList(), Collections.<Class<?>, Integer>emptyMap(), Collections.<Class<?>>emptySet(), Collections.<Class<? extends Annotation>>emptySet());
+    public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<Class<?>> emptyList(),
+            Collections.<Class<?>> emptyList(), Collections.<Class<?>, Integer> emptyMap(), Collections.<Class<?>> emptySet(),
+            Collections.<Class<? extends Annotation>> emptySet());
 
     private final List<Class<?>> interceptors;
     private final List<Class<?>> decorators;
@@ -155,6 +157,7 @@ public class ModuleEnablement {
 
     @Override
     public String toString() {
-        return "ModuleEnablement [interceptors=" + interceptors + ", decorators=" + decorators + ", alternatives=" + getAllAlternatives() + "]";
+        return "ModuleEnablement [interceptors=" + interceptors + ", decorators=" + decorators + ", alternatives="
+                + getAllAlternatives() + "]";
     }
 }

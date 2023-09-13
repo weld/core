@@ -26,9 +26,9 @@ import jakarta.interceptor.InvocationContext;
 /**
  * This interceptor class is passivation capable but it has non-passivation capable dependencies. This is allowed provided it
  * does not intercept a bean declaring passivation scope.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @Interceptor
 @EnginePowered

@@ -46,7 +46,8 @@ import org.jboss.weld.util.bean.SerializableForwardingBean;
 public class DecoratedBeanMetadataBean extends InterceptedBeanMetadataBean {
 
     public DecoratedBeanMetadataBean(BeanManagerImpl beanManager) {
-        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Bean.class, Decorated.class.getSimpleName())), beanManager);
+        super(new StringBeanIdentifier(
+                BeanIdentifiers.forBuiltInBean(beanManager, Bean.class, Decorated.class.getSimpleName())), beanManager);
     }
 
     @Override

@@ -19,17 +19,16 @@ package org.jboss.weld.tests.ejb.stateless.noInterfaceNonPublic;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-
 /**
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
 public class SomeOtherBean {
-    
+
     @Inject
     ProblematicBean noIface;
-    
+
     public void doSomething() {
         noIface.ping();
     }

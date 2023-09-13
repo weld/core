@@ -25,12 +25,12 @@ import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
 
 /**
-*
-* Message IDs: 001300 - 001399
-*
-* @author Jozef Hartinger
-*
-*/
+ *
+ * Message IDs: 001300 - 001399
+ *
+ * @author Jozef Hartinger
+ *
+ */
 @MessageLogger(projectCode = WeldEnvironmentLogger.WELD_ENV_PROJECT_CODE)
 public interface UndertowLogger extends WeldEnvironmentLogger {
     UndertowLogger LOG = Logger.getMessageLogger(UndertowLogger.class, Category.UNDERTOW.getName());

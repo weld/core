@@ -47,6 +47,7 @@ public interface ExpressionLanguageSupport extends Service {
 
     /**
      * Creates an {@link ELResolver} for given {@link BeanManagerImpl}
+     *
      * @param manager the given manager
      * @return
      */

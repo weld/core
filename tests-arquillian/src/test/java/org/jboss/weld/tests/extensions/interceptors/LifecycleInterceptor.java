@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.interceptors;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import jakarta.interceptor.InvocationContext;
 
 /**

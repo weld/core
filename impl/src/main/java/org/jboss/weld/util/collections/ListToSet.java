@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Provides a set-like read-only view on a given {@link List}. Modification of the underlying list is not supported.
+ *
  * @author Jozef Hartinger
  *
  */

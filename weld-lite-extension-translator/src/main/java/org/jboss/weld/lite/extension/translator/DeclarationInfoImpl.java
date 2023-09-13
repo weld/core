@@ -1,18 +1,19 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.AnnotationInfo;
-import jakarta.enterprise.lang.model.declarations.DeclarationInfo;
-import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.reflect.AnnotatedElement,
-        CdiDeclaration extends jakarta.enterprise.inject.spi.Annotated> extends AnnotationTargetImpl<ReflectionDeclaration> implements DeclarationInfo {
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.AnnotationInfo;
+import jakarta.enterprise.lang.model.declarations.DeclarationInfo;
+
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
+
+abstract class DeclarationInfoImpl<ReflectionDeclaration extends java.lang.reflect.AnnotatedElement, CdiDeclaration extends jakarta.enterprise.inject.spi.Annotated>
+        extends AnnotationTargetImpl<ReflectionDeclaration> implements DeclarationInfo {
     final CdiDeclaration cdiDeclaration; // may be null
 
     DeclarationInfoImpl(ReflectionDeclaration reflectionDeclaration, CdiDeclaration cdiDeclaration, BeanManager bm) {

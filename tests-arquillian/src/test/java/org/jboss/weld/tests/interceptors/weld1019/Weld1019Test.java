@@ -1,5 +1,10 @@
 package org.jboss.weld.tests.interceptors.weld1019;
 
+import static org.junit.Assert.*;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -8,11 +13,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.Extension;
-
-import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
@@ -33,6 +33,5 @@ public class Weld1019Test {
     public void testInterceptorInvoked(HelloBean helloBean, BeanManager beanManager) {
         assertEquals("HELLO WORLD", helloBean.getMessage());
     }
-
 
 }

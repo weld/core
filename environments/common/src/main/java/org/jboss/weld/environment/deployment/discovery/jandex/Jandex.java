@@ -37,9 +37,12 @@ public class Jandex {
             Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, BeanDiscoveryMode emptyBeansXmlDiscoveryMode)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
-        Class<JandexDiscoveryStrategy> strategyClass = Reflections.loadClass(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME);
+        Class<JandexDiscoveryStrategy> strategyClass = Reflections.loadClass(resourceLoader,
+                JANDEX_DISCOVERY_STRATEGY_CLASS_NAME);
         return SecurityActions
-                .newConstructorInstance(strategyClass, new Class<?>[] { ResourceLoader.class, Bootstrap.class, Set.class, BeanDiscoveryMode.class }, resourceLoader, bootstrap,
+                .newConstructorInstance(strategyClass,
+                        new Class<?>[] { ResourceLoader.class, Bootstrap.class, Set.class, BeanDiscoveryMode.class },
+                        resourceLoader, bootstrap,
                         initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
 
     }

@@ -28,7 +28,7 @@ import jakarta.interceptor.InterceptorBinding;
 
 @InterceptorBinding
 @Inherited
-@Target({ TYPE, METHOD})
+@Target({ TYPE, METHOD })
 @Retention(RUNTIME)
 public @interface BarBinding {
 

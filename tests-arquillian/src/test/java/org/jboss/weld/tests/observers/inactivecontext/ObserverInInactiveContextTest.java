@@ -49,5 +49,4 @@ public class ObserverInInactiveContextTest {
         fooEvent.fire(new Foo());
     }
 
-
 }

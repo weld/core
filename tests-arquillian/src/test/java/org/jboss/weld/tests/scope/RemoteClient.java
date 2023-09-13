@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.scope;
 
-import org.jboss.weld.test.util.Utils;
-import org.junit.Assert;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.spi.Bean;
@@ -13,8 +13,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
+
+import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 
 @WebServlet("/")
 public class RemoteClient extends HttpServlet {

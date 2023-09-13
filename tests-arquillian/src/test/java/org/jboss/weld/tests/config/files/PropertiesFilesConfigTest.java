@@ -48,9 +48,9 @@ public class PropertiesFilesConfigTest {
 
         BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class);
         ejbJar.addClass(DummySessionBean.class).addAsResource(PropertiesBuilder.newBuilder()
-                        .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
-                        .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
-                        .build(),
+                .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
+                .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
+                .build(),
                 "weld.properties");
 
         WebArchive war1 = Testable.archiveToTest(ShrinkWrap
@@ -58,23 +58,26 @@ public class PropertiesFilesConfigTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(PropertiesFilesConfigTest.class)
                 .addAsResource(PropertiesBuilder.newBuilder()
-                                .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
-                                .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
-                                .set(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get(), "FIXED_TIMEOUT")
-                                .build(),
+                        .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
+                        .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
+                        .set(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get(), "FIXED_TIMEOUT")
+                        .build(),
                         "weld.properties"));
 
         WebArchive war2 = ShrinkWrap
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(PropertiesBuilder.newBuilder()
-                                .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
-                                .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
-                                .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "1000")
-                                .build(),
+                        .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
+                        .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
+                        .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "1000")
+                        .build(),
                         "weld.properties");
 
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(PropertiesFilesConfigTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(ejbJar, war1, war2);
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(PropertiesFilesConfigTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModules(ejbJar, war1, war2);
     }
 
     @Inject

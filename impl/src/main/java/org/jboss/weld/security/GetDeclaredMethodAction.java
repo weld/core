@@ -31,7 +31,8 @@ public abstract class GetDeclaredMethodAction extends AbstractReflectionAction {
 
     /**
      * Returns {@link PrivilegedAction} instead of {@link PrivilegedExceptionAction}. If {@link NoSuchMethodException} is thrown
-     * it is wrapped within {@link WeldException} using {@link ReflectionLogger#noSuchMethodWrapper(NoSuchMethodException, String)}.
+     * it is wrapped within {@link WeldException} using
+     * {@link ReflectionLogger#noSuchMethodWrapper(NoSuchMethodException, String)}.
      */
     public static PrivilegedAction<Method> wrapException(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
         return new WrappingAction(javaClass, methodName, parameterTypes);

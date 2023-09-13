@@ -16,6 +16,14 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.lang.reflect.ParameterizedType;
+
+import jakarta.enterprise.inject.IllegalProductException;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,14 +33,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.IllegalProductException;
-import jakarta.enterprise.inject.Instance;
-import jakarta.enterprise.inject.spi.InjectionPoint;
-
-import java.lang.reflect.ParameterizedType;
-
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class InjectionPointTest {
@@ -44,8 +44,8 @@ public class InjectionPointTest {
     }
 
     /*
-    * description = "WELD-239"
-    */
+     * description = "WELD-239"
+     */
     @Test
     public void testCorrectInjectionPointUsed(IntConsumer intConsumer, DoubleConsumer doubleConsumer) {
         intConsumer.ping();
@@ -53,13 +53,14 @@ public class InjectionPointTest {
         try {
             doubleConsumer.ping();
         } catch (IllegalProductException e) {
-            Assert.assertTrue(e.getMessage().contains("Injection Point: field org.jboss.weld.tests.injectionPoint.DoubleGenerator.timer"));
+            Assert.assertTrue(e.getMessage()
+                    .contains("Injection Point: field org.jboss.weld.tests.injectionPoint.DoubleGenerator.timer"));
         }
     }
 
     /*
-    * description = "WELD-316"
-    */
+     * description = "WELD-316"
+     */
     @Test
     public void testFieldInjectionPointSerializability(Consumer consumer) throws Throwable {
         consumer.ping();
@@ -69,14 +70,14 @@ public class InjectionPointTest {
         InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
         Assert.assertEquals("str", ip1.getMember().getName());
     }
-    
+
     @Test
     public void testConstructorInjectionPointSerializability(Consumer consumer) throws Throwable {
         InjectionPoint ip = consumer.getSheep().getIp();
         assertNotNull(ip);
         Utils.deserialize(Utils.serialize(ip));
     }
-    
+
     @Test
     public void testMethodInjectionPointSerializability(Consumer consumer) throws Throwable {
         InjectionPoint ip = consumer.getInitializerSheep().getIp();
@@ -85,8 +86,8 @@ public class InjectionPointTest {
     }
 
     /*
-    * description = "WELD-812"
-    */
+     * description = "WELD-812"
+     */
     @Test
     public void testSerializabilityOfInstance(Estate estate) throws Throwable {
         // We have to perform some indirection to make sure we are fully inside Weld Injection Points, not third party ones!
@@ -104,8 +105,8 @@ public class InjectionPointTest {
     }
 
     /*
-    * description = "WELD-438"
-    */
+     * description = "WELD-438"
+     */
     @Test
     public void testInjectionPointWhenInstanceGetIsUsed(PigSty pigSty) throws Exception {
         Pig pig = pigSty.getPig();

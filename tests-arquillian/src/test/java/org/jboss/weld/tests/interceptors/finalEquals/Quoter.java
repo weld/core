@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.interceptors.finalEquals;
 
-
 import jakarta.enterprise.context.Dependent;
 
 /**

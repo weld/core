@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.nonContextual;
 
+import java.util.logging.Logger;
+
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-import java.util.logging.Logger;
 
 public class ServletContextListenerImpl implements ServletContextListener {
 

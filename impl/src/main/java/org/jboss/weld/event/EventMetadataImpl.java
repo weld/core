@@ -47,7 +47,8 @@ public final class EventMetadataImpl implements EventMetadata {
         this(type, injectionPoint, null, qualifiers);
     }
 
-    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, Annotation[] qualifierArray) {
+    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers,
+            Annotation[] qualifierArray) {
         this.type = type;
         this.injectionPoint = injectionPoint;
         this.qualifiers = qualifiers;

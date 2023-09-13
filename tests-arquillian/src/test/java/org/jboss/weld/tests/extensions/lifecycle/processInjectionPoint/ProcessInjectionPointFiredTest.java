@@ -49,7 +49,8 @@ public class ProcessInjectionPointFiredTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessInjectionPointFiredTest.class)).addPackage(Alpha.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessInjectionPointFiredTest.class))
+                .addPackage(Alpha.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class)
                 .addClass(BeanUtilities.class);
     }
 

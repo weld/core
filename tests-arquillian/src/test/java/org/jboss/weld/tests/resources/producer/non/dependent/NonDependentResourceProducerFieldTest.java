@@ -20,7 +20,9 @@ import org.junit.runner.RunWith;
 @Category(Integration.class)
 public class NonDependentResourceProducerFieldTest {
 
-    public static final Asset PERSISTENCE_XML = new ByteArrayAsset("<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"1.0\"><persistence-unit name=\"pu1\"><jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source></persistence-unit></persistence>".getBytes());
+    public static final Asset PERSISTENCE_XML = new ByteArrayAsset(
+            "<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"1.0\"><persistence-unit name=\"pu1\"><jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source></persistence-unit></persistence>"
+                    .getBytes());
 
     @Deployment
     @ShouldThrowException(DefinitionException.class)
@@ -30,10 +32,9 @@ public class NonDependentResourceProducerFieldTest {
                 .addAsResource(PERSISTENCE_XML, "META-INF/persistence.xml");
     }
 
-
     @Test
     public void testDeploymentWithNonDependentResourceProducerField() {
         // should throw definition exception
-     }
+    }
 
 }

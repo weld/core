@@ -25,14 +25,13 @@ import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -54,9 +53,12 @@ public class ExplicitClassLoaderScanningTest {
         archive.as(ZipExporter.class).exportTo(jar, true);
 
         /*
-         * Special classloader that hides BDAs in parent classloaders. This would not be needed normally. We need this here because
-         * , since this testsuite defines a top-level beans.xml file, each file in this testsuite is already part of this single giant BDA.
-         * Since we are adding the EmbeddedApplication class to the special BDA we test, we do not want the class to be found twice. We cannot just leave
+         * Special classloader that hides BDAs in parent classloaders. This would not be needed normally. We need this here
+         * because
+         * , since this testsuite defines a top-level beans.xml file, each file in this testsuite is already part of this single
+         * giant BDA.
+         * Since we are adding the EmbeddedApplication class to the special BDA we test, we do not want the class to be found
+         * twice. We cannot just leave
          * out the parent classloader as we need CDI classes to be loadable from the application.
          */
         ClassLoader classLoader = new URLClassLoader(new URL[] { jar.toURI().toURL() }) {

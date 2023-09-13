@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,15 +31,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.inject.Inject;
-
 @RunWith(Arquillian.class)
 public class DisposalMethodOnOtherBeanNotResolvedTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposalMethodOnOtherBeanNotResolvedTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposalMethodOnOtherBeanNotResolvedTest.class))
                 .addPackage(DisposalMethodOnOtherBeanNotResolvedTest.class.getPackage())
                 .addClass(Utils.class);
     }

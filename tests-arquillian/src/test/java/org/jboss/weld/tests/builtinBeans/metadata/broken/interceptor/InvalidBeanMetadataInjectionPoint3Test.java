@@ -35,11 +35,12 @@ public class InvalidBeanMetadataInjectionPoint3Test {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(
-                org.jboss.weld.tests.builtinBeans.metadata.broken.decorator.InvalidBeanMetadataInjectionPoint3Test.class)).addClasses(Frozen.class, Yoghurt.class, YoghurtInterceptor3.class);
+                org.jboss.weld.tests.builtinBeans.metadata.broken.decorator.InvalidBeanMetadataInjectionPoint3Test.class))
+                .addClasses(Frozen.class, Yoghurt.class, YoghurtInterceptor3.class);
     }
 
     @Test
     public void testDeploymentFailsWithBadInterceptor() {
         // should throw definition exception
-     }
+    }
 }

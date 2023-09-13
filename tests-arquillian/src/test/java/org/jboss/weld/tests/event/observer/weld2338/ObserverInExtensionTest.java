@@ -43,8 +43,9 @@ public class ObserverInExtensionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ObserverInExtensionTest.class)).addPackage(ObserverInExtensionTest.class.getPackage())
-            .addAsServiceProvider(Extension.class, Observer.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ObserverInExtensionTest.class))
+                .addPackage(ObserverInExtensionTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, Observer.class);
     }
 
     @Test

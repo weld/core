@@ -41,8 +41,10 @@ import org.jboss.weld.util.collections.ImmutableMap;
 /**
  * An optional per deployment service.
  *
- * The index holds identifiers for the specified set of beans (note that only instances of {@link CommonBean} and implementations of {@link PassivationCapable}
- * are included). Identifiers are sorted into ascending order, according to the {@link BeanIdentifier#asString()} natural ordering.
+ * The index holds identifiers for the specified set of beans (note that only instances of {@link CommonBean} and
+ * implementations of {@link PassivationCapable}
+ * are included). Identifiers are sorted into ascending order, according to the {@link BeanIdentifier#asString()} natural
+ * ordering.
  *
  * @author Martin Kouba
  */
@@ -93,7 +95,8 @@ public class BeanIdentifierIndex implements Service {
     /**
      * Note that the index can only be built once.
      *
-     * @param beans The set of beans the index should be built from, only instances of {@link CommonBean} and implementations of {@link PassivationCapable} are
+     * @param beans The set of beans the index should be built from, only instances of {@link CommonBean} and implementations of
+     *        {@link PassivationCapable} are
      *        included
      * @throws IllegalStateException If the index is built already
      */
@@ -138,7 +141,7 @@ public class BeanIdentifierIndex implements Service {
 
         indexHash = Arrays.hashCode(index);
 
-        if(BootstrapLogger.LOG.isDebugEnabled()) {
+        if (BootstrapLogger.LOG.isDebugEnabled()) {
             BootstrapLogger.LOG.beanIdentifierIndexBuilt(getDebugInfo());
         }
         indexBuilt.set(true);

@@ -65,7 +65,7 @@ public class ClientProxyMethodModifiersTest {
 
     private Method find(String name, Method[] methods) {
         for (Method method : methods) {
-            if(name.equals(method.getName())) {
+            if (name.equals(method.getName())) {
                 return method;
             }
         }

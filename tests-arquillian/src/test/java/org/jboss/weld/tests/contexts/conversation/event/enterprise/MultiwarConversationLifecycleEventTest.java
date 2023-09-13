@@ -47,11 +47,15 @@ public class MultiwarConversationLifecycleEventTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class).addClasses(TestServlet.class, ConversationBean.class, ObserverWeb1.class)
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class)
+                .addClasses(TestServlet.class, ConversationBean.class, ObserverWeb1.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class).addClass(ObserverWeb2.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class).addClass(ObserverWeb2.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         JavaArchive shared = ShrinkWrap.create(JavaArchive.class, "shared.jar").addClass(ActionSequence.class);
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(MultiwarConversationLifecycleEventTest.class, Utils.ARCHIVE_TYPE.EAR))
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(MultiwarConversationLifecycleEventTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModules(war1, war2).addAsLibrary(shared);
     }
 

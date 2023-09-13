@@ -57,7 +57,8 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
         if (decorators.isEmpty()) {
             return instance;
         }
-        return Decorators.getOuterDelegate(this, instance, creationalContext, getProxyClass(), cip.peek(), getBeanManager(), decorators);
+        return Decorators.getOuterDelegate(this, instance, creationalContext, getProxyClass(), cip.peek(), getBeanManager(),
+                decorators);
     }
 
     protected abstract T newInstance(InjectionPoint ip, CreationalContext<T> creationalContext);

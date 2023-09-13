@@ -50,7 +50,8 @@ public class InterceptorDiscoveryTest {
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).interceptors(ClassicInterceptor.class), "beans.xml")
                 .addClasses(Dog.class, Cat.class, InterceptorBindingAnnotation.class);
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).interceptors(ClassicInterceptor.class), "beans.xml")
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).interceptors(ClassicInterceptor.class),
+                        "beans.xml")
                 .addClasses(Plant.class, Tree.class, Stone.class, ClassicInterceptor.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).interceptors(ClassicInterceptor.class), "beans.xml")

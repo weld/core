@@ -32,8 +32,8 @@ public class DecoratedInteraceWithDefaultMethodTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratedInteraceWithDefaultMethodTest.class))
-            .decorate(BeanDecorator.class, DecoratorWhichOnlyOverridesMethodWithDefaultImpl.class)
-            .addPackage(DecoratedInteraceWithDefaultMethodTest.class.getPackage());
+                .decorate(BeanDecorator.class, DecoratorWhichOnlyOverridesMethodWithDefaultImpl.class)
+                .addPackage(DecoratedInteraceWithDefaultMethodTest.class.getPackage());
     }
 
     @Test
@@ -53,6 +53,8 @@ public class DecoratedInteraceWithDefaultMethodTest {
     public void testDefaultMethodGetsIntercepted(DecoratedBean bean) {
         DecoratorWhichOnlyOverridesMethodWithDefaultImpl.reset();
         bean.defaultDecorated();
-        Assert.assertEquals("A method with default implementation in an interface should be decorated even when the bean does not override it and it is the *only* decorated method", 1, DecoratorWhichOnlyOverridesMethodWithDefaultImpl.decoratedInvocationCount);
+        Assert.assertEquals(
+                "A method with default implementation in an interface should be decorated even when the bean does not override it and it is the *only* decorated method",
+                1, DecoratorWhichOnlyOverridesMethodWithDefaultImpl.decoratedInvocationCount);
     }
 }

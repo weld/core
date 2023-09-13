@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se.test.beandiscovery;
 
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.environment.se.test.beandiscovery.interceptors.InterceptorBindingAnnotation;
 
 @InterceptorBindingAnnotation

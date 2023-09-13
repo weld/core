@@ -54,7 +54,8 @@ public class JandexClassFileInfo implements ClassFileInfo {
 
     private static final Logger log = Logger.getLogger(JandexClassFileInfo.class);
 
-    public JandexClassFileInfo(String className, IndexView index, ComputingCache<DotName, Set<String>> annotationClassAnnotationsCache, ClassLoader classLoader) {
+    public JandexClassFileInfo(String className, IndexView index,
+            ComputingCache<DotName, Set<String>> annotationClassAnnotationsCache, ClassLoader classLoader) {
         this.index = index;
         this.annotationClassAnnotationsCache = annotationClassAnnotationsCache;
         this.classInfo = index.getClassByName(DotName.createSimple(className));
@@ -228,7 +229,8 @@ public class JandexClassFileInfo implements ClassFileInfo {
     /**
      * @param to
      * @param name
-     * @return <code>true</code> if the name is equal to the fromName, or if the name represents a superclass or superinterface of the fromName,
+     * @return <code>true</code> if the name is equal to the fromName, or if the name represents a superclass or superinterface
+     *         of the fromName,
      *         <code>false</code> otherwise
      */
     private boolean isAssignableTo(DotName name, Class<?> to) {
@@ -262,7 +264,8 @@ public class JandexClassFileInfo implements ClassFileInfo {
         return false;
     }
 
-    private boolean containsAnnotation(ClassInfo classInfo, DotName requiredAnnotationName, Class<? extends Annotation> requiredAnnotation) {
+    private boolean containsAnnotation(ClassInfo classInfo, DotName requiredAnnotationName,
+            Class<? extends Annotation> requiredAnnotation) {
         // Type and members
         if (classInfo.annotationsMap().containsKey(requiredAnnotationName)) {
             return true;
@@ -309,7 +312,8 @@ public class JandexClassFileInfo implements ClassFileInfo {
                     }
                     // Meta-annotations
                     for (AnnotationInstance annotation : method.annotations()) {
-                        if (annotationClassAnnotationsCache.getValue(annotation.name()).contains(requiredAnnotationName.toString())) {
+                        if (annotationClassAnnotationsCache.getValue(annotation.name())
+                                .contains(requiredAnnotationName.toString())) {
                             return true;
                         }
                     }
@@ -339,4 +343,3 @@ public class JandexClassFileInfo implements ClassFileInfo {
         return classInfo.toString();
     }
 }
-

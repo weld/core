@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
-import jakarta.enterprise.context.ConversationScoped;
 import java.io.Serializable;
+
+import jakarta.enterprise.context.ConversationScoped;
 
 @ConversationScoped
 public class Baz implements Serializable {

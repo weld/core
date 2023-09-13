@@ -35,7 +35,8 @@ public class VetoTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VetoTest.class)).addPackage(Wheat.class.getPackage()).addAsServiceProvider(Extension.class, VetoingExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VetoTest.class))
+                .addPackage(Wheat.class.getPackage()).addAsServiceProvider(Extension.class, VetoingExtension.class);
     }
 
     @Test

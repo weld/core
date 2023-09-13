@@ -64,13 +64,16 @@ public class ProcessBeanAttributesNotFiredTest {
 
     @Test
     public void testProcessBeanAttributesNotFiredForProgrammaticallyAddedBeans() {
-        assertFalse("ProcessBeanAttributes was called for built-in bean", MyExtension.observedNames.contains(MyExtension.PROGRAMMATICALLY_ADDED_BEAN_NAME));
+        assertFalse("ProcessBeanAttributes was called for built-in bean",
+                MyExtension.observedNames.contains(MyExtension.PROGRAMMATICALLY_ADDED_BEAN_NAME));
     }
 
     @Test
     public void testProcessBeanAttributesNotFiredForBuiltInBeans() {
-        final Type[] types = new Type[] {Instance.class, Bean.class, Event.class, EventMetadata.class, InjectionPoint.class, BeanManager.class, Decorator.class, 
-                Interceptor.class, UserTransaction.class, Principal.class, HttpServletRequest.class, HttpSession.class, Conversation.class, ServletContext.class };
+        final Type[] types = new Type[] { Instance.class, Bean.class, Event.class, EventMetadata.class, InjectionPoint.class,
+                BeanManager.class, Decorator.class,
+                Interceptor.class, UserTransaction.class, Principal.class, HttpServletRequest.class, HttpSession.class,
+                Conversation.class, ServletContext.class };
         for (Type type : types) {
             assertFalse("ProcessBeanAttributes was called for built-in bean " + type, MyExtension.observedTypes.contains(type));
         }

@@ -27,7 +27,7 @@ import jakarta.interceptor.InvocationContext;
 public class FooInterceptor {
 
     public static boolean invoked;
-    
+
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
         invoked = true;

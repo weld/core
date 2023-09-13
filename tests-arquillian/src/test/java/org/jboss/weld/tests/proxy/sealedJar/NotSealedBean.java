@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.proxy.sealed;
+package org.jboss.weld.tests.proxy.sealedJar;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import org.jboss.weld.tests.proxy.sealed.library.SealedBean;
+import org.jboss.weld.tests.proxy.sealedJar.library.SealedBean;
 
 /**
  * A bean inside WAR deployment, not sealed.

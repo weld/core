@@ -229,8 +229,6 @@ public class ParameterizedEventTest {
         assertFalse(observer.isIntegerFooObserved());
     }
 
-
-
     private void reset() {
         observer.reset();
         integerObserver.reset();

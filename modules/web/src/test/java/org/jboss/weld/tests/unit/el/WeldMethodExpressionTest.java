@@ -17,15 +17,15 @@
 
 package org.jboss.weld.tests.unit.el;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodInfo;
 
 import org.jboss.weld.module.web.el.WeldMethodExpression;
 import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
@@ -47,8 +47,6 @@ public class WeldMethodExpressionTest {
         assertFalse("should not be equal", delegate.equals(wrapper1));
         assertFalse("should not be equal", wrapper1.equals(delegate));
     }
-
-
 
     private static class MockMethodExpression extends MethodExpression {
 
@@ -75,12 +73,15 @@ public class WeldMethodExpressionTest {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
 
             MockMethodExpression that = (MockMethodExpression) o;
 
-            if (!expressionString.equals(that.expressionString)) return false;
+            if (!expressionString.equals(that.expressionString))
+                return false;
 
             return true;
         }

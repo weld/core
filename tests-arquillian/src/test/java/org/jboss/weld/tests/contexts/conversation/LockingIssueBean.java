@@ -1,13 +1,14 @@
 package org.jboss.weld.tests.contexts.conversation;
 
-import org.jboss.weld.context.http.HttpConversationContext;
+import java.io.Serializable;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Conversation;
 import jakarta.enterprise.context.ConversationScoped;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
-import java.io.Serializable;
+
+import org.jboss.weld.context.http.HttpConversationContext;
 
 @Model
 @ConversationScoped

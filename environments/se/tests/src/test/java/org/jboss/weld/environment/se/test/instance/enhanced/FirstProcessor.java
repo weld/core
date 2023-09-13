@@ -17,8 +17,8 @@
 package org.jboss.weld.environment.se.test.instance.enhanced;
 
 import jakarta.annotation.PreDestroy;
-
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.test.util.ActionSequence;
 
 /**

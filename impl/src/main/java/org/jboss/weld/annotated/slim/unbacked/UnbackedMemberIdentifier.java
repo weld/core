@@ -25,6 +25,7 @@ import org.jboss.weld.resources.MemberTransformer;
 /**
  * A serialization proxy for {@link UnbackedAnnotatedMember}s. A calculated id of a member is stored. Based on the id, the
  * {@link UnbackedAnnotatedMember} instance is looked up from {@link MemberTransformer} on deserialization.
+ *
  * @author jharting
  *
  * @param <X>

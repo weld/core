@@ -16,18 +16,6 @@
  */
 package org.jboss.weld.tests.contexts.propagation;
 
-import org.jboss.weld.context.WeldAlterableContext;
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.context.bound.BoundConversationContext;
-import org.jboss.weld.context.bound.BoundLiteral;
-import org.jboss.weld.context.bound.BoundRequest;
-import org.jboss.weld.context.bound.BoundRequestContext;
-import org.jboss.weld.context.bound.BoundSessionContext;
-import org.jboss.weld.context.bound.MutableBoundRequest;
-import org.jboss.weld.manager.api.WeldManager;
-
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.inject.spi.CDI;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +25,19 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.CDI;
+
+import org.jboss.weld.context.WeldAlterableContext;
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.context.bound.BoundConversationContext;
+import org.jboss.weld.context.bound.BoundLiteral;
+import org.jboss.weld.context.bound.BoundRequest;
+import org.jboss.weld.context.bound.BoundRequestContext;
+import org.jboss.weld.context.bound.BoundSessionContext;
+import org.jboss.weld.context.bound.MutableBoundRequest;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * Util class allowing to offload tasks to another thread. Takes care of context activation/propagation.
@@ -59,9 +60,12 @@ public class ContextPropagationService {
             @Override
             public T call() throws Exception {
                 WeldManager weldManager = CDI.current().select(WeldManager.class).get();
-                BoundRequestContext requestContext = weldManager.instance().select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
-                BoundSessionContext sessionContext = weldManager.instance().select(BoundSessionContext.class, BoundLiteral.INSTANCE).get();
-                BoundConversationContext conversationContext = weldManager.instance().select(BoundConversationContext.class, BoundLiteral.INSTANCE).get();
+                BoundRequestContext requestContext = weldManager.instance()
+                        .select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
+                BoundSessionContext sessionContext = weldManager.instance()
+                        .select(BoundSessionContext.class, BoundLiteral.INSTANCE).get();
+                BoundConversationContext conversationContext = weldManager.instance()
+                        .select(BoundConversationContext.class, BoundLiteral.INSTANCE).get();
 
                 // we will be using bound contexts, prepare backing structures for contexts
                 Map<String, Object> sessionMap = new HashMap<>();

@@ -39,7 +39,9 @@ public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstan
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeploymentWO() {
-        return getDeployment(PerDeploymentInstantiatorWOTest.class).addAsResource(new StringAsset("org.jboss.weld.construction.relaxed=false\norg.jboss.weld.proxy.instantiator="), "weld.properties");
+        return getDeployment(PerDeploymentInstantiatorWOTest.class).addAsResource(
+                new StringAsset("org.jboss.weld.construction.relaxed=false\norg.jboss.weld.proxy.instantiator="),
+                "weld.properties");
     }
 
     @Inject

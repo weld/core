@@ -18,9 +18,7 @@ package org.jboss.weld.tests.extensions.annotatedType;
 
 import jakarta.inject.Inject;
 
-
 public class TumbleDryer {
-
 
     private Plug plug;
 

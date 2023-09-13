@@ -35,8 +35,8 @@ public class Weld1418Test {
     @Deployment
     public static WebArchive deployment() {
         return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1418Test.class, Utils.ARCHIVE_TYPE.WAR))
-            .addClasses(Servlet.class, SomeBean.class)
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addClasses(Servlet.class, SomeBean.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @ArquillianResource
@@ -47,7 +47,8 @@ public class Weld1418Test {
     public void testTwoConcurrentInitialRequestsInSameSessionButDifferentConversations() throws Exception {
         CookieHandler.setDefault(new CookieManager());
         String cid;
-        HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "servlet/startConversation?value=" + VALUE).openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "servlet/startConversation?value=" + VALUE)
+                .openConnection();
         try {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 cid = in.readLine();
@@ -69,7 +70,8 @@ public class Weld1418Test {
     public void testSecondRequestInSameConversationWhileFirstRequestStillActive() throws Exception {
         CookieHandler.setDefault(new CookieManager());
         String cid;
-        HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "servlet/startConversation?sleep=500&value=" + VALUE).openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "servlet/startConversation?sleep=500&value=" + VALUE)
+                .openConnection();
         try {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 cid = in.readLine();
@@ -85,7 +87,6 @@ public class Weld1418Test {
             conn.disconnect();
         }
     }
-
 
     private String makeRequest(URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

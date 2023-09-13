@@ -28,7 +28,8 @@ public class DefaultObserverNotifierFactory implements ObserverNotifierFactory {
     }
 
     @Override
-    public ObserverNotifier create(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+    public ObserverNotifier create(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services,
+            boolean strict) {
         return new ObserverNotifier(contextId, resolver, services, strict);
     }
 }

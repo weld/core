@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.io.Serializable;
 
 @Named
 @SessionScoped

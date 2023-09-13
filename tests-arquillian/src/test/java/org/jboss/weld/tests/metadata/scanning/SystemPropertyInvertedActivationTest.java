@@ -24,13 +24,13 @@ public class SystemPropertyInvertedActivationTest {
 
     public static final Asset BEANS_XML = createBeansXml(
             "<weld:scan>"
-                + "<weld:include name=\"" + Bar.class.getName() + "\">"
+                    + "<weld:include name=\"" + Bar.class.getName() + "\">"
                     + "<weld:if-system-property name=\"!" + SET_PROPERTY_1 + "\" />"
-                + "</weld:include>"
-                + "<weld:include name=\"" + Foo.class.getName() + "\">"
+                    + "</weld:include>"
+                    + "<weld:include name=\"" + Foo.class.getName() + "\">"
                     + "<weld:if-system-property name=\"!" + UNSET_PROPERTY_1 + "\" />"
-                + "</weld:include>"
-            + "</weld:scan>");
+                    + "</weld:include>"
+                    + "</weld:scan>");
 
     @Deployment
     public static Archive<?> deployment() {

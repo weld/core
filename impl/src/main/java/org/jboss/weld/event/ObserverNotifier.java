@@ -71,7 +71,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 /**
  * Provides event-related operations such as observer method resolution and event delivery.
  *
- * An ObserverNotifier may be created with strict checks enabled. In such case event type checks are performed. Otherwise, the ObserverNotifier is called
+ * An ObserverNotifier may be created with strict checks enabled. In such case event type checks are performed. Otherwise, the
+ * ObserverNotifier is called
  * lenient. The lenient version should be used for internal dispatching of events only.
  *
  * @author Jozef Hartinger
@@ -104,17 +105,20 @@ public class ObserverNotifier {
             this.eventTypeCheckCache = null;
         }
         // fall back to FJP.commonPool() if ExecutorServices are not installed
-        this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
+        this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor())
+                .orElse(ForkJoinPool.commonPool());
         // ScheduledExecutor might have null value
         this.timerExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTimerExecutor()).orElse(null);
         this.securityServices = services.getRequired(SecurityServices.class);
         // LazyValueHolder is used because contexts are not ready yet at the point when ObserverNotifier is first initialized
         this.requestContextHolder = LazyValueHolder
-                .forSupplier(() -> Container.instance(contextId).deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get());
+                .forSupplier(() -> Container.instance(contextId).deploymentManager().instance()
+                        .select(RequestContext.class, UnboundLiteral.INSTANCE).get());
     }
 
     /**
-     * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is verified.
+     * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is
+     * verified.
      *
      * @param event the event object
      * @param qualifiers given event qualifiers
@@ -126,7 +130,8 @@ public class ObserverNotifier {
     }
 
     /**
-     * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is verified.
+     * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is
+     * verified.
      *
      * @param event the event object
      * @param qualifiers given event qualifiers
@@ -148,7 +153,8 @@ public class ObserverNotifier {
     }
 
     /**
-     * Delivers the given event object to observer methods resolved based on the runtime type of the event object and given event qualifiers. If strict checks
+     * Delivers the given event object to observer methods resolved based on the runtime type of the event object and given
+     * event qualifiers. If strict checks
      * are enabled the event object type is verified.
      *
      * @param event the event object
@@ -160,7 +166,8 @@ public class ObserverNotifier {
     }
 
     /**
-     * Delivers the given event object to observer methods resolved based on the given event type and qualifiers. If strict checks are enabled the given type is
+     * Delivers the given event object to observer methods resolved based on the given event type and qualifiers. If strict
+     * checks are enabled the given type is
      * verified.
      *
      * @param eventType the given event type
@@ -178,7 +185,8 @@ public class ObserverNotifier {
     }
 
     /**
-     * Delivers the given event object to observer methods resolved based on the given resolvable. If strict checks are enabled the event object type is
+     * Delivers the given event object to observer methods resolved based on the given resolvable. If strict checks are enabled
+     * the event object type is
      * verified.
      *
      * @param event the given event object
@@ -192,13 +200,15 @@ public class ObserverNotifier {
     protected Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         Set<Type> typeClosure = sharedObjectCache.getTypeClosureHolder(eventType).get();
-        return new ResolvableBuilder(resolver.getMetaAnnotationStore()).addTypes(typeClosure).addType(Object.class).addQualifiers(qualifiers)
+        return new ResolvableBuilder(resolver.getMetaAnnotationStore()).addTypes(typeClosure).addType(Object.class)
+                .addQualifiers(qualifiers)
                 .addQualifierUnchecked(QualifierInstance.ANY).create();
     }
 
     protected Resolvable buildEventResolvable(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ResolvableBuilder(resolver.getMetaAnnotationStore()).addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get()).addType(Object.class)
+        return new ResolvableBuilder(resolver.getMetaAnnotationStore())
+                .addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get()).addType(Object.class)
                 .addQualifiers(qualifiers).addQualifierUnchecked(QualifierInstance.ANY).create();
     }
 
@@ -217,12 +227,15 @@ public class ObserverNotifier {
     }
 
     /**
-     * If strict checks are enabled this method performs event type checks on the given type. More specifically it verifies that no type variables nor wildcards
-     * are present within the event type. In addition, this method verifies, that the event type is not assignable to a container lifecycle event type. If
+     * If strict checks are enabled this method performs event type checks on the given type. More specifically it verifies that
+     * no type variables nor wildcards
+     * are present within the event type. In addition, this method verifies, that the event type is not assignable to a
+     * container lifecycle event type. If
      * strict checks are not enabled then this method does not perform any action.
      *
      * @param eventType the given event type
-     * @throws org.jboss.weld.exceptions.IllegalArgumentException if the strict mode is enabled and the event type contains a type variable, wildcard or is
+     * @throws org.jboss.weld.exceptions.IllegalArgumentException if the strict mode is enabled and the event type contains a
+     *         type variable, wildcard or is
      *         assignable to a container lifecycle event type
      */
     public void checkEventObjectType(Type eventType) {
@@ -240,13 +253,15 @@ public class ObserverNotifier {
         public RuntimeException apply(Type eventType) {
             Type resolvedType = Types.getCanonicalType(eventType);
             /*
-             * If the runtime type of the event object contains a type variable, the container must throw an IllegalArgumentException.
+             * If the runtime type of the event object contains a type variable, the container must throw an
+             * IllegalArgumentException.
              */
             if (Types.containsTypeVariable(resolvedType)) {
                 return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
             }
             /*
-             * If the runtime type of the event object is assignable to the type of a container lifecycle event, IllegalArgumentException is thrown.
+             * If the runtime type of the event object is assignable to the type of a container lifecycle event,
+             * IllegalArgumentException is thrown.
              */
             Class<?> resolvedClass = Reflections.getRawType(eventType);
             for (Class<?> containerEventType : Observers.CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES) {
@@ -259,7 +274,8 @@ public class ObserverNotifier {
     }
 
     /**
-     * Delivers the given synchronous event object to synchronous and transactional observer methods. Event metadata is made available for injection into
+     * Delivers the given synchronous event object to synchronous and transactional observer methods. Event metadata is made
+     * available for injection into
      * observer methods, if needed. Asynchronous observer methods are ignored.
      *
      * @param observers the given observer methods
@@ -271,10 +287,12 @@ public class ObserverNotifier {
             metadata = null;
         }
         notifySyncObservers(observers.getImmediateSyncObservers(), event, metadata, ObserverExceptionHandler.IMMEDIATE_HANDLER);
-        notifyTransactionObservers(observers.getTransactionObservers(), event, metadata, ObserverExceptionHandler.IMMEDIATE_HANDLER);
+        notifyTransactionObservers(observers.getTransactionObservers(), event, metadata,
+                ObserverExceptionHandler.IMMEDIATE_HANDLER);
     }
 
-    protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata, ObserverExceptionHandler handler) {
+    protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata,
+            ObserverExceptionHandler handler) {
         if (observers.isEmpty()) {
             return;
         }
@@ -300,27 +318,32 @@ public class ObserverNotifier {
     /**
      * Delivers the given asynchronous event object to given observer asynchronous observer methods.
      *
-     * Asynchronous observer methods are scheduled to be notified in a separate thread. Note that this method exits just after event delivery to asynchronous
+     * Asynchronous observer methods are scheduled to be notified in a separate thread. Note that this method exits just after
+     * event delivery to asynchronous
      * observer methods is scheduled. {@link EventMetadata} is made available for injection into observer methods, if needed.
      *
-     * Note that if any of the observer methods throws an exception, it is never thrown out of this method. Instead, all the exceptions are grouped together
+     * Note that if any of the observer methods throws an exception, it is never thrown out of this method. Instead, all the
+     * exceptions are grouped together
      * using {@link CompletionException} and the returned {@link CompletionStage} fails with this compound exception.
      *
-     * If an executor is provided then observer methods are notified using this executor. Otherwise, Weld's task executor is used.
+     * If an executor is provided then observer methods are notified using this executor. Otherwise, Weld's task executor is
+     * used.
      *
      * @param observers the given observer methods
      * @param event the given event object
      * @param metadata event metadata
      * @param options
      */
-    public <T, U extends T> CompletionStage<U> notifyAsync(ResolvedObservers<T> observers, U event, EventMetadata metadata, NotificationOptions options) {
+    public <T, U extends T> CompletionStage<U> notifyAsync(ResolvedObservers<T> observers, U event, EventMetadata metadata,
+            NotificationOptions options) {
         if (!observers.isMetadataRequired()) {
             metadata = null;
         }
         return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, options.getExecutor(), options);
     }
 
-    protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata,
+    protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event,
+            EventMetadata metadata,
             Executor executor, NotificationOptions options) {
         if (executor == null) {
             executor = asyncEventExecutor;
@@ -342,33 +365,38 @@ public class ObserverNotifier {
             exceptionHandler = new CollectingExceptionHandler(new CopyOnWriteArrayList<>());
             List<CompletableFuture<T>> completableFutures = new ArrayList<>(observers.size());
             for (ObserverMethod<? super T> observer : observers) {
-                completableFutures.add(CompletableFuture.supplyAsync(createSupplier(tccl, securityContextActionConsumer, event, metadata, exceptionHandler, false, () -> {
-                    notifyAsyncObserver(observer, event, metadata, exceptionHandler);
-                }), executor));
+                completableFutures.add(CompletableFuture.supplyAsync(
+                        createSupplier(tccl, securityContextActionConsumer, event, metadata, exceptionHandler, false, () -> {
+                            notifyAsyncObserver(observer, event, metadata, exceptionHandler);
+                        }), executor));
             }
-            completableFuture = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[] {})).thenApply((ignoredVoid) -> {
-                handleExceptions(exceptionHandler);
-                return event;
-            });
+            completableFuture = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[] {}))
+                    .thenApply((ignoredVoid) -> {
+                        handleExceptions(exceptionHandler);
+                        return event;
+                    });
         } else {
             // Async observers are notified serially in a single worker thread
             exceptionHandler = new CollectingExceptionHandler();
-            completableFuture = CompletableFuture.supplyAsync(createSupplier(tccl, securityContextActionConsumer, event, metadata, exceptionHandler, true, () -> {
-                for (ObserverMethod<? super T> observer : observers) {
-                    notifyAsyncObserver(observer, event, metadata, exceptionHandler);
-                }
-            }), executor);
+            completableFuture = CompletableFuture.supplyAsync(
+                    createSupplier(tccl, securityContextActionConsumer, event, metadata, exceptionHandler, true, () -> {
+                        for (ObserverMethod<? super T> observer : observers) {
+                            notifyAsyncObserver(observer, event, metadata, exceptionHandler);
+                        }
+                    }), executor);
         }
 
         // If NotificationOptionKeys.TIMEOUT is set, we will trigger the counter and use CompletableFuture.anyOf()
         if (timeout != null) {
-            completableFuture = CompletableFuture.anyOf(completableFuture, startTimer(timeout)).thenApply((ignoredObject) -> event);
+            completableFuture = CompletableFuture.anyOf(completableFuture, startTimer(timeout))
+                    .thenApply((ignoredObject) -> event);
         }
         return new AsyncEventDeliveryStage<>(completableFuture, executor);
     }
 
     /**
-     * Verifies that, if timeout options was set, the executor is available and input value for timeout can be interpreted as Long.
+     * Verifies that, if timeout options was set, the executor is available and input value for timeout can be interpreted as
+     * Long.
      * Returns the timeout value if all is alright, null if this option was not requested.
      */
     private Long initTimeoutOption(Object timeoutOptionValue) {
@@ -405,7 +433,8 @@ public class ObserverNotifier {
      */
     private <T> CompletableFuture<T> startTimer(Long timeout) {
         CompletableFuture<T> timeoutFuture = new CompletableFuture<T>();
-        timerExecutor.schedule(() -> timeoutFuture.completeExceptionally(new TimeoutException()), timeout, TimeUnit.MILLISECONDS);
+        timerExecutor.schedule(() -> timeoutFuture.completeExceptionally(new TimeoutException()), timeout,
+                TimeUnit.MILLISECONDS);
         return timeoutFuture;
     }
 
@@ -419,7 +448,8 @@ public class ObserverNotifier {
     }
 
     /**
-     * The supplier associates the security context with the current thread, activates the request context, runs the "notify" action and handles exceptions if
+     * The supplier associates the security context with the current thread, activates the request context, runs the "notify"
+     * action and handles exceptions if
      * required.
      *
      * @param event
@@ -429,7 +459,9 @@ public class ObserverNotifier {
      * @param notifyAction
      * @return a new supplier
      */
-    private <T, U extends T> Supplier<T> createSupplier(ClassLoader threadContextClassLoader, Consumer<Runnable> securityContextActionConsumer, U event, EventMetadata metadata, ObserverExceptionHandler exceptionHandler,
+    private <T, U extends T> Supplier<T> createSupplier(ClassLoader threadContextClassLoader,
+            Consumer<Runnable> securityContextActionConsumer, U event, EventMetadata metadata,
+            ObserverExceptionHandler exceptionHandler,
             boolean handleExceptions, Runnable notifyAction) {
         return () -> {
             ClassLoader originalCl = SecurityActions.getContextClassLoader();
@@ -472,9 +504,12 @@ public class ObserverNotifier {
     }
 
     /**
-     * There are two different strategies of exception handling for observer methods. When an exception is raised by a synchronous or transactional observer for
-     * a synchronous event, this exception stops the notification chain and the exception is propagated immediately. On the other hand, an exception thrown
-     * during asynchronous event delivery never is never propagated directly. Instead, all the exceptions for a given asynchronous event are collected and then
+     * There are two different strategies of exception handling for observer methods. When an exception is raised by a
+     * synchronous or transactional observer for
+     * a synchronous event, this exception stops the notification chain and the exception is propagated immediately. On the
+     * other hand, an exception thrown
+     * during asynchronous event delivery never is never propagated directly. Instead, all the exceptions for a given
+     * asynchronous event are collected and then
      * made available together using CompletionException.
      *
      * @author Jozef Hartinger

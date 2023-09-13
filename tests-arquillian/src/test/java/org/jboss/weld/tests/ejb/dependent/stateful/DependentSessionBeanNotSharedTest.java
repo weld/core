@@ -18,14 +18,13 @@ package org.jboss.weld.tests.ejb.dependent.stateful;
 
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.PropertiesBuilder;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -41,12 +40,14 @@ public abstract class DependentSessionBeanNotSharedTest {
 
     public static Archive<?> getDeployment(boolean optimizationEnabled) {
         return ShrinkWrap
-                .create(WebArchive.class, Utils.getDeploymentNameAsHash(DependentSessionBeanNotSharedTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(DependentSessionBeanNotSharedTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(DependentSessionBeanNotSharedTest.class, StatefulService.class, Injection.class)
                 .addAsResource(
                         PropertiesBuilder.newBuilder()
                                 .set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "" + optimizationEnabled)
-                                .build(), "weld.properties");
+                                .build(),
+                        "weld.properties");
     }
 
     @Test

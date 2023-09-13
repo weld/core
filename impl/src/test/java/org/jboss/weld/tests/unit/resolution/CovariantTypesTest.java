@@ -82,9 +82,12 @@ public class CovariantTypesTest {
 
     @Test
     public void testRawTypeAssignableFromParameterizedType() {
-        assertTrue(CovariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, String.class, Integer.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, Object.class, Object.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(HashMap.class, Object.class, Object.class)));
+        assertTrue(
+                CovariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, String.class, Integer.class)));
+        assertTrue(
+                CovariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, Object.class, Object.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(Map.class,
+                new ParameterizedTypeImpl(HashMap.class, Object.class, Object.class)));
         assertFalse(CovariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(List.class, Object.class)));
     }
 
@@ -116,18 +119,25 @@ public class CovariantTypesTest {
 
     @Test
     public void testRawTypeAssignableFromWildcardType() {
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.defaultInstance())));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Number.class))));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Integer.class))));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withLowerBound(Integer.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class),
+                new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.defaultInstance())));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class),
+                new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Number.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class),
+                new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Integer.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, Integer.class),
+                new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withLowerBound(Integer.class))));
     }
 
     @Test
     public void testRawTypeAssignableFromGenericArrayType() {
         assertTrue(CovariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(List.class, Object.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(List.class, Integer.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(ArrayList.class, Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new ArrayList[0].getClass(), new GenericArrayTypeImpl(List.class, Integer.class)));
+        assertTrue(
+                CovariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(List.class, Integer.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new List[0].getClass(),
+                new GenericArrayTypeImpl(ArrayList.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ArrayList[0].getClass(),
+                new GenericArrayTypeImpl(List.class, Integer.class)));
     }
 
     /*
@@ -135,10 +145,14 @@ public class CovariantTypesTest {
      */
     @Test
     public void testParameterizedTypeAssignableFromRawType() {
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Object.class, Object.class), Map.class));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Runnable.class, Exception.class), Map.class));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Object.class, Object.class), HashMap.class));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Runnable.class, Exception.class), HashMap.class));
+        assertTrue(
+                CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Object.class, Object.class), Map.class));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Runnable.class, Exception.class),
+                Map.class));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Object.class, Object.class),
+                HashMap.class));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Runnable.class, Exception.class),
+                HashMap.class));
         assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, String.class), Collection.class));
 
         assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Comparable.class, Integer.class), Double.class));
@@ -146,17 +160,28 @@ public class CovariantTypesTest {
 
     @Test
     public void testParameterizedTypeAssignableFromParameterizedType() {
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, String.class, Integer.class), new ParameterizedTypeImpl(Map.class, String.class, Integer.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Runnable.class), new ParameterizedTypeImpl(List.class, Runnable.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class), new ParameterizedTypeImpl(List.class, Object.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, String.class, Integer.class), new ParameterizedTypeImpl(HashMap.class, String.class, Integer.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Runnable.class), new ParameterizedTypeImpl(ArrayList.class, Runnable.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class), new ParameterizedTypeImpl(ArrayList.class, Object.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class), new ParameterizedTypeImpl(List.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class), new ParameterizedTypeImpl(List.class, Runnable.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Number.class), new ParameterizedTypeImpl(List.class, Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Number.class), new ParameterizedTypeImpl(List.class, Runnable.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Integer.class), new ParameterizedTypeImpl(List.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, String.class, Integer.class),
+                new ParameterizedTypeImpl(Map.class, String.class, Integer.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Runnable.class),
+                new ParameterizedTypeImpl(List.class, Runnable.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class),
+                new ParameterizedTypeImpl(List.class, Object.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, String.class, Integer.class),
+                new ParameterizedTypeImpl(HashMap.class, String.class, Integer.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Runnable.class),
+                new ParameterizedTypeImpl(ArrayList.class, Runnable.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class),
+                new ParameterizedTypeImpl(ArrayList.class, Object.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class),
+                new ParameterizedTypeImpl(List.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Object.class),
+                new ParameterizedTypeImpl(List.class, Runnable.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Number.class),
+                new ParameterizedTypeImpl(List.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Number.class),
+                new ParameterizedTypeImpl(List.class, Runnable.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Integer.class),
+                new ParameterizedTypeImpl(List.class, Number.class)));
     }
 
     @Test
@@ -198,16 +223,27 @@ public class CovariantTypesTest {
 
     @Test
     public void testParameterizedTypeAssignableFromWildcardType() {
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.defaultInstance())));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Iterable.class))));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Collection.class))));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)), new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Integer.class)))));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)),
+                new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.defaultInstance())));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)),
+                new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Iterable.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)),
+                new ParameterizedTypeImpl(Collection.class, WildcardTypeImpl.withUpperBound(Collection.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                new ParameterizedTypeImpl(Collection.class, new ParameterizedTypeImpl(Collection.class, Integer.class)),
+                new ParameterizedTypeImpl(Collection.class,
+                        WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Integer.class)))));
     }
 
     @Test
     public void testParameterizedTypeAssignableFromGenericArrayType() {
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Integer.class), new GenericArrayTypeImpl(List.class, Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Integer.class), new GenericArrayTypeImpl(ArrayList.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Integer.class),
+                new GenericArrayTypeImpl(List.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new ParameterizedTypeImpl(List.class, Integer.class),
+                new GenericArrayTypeImpl(ArrayList.class, Integer.class)));
     }
 
     /*
@@ -290,7 +326,7 @@ public class CovariantTypesTest {
             for (int j = 0; j < count; j++) {
                 /*
                  * E (4) extends D (3) extends C (2) extends A (0)
-                 *                             B (1) extends A (0)
+                 * B (1) extends A (0)
                  */
                 if (i == j || i == 0 || (i < j && i != 1)) {
                     assertTrue(CovariantTypes.isAssignableFrom(typeVariables[i], typeVariables[j]));
@@ -335,7 +371,6 @@ public class CovariantTypesTest {
         assertFalse(CovariantTypes.isAssignableFrom(b, new GenericArrayTypeImpl(ArrayList.class, Number.class)));
         assertFalse(CovariantTypes.isAssignableFrom(b, new GenericArrayTypeImpl(ArrayList.class, Integer.class)));
     }
-
 
     /*
      * Wildcard
@@ -393,19 +428,42 @@ public class CovariantTypesTest {
 
     @Test
     public void testWildcardAssignableFromParameterizedType() {
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), new ParameterizedTypeImpl(Collection.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(Collection.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(List.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(ArrayList.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(Collection.class, Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(Collection.class, Object.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(),
+                new ParameterizedTypeImpl(Collection.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(Collection.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(List.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(ArrayList.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(Collection.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(Collection.class, Object.class)));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(Collection.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(Iterable.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(List.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(ArrayList.class, Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(Collection.class, Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)), new ParameterizedTypeImpl(Collection.class, Object.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(Collection.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(Iterable.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(List.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(ArrayList.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(Collection.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class)),
+                new ParameterizedTypeImpl(Collection.class, Object.class)));
     }
 
     @Test
@@ -453,14 +511,18 @@ public class CovariantTypesTest {
             for (int j = 0; j < count; j++) {
                 /*
                  * E (4) extends D (3) extends C (2) extends A (0)
-                 *                             B (1) extends A (0)
+                 * B (1) extends A (0)
                  */
                 if (i == j || i == 0 || (i < j && i != 1)) {
-                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]), typeVariables[j]));
-                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]), typeVariables[i]));
+                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]),
+                            typeVariables[j]));
+                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]),
+                            typeVariables[i]));
                 } else {
-                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]), typeVariables[j]));
-                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]), typeVariables[i]));
+                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]),
+                            typeVariables[j]));
+                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]),
+                            typeVariables[i]));
                 }
             }
         }
@@ -469,21 +531,33 @@ public class CovariantTypesTest {
     @Test
     public void testWildcardAssignableFromWildcard() {
         assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), WildcardTypeImpl.defaultInstance()));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), WildcardTypeImpl.withUpperBound(Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Number.class), WildcardTypeImpl.withUpperBound(Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Number.class), WildcardTypeImpl.defaultInstance()));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(),
+                WildcardTypeImpl.withUpperBound(Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Number.class),
+                WildcardTypeImpl.withUpperBound(Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Number.class),
+                WildcardTypeImpl.defaultInstance()));
 
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class), WildcardTypeImpl.defaultInstance()));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class), WildcardTypeImpl.withUpperBound(Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class), WildcardTypeImpl.withUpperBound(Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class),
+                WildcardTypeImpl.defaultInstance()));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class),
+                WildcardTypeImpl.withUpperBound(Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class),
+                WildcardTypeImpl.withUpperBound(Integer.class)));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), WildcardTypeImpl.withLowerBound(Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Number.class), WildcardTypeImpl.withLowerBound(Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Integer.class), WildcardTypeImpl.withLowerBound(Integer.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(),
+                WildcardTypeImpl.withLowerBound(Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Number.class),
+                WildcardTypeImpl.withLowerBound(Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Integer.class),
+                WildcardTypeImpl.withLowerBound(Integer.class)));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Number.class), WildcardTypeImpl.withLowerBound(Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class), WildcardTypeImpl.withLowerBound(Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Number.class), WildcardTypeImpl.withLowerBound(Integer.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Number.class),
+                WildcardTypeImpl.withLowerBound(Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class),
+                WildcardTypeImpl.withLowerBound(Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Number.class),
+                WildcardTypeImpl.withLowerBound(Integer.class)));
     }
 
     @Test
@@ -503,61 +577,102 @@ public class CovariantTypesTest {
 
         for (int i = 0; i < count; i++) {
             // unbounded wildcard should be assignable from anything
-            assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), WildcardTypeImpl.withUpperBound(typeVariables[i])));
-            assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), WildcardTypeImpl.withLowerBound(typeVariables[i])));
+            assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(),
+                    WildcardTypeImpl.withUpperBound(typeVariables[i])));
+            assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(),
+                    WildcardTypeImpl.withLowerBound(typeVariables[i])));
             for (int j = 0; j < count; j++) {
                 // wildcard with an upper bound is UNassignable from a wildcard with a lower bound and vice versa
-                assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]), WildcardTypeImpl.withLowerBound(typeVariables[j])));
-                assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[i]), WildcardTypeImpl.withUpperBound(typeVariables[j])));
+                assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]),
+                        WildcardTypeImpl.withLowerBound(typeVariables[j])));
+                assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[i]),
+                        WildcardTypeImpl.withUpperBound(typeVariables[j])));
                 if (i == j || (i < j && j != 3)) {
-                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]), WildcardTypeImpl.withUpperBound(typeVariables[j])));
-                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]), WildcardTypeImpl.withLowerBound(typeVariables[i])));
+                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]),
+                            WildcardTypeImpl.withUpperBound(typeVariables[j])));
+                    assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]),
+                            WildcardTypeImpl.withLowerBound(typeVariables[i])));
                 } else {
-                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]), WildcardTypeImpl.withUpperBound(typeVariables[j])));
-                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]), WildcardTypeImpl.withLowerBound(typeVariables[i])));
+                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(typeVariables[i]),
+                            WildcardTypeImpl.withUpperBound(typeVariables[j])));
+                    assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(typeVariables[j]),
+                            WildcardTypeImpl.withLowerBound(typeVariables[i])));
                 }
             }
         }
 
         // one wildcard bounded by a class and the other bounded by a type variable
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Exception.class), WildcardTypeImpl.withUpperBound(d)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(RuntimeException.class), WildcardTypeImpl.withUpperBound(d)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Exception.class),
+                WildcardTypeImpl.withUpperBound(d)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(RuntimeException.class),
+                WildcardTypeImpl.withUpperBound(d)));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Serializable.class), WildcardTypeImpl.withUpperBound(b)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Throwable.class), WildcardTypeImpl.withUpperBound(b)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Exception.class), WildcardTypeImpl.withUpperBound(b)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Serializable.class),
+                WildcardTypeImpl.withUpperBound(b)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Throwable.class),
+                WildcardTypeImpl.withUpperBound(b)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Exception.class),
+                WildcardTypeImpl.withUpperBound(b)));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(a), WildcardTypeImpl.withLowerBound(Throwable.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(c), WildcardTypeImpl.withLowerBound(Throwable.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(a), WildcardTypeImpl.withLowerBound(Exception.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(c), WildcardTypeImpl.withLowerBound(Exception.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(a),
+                WildcardTypeImpl.withLowerBound(Throwable.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(c),
+                WildcardTypeImpl.withLowerBound(Throwable.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(a),
+                WildcardTypeImpl.withLowerBound(Exception.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(c),
+                WildcardTypeImpl.withLowerBound(Exception.class)));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d), WildcardTypeImpl.withLowerBound(Throwable.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d), WildcardTypeImpl.withLowerBound(Exception.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d), WildcardTypeImpl.withLowerBound(RuntimeException.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d),
+                WildcardTypeImpl.withLowerBound(Throwable.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d),
+                WildcardTypeImpl.withLowerBound(Exception.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d),
+                WildcardTypeImpl.withLowerBound(RuntimeException.class)));
 
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(RuntimeException.class), WildcardTypeImpl.withLowerBound(a)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Throwable.class), WildcardTypeImpl.withLowerBound(a)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(RuntimeException.class), WildcardTypeImpl.withLowerBound(d)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Throwable.class), WildcardTypeImpl.withLowerBound(d)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(RuntimeException.class),
+                WildcardTypeImpl.withLowerBound(a)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Throwable.class),
+                WildcardTypeImpl.withLowerBound(a)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(RuntimeException.class),
+                WildcardTypeImpl.withLowerBound(d)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Throwable.class),
+                WildcardTypeImpl.withLowerBound(d)));
 
         // mix upper bounds with lower bounds
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Exception.class), WildcardTypeImpl.withLowerBound(d)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Exception.class), WildcardTypeImpl.withUpperBound(d)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d), WildcardTypeImpl.withUpperBound(Exception.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(d), WildcardTypeImpl.withLowerBound(Exception.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Exception.class),
+                WildcardTypeImpl.withLowerBound(d)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Exception.class),
+                WildcardTypeImpl.withUpperBound(d)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(d),
+                WildcardTypeImpl.withUpperBound(Exception.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(d),
+                WildcardTypeImpl.withLowerBound(Exception.class)));
     }
 
     @Test
     public void testWildcardAssignableFromGenericArrayType() {
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), new GenericArrayTypeImpl(List.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new GenericArrayTypeImpl(List.class, Number.class)), new GenericArrayTypeImpl(List.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new GenericArrayTypeImpl(List.class, Number.class)), new GenericArrayTypeImpl(ArrayList.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(new GenericArrayTypeImpl(List.class, Number.class)), new GenericArrayTypeImpl(Collection.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(),
+                new GenericArrayTypeImpl(List.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new GenericArrayTypeImpl(List.class, Number.class)),
+                new GenericArrayTypeImpl(List.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new GenericArrayTypeImpl(List.class, Number.class)),
+                new GenericArrayTypeImpl(ArrayList.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withUpperBound(new GenericArrayTypeImpl(List.class, Number.class)),
+                new GenericArrayTypeImpl(Collection.class, Number.class)));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new GenericArrayTypeImpl(List.class, Number.class)), new GenericArrayTypeImpl(List.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new GenericArrayTypeImpl(List.class, Number.class)), new GenericArrayTypeImpl(Collection.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(new GenericArrayTypeImpl(List.class, Number.class)), new GenericArrayTypeImpl(ArrayList.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new GenericArrayTypeImpl(List.class, Number.class)),
+                new GenericArrayTypeImpl(List.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new GenericArrayTypeImpl(List.class, Number.class)),
+                new GenericArrayTypeImpl(Collection.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(
+                WildcardTypeImpl.withLowerBound(new GenericArrayTypeImpl(List.class, Number.class)),
+                new GenericArrayTypeImpl(ArrayList.class, Number.class)));
     }
 
     /*
@@ -566,15 +681,19 @@ public class CovariantTypesTest {
     @Test
     public void testGenericArrayTypeAssignableFromRawType() {
         assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new List[0].getClass()));
-        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new ArrayList[0].getClass()));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new Object[0].getClass()));
+        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class),
+                new ArrayList[0].getClass()));
+        assertFalse(
+                CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new Object[0].getClass()));
         assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new Set[0].getClass()));
     }
 
     @Test
     public void testGenericArrayTypeAssignableFromParameterizedType() {
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new ParameterizedTypeImpl(List.class, Object.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new ParameterizedTypeImpl(List.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class),
+                new ParameterizedTypeImpl(List.class, Object.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class),
+                new ParameterizedTypeImpl(List.class, Number.class)));
     }
 
     @Test
@@ -591,22 +710,36 @@ public class CovariantTypesTest {
     @Test
     @SuppressWarnings("all")
     public <A, B extends Number> void testGenericArrayTypeAssignableFromWildcard() {
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), WildcardTypeImpl.defaultInstance()));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class))));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class))));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Integer.class))));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Integer.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                WildcardTypeImpl.defaultInstance()));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Number.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Number.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                WildcardTypeImpl.withUpperBound(new ParameterizedTypeImpl(Collection.class, Integer.class))));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                WildcardTypeImpl.withLowerBound(new ParameterizedTypeImpl(Collection.class, Integer.class))));
     }
 
     @Test
     public void testGenericArrayTypeAssignableFromGenericArrayType() {
-        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), new GenericArrayTypeImpl(Collection.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), new GenericArrayTypeImpl(List.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), new GenericArrayTypeImpl(ArrayList.class, Number.class)));
-        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, WildcardTypeImpl.defaultInstance()), new GenericArrayTypeImpl(ArrayList.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), new GenericArrayTypeImpl(Iterable.class, Number.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), new GenericArrayTypeImpl(Collection.class, Object.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), new GenericArrayTypeImpl(Collection.class, Integer.class)));
-        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class), new GenericArrayTypeImpl(Collection.class, Double.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                new GenericArrayTypeImpl(Collection.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                new GenericArrayTypeImpl(List.class, Number.class)));
+        assertTrue(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                new GenericArrayTypeImpl(ArrayList.class, Number.class)));
+        assertTrue(
+                CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, WildcardTypeImpl.defaultInstance()),
+                        new GenericArrayTypeImpl(ArrayList.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                new GenericArrayTypeImpl(Iterable.class, Number.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                new GenericArrayTypeImpl(Collection.class, Object.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                new GenericArrayTypeImpl(Collection.class, Integer.class)));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Collection.class, Number.class),
+                new GenericArrayTypeImpl(Collection.class, Double.class)));
     }
 }

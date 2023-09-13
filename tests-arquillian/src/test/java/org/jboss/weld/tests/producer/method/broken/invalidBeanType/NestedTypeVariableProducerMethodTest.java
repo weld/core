@@ -38,11 +38,11 @@ public class NestedTypeVariableProducerMethodTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NestedTypeVariableProducerMethodTest.class))
-            .addClasses(Foo.class, NestedTypeVariableProducer.class);
+                .addClasses(Foo.class, NestedTypeVariableProducer.class);
     }
 
     @Test
     public void testDeploymentWithNestedTypeProducerMethod() {
         // should throw definition exception
-     }
+    }
 }

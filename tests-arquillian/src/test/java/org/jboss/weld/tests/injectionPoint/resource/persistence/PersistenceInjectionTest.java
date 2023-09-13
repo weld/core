@@ -49,11 +49,15 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class PersistenceInjectionTest {
 
-    public static final Asset PERSISTENCE_XML = new ByteArrayAsset("<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"2.0\"><persistence-unit name=\"test\"><jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source></persistence-unit></persistence>".getBytes());
+    public static final Asset PERSISTENCE_XML = new ByteArrayAsset(
+            "<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"2.0\"><persistence-unit name=\"test\"><jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source></persistence-unit></persistence>"
+                    .getBytes());
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(PersistenceInjectionTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(PersistenceInjectionTest.class.getPackage())
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(PersistenceInjectionTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(PersistenceInjectionTest.class.getPackage())
                 .addClass(ActionSequence.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(PERSISTENCE_XML, "META-INF/persistence.xml");

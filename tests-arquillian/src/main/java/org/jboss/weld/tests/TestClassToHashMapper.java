@@ -10,13 +10,15 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.jboss.weld.test.util.Utils;
 
 /**
- * This class generates file with TestClassToHashMapper#OUTPUT_FILE_NAME file name in TestClassToHashMapper#TARGET_DIR directory.
- * Generated file contains fully qualified name of each test class and its related hash. Class is executed using exec-maven-plugin during
+ * This class generates file with TestClassToHashMapper#OUTPUT_FILE_NAME file name in TestClassToHashMapper#TARGET_DIR
+ * directory.
+ * Generated file contains fully qualified name of each test class and its related hash. Class is executed using
+ * exec-maven-plugin during
  * install maven phase.
  */
 public class TestClassToHashMapper {
 
-    private TestClassToHashMapper(){
+    private TestClassToHashMapper() {
     }
 
     public static final String TEST_SUFFIX = "Test.java";

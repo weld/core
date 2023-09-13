@@ -35,7 +35,6 @@ public class Checker {
         return false;
     }
 
-
     public static boolean checkEntityManager(EntityManager entityManager) {
         if (entityManager != null) {
             return !entityManager.contains(new Foo());

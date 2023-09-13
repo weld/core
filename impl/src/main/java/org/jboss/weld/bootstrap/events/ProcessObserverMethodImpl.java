@@ -41,7 +41,8 @@ import org.jboss.weld.util.Preconditions;
 public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainerEvent
         implements ProcessObserverMethod<T, X> {
 
-    public static <T, X> ObserverMethod<T> fire(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
+    public static <T, X> ObserverMethod<T> fire(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod,
+            ObserverMethod<T> observerMethod) {
         return fire(new ProcessObserverMethodImpl<>(beanManager, beanMethod, observerMethod));
     }
 
@@ -68,7 +69,8 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     }
 
     @SuppressWarnings("rawtypes")
-    ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod, Class<? extends ProcessObserverMethod> rawType) {
+    ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod,
+            Class<? extends ProcessObserverMethod> rawType) {
         super(beanManager, rawType, new Type[] { observerMethod.getObservedType(), observerMethod.getBeanClass() });
         this.beanMethod = beanMethod;
         this.initialObserverMethod = observerMethod;
@@ -88,7 +90,8 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     @Override
     public void setObserverMethod(ObserverMethod<T> observerMethod) {
         if (configurator != null) {
-            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessObserverMethod.class.getSimpleName(), getReceiver());
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessObserverMethod.class.getSimpleName(),
+                    getReceiver());
         }
         Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         checkWithinObserverNotification();
@@ -99,7 +102,8 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     @Override
     public ObserverMethodConfigurator<T> configureObserverMethod() {
         if (observerMethodSet) {
-            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessObserverMethod.class.getSimpleName(), getReceiver());
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessObserverMethod.class.getSimpleName(),
+                    getReceiver());
         }
         checkWithinObserverNotification();
         if (configurator == null) {

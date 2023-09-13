@@ -20,7 +20,8 @@ import java.lang.annotation.Annotation;
 
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 
-public abstract class ForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint implements WeldInjectionPointAttributes<T, S> {
+public abstract class ForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint
+        implements WeldInjectionPointAttributes<T, S> {
 
     @Override
     public <X extends Annotation> X getQualifier(Class<X> annotationType) {

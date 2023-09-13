@@ -336,6 +336,7 @@ public class Reflections {
 
     /**
      * Tries to load a class using the specified ResourceLoader. Returns null if the class is not found.
+     *
      * @param className
      * @param resourceLoader
      * @return the loaded class or null if the given class cannot be loaded
@@ -376,13 +377,13 @@ public class Reflections {
      * @return <code>true</code> if the given class is a static nested class, <code>false</code> otherwise
      */
     public static boolean isStaticNestedClass(Class<?> javaClass) {
-        if(javaClass.getEnclosingConstructor() != null || javaClass.getEnclosingMethod() != null) {
+        if (javaClass.getEnclosingConstructor() != null || javaClass.getEnclosingMethod() != null) {
             // Local or anonymous class
             return false;
         }
-        if(javaClass.getEnclosingClass() != null) {
+        if (javaClass.getEnclosingClass() != null) {
             // Extra check for anonymous class - http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8034044
-            if(javaClass.isAnonymousClass()) {
+            if (javaClass.isAnonymousClass()) {
                 return false;
             }
             return Reflections.isStatic(javaClass);
@@ -405,11 +406,13 @@ public class Reflections {
      *
      * It is a responsibility of the caller to make sure that the method is accessible to the caller.
      */
-    public static <T> T invokeAndUnwrap(final Object instance, final Method method, final Object... parameters) throws Throwable {
+    public static <T> T invokeAndUnwrap(final Object instance, final Method method, final Object... parameters)
+            throws Throwable {
         try {
             return cast(method.invoke(instance, parameters));
         } catch (IllegalArgumentException e) {
-            throw ReflectionLogger.LOG.illegalArgumentExceptionOnReflectionInvocation(instance.getClass(), instance, method, Arrays.toString(parameters), e);
+            throw ReflectionLogger.LOG.illegalArgumentExceptionOnReflectionInvocation(instance.getClass(), instance, method,
+                    Arrays.toString(parameters), e);
         } catch (IllegalAccessException e) {
             throw new WeldException(e);
         } catch (InvocationTargetException e) {
@@ -420,6 +423,7 @@ public class Reflections {
     /**
      * Triggers loading of declaring class (if any) of the given class recursively.
      * If the class cannot be loaded, the underlying {@link LinkageError} is propagated.
+     *
      * @param class the given class
      * @throws LinkageError or its subclass if a declaring class cannot be loaded
      */
@@ -433,6 +437,7 @@ public class Reflections {
      * Searches for a declared method with a given name. If the class declares multiple methods with the given name,
      * there is no guarantee as of which methods is returned. Null is returned if the class does not declare a method
      * with the given name.
+     *
      * @param clazz the given class
      * @param methodName the given method name
      * @return method method with the given name declared by the given class or null if no such method exists
@@ -447,9 +452,12 @@ public class Reflections {
     }
 
     /**
-     * Unwraps the given {@link InvocationTargetException}. {@link Error} and {@link Exception} are unwrapped right away, {@link Throwable} is wrapped
-     * within {@link WeldException}. This method never returns - it always throws the unwrapped cause instead. The return type matches the throws part of
+     * Unwraps the given {@link InvocationTargetException}. {@link Error} and {@link Exception} are unwrapped right away,
+     * {@link Throwable} is wrapped
+     * within {@link WeldException}. This method never returns - it always throws the unwrapped cause instead. The return type
+     * matches the throws part of
      * the signature just to simplify usage.
+     *
      * @param the given exception
      * @return
      * @throws Exception unwrapped cause of {@link InvocationTargetException}
@@ -504,7 +512,7 @@ public class Reflections {
      * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays as "URL".
      *
      * @param name
-     *            The string to be decapitalized.
+     *        The string to be decapitalized.
      * @return The decapitalized version of the string.
      */
     public static String decapitalize(String name) {

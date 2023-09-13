@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * Exception message that produces a list of exceptions and their stack traces
- * for logging.  This is typically used in lifecycle events which accumulate
+ * for logging. This is typically used in lifecycle events which accumulate
  * exceptions across observers.
  *
  * @author David Allen

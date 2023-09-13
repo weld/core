@@ -21,7 +21,7 @@ import jakarta.enterprise.context.Dependent;
 @Dependent
 public class AlphaFromDirectory {
 
-    public int ping(){
+    public int ping() {
         return 1;
     }
 }

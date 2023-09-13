@@ -16,30 +16,30 @@
  */
 package org.jboss.weld.tests.contexts.conversation.sessiontimeout;
 
-import org.jboss.weld.test.util.ActionSequence;
+import java.io.Serializable;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ConversationScoped;
 
-import java.io.Serializable;
+import org.jboss.weld.test.util.ActionSequence;
 
 @SuppressWarnings("serial")
 @ConversationScoped
 public class Foo implements Serializable {
 
     public void ping() {
-        ActionSequence.addAction(Foo.class.getSimpleName()+"ping");
+        ActionSequence.addAction(Foo.class.getSimpleName() + "ping");
     }
 
     @PostConstruct
     public void init() {
-        ActionSequence.addAction(Foo.class.getSimpleName()+"init");
+        ActionSequence.addAction(Foo.class.getSimpleName() + "init");
     }
 
     @PreDestroy
     public void destroy() {
-        ActionSequence.addAction(Foo.class.getSimpleName()+"destroy");
+        ActionSequence.addAction(Foo.class.getSimpleName() + "destroy");
     }
 
 }

@@ -28,16 +28,17 @@ import org.junit.runner.RunWith;
 /**
  * Verifies, that a deployment, which contains a non-passivation capable SFSB which is not bound to a passivating context, is
  * valid.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class NonPassivationCapableSessionBeanTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivationCapableSessionBeanTest.class)).intercept(DigitalInterceptor.class).addPackage(Telephone.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivationCapableSessionBeanTest.class))
+                .intercept(DigitalInterceptor.class).addPackage(Telephone.class.getPackage());
     }
 
     @Test

@@ -25,10 +25,12 @@ import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR",
+        "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, Serializable {
 
-    public static <X> List<AnnotatedParameter<X>> forExecutable(Executable executable, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache cache) {
+    public static <X> List<AnnotatedParameter<X>> forExecutable(Executable executable,
+            BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache cache) {
         final Parameter[] parameters = executable.getParameters();
         if (parameters.length == 0) {
             return Collections.emptyList();
@@ -40,7 +42,8 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         return builder.build();
     }
 
-    public static <X> AnnotatedParameter<X> of(Parameter parameter, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
+    public static <X> AnnotatedParameter<X> of(Parameter parameter, int position,
+            BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
         return new BackedAnnotatedParameter<X>(parameter, position, declaringCallable, sharedObjectCache);
     }
 
@@ -48,7 +51,8 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
     private final int position;
     private final BackedAnnotatedCallable<X, ?> declaringCallable;
 
-    private BackedAnnotatedParameter(Parameter parameter, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
+    private BackedAnnotatedParameter(Parameter parameter, int position, BackedAnnotatedCallable<X, ?> declaringCallable,
+            SharedObjectCache sharedObjectCache) {
         super(parameter.getParameterizedType(), sharedObjectCache);
         this.parameter = parameter;
         this.position = position;

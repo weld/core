@@ -38,9 +38,9 @@ import org.junit.runner.RunWith;
 /**
  * This test verifies that injected {@link Bean}, {@link Interceptor} and {@link Decorator} objects are passivation capable
  * dependencies.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class BeanMetadataPassivationCapableDependencyTest {

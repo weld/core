@@ -42,7 +42,8 @@ import org.jboss.weld.util.reflection.Reflections;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "The bean cache is loaded lazily.")
-public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPointAttributes<T, Field>, Serializable {
+public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field>
+        implements WeldInjectionPointAttributes<T, Field>, Serializable {
 
     /**
      * Creates an injection point without firing the {@link ProcessInjectionPoint} event.

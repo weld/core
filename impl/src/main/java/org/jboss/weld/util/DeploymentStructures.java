@@ -33,14 +33,16 @@ public class DeploymentStructures {
     private DeploymentStructures() {
     }
 
-    public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz) {
+    public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager,
+            BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz) {
         BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
         if (beanDeploymentArchive == null) {
             throw UtilLogger.LOG.unableToFindBeanDeploymentArchive(clazz);
         } else {
             BeanDeployment beanDeployment = bdaMapping.getBeanDeployment(beanDeploymentArchive);
             if (beanDeployment == null) {
-                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts, true);
+                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(),
+                        contexts, true);
                 bdaMapping.put(beanDeploymentArchive, beanDeployment);
             }
             return beanDeployment;

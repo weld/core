@@ -103,7 +103,8 @@ public class HttpContextLifecycle implements Service {
         private int value = 1;
     }
 
-    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards,
+    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter,
+            boolean ignoreForwards,
             boolean ignoreIncludes, boolean lazyConversationContext, boolean nestedInvocationGuardEnabled) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager, lazyConversationContext);
@@ -175,8 +176,10 @@ public class HttpContextLifecycle implements Service {
                 } else {
                     // fallback for backward compatibility
                     ServletLogger.LOG.noEeModuleDescriptor(beanManager);
-                    final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
-                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
+                    final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null,
+                            Collections.singleton(qualifier));
+                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata,
+                            qualifier);
                 }
             }
         }
@@ -203,7 +206,8 @@ public class HttpContextLifecycle implements Service {
             // the old session won't be available at the time we destroy this request
             // let's store its reference until then
             if (getRequestContext() instanceof HttpRequestContextImpl) {
-                HttpServletRequest request = Reflections.<HttpRequestContextImpl> cast(getRequestContext()).getHttpServletRequest();
+                HttpServletRequest request = Reflections.<HttpRequestContextImpl> cast(getRequestContext())
+                        .getHttpServletRequest();
                 request.setAttribute(HTTP_SESSION, session);
             }
         }
@@ -228,8 +232,10 @@ public class HttpContextLifecycle implements Service {
             } else {
                 if (counter != null && marker == null) {
                     /*
-                     * This request has not been processed yet but the guard is set already. That indicates, that the guard leaked from a previous request
-                     * processing - most likely the Servlet container did not invoke listener methods symmetrically. Log a warning and recover by
+                     * This request has not been processed yet but the guard is set already. That indicates, that the guard
+                     * leaked from a previous request
+                     * processing - most likely the Servlet container did not invoke listener methods symmetrically. Log a
+                     * warning and recover by
                      * re-initializing the guard
                      */
                     ServletLogger.LOG.guardLeak(counter.value);
@@ -321,7 +327,8 @@ public class HttpContextLifecycle implements Service {
         try {
             conversationContextActivator.deactivateConversationContext(request);
             /*
-             * If this request has been switched to async then do not invalidate the context now as it will be invalidated at the end of the async operation.
+             * If this request has been switched to async then do not invalidate the context now as it will be invalidated at
+             * the end of the async operation.
              */
             if (servletApi.isAsyncSupported() && servletApi.isAsyncStarted(request)) {
                 // Note that we can't use isAsyncStarted() because it may return false after dispatch
@@ -371,24 +378,30 @@ public class HttpContextLifecycle implements Service {
     }
 
     /**
-     * Some Servlet containers fire HttpServletListeners for include requests (inner requests caused by calling the include method of RequestDispatcher). This
-     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is an included request or not.
+     * Some Servlet containers fire HttpServletListeners for include requests (inner requests caused by calling the include
+     * method of RequestDispatcher). This
+     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is
+     * an included request or not.
      */
     private boolean isIncludedRequest(HttpServletRequest request) {
         return request.getAttribute(INCLUDE_HEADER) != null;
     }
 
     /**
-     * Some Servlet containers fire HttpServletListeners for forward requests (inner requests caused by calling the forward method of RequestDispatcher). This
-     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is an forwarded request or not.
+     * Some Servlet containers fire HttpServletListeners for forward requests (inner requests caused by calling the forward
+     * method of RequestDispatcher). This
+     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is
+     * an forwarded request or not.
      */
     private boolean isForwardedRequest(HttpServletRequest request) {
         return request.getAttribute(FORWARD_HEADER) != null;
     }
 
     /**
-     * The way servlet containers react to an exception that occurs in a {@link ServletRequestListener} differs among servlet listeners. In certain containers
-     * the destroyed callback may be invoked multiple times, causing the latter invocations to fail as thread locals have already been unset. We use the
+     * The way servlet containers react to an exception that occurs in a {@link ServletRequestListener} differs among servlet
+     * listeners. In certain containers
+     * the destroyed callback may be invoked multiple times, causing the latter invocations to fail as thread locals have
+     * already been unset. We use the
      * {@link #REQUEST_DESTROYED} flag to indicate that all further invocations of the
      * {@link ServletRequestListener#requestDestroyed(jakarta.servlet.ServletRequestEvent)} should be ignored by Weld.
      */

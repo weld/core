@@ -38,38 +38,37 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class HierarchyDiscovery {
 
-
-   /**
-    * Performs base type normalization before hierarchy discovery is performed.
-    * <p>
-    * Type normalization only affects parameterized types (e.g. public class <tt>Foo&lt;T extends Serializable&gt;</tt>)
-    * that are used in form of a raw type (e.g. <tt>Foo.class</tt>). During the process of type normalization, this raw type
-    * (<tt>Foo.class</tt> is instance of <tt>Class<?></tt>) is replaced by a canonical version of the type which in this case
-    * would be the parameterized type of <tt>Foo&lt;T extends Serializable&gt;</tt>
-    * <p>
-    * Base type normalization means that only the base type, which is the input for hierarchy discovery, is normalized.
-    * Other types discovered during hierarchy discovery are never normalized even if a raw form of a parameterized type
-    * is discovered.
-    * <p>
-    * A user of this class should recognize whether base type normalization is required and set the <tt>normalize</tt>
-    * parameter accordingly.
-    * <p>
-    * In the realm of CDI there is only a single use-case for base type normalization. That is resolving bean types of
-    * a bean defined as a class (managed and session beans). Here, e.g. discovered <tt>Foo.class</tt> needs to be normalized as
-    * the correct CDI bean type is <tt>Foo&lt;T extends Serializable&gt;</tt>, not <tt>Foo.class</tt>.
-    * <p>
-    * In other cases, the complete generic information of the base type is known and thus base type normalization should
-    * not be used so that it does not cover intentionally declared raw types (e.g. an injection point with a raw type should
-    * be recognized as an injection point with a raw type, not it's canonical version).
-    * This covers:
-    * <ul>
-    *     <li>type closure of an injection point or delegate</li>
-    *     <li>type closure of a producer field type</li>
-    *     <li>type closure of a producer method return type</li>
-    *     <li>type closure of a parameter type (observer, initializer, producer and disposer methods)</li>
-    *     <li>type closure of an event</li>
-    * </ul>
-    **/
+    /**
+     * Performs base type normalization before hierarchy discovery is performed.
+     * <p>
+     * Type normalization only affects parameterized types (e.g. public class <tt>Foo&lt;T extends Serializable&gt;</tt>)
+     * that are used in form of a raw type (e.g. <tt>Foo.class</tt>). During the process of type normalization, this raw type
+     * (<tt>Foo.class</tt> is instance of <tt>Class<?></tt>) is replaced by a canonical version of the type which in this case
+     * would be the parameterized type of <tt>Foo&lt;T extends Serializable&gt;</tt>
+     * <p>
+     * Base type normalization means that only the base type, which is the input for hierarchy discovery, is normalized.
+     * Other types discovered during hierarchy discovery are never normalized even if a raw form of a parameterized type
+     * is discovered.
+     * <p>
+     * A user of this class should recognize whether base type normalization is required and set the <tt>normalize</tt>
+     * parameter accordingly.
+     * <p>
+     * In the realm of CDI there is only a single use-case for base type normalization. That is resolving bean types of
+     * a bean defined as a class (managed and session beans). Here, e.g. discovered <tt>Foo.class</tt> needs to be normalized as
+     * the correct CDI bean type is <tt>Foo&lt;T extends Serializable&gt;</tt>, not <tt>Foo.class</tt>.
+     * <p>
+     * In other cases, the complete generic information of the base type is known and thus base type normalization should
+     * not be used so that it does not cover intentionally declared raw types (e.g. an injection point with a raw type should
+     * be recognized as an injection point with a raw type, not it's canonical version).
+     * This covers:
+     * <ul>
+     * <li>type closure of an injection point or delegate</li>
+     * <li>type closure of a producer field type</li>
+     * <li>type closure of a producer method return type</li>
+     * <li>type closure of a parameter type (observer, initializer, producer and disposer methods)</li>
+     * <li>type closure of an event</li>
+     * </ul>
+     **/
     public static HierarchyDiscovery forNormalizedType(Type type) {
         return new HierarchyDiscovery(Types.getCanonicalType(type));
     }
@@ -81,6 +80,7 @@ public class HierarchyDiscovery {
 
     /**
      * Constructs a new {@link HierarchyDiscovery} instance.
+     *
      * @param type the type whose hierarchy will be discovered
      */
     public HierarchyDiscovery(Type type) {
@@ -185,7 +185,6 @@ public class HierarchyDiscovery {
     /*
      * Resolving part. Using resolvedTypeVariables map which was prepared in the processing part.
      */
-
 
     public Type resolveType(Type type) {
         if (type instanceof Class) {

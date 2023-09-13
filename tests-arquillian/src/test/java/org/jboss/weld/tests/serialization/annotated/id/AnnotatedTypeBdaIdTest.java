@@ -22,8 +22,6 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -37,12 +35,14 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType.SerializationProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * Verifies, that when {@link BeanManager#createAnnotatedType(Class)} is called on two different bean managers for the same Class, the resulting
+ * Verifies, that when {@link BeanManager#createAnnotatedType(Class)} is called on two different bean managers for the same
+ * Class, the resulting
  * {@link AnnotatedType}s are equal.
  *
  * @see WELD-1600
@@ -68,7 +68,10 @@ public class AnnotatedTypeBdaIdTest {
         JavaArchive jar1 = ShrinkWrap.create(BeanArchive.class).addClass(CarFactory1.class);
         JavaArchive jar2 = ShrinkWrap.create(BeanArchive.class).addClass(CarFactory2.class);
         JavaArchive nonBda = ShrinkWrap.create(JavaArchive.class).addClass(UnknownClass.class);
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeBdaIdTest.class, Utils.ARCHIVE_TYPE.WAR)).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(Car.class, Utils.class).addAsLibraries(jar1, jar2, nonBda);
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeBdaIdTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(Car.class, Utils.class)
+                .addAsLibraries(jar1, jar2, nonBda);
     }
 
     @Test
@@ -78,7 +81,8 @@ public class AnnotatedTypeBdaIdTest {
 
     @Test
     public void testLoadingNotKnownAnnotatedType() throws ClassNotFoundException, IOException {
-        AnnotatedTypeIdentifier identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(manager.getContextId(), UnknownClass.class, UnknownClass.class, manager.getId());
+        AnnotatedTypeIdentifier identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(manager.getContextId(),
+                UnknownClass.class, UnknownClass.class, manager.getId());
         SerializationProxy<?> proxy = new SerializationProxy<Object>(identifier);
         Object result = Utils.deserialize(Utils.serialize(proxy));
         Assert.assertNotNull(result);

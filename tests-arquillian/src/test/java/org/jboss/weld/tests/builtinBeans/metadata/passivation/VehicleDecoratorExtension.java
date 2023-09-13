@@ -44,6 +44,7 @@ public class VehicleDecoratorExtension implements Extension {
         Set<Annotation> delegateQualifiers = Collections.<Annotation> singleton(Any.Literal.INSTANCE);
         Set<Type> decoratedTypes = Collections.<Type> singleton(Vehicle.class);
         InjectionTargetFactory<VehicleDecorator> factory = manager.getInjectionTargetFactory(annotatedType);
-        event.addBean(new PassivationCapableDecoratorImpl<VehicleDecorator>(VehicleDecorator.class, attributes, Vehicle.class, delegateQualifiers, decoratedTypes, factory));
+        event.addBean(new PassivationCapableDecoratorImpl<VehicleDecorator>(VehicleDecorator.class, attributes, Vehicle.class,
+                delegateQualifiers, decoratedTypes, factory));
     }
 }

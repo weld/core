@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @author Jozef Hartinger
  *
  */
@@ -46,7 +46,8 @@ public class LifecycleInterceptorOrderingTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LifecycleInterceptorOrderingTest.class)).intercept(FooInterceptor.class, BarInterceptor.class, BazInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LifecycleInterceptorOrderingTest.class))
+                .intercept(FooInterceptor.class, BarInterceptor.class, BazInterceptor.class)
                 .addPackage(LifecycleInterceptorOrderingTest.class.getPackage());
     }
 

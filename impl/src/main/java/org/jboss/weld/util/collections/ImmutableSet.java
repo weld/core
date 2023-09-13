@@ -29,7 +29,8 @@ import java.util.stream.Collector;
 import org.jboss.weld.util.Preconditions;
 
 /**
- * Weld's immutable set implementation. Instances returned from methods of this class may use different strategies to achieve good performance / memory
+ * Weld's immutable set implementation. Instances returned from methods of this class may use different strategies to achieve
+ * good performance / memory
  * consumption balance.
  * <p>
  * These strategies include:
@@ -51,7 +52,8 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
     }
 
     /**
-     * Creates a new immutable set that consists of the elements in the given collection. If the given collection is already an instance created by
+     * Creates a new immutable set that consists of the elements in the given collection. If the given collection is already an
+     * instance created by
      * {@link ImmutableSet}, the instance is re-used.
      *
      * @param collection the given collection

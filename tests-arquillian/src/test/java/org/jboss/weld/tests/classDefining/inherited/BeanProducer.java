@@ -17,11 +17,11 @@
 
 package org.jboss.weld.tests.classDefining.inherited;
 
-import org.jboss.weld.tests.classDefining.inherited.extending.MyInterface;
-import org.jboss.weld.tests.classDefining.inherited.base.AncestorInterface;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
+
+import org.jboss.weld.tests.classDefining.inherited.base.AncestorInterface;
+import org.jboss.weld.tests.classDefining.inherited.extending.MyInterface;
 
 @ApplicationScoped
 public class BeanProducer {

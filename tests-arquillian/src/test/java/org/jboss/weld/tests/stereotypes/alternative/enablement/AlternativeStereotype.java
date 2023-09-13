@@ -33,5 +33,5 @@ import jakarta.enterprise.inject.Stereotype;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface AlternativeStereotype {
-    
+
 }

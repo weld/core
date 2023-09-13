@@ -42,11 +42,14 @@ public class BeanDiscoveryInjectionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+        JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClasses(Dog.class, Cat.class, Cow.class);
-        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
+        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
                 .addClasses(Plant.class, Tree.class, Stone.class);
-        JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml")
+        JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml")
                 .addClasses(Flat.class, House.class);
         return ShrinkWrap.create(WeldSEClassPath.class).add(archive01, archive02, archive03);
     }
@@ -64,7 +67,7 @@ public class BeanDiscoveryInjectionTest {
         assertEquals(1, manager.getBeans(Plant.class).size());
         assertEquals(0, manager.getBeans(Stone.class).size());
         for (BeanDeploymentArchive beanDeploymentArchive : Container.instance(manager).beanDeploymentArchives().keySet()) {
-            if(beanDeploymentArchive.getBeanClasses().contains(Plant.class.getName())) {
+            if (beanDeploymentArchive.getBeanClasses().contains(Plant.class.getName())) {
                 assertFalse(beanDeploymentArchive.getBeanClasses().contains(Stone.class.getName()));
                 assertTrue(beanDeploymentArchive.getKnownClasses().contains(Stone.class.getName()));
             }

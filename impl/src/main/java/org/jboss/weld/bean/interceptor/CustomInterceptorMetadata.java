@@ -32,7 +32,8 @@ public class CustomInterceptorMetadata<T> implements InterceptorClassMetadata<T>
 
     @SuppressWarnings("unchecked")
     public static <T> CustomInterceptorMetadata<T> of(Interceptor<T> interceptor) {
-        return new CustomInterceptorMetadata<T>(new CdiInterceptorFactory<T>(interceptor), (Class<T>) interceptor.getBeanClass(),
+        return new CustomInterceptorMetadata<T>(new CdiInterceptorFactory<T>(interceptor),
+                (Class<T>) interceptor.getBeanClass(),
                 interceptor.getName() != null && !interceptor.getName().isEmpty() ? interceptor.getName() : null);
     }
 
@@ -48,18 +49,20 @@ public class CustomInterceptorMetadata<T> implements InterceptorClassMetadata<T>
 
     @Override
     public CdiInterceptorFactory<T> getInterceptorFactory() {
-       return factory;
+        return factory;
     }
 
     @Override
     public boolean isEligible(InterceptionType interceptionType) {
-        return factory.getInterceptor().intercepts(jakarta.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
+        return factory.getInterceptor()
+                .intercepts(jakarta.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptionType interceptionType) {
-        return new CustomInterceptorInvocation<T>(factory.getInterceptor(), (T) interceptorInstance,jakarta.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
+        return new CustomInterceptorInvocation<T>(factory.getInterceptor(), (T) interceptorInstance,
+                jakarta.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
     }
 
     @Override

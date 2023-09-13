@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.beanDeployment.managed.missingClassDependency;
 
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,8 +30,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import jakarta.inject.Inject;
-
 @RunWith(Arquillian.class)
 @Category(Integration.class)
 public class Bootstrap2Test {
@@ -37,8 +37,7 @@ public class Bootstrap2Test {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(Bootstrap2Test.class))
                 .addClass(Bootstrap2Test.class)
-                .addClasses(Cod.class, Herring.class)
-                ;
+                .addClasses(Cod.class, Herring.class);
     }
 
     @Inject

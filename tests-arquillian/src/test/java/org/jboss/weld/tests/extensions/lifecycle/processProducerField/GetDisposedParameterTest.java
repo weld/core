@@ -50,7 +50,8 @@ public class GetDisposedParameterTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetDisposedParameterTest.class)).addPackage(Producer.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetDisposedParameterTest.class))
+                .addPackage(Producer.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 
     @Test

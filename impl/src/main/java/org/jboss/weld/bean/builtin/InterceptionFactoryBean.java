@@ -46,10 +46,12 @@ public class InterceptionFactoryBean extends AbstractStaticallyDecorableBuiltInB
     }
 
     @Override
-    protected InterceptionFactory<?> newInstance(InjectionPoint ip, CreationalContext<InterceptionFactory<?>> creationalContext) {
+    protected InterceptionFactory<?> newInstance(InjectionPoint ip,
+            CreationalContext<InterceptionFactory<?>> creationalContext) {
         AnnotatedParameter<?> annotatedParameter = (AnnotatedParameter<?>) ip.getAnnotated();
         ParameterizedType parameterizedType = (ParameterizedType) annotatedParameter.getBaseType();
-        AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(Reflections.getRawType(parameterizedType.getActualTypeArguments()[0]));
+        AnnotatedType<?> annotatedType = beanManager
+                .createAnnotatedType(Reflections.getRawType(parameterizedType.getActualTypeArguments()[0]));
         return InterceptionFactoryImpl.of(beanManager, creationalContext, annotatedType);
     }
 

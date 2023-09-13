@@ -46,23 +46,29 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
 
     private final LazyValueHolder<FastEvent<Object>> requestInitializedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
         private static final long serialVersionUID = 1L;
+
         @Override
         protected FastEvent<Object> computeValue() {
-            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), Initialized.Literal.REQUEST);
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(),
+                    Initialized.Literal.REQUEST);
         }
     };
     private final LazyValueHolder<FastEvent<Object>> requestBeforeDestroyedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
         private static final long serialVersionUID = 1L;
+
         @Override
         protected FastEvent<Object> computeValue() {
-            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), BeforeDestroyed.Literal.REQUEST);
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(),
+                    BeforeDestroyed.Literal.REQUEST);
         }
     };
     private final LazyValueHolder<FastEvent<Object>> requestDestroyedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
         private static final long serialVersionUID = 1L;
+
         @Override
         protected FastEvent<Object> computeValue() {
-            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), Destroyed.Literal.REQUEST);
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(),
+                    Destroyed.Literal.REQUEST);
         }
     };
 
@@ -102,5 +108,3 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
 
     protected abstract BeanManagerImpl getBeanManager();
 }
-
-

@@ -26,7 +26,8 @@ import jakarta.enterprise.inject.spi.configurator.AnnotatedFieldConfigurator;
  *
  * @param <T>
  */
-public class AnnotatedFieldConfiguratorImpl<T> extends AnnotatedConfigurator<T, AnnotatedField<T>, AnnotatedFieldConfiguratorImpl<T>>
+public class AnnotatedFieldConfiguratorImpl<T>
+        extends AnnotatedConfigurator<T, AnnotatedField<T>, AnnotatedFieldConfiguratorImpl<T>>
         implements AnnotatedFieldConfigurator<T> {
 
     /**

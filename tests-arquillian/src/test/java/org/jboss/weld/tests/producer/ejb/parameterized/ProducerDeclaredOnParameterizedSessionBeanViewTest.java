@@ -18,8 +18,6 @@ package org.jboss.weld.tests.producer.ejb.parameterized;
 
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,6 +26,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -41,8 +40,12 @@ public class ProducerDeclaredOnParameterizedSessionBeanViewTest {
 
     @Deployment
     public static Archive<?> deployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ProducerDeclaredOnParameterizedSessionBeanViewTest.class,
-                Utils.ARCHIVE_TYPE.WAR)).addPackage(ProducerDeclaredOnParameterizedSessionBeanViewTest.class.getPackage()).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ProducerDeclaredOnParameterizedSessionBeanViewTest.class,
+                                Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(ProducerDeclaredOnParameterizedSessionBeanViewTest.class.getPackage())
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Inject

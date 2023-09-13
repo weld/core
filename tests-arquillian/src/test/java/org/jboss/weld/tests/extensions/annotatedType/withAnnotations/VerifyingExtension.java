@@ -18,6 +18,8 @@ package org.jboss.weld.tests.extensions.annotatedType.withAnnotations;
 
 import static org.junit.Assert.assertNull;
 
+import java.beans.ConstructorProperties;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Stereotype;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -26,7 +28,6 @@ import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.inject.Named;
 import jakarta.validation.Constraint;
-import java.beans.ConstructorProperties;
 
 public class VerifyingExtension implements Extension {
 
@@ -47,12 +48,12 @@ public class VerifyingExtension implements Extension {
         assertNull(groupType);
         this.groupType = event.getAnnotatedType();
     }
-    
+
     void processMyBean(@Observes @WithAnnotations(Named.class) ProcessAnnotatedType<MyBean> event) {
         assertNull(myBeanType);
         this.myBeanType = event.getAnnotatedType();
     }
-    
+
     void processMyBeanMeta(@Observes @WithAnnotations(Stereotype.class) ProcessAnnotatedType<MyBeanMeta> event) {
         assertNull(myBeanMetaType);
         this.myBeanMetaType = event.getAnnotatedType();
@@ -73,5 +74,5 @@ public class VerifyingExtension implements Extension {
     AnnotatedType<MyBeanMeta> getMyBeanMetaType() {
         return myBeanMetaType;
     }
-    
+
 }

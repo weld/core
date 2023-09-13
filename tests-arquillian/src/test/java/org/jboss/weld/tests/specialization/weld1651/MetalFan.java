@@ -24,5 +24,5 @@ import jakarta.enterprise.inject.Specializes;
  */
 @Specializes
 @Dependent
-public class MetalFan<T extends Music> extends Fan<T>{
+public class MetalFan<T extends Music> extends Fan<T> {
 }

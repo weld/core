@@ -64,7 +64,8 @@ public class ConversationPropagationFilter implements Filter {
         }
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             response = wrapResponse((HttpServletResponse) response, ((HttpServletRequest) request).getContextPath());
         }
@@ -85,10 +86,11 @@ public class ConversationPropagationFilter implements Filter {
                         Conversation conversation = conversationContext.getCurrentConversation();
                         if (!conversation.isTransient()) {
                             path = new FacesUrlTransformer(path, context)
-                                .toRedirectViewId()
-                                .toActionUrl()
-                                .appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId())
-                                .encode();
+                                    .toRedirectViewId()
+                                    .toActionUrl()
+                                    .appendConversationIdIfNecessary(conversationContext.getParameterName(),
+                                            conversation.getId())
+                                    .encode();
                         }
                     }
                 }
@@ -96,7 +98,6 @@ public class ConversationPropagationFilter implements Filter {
             }
         };
     }
-
 
     private static Instance<Context> instance(String id) {
         return Container.instance(id).deploymentManager().instance().select(Context.class);

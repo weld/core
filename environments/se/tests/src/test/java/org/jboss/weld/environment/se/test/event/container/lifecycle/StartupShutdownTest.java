@@ -20,6 +20,7 @@ package org.jboss.weld.environment.se.test.event.container.lifecycle;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Shutdown;
 import jakarta.enterprise.event.Startup;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -38,8 +39,10 @@ public class StartupShutdownTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StartupShutdownTest.class))
-                .addPackage(StartupShutdownTest.class.getPackage())).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StartupShutdownTest.class))
+                        .addPackage(StartupShutdownTest.class.getPackage()))
+                .build();
     }
 
     @Test

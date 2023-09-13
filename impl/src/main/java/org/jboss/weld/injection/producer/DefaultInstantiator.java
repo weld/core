@@ -43,7 +43,8 @@ public class DefaultInstantiator<T> extends AbstractInstantiator<T> {
 
     public DefaultInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl manager) {
         EnhancedAnnotatedConstructor<T> constructor = Beans.getBeanConstructor(type);
-        this.constructor = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, type.getJavaClass(), constructor, manager);
+        this.constructor = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, type.getJavaClass(),
+                constructor, manager);
     }
 
     @Override

@@ -35,9 +35,11 @@ class WeldEjbValidator implements PlugableValidator {
         // check that UserTransaction is not injected into a SessionBean with container-managed transactions
         if (bean instanceof SessionBean<?>) {
             SessionBean<?> sessionBean = (SessionBean<?>) bean;
-            if (UserTransaction.class.equals(ij.getType()) && (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(Default.Literal.INSTANCE))
+            if (UserTransaction.class.equals(ij.getType())
+                    && (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(Default.Literal.INSTANCE))
                     && hasContainerManagedTransactions(sessionBean)) {
-                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij, Formats.formatAsStackTraceElement(ij));
+                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij,
+                        Formats.formatAsStackTraceElement(ij));
             }
         }
     }

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.instantiator.unsafe;
 
-public interface NormalScopedFooInterface  {
+public interface NormalScopedFooInterface {
 
     String ping();
 }

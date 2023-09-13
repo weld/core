@@ -45,7 +45,8 @@ public class BeanArchivesTest {
         BeanDeploymentArchive bda1 = new WeldBeanDeploymentArchive("foo", ImmutableList.of(beanClass), null);
         BeanDeploymentArchive bda2 = new WeldBeanDeploymentArchive("bar", ImmutableList.of(beanClass), null);
 
-        Multimap<String, BeanDeploymentArchive> problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(Collections.singleton(bda1));
+        Multimap<String, BeanDeploymentArchive> problems = BeanArchives
+                .findBeanClassesDeployedInMultipleBeanArchives(Collections.singleton(bda1));
         assertTrue(problems.isEmpty());
 
         problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(ImmutableSet.of(bda1, bda2));
@@ -64,13 +65,19 @@ public class BeanArchivesTest {
     @Test
     public void testExtractBeanArchiveId() {
         assertEquals("/foo_/WEB-INF/classes",
-                BeanArchives.extractBeanArchiveId("/tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/classes", "/foo", "/WEB-INF"));
+                BeanArchives.extractBeanArchiveId("/tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/classes",
+                        "/foo", "/WEB-INF"));
         assertEquals("_/WEB-INF/classes",
-                BeanArchives.extractBeanArchiveId("/tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/classes", "", "/WEB-INF"));
+                BeanArchives.extractBeanArchiveId("/tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/classes",
+                        "", "/WEB-INF"));
         assertEquals("/foo_/WEB-INF/lib/bar.jar",
-                BeanArchives.extractBeanArchiveId("file:///tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/lib/bar.jar", "/foo", "/WEB-INF"));
+                BeanArchives.extractBeanArchiveId(
+                        "file:///tmp/tomcat/webapps/87b26796-2e95-4f64-8039-409ae1d1b705/WEB-INF/lib/bar.jar", "/foo",
+                        "/WEB-INF"));
         assertEquals("/foo_/WEB-INF/classes",
-                BeanArchives.extractBeanArchiveId("C:\\tmp\\tomcat\\webapps\\87b26796-2e95-4f64-8039-409ae1d1b705\\WEB-INF\\classes", "/foo", "/WEB-INF"));
+                BeanArchives.extractBeanArchiveId(
+                        "C:\\tmp\\tomcat\\webapps\\87b26796-2e95-4f64-8039-409ae1d1b705\\WEB-INF\\classes", "/foo",
+                        "/WEB-INF"));
         assertEquals("_/test/producer/0.1.0-SNAPSHOT/producer-0.1.0-SNAPSHOT.jar",
                 BeanArchives.extractBeanArchiveId("/test/producer/0.1.0-SNAPSHOT/producer-0.1.0-SNAPSHOT.jar", "", "/WEB-INF"));
     }

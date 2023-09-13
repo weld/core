@@ -27,7 +27,7 @@ public class CustomScopedBean {
 
     boolean observerCalled = false;
 
-    public void onAnyDocumentEvent(@Observes(notifyObserver=Reception.IF_EXISTS) NotifyObserverTest event) {
+    public void onAnyDocumentEvent(@Observes(notifyObserver = Reception.IF_EXISTS) NotifyObserverTest event) {
         observerCalled = true;
     }
 

@@ -35,7 +35,8 @@ import org.jboss.weld.environment.util.Files;
 /**
  * Handles the paths to resources within a web application if a WAR archive is not extracted to the file system.
  * <p>
- * For {@code WEB-INF/classes}, {@link ServletContext#getResourcePaths(String)} is used. For libraries, only {@code war} protocol is supported.
+ * For {@code WEB-INF/classes}, {@link ServletContext#getResourcePaths(String)} is used. For libraries, only {@code war}
+ * protocol is supported.
  *
  * @author Martin Kouba
  * @author Thomas Meyer
@@ -113,7 +114,8 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
 
     private String toClassName(String rootPath, String resourcePath) {
         // Remove WEB-INF/classes part, suffix and replace slashes with dots
-        return resourcePath.substring(rootPath.length() + 1, resourcePath.lastIndexOf(Files.CLASS_FILE_EXTENSION)).replace(SLASH, DOT);
+        return resourcePath.substring(rootPath.length() + 1, resourcePath.lastIndexOf(Files.CLASS_FILE_EXTENSION))
+                .replace(SLASH, DOT);
     }
 
 }

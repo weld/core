@@ -1,21 +1,23 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.types.ClassType;
 import jakarta.enterprise.lang.model.types.ParameterizedType;
 import jakarta.enterprise.lang.model.types.Type;
-import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 
 class ParameterizedTypeImpl extends TypeImpl<java.lang.reflect.AnnotatedParameterizedType> implements ParameterizedType {
     ParameterizedTypeImpl(java.lang.reflect.AnnotatedParameterizedType reflectionType, BeanManager bm) {
         this(reflectionType, null, bm);
     }
 
-    ParameterizedTypeImpl(java.lang.reflect.AnnotatedParameterizedType reflectionType, AnnotationOverrides overrides, BeanManager bm) {
+    ParameterizedTypeImpl(java.lang.reflect.AnnotatedParameterizedType reflectionType, AnnotationOverrides overrides,
+            BeanManager bm) {
         super(reflectionType, overrides, bm);
     }
 

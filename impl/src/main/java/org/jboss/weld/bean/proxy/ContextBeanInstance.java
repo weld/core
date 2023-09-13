@@ -63,12 +63,11 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
 
     private static final ThreadLocal<WeldCreationalContext<?>> currentCreationalContext = new ThreadLocal<WeldCreationalContext<?>>();
 
-
     /**
      * Creates a new locator for instances of the given bean.
      *
      * @param bean The contextual bean
-     * @param id   The unique identifier of this bean
+     * @param id The unique identifier of this bean
      */
     public ContextBeanInstance(Bean<T> bean, BeanIdentifier id, String contextId) {
         this.bean = bean;
@@ -115,7 +114,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     }
 
     private Object readResolve() throws ObjectStreamException {
-        Bean<T> bean = Container.instance(contextId).services().get(ContextualStore.class).<Bean<T>, T>getContextual(id);
+        Bean<T> bean = Container.instance(contextId).services().get(ContextualStore.class).<Bean<T>, T> getContextual(id);
         return new ContextBeanInstance<T>(bean, id, contextId);
     }
 

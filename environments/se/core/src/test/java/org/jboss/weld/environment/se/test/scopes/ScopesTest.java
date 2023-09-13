@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.se.test.scopes;
 
-
 import static org.junit.Assert.assertEquals;
 
 import jakarta.enterprise.inject.spi.BeanManager;

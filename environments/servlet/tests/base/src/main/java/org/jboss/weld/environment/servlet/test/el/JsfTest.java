@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.environment.servlet.test.el;
 
-import static org.junit.Assert.assertEquals;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.EMPTY_FACES_CONFIG_XML;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.FACES_WEB_XML;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;

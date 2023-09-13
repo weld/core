@@ -58,7 +58,8 @@ public class SimpleAsyncListenerTest {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getPage(getPath(AsyncServlet.TEST_ERROR));
         Page results = webClient.getPage(contextPath + "Status");
-        assertTrue(results.getWebResponse().getContentAsString(), results.getWebResponse().getContentAsString().contains("onError: true"));
+        assertTrue(results.getWebResponse().getContentAsString(),
+                results.getWebResponse().getContentAsString().contains("onError: true"));
     }
 
     @Test

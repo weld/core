@@ -17,14 +17,14 @@
 
 package org.jboss.weld.atinject.tck;
 
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
-
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
 
 public class AllDiscoveryBeansXml implements BeansXml {
     public static final AllDiscoveryBeansXml INSTANCE = new AllDiscoveryBeansXml();

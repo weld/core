@@ -37,7 +37,8 @@ public class LocalEjbObserverTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LocalEjbObserverTest.class)).addPackage(FooLocal.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LocalEjbObserverTest.class))
+                .addPackage(FooLocal.class.getPackage());
     }
 
     @Test

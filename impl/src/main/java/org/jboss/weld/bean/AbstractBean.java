@@ -119,9 +119,11 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
             String previousSpecializedBeanName = null;
             for (AbstractBean<?, ?> specializedBean : getSpecializedBeans()) {
                 String name = specializedBean.getName();
-                if (previousSpecializedBeanName != null && name != null && !previousSpecializedBeanName.equals(specializedBean.getName())) {
+                if (previousSpecializedBeanName != null && name != null
+                        && !previousSpecializedBeanName.equals(specializedBean.getName())) {
                     // there may be multiple beans specialized by this bean - make sure they all share the same name
-                    throw BeanLogger.LOG.beansWithDifferentBeanNamesCannotBeSpecialized(previousSpecializedBeanName, specializedBean.getName(), this);
+                    throw BeanLogger.LOG.beansWithDifferentBeanNamesCannotBeSpecialized(previousSpecializedBeanName,
+                            specializedBean.getName(), this);
                 }
                 previousSpecializedBeanName = name;
                 if (isNameDefined && name != null) {

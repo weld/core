@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.observers.decoration;
 
-/** Plain payload class for event.
+/**
+ * Plain payload class for event.
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 public class Job {
-    
+
 }

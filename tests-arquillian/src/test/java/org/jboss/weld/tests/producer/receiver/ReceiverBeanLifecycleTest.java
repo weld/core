@@ -36,17 +36,19 @@ import org.junit.runner.RunWith;
 
 /**
  * CDI spec 6.4.2:
- * "any @Dependent scoped contextual instance created to receive a producer method, producer field, disposer method or observer method invocation is destroyed when the invocation completes, and"
- * 
+ * "any @Dependent scoped contextual instance created to receive a producer method, producer field, disposer method or observer
+ * method invocation is destroyed when the invocation completes, and"
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class ReceiverBeanLifecycleTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ReceiverBeanLifecycleTest.class)).addPackage(ReceiverBeanLifecycleTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ReceiverBeanLifecycleTest.class))
+                .addPackage(ReceiverBeanLifecycleTest.class.getPackage()).addClass(Utils.class);
     }
 
     @Test

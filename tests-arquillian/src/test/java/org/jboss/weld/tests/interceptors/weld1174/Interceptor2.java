@@ -16,18 +16,18 @@
  */
 package org.jboss.weld.tests.interceptors.weld1174;
 
+import java.io.Serializable;
+
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
-import java.io.Serializable;
 
 @Interceptor
 @ClassTestBinding
-public class Interceptor2  implements Serializable {
+public class Interceptor2 implements Serializable {
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
         VisitList.add(getClass().getSimpleName());
         return ctx.proceed();
     }
 }
-

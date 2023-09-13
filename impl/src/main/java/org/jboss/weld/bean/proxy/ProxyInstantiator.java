@@ -32,7 +32,8 @@ import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * Implementations of this interface are capable of creating instances of a given proxy class. This can either be done simply by calling
+ * Implementations of this interface are capable of creating instances of a given proxy class. This can either be done simply by
+ * calling
  * {@link Class#newInstance()} or using more advanced mechanism (e.g. sun.misc.Unsafe)
  *
  * @author Jozef Hartinger
@@ -59,14 +60,17 @@ public interface ProxyInstantiator extends Service {
      * @param constructor the given constructor
      * @param clazz the given class
      * @param declaringBean the declaring bean
-     * @return an {@link UnproxyableResolutionException} if the given class is not proxyable due to the given constructor, null otherwise
+     * @return an {@link UnproxyableResolutionException} if the given class is not proxyable due to the given constructor, null
+     *         otherwise
      * @throws UnproxyableResolutionException
      */
-    <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz, Bean<?> declaringBean)
+    <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz,
+            Bean<?> declaringBean)
             throws UnproxyableResolutionException;
 
     /**
-     * Indicates whether this instantiator calls proxy class' no-arg constructor or whether it uses an alternative mechanism to obtain a proxy class instance.
+     * Indicates whether this instantiator calls proxy class' no-arg constructor or whether it uses an alternative mechanism to
+     * obtain a proxy class instance.
      *
      * @return true if this implementation uses proxy class' no-arg constructor for creating new instances, false otherwise
      */
@@ -132,11 +136,13 @@ public interface ProxyInstantiator extends Service {
             return result;
         }
 
-        private static ProxyInstantiator newInstance(String implementation) throws InstantiationException, IllegalAccessException {
+        private static ProxyInstantiator newInstance(String implementation)
+                throws InstantiationException, IllegalAccessException {
             if (DefaultProxyInstantiator.class.getName().equals(implementation)) {
                 return DefaultProxyInstantiator.INSTANCE;
             }
-            Class<? extends ProxyInstantiator> clazz = Reflections.loadClass(implementation, new ClassLoaderResourceLoader(ProxyInstantiator.class.getClassLoader()));
+            Class<? extends ProxyInstantiator> clazz = Reflections.loadClass(implementation,
+                    new ClassLoaderResourceLoader(ProxyInstantiator.class.getClassLoader()));
             if (clazz == null) {
                 throw new WeldException("Unable to load ProxyInstantiator implementation: " + implementation);
             }

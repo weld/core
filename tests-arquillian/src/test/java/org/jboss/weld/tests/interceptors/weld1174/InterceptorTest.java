@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.tests.interceptors.weld1174;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,12 +35,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import jakarta.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author <a href="ron.sigal@jboss.com">Ron Sigal</a>
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
@@ -44,8 +45,8 @@ public class InterceptorTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorTest.class))
-            .intercept(Interceptor2.class, Interceptor3.class)
-            .addPackage(InterceptorTest.class.getPackage());
+                .intercept(Interceptor2.class, Interceptor3.class)
+                .addPackage(InterceptorTest.class.getPackage());
     }
 
     @Inject
@@ -74,10 +75,10 @@ public class InterceptorTest {
 
     private void assertInterceptorsWereInvokedInCorrectOrder() {
         List<String> expectedOrder = Arrays.asList(
-            Interceptor0.class.getSimpleName(),
-            Interceptor1.class.getSimpleName(),
-            Interceptor2.class.getSimpleName(),
-            Interceptor3.class.getSimpleName());
+                Interceptor0.class.getSimpleName(),
+                Interceptor1.class.getSimpleName(),
+                Interceptor2.class.getSimpleName(),
+                Interceptor3.class.getSimpleName());
 
         assertEquals(expectedOrder, VisitList.getList());
     }

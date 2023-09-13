@@ -32,7 +32,6 @@ package org.jboss.weld.tests.contexts.conversation.exceptionInPhaseListener;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
@@ -70,7 +69,9 @@ public class ClientConversationContextTest {
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ClientConversationContextTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ClientConversationContextTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(ConversationTestPhaseListener.class, Cloud.class)
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
@@ -88,7 +89,6 @@ public class ClientConversationContextTest {
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         // First, try a transient conversation
-
 
         // Access a page that throws an exception
         client.getPage(getPath("/thunderstorm.xhtml"));

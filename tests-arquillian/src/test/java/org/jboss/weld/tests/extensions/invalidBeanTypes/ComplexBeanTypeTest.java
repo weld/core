@@ -42,18 +42,19 @@ public class ComplexBeanTypeTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ComplexBeanTypeTest.class))
-            .addClasses(ComplexBeanTypeTest.class, Foo.class, CustomBeanType.class)
-            .addAsServiceProvider(Extension.class, BrokenExtension.class);
+                .addClasses(ComplexBeanTypeTest.class, Foo.class, CustomBeanType.class)
+                .addAsServiceProvider(Extension.class, BrokenExtension.class);
     }
 
     @Test
     public void testDeploymentFailsWithInvalidBeanTypes() {
         // should throw definition exception
-     }
+    }
 
     public static class BrokenExtension<T> implements Extension {
         public void observe(@Observes AfterBeanDiscovery event) {
-            event.addBean(new CustomBeanType(new TypeLiteral<Foo<Foo<?>[][]>[][]>() {}.getType()));
+            event.addBean(new CustomBeanType(new TypeLiteral<Foo<Foo<?>[][]>[][]>() {
+            }.getType()));
         }
     }
 }

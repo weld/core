@@ -23,9 +23,6 @@ import java.util.concurrent.ForkJoinPool;
 
 import jakarta.enterprise.inject.spi.CDI;
 
-import org.jboss.weld.manager.api.WeldManager;
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -34,7 +31,9 @@ import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.executor.CommonForkJoinPoolExecutorServices;
 import org.jboss.weld.manager.api.ExecutorServices;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.tests.util.PropertiesBuilder;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,9 +46,10 @@ public class CommonExecutorServicesConfigurationTest {
                 .addClass(CommonExecutorServicesConfigurationTest.class)
                 .addAsResource(
                         PropertiesBuilder
-                        .newBuilder()
-                        .set("org.jboss.weld.executor.threadPoolType", "COMMON")
-                        .build(), "weld.properties");
+                                .newBuilder()
+                                .set("org.jboss.weld.executor.threadPoolType", "COMMON")
+                                .build(),
+                        "weld.properties");
     }
 
     @Test
@@ -61,7 +61,8 @@ public class CommonExecutorServicesConfigurationTest {
         assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
         assertTrue(manager.getServices().get(ContainerLifecycleEvents.class).isPreloaderEnabled());
         assertTrue(manager.getServices().get(ExecutorServices.class) instanceof CommonForkJoinPoolExecutorServices);
-        CommonForkJoinPoolExecutorServices executor = (CommonForkJoinPoolExecutorServices) manager.getServices().get(ExecutorServices.class);
+        CommonForkJoinPoolExecutorServices executor = (CommonForkJoinPoolExecutorServices) manager.getServices()
+                .get(ExecutorServices.class);
         Assert.assertTrue(executor.getTaskExecutor() == ForkJoinPool.commonPool());
     }
 }

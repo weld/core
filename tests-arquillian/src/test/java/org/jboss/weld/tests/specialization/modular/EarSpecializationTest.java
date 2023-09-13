@@ -33,7 +33,8 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * Test for resolution of specialized beans. Verifies that a bean is only specialized in the BDA from which the specializing bean is accessible.
+ * Test for resolution of specialized beans. Verifies that a bean is only specialized in the BDA from which the specializing
+ * bean is accessible.
  *
  * @author Jozef Hartinger
  *
@@ -44,10 +45,16 @@ public class EarSpecializationTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war").addClasses(InjectedBean1.class, SpecializedFactory.class, VerifyingListener.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        JavaArchive lib = ShrinkWrap.create(BeanArchive.class).addClasses(Factory.class, FactoryEvent.class, Product.class, InjectedBean2.class, Assert.class);
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EarSpecializationTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModule(war).addAsLibrary(
-                lib);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(InjectedBean1.class, SpecializedFactory.class, VerifyingListener.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        JavaArchive lib = ShrinkWrap.create(BeanArchive.class).addClasses(Factory.class, FactoryEvent.class, Product.class,
+                InjectedBean2.class, Assert.class);
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(EarSpecializationTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModule(war).addAsLibrary(
+                        lib);
     }
 
     @Test

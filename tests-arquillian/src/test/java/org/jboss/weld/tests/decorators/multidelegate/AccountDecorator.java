@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.tests.decorators.multidelegate;
 
+import java.math.BigDecimal;
+
 import jakarta.decorator.Decorator;
 import jakarta.decorator.Delegate;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
-import java.math.BigDecimal;
 
 @Decorator
 public class AccountDecorator implements Account {

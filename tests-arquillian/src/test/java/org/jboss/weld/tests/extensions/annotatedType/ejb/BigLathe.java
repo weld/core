@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.ejb;
 
-import jakarta.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import jakarta.inject.Qualifier;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)

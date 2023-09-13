@@ -24,7 +24,7 @@ import jakarta.enterprise.inject.Typed;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
-@Typed({SomeOtherBean.class, TypedBean.class})
+@Typed({ SomeOtherBean.class, TypedBean.class })
 public class TypedBean extends SomeOtherBean {
-    
+
 }

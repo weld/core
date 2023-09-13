@@ -53,9 +53,12 @@ public class CombinedPropertiesFilesConfigTest {
 
     @Deployment(testable = false, order = 0, name = JAR_DEPLOYMENT)
     public static Archive<?> createSystemPropertiesLoaderArchive() {
-        JavaArchive testDeployment = ShrinkWrap.create(BeanArchive.class).addClasses(SystemPropertiesLoader.class, PropertiesBuilder.class);
-        PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true").set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "10")
-                .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "500").set(ConfigurationKey.RELAXED_CONSTRUCTION.get(), "true")
+        JavaArchive testDeployment = ShrinkWrap.create(BeanArchive.class).addClasses(SystemPropertiesLoader.class,
+                PropertiesBuilder.class);
+        PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true")
+                .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "10")
+                .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "500")
+                .set(ConfigurationKey.RELAXED_CONSTRUCTION.get(), "true")
                 .addAsSystemProperties(testDeployment);
         return testDeployment;
     }
@@ -63,11 +66,12 @@ public class CombinedPropertiesFilesConfigTest {
     @Deployment(order = 1, name = WAR_DEPLOYMENT)
     public static Archive<?> createTestArchive() {
 
-        BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CombinedPropertiesFilesConfigTest.class));
+        BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class,
+                Utils.getDeploymentNameAsHash(CombinedPropertiesFilesConfigTest.class));
         ejbJar.addClass(DummySessionBean.class).addAsResource(PropertiesBuilder.newBuilder()
-                        .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
-                        .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
-                        .build(),
+                .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
+                .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
+                .build(),
                 "weld.properties");
 
         WebArchive war1 = Testable.archiveToTest(ShrinkWrap
@@ -75,21 +79,24 @@ public class CombinedPropertiesFilesConfigTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(CombinedPropertiesFilesConfigTest.class)
                 .addAsResource(PropertiesBuilder.newBuilder()
-                                .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
-                                .set(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get(), "FIXED_TIMEOUT")
-                                .build(),
+                        .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
+                        .set(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get(), "FIXED_TIMEOUT")
+                        .build(),
                         "weld.properties"));
 
         WebArchive war2 = ShrinkWrap
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(PropertiesBuilder.newBuilder()
-                                .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
-                                .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "1000")
-                                .build(),
+                        .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
+                        .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "1000")
+                        .build(),
                         "weld.properties");
 
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(CombinedPropertiesFilesConfigTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(ejbJar, war1, war2);
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(CombinedPropertiesFilesConfigTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModules(ejbJar, war1, war2);
     }
 
     @Inject

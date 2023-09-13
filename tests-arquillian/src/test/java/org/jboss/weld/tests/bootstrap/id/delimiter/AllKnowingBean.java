@@ -24,7 +24,7 @@ import jakarta.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class AllKnowingBean {
-      
+
     public int getAnswerToLifeUniverseAndEverything() {
         return 42;
     }

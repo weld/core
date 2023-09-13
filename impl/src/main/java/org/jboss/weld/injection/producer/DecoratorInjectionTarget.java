@@ -59,7 +59,8 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
         this.delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, getInjectionPoints());
         if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
             FieldInjectionPoint<?, ?> fip = (FieldInjectionPoint<?, ?>) delegateInjectionPoint;
-            this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(fip.getAnnotated().getJavaMember()));
+            this.accessibleField = AccessController
+                    .doPrivileged(new GetAccessibleCopyOfMember<Field>(fip.getAnnotated().getJavaMember()));
         } else {
             this.accessibleField = null;
         }
@@ -67,15 +68,20 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
     }
 
     @Override
-    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
+    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Set<InjectionPoint> injectionPoints) {
         if (type.isAbstract()) {
-            ConstructorInjectionPoint<T> originalConstructor = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, type, beanManager);
+            ConstructorInjectionPoint<T> originalConstructor = InjectionPointFactory.instance()
+                    .createConstructorInjectionPoint(bean, type, beanManager);
             injectionPoints.addAll(originalConstructor.getParameterInjectionPoints());
-            final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, injectionPoints);
+            final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type,
+                    injectionPoints);
             return new SubclassedComponentInstantiator<T>(type, bean, originalConstructor, beanManager) {
                 @Override
-                protected Class<T> createEnhancedSubclass(EnhancedAnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
-                    return new DecoratorProxyFactory<T>(manager.getContextId(), type.getJavaClass(), delegateInjectionPoint, bean).getProxyClass();
+                protected Class<T> createEnhancedSubclass(EnhancedAnnotatedType<T> type, Bean<?> bean,
+                        BeanManagerImpl manager) {
+                    return new DecoratorProxyFactory<T>(manager.getContextId(), type.getJavaClass(), delegateInjectionPoint,
+                            bean).getProxyClass();
                 }
             };
         } else {
@@ -108,7 +114,8 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
             } catch (IllegalAccessException e) {
                 throw UtilLogger.LOG.accessErrorOnField(accessibleField.getName(), accessibleField.getDeclaringClass(), e);
             }
-            final ProxyMethodHandler handler = new ProxyMethodHandler(beanManager.getContextId(), new TargetBeanInstance(delegate), getBean());
+            final ProxyMethodHandler handler = new ProxyMethodHandler(beanManager.getContextId(),
+                    new TargetBeanInstance(delegate), getBean());
             ((ProxyObject) instance).weld_setHandler(handler);
         }
     }
@@ -121,16 +128,16 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
     @SuppressWarnings("unchecked")
     private void checkAbstractMethods(EnhancedAnnotatedType<T> type) {
 
-        if(!type.isAbstract()) {
+        if (!type.isAbstract()) {
             return;
         }
 
         Set<Type> decoratedTypes = null;
         Bean<?> bean = getBean();
 
-        if(bean != null && (bean instanceof DecoratorImpl)) {
-            decoratedTypes = ((DecoratorImpl<T>)bean).getDecoratedTypes();
+        if (bean != null && (bean instanceof DecoratorImpl)) {
+            decoratedTypes = ((DecoratorImpl<T>) bean).getDecoratedTypes();
         }
-        Decorators.checkAbstractMethods(decoratedTypes,  type, beanManager);
+        Decorators.checkAbstractMethods(decoratedTypes, type, beanManager);
     }
 }

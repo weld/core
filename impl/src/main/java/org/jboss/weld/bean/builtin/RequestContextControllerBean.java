@@ -45,7 +45,8 @@ public class RequestContextControllerBean extends AbstractStaticallyDecorableBui
     }
 
     @Override
-    protected RequestContextController newInstance(InjectionPoint ip, CreationalContext<RequestContextController> creationalContext) {
+    protected RequestContextController newInstance(InjectionPoint ip,
+            CreationalContext<RequestContextController> creationalContext) {
         return new InjectableRequestContextController(beanManager, getUnboundRequestContext());
     }
 

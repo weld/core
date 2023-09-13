@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
+import static jakarta.ejb.TransactionManagementType.BEAN;
+
 import java.lang.annotation.Annotation;
+
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJBException;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionManagement;
-import static jakarta.ejb.TransactionManagementType.BEAN;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
@@ -35,10 +37,10 @@ import jakarta.transaction.UserTransaction;
 public class DogAgent implements Agent {
 
     public static String EVENT_FIRED = "afterEventFired";
-    
+
     @Resource
     private UserTransaction userTransaction;
-    
+
     @Inject
     private BeanManager jsr299Manager;
 

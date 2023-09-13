@@ -28,14 +28,14 @@ public class TestExtension implements Extension {
 
     static final AtomicBoolean PIT_OBSERVED = new AtomicBoolean(false);
 
-   // This observer is always dropped after bootstrap
-   void observeFooPat(@Observes ProcessAnnotatedType<Foo> event) {
-       event.configureAnnotatedType().removeAll().add(ApplicationScoped.Literal.INSTANCE);
-   }
+    // This observer is always dropped after bootstrap
+    void observeFooPat(@Observes ProcessAnnotatedType<Foo> event) {
+        event.configureAnnotatedType().removeAll().add(ApplicationScoped.Literal.INSTANCE);
+    }
 
-   // This observer is only dropped if optimized cleanup is allowed
-   void observeFooPit(@Observes ProcessInjectionTarget<Foo> event) {
-       PIT_OBSERVED.set(true);
-   }
+    // This observer is only dropped if optimized cleanup is allowed
+    void observeFooPit(@Observes ProcessInjectionTarget<Foo> event) {
+        PIT_OBSERVED.set(true);
+    }
 
 }

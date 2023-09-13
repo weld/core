@@ -27,7 +27,6 @@ import jakarta.jms.MessageListener;
 })
 public class MilkMan implements MessageListener {
 
-
     public void onMessage(Message message) {
 
     }

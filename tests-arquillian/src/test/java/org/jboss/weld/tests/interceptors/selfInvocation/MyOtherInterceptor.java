@@ -30,7 +30,7 @@ public class MyOtherInterceptor {
     public static int TIMES_INVOKED = 0;
 
     @AroundInvoke
-    public Object doSomething(InvocationContext ic) throws Exception{
+    public Object doSomething(InvocationContext ic) throws Exception {
         TIMES_INVOKED++;
         return ic.proceed();
     }

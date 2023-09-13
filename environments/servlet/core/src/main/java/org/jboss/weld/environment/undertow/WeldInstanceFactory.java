@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.environment.undertow;
 
-import io.undertow.servlet.api.InstanceFactory;
-import io.undertow.servlet.api.InstanceHandle;
-
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Unmanaged;
 import jakarta.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
@@ -27,6 +24,9 @@ import jakarta.servlet.ServletContext;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.jboss.weld.util.reflection.Reflections;
+
+import io.undertow.servlet.api.InstanceFactory;
+import io.undertow.servlet.api.InstanceHandle;
 
 /**
  * {@link InstanceFactory} implementation that uses CDI's {@link Unmanaged} internally to obtain Weld-managed instances.
@@ -55,7 +55,8 @@ class WeldInstanceFactory<T> implements InstanceFactory<T> {
     public InstanceHandle<T> createInstance() throws InstantiationException {
         Object manager = context.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager instanceof BeanManager) {
-            UnmanagedInstance<T> instance = new Unmanaged<T>(BeanManagerProxy.unwrap((BeanManager) manager), clazz).newInstance();
+            UnmanagedInstance<T> instance = new Unmanaged<T>(BeanManagerProxy.unwrap((BeanManager) manager), clazz)
+                    .newInstance();
             instance.produce().inject().postConstruct();
             return new WeldInstanceHandle<T>(instance);
         } else {

@@ -38,7 +38,8 @@ public abstract class ForwardingExpressionFactory extends ExpressionFactory {
     }
 
     @Override
-    public MethodExpression createMethodExpression(ELContext context, String expression, Class<?> expectedReturnType, Class<?>[] expectedParamTypes) {
+    public MethodExpression createMethodExpression(ELContext context, String expression, Class<?> expectedReturnType,
+            Class<?>[] expectedParamTypes) {
         return delegate().createMethodExpression(context, expression, expectedReturnType, expectedParamTypes);
     }
 

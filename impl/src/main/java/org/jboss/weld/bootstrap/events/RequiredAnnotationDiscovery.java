@@ -57,16 +57,22 @@ public class RequiredAnnotationDiscovery implements Service {
      *
      * <ul>
      * <li>The required annotation or an annotation annotated with the required annotation is present on the class</li>
-     * <li>The required annotation or an annotation annotated with the required annotation, which is annotated with {@link Inherited}, is present on a direct or
+     * <li>The required annotation or an annotation annotated with the required annotation, which is annotated with
+     * {@link Inherited}, is present on a direct or
      * indirect superclass of the given class</li>
-     * <li>The required annotation or an annotation annotated with the required annotation is present on a field or method declared by the given class or any
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a field or method
+     * declared by the given class or any
      * direct or indirect superclass of the given class</li>
-     * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a method declared by the given class or
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a method
+     * declared by the given class or
      * any direct or indirect superclass of the given class</li>
-     * <li>The annotation or an annotation annotated with the required annotation is present on a default method or a parameter of a default method declared by an interface directly or
+     * <li>The annotation or an annotation annotated with the required annotation is present on a default method or a parameter
+     * of a default method declared by an interface directly or
      * indirectly implemented by the given class</li>
-     * <li>The required annotation or an annotation annotated with the required annotation is present on a constructor declared by the given class</li>
-     * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a constructor declared by the given
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a constructor declared
+     * by the given class</li>
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a
+     * constructor declared by the given
      * class</li>
      * </ul>
      *
@@ -79,7 +85,8 @@ public class RequiredAnnotationDiscovery implements Service {
         if (containsAnnotation(annotatedType.getAnnotations(), requiredAnnotation, true)) {
             return true;
         }
-        for (Class<?> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+        for (Class<?> clazz = annotatedType.getJavaClass(); clazz != null
+                && clazz != Object.class; clazz = clazz.getSuperclass()) {
             // fields
             for (Field field : clazz.getDeclaredFields()) {
                 if (containsAnnotations(cache.getAnnotations(field), requiredAnnotation)) {
@@ -132,7 +139,8 @@ public class RequiredAnnotationDiscovery implements Service {
         return containsAnnotation(annotations, requiredAnnotation, true);
     }
 
-    private boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+    private boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation,
+            boolean checkMetaAnnotations) {
         for (Annotation annotation : annotations) {
             if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
                 return true;
@@ -141,11 +149,13 @@ public class RequiredAnnotationDiscovery implements Service {
         return false;
     }
 
-    private boolean containsAnnotations(Iterable<? extends Annotation> annotations, Class<? extends Annotation> requiredAnnotation) {
+    private boolean containsAnnotations(Iterable<? extends Annotation> annotations,
+            Class<? extends Annotation> requiredAnnotation) {
         return containsAnnotation(annotations, requiredAnnotation, true);
     }
 
-    private boolean containsAnnotation(Iterable<? extends Annotation> annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+    private boolean containsAnnotation(Iterable<? extends Annotation> annotations,
+            Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
         for (Annotation annotation : annotations) {
             if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
                 return true;
@@ -154,7 +164,8 @@ public class RequiredAnnotationDiscovery implements Service {
         return false;
     }
 
-    private boolean containsAnnotation(Annotation annotation, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+    private boolean containsAnnotation(Annotation annotation, Class<? extends Annotation> requiredAnnotation,
+            boolean checkMetaAnnotations) {
         Class<? extends Annotation> annotationType = annotation.annotationType();
         if (requiredAnnotation.equals(annotationType)) {
             return true;

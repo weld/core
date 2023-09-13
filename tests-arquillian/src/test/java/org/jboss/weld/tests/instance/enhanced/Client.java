@@ -17,11 +17,11 @@
 
 package org.jboss.weld.tests.instance.enhanced;
 
+import java.math.BigDecimal;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-
-import java.math.BigDecimal;
 
 /**
  * A version of {@link Client} that uses purely CDI interfaces

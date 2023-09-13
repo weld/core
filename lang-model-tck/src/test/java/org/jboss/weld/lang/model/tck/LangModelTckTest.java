@@ -19,6 +19,7 @@ package org.jboss.weld.lang.model.tck;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.cdi.lang.model.tck.LangModelVerifier;

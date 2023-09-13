@@ -33,7 +33,8 @@ public class NamedParameterInjectionPointTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NamedParameterInjectionPointTest.class)).addPackage(NamedParameterInjectionPointTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NamedParameterInjectionPointTest.class))
+                .addPackage(NamedParameterInjectionPointTest.class.getPackage());
     }
 
     @Test

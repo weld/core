@@ -38,7 +38,9 @@ public class ContextEventsFiredForPostConstructTest {
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
                 .add(ShrinkWrap.create(BeanArchive.class)
-                        .addClasses(ContextEventsFiredForPostConstructTest.class, ContextLifecycleObserver.class, Alpha.class, Beta.class, Gama.class)).build();
+                        .addClasses(ContextEventsFiredForPostConstructTest.class, ContextLifecycleObserver.class, Alpha.class,
+                                Beta.class, Gama.class))
+                .build();
     }
 
     @Test

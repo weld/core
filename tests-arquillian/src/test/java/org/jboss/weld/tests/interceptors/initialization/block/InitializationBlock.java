@@ -23,10 +23,10 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.transaction.UserTransaction;
 
 /**
- *@author Emily Jiang
+ * @author Emily Jiang
  */
 @Dependent
-public class InitializationBlock{
+public class InitializationBlock {
 
     public final String VALUE;
 

@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import jakarta.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -44,8 +46,6 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
-
-import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
@@ -157,14 +157,16 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     /**
      *
-     * @return <code>true</code> if a new item was added and the up-to-date enablements were not built yet, <code>false</code> otherwise
+     * @return <code>true</code> if a new item was added and the up-to-date enablements were not built yet, <code>false</code>
+     *         otherwise
      */
     public boolean isDirty() {
         return dirty;
     }
 
     /*
-     * cachedAlternativeMap is accessed from a single thread only and the result is safely propagated. Therefore, there is no need to synchronize access to
+     * cachedAlternativeMap is accessed from a single thread only and the result is safely propagated. Therefore, there is no
+     * need to synchronize access to
      * cachedAlternativeMap.
      */
     private Map<Class<?>, Integer> getGlobalAlternativeMap() {
@@ -199,29 +201,35 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         List<Class<?>> globallyEnabledInterceptors = getInterceptorList(null);
         List<Class<?>> globallyEnabledDecorators = getDecoratorList(null);
 
-        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>>builder();
+        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>> builder();
         moduleInterceptorsBuilder.addAll(globallyEnabledInterceptors);
 
-        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>>builder();
+        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>> builder();
         moduleDecoratorsBuilder.addAll(globallyEnabledDecorators);
 
         if (beansXml != null) {
 
             checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE);
             checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE);
-            checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES);
-            checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
+            checkForDuplicates(beansXml.getEnabledAlternativeClasses(),
+                    ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES);
+            checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(),
+                    ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
 
-            List<Class<?>> interceptorClasses = beansXml.getEnabledInterceptors().stream().map(loader).collect(Collectors.toList());
-            moduleInterceptorsBuilder.addAll(filter(interceptorClasses, globallyEnabledInterceptors, ValidatorLogger.INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE,
+            List<Class<?>> interceptorClasses = beansXml.getEnabledInterceptors().stream().map(loader)
+                    .collect(Collectors.toList());
+            moduleInterceptorsBuilder.addAll(filter(interceptorClasses, globallyEnabledInterceptors,
+                    ValidatorLogger.INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE,
                     deployment));
 
             List<Class<?>> decoratorClasses = beansXml.getEnabledDecorators().stream().map(loader).collect(Collectors.toList());
-            moduleDecoratorsBuilder.addAll(filter(decoratorClasses, globallyEnabledDecorators, ValidatorLogger.DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE,
-                    deployment));
+            moduleDecoratorsBuilder.addAll(
+                    filter(decoratorClasses, globallyEnabledDecorators, ValidatorLogger.DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE,
+                            deployment));
 
             alternativeClasses = beansXml.getEnabledAlternativeClasses().stream().map(loader).collect(ImmutableSet.collector());
-            alternativeStereotypes = cast(beansXml.getEnabledAlternativeStereotypes().stream().map(loader).collect(ImmutableSet.collector()));
+            alternativeStereotypes = cast(
+                    beansXml.getEnabledAlternativeStereotypes().stream().map(loader).collect(ImmutableSet.collector()));
         } else {
             alternativeClasses = Collections.emptySet();
             alternativeStereotypes = Collections.emptySet();
@@ -232,7 +240,8 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         // We suppose that enablements are always created all at once
         dirty = false;
 
-        return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives, alternativeClasses,
+        return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives,
+                alternativeClasses,
                 alternativeStereotypes);
     }
 
@@ -245,7 +254,8 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     @Override
     public String toString() {
-        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators=" + decorators + "]";
+        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators="
+                + decorators + "]";
     }
 
     private <T> void checkForDuplicates(List<Metadata<T>> list, MessageCallback<DeploymentException> messageCallback) {
@@ -267,9 +277,10 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
      * @param deployment
      * @return the filtered list
      */
-    private <T> List<Class<?>> filter(List<Class<?>> enabledClasses, List<Class<?>> globallyEnabledClasses, LogMessageCallback logMessageCallback,
+    private <T> List<Class<?>> filter(List<Class<?>> enabledClasses, List<Class<?>> globallyEnabledClasses,
+            LogMessageCallback logMessageCallback,
             BeanDeployment deployment) {
-        for (Iterator<Class<?>> iterator = enabledClasses.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Class<?>> iterator = enabledClasses.iterator(); iterator.hasNext();) {
             Class<?> enabledClass = iterator.next();
             if (globallyEnabledClasses.contains(enabledClass)) {
                 logMessageCallback.log(enabledClass, deployment.getBeanDeploymentArchive().getId());

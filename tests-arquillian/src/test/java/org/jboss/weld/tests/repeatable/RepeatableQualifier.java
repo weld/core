@@ -32,7 +32,6 @@ import org.jboss.weld.tests.repeatable.RepeatableQualifier.Container;
 @Repeatable(Container.class)
 public @interface RepeatableQualifier {
 
-
     String value();
 
     @Retention(RetentionPolicy.RUNTIME)

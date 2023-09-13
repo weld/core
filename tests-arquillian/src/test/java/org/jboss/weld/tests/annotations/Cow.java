@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.annotations;
 
-
 import jakarta.enterprise.context.Dependent;
 
 @Foo

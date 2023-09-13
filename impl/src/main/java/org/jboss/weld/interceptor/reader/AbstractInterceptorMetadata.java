@@ -26,7 +26,6 @@ import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
-
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  * @author Jozef Hartinger
@@ -42,7 +41,7 @@ public abstract class AbstractInterceptorMetadata implements InterceptorMetadata
     public List<Method> getInterceptorMethods(InterceptionType interceptionType) {
         if (interceptorMethodMap != null) {
             List<Method> methods = interceptorMethodMap.get(interceptionType);
-            return methods == null ? Collections.<Method>emptyList() : methods;
+            return methods == null ? Collections.<Method> emptyList() : methods;
         } else {
             return Collections.emptyList();
         }
@@ -60,7 +59,8 @@ public abstract class AbstractInterceptorMetadata implements InterceptorMetadata
 
     @Override
     public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptionType interceptionType) {
-        return new SimpleInterceptorInvocation(interceptorInstance, interceptionType, getInterceptorMethods(interceptionType), isTargetClassInterceptor());
+        return new SimpleInterceptorInvocation(interceptorInstance, interceptionType, getInterceptorMethods(interceptionType),
+                isTargetClassInterceptor());
     }
 
     protected abstract boolean isTargetClassInterceptor();

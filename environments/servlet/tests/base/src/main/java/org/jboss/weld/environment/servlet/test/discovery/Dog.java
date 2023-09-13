@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.test.discovery;
 
-
 @InterceptorBindingAnnotation
 public class Dog implements DogInterface {
 

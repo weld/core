@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.assignability.variable;
 
-
 public class Foo<T> {
 
     private final String name;

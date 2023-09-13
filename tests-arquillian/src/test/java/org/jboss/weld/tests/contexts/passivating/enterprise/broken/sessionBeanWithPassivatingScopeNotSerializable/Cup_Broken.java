@@ -25,6 +25,6 @@ import jakarta.inject.Inject;
 public class Cup_Broken {
 
     @SuppressWarnings("unused")
-    @Inject 
+    @Inject
     private Foo foo;
 }

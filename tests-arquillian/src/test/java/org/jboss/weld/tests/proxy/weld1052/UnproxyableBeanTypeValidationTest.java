@@ -25,7 +25,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +43,8 @@ public class UnproxyableBeanTypeValidationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(UnproxyableBeanTypeValidationTest.class)).addPackage(UnproxyableBeanTypeValidationTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(UnproxyableBeanTypeValidationTest.class))
+                .addPackage(UnproxyableBeanTypeValidationTest.class.getPackage());
     }
 
     @Test

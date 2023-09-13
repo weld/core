@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -66,10 +65,12 @@ public class ContainerEventsTest {
     public void testContainerEventsToString() {
         String id = "007";
         ActionSequence.reset();
-        try (WeldContainer container = new Weld(id).disableDiscovery().beanClasses(ContainerEventToStringObserver.class).initialize()) {
+        try (WeldContainer container = new Weld(id).disableDiscovery().beanClasses(ContainerEventToStringObserver.class)
+                .initialize()) {
             assertFalse(container.select(ContainerEventToStringObserver.class).isUnsatisfied());
         }
-        assertEquals(expectedToStringResult("ContainerInitialized", id), ContainerEventToStringObserver.containerInitializedToString);
+        assertEquals(expectedToStringResult("ContainerInitialized", id),
+                ContainerEventToStringObserver.containerInitializedToString);
         assertEquals(expectedToStringResult("ContainerShutdown", id), ContainerEventToStringObserver.containerShutdownToString);
     }
 

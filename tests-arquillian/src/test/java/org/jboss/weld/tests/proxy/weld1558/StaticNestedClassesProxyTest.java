@@ -40,7 +40,8 @@ public class StaticNestedClassesProxyTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StaticNestedClassesProxyTest.class)).addPackage(StaticNestedClassesProxyTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StaticNestedClassesProxyTest.class))
+                .addPackage(StaticNestedClassesProxyTest.class.getPackage());
     }
 
     @Test

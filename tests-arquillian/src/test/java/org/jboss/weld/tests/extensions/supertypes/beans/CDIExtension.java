@@ -17,13 +17,14 @@
 
 package org.jboss.weld.tests.extensions.supertypes.beans;
 
+import java.util.Collections;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
-import java.util.Collections;
 
 /**
  * @author robc
@@ -39,8 +40,8 @@ public class CDIExtension implements Extension {
         newType.setConstructors(type.getConstructors());
 
         // Clear all fields and methods
-        newType.setFields(Collections.<AnnotatedField<? super T>>emptySet());
-        newType.setMethods(Collections.<AnnotatedMethod<? super T>>emptySet());
+        newType.setFields(Collections.<AnnotatedField<? super T>> emptySet());
+        newType.setMethods(Collections.<AnnotatedMethod<? super T>> emptySet());
         event.setAnnotatedType(newType);
     }
 

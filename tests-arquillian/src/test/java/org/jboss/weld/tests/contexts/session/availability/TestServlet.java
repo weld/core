@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.contexts.session.availability;
 
 import java.io.IOException;
+
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -48,6 +49,3 @@ public class TestServlet extends HttpServlet {
     }
 
 }
-
-
-

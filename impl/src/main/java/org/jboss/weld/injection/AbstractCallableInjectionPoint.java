@@ -46,9 +46,12 @@ abstract class AbstractCallableInjectionPoint<T, X, S extends Member> implements
     private final Set<InjectionPoint> injectionPoints;
     protected final boolean hasTransientReferenceParameter;
 
-    protected AbstractCallableInjectionPoint(EnhancedAnnotatedCallable<T, X, S> callable, Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, InjectionPointFactory factory, BeanManagerImpl manager) {
+    protected AbstractCallableInjectionPoint(EnhancedAnnotatedCallable<T, X, S> callable, Bean<?> declaringBean,
+            Class<?> declaringComponentClass, boolean observerOrDisposer, InjectionPointFactory factory,
+            BeanManagerImpl manager) {
         this.declaringBean = declaringBean;
-        this.parameters = factory.getParameterInjectionPoints(callable, declaringBean, declaringComponentClass, manager, observerOrDisposer);
+        this.parameters = factory.getParameterInjectionPoints(callable, declaringBean, declaringComponentClass, manager,
+                observerOrDisposer);
         if (observerOrDisposer) {
             this.injectionPoints = InjectionPoints.filterOutSpecialParameterInjectionPoints(parameters);
         } else {

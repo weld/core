@@ -72,9 +72,12 @@ public class ProxyMethodHandler implements MethodHandler, Serializable, Metadata
         return this.getInstance();
     }
 
-    /* (non-Javadoc)
-    * @see javassist.util.proxy.MethodHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.Object[])
-    */
+    /*
+     * (non-Javadoc)
+     *
+     * @see javassist.util.proxy.MethodHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.reflect.Method,
+     * java.lang.Object[])
+     */
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
         if (thisMethod == null) {
             BeanLogger.LOG.methodHandlerProcessingReturningBeanInstance(self.getClass());
@@ -118,13 +121,15 @@ public class ProxyMethodHandler implements MethodHandler, Serializable, Metadata
             if (beanId == null) {
                 throw BeanLogger.LOG.proxyHandlerSerializedForNonSerializableBean();
             }
-            bean = Container.instance(contextId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+            bean = Container.instance(contextId).services().get(ContextualStore.class)
+                    .<Bean<Object>, Object> getContextual(beanId);
         }
         return bean;
     }
 
     /**
      * Returns the underlying instance.
+     *
      * @return the underlying instance
      */
     public Object getInstance() {

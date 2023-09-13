@@ -136,7 +136,7 @@ public class InjectionPointFactory {
     public <T, X> FieldInjectionPoint<T, X> createFieldInjectionPoint(EnhancedAnnotatedField<T, X> field,
             Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
         FieldInjectionPointAttributes<T, X> attributes = InferringFieldInjectionPointAttributes.of(field, declaringBean,
-            declaringComponentClass, manager);
+                declaringComponentClass, manager);
         attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new FieldInjectionPoint<T, X>(attributes);
     }
@@ -153,7 +153,7 @@ public class InjectionPointFactory {
     public <T, X> ParameterInjectionPoint<T, X> createParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter,
             Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
         ParameterInjectionPointAttributes<T, X> attributes = InferringParameterInjectionPointAttributes.of(parameter,
-            declaringBean, declaringComponentClass, manager);
+                declaringBean, declaringComponentClass, manager);
         attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new ParameterInjectionPointImpl<T, X>(attributes);
     }
@@ -173,12 +173,16 @@ public class InjectionPointFactory {
         return new ConstructorInjectionPoint<T>(constructor, declaringBean, declaringComponentClass, this, manager);
     }
 
-    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean,
-            Class<?> declaringComponentClass, Set<Class<? extends Annotation>> specialParameterMarkers, BeanManagerImpl manager) {
+    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(MethodInjectionPointType methodInjectionPointType,
+            EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean,
+            Class<?> declaringComponentClass, Set<Class<? extends Annotation>> specialParameterMarkers,
+            BeanManagerImpl manager) {
         if (enhancedMethod.isStatic()) {
-            return new StaticMethodInjectionPoint<T, X>(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
+            return new StaticMethodInjectionPoint<T, X>(methodInjectionPointType, enhancedMethod, declaringBean,
+                    declaringComponentClass, specialParameterMarkers, this, manager);
         } else {
-            return new VirtualMethodInjectionPoint<T, X>(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
+            return new VirtualMethodInjectionPoint<T, X>(methodInjectionPointType, enhancedMethod, declaringBean,
+                    declaringComponentClass, specialParameterMarkers, this, manager);
         }
     }
 
@@ -218,16 +222,14 @@ public class InjectionPointFactory {
     }
 
     private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField,
-            ImmutableSet.Builder<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, Class<?> declaringComponentClass,
+            ImmutableSet.Builder<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean,
+            Class<?> declaringComponentClass,
             BeanManagerImpl manager) {
         if (annotatedField.isFinal()) {
             throw UtilLogger.LOG.qualifierOnFinalField(annotatedField);
         }
         injectableFields.add(createFieldInjectionPoint(annotatedField, declaringBean, declaringComponentClass, manager));
     }
-
-
-
 
     /*
      * Utility methods for parameter InjectionPoints

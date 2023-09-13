@@ -46,7 +46,7 @@ public class WeldEventTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldEventTest.class))
-            .addPackage(WeldEventTest.class.getPackage())).build();
+                .addPackage(WeldEventTest.class.getPackage())).build();
     }
 
     @Test
@@ -102,7 +102,7 @@ public class WeldEventTest {
 
             // WeldEvent<Object> -> WeldEvent<SomeInterface> -> fire(SomeOtherBean)
             observer.reset();
-            container.event().<SomeInterface>select(someInterfaceType).fire(container.select(SomeOtherBean.class).get());
+            container.event().<SomeInterface> select(someInterfaceType).fire(container.select(SomeOtherBean.class).get());
             Assert.assertTrue(observer.isSomeInterfaceObserved());
             Assert.assertTrue(observer.isSomeOtherBeanObserved());
             Assert.assertFalse(observer.isSomeTypedBeanObserved());

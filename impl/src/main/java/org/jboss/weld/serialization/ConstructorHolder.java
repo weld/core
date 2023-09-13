@@ -29,7 +29,8 @@ import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
  * @author Jozef Hartinger
  *
  */
-public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor<X>> implements PrivilegedAction<Constructor<X>> {
+public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor<X>>
+        implements PrivilegedAction<Constructor<X>> {
 
     private static final long serialVersionUID = -6439218442811003152L;
 

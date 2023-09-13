@@ -18,7 +18,6 @@ package org.jboss.weld.tests.builtinBeans.ee;
 
 import jakarta.ejb.Stateful;
 
-
 @Stateful
 public class Horse implements HorseRemote {
     public boolean ping() {

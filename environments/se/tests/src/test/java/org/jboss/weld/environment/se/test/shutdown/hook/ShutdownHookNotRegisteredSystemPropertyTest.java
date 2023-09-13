@@ -35,7 +35,9 @@ public class ShutdownHookNotRegisteredSystemPropertyTest extends ShutdownHookNot
 
     @Deployment(managed = false, name = DEPLOYMENT_NAME)
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(ShutdownHookNotRegisteredTest.class, ShutdownHookNotRegisteredSystemPropertyTest.class, Foo.class))
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addClasses(ShutdownHookNotRegisteredTest.class,
+                        ShutdownHookNotRegisteredSystemPropertyTest.class, Foo.class))
                 .addSystemProperty(Weld.SHUTDOWN_HOOK_SYSTEM_PROPERTY, "false").build();
     }
 

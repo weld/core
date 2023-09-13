@@ -34,11 +34,12 @@ public class DisposerMethodValidationTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerMethodValidationTest.class)).addPackage(Battery.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerMethodValidationTest.class))
+                .addPackage(Battery.class.getPackage());
     }
 
     @Test
     public void testDeploymentWithDisposerValidationFailure() {
         // should throw deployment exception
-     }
+    }
 }

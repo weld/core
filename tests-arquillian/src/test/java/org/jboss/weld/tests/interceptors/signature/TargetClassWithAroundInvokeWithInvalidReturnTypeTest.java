@@ -37,13 +37,15 @@ public class TargetClassWithAroundInvokeWithInvalidReturnTypeTest {
     // Can either be IllegalArgumentException (thrown by org.jboss.as.ee) or DefinitionException (thrown by Weld)
     @ShouldThrowException(Exception.class)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TargetClassWithAroundInvokeWithInvalidReturnTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(TargetClassWithAroundInvokeWithInvalidReturnTypeTest.class))
                 .addClass(TargetClassWithAroundInvokeWithInvalidReturnType.class);
     }
 
     @Test
     public void testDeploymentWithInvalidReturnType() {
         // should throw exception, either IllegalArg or Definition
-     }
+    }
 
 }

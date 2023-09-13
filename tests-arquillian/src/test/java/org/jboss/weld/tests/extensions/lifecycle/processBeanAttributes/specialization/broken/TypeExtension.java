@@ -30,13 +30,14 @@ import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 
 /**
  * The spec says:
- * 
- * "If X does not have some bean type of Y, the container automatically detects the problem and treats it as a definition error."
- * 
+ *
+ * "If X does not have some bean type of Y, the container automatically detects the problem and treats it as a definition
+ * error."
+ *
  * This test verifies, that such problem is detected if the set of types of X is altered by a portable extension.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 public class TypeExtension implements Extension {
 

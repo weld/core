@@ -132,7 +132,8 @@ import org.jboss.weld.util.collections.WeldCollections;
  * </pre>
  *
  * <p>
- * By default, the discovery is enabled so that all beans from all discovered bean archives are considered. However, it's possible to define a "synthetic" bean
+ * By default, the discovery is enabled so that all beans from all discovered bean archives are considered. However, it's
+ * possible to define a "synthetic" bean
  * archive, or the set of bean classes and enablement respectively:
  * </p>
  *
@@ -150,21 +151,23 @@ import org.jboss.weld.util.collections.WeldCollections;
  *
  *
  * <p>
- * In the same manner, it is possible to explicitly declare interceptors, decorators, extensions and Weld-specific options (such as relaxed construction) using
+ * In the same manner, it is possible to explicitly declare interceptors, decorators, extensions and Weld-specific options (such
+ * as relaxed construction) using
  * the builder.
  * </p>
  *
  * <pre>
  * Weld builder = new Weld()
- *  .disableDiscovery()
- *  .packages(Main.class, Utils.class)
- *  .interceptors(TransactionalInterceptor.class)
- *  .property("org.jboss.weld.construction.relaxed", true);
+ *         .disableDiscovery()
+ *         .packages(Main.class, Utils.class)
+ *         .interceptors(TransactionalInterceptor.class)
+ *         .property("org.jboss.weld.construction.relaxed", true);
  * WeldContainer container = builder.initialize();
  * </pre>
  *
  * <p>
- * The builder is reusable which means that it's possible to initialize multiple Weld containers with one builder. However, note that containers must have a
+ * The builder is reusable which means that it's possible to initialize multiple Weld containers with one builder. However, note
+ * that containers must have a
  * unique identifier assigned when running multiple Weld instances at the same time.
  * </p>
  *
@@ -178,7 +181,8 @@ import org.jboss.weld.util.collections.WeldCollections;
 public class Weld extends SeContainerInitializer implements ContainerInstanceFactory {
 
     /**
-     * By default, the set of bean-defining annotations is fixed. If set to a {@link Set} of annotation classes, the set of bean-defining annotations is
+     * By default, the set of bean-defining annotations is fixed. If set to a {@link Set} of annotation classes, the set of
+     * bean-defining annotations is
      * augmented with the contents of the {@link Set}.
      * <p>
      * This key can be used through {@link #property(String, Object}.
@@ -186,7 +190,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public static final String ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY = "org.jboss.weld.se.additionalBeanDefiningAnnotations";
 
     /**
-     * By default, bean archive isolation is enabled. If set to false, Weld will use a "flat" deployment structure - all bean classes share the same bean
+     * By default, bean archive isolation is enabled. If set to false, Weld will use a "flat" deployment structure - all bean
+     * classes share the same bean
      * archive and all beans.xml descriptors are automatically merged into one.
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
@@ -202,7 +207,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     /**
      * Standard behavior is that empty {@code beans.xml} is treated as discovery mode {@code annotated}.
-     * This configuration property allows to change the behavior to discovery mode {@code all} which is how it used to work prior to
+     * This configuration property allows to change the behavior to discovery mode {@code all} which is how it used to work
+     * prior to
      * CDI 4.0.
      * <p/>
      * Note that this option is temporary and servers to easy migration. As such, it will be eventually removed.
@@ -210,14 +216,16 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public static final String EMPTY_BEANS_XML_DISCOVERY_MODE_ALL = "org.jboss.weld.se.discovery.emptyBeansXmlModeAll";
 
     /**
-     * By default, Weld automatically registers shutdown hook during initialization. If set to false, the registration of a shutdown hook is skipped.
+     * By default, Weld automatically registers shutdown hook during initialization. If set to false, the registration of a
+     * shutdown hook is skipped.
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
      */
     public static final String SHUTDOWN_HOOK_SYSTEM_PROPERTY = "org.jboss.weld.se.shutdownHook";
 
     /**
-     * By default, Weld SE does not support implicit bean archives without beans.xml. If set to true, Weld scans the class path entries and implicit bean
+     * By default, Weld SE does not support implicit bean archives without beans.xml. If set to true, Weld scans the class path
+     * entries and implicit bean
      * archives which don't contain a beans.xml file are also supported.
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
@@ -230,8 +238,10 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public static final String JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT = "jakarta.enterprise.inject.scan.implicit";
 
     /**
-     * By default, Weld is allowed to perform efficient cleanup and further optimizations after bootstrap. This feature is normally controlled by integrator
-     * through {@link ConfigurationKey#ALLOW_OPTIMIZED_CLEANUP} but in Weld SE a client of the bootstrap API is de facto in the role of integrator.
+     * By default, Weld is allowed to perform efficient cleanup and further optimizations after bootstrap. This feature is
+     * normally controlled by integrator
+     * through {@link ConfigurationKey#ALLOW_OPTIMIZED_CLEANUP} but in Weld SE a client of the bootstrap API is de facto in the
+     * role of integrator.
      * <p>
      * This key can be also used through {@link #property(String, Object)}.
      */
@@ -357,10 +367,12 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * All classes from the packages of the specified classes will be added to the set of bean classes for the synthetic bean archive.
+     * All classes from the packages of the specified classes will be added to the set of bean classes for the synthetic bean
+     * archive.
      *
      * <p>
-     * Note that the scanning possibilities are limited. Therefore, only directories and jar files from the filesystem are supported.
+     * Note that the scanning possibilities are limited. Therefore, only directories and jar files from the filesystem are
+     * supported.
      * </p>
      *
      * <p>
@@ -377,7 +389,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Packages of the specified classes will be scanned and found classes will be added to the set of bean classes for the synthetic bean archive.
+     * Packages of the specified classes will be scanned and found classes will be added to the set of bean classes for the
+     * synthetic bean archive.
      *
      * @param scanRecursively
      * @param packageClasses
@@ -411,7 +424,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * A package of the specified class will be scanned and found classes will be added to the set of bean classes for the synthetic bean archive.
+     * A package of the specified class will be scanned and found classes will be added to the set of bean classes for the
+     * synthetic bean archive.
      *
      * @param scanRecursively
      * @param packageClass
@@ -483,7 +497,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Enable interceptors for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param interceptorClasses
@@ -498,7 +513,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add an interceptor class to the list of enabled interceptors for the synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param interceptorClass
@@ -520,7 +536,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Enable decorators for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param decoratorClasses
@@ -535,7 +552,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add a decorator class to the list of enabled decorators for the synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param decoratorClass
@@ -557,7 +575,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Select alternatives for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param alternativeClasses
@@ -572,7 +591,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add an alternative class to the list of selected alternatives for a synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param alternativeClass
@@ -594,7 +614,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Select alternative stereotypes for the synthetic bean archive, all previous values are removed.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param alternativeStereotypeClasses
@@ -619,7 +640,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     /**
      * Add an alternative stereotype class to the list of selected alternative stereotypes for a synthetic bean archive.
      * <p>
-     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to compensate the absence of the
+     * This method does not add any class to the set of bean classes for the synthetic bean archive. It's purpose is solely to
+     * compensate the absence of the
      * <code>beans.xml</code> descriptor.
      *
      * @param alternativeStereotypeClass
@@ -676,7 +698,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * {@link org.jboss.weld.transaction.spi.TransactionServices}.
      * </p>
      * <p>
-     * Service implementation may specify their priority using {@link Priority}. Services with higher priority have precedence. Services that do not specify
+     * Service implementation may specify their priority using {@link Priority}. Services with higher priority have precedence.
+     * Services that do not specify
      * priority have the default priority of 4500.
      * </p>
      *
@@ -686,7 +709,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     public Weld addServices(Service... services) {
         for (Service service : services) {
-            for (Class<? extends Service> serviceInterface : Services.identifyServiceInterfaces(service.getClass(), new HashSet<>())) {
+            for (Class<? extends Service> serviceInterface : Services.identifyServiceInterfaces(service.getClass(),
+                    new HashSet<>())) {
                 additionalServices.put(serviceInterface, service);
             }
         }
@@ -695,9 +719,11 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     /**
      * Sets the bean discovery mode for synthetic bean archive. Default mode is ANNOTATED.
-     * @param mode bean discovery mode in a form of an enum from {@link org.jboss.weld.bootstrap.spi.BeanDiscoveryMode}. Accepted values are ALL, ANNOTATED
      *
-     * @return  self
+     * @param mode bean discovery mode in a form of an enum from {@link org.jboss.weld.bootstrap.spi.BeanDiscoveryMode}.
+     *        Accepted values are ALL, ANNOTATED
+     *
+     * @return self
      * @throws IllegalArgumentException if BeanDiscoveryMode.NONE is passed as an argument
      */
     public Weld setBeanDiscoveryMode(BeanDiscoveryMode mode) {
@@ -752,7 +778,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * By default, the discovery is enabled. However, it's possible to disable the discovery completely so that only the "synthetic" bean archive is considered.
+     * By default, the discovery is enabled. However, it's possible to disable the discovery completely so that only the
+     * "synthetic" bean archive is considered.
      *
      * @return self
      */
@@ -771,13 +798,17 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Bootstraps a new Weld SE container with the current container id (generated value if not set through {@link #containerId(String)}).
+     * Bootstraps a new Weld SE container with the current container id (generated value if not set through
+     * {@link #containerId(String)}).
      * <p/>
-     * The container must be shut down properly when an application is stopped. Applications are encouraged to use the try-with-resources statement or invoke
+     * The container must be shut down properly when an application is stopped. Applications are encouraged to use the
+     * try-with-resources statement or invoke
      * {@link WeldContainer#shutdown()} explicitly.
      * <p/>
-     * However, a shutdown hook is also registered during initialization so that all running containers are shut down automatically when a program exits or VM
-     * is terminated. This means that it's not necessary to implement the shutdown logic in a class where a main method is used to start the container.
+     * However, a shutdown hook is also registered during initialization so that all running containers are shut down
+     * automatically when a program exits or VM
+     * is terminated. This means that it's not necessary to implement the shutdown logic in a class where a main method is used
+     * to start the container.
      *
      * @return the Weld container
      * @see #enableDiscovery()
@@ -786,7 +817,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public WeldContainer initialize() {
 
         // If also building a synthetic bean archive or the implicit scan is enabled, the check for beans.xml is not necessary
-        if (!isSyntheticBeanArchiveRequired() && !isImplicitScanEnabled() && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
+        if (!isSyntheticBeanArchiveRequired() && !isImplicitScanEnabled()
+                && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
             throw CommonLogger.LOG.missingBeansXml();
         }
 
@@ -845,7 +877,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Set a {@link ClassLoader}. The given {@link ClassLoader} will be scanned automatically for bean archives if scanning is enabled.
+     * Set a {@link ClassLoader}. The given {@link ClassLoader} will be scanned automatically for bean archives if scanning is
+     * enabled.
      *
      * @param classLoader
      * @return self
@@ -857,7 +890,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Set a {@link ResourceLoader} used to scan the application for bean archives. If you only want to use a specific {@link ClassLoader} for scanning, use
+     * Set a {@link ResourceLoader} used to scan the application for bean archives. If you only want to use a specific
+     * {@link ClassLoader} for scanning, use
      * {@link #setClassLoader(ClassLoader)} instead.
      *
      * @param resourceLoader
@@ -930,7 +964,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     /**
      * <p>
-     * Extensions to Weld SE can subclass and override this method to customize the deployment before weld boots up. For example, to add a custom
+     * Extensions to Weld SE can subclass and override this method to customize the deployment before weld boots up. For
+     * example, to add a custom
      * ResourceLoader, you would subclass Weld like so:
      * </p>
      *
@@ -955,23 +990,25 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
 
-        final BeanDiscoveryMode emptyBeansXmlDiscoveryMode = isEnabled(EMPTY_BEANS_XML_DISCOVERY_MODE_ALL, false) ? BeanDiscoveryMode.ALL : BeanDiscoveryMode.ANNOTATED;
+        final BeanDiscoveryMode emptyBeansXmlDiscoveryMode = isEnabled(EMPTY_BEANS_XML_DISCOVERY_MODE_ALL, false)
+                ? BeanDiscoveryMode.ALL
+                : BeanDiscoveryMode.ANNOTATED;
         final Iterable<Metadata<Extension>> extensions = getExtensions();
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final Deployment deployment;
         final Set<WeldBeanDeploymentArchive> beanDeploymentArchives = new HashSet<WeldBeanDeploymentArchive>();
         final Map<Class<? extends Service>, Service> additionalServices = new HashMap<>(this.additionalServices);
         final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.<Class<? extends Annotation>> builder()
-            .addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
-            // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
-            .add(ThreadScoped.class)
-            // Add all custom bean defining annotations user registered via Weld.addBeanDefiningAnnotations()
-            .addAll(extendedBeanDefiningAnnotations)
-            .build();
+                .addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
+                // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
+                .add(ThreadScoped.class)
+                // Add all custom bean defining annotations user registered via Weld.addBeanDefiningAnnotations()
+                .addAll(extendedBeanDefiningAnnotations)
+                .build();
 
         if (discoveryEnabled) {
             DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
-                   beanDefiningAnnotations, isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false),
+                    beanDefiningAnnotations, isEnabled(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, false),
                     emptyBeansXmlDiscoveryMode);
             if (isImplicitScanEnabled()) {
                 strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap, emptyBeansXmlDiscoveryMode));
@@ -994,13 +1031,14 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
                 for (String className : setOfAllBeanClasses) {
                     Class<?> clazz = Reflections.loadClass(resourceLoader, className);
                     if (clazz != null && Reflections.hasBeanDefiningAnnotation(clazz, beanDefiningAnnotations)) {
-                       filteredSetbuilder.add(className);
+                        filteredSetbuilder.add(className);
                     }
                 }
                 setOfAllBeanClasses = filteredSetbuilder.build();
             }
-            WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, setOfAllBeanClasses, null,
-                buildSyntheticBeansXml(), Collections.emptySet(), ImmutableSet.copyOf(beanClasses));
+            WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID,
+                    setOfAllBeanClasses, null,
+                    buildSyntheticBeansXml(), Collections.emptySet(), ImmutableSet.copyOf(beanClasses));
             beanDeploymentArchives.add(syntheticBeanArchive);
         }
 
@@ -1008,11 +1046,13 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             throw WeldSELogger.LOG.weldContainerCannotBeInitializedNoBeanArchivesFound();
         }
 
-        Multimap<String, BeanDeploymentArchive> problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(beanDeploymentArchives);
+        Multimap<String, BeanDeploymentArchive> problems = BeanArchives
+                .findBeanClassesDeployedInMultipleBeanArchives(beanDeploymentArchives);
         if (!problems.isEmpty()) {
             // Right now, we only log a warning for each bean class deployed in multiple bean archives
             for (Entry<String, Collection<BeanDeploymentArchive>> entry : problems.entrySet()) {
-                WeldSELogger.LOG.beanClassDeployedInMultipleBeanArchives(entry.getKey(), WeldCollections.toMultiRowString(entry.getValue()));
+                WeldSELogger.LOG.beanClassDeployedInMultipleBeanArchives(entry.getKey(),
+                        WeldCollections.toMultiRowString(entry.getValue()));
             }
         }
 
@@ -1034,7 +1074,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     /**
-     * Utility method allowing managed instances of beans to provide entry points for non-managed beans (such as {@link WeldContainer}). Should only called once
+     * Utility method allowing managed instances of beans to provide entry points for non-managed beans (such as
+     * {@link WeldContainer}). Should only called once
      * Weld has finished booting.
      *
      * @param manager the BeanManager to use to access the managed instance
@@ -1044,7 +1085,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      * @throws IllegalArgumentException if the given type represents a type variable
      * @throws IllegalArgumentException if two instances of the same qualifier type are given
      * @throws IllegalArgumentException if an instance of an annotation that is not a qualifier type is given
-     * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws AmbiguousResolutionException if the ambiguous dependency resolution rules
+     * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws AmbiguousResolutionException if the
+     *         ambiguous dependency resolution rules
      *         fail
      * @throws IllegalArgumentException if the given type is not a bean type of the given bean
      */
@@ -1058,7 +1100,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     protected boolean isImplicitScanEnabled() {
-        return isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false) || isEnabled(JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, false);
+        return isEnabled(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, false)
+                || isEnabled(JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, false);
     }
 
     protected boolean isSyntheticBeanArchiveRequired() {
@@ -1084,7 +1127,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         if (weldSEBeanRegistrant == null) {
             try {
                 weldSEBeanRegistrant = SecurityActions.newInstance(WeldSEBeanRegistrant.class);
-                result.add(new MetadataImpl<Extension>(weldSEBeanRegistrant, SYNTHETIC_LOCATION_PREFIX + WeldSEBeanRegistrant.class.getName()));
+                result.add(new MetadataImpl<Extension>(weldSEBeanRegistrant,
+                        SYNTHETIC_LOCATION_PREFIX + WeldSEBeanRegistrant.class.getName()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -1111,8 +1155,10 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     }
 
     protected BeansXml buildSyntheticBeansXml() {
-        return new BeansXmlImpl(ImmutableList.copyOf(selectedAlternatives), ImmutableList.copyOf(selectedAlternativeStereotypes),
-                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), Scanning.EMPTY_SCANNING, null, beanDiscoveryMode, null, false);
+        return new BeansXmlImpl(ImmutableList.copyOf(selectedAlternatives),
+                ImmutableList.copyOf(selectedAlternativeStereotypes),
+                ImmutableList.copyOf(enabledDecorators), ImmutableList.copyOf(enabledInterceptors), Scanning.EMPTY_SCANNING,
+                null, beanDiscoveryMode, null, false);
     }
 
     private MetadataImpl<String> syntheticMetadata(Class<?> clazz) {
@@ -1141,7 +1187,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
                     if (PROCOTOL_FILE.equals(resourceUrl.getProtocol())) {
                         File file = new File(resourceUri);
-                        handleDir(file.isDirectory() ? file : file.getParentFile(), packInfo.isScanRecursively(), packName, foundClasses);
+                        handleDir(file.isDirectory() ? file : file.getParentFile(), packInfo.isScanRecursively(), packName,
+                                foundClasses);
                     } else if (PROCOTOL_JAR.equals(resourceUrl.getProtocol())) {
                         handleJar(resourceUri, packInfo.isScanRecursively(), packName, foundClasses);
                     } else {
@@ -1267,7 +1314,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
 
         // parse from system properties
-        String stringValue = AccessController.doPrivileged(new GetSystemPropertyAction(ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY));
+        String stringValue = AccessController
+                .doPrivileged(new GetSystemPropertyAction(ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY));
         if (stringValue != null) {
             for (String className : stringValue.split(",")) {
                 if (!className.isEmpty()) {
@@ -1301,7 +1349,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             this.packName = packClass.getPackage().getName();
             this.packClassName = packClass.getName();
             this.scanRecursively = recursiveScan;
-            this.classLoaderRef = new WeakReference<ClassLoader>(AccessController.doPrivileged(new GetClassLoaderAction(packClass)));
+            this.classLoaderRef = new WeakReference<ClassLoader>(
+                    AccessController.doPrivileged(new GetClassLoaderAction(packClass)));
         }
 
         PackInfo(Package pack, boolean recursiveScan) {

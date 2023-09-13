@@ -70,7 +70,8 @@ public abstract class AbstractFacadeBean<T> extends AbstractDecorableBuiltInBean
     protected InjectionPoint getInjectionPoint(CurrentInjectionPoint cip) {
         InjectionPoint ip = super.getInjectionPoint(cip);
         if (ip == null) {
-            ip = new DynamicLookupInjectionPoint(EmptyInjectionPoint.INSTANCE, getDefaultType(), Collections.<Annotation>emptySet());
+            ip = new DynamicLookupInjectionPoint(EmptyInjectionPoint.INSTANCE, getDefaultType(),
+                    Collections.<Annotation> emptySet());
         }
         return ip;
     }

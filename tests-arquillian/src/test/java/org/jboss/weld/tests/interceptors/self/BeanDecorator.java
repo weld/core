@@ -1,8 +1,5 @@
 package org.jboss.weld.tests.interceptors.self;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.decorator.Decorator;
 import jakarta.decorator.Delegate;
 import jakarta.inject.Inject;
@@ -24,7 +21,7 @@ public class BeanDecorator implements Decorated {
     }
 
     public void doDecorated() {
-       decoratedInvocationCount ++;
-       delegate.doDecorated();
+        decoratedInvocationCount++;
+        delegate.doDecorated();
     }
 }

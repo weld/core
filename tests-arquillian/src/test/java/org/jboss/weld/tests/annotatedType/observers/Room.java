@@ -18,22 +18,18 @@ package org.jboss.weld.tests.annotatedType.observers;
 
 import jakarta.enterprise.event.Observes;
 
-public class Room
-{
-   private boolean clean = false;
+public class Room {
+    private boolean clean = false;
 
-   public void clean(@Observes CleanEvent event)
-   {
-      setClean(true);
-   }
+    public void clean(@Observes CleanEvent event) {
+        setClean(true);
+    }
 
-   public boolean isClean()
-   {
-      return clean;
-   }
+    public boolean isClean() {
+        return clean;
+    }
 
-   public void setClean(boolean entered)
-   {
-      this.clean = entered;
-   }
+    public void setClean(boolean entered) {
+        this.clean = entered;
+    }
 }

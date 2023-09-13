@@ -40,7 +40,8 @@ public class ModifyingExtension implements Extension {
             }
 
             public Set<Annotation> getQualifiers() {
-                return Collections.unmodifiableSet(new HashSet<Annotation>(Arrays.asList(new Cute.Literal(), new Wild.Literal(true), Any.Literal.INSTANCE)));
+                return Collections.unmodifiableSet(new HashSet<Annotation>(
+                        Arrays.asList(new Cute.Literal(), new Wild.Literal(true), Any.Literal.INSTANCE)));
             }
 
             public Class<? extends Annotation> getScope() {

@@ -39,7 +39,8 @@ public class SubclassConstructorInjectionPointTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SubclassConstructorInjectionPointTest.class)).intercept(FooInterceptor.class).addPackage(Foo.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SubclassConstructorInjectionPointTest.class))
+                .intercept(FooInterceptor.class).addPackage(Foo.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

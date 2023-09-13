@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.tests.extensions;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import jakarta.enterprise.inject.spi.Extension;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,11 +32,6 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Extension;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -49,8 +49,8 @@ public class EnterpriseExtensionTest {
     }
 
     /*
-    * description = "WELD-243"
-    */
+     * description = "WELD-243"
+     */
     @Test
     public void testContainerEventsOnlySentToExtensionBeans(ExtensionObserver extensionObserver, OtherObserver otherObserver) {
         assertTrue(extensionObserver.isBeforeBeanDiscovery());
@@ -115,8 +115,8 @@ public class EnterpriseExtensionTest {
     }
 
     /*
-    * WELD-503
-    */
+     * WELD-503
+     */
     @Test
     public void testProcessStarOnlyCalledForEnableSessionBeans(TrainlineExtension extension) {
         assertFalse(extension.isProcessTerminusBean());

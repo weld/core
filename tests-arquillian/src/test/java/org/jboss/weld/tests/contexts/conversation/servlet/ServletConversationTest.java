@@ -58,7 +58,8 @@ public class ServletConversationTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletConversationTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletConversationTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Message.class, Servlet.class, DestroyedConversationObserver.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebResource(ServletConversationTest.class.getPackage(), "message.html", "message.html");

@@ -58,12 +58,13 @@ public class Utils {
     /**
      * Checks if all annotations are in a given set of annotations
      *
-     * @param annotations     The annotation set
+     * @param annotations The annotation set
      * @param annotationTypes The annotations to match
      * @return True if match, false otherwise
      */
     @SafeVarargs
-    public static boolean annotationSetMatches(Set<? extends Annotation> annotations, Class<? extends Annotation>... annotationTypes) {
+    public static boolean annotationSetMatches(Set<? extends Annotation> annotations,
+            Class<? extends Annotation>... annotationTypes) {
         List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
         annotationTypeList.addAll(Arrays.asList(annotationTypes));
         for (Annotation annotation : annotations) {
@@ -103,13 +104,13 @@ public class Utils {
 
     public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
         try (TCCLObjectInputStream in = new TCCLObjectInputStream(new ByteArrayInputStream(bytes))) {
-            return Reflections.<T>cast(in.readObject());
+            return Reflections.<T> cast(in.readObject());
         }
     }
 
     public static <T> T deserialize(byte[] bytes, ClassLoader cl) throws IOException, ClassNotFoundException {
         try (TCCLObjectInputStream in = new TCCLObjectInputStream(new ByteArrayInputStream(bytes), cl)) {
-            return Reflections.<T>cast(in.readObject());
+            return Reflections.<T> cast(in.readObject());
         }
     }
 

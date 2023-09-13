@@ -65,7 +65,9 @@ public class BeansXmlParser {
         if (beansXmlValidator != null) {
             beansXmlValidator.validate(beansXml, handler);
         }
-        return handler != null ? new BeansXmlStreamParser(beansXml, text -> handler.interpolate(text), emptyBeansXmlDiscoveryModeAll).parse() : new BeansXmlStreamParser(beansXml, emptyBeansXmlDiscoveryModeAll).parse();
+        return handler != null
+                ? new BeansXmlStreamParser(beansXml, text -> handler.interpolate(text), emptyBeansXmlDiscoveryModeAll).parse()
+                : new BeansXmlStreamParser(beansXml, emptyBeansXmlDiscoveryModeAll).parse();
     }
 
     public BeansXml parse(Iterable<URL> urls) {
@@ -106,13 +108,15 @@ public class BeansXmlParser {
                 isTrimmed = beansXml.isTrimmed();
                 discoveryModesSet.add(beansXml.getBeanDiscoveryMode());
                 /*
-                 * provided we are merging the content of multiple XML files, getBeansXml() returns an InputStream representing the last one
+                 * provided we are merging the content of multiple XML files, getBeansXml() returns an InputStream representing
+                 * the last one
                  */
                 beansXmlUrl = beansXml.getUrl();
             }
         }
 
-        return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl,
+        return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors,
+                new ScanningImpl(includes, excludes), beansXmlUrl,
                 discoveryModesSet.size() == 1 ? discoveryModesSet.iterator().next() : BeanDiscoveryMode.ALL, null, isTrimmed);
     }
 
@@ -138,7 +142,8 @@ public class BeansXmlParser {
         return false;
     }
 
-    public static BeansXml mergeExisting(final Iterable<? extends BeanDeploymentArchive> beanArchives, final boolean removeDuplicates) {
+    public static BeansXml mergeExisting(final Iterable<? extends BeanDeploymentArchive> beanArchives,
+            final boolean removeDuplicates) {
         return merge(beanArchives, bda -> bda.getBeansXml(), removeDuplicates);
     }
 

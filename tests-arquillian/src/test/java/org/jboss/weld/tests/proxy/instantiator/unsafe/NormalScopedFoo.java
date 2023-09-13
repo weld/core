@@ -28,12 +28,12 @@ public class NormalScopedFoo implements NormalScopedFooInterface {
 
     @Inject
     public NormalScopedFoo(BeanManager beanManager) {
-        id+= " voila";
+        id += " voila";
     }
 
     @PostConstruct
     public void init() {
-        id+= "!";
+        id += "!";
     }
 
     @AlphaBinding

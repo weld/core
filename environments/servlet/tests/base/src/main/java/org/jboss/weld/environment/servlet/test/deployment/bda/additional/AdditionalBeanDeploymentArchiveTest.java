@@ -50,16 +50,19 @@ public class AdditionalBeanDeploymentArchiveTest {
     @Deployment
     public static WebArchive createTestArchive() {
         return baseDeployment()
-                .addAsWebInfResource(new ByteArrayAsset(SimpleExtension.class.getName().getBytes()), "classes/META-INF/services/" + Extension.class.getName())
+                .addAsWebInfResource(new ByteArrayAsset(SimpleExtension.class.getName().getBytes()),
+                        "classes/META-INF/services/" + Extension.class.getName())
                 .addClasses(AdditionalBeanDeploymentArchiveTest.class, SimpleExtension.class)
-                .addAsLibraries(ShrinkWrap.create(BeanArchive.class).addClass(Dummy.class), ShrinkWrap.create(JavaArchive.class).addClass(Outsider.class));
+                .addAsLibraries(ShrinkWrap.create(BeanArchive.class).addClass(Dummy.class),
+                        ShrinkWrap.create(JavaArchive.class).addClass(Outsider.class));
     }
 
     @Test
     public void testAdditionalBeanDeploymentArchiveCreated(Outsider outsider, BeanManagerImpl beanManager) {
         assertNotNull(outsider);
         outsider.ping();
-        Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
+        Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager)
+                .beanDeploymentArchives();
         assertEquals(3, beanDeploymentArchivesMap.size());
         boolean additionalBdaFound = false;
         for (BeanDeploymentArchive bda : beanDeploymentArchivesMap.keySet()) {

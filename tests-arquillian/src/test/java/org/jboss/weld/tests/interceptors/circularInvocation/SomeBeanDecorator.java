@@ -17,12 +17,13 @@
 
 package org.jboss.weld.tests.interceptors.circularInvocation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.decorator.Decorator;
 import jakarta.decorator.Delegate;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Marius Bogoevici

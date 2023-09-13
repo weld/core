@@ -69,13 +69,15 @@ public class InjectionTargetPostConstructTest {
     @Test
     public void testInjectionTargetPostConstructInvokedForCDIBean() {
         cdiBean.foo();
-        assertTrue("InjectionTarget.postConstruct not invoked", InjectionTargetWrappingExtension.invokedPostConstructs.contains(TheCDIBean.class.getName()));
+        assertTrue("InjectionTarget.postConstruct not invoked",
+                InjectionTargetWrappingExtension.invokedPostConstructs.contains(TheCDIBean.class.getName()));
     }
 
     @Test
     @Ignore("WFLY-168")
     public void testInjectionTargetPostConstructInvokedForEJB() {
         ejb.foo();
-        assertTrue("InjectionTarget.postConstruct not invoked", InjectionTargetWrappingExtension.invokedPostConstructs.contains(TheEJB.class.getName()));
+        assertTrue("InjectionTarget.postConstruct not invoked",
+                InjectionTargetWrappingExtension.invokedPostConstructs.contains(TheEJB.class.getName()));
     }
 }

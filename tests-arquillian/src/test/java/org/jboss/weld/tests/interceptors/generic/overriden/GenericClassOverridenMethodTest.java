@@ -40,14 +40,14 @@ public class GenericClassOverridenMethodTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericClassOverridenMethodTest.class))
-            .addPackage(GenericClassOverridenMethodTest.class.getPackage());
+                .addPackage(GenericClassOverridenMethodTest.class.getPackage());
     }
 
     @Inject
     AbstractService<Foo> serviceInjectedAsSuperclass; // tests that invocation via superclass is still intercepted
 
     @Inject
-    ActualInterceptedService serviceInjectedAsImpl; // tests that classical invocation via implementing class works 
+    ActualInterceptedService serviceInjectedAsImpl; // tests that classical invocation via implementing class works
 
     @Test
     public void testInterceptionWorks() {

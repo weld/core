@@ -21,7 +21,7 @@ import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 
 /**
- *@author Kirill Gaevskii
+ * @author Kirill Gaevskii
  */
 @Accountant
 @Interceptor

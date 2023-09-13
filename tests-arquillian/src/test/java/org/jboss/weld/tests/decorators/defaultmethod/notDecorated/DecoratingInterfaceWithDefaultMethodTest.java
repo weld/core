@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.decorators.defaultmethod.notDecorated;
 
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -38,7 +39,8 @@ import org.junit.runner.RunWith;
 public class DecoratingInterfaceWithDefaultMethodTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratingInterfaceWithDefaultMethodTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratingInterfaceWithDefaultMethodTest.class))
                 .decorate(NonAbstractDecorator.class)
                 .decorate(AbstractDecorator.class)
                 .addPackage(DecoratingInterfaceWithDefaultMethodTest.class.getPackage());
@@ -50,6 +52,7 @@ public class DecoratingInterfaceWithDefaultMethodTest {
     @Test
     public void testDecoratorOnInterfaceWithDefaultMethod() {
         Assert.assertEquals(InterfaceWithDefaultMethod.class.getSimpleName(), bean.defaultPing());
-        Assert.assertEquals(AbstractDecorator.class.getSimpleName() + FooBean.class.getSimpleName() + NonAbstractDecorator.class.getSimpleName(), bean.decoratedMethod());
+        Assert.assertEquals(AbstractDecorator.class.getSimpleName() + FooBean.class.getSimpleName()
+                + NonAbstractDecorator.class.getSimpleName(), bean.decoratedMethod());
     }
 }

@@ -53,7 +53,8 @@ public class BuiltinMetadataBeanTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltinMetadataBeanTest.class)).intercept(YoghurtInterceptor.class).decorate(MilkProductDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltinMetadataBeanTest.class))
+                .intercept(YoghurtInterceptor.class).decorate(MilkProductDecorator.class)
                 .addPackage(Yoghurt.class.getPackage());
     }
 

@@ -79,8 +79,9 @@ public class ExtensionBeanDeployer {
 
     private <E extends Extension> void deployBean(Metadata<E> extension, ClassTransformer classTransformer) {
         // Locate the BeanDeployment for this extension
-        BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue()
-                .getClass());
+        BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping,
+                contexts, extension.getValue()
+                        .getClass());
 
         // Do not register synthetic extension as a bean, only register container lifecycle observer methods
         if (extension.getValue() instanceof SyntheticExtension) {
@@ -110,7 +111,8 @@ public class ExtensionBeanDeployer {
         }
     }
 
-    private <E extends Extension> EnhancedAnnotatedType<E> getEnhancedAnnotatedType(ClassTransformer classTransformer, Metadata<E> extension,
+    private <E extends Extension> EnhancedAnnotatedType<E> getEnhancedAnnotatedType(ClassTransformer classTransformer,
+            Metadata<E> extension,
             BeanDeployment beanDeployment) {
         Class<? extends Extension> clazz = extension.getValue().getClass();
         try {
@@ -134,7 +136,8 @@ public class ExtensionBeanDeployer {
         this.extensions.add(extension);
     }
 
-    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass,
+    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager,
+            EnhancedAnnotatedType<? super X> annotatedClass,
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
         for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers, false);
@@ -144,16 +147,19 @@ public class ExtensionBeanDeployer {
         }
     }
 
-    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method,
+    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager,
+            EnhancedAnnotatedMethod<T, ? super X> method,
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers, boolean isAsync) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager, isAsync);
         ObserverInitializationContext<T, X> observerMethodInitializer = ObserverInitializationContext.of(observer, method);
         if (Observers.isContainerLifecycleObserverMethod(observer)) {
             if (isAsync) {
-                throw EventLogger.LOG.asyncContainerLifecycleEventObserver(observer, Formats.formatAsStackTraceElement(method.getJavaMember()));
+                throw EventLogger.LOG.asyncContainerLifecycleEventObserver(observer,
+                        Formats.formatAsStackTraceElement(method.getJavaMember()));
             }
             if (method.isStatic()) {
-                throw EventLogger.LOG.staticContainerLifecycleEventObserver(observer, Formats.formatAsStackTraceElement(method.getJavaMember()));
+                throw EventLogger.LOG.staticContainerLifecycleEventObserver(observer,
+                        Formats.formatAsStackTraceElement(method.getJavaMember()));
             }
         }
         observerMethodInitializers.add(observerMethodInitializer);

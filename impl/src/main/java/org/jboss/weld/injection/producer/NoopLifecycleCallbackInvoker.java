@@ -59,7 +59,7 @@ public class NoopLifecycleCallbackInvoker<T> implements LifecycleCallbackInvoker
     }
 
     @Override
-    public boolean hasPostConstructCallback(){
+    public boolean hasPostConstructCallback() {
         return false;
     }
 

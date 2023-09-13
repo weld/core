@@ -5,8 +5,8 @@ import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.InvocationContext;
 
 /**
-* @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
-*/
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
+ */
 @Dependent
 public class TargetClassWithAroundInvokeWithInvalidParameterCount {
     @AroundInvoke

@@ -27,7 +27,8 @@ import jakarta.enterprise.inject.spi.AnnotatedConstructor;
  *
  * @param <X>
  */
-public abstract class ForwardingAnnotatedConstructor<X> extends ForwardingAnnotatedCallable<X> implements AnnotatedConstructor<X> {
+public abstract class ForwardingAnnotatedConstructor<X> extends ForwardingAnnotatedCallable<X>
+        implements AnnotatedConstructor<X> {
 
     @Override
     protected abstract AnnotatedConstructor<X> delegate();

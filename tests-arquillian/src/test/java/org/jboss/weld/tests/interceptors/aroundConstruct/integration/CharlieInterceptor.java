@@ -36,7 +36,7 @@ public class CharlieInterceptor extends AbstractInterceptor {
         Object[] params = ctx.getParameters();
         assertEquals(1, params.length);
         assertEquals(2, params[0]);
-        ctx.setParameters(new Integer[] {3});
+        ctx.setParameters(new Integer[] { 3 });
 
         // test context data before construction
         assertTrue(ctx.getContextData().containsKey(AlphaInterceptor.class.getName()));
@@ -46,7 +46,6 @@ public class CharlieInterceptor extends AbstractInterceptor {
         ctx.getContextData().put(CharlieInterceptor.class.getName(), this);
         ctx.getContextData().put("foo", CharlieInterceptor.class.getName());
 
-
         proceed(ctx);
 
         // test context data after construction
@@ -55,7 +54,6 @@ public class CharlieInterceptor extends AbstractInterceptor {
         assertTrue(ctx.getContextData().containsKey(CharlieInterceptor.class.getName()));
         assertTrue(ctx.getContextData().containsKey("foo"));
         assertEquals(CharlieInterceptor.class.getName(), ctx.getContextData().get("foo"));
-
 
         // test parameters after construction
         Object[] params2 = ctx.getParameters();

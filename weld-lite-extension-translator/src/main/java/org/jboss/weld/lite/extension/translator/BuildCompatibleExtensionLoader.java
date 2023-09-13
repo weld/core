@@ -17,13 +17,13 @@
 
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
-import jakarta.enterprise.inject.build.compatible.spi.SkipIfPortableExtensionPresent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
+
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+import jakarta.enterprise.inject.build.compatible.spi.SkipIfPortableExtensionPresent;
 
 /**
  * A helper class used to load all implementations of {@link BuildCompatibleExtension} via service loader which also
@@ -64,7 +64,8 @@ public class BuildCompatibleExtensionLoader {
 
                     for (BuildCompatibleExtension extension : ServiceLoader.load(BuildCompatibleExtension.class, classLoader)) {
                         Class<? extends BuildCompatibleExtension> extensionClass = extension.getClass();
-                        SkipIfPortableExtensionPresent skip = extensionClass.getAnnotation(SkipIfPortableExtensionPresent.class);
+                        SkipIfPortableExtensionPresent skip = extensionClass
+                                .getAnnotation(SkipIfPortableExtensionPresent.class);
                         if (skip != null) {
                             continue;
                         }

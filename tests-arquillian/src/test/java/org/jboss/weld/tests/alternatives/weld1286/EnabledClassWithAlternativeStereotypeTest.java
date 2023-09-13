@@ -52,7 +52,9 @@ public class EnabledClassWithAlternativeStereotypeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnabledClassWithAlternativeStereotypeTest.class)).alternate(AlternativeBean.class)
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnabledClassWithAlternativeStereotypeTest.class))
+                .alternate(AlternativeBean.class)
                 .addPackage(EnabledClassWithAlternativeStereotypeTest.class.getPackage());
     }
 

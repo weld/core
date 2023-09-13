@@ -44,7 +44,8 @@ public class MemberLevelInheritanceTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MemberLevelInheritanceTest.class)).addPackage(Dao.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MemberLevelInheritanceTest.class))
+                .addPackage(Dao.class.getPackage());
     }
 
     @Inject
@@ -72,33 +73,33 @@ public class MemberLevelInheritanceTest {
         assertNotNull(carDao.getEvent());
         assertNotNull(carDao.getObserverInjectionPoint());
     }
-//    @Test
-//    public void testInjectionPoint(BeanManager manager) throws Exception {
-//
-//        Bean<Foo> fooBean = Reflections.cast(manager.resolve(manager.getBeans(Foo.class)));
-//        Set<InjectionPoint> injectionPoints = fooBean.getInjectionPoints();
-//        assertEquals(injectionPoints.size(), 1);
-//        InjectionPoint inheritedInjectionPoint = injectionPoints.iterator().next();
-//
-//        checkParameterizedType(inheritedInjectionPoint.getType(), Baz.class, String.class);
-//    }
+    //    @Test
+    //    public void testInjectionPoint(BeanManager manager) throws Exception {
+    //
+    //        Bean<Foo> fooBean = Reflections.cast(manager.resolve(manager.getBeans(Foo.class)));
+    //        Set<InjectionPoint> injectionPoints = fooBean.getInjectionPoints();
+    //        assertEquals(injectionPoints.size(), 1);
+    //        InjectionPoint inheritedInjectionPoint = injectionPoints.iterator().next();
+    //
+    //        checkParameterizedType(inheritedInjectionPoint.getType(), Baz.class, String.class);
+    //    }
 
-//    @Test
-//    public void testObserver(BeanManager manager) throws Exception {
-//
-//        Set<ObserverMethod<? super Qux>> observerMethods = manager.resolveObserverMethods(new Qux(null));
-//        // Foo and Bar
-//        assertEquals(observerMethods.size(), 2);
-//
-//        for (ObserverMethod<? super Qux> observerMethod : observerMethods) {
-//            if (observerMethod.getBeanClass().equals(Foo.class)) {
-//                checkParameterizedType(observerMethod.getObservedType(), Baz.class, String.class);
-//                return;
-//            }
-//        }
-//        // No Foo observer
-//        Assert.fail();
-//    }
+    //    @Test
+    //    public void testObserver(BeanManager manager) throws Exception {
+    //
+    //        Set<ObserverMethod<? super Qux>> observerMethods = manager.resolveObserverMethods(new Qux(null));
+    //        // Foo and Bar
+    //        assertEquals(observerMethods.size(), 2);
+    //
+    //        for (ObserverMethod<? super Qux> observerMethod : observerMethods) {
+    //            if (observerMethod.getBeanClass().equals(Foo.class)) {
+    //                checkParameterizedType(observerMethod.getObservedType(), Baz.class, String.class);
+    //                return;
+    //            }
+    //        }
+    //        // No Foo observer
+    //        Assert.fail();
+    //    }
 
     private void checkParameterizedType(Type declaredType, Type rawType, Type argumentType) {
 

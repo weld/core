@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import jakarta.enterprise.inject.spi.Extension;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -29,6 +27,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.junit.Test;
 
@@ -61,8 +61,9 @@ public class EnablementListViewTest {
         int stringPriority = 1;
         int doublePriority = 300;
         int bigIntegerPriority = 301;
-        int floatPriority = (((bigIntegerPriority * Item.ITEM_PRIORITY_SCALE_POWER) - (doublePriority * Item.ITEM_PRIORITY_SCALE_POWER)) / 2)
-            + (doublePriority * Item.ITEM_PRIORITY_SCALE_POWER);
+        int floatPriority = (((bigIntegerPriority * Item.ITEM_PRIORITY_SCALE_POWER)
+                - (doublePriority * Item.ITEM_PRIORITY_SCALE_POWER)) / 2)
+                + (doublePriority * Item.ITEM_PRIORITY_SCALE_POWER);
 
         list.add(new Item(Integer.class, 20));
         list.add(new Item(String.class, stringPriority));
@@ -72,8 +73,7 @@ public class EnablementListViewTest {
         assertTrue(view.contains(Integer.class));
         assertEquals(2, view.indexOf(Double.class));
         assertEquals(0, view.lastIndexOf(Integer.class));
-        
-        
+
         assertEquals(stringPriority, list.get(1).getOriginalPriority());
         assertEquals(stringPriority, list.get(1).getPriority());
         assertEquals(0, list.get(1).getNumberOfScaling());
@@ -106,7 +106,7 @@ public class EnablementListViewTest {
 
         view.set(0, StringBuilder.class);
         assertEquals(stringPriority * Item.ITEM_PRIORITY_SCALE_POWER, list.get(0).getPriority());
-        
+
         // remove via List.remove(Object)
         view.remove(Double.class);
         assertEquals(4, list.size());
@@ -202,11 +202,11 @@ public class EnablementListViewTest {
         assertEquals(2, list.size());
         assertEquals(Integer.class, list.get(0).getJavaClass());
         assertEquals(Float.class, list.get(1).getJavaClass());
-        
+
         // re-add missing items
         list.add(new Item(String.class, 20));
         list.add(new Item(Double.class, 30));
-        
+
         // try containsAll()
         assertTrue(view.containsAll(testList));
     }

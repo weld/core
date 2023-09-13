@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.category;
 
-
 /**
  * Marker Interface for JUnit Category marking Broken tests
  *

@@ -153,7 +153,8 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
             if (beansXmlEntry != null) {
                 logger.debugv(BEANS_XML_FOUND_MESSAGE, entryFile);
                 BeansXml beansXml = parseBeansXml(
-                        new URL(PROCOTOL_JAR + ":" + entryFile.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + beansXmlEntry.getName()));
+                        new URL(PROCOTOL_JAR + ":" + entryFile.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR
+                                + beansXmlEntry.getName()));
                 if (accept(beansXml)) {
                     results.add(new ScanResult(beansXml, entryFile.getPath()));
                 }

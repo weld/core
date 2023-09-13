@@ -39,7 +39,8 @@ public class InterceptedObserverMethodTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(InterceptedObserverMethodTest.class.getPackage()).addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class).addPackage(InterceptedObserverMethodTest.class.getPackage())
+                .addClass(ActionSequence.class);
     }
 
     @Test
@@ -47,7 +48,8 @@ public class InterceptedObserverMethodTest {
         ActionSequence.reset();
         beanManager.getEvent().select(String.class, Juicy.Literal.INSTANCE).fire("bar");
         assertEquals(8, ActionSequence.getSequenceSize());
-        ActionSequence.assertSequenceDataContainsAll(PublicObserver.class.getName(), PrivateObserver.class.getName(), ProtectedObserver.class.getName(),
+        ActionSequence.assertSequenceDataContainsAll(PublicObserver.class.getName(), PrivateObserver.class.getName(),
+                ProtectedObserver.class.getName(),
                 PackagePrivateObserver.class.getName(), SecureInterceptor.class.getName());
     }
 }

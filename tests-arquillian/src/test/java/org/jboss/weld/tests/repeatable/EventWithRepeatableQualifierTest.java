@@ -41,7 +41,8 @@ public class EventWithRepeatableQualifierTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventWithRepeatableQualifierTest.class)).addPackage(EventWithRepeatableQualifierTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventWithRepeatableQualifierTest.class))
+                .addPackage(EventWithRepeatableQualifierTest.class.getPackage());
     }
 
     @Test
@@ -79,6 +80,5 @@ public class EventWithRepeatableQualifierTest {
         Assert.assertTrue(observer.getFooBarBaz().contains(EVENT));
         Assert.assertFalse(observer.getFooQux().contains(EVENT));
     }
-
 
 }

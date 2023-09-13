@@ -1,12 +1,13 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.reflect.AnnotatedType;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.types.PrimitiveType;
+
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
-
-import java.lang.reflect.AnnotatedType;
 
 class PrimitiveTypeImpl extends TypeImpl<AnnotatedType> implements PrimitiveType {
     final Class<?> clazz;

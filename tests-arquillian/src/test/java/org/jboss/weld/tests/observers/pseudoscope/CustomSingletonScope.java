@@ -28,6 +28,6 @@ import jakarta.inject.Scope;
  */
 @Scope
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD,ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
 public @interface CustomSingletonScope {
 }

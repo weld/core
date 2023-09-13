@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -41,7 +42,8 @@ public class MinValuePriorityTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MinValuePriorityTest.class)).addPackage(AfterTypeDiscoveryObserver.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MinValuePriorityTest.class))
+                .addPackage(AfterTypeDiscoveryObserver.class.getPackage())
                 .addAsServiceProvider(Extension.class, AfterTypeDiscoveryObserver.class);
     }
 

@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.resolution.weld1075;
 
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -27,8 +28,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertNotNull;
-
 /**
  * @author Sebastian Graca
  * @author Ales Justin
@@ -37,7 +36,8 @@ import static org.junit.Assert.assertNotNull;
 public class ResolutionTest {
     @Deployment
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ResolutionTest.class)).addPackage(ResolutionTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ResolutionTest.class))
+                .addPackage(ResolutionTest.class.getPackage());
     }
 
     @Test

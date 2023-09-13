@@ -40,7 +40,8 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     private InterceptionType interceptionType;
 
     @Override
-    protected void checkQualifier(Annotation qualifier,final QualifierInstance qualifierInstance, Class<? extends  Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance,
+            Class<? extends Annotation> annotationType) {
         if (!getMetaAnnotationStore().getInterceptorBindingModel(annotationType).isValid()) {
             throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
@@ -98,11 +99,11 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
         return new InterceptorResolvableImpl(rawType, types, declaringBean, interceptionType, qualifierInstances);
     }
 
-
     private static class InterceptorResolvableImpl extends ResolvableImpl implements InterceptorResolvable {
         private final InterceptionType interceptionType;
 
-        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Bean<?> declaringBean, InterceptionType interceptionType, final Set<QualifierInstance> instances) {
+        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Bean<?> declaringBean,
+                InterceptionType interceptionType, final Set<QualifierInstance> instances) {
             super(rawType, typeClosure, declaringBean, instances, false);
             this.interceptionType = interceptionType;
         }

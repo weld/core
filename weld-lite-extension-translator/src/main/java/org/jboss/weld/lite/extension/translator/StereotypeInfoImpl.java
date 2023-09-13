@@ -1,5 +1,11 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
@@ -10,12 +16,6 @@ import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.inject.Named;
 import jakarta.inject.Scope;
 import jakarta.interceptor.InterceptorBinding;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 class StereotypeInfoImpl implements StereotypeInfo {
     // declaration of the sterotype annotation

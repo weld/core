@@ -36,13 +36,16 @@ import org.jboss.weld.util.reflection.Reflections;
  * @param <T>
  * @author Pete Muir
  */
-public class EnhancedAnnotatedFieldImpl<T, X> extends AbstractEnhancedAnnotatedMember<T, X, Field> implements EnhancedAnnotatedField<T, X> {
+public class EnhancedAnnotatedFieldImpl<T, X> extends AbstractEnhancedAnnotatedMember<T, X, Field>
+        implements EnhancedAnnotatedField<T, X> {
 
     private final AnnotatedField<X> slim;
 
-    public static <X, Y extends X> EnhancedAnnotatedFieldImpl<?, X> of(AnnotatedField<X> annotatedField, EnhancedAnnotatedType<Y> declaringClass, ClassTransformer classTransformer) {
+    public static <X, Y extends X> EnhancedAnnotatedFieldImpl<?, X> of(AnnotatedField<X> annotatedField,
+            EnhancedAnnotatedType<Y> declaringClass, ClassTransformer classTransformer) {
         EnhancedAnnotatedType<X> downcastDeclaringType = Reflections.cast(declaringClass);
-        return new EnhancedAnnotatedFieldImpl<Object, X>(annotatedField, buildAnnotationMap(annotatedField.getAnnotations()), buildAnnotationMap(annotatedField.getAnnotations()), downcastDeclaringType, classTransformer);
+        return new EnhancedAnnotatedFieldImpl<Object, X>(annotatedField, buildAnnotationMap(annotatedField.getAnnotations()),
+                buildAnnotationMap(annotatedField.getAnnotations()), downcastDeclaringType, classTransformer);
     }
 
     /**
@@ -51,10 +54,13 @@ public class EnhancedAnnotatedFieldImpl<T, X> extends AbstractEnhancedAnnotatedM
      * Initializes the superclass with the built annotation map and detects the
      * type arguments
      *
-     * @param field          The actual field
+     * @param field The actual field
      * @param declaringClass The abstraction of the declaring class
      */
-    private EnhancedAnnotatedFieldImpl(AnnotatedField<X> annotatedField, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, EnhancedAnnotatedType<X> declaringClass, ClassTransformer classTransformer) {
+    private EnhancedAnnotatedFieldImpl(AnnotatedField<X> annotatedField,
+            Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, EnhancedAnnotatedType<X> declaringClass,
+            ClassTransformer classTransformer) {
         super(annotatedField, annotationMap, declaredAnnotationMap, classTransformer, declaringClass);
         this.slim = annotatedField;
     }

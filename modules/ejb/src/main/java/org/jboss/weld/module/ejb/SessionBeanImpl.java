@@ -68,22 +68,25 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
     /**
      * Creates a simple, annotation defined Enterprise Web Bean using the annotations specified on type
      *
-     * @param <T>         The type
+     * @param <T> The type
      * @param beanManager the current manager
-     * @param type        the AnnotatedType to use
+     * @param type the AnnotatedType to use
      * @return An Enterprise Web Bean
      */
-    public static <T> SessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, EnhancedAnnotatedType<T> type) {
-        return new SessionBeanImpl<T>(attributes, type, ejbDescriptor, new StringBeanIdentifier(SessionBeans.createIdentifier(type, ejbDescriptor)), beanManager);
+    public static <T> SessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor,
+            BeanManagerImpl beanManager, EnhancedAnnotatedType<T> type) {
+        return new SessionBeanImpl<T>(attributes, type, ejbDescriptor,
+                new StringBeanIdentifier(SessionBeans.createIdentifier(type, ejbDescriptor)), beanManager);
     }
 
     /**
      * Constructor
      *
-     * @param type    The type of the bean
+     * @param type The type of the bean
      * @param manager The Bean manager
      */
-    SessionBeanImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanIdentifier identifier, BeanManagerImpl manager) {
+    SessionBeanImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor,
+            BeanIdentifier identifier, BeanManagerImpl manager) {
         super(attributes, type, identifier, manager);
         this.ejbDescriptor = ejbDescriptor;
         setProducer(beanManager.getLocalInjectionTargetFactory(type).createInjectionTarget(type, this, false));
@@ -182,7 +185,8 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
         if (!isDependent() && getEnhancedAnnotated().isGeneric()) {
             throw BeanLogger.LOG.genericSessionBeanMustBeDependent(this);
         }
-        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
+        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope())
+                .isPassivating();
         if (passivating && !isPassivationCapableBean()) {
             throw BeanLogger.LOG.passivatingBeanNeedsSerializableImpl(this);
         }
@@ -201,8 +205,10 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
      * methods.
      */
     protected void checkObserverMethods() {
-        Collection<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = BeanMethods.getObserverMethods(this.getEnhancedAnnotated());
-        Collection<EnhancedAnnotatedMethod<?, ? super T>> asyncObserverMethods = BeanMethods.getAsyncObserverMethods(this.getEnhancedAnnotated());
+        Collection<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = BeanMethods
+                .getObserverMethods(this.getEnhancedAnnotated());
+        Collection<EnhancedAnnotatedMethod<?, ? super T>> asyncObserverMethods = BeanMethods
+                .getAsyncObserverMethods(this.getEnhancedAnnotated());
         checkObserverMethods(observerMethods);
         checkObserverMethods(asyncObserverMethods);
     }
@@ -212,11 +218,13 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
             Set<MethodSignature> businessMethodSignatures = getLocalBusinessMethodSignatures();
             Set<MethodSignature> remoteBusinessMethodSignatures = getRemoteBusinessMethodSignatures();
             for (EnhancedAnnotatedMethod<?, ? super T> observerMethod : observerMethods) {
-                boolean isLocalBusinessMethod = !remoteBusinessMethodSignatures.contains(observerMethod.getSignature()) && businessMethodSignatures
-                        .contains(observerMethod.getSignature());
+                boolean isLocalBusinessMethod = !remoteBusinessMethodSignatures.contains(observerMethod.getSignature())
+                        && businessMethodSignatures
+                                .contains(observerMethod.getSignature());
                 if (!isLocalBusinessMethod && !observerMethod.isStatic()) {
                     throw BeanLogger.LOG
-                            .observerMethodMustBeStaticOrBusiness(observerMethod, Formats.formatAsStackTraceElement(observerMethod.getJavaMember()));
+                            .observerMethodMustBeStaticOrBusiness(observerMethod,
+                                    Formats.formatAsStackTraceElement(observerMethod.getJavaMember()));
                 }
             }
         }
@@ -258,7 +266,9 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
 
     @Override
     public String toString() {
-        return "Session bean [" + getBeanClass() + " with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "]; local interfaces are [" + Formats.formatBusinessInterfaceDescriptors(getEjbDescriptor().getLocalBusinessInterfaces()) + "]";
+        return "Session bean [" + getBeanClass() + " with qualifiers [" + Formats.formatAnnotations(getQualifiers())
+                + "]; local interfaces are ["
+                + Formats.formatBusinessInterfaceDescriptors(getEjbDescriptor().getLocalBusinessInterfaces()) + "]";
     }
 
     // ejb's are always proxiable
@@ -274,7 +284,8 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
 
     @Override
     public boolean isPassivationCapableDependency() {
-        return (ejbDescriptor.isStateful() && isPassivationCapableBean()) || ejbDescriptor.isSingleton() || ejbDescriptor.isStateless();
+        return (ejbDescriptor.isStateful() && isPassivationCapableBean()) || ejbDescriptor.isSingleton()
+                || ejbDescriptor.isStateless();
     }
 
     @Override
@@ -287,7 +298,8 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
     protected void registerInterceptors() {
         InterceptionModel model = beanManager.getInterceptorModelRegistry().get(getAnnotated());
         if (model != null) {
-            getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(), new InterceptorBindingsAdapter(model));
+            getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor().delegate(),
+                    new InterceptorBindingsAdapter(model));
         }
     }
 }
