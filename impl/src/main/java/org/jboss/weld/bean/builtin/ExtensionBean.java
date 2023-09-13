@@ -47,7 +47,8 @@ public class ExtensionBean<E extends Extension> extends AbstractBuiltInBean<E> {
     private final boolean proxiable;
 
     public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<E> enhancedAnnotatedType, Metadata<E> instance) {
-        super(new StringBeanIdentifier(BeanIdentifiers.forExtension(enhancedAnnotatedType)), manager, enhancedAnnotatedType.getJavaClass());
+        super(new StringBeanIdentifier(BeanIdentifiers.forExtension(enhancedAnnotatedType)), manager,
+                enhancedAnnotatedType.getJavaClass());
         this.annotatedType = enhancedAnnotatedType.slim();
         this.instance = instance;
         this.passivationCapable = enhancedAnnotatedType.isSerializable();

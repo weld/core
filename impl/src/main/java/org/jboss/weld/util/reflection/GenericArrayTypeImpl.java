@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 /**
  * @author Marko Luksa
  * @author Jozef Hartinger
-*/
+ */
 public class GenericArrayTypeImpl implements GenericArrayType {
 
     private Type genericComponentType;
@@ -46,7 +46,7 @@ public class GenericArrayTypeImpl implements GenericArrayType {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (genericComponentType instanceof Class<?>) {
-            sb.append(Reflections.<Class<?>>cast(genericComponentType).getName());
+            sb.append(Reflections.<Class<?>> cast(genericComponentType).getName());
         } else {
             sb.append(genericComponentType.toString());
         }

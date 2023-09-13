@@ -25,7 +25,7 @@ public class Foo {
     /**
      * This is the offending method because of its package private param
      */
-    private void notToBeInterceptedMethod(PackPrivate param){
+    private void notToBeInterceptedMethod(PackPrivate param) {
 
     }
 

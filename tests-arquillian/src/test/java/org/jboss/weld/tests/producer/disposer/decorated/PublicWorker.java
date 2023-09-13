@@ -27,23 +27,23 @@ import org.jboss.weld.test.util.ActionSequence;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
-public class PublicWorker implements Worker{
+public class PublicWorker implements Worker {
 
     private int hiddenField = 0;
-    
+
     @Override
     public void doStuff() {
         ActionSequence.addAction(PublicWorker.class.getName());
-        hiddenField ++;
+        hiddenField++;
     }
-    
+
     @Produces
     @Lazy
-    public PublicWorker producePublic(){
+    public PublicWorker producePublic() {
         ActionSequence.addAction(PublicWorker.class.getName() + "-" + hiddenField);
         return new PublicWorker();
     }
-    
+
     public void dispose(@Disposes @Lazy PublicWorker worker) {
         ActionSequence.addAction(PublicWorker.class.getName() + "-" + hiddenField);
     }

@@ -36,7 +36,8 @@ public class RemoteEjbInInterfaceHierarchyObserverTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbInInterfaceHierarchyObserverTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbInInterfaceHierarchyObserverTest.class))
                 .addClasses(BarBean.class, BarRemote.class, BarSuperRemote.class, Giraffe.class);
     }
 

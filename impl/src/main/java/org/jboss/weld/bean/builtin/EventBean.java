@@ -33,11 +33,12 @@ import org.jboss.weld.util.reflection.Reflections;
 public class EventBean extends AbstractFacadeBean<Event<?>> {
 
     @SuppressWarnings("serial")
-    private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>(){}.getType();
-    private static final Set<Type> TYPES = ImmutableSet.<Type>of(Event.class, Object.class, WeldEvent.class);
+    private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>() {
+    }.getType();
+    private static final Set<Type> TYPES = ImmutableSet.<Type> of(Event.class, Object.class, WeldEvent.class);
 
     public EventBean(BeanManagerImpl manager) {
-        super(manager, Reflections.<Class<Event<?>>>cast(Event.class));
+        super(manager, Reflections.<Class<Event<?>>> cast(Event.class));
     }
 
     @Override

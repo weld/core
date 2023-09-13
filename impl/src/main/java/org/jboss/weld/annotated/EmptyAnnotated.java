@@ -37,7 +37,7 @@ public class EmptyAnnotated implements Annotated {
 
     @Override
     public Set<Type> getTypeClosure() {
-        return Collections.<Type>singleton(Object.class);
+        return Collections.<Type> singleton(Object.class);
     }
 
     @Override

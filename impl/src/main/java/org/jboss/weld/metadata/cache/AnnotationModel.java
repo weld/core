@@ -80,7 +80,9 @@ public abstract class AnnotationModel<T extends Annotation> {
     }
 
     protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
-        if (valid && (!annotatedAnnotation.isAnnotationPresent(Retention.class) || annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))) {
+        if (valid && (!annotatedAnnotation.isAnnotationPresent(Retention.class)
+                || annotatedAnnotation.isAnnotationPresent(Retention.class)
+                        && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))) {
             this.valid = false;
             ReflectionLogger.LOG.missingRetention(annotatedAnnotation);
         }

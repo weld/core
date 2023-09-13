@@ -16,5 +16,5 @@
  */
 @Vetoed
 package org.jboss.weld.interceptor.proxy;
-import jakarta.enterprise.inject.Vetoed;
 
+import jakarta.enterprise.inject.Vetoed;

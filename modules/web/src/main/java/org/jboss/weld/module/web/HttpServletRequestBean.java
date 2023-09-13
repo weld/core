@@ -26,9 +26,9 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.web.context.http.HttpRequestContextImpl;
 import org.jboss.weld.module.web.logging.ServletLogger;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**

@@ -30,8 +30,10 @@ import org.jboss.weld.util.Observers;
  * An optimized internal facility for dispatching events.
  *
  * <p>
- * FastEvent eliminates most of the overhead associated with request dispatching by resolving observer methods upfront. It is therefore suitable for cases when
- * certain event is dispatched repeatedly. A FastEvent instance should be created once for a given event type / qualifiers combination and then reused every
+ * FastEvent eliminates most of the overhead associated with request dispatching by resolving observer methods upfront. It is
+ * therefore suitable for cases when
+ * certain event is dispatched repeatedly. A FastEvent instance should be created once for a given event type / qualifiers
+ * combination and then reused every
  * time a given event is dispatched.
  * </p>
  *
@@ -40,14 +42,17 @@ import org.jboss.weld.util.Observers;
  * </p>
  *
  * <ul>
- * <li>Event type and qualifiers must be known at FastEvent construction time. The actual type of the event object passed to the {@link #fire(Object)} method is
+ * <li>Event type and qualifiers must be known at FastEvent construction time. The actual type of the event object passed to the
+ * {@link #fire(Object)} method is
  * not considered for observer method resolution.</li>
- * <li>Events dispatched using FastEvent are always delivered immediately. If an observer method is transactional it will not be notified</li>
+ * <li>Events dispatched using FastEvent are always delivered immediately. If an observer method is transactional it will not be
+ * notified</li>
  * <li>FastEvent is not serializable</li>
  * </ul>
  *
  * <p>
- * These constraints should always be carefully considered when deciding whether to use FastEvent or not. FastEvent is an internal construct and <strong>should
+ * These constraints should always be carefully considered when deciding whether to use FastEvent or not. FastEvent is an
+ * internal construct and <strong>should
  * not</strong> be used by an application.
  * </p>
  *
@@ -58,7 +63,8 @@ import org.jboss.weld.util.Observers;
 public class FastEvent<T> {
 
     /**
-     * Same as {@link #of(Class, BeanManagerImpl, Annotation...)}, just the accessible lenient observer notifier is used for observer method resolution
+     * Same as {@link #of(Class, BeanManagerImpl, Annotation...)}, just the accessible lenient observer notifier is used for
+     * observer method resolution
      */
     public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, Annotation... qualifiers) {
         return of(type, manager, manager.getAccessibleLenientObserverNotifier(), qualifiers);
@@ -66,13 +72,15 @@ public class FastEvent<T> {
 
     /**
      * Constructs a new FastEvent instance
+     *
      * @param type the event type
      * @param manager the bean manager
      * @param notifier the notifier to be used for observer method resolution
      * @param qualifiers the event qualifiers
      * @return
      */
-    public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier, Annotation... qualifiers) {
+    public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier,
+            Annotation... qualifiers) {
         ResolvedObservers<T> resolvedObserverMethods = notifier.<T> resolveObserverMethods(type, qualifiers);
         if (resolvedObserverMethods.isMetadataRequired()) {
             EventMetadata metadata = new EventMetadataImpl(type, null, qualifiers);
@@ -100,7 +108,8 @@ public class FastEvent<T> {
         private final EventMetadata metadata;
         private final CurrentEventMetadata metadataService;
 
-        private FastEventWithMetadataPropagation(ResolvedObservers<T> resolvedObserverMethods, EventMetadata metadata, CurrentEventMetadata metadataService) {
+        private FastEventWithMetadataPropagation(ResolvedObservers<T> resolvedObserverMethods, EventMetadata metadata,
+                CurrentEventMetadata metadataService) {
             super(resolvedObserverMethods);
             this.metadata = metadata;
             this.metadataService = metadataService;

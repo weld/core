@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.environment.se.test.shutdown.hook;
 
+import java.net.BindException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
-import java.net.BindException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 class UndertowTestServer {
 

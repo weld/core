@@ -39,7 +39,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * @author Marko Luksa
- * 
+ *
  *         Timeout tests that address WELD-1452
  */
 @RunWith(Arquillian.class)
@@ -51,7 +51,8 @@ public class ConversationTimeoutTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ConversationTimeoutTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ConversationTimeoutTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(ConversationTimeoutTest.class.getPackage())
                 .addAsWebInfResource(ConversationTimeoutTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

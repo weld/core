@@ -96,7 +96,8 @@ public class Container {
         initialize(contextId, deploymentManager, deploymentServices, null);
     }
 
-    public static void initialize(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Environment environment) {
+    public static void initialize(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices,
+            Environment environment) {
         Container instance = new Container(contextId, deploymentManager, deploymentServices, environment);
         Container.instance.set(contextId, instance);
     }
@@ -124,7 +125,8 @@ public class Container {
         this(RegistrySingletonProvider.STATIC_INSTANCE, deploymentManager, deploymentServices);
     }
 
-    public Container(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Environment environment) {
+    public Container(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices,
+            Environment environment) {
         this.deploymentManager = deploymentManager;
         this.managers = new ConcurrentHashMap<String, BeanManagerImpl>();
         this.managers.put(deploymentManager.getId(), deploymentManager);

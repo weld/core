@@ -41,7 +41,8 @@ public class InterceptedProducerMethodTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(InterceptedProducerMethodTest.class.getPackage()).addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class).addPackage(InterceptedProducerMethodTest.class.getPackage())
+                .addClass(ActionSequence.class);
     }
 
     @Inject

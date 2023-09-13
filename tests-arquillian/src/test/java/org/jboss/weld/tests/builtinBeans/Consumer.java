@@ -68,5 +68,4 @@ public class Consumer implements Serializable {
         Assert.assertTrue(Checker.checkEvent(event, observer));
     }
 
-
 }

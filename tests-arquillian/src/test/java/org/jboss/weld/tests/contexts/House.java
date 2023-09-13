@@ -1,7 +1,8 @@
 package org.jboss.weld.tests.contexts;
 
-import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
+
+import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
 public class House implements Serializable {

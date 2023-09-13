@@ -70,8 +70,9 @@ public class FacesUrlTransformer {
 
     private static boolean isCidParamAbsent(String url, String parameterName, int queryStringIndex) {
         return url.indexOf(QUERY_STRING_DELIMITER + parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0
-            && url.indexOf(PARAMETER_PAIR_DELIMITER + parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0
-            && url.indexOf(PARAMETER_PAIR_DELIMITER_ENCODED + parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0;
+                && url.indexOf(PARAMETER_PAIR_DELIMITER + parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0
+                && url.indexOf(PARAMETER_PAIR_DELIMITER_ENCODED + parameterName + PARAMETER_ASSIGNMENT_OPERATOR,
+                        queryStringIndex) < 0;
     }
 
     public String getUrl() {

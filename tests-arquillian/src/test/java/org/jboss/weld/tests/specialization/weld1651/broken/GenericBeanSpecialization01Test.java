@@ -29,6 +29,7 @@ import org.jboss.weld.tests.specialization.weld1651.Fan;
 import org.jboss.weld.tests.specialization.weld1651.Music;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 /**
  * @author Matus Abaffy
  */
@@ -45,5 +46,5 @@ public class GenericBeanSpecialization01Test {
     @Test
     public void testDeploymentWithSpecializingBeanWithStricterType() {
         // should throw definition exception
-     }
+    }
 }

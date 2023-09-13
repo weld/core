@@ -40,13 +40,16 @@ public class OptimizedCleanupTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(OptimizedCleanupTest.class, Foo.class, TestExtension.class)).build();
+        return ClassPath.builder().add(
+                ShrinkWrap.create(BeanArchive.class).addClasses(OptimizedCleanupTest.class, Foo.class, TestExtension.class))
+                .build();
     }
 
     @Test
     public void testEnabled() {
         TestExtension.PIT_OBSERVED.set(false);
-        try (WeldContainer container = new Weld().addExtension(new TestExtension()).property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.TRUE)
+        try (WeldContainer container = new Weld().addExtension(new TestExtension())
+                .property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.TRUE)
                 .initialize()) {
             BeanManagerImpl beanManager = BeanManagerProxy.unwrap(container.getBeanManager());
             Bean<?> fooBean = beanManager.resolve(beanManager.getBeans(Foo.class));
@@ -60,7 +63,8 @@ public class OptimizedCleanupTest {
     @Test
     public void testDisabled() {
         TestExtension.PIT_OBSERVED.set(false);
-        try (WeldContainer container = new Weld().addExtension(new TestExtension()).property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.FALSE)
+        try (WeldContainer container = new Weld().addExtension(new TestExtension())
+                .property(Weld.ALLOW_OPTIMIZED_CLEANUP, Boolean.FALSE)
                 .initialize()) {
             BeanManagerImpl beanManager = BeanManagerProxy.unwrap(container.getBeanManager());
             Bean<?> fooBean = beanManager.resolve(beanManager.getBeans(Foo.class));

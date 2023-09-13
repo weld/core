@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.sessionbean;
 
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,9 +30,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.Extension;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -43,8 +43,8 @@ public class SessionBeanExtensionTest {
     }
 
     /*
-    * description = "WELD-925"
-    */
+     * description = "WELD-925"
+     */
     @Test
     public void testPossibleToVetoSessionBean(BeanManager beanManager) {
         Assert.assertEquals(1, beanManager.getBeans(MotorBikeBean.class).size());

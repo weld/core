@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.scope;
 
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,9 +30,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-
 @RunWith(Arquillian.class)
 public class ScopeTest {
     @Deployment
@@ -39,13 +39,12 @@ public class ScopeTest {
                 .addClass(Utils.class);
     }
 
-
     @Inject
     private BeanManagerImpl beanManager;
 
     /*
-    * description = "WELD-322"
-    */
+     * description = "WELD-322"
+     */
     @Test
     public void testScopeDeclaredOnSubclassOverridesScopeOnSuperClass() {
         Assert.assertEquals(Dependent.class, beanManager.resolve(beanManager.getBeans(Bar.class)).getScope());

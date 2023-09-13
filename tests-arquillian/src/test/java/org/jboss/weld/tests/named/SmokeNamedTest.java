@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.named;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,9 +29,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -43,7 +43,8 @@ public class SmokeNamedTest {
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @Inject @Named
+    @Inject
+    @Named
     private Fish carp;
 
     @Test

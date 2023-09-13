@@ -30,7 +30,8 @@ public class MethodHolderSerializationTest {
 
     @Test
     public void testPrimitiveParameters() throws Exception {
-        Method method = getMethod("methodWithPrimitiveParameters", byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class);
+        Method method = getMethod("methodWithPrimitiveParameters", byte.class, short.class, int.class, long.class, float.class,
+                double.class, boolean.class, char.class);
         assertReferenceSerializable(method);
     }
 
@@ -52,7 +53,6 @@ public class MethodHolderSerializationTest {
         assertReferenceSerializable(method);
     }
 
-
     private Method getMethod(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
         return getClass().getDeclaredMethod(name, parameterTypes);
     }
@@ -61,7 +61,6 @@ public class MethodHolderSerializationTest {
         MethodHolder reference = MethodHolder.of(method);
         Utils.deserialize(Utils.serialize(reference));
     }
-
 
     @SuppressWarnings("UnusedDeclaration")
     public void methodWithPrimitiveParameters(byte b, short s, int i, long l, float f, double d, boolean bool, char ch) {

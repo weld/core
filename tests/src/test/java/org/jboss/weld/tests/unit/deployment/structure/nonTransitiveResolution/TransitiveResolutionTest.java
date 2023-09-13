@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
+import static org.jboss.weld.test.util.Utils.getReference;
+import static org.testng.Assert.assertEquals;
+
 import java.util.Collections;
 
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -31,13 +34,11 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import static org.jboss.weld.test.util.Utils.getReference;
-import static org.testng.Assert.assertEquals;
 
 public class TransitiveResolutionTest {
     /*
-    * description = "WELD-319"
-    */
+     * description = "WELD-319"
+     */
     @Test
     public void testBeansXmlIsolation() {
         BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar",
@@ -66,14 +67,15 @@ public class TransitiveResolutionTest {
     }
 
     /*
-    * description = "WELD-319"
-    */
+     * description = "WELD-319"
+     */
     @Test
     public void testBeansXmlMultipleEnabling() {
         BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar",
                 new BeansXmlImpl(Collections.singletonList(Alt.class.getName()), null, null, null), Alt.class);
         BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar",
-                new BeansXmlImpl(Collections.singletonList(Alt2.class.getName()), Collections.<String>emptyList(), null, null), Alt2.class);
+                new BeansXmlImpl(Collections.singletonList(Alt2.class.getName()), Collections.<String> emptyList(), null, null),
+                Alt2.class);
         BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
         war.getBeanDeploymentArchives().add(jar1);
         war.getBeanDeploymentArchives().add(jar2);
@@ -97,8 +99,8 @@ public class TransitiveResolutionTest {
     }
 
     /*
-    * description = "WELD-236"
-    */
+     * description = "WELD-236"
+     */
     @Test
     public void testTypicalEarStructure() {
 
@@ -143,14 +145,15 @@ public class TransitiveResolutionTest {
     }
 
     /*
-    * WELD-507
-    */
+     * WELD-507
+     */
     @Test
     public void testInterceptorEnabledInWarButPackagedInEjbJar() {
 
         // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
         // jar
-        final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Basic.class, BasicInterceptor.class, Simple.class);
+        final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Basic.class, BasicInterceptor.class,
+                Simple.class);
 
         // Create the BDA in which we will deploy Bar. This is equivalent to a war
         BeansXml beansXml = new BeansXmlImpl(null, null, null, Collections.singletonList(BasicInterceptor.class.getName()));
@@ -192,14 +195,15 @@ public class TransitiveResolutionTest {
     }
 
     /*
-    * WELD-507
-    */
+     * WELD-507
+     */
     @Test
     public void testDecoratorEnabledInWarButPackagedInEjbJar() {
 
         // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
         // jar
-        final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Blah.class, BlahDecorator.class, BlahImpl.class);
+        final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Blah.class, BlahDecorator.class,
+                BlahImpl.class);
 
         // Create the BDA in which we will deploy Bar. This is equivalent to a war
         BeansXml beansXml = new BeansXmlImpl(null, null, Collections.singletonList(BlahDecorator.class.getName()), null);

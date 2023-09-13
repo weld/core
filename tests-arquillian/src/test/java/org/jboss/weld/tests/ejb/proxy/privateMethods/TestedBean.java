@@ -23,6 +23,4 @@ import jakarta.ejb.Stateless;
 @LocalBean
 public class TestedBean extends BeanWithPrivateMethod {
 
-
-
 }

@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 import jakarta.inject.Qualifier;
 
 @Qualifier
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Secret
 public @interface SuperSecret {

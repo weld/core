@@ -16,16 +16,18 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import jakarta.enterprise.inject.spi.AnnotatedMethod;
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 /**
  * @author Stuart Douglas
  */
 class TestAnnotatedMethod<X> extends AbstractTestAnnotatedCallable<X, Method> implements AnnotatedMethod<X> {
-    TestAnnotatedMethod(AnnotatedType<X> type, Method method, TestAnnotationStore annotations, Map<Integer, TestAnnotationStore> parameterAnnotations) {
+    TestAnnotatedMethod(AnnotatedType<X> type, Method method, TestAnnotationStore annotations,
+            Map<Integer, TestAnnotationStore> parameterAnnotations) {
         super(type, method, method.getReturnType(), method.getParameterTypes(), annotations, parameterAnnotations);
     }
 

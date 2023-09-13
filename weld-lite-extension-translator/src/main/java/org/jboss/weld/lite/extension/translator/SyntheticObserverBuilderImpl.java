@@ -1,5 +1,10 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.enterprise.event.Reception;
 import jakarta.enterprise.event.TransactionPhase;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserver;
@@ -7,12 +12,8 @@ import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserverBuilder;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-class SyntheticObserverBuilderImpl<T> extends SyntheticComponentBuilderBase<SyntheticObserverBuilderImpl<T>> implements SyntheticObserverBuilder<T> {
+class SyntheticObserverBuilderImpl<T> extends SyntheticComponentBuilderBase<SyntheticObserverBuilderImpl<T>>
+        implements SyntheticObserverBuilder<T> {
     Class<?> declaringClass;
     java.lang.reflect.Type eventType;
     Set<Annotation> qualifiers = new HashSet<>();

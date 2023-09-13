@@ -37,8 +37,10 @@ import org.jboss.weld.util.collections.ImmutableSet;
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
 
     private final TypeStore store;
-    private final Function<AnnotatedElement, Set<Annotation>> ANNOTATIONS_FUNCTION = input -> ImmutableSet.of(internalGetAnnotations(input));
-    private final Function<AnnotatedElement, Set<Annotation>> DECLARED_ANNOTATIONS_FUNCTION = input -> ImmutableSet.of(internalGetDeclaredAnnotations(input));
+    private final Function<AnnotatedElement, Set<Annotation>> ANNOTATIONS_FUNCTION = input -> ImmutableSet
+            .of(internalGetAnnotations(input));
+    private final Function<AnnotatedElement, Set<Annotation>> DECLARED_ANNOTATIONS_FUNCTION = input -> ImmutableSet
+            .of(internalGetDeclaredAnnotations(input));
 
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
         return element.getAnnotations();
@@ -59,7 +61,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         this.annotations = cacheBuilder.build(ANNOTATIONS_FUNCTION);
         this.declaredAnnotations = cacheBuilder.build(DECLARED_ANNOTATIONS_FUNCTION);
         this.backedAnnotatedTypeAnnotations = cacheBuilder.build(new BackedAnnotatedTypeAnnotationsFunction());
-        this.annotationClasses =  cacheBuilder.build(new AnnotationClassFunction());
+        this.annotationClasses = cacheBuilder.build(new AnnotationClassFunction());
     }
 
     @Override
@@ -134,7 +136,8 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     private class AnnotationClassFunction implements Function<Class<? extends Annotation>, AnnotationClass<?>> {
         @Override
         public AnnotationClass<?> apply(Class<? extends Annotation> input) {
-            boolean scope = input.isAnnotationPresent(NormalScope.class) || input.isAnnotationPresent(Scope.class) || store.isExtraScope(input);
+            boolean scope = input.isAnnotationPresent(NormalScope.class) || input.isAnnotationPresent(Scope.class)
+                    || store.isExtraScope(input);
             Method repeatableAnnotationAccessor = Annotations.getRepeatableAnnotationAccessor(input);
             Set<Annotation> metaAnnotations = ImmutableSet.of(internalGetAnnotations(input));
             return new AnnotationClassImpl<>(scope, repeatableAnnotationAccessor, metaAnnotations);

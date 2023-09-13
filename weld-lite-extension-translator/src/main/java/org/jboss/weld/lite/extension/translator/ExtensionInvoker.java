@@ -1,11 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.annotation.Priority;
-import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
-import jakarta.enterprise.inject.build.compatible.spi.SkipIfPortableExtensionPresent;
-import jakarta.interceptor.Interceptor;
-import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -14,6 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+import jakarta.enterprise.inject.build.compatible.spi.SkipIfPortableExtensionPresent;
+import jakarta.interceptor.Interceptor;
+
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 class ExtensionInvoker {
 
@@ -99,7 +100,8 @@ class ExtensionInvoker {
                 parameterTypes[i] = jakarta.enterprise.inject.build.compatible.spi.BeanInfo.class;
             } else if (jakarta.enterprise.inject.build.compatible.spi.ObserverInfo.class.isAssignableFrom(argumentClass)) {
                 parameterTypes[i] = jakarta.enterprise.inject.build.compatible.spi.ObserverInfo.class;
-            } else if (jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents.class.isAssignableFrom(argumentClass)) {
+            } else if (jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents.class
+                    .isAssignableFrom(argumentClass)) {
                 parameterTypes[i] = jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents.class;
             } else if (jakarta.enterprise.inject.build.compatible.spi.Messages.class.isAssignableFrom(argumentClass)) {
                 parameterTypes[i] = jakarta.enterprise.inject.build.compatible.spi.Messages.class;

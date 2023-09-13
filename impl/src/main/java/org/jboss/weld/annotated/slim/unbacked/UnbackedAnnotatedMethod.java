@@ -24,25 +24,30 @@ import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR",
+        "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> implements AnnotatedMethod<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedMethod<X> of(AnnotatedMethod<X> originalMethod, UnbackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {
+    public static <X, Y extends X> AnnotatedMethod<X> of(AnnotatedMethod<X> originalMethod,
+            UnbackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {
         UnbackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
-        return new UnbackedAnnotatedMethod<X>(originalMethod.getBaseType(), originalMethod.getTypeClosure(), originalMethod.getAnnotations(), downcastDeclaringType,
+        return new UnbackedAnnotatedMethod<X>(originalMethod.getBaseType(), originalMethod.getTypeClosure(),
+                originalMethod.getAnnotations(), downcastDeclaringType,
                 originalMethod.getParameters(), originalMethod.getJavaMember(), cache);
     }
 
     private final Method method;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public UnbackedAnnotatedMethod(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, UnbackedAnnotatedType<X> declaringType,
+    public UnbackedAnnotatedMethod(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations,
+            UnbackedAnnotatedType<X> declaringType,
             List<AnnotatedParameter<X>> originalParameters, Method method, SharedObjectCache cache) {
         super(baseType, typeClosure, cache.getSharedSet(annotations), declaringType);
         this.method = method;
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(originalParameters.size());
         for (AnnotatedParameter<X> originalParameter : originalParameters) {
-            parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
+            parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(),
+                    originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
                     originalParameter.getPosition(), this));
         }
         this.parameters = ImmutableList.copyOf(parameters);
@@ -64,7 +69,8 @@ public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> imple
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new UnbackedMemberIdentifier<X>(getDeclaringType(), AnnotatedTypes.createMethodId(method, getAnnotations(), getParameters()));
+        return new UnbackedMemberIdentifier<X>(getDeclaringType(),
+                AnnotatedTypes.createMethodId(method, getAnnotations(), getParameters()));
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {

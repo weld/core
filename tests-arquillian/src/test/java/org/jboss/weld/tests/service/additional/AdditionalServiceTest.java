@@ -50,17 +50,20 @@ public class AdditionalServiceTest {
     public static Archive<?> getDeployment() {
         @SuppressWarnings("rawtypes")
         Class[] classes = new Class[] {
-            AlphaImpl.class,
-            AlphaService.class,
-            Bravo1Service.class,
-            Bravo2Service.class,
-            BravoImpl.class,
-            TransactionServices1.class,
-            TransactionServices2.class
+                AlphaImpl.class,
+                AlphaService.class,
+                Bravo1Service.class,
+                Bravo2Service.class,
+                BravoImpl.class,
+                TransactionServices1.class,
+                TransactionServices2.class
         };
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AdditionalServiceTest.class, Utils.ARCHIVE_TYPE.WAR)).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(AdditionalServiceTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(classes)
-                .addAsServiceProvider(Service.class, AlphaImpl.class, BravoImpl.class, TransactionServices1.class, TransactionServices2.class);
+                .addAsServiceProvider(Service.class, AlphaImpl.class, BravoImpl.class, TransactionServices1.class,
+                        TransactionServices2.class);
     }
 
     @Test

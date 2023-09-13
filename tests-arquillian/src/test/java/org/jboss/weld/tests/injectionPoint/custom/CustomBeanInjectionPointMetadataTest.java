@@ -42,7 +42,8 @@ public class CustomBeanInjectionPointMetadataTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomBeanInjectionPointMetadataTest.class))
-                .addPackage(CustomBeanInjectionPointMetadataTest.class.getPackage()).addAsServiceProvider(Extension.class, BarExtension.class);
+                .addPackage(CustomBeanInjectionPointMetadataTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, BarExtension.class);
     }
 
     @Test

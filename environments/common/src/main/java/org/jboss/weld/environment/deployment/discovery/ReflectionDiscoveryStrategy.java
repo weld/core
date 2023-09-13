@@ -29,7 +29,8 @@ import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
- * This implementation supports bean-discovery-mode="annotated" and makes use of reflection to detect a class with a bean defining annotation.
+ * This implementation supports bean-discovery-mode="annotated" and makes use of reflection to detect a class with a bean
+ * defining annotation.
  *
  * @author Matej Briškár
  * @author Martin Kouba
@@ -39,8 +40,8 @@ public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
     private final AtomicBoolean annotatedDiscoveryProcessed;
 
     public ReflectionDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap,
-                                       Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
-                                       BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
+            BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         super(resourceLoader, bootstrap, initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
         this.annotatedDiscoveryProcessed = new AtomicBoolean(false);
         registerHandler(new FileSystemBeanArchiveHandler());

@@ -35,5 +35,4 @@ public class LegacyPrioritizedInterceptor extends PrioritizedInterceptor {
         return new LegacyPrioritizedInterceptor(getPriority(), getInterceptorBindings());
     }
 
-
 }

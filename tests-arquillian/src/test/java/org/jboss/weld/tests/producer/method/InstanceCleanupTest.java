@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.producer.method;
 
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 

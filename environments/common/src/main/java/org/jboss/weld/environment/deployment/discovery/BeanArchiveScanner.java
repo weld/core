@@ -25,7 +25,8 @@ import org.jboss.weld.environment.util.BeanArchives;
 /**
  * Scans the application for bean archives.
  *
- * The implementation may be optimized for bean archives containing beans.xml file with bean-discovey-mode of none. E.g. it does not have to scan classes in
+ * The implementation may be optimized for bean archives containing beans.xml file with bean-discovey-mode of none. E.g. it does
+ * not have to scan classes in
  * such an archive.
  *
  * @author Martin Kouba
@@ -59,7 +60,8 @@ public interface BeanArchiveScanner {
 
         /**
          *
-         * @return the beans.xml representation or <code>null</code> in case of a candidate for an implicit bean archive with no beans.xml
+         * @return the beans.xml representation or <code>null</code> in case of a candidate for an implicit bean archive with no
+         *         beans.xml
          */
         public BeansXml getBeansXml() {
             return beansXml;

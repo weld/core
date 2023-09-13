@@ -39,7 +39,9 @@ public class TargetClassWithPostConstructWithInvalidReturnTypeTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TargetClassWithPostConstructWithInvalidReturnTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(TargetClassWithPostConstructWithInvalidReturnTypeTest.class))
                 .addClass(TargetClassWithPostConstructWithInvalidReturnType.class);
     }
 

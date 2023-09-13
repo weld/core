@@ -51,7 +51,8 @@ public class VerifyingExtension implements Extension {
     void init(@Observes BeforeBeanDiscovery event, BeanManager manager) throws Exception {
         ServiceRegistry services = BeanManagerProxy.unwrap(manager).getServices();
         this.classFileServices = services.get(ClassFileServices.class);
-        this.resolver = new FastProcessAnnotatedTypeResolver(services.get(GlobalObserverNotifierService.class).getAllObserverMethods());
+        this.resolver = new FastProcessAnnotatedTypeResolver(
+                services.get(GlobalObserverNotifierService.class).getAllObserverMethods());
         this.notifier = BeanManagerProxy.unwrap(manager).getGlobalLenientObserverNotifier();
         this.discovery = services.get(RequiredAnnotationDiscovery.class);
         this.transformer = services.get(ClassTransformer.class);
@@ -74,13 +75,15 @@ public class VerifyingExtension implements Extension {
             notResolved.removeAll(actual);
             Set<?> notExpected = new HashSet<Object>(actual);
             notExpected.removeAll(expected);
-            Assert.fail("Resolved observer mismatch for " + javaClass + ". Expected but not resolved: " + notResolved + ". Resolved but not expected: " + notExpected);
+            Assert.fail("Resolved observer mismatch for " + javaClass + ". Expected but not resolved: " + notResolved
+                    + ". Resolved but not expected: " + notExpected);
         }
     }
 
     private <T> List<ObserverMethod<? super T>> resolve(Class<?> javaClass) {
-        Resolvable resolvable = ProcessAnnotatedTypeEventResolvable.forProcessAnnotatedType(transformer.getBackedAnnotatedType(javaClass, "foo"), discovery);
-        return notifier.<T>resolveObserverMethods(resolvable).getAllObservers();
+        Resolvable resolvable = ProcessAnnotatedTypeEventResolvable
+                .forProcessAnnotatedType(transformer.getBackedAnnotatedType(javaClass, "foo"), discovery);
+        return notifier.<T> resolveObserverMethods(resolvable).getAllObservers();
     }
 
     public boolean isInitialized() {

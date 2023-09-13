@@ -19,6 +19,7 @@ package org.jboss.weld.tests.contexts.passivating.injection.broken;
 public abstract class TestClasses {
 
     protected static Class<?>[] getCommonClasses() {
-        return new Class<?>[] { TestClasses.class, Animal.class, Bio.class, Pasture.class, Random.class, Sheep.class, Truck.class };
+        return new Class<?>[] { TestClasses.class, Animal.class, Bio.class, Pasture.class, Random.class, Sheep.class,
+                Truck.class };
     }
 }

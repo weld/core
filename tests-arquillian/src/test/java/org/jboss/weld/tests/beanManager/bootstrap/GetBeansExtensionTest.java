@@ -42,10 +42,10 @@ public class GetBeansExtensionTest {
     @Deployment
     public static Archive<?> deployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetBeansExtensionTest.class))
-            // Test bean
-            .addClasses(CdiExtensionBean.class, GetBeansExtension.class)
-            // Test extension
-            .addAsServiceProvider(Extension.class, GetBeansExtension.class);
+                // Test bean
+                .addClasses(CdiExtensionBean.class, GetBeansExtension.class)
+                // Test extension
+                .addAsServiceProvider(Extension.class, GetBeansExtension.class);
     }
 
     @Inject

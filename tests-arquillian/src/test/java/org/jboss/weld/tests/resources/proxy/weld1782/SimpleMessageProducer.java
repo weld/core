@@ -35,7 +35,6 @@ public class SimpleMessageProducer {
     @Inject
     private Topic topic;
 
-
     public void sendTopicMessage() {
 
         Connection connection = null;
@@ -59,7 +58,7 @@ public class SimpleMessageProducer {
                 try {
                     connection.close();
                 } catch (JMSException e) {
-                   e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         }

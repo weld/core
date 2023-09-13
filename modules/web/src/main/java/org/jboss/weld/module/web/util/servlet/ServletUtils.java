@@ -2,8 +2,8 @@ package org.jboss.weld.module.web.util.servlet;
 
 import jakarta.servlet.ServletContext;
 
-import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.servlet.api.InitParameters;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
@@ -21,8 +21,10 @@ public class ServletUtils {
     }
 
     /**
-     * Returns the right {@link HttpContextActivationFilter}. If one is set through the SPI it has precedence. Otherwise, if a mapping is set using web.xml, a
-     * new {@link RegexHttpContextActivationFilter} is constructed and returned. By default, {@link AcceptingHttpContextActivationFilter} is used.
+     * Returns the right {@link HttpContextActivationFilter}. If one is set through the SPI it has precedence. Otherwise, if a
+     * mapping is set using web.xml, a
+     * new {@link RegexHttpContextActivationFilter} is constructed and returned. By default,
+     * {@link AcceptingHttpContextActivationFilter} is used.
      *
      * @param manager
      * @param context

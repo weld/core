@@ -33,14 +33,17 @@ import org.jboss.weld.util.Types;
  * An identifier for a an {@link AnnotatedType} The identifier is composed of four parts:
  *
  * <ul>
- *    <li>The identifier of the {@link BeanDeploymentArchive} which the type resides in. This allows different {@link BeanDeploymentArchive}s to bundle classes with the same name.</li>
- *    <li>The declaring class name.</li>
- *    <li>An optional suffix. The suffix is used for two purposes.</li>
- *    <ul>
- *       <li>If a {@link BackedAnnotatedType} is created for a parameterized type, suffix is set to an identifier of that type</li>
- *       <li>For an {@link UnbackedAnnotatedType} suffix holds the type identifier provided by the extension or calculated based on the type's qualities (see {@link AnnotatedTypes#createTypeId(AnnotatedType)})</li>
- *    </ul>
- *    <li>Modified flag which indicates whether this is an identifier for an {@link AnnotatedType} which has been modified during {@link ProcessAnnotatedType} event notification.</li>
+ * <li>The identifier of the {@link BeanDeploymentArchive} which the type resides in. This allows different
+ * {@link BeanDeploymentArchive}s to bundle classes with the same name.</li>
+ * <li>The declaring class name.</li>
+ * <li>An optional suffix. The suffix is used for two purposes.</li>
+ * <ul>
+ * <li>If a {@link BackedAnnotatedType} is created for a parameterized type, suffix is set to an identifier of that type</li>
+ * <li>For an {@link UnbackedAnnotatedType} suffix holds the type identifier provided by the extension or calculated based on
+ * the type's qualities (see {@link AnnotatedTypes#createTypeId(AnnotatedType)})</li>
+ * </ul>
+ * <li>Modified flag which indicates whether this is an identifier for an {@link AnnotatedType} which has been modified during
+ * {@link ProcessAnnotatedType} event notification.</li>
  * </ul>
  *
  * @author Jozef Hartinger
@@ -52,12 +55,15 @@ public class AnnotatedTypeIdentifier implements Identifier {
 
     public static final String SYNTHETIC_ANNOTATION_SUFFIX = "syntheticAnnotation";
 
-    public static AnnotatedTypeIdentifier forBackedAnnotatedType(String contextId, Class<?> javaClass, Type type, String bdaId) {
+    public static AnnotatedTypeIdentifier forBackedAnnotatedType(String contextId, Class<?> javaClass, Type type,
+            String bdaId) {
         return forBackedAnnotatedType(contextId, javaClass, type, bdaId, null);
     }
 
-    public static AnnotatedTypeIdentifier forBackedAnnotatedType(String contextId, Class<?> javaClass, Type type, String bdaId, String suffix) {
-        return new AnnotatedTypeIdentifier(contextId, bdaId, javaClass.getName(), suffix != null ? suffix : getTypeId(type), false);
+    public static AnnotatedTypeIdentifier forBackedAnnotatedType(String contextId, Class<?> javaClass, Type type, String bdaId,
+            String suffix) {
+        return new AnnotatedTypeIdentifier(contextId, bdaId, javaClass.getName(), suffix != null ? suffix : getTypeId(type),
+                false);
     }
 
     public static AnnotatedTypeIdentifier forModifiedAnnotatedType(AnnotatedTypeIdentifier originalIdentifier) {
@@ -68,7 +74,8 @@ public class AnnotatedTypeIdentifier implements Identifier {
                 originalIdentifier.suffix, true);
     }
 
-    public static AnnotatedTypeIdentifier of(String contextId, String bdaId, String className, String suffix, boolean modified) {
+    public static AnnotatedTypeIdentifier of(String contextId, String bdaId, String className, String suffix,
+            boolean modified) {
         return new AnnotatedTypeIdentifier(contextId, bdaId, className, suffix, modified);
     }
 
@@ -130,7 +137,8 @@ public class AnnotatedTypeIdentifier implements Identifier {
         if (obj instanceof AnnotatedTypeIdentifier) {
             AnnotatedTypeIdentifier they = (AnnotatedTypeIdentifier) obj;
             return Objects.equals(bdaId, they.bdaId) && Objects.equals(className, they.className)
-                    && Objects.equals(suffix, they.suffix) && Objects.equals(modified, they.modified) && Objects.equals(contextId, they.contextId);
+                    && Objects.equals(suffix, they.suffix) && Objects.equals(modified, they.modified)
+                    && Objects.equals(contextId, they.contextId);
         }
         return false;
     }
@@ -146,7 +154,8 @@ public class AnnotatedTypeIdentifier implements Identifier {
         builder.append(className);
         builder.append(ID_SEPARATOR);
         // AnnodatedType added by an extension often has suffix starting with class FQCN
-        builder.append(suffix != null ? (suffix.startsWith(className) ? suffix.substring(className.length()) : suffix) : suffix);
+        builder.append(
+                suffix != null ? (suffix.startsWith(className) ? suffix.substring(className.length()) : suffix) : suffix);
         builder.append(ID_SEPARATOR);
         builder.append(modified ? 1 : 0);
         return builder.toString();
@@ -154,7 +163,8 @@ public class AnnotatedTypeIdentifier implements Identifier {
 
     @Override
     public String toString() {
-        return "AnnotatedTypeIdentifier [contextId=" + contextId + ", bdaId=" + bdaId + ", className=" + className + ", suffix=" + suffix + ", modified="
+        return "AnnotatedTypeIdentifier [contextId=" + contextId + ", bdaId=" + bdaId + ", className=" + className + ", suffix="
+                + suffix + ", modified="
                 + modified + "]";
     }
 

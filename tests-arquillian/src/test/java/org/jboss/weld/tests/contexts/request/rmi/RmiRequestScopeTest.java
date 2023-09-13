@@ -46,7 +46,8 @@ public class RmiRequestScopeTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RmiRequestScopeTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(RmiRequestScopeTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Bridge.class, BridgeBean.class, Config.class, Manager.class, My.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
@@ -74,7 +75,8 @@ public class RmiRequestScopeTest {
             // the remote view fully qualified class name
             final String viewClassName = Bridge.class.getName();
             // let's do the lookup
-            return (Bridge) context.lookup("ejb:" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + viewClassName);
+            return (Bridge) context
+                    .lookup("ejb:" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + viewClassName);
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }

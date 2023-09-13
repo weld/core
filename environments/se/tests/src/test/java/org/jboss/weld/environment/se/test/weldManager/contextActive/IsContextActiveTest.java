@@ -45,8 +45,9 @@ public class IsContextActiveTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
-            .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(IsContextActiveTest.class))
-                .addClasses(IsContextActiveTest.class, TheLoneBean.class)).build();
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(IsContextActiveTest.class))
+                        .addClasses(IsContextActiveTest.class, TheLoneBean.class))
+                .build();
     }
 
     @Test
@@ -54,7 +55,7 @@ public class IsContextActiveTest {
         try (WeldContainer container = new Weld().initialize()) {
             // TheLoneBean is just to have some bean in the archive
             container.select(TheLoneBean.class).get().ping();
-            
+
             WeldManager manager = container.select(WeldManager.class).get();
             // app scoped context is always active whereas session scoped in SE is not
             Assert.assertTrue(manager.isContextActive(ApplicationScoped.class));

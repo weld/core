@@ -26,8 +26,8 @@ import jakarta.enterprise.inject.spi.ProcessProducerMethod;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerMethod<T, X>> implements ProcessProducerMethod<T, X> {
-
+public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerMethod<T, X>>
+        implements ProcessProducerMethod<T, X> {
 
     protected static <T, X> void fire(BeanManagerImpl beanManager, ProducerMethod<T, X> bean) {
         if (beanManager.isBeanEnabled(bean)) {
@@ -37,7 +37,8 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
     }
 
     private ProcessProducerMethodImpl(BeanManagerImpl beanManager, ProducerMethod<T, X> bean) {
-        super(beanManager, ProcessProducerMethod.class, new Type[]{bean.getAnnotated().getBaseType(), bean.getAnnotated().getDeclaringType().getBaseType()}, bean);
+        super(beanManager, ProcessProducerMethod.class,
+                new Type[] { bean.getAnnotated().getBaseType(), bean.getAnnotated().getDeclaringType().getBaseType() }, bean);
     }
 
     public AnnotatedMethod<T> getAnnotatedProducerMethod() {
@@ -48,6 +49,5 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
             return null;
         }
     }
-
 
 }

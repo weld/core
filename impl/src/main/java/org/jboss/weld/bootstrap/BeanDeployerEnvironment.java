@@ -72,9 +72,9 @@ public class BeanDeployerEnvironment {
         this(
                 new HashSet<SlimAnnotatedTypeContext<?>>(),
                 new HashSet<Class<?>>(),
-                SetMultimap.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
+                SetMultimap.<Class<?>, AbstractClassBean<?>> newConcurrentSetMultimap(),
                 new HashSet<ProducerField<?, ?>>(),
-                SetMultimap.<WeldMethodKey, ProducerMethod<?, ?>>newConcurrentSetMultimap(),
+                SetMultimap.<WeldMethodKey, ProducerMethod<?, ?>> newConcurrentSetMultimap(),
                 new HashSet<RIBean<?>>(),
                 new HashSet<ObserverInitializationContext<?, ?>>(),
                 new HashSet<DisposalMethod<?, ?>>(),
@@ -110,7 +110,8 @@ public class BeanDeployerEnvironment {
         this.resolvedDisposalBeans = resolvedDisposalBeans;
         this.decorators = decorators;
         this.interceptors = interceptors;
-        this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans, manager.getServices().get(WeldConfiguration.class));
+        this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans,
+                manager.getServices().get(WeldConfiguration.class));
         this.newBeanTypes = newBeanTypes;
         this.manager = manager;
     }
@@ -248,9 +249,11 @@ public class BeanDeployerEnvironment {
      * @param declaringBean declaring bean
      * @return The set of matching disposal methods
      */
-    public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean) {
+    public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers,
+            AbstractClassBean<X> declaringBean) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder(manager).addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));
+        Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder(manager).addTypes(types)
+                .addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));
         resolvedDisposalBeans.addAll(beans);
         return Collections.unmodifiableSet(beans);
     }
@@ -361,8 +364,9 @@ public class BeanDeployerEnvironment {
     }
 
     public void trim() {
-        for (Iterator<SlimAnnotatedTypeContext<?>> iterator = annotatedTypes.iterator(); iterator.hasNext(); ) {
-            if (!AnnotatedTypes.hasBeanDefiningAnnotation(iterator.next().getAnnotatedType(), AnnotatedTypes.TRIM_META_ANNOTATIONS)) {
+        for (Iterator<SlimAnnotatedTypeContext<?>> iterator = annotatedTypes.iterator(); iterator.hasNext();) {
+            if (!AnnotatedTypes.hasBeanDefiningAnnotation(iterator.next().getAnnotatedType(),
+                    AnnotatedTypes.TRIM_META_ANNOTATIONS)) {
                 iterator.remove();
             }
         }

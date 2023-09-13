@@ -43,7 +43,8 @@ public class DisposedParameterPositionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposedParameterPositionTest.class)).addClasses(Producer.class, Product.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposedParameterPositionTest.class))
+                .addClasses(Producer.class, Product.class);
     }
 
     @Test

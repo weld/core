@@ -26,7 +26,8 @@ import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import sun.misc.Unsafe;
 
 /**
- * {@link ProxyInstantiator} implementation that  {@link Unsafe#allocateInstance(Class)} to instantiate proxy class instance. When this
+ * {@link ProxyInstantiator} implementation that {@link Unsafe#allocateInstance(Class)} to instantiate proxy class instance.
+ * When this
  * instantiator is used, the proxy class does not need to declare a no-arg constructor at all.
  *
  * @author Jozef Hartinger
@@ -44,7 +45,7 @@ class UnsafeProxyInstantiator implements ProxyInstantiator {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T newInstance(Class<T> clazz) throws InstantiationException{
+    public <T> T newInstance(Class<T> clazz) throws InstantiationException {
         return (T) unsafe.allocateInstance(clazz);
     }
 
@@ -58,7 +59,8 @@ class UnsafeProxyInstantiator implements ProxyInstantiator {
     }
 
     @Override
-    public <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz, Bean<?> declaringBean)
+    public <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz,
+            Bean<?> declaringBean)
             throws UnproxyableResolutionException {
         // noop - no constructor is fine
         return null;

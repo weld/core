@@ -39,7 +39,8 @@ public class ExcludeClassInterceptorsTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExcludeClassInterceptorsTest.class)).addPackage(ExcludeClassInterceptorsTest.class.getPackage()).addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExcludeClassInterceptorsTest.class))
+                .addPackage(ExcludeClassInterceptorsTest.class.getPackage()).addClass(ActionSequence.class);
     }
 
     @Test

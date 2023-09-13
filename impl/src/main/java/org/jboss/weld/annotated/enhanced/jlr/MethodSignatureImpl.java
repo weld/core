@@ -29,7 +29,7 @@ public class MethodSignatureImpl implements MethodSignature {
 
     public static MethodSignature of(AnnotatedMethod<?> method) {
         if (method instanceof EnhancedAnnotatedMethod<?, ?>) {
-            return Reflections.<EnhancedAnnotatedMethod<?, ?>>cast(method).getSignature();
+            return Reflections.<EnhancedAnnotatedMethod<?, ?>> cast(method).getSignature();
         }
         return new MethodSignatureImpl(method);
     }
@@ -104,7 +104,8 @@ public class MethodSignatureImpl implements MethodSignature {
 
     @Override
     public String toString() {
-        return new StringBuffer().append("method ").append(getMethodName()).append(Arrays.toString(parameterTypes).replace('[', '(').replace(']', ')')).toString();
+        return new StringBuffer().append("method ").append(getMethodName())
+                .append(Arrays.toString(parameterTypes).replace('[', '(').replace(']', ')')).toString();
     }
 
     @Override

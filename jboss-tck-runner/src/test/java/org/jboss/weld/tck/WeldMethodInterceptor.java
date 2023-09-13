@@ -35,7 +35,8 @@ import org.testng.IMethodInstance;
 import org.testng.ITestContext;
 
 /**
- * If unsafe proxies are enabled, this interceptor disables a set of TCK tests that are known to fail with unsafe proxies (because with unsafe proxies Weld is
+ * If unsafe proxies are enabled, this interceptor disables a set of TCK tests that are known to fail with unsafe proxies
+ * (because with unsafe proxies Weld is
  * less strict than required).
  *
  * @author Jozef Hartinger

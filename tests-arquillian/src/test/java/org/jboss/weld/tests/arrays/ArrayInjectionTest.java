@@ -1,5 +1,12 @@
 package org.jboss.weld.tests.arrays;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -8,13 +15,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -52,7 +52,7 @@ public class ArrayInjectionTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ArrayInjectionTest.class))
-            .addClasses(Foo.class, Bar.class, ArrayProducer.class);
+                .addClasses(Foo.class, Bar.class, ArrayProducer.class);
     }
 
     @Test

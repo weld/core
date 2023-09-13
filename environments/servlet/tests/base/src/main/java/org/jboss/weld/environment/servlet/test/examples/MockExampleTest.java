@@ -33,12 +33,14 @@ public class MockExampleTest {
     @Deployment
     public static WebArchive createTestArchive() {
         // BeanDiscoveryMode.ALL because many tests have 0 beans to discover and Weld would just skip initialization
-        return baseDeployment(new BeansXml(BeanDiscoveryMode.ALL).alternatives(MockSentenceTranslator.class)).addPackage(MockExampleTest.class.getPackage());
+        return baseDeployment(new BeansXml(BeanDiscoveryMode.ALL).alternatives(MockSentenceTranslator.class))
+                .addPackage(MockExampleTest.class.getPackage());
     }
 
     @Test
     public void testMockSentenceTranslator(TextTranslator textTranslator) throws Exception {
-        assertEquals("Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.", textTranslator.translate("Hello world. How's tricks?"));
+        assertEquals("Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.",
+                textTranslator.translate("Hello world. How's tricks?"));
     }
 
 }

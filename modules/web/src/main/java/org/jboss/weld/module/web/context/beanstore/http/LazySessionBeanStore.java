@@ -64,7 +64,8 @@ public class LazySessionBeanStore extends AbstractSessionBeanStore {
      * @param namingScheme
      * @param attributeLazyFetchingEnabled
      */
-    public LazySessionBeanStore(HttpServletRequest request, NamingScheme namingScheme,  boolean attributeLazyFetchingEnabled, ServiceRegistry serviceRegistry) {
+    public LazySessionBeanStore(HttpServletRequest request, NamingScheme namingScheme, boolean attributeLazyFetchingEnabled,
+            ServiceRegistry serviceRegistry) {
         super(namingScheme, attributeLazyFetchingEnabled, serviceRegistry);
         this.request = request;
         ContextLogger.LOG.loadingBeanStoreMapFromSession(this, getSession(false));
@@ -72,6 +73,7 @@ public class LazySessionBeanStore extends AbstractSessionBeanStore {
 
     /**
      * Get the session, create equals false;
+     *
      * @return http session or null if no such session exists
      */
     protected HttpSession getSessionIfExists() {

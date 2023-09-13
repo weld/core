@@ -2,7 +2,6 @@ package org.jboss.weld.contexts.beanstore;
 
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 
-
 /**
  * <p>
  * A naming scheme which can have it's cid swapped out.

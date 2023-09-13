@@ -47,7 +47,6 @@ public class StaticNonLifecycleEventObserverTest {
     @Inject
     private Event<Set<String>> evt;
 
-
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StaticNonLifecycleEventObserverTest.class))

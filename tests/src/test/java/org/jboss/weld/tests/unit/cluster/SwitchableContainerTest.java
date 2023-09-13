@@ -16,14 +16,14 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
+import jakarta.enterprise.inject.spi.Bean;
+
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.mock.cluster.SwitchableSingletonProvider;
 import org.testng.annotations.Test;
-
-import jakarta.enterprise.inject.spi.Bean;
 
 public class SwitchableContainerTest extends AbstractClusterTest {
 

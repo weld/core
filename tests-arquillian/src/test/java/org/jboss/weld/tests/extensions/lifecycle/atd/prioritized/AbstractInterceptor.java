@@ -30,6 +30,7 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * Utility class for extension-provided interceptor tests.
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
  *
  */

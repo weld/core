@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.serialization;
 
+import java.io.Serializable;
+
+import jakarta.enterprise.inject.IllegalProductException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,20 +30,18 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.inject.IllegalProductException;
-import java.io.Serializable;
-
 @RunWith(Arquillian.class)
 public class SerializationTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SerializationTest.class)).addPackage(SerializationTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SerializationTest.class))
+                .addPackage(SerializationTest.class.getPackage()).addClass(Utils.class);
     }
 
     /*
-    * description =
-    * "http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html"
-    */
+     * description =
+     * "http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html"
+     */
     @Test
     public void testNonSerializableProductInjectedIntoSessionScopedBean(LoggerConsumer consumer) throws Exception {
         try {

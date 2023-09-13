@@ -45,7 +45,8 @@ public class BackedAnnotatedTypeSerializationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BackedAnnotatedTypeSerializationTest.class)).addPackage(BackedAnnotatedTypeSerializationTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BackedAnnotatedTypeSerializationTest.class))
+                .addPackage(BackedAnnotatedTypeSerializationTest.class.getPackage())
                 .addClass(Utils.class).addAsServiceProvider(Extension.class, FooExtension.class);
     }
 

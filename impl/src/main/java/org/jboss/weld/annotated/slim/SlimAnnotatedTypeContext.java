@@ -69,7 +69,8 @@ public class SlimAnnotatedTypeContext<T> {
     }
 
     /**
-     * @return {@link ClassFileInfo} describing the underlying class. This attribute is only available if the integrator provided {@link ClassFileServices} and
+     * @return {@link ClassFileInfo} describing the underlying class. This attribute is only available if the integrator
+     *         provided {@link ClassFileServices} and
      *         the underlying type is comes from scanning (not registered by an extension).
      */
     public ClassFileInfo getClassInfo() {
@@ -77,8 +78,10 @@ public class SlimAnnotatedTypeContext<T> {
     }
 
     /**
-     * @return the set of ProcessAnnotatedType observer method to which the ProcessAnnotatedType event for this type is assignable. This
-     *         attribute is only available if the integrator provided {@link ClassFileServices} and the underlying type is comes from scanning (not registered
+     * @return the set of ProcessAnnotatedType observer method to which the ProcessAnnotatedType event for this type is
+     *         assignable. This
+     *         attribute is only available if the integrator provided {@link ClassFileServices} and the underlying type is comes
+     *         from scanning (not registered
      *         by an extension).
      */
     public Set<ContainerLifecycleEventObserverMethod<?>> getResolvedProcessAnnotatedTypeObservers() {

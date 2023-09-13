@@ -19,6 +19,7 @@ package org.jboss.weld.tests.stereotypes.priority.conflicting;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Alternative;
+
 import org.jboss.weld.tests.stereotypes.priority.PriorityStereotype;
 
 @Dependent

@@ -17,11 +17,10 @@
 
 package org.jboss.weld.tests.producer.field.named;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -35,12 +34,16 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * <p>Check what happens when session.invalidate() is called.</p>
+ * <p>
+ * Check what happens when session.invalidate() is called.
+ * </p>
  *
  * @author Pete Muir
  */
@@ -49,7 +52,8 @@ import java.util.Set;
 public class NamedProducerTest {
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(NamedProducerTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(NamedProducerTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(User.class, NewUserAction.class, Employee.class, SaveAction.class)
                 .addAsWebInfResource(NamedProducerTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(NamedProducerTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
@@ -62,8 +66,8 @@ public class NamedProducerTest {
     private URL url;
 
     /*
-    * description = "forum post"
-    */
+     * description = "forum post"
+     */
     @Test
     public void testNamedProducerWorks() throws Exception {
         WebClient client = new WebClient();
@@ -75,8 +79,8 @@ public class NamedProducerTest {
     }
 
     /*
-    * description = "WELD-404"
-    */
+     * description = "WELD-404"
+     */
     @Test
     public void testNamedProducerFieldLoosesValues() throws Exception {
         WebClient client = new WebClient();

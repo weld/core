@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.event.observer.transactional;
 
 import java.lang.annotation.Annotation;
+
 import jakarta.ejb.Local;
 
 @Local

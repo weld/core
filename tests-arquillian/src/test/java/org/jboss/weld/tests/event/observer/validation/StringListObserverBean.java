@@ -1,8 +1,9 @@
 package org.jboss.weld.tests.event.observer.validation;
 
+import java.util.List;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Singleton;
-import java.util.List;
 
 @Singleton
 public class StringListObserverBean {

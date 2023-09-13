@@ -42,7 +42,6 @@ public class InvalidObjectException extends java.io.InvalidObjectException {
         this.message = new WeldExceptionStringMessage(message);
     }
 
-
     @Override
     public String getLocalizedMessage() {
         return getMessage();

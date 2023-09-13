@@ -10,9 +10,11 @@ import java.util.List;
 public interface InterceptorInvocation {
 
     /**
-     * Returns {@link InterceptorMethodInvocation} objects representing interceptor methods to be invoked during an interceptor invocation.
+     * Returns {@link InterceptorMethodInvocation} objects representing interceptor methods to be invoked during an interceptor
+     * invocation.
      * <p>
-     * Each of the {@link InterceptorMethodInvocation} should be invoked as part of the invocation chain. The methods should be invoked in the given order.
+     * Each of the {@link InterceptorMethodInvocation} should be invoked as part of the invocation chain. The methods should be
+     * invoked in the given order.
      *
      * @return interceptor method invocation list
      */

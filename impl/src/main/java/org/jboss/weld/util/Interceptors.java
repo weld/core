@@ -37,6 +37,7 @@ import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  * Helper class for working with interceptors and interceptor bindings.
+ *
  * @author Jozef Hartinger
  *
  */
@@ -47,6 +48,7 @@ public class Interceptors {
 
     /**
      * Extracts a set of interceptor bindings from a collection of annotations.
+     *
      * @param beanManager
      * @param annotations
      * @return
@@ -68,7 +70,8 @@ public class Interceptors {
      * @param addInheritedInterceptorBindings add inherited level interceptor bindings to the result set.
      * @return
      */
-    public static Set<Annotation> flattenInterceptorBindings(EnhancedAnnotatedType<?> clazz, BeanManagerImpl beanManager, Collection<Annotation> annotations, boolean addTopLevelInterceptorBindings,
+    public static Set<Annotation> flattenInterceptorBindings(EnhancedAnnotatedType<?> clazz, BeanManagerImpl beanManager,
+            Collection<Annotation> annotations, boolean addTopLevelInterceptorBindings,
             boolean addInheritedInterceptorBindings) {
         Set<Annotation> flattenInterceptorBindings = new InterceptorBindingSet(beanManager);
         MetaAnnotationStore metaAnnotationStore = beanManager.getServices().get(MetaAnnotationStore.class);
@@ -78,28 +81,34 @@ public class Interceptors {
         }
         if (addInheritedInterceptorBindings) {
             for (Annotation annotation : annotations) {
-                addInheritedInterceptorBindings(clazz, annotation.annotationType(), metaAnnotationStore, flattenInterceptorBindings);
+                addInheritedInterceptorBindings(clazz, annotation.annotationType(), metaAnnotationStore,
+                        flattenInterceptorBindings);
             }
         }
         return flattenInterceptorBindings;
     }
 
-    private static void addInheritedInterceptorBindings(EnhancedAnnotatedType<?> clazz, Class<? extends Annotation> bindingType, MetaAnnotationStore metaAnnotationStore, Set<Annotation> flattenInterceptorBindings) {
-        Set<Annotation> metaBindings = metaAnnotationStore.getInterceptorBindingModel(bindingType).getInheritedInterceptionBindingTypes();
+    private static void addInheritedInterceptorBindings(EnhancedAnnotatedType<?> clazz, Class<? extends Annotation> bindingType,
+            MetaAnnotationStore metaAnnotationStore, Set<Annotation> flattenInterceptorBindings) {
+        Set<Annotation> metaBindings = metaAnnotationStore.getInterceptorBindingModel(bindingType)
+                .getInheritedInterceptionBindingTypes();
         addInterceptorBindings(clazz, metaBindings, flattenInterceptorBindings, metaAnnotationStore);
         for (Annotation metaBinding : metaBindings) {
-            addInheritedInterceptorBindings(clazz, metaBinding.annotationType(), metaAnnotationStore, flattenInterceptorBindings);
+            addInheritedInterceptorBindings(clazz, metaBinding.annotationType(), metaAnnotationStore,
+                    flattenInterceptorBindings);
         }
     }
 
-    private static void addInterceptorBindings(EnhancedAnnotatedType<?> clazz, Collection<Annotation> interceptorBindings, Set<Annotation> flattenInterceptorBindings,
+    private static void addInterceptorBindings(EnhancedAnnotatedType<?> clazz, Collection<Annotation> interceptorBindings,
+            Set<Annotation> flattenInterceptorBindings,
             MetaAnnotationStore metaAnnotationStore) {
         for (Annotation annotation : interceptorBindings) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (!annotation.annotationType().isAnnotationPresent(Repeatable.class)) {
                 for (Annotation binding : flattenInterceptorBindings) {
                     if (binding.annotationType().equals(annotationType)
-                            && !metaAnnotationStore.getInterceptorBindingModel(annotationType).isEqual(annotation, binding, false)) {
+                            && !metaAnnotationStore.getInterceptorBindingModel(annotationType).isEqual(annotation, binding,
+                                    false)) {
                         if (clazz != null) {
                             throw new DefinitionException(BeanLogger.LOG.conflictingInterceptorBindings(clazz));
                         } else {
@@ -116,13 +125,17 @@ public class Interceptors {
     /**
      * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
      */
-    public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, EnhancedAnnotatedType<?> clazz, Collection<Class<? extends Annotation>> stereotypes) {
+    public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager,
+            EnhancedAnnotatedType<?> clazz, Collection<Class<? extends Annotation>> stereotypes) {
         Set<Annotation> rawBindings = clazz.getMetaAnnotations(InterceptorBinding.class);
-        Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(clazz, beanManager, filterInterceptorBindings(beanManager, rawBindings), true, false);
+        Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(clazz, beanManager,
+                filterInterceptorBindings(beanManager, rawBindings), true, false);
         Set<Annotation> inheritedBindingAnnotations = new HashSet<Annotation>();
-        inheritedBindingAnnotations.addAll(flattenInterceptorBindings(clazz, beanManager, filterInterceptorBindings(beanManager, rawBindings), false, true));
+        inheritedBindingAnnotations.addAll(flattenInterceptorBindings(clazz, beanManager,
+                filterInterceptorBindings(beanManager, rawBindings), false, true));
         for (Class<? extends Annotation> annotation : stereotypes) {
-            inheritedBindingAnnotations.addAll(flattenInterceptorBindings(clazz, beanManager, filterInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)), true, true));
+            inheritedBindingAnnotations.addAll(flattenInterceptorBindings(clazz, beanManager,
+                    filterInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)), true, true));
         }
         try {
             return mergeBeanInterceptorBindings(beanManager, clazz, classBindingAnnotations, inheritedBindingAnnotations);
@@ -134,7 +147,8 @@ public class Interceptors {
     /**
      * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
      */
-    public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, AnnotatedType<?> clazz,
+    public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager,
+            AnnotatedType<?> clazz,
             Collection<Annotation> classBindingAnnotations, Collection<Annotation> inheritedBindingAnnotations) {
 
         SetMultimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = SetMultimap.newSetMultimap();
@@ -147,7 +161,8 @@ public class Interceptors {
             if (!annotationType.isAnnotationPresent(Repeatable.class)) {
                 // Detec conflicts for non repeating bindings
                 for (Annotation mergedBinding : mergedBeanBindings.get(annotationType)) {
-                    if (!metaAnnotationStore.getInterceptorBindingModel(annotationType).isEqual(binding, mergedBinding, false)) {
+                    if (!metaAnnotationStore.getInterceptorBindingModel(annotationType).isEqual(binding, mergedBinding,
+                            false)) {
                         throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(clazz.getJavaClass()));
                     }
                 }
@@ -164,7 +179,8 @@ public class Interceptors {
             } else {
                 Set<Annotation> inheritedBindings = acceptedInheritedBindings.get(annotationType);
                 for (Annotation inheritedBinding : inheritedBindings) {
-                    if (!metaAnnotationStore.getInterceptorBindingModel(annotationType).isEqual(binding, inheritedBinding, false)) {
+                    if (!metaAnnotationStore.getInterceptorBindingModel(annotationType).isEqual(binding, inheritedBinding,
+                            false)) {
                         throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(clazz.getJavaClass()));
                     }
                 }

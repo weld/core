@@ -42,7 +42,7 @@ public class FormatsTest {
 
     /**
      * This test will FAIL with IBM JVM, because Apache BCEL classes are not present there. Therefore util method
-     * Formats.getLineNumber always returns 0 as line number. 
+     * Formats.getLineNumber always returns 0 as line number.
      * Apache BCEL classes are used to look up the line numbers in bytecode.
      */
     @Test
@@ -82,7 +82,6 @@ public class FormatsTest {
         assertTrue("Line: " + line, line > 0);
         // System.out.println(member + " :" + line);
     }
-
 
     Constructor<?> findConstructor(Class<?> javaClass, Class<?>... parameterTypes) {
         Class<?> clazz = javaClass;

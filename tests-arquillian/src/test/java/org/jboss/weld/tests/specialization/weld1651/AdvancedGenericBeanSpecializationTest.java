@@ -40,12 +40,13 @@ public class AdvancedGenericBeanSpecializationTest {
 
     @Deployment
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdvancedGenericBeanSpecializationTest.class)).addClasses(AdvancedGenericBeanSpecializationTest.class, SpecializedGenericBean.class,
-                SpecializingGenericBean.class, Bar.class, Foo.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdvancedGenericBeanSpecializationTest.class))
+                .addClasses(AdvancedGenericBeanSpecializationTest.class, SpecializedGenericBean.class,
+                        SpecializingGenericBean.class, Bar.class, Foo.class);
     }
 
     @Test
-    public void testGenericBeanSpecialization(){
+    public void testGenericBeanSpecialization() {
         assertNotNull(bean);
     }
 }

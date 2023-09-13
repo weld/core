@@ -53,7 +53,6 @@ public class InjectionServicesTest {
         Assert.assertNotNull(foo.getBar());
         Assert.assertEquals("hi!", foo.getMessage());
 
-
         container.stopContainer();
     }
 

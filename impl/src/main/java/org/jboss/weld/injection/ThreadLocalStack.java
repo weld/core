@@ -31,14 +31,19 @@ import org.jboss.weld.contexts.cache.RequestScopedItem;
  *
  * Therefore this implementation tries to optimize that.
  *
- * First of all we make use of {@link RequestScopedCache} for cleaning up the thread local. If {@link RequestScopedCache} is active
- * we do not remove the stack from thread local immediately when it becomes empty but defer this to the point when {@link RequestScopedCache}
+ * First of all we make use of {@link RequestScopedCache} for cleaning up the thread local. If {@link RequestScopedCache} is
+ * active
+ * we do not remove the stack from thread local immediately when it becomes empty but defer this to the point when
+ * {@link RequestScopedCache}
  * is cleaned up.
  *
- * Secondly, we reduce the number of ThreadLocal.get() accesses by returning a {@link ThreadLocalStackReference} which a client uses to pop a value.
+ * Secondly, we reduce the number of ThreadLocal.get() accesses by returning a {@link ThreadLocalStackReference} which a client
+ * uses to pop a value.
  *
- * Lastly, the {@link ThreadLocal} instance is configured to set a new initial value by default. This is safe when {@link RequestScopedCache} is used
- * but may lead to {@link ThreadLocal} leak when it is not. Therefore, special care needs to be take to guarantee that each {@link ThreadLocal#get()}
+ * Lastly, the {@link ThreadLocal} instance is configured to set a new initial value by default. This is safe when
+ * {@link RequestScopedCache} is used
+ * but may lead to {@link ThreadLocal} leak when it is not. Therefore, special care needs to be take to guarantee that each
+ * {@link ThreadLocal#get()}
  * operation has a matching {@link Stack#removeIfEmpty()} call (see {@link ThreadLocalStack#peek()}) as an example.
  *
  */
@@ -117,9 +122,11 @@ public class ThreadLocalStack<T> {
         public void invalidate() {
             /*
              * This cached item is being invalidated.
-             * It does not necessarily mean that the request is being destroyed - it may just be the case that it is being flushed in the middle
+             * It does not necessarily mean that the request is being destroyed - it may just be the case that it is being
+             * flushed in the middle
              * of a request (e.g. for AlterableContext.destroy()).
-             * Therefore, we cannot remove the stack now but we just set removeWhenEmpty flag and let it remove itself once the stack gets empty.
+             * Therefore, we cannot remove the stack now but we just set removeWhenEmpty flag and let it remove itself once the
+             * stack gets empty.
              */
             removeWhenEmpty = true;
             removeIfEmpty();
@@ -141,8 +148,10 @@ public class ThreadLocalStack<T> {
     }
 
     /**
-     * Convenience method which only pushes something to stack if the condition evaluates to true. If the condition evaluates to true, this method behaves the same as {@link #push(Object)}.
-     * Otherwise, a special null {@link ThreadLocalStackReference} object is returned. {@link ThreadLocalStackReference#pop()} may
+     * Convenience method which only pushes something to stack if the condition evaluates to true. If the condition evaluates to
+     * true, this method behaves the same as {@link #push(Object)}.
+     * Otherwise, a special null {@link ThreadLocalStackReference} object is returned. {@link ThreadLocalStackReference#pop()}
+     * may
      * be called on the returned object - it will not have any effect and always return null.
      */
     @SuppressWarnings("unchecked")
@@ -155,8 +164,10 @@ public class ThreadLocalStack<T> {
     }
 
     /**
-     * Convenience method which also accepts null values. If the given parameter is non-null, this method behaves the same as {@link #push(Object)}.
-     * Otherwise, a special null {@link ThreadLocalStackReference} object is returned. {@link ThreadLocalStackReference#pop()} may
+     * Convenience method which also accepts null values. If the given parameter is non-null, this method behaves the same as
+     * {@link #push(Object)}.
+     * Otherwise, a special null {@link ThreadLocalStackReference} object is returned. {@link ThreadLocalStackReference#pop()}
+     * may
      * be called on the returned object - it will not have any effect and always return null.
      */
     public ThreadLocalStackReference<T> pushIfNotNull(T item) {

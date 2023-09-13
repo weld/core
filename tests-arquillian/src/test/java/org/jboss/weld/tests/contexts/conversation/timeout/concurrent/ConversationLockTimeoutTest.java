@@ -23,10 +23,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.TextPage;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.util.Cookie;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -43,6 +39,11 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.TextPage;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.Cookie;
+
 @RunWith(Arquillian.class)
 @Category(Integration.class)
 public class ConversationLockTimeoutTest {
@@ -55,12 +56,15 @@ public class ConversationLockTimeoutTest {
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
         WebArchive testDeployment = ShrinkWrap
-                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ConversationLockTimeoutTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ConversationLockTimeoutTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(ConversationLockTimeoutTest.class.getPackage())
                 .addClass(Timer.class)
                 .addAsWebInfResource(ConversationLockTimeoutTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONVERSATION_CONCURRENT_ACCESS_TIMEOUT.get(), "3000").build(),
+                .addAsResource(
+                        PropertiesBuilder.newBuilder()
+                                .set(ConfigurationKey.CONVERSATION_CONCURRENT_ACCESS_TIMEOUT.get(), "3000").build(),
                         "weld.properties");
         return testDeployment;
     }
@@ -85,7 +89,8 @@ public class ConversationLockTimeoutTest {
         final Future<String> longTaskFuture = executorService.submit(longTask);
         Timer timer = Timer.startNew(1000l);
         final Future<String> busyRequestFuture = executorService.submit(busyRequest);
-        timer.setSleepInterval(100l).setDelay(2, TimeUnit.SECONDS).addStopCondition(() -> longTaskFuture.isDone() || busyRequestFuture.isDone()).start();
+        timer.setSleepInterval(100l).setDelay(2, TimeUnit.SECONDS)
+                .addStopCondition(() -> longTaskFuture.isDone() || busyRequestFuture.isDone()).start();
 
         Assert.assertEquals("OK", longTaskFuture.get());
         Assert.assertEquals("Conversation locked", busyRequestFuture.get());

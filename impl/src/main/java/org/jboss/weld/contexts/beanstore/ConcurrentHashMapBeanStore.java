@@ -60,10 +60,10 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
 
     public LockedBean lock(final BeanIdentifier id) {
         LockStore lockStore = this.lockStore;
-        if(lockStore == null) {
+        if (lockStore == null) {
             synchronized (this) {
                 lockStore = this.lockStore;
-                if(lockStore == null) {
+                if (lockStore == null) {
                     this.lockStore = lockStore = new LockStore();
                 }
             }

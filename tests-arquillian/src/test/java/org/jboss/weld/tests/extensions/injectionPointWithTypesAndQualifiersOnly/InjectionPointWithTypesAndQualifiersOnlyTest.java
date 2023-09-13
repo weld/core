@@ -42,7 +42,8 @@ public class InjectionPointWithTypesAndQualifiersOnlyTest {
 
     @Deployment
     public static Archive<?> deployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointWithTypesAndQualifiersOnlyTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointWithTypesAndQualifiersOnlyTest.class))
                 .addPackage(InjectionPointWithTypesAndQualifiersOnlyTest.class.getPackage());
     }
 
@@ -58,6 +59,6 @@ public class InjectionPointWithTypesAndQualifiersOnlyTest {
         InjectionPoint ip = new CustomInjectionPoint();
         Object o = manager.getInjectableReference(ip, ctx);
 
-        Assert.assertEquals(5, ((DummyBean)o).getSomeValue());
+        Assert.assertEquals(5, ((DummyBean) o).getSomeValue());
     }
 }

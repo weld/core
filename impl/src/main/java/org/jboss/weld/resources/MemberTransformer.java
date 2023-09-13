@@ -125,12 +125,14 @@ public class MemberTransformer implements BootstrapService {
                 }
             }
             for (AnnotatedMethod<? super T> method : type.getMethods()) {
-                if (id.equals(AnnotatedTypes.createMethodId(method.getJavaMember(), method.getAnnotations(), method.getParameters()))) {
+                if (id.equals(AnnotatedTypes.createMethodId(method.getJavaMember(), method.getAnnotations(),
+                        method.getParameters()))) {
                     return Reflections.cast(method);
                 }
             }
             for (AnnotatedConstructor<T> constructor : type.getConstructors()) {
-                if (id.equals(AnnotatedTypes.createConstructorId(constructor.getJavaMember(), constructor.getAnnotations(), constructor.getParameters()))) {
+                if (id.equals(AnnotatedTypes.createConstructorId(constructor.getJavaMember(), constructor.getAnnotations(),
+                        constructor.getParameters()))) {
                     return cast(constructor);
                 }
             }
@@ -140,7 +142,8 @@ public class MemberTransformer implements BootstrapService {
 
     // Enhanced members
 
-    public <X, A extends EnhancedAnnotatedMember<?, X, ? extends Member>> A loadEnhancedMember(AnnotatedMember<X> member, String bdaId) {
+    public <X, A extends EnhancedAnnotatedMember<?, X, ? extends Member>> A loadEnhancedMember(AnnotatedMember<X> member,
+            String bdaId) {
         if (member instanceof EnhancedAnnotatedMember<?, ?, ?>) {
             return Reflections.cast(member);
         }
@@ -216,14 +219,16 @@ public class MemberTransformer implements BootstrapService {
         }
     }
 
-    private class EnhancedConstructorLoader extends AbstractEnhancedMemberLoader<AnnotatedConstructor<?>, EnhancedAnnotatedConstructor<?>> {
+    private class EnhancedConstructorLoader
+            extends AbstractEnhancedMemberLoader<AnnotatedConstructor<?>, EnhancedAnnotatedConstructor<?>> {
         @Override
         public boolean equals(EnhancedAnnotatedConstructor<?> member1, AnnotatedConstructor<?> member2) {
             return AnnotatedTypes.compareAnnotatedCallable(member1, member2);
         }
 
         @Override
-        public Collection<EnhancedAnnotatedConstructor<?>> getMembersOfDeclaringType(MemberKey<?, AnnotatedConstructor<?>> source) {
+        public Collection<EnhancedAnnotatedConstructor<?>> getMembersOfDeclaringType(
+                MemberKey<?, AnnotatedConstructor<?>> source) {
             return cast(source.type.getConstructors());
         }
     }

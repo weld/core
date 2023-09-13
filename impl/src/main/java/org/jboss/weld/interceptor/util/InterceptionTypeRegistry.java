@@ -17,7 +17,6 @@
 
 package org.jboss.weld.interceptor.util;
 
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
@@ -40,7 +39,8 @@ public final class InterceptionTypeRegistry {
         ImmutableMap.Builder<InterceptionType, Class<? extends Annotation>> builder = ImmutableMap.builder();
         for (InterceptionType interceptionType : InterceptionType.values()) {
             try {
-                builder.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.getClassLoader().loadClass(interceptionType.annotationClassName()));
+                builder.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.getClassLoader()
+                        .loadClass(interceptionType.annotationClassName()));
             } catch (Exception e) {
                 if (InterceptionUtils.isAnnotationClassExpected(interceptionType)) {
                     InterceptorLogger.LOG.interceptorAnnotationClassNotFound(interceptionType.annotationClassName());

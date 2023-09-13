@@ -34,7 +34,8 @@ import jakarta.interceptor.InterceptorBinding;
 public @interface FooInterceptorBinding {
 
     @SuppressWarnings("all")
-    public class FooInterceptorBindingLiteral extends AnnotationLiteral<FooInterceptorBinding> implements FooInterceptorBinding {
+    public class FooInterceptorBindingLiteral extends AnnotationLiteral<FooInterceptorBinding>
+            implements FooInterceptorBinding {
         public static final FooInterceptorBindingLiteral INSTANCE = new FooInterceptorBindingLiteral();
     }
 }

@@ -49,13 +49,14 @@ public class ManagedBeansWithCDITest {
 
     @Deployment(testable = false)
     public static Archive<?> deployment() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(ManagedBeansWithCDITest.class, Utils.ARCHIVE_TYPE.EAR));
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class,
+                Utils.getDeploymentNameAsHash(ManagedBeansWithCDITest.class, Utils.ARCHIVE_TYPE.EAR));
         ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsWebResource(ManagedBeansWithCDITest.class.getPackage(), "index.xhtml", "index.xhtml")
                 .addAsWebResource(ManagedBeansWithCDITest.class.getPackage(), "timezones.xhtml", "timezones.xhtml")
-                .setWebXML(ManagedBeansWithCDITest.class.getPackage(), "web.xml")
-                );
-        ear.addAsLibrary(ShrinkWrap.create(JavaArchive.class, "test.jar").addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
+                .setWebXML(ManagedBeansWithCDITest.class.getPackage(), "web.xml"));
+        ear.addAsLibrary(
+                ShrinkWrap.create(JavaArchive.class, "test.jar").addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
         return ear;
 
     }

@@ -64,8 +64,9 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     private final Field delegateField;
     private final TargetInstanceBytecodeMethodResolver targetInstanceBytecodeMethodResolver = new TargetInstanceBytecodeMethodResolver();
 
-    public DecoratorProxyFactory(String contextId, Class<T> proxyType, WeldInjectionPointAttributes<?, ?> delegateInjectionPoint, Bean<?> bean) {
-        super(contextId, proxyType, Collections.<Type>emptySet(), bean);
+    public DecoratorProxyFactory(String contextId, Class<T> proxyType,
+            WeldInjectionPointAttributes<?, ?> delegateInjectionPoint, Bean<?> bean) {
+        super(contextId, proxyType, Collections.<Type> emptySet(), bean);
         this.delegateInjectionPoint = delegateInjectionPoint;
         if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
             delegateField = (Field) ((FieldInjectionPoint<?, ?>) delegateInjectionPoint).getMember();
@@ -79,14 +80,17 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
      * methodHandler field as then new methodHandler
      */
     private void addHandlerInitializerMethod(ClassFile proxyClassType, ClassMethod staticConstructor) throws Exception {
-        ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, INIT_MH_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
+        ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, INIT_MH_METHOD_NAME,
+                BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
         final CodeAttribute b = classMethod.getCodeAttribute();
         b.aload(0);
-        StaticMethodInformation methodInfo = new StaticMethodInformation(INIT_MH_METHOD_NAME, new Class[] { Object.class }, void.class,
+        StaticMethodInformation methodInfo = new StaticMethodInformation(INIT_MH_METHOD_NAME, new Class[] { Object.class },
+                void.class,
                 classMethod.getClassFile().getName());
         invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
         b.checkcast(MethodHandler.class);
-        b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
+        b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME,
+                DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.returnInstruction();
         BeanLogger.LOG.createdMethodHandlerInitializerForDecoratorProxy(getBeanType());
 
@@ -124,7 +128,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                     }
                     // exclude bridge methods
                     if (Modifier.isAbstract(method.getModifiers())) {
-                         createAbstractMethodCode(proxyClassType.addMethod(method), methodInfo, staticConstructor);
+                        createAbstractMethodCode(proxyClassType.addMethod(method), methodInfo, staticConstructor);
                     }
                 }
             }
@@ -161,7 +165,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
 
     // m is more generic than a
     private static boolean isEqual(Method m, Method a) {
-        if (m.getName().equals(a.getName()) && m.getParameterCount() == a.getParameterCount() && m.getReturnType().isAssignableFrom(a.getReturnType())) {
+        if (m.getName().equals(a.getName()) && m.getParameterCount() == a.getParameterCount()
+                && m.getReturnType().isAssignableFrom(a.getReturnType())) {
             for (int i = 0; i < m.getParameterCount(); i++) {
                 if (!(m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]))) {
                     return false;
@@ -188,7 +193,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
             final CodeAttribute b = classMethod.getCodeAttribute();
             // load the delegate field
             b.aload(0);
-            b.getfield(classMethod.getClassFile().getName(), delegateField.getName(), DescriptorUtils.makeDescriptor(delegateField.getType()));
+            b.getfield(classMethod.getClassFile().getName(), delegateField.getName(),
+                    DescriptorUtils.makeDescriptor(delegateField.getType()));
             // load the parameters
             b.loadMethodParameters();
             // invoke the delegate method
@@ -223,7 +229,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
      * @param delegateParameterPosition
      * @return
      */
-    private void createDelegateInitializerCode(ClassMethod classMethod, MethodInformation initializerMethodInfo, int delegateParameterPosition) {
+    private void createDelegateInitializerCode(ClassMethod classMethod, MethodInformation initializerMethodInfo,
+            int delegateParameterPosition) {
         final CodeAttribute b = classMethod.getCodeAttribute();
         // we need to push all the parameters on the stack to call the corresponding
         // superclass arguments
@@ -244,14 +251,16 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 localVariables++;
             }
         }
-        b.invokespecial(classMethod.getClassFile().getSuperclass(), initializerMethodInfo.getName(), initializerMethodInfo.getDescriptor());
+        b.invokespecial(classMethod.getClassFile().getSuperclass(), initializerMethodInfo.getName(),
+                initializerMethodInfo.getDescriptor());
         // if this method returns a value it is now sitting on top of the stack
         // we will leave it there are return it later
 
         // now we need to call _initMH
         b.aload(0); // load this
         b.aload(actualDelegateParameterPosition); // load the delegate
-        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME, "(" + LJAVA_LANG_OBJECT + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME,
+                "(" + LJAVA_LANG_OBJECT + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         // return the object from the top of the stack that we got from calling
         // the superclass method earlier
         b.returnInstruction();
@@ -261,9 +270,11 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     protected class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
         private static final String JAVA_LANG_CLASS_CLASS_NAME = "java.lang.Class";
 
-        public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor) {
+        public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName,
+                String[] parameterTypes, ClassMethod staticConstructor) {
             // get the correct class type to use to resolve the method
-            MethodInformation methodInfo = new StaticMethodInformation("weld_getTargetClass", new String[0], LJAVA_LANG_CLASS, TargetInstanceProxy.class.getName());
+            MethodInformation methodInfo = new StaticMethodInformation("weld_getTargetClass", new String[0], LJAVA_LANG_CLASS,
+                    TargetInstanceProxy.class.getName());
             invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
             CodeAttribute code = classMethod.getCodeAttribute();
             code.checkcast("java/lang/Class");
@@ -281,8 +292,10 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // and store it in the array
                 code.aastore();
             }
-            code.invokestatic(GetDeclaredMethodAction.class.getName(), "wrapException", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/security/PrivilegedAction;");
-            code.invokestatic(AccessController.class.getName(), "doPrivileged", "(Ljava/security/PrivilegedAction;)Ljava/lang/Object;");
+            code.invokestatic(GetDeclaredMethodAction.class.getName(), "wrapException",
+                    "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/security/PrivilegedAction;");
+            code.invokestatic(AccessController.class.getName(), "doPrivileged",
+                    "(Ljava/security/PrivilegedAction;)Ljava/lang/Object;");
             code.checkcast(Method.class);
         }
 

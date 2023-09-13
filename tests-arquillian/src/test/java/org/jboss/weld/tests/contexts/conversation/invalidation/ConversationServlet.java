@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.contexts.conversation.invalidation;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 
 import jakarta.enterprise.context.Conversation;

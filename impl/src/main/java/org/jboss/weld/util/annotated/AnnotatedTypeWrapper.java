@@ -33,7 +33,8 @@ public class AnnotatedTypeWrapper<T> extends ForwardingAnnotatedType<T> {
         this(delegate, true, additionalAnnotations);
     }
 
-    public AnnotatedTypeWrapper(AnnotatedType<T> delegate, boolean keepOriginalAnnotations, Annotation... additionalAnnotations) {
+    public AnnotatedTypeWrapper(AnnotatedType<T> delegate, boolean keepOriginalAnnotations,
+            Annotation... additionalAnnotations) {
         this.delegate = delegate;
         ImmutableSet.Builder<Annotation> builder = ImmutableSet.<Annotation> builder();
         if (keepOriginalAnnotations) {

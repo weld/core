@@ -48,7 +48,7 @@ public class WeldInternalConstructsTest {
     @Deployment
     public static Archive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInternalConstructsTest.class))
-            .addPackage(WeldInternalConstructsTest.class.getPackage());
+                .addPackage(WeldInternalConstructsTest.class.getPackage());
     }
 
     @Inject
@@ -78,7 +78,8 @@ public class WeldInternalConstructsTest {
         Bean<?> bean = cm.getBean();
         Set<Bean<?>> beans = bm.getBeans(ClientProxyBean.class);
         Assert.assertEquals(1, beans.size());
-        Assert.assertEquals(((WeldBean) beans.iterator().next()).getIdentifier().asString(), ((WeldBean) bean).getIdentifier().asString());
+        Assert.assertEquals(((WeldBean) beans.iterator().next()).getIdentifier().asString(),
+                ((WeldBean) bean).getIdentifier().asString());
     }
 
     @Test
@@ -127,7 +128,8 @@ public class WeldInternalConstructsTest {
         Bean<?> bean = cm.getBean();
         Set<Bean<?>> beans = bm.getBeans(DecoratedProxiedBean.class);
         Assert.assertEquals(1, beans.size());
-        Assert.assertEquals(((WeldBean) beans.iterator().next()).getIdentifier().asString(), ((WeldBean) bean).getIdentifier().asString());
+        Assert.assertEquals(((WeldBean) beans.iterator().next()).getIdentifier().asString(),
+                ((WeldBean) bean).getIdentifier().asString());
     }
 
     @Test
@@ -154,6 +156,7 @@ public class WeldInternalConstructsTest {
         Bean<?> bean = cm.getBean();
         Set<Bean<?>> beans = bm.getBeans(InterceptedProxiedBean.class);
         Assert.assertEquals(1, beans.size());
-        Assert.assertEquals(((WeldBean) beans.iterator().next()).getIdentifier().asString(), ((WeldBean) bean).getIdentifier().asString());
+        Assert.assertEquals(((WeldBean) beans.iterator().next()).getIdentifier().asString(),
+                ((WeldBean) bean).getIdentifier().asString());
     }
 }

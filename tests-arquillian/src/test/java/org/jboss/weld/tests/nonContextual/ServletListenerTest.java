@@ -35,7 +35,8 @@ import org.junit.runner.RunWith;
 public class ServletListenerTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletListenerTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletListenerTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(ServletContextListenerImpl.class, LogManager.class)
                 .addAsWebInfResource(
                         ServletListenerTest.class.getPackage(), "web.xml", ArchivePaths.create("web.xml"))

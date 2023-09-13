@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.tests.interceptors.passivation.broken.interceptorWithNonSerializableField;
 
+import java.io.Serializable;
+
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
-import java.io.Serializable;
 
 /**
  * @author Marius Bogoevici

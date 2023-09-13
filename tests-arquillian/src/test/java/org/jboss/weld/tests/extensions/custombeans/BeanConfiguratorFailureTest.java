@@ -40,7 +40,9 @@ public class BeanConfiguratorFailureTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanConfiguratorFailureTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(BeanConfiguratorFailureTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(BeanConfiguratorFailureTest.class, VetoedBean.class, BrokenExtension.class, CoolStereotype.class)
                 .addAsServiceProvider(Extension.class, BrokenExtension.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

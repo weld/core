@@ -45,18 +45,20 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
 
     public InvokableAnnotatedMethod(AnnotatedMethod<T> annotatedMethod) {
         this.annotatedMethod = annotatedMethod;
-        this.methods = Collections.<Class<?>, Method>singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(), annotatedMethod.getJavaMember());
+        this.methods = Collections.<Class<?>, Method> singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(),
+                annotatedMethod.getJavaMember());
         SecurityActions.ensureAccessible(annotatedMethod.getJavaMember());
     }
 
     /**
      * Invokes the method
      *
-     * @param instance   The instance to invoke
+     * @param instance The instance to invoke
      * @param parameters The method parameters
      * @return A reference to the instance
      */
-    public <X> X invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public <X> X invoke(Object instance, Object... parameters)
+            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         return cast(annotatedMethod.getJavaMember().invoke(instance, parameters));
     }
 
@@ -65,10 +67,11 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
      * class. Useful with proxies
      *
      * @param instance The instance to invoke
-     * @param manager  The Bean manager
+     * @param manager The Bean manager
      * @return A reference to the instance
      */
-    public <X> X invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public <X> X invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException,
+            IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         final Map<Class<?>, Method> methods = this.methods;
         Method method = methods.get(instance.getClass());
         if (method == null) {

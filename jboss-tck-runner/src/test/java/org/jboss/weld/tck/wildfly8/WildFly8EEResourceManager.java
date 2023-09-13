@@ -47,7 +47,8 @@ public class WildFly8EEResourceManager {
                 messaging.checkJmsTopic(client);
             } else {
                 /*
-                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml) If this happens, do not attempt to install Queue/Topic as
+                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml) If this happens, do not
+                 * attempt to install Queue/Topic as
                  * that always fails
                  */
                 logger.log(Level.WARNING, "JMS subsystem not installed. Skipping test Queue/Topic installation.");
@@ -199,7 +200,8 @@ public class WildFly8EEResourceManager {
             response = client.execute(new OperationBuilder(request).build());
 
             if (!response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS)) {
-                throw new RuntimeException("Test data source was not found and could not be created automatically: " + response);
+                throw new RuntimeException(
+                        "Test data source was not found and could not be created automatically: " + response);
             }
 
             // As of AS7 7.1 we have to enable DS

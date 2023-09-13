@@ -29,7 +29,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Validates that if a decorator which has a non-passivation capable dependency decorates a built-in bean, Weld detects this as a {@link DeploymentException}.
+ * Validates that if a decorator which has a non-passivation capable dependency decorates a built-in bean, Weld detects this as
+ * a {@link DeploymentException}.
+ *
  * @author Jozef Hartinger
  * @see WELD-1273
  *
@@ -40,11 +42,14 @@ public class BuiltInBeanPassivationCapabilityValidationTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltInBeanPassivationCapabilityValidationTest.class)).decorate(ConversationDecorator.class).addPackage(BuiltInBeanPassivationCapabilityValidationTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltInBeanPassivationCapabilityValidationTest.class))
+                .decorate(ConversationDecorator.class)
+                .addPackage(BuiltInBeanPassivationCapabilityValidationTest.class.getPackage());
     }
 
     @Test
     public void testDeploymentFailsWithNonPassivationCapableBean() {
         // should throw deployment exception
-     }
+    }
 }

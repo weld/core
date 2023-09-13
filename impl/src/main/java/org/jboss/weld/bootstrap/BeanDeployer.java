@@ -181,7 +181,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         if (suffix == null) {
             suffix = AnnotatedTypes.createTypeId(source);
         }
-        getEnvironment().addSyntheticAnnotatedType(classTransformer.getUnbackedAnnotatedType(source, getManager().getId(), suffix), extension);
+        getEnvironment().addSyntheticAnnotatedType(
+                classTransformer.getUnbackedAnnotatedType(source, getManager().getId(), suffix), extension);
         return this;
     }
 
@@ -207,7 +208,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             final FastProcessAnnotatedTypeResolver resolver = Container.instance(getManager()).deploymentManager().getServices()
                     .get(FastProcessAnnotatedTypeResolver.class);
             if (resolver != null) {
-                return new FastAnnotatedTypeLoader(getManager(), classTransformer, classFileServices, containerLifecycleEvents, resolver);
+                return new FastAnnotatedTypeLoader(getManager(), classTransformer, classFileServices, containerLifecycleEvents,
+                        resolver);
             }
         }
         // if FastProcessAnnotatedTypeResolver is not available, fall back to AnnotatedTypeLoader
@@ -220,7 +222,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
         for (SlimAnnotatedTypeContext<?> annotatedTypeContext : getEnvironment().getAnnotatedTypes()) {
             SlimAnnotatedType<?> annotatedType = annotatedTypeContext.getAnnotatedType();
-            final ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), annotatedTypeContext);
+            final ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(),
+                    annotatedTypeContext);
 
             // process the result
             if (event != null) {
@@ -231,7 +234,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     boolean dirty = event.isDirty();
                     if (dirty) {
                         classesToBeRemoved.add(annotatedTypeContext); // remove the original class
-                        classesToBeAdded.add(SlimAnnotatedTypeContext.of(event.getResultingAnnotatedType(), annotatedTypeContext.getExtension()));
+                        classesToBeAdded.add(SlimAnnotatedTypeContext.of(event.getResultingAnnotatedType(),
+                                annotatedTypeContext.getExtension()));
                     }
                     processPriority(event.getResultingAnnotatedType());
                 }
@@ -259,8 +263,10 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         ejbSupport.createSessionBeans(getEnvironment(), otherWeldClasses, getManager());
     }
 
-    protected void createClassBean(SlimAnnotatedType<?> annotatedType, SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses) {
-        boolean managedBeanOrDecorator = !ejbSupport.isEjb(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
+    protected void createClassBean(SlimAnnotatedType<?> annotatedType,
+            SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses) {
+        boolean managedBeanOrDecorator = !ejbSupport.isEjb(annotatedType.getJavaClass())
+                && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
             containerLifecycleEvents.preloadProcessInjectionTarget(annotatedType.getJavaClass());
             containerLifecycleEvents.preloadProcessBeanAttributes(annotatedType.getJavaClass());
@@ -283,7 +289,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             }
             Class<? extends Annotation> scopeClass = Beans.getBeanDefiningAnnotationScope(annotatedType);
             if (scopeClass != null && !Beans.hasSimpleCdiConstructor(annotatedType)) {
-                BootstrapLogger.LOG.annotatedTypeNotRegisteredAsBeanDueToMissingAppropriateConstructor(annotatedType.getJavaClass().getName(),
+                BootstrapLogger.LOG.annotatedTypeNotRegisteredAsBeanDueToMissingAppropriateConstructor(
+                        annotatedType.getJavaClass().getName(),
                         scopeClass.getSimpleName());
             }
             otherWeldClasses.put(annotatedType.getJavaClass(), annotatedType);

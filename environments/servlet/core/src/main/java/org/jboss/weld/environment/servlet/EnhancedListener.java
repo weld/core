@@ -31,13 +31,16 @@ import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
 
 /**
- * This listener also implements {@link ServletContainerInitializer} so that it's able to boot Weld before any application code is called, and thus injections
+ * This listener also implements {@link ServletContainerInitializer} so that it's able to boot Weld before any application code
+ * is called, and thus injections
  * will succeed for all listeners, servlets, filters etc.
  *
- * This listener MUST NOT be defined in web.xml because it registers itself during {@link ServletContainerInitializer#onStartup(Set, ServletContext)}
+ * This listener MUST NOT be defined in web.xml because it registers itself during
+ * {@link ServletContainerInitializer#onStartup(Set, ServletContext)}
  * notification!
  *
- * {@link ServletContextListener#contextDestroyed(ServletContextEvent)}, ServletRequest and HttpSession notifications are no-op in case of the {@link Listener} is registered as well.
+ * {@link ServletContextListener#contextDestroyed(ServletContextEvent)}, ServletRequest and HttpSession notifications are no-op
+ * in case of the {@link Listener} is registered as well.
  *
  * @author Martin Kouba
  * @author Jan Bartel
@@ -47,7 +50,8 @@ import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
  */
 public class EnhancedListener extends ForwardingServletListener implements ServletContainerInitializer {
 
-    public static final String ENHANCED_LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName() + ".enhancedListenerUsed";
+    public static final String ENHANCED_LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName()
+            + ".enhancedListenerUsed";
 
     private volatile boolean isOriginalListenerUsed = false;
 

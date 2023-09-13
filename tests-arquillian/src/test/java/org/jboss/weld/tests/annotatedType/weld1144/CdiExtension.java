@@ -26,7 +26,7 @@ public class CdiExtension implements Extension {
 
         for (final AnnotatedField<? super T> annotatedField : annotatedType.getFields()) {
             // Use 'annotatedField' instead of 'new AnnotatedField' and the code works:
-//            processedFields.add( annotatedField ); if ( true ) { continue; }
+            //            processedFields.add( annotatedField ); if ( true ) { continue; }
             processedFields.add(new MyAnnotatedField<T>(annotatedField));
         }
 

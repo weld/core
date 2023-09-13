@@ -16,15 +16,16 @@
  */
 package org.jboss.weld.util.collections;
 
-import org.jboss.weld.util.Preconditions;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.jboss.weld.util.Preconditions;
+
 /**
- * Contains {@link Set} implementations optimized for tiny number of elements. These implementations do not use hashing. {@link Set#contains(Object)} is o(n)
+ * Contains {@link Set} implementations optimized for tiny number of elements. These implementations do not use hashing.
+ * {@link Set#contains(Object)} is o(n)
  * which is fine as the sets are tiny.
  *
  * @author Jozef Hartinger

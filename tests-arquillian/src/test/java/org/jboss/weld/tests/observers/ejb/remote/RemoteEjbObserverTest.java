@@ -38,7 +38,8 @@ public class RemoteEjbObserverTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbObserverTest.class)).addClasses(FooBean.class, FooRemote.class,
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RemoteEjbObserverTest.class)).addClasses(
+                FooBean.class, FooRemote.class,
                 Giraffe.class);
     }
 

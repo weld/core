@@ -16,23 +16,23 @@
  */
 package org.jboss.weld.tests.interceptors.extension;
 
+import jakarta.interceptor.Interceptor;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.interceptor.Interceptor;
-
 /**
  * Registers an extension-provided implementation of the {@link Interceptor} interface. This causes deployment error on Weld if
  * an intercepted bean is passivation capable.
- * 
+ *
  * @see WELD-996
  * @see InterceptedSerializableBean
- * 
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class CustomInterceptorRegistrationTest {

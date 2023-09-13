@@ -38,7 +38,9 @@ public class AroundConstructInterceptorWithVoidReturnTypeTest extends AbstractSi
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundConstructInterceptorWithVoidReturnTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(AroundConstructInterceptorWithVoidReturnTypeTest.class))
                 .intercept(MyInterceptor.class)
                 .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, LifecycleInterceptedBean.class);
     }

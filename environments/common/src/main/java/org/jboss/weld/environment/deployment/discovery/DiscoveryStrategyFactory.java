@@ -32,7 +32,7 @@ import org.jboss.weld.util.ServiceLoader;
 /**
  * @author Martin Kouba
  * @author <a href="https://about.me/lairdnelson"
- * target="_parent">Laird Nelson</a>
+ *         target="_parent">Laird Nelson</a>
  */
 public final class DiscoveryStrategyFactory {
 
@@ -47,10 +47,11 @@ public final class DiscoveryStrategyFactory {
      * @return the discovery strategy
      */
     public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap,
-        Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, boolean jandexStrategyDisabled,
-        BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, boolean jandexStrategyDisabled,
+            BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         DiscoveryStrategy returnValue = null;
-        final Iterator<Metadata<DiscoveryStrategy>> iterator = ServiceLoader.load(DiscoveryStrategy.class, resourceLoader).iterator();
+        final Iterator<Metadata<DiscoveryStrategy>> iterator = ServiceLoader.load(DiscoveryStrategy.class, resourceLoader)
+                .iterator();
         if (iterator != null && iterator.hasNext()) {
             final DiscoveryStrategy candidate = iterator.next().getValue();
             if (candidate != null) {
@@ -70,8 +71,9 @@ public final class DiscoveryStrategyFactory {
                             initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
                 } catch (Exception e) {
                     throw CommonLogger.LOG.unableToInstantiate(Jandex.JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
-                        Arrays.toString(new Object[] { resourceLoader, bootstrap,
-                                initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode }), e);
+                            Arrays.toString(new Object[] { resourceLoader, bootstrap,
+                                    initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode }),
+                            e);
                 }
             }
         }

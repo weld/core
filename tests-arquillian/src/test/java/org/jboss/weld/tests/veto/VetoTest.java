@@ -45,7 +45,8 @@ public class VetoTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VetoTest.class)).addPackages(true, Elephant.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VetoTest.class))
+                .addPackages(true, Elephant.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

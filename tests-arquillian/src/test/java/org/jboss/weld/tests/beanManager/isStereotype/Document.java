@@ -20,7 +20,7 @@ package org.jboss.weld.tests.beanManager.isStereotype;
 @SuperSecret
 public class Document {
 
-    public void touch(){
+    public void touch() {
 
     }
 }

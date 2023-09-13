@@ -18,15 +18,18 @@ public abstract class ForwardingInstanceManager implements InstanceManager {
         delegate().newInstance(o);
     }
 
-    public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
+    public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException,
+            NamingException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
         return delegate().newInstance(fqcn, classLoader);
     }
 
-    public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
+    public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException,
+            InstantiationException, ClassNotFoundException, NoSuchMethodException {
         return delegate().newInstance(fqcn);
     }
 
-    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, NoSuchMethodException {
+    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException,
+            InstantiationException, NoSuchMethodException {
         return delegate().newInstance(clazz);
     }
 

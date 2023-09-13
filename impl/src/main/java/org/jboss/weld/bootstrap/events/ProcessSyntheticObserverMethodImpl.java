@@ -29,9 +29,11 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @author Martin Kouba
  */
-public class ProcessSyntheticObserverMethodImpl<T, X> extends ProcessObserverMethodImpl<T, X> implements ProcessSyntheticObserverMethod<T, X> {
+public class ProcessSyntheticObserverMethodImpl<T, X> extends ProcessObserverMethodImpl<T, X>
+        implements ProcessSyntheticObserverMethod<T, X> {
 
-    public static <T, X> ObserverMethod<T> fire(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod,
+    public static <T, X> ObserverMethod<T> fire(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod,
+            ObserverMethod<T> observerMethod,
             Extension extension) {
         return fire(new ProcessSyntheticObserverMethodImpl<>(beanManager, beanMethod, observerMethod, extension));
     }
@@ -45,7 +47,8 @@ public class ProcessSyntheticObserverMethodImpl<T, X> extends ProcessObserverMet
      * @param observerMethod
      * @param extension
      */
-    private ProcessSyntheticObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod,
+    private ProcessSyntheticObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod,
+            ObserverMethod<T> observerMethod,
             Extension extension) {
         super(beanManager, beanMethod, observerMethod, ProcessSyntheticObserverMethod.class);
         this.source = extension;

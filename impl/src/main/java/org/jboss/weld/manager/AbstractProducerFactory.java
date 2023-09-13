@@ -47,7 +47,8 @@ public abstract class AbstractProducerFactory<X> implements ProducerFactory<X> {
 
     protected abstract AnnotatedMember<X> getAnnotatedMember();
 
-    public abstract <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean, DisposalMethod<X, T> disposalMethod);
+    public abstract <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean,
+            DisposalMethod<X, T> disposalMethod);
 
     @Override
     public <T> Producer<T> createProducer(Bean<T> bean) {

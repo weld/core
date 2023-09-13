@@ -59,6 +59,7 @@ public interface EnhancedAnnotatedMethod<T, X> extends EnhancedAnnotatedCallable
 
     /**
      * Returns a lightweight implementation of {@link AnnotatedMethod} with minimal memory footprint.
+     *
      * @return the slim version of this {@link AnnotatedMethod}
      */
     AnnotatedMethod<X> slim();

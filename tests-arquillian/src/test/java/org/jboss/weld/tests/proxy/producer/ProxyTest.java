@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.producer;
 
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,8 +27,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.inject.Inject;
 
 /**
  * @author Kevin Pollet
@@ -59,11 +59,11 @@ public class ProxyTest {
         private String message;
 
         public GreetServiceStringImpl(String message) {
-           this.message = message;
+            this.message = message;
         }
 
         public String greet() {
-           return message;
+            return message;
         }
     }
 }

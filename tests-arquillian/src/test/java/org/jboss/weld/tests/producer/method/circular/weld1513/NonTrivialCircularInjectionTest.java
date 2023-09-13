@@ -35,7 +35,8 @@ public class NonTrivialCircularInjectionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonTrivialCircularInjectionTest.class)).addPackage(NonTrivialCircularInjectionTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonTrivialCircularInjectionTest.class))
+                .addPackage(NonTrivialCircularInjectionTest.class.getPackage());
     }
 
     @Test

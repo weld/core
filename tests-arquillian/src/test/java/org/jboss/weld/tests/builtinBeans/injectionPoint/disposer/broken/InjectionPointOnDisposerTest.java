@@ -39,11 +39,12 @@ public class InjectionPointOnDisposerTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointOnDisposerTest.class)).addPackage(InjectionPointOnDisposerTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointOnDisposerTest.class))
+                .addPackage(InjectionPointOnDisposerTest.class.getPackage());
     }
 
     @Test
     public void testInjectInDisposer() {
         // should throw definition exception
-     }
+    }
 }

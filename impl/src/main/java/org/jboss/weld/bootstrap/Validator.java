@@ -141,7 +141,8 @@ public class Validator implements Service {
             validateInjectionPoint(ij, beanManager);
         }
         // Validate all pseudo-scoped beans, except for built-in beans and session beans which are proxied by the EJB container
-        if (!beanManager.isNormalScope(bean.getScope()) && !(bean instanceof AbstractBuiltInBean) && !(bean instanceof SessionBean)) {
+        if (!beanManager.isNormalScope(bean.getScope()) && !(bean instanceof AbstractBuiltInBean)
+                && !(bean instanceof SessionBean)) {
             validatePseudoScopedBean(bean, beanManager);
         }
 
@@ -154,8 +155,8 @@ public class Validator implements Service {
      * Validate an RIBean. This includes validating whether two beans specialize
      * the same bean
      *
-     * @param bean             the bean to validate
-     * @param beanManager      the current manager
+     * @param bean the bean to validate
+     * @param beanManager the current manager
      * @param specializedBeans the existing specialized beans
      */
     protected void validateRIBean(CommonBean<?> bean, BeanManagerImpl beanManager, Collection<CommonBean<?>> specializedBeans) {
@@ -204,11 +205,15 @@ public class Validator implements Service {
                 boolean passivationCapabilityCheckRequired = beanManager.isPassivatingScope(classBean.getScope());
                 for (InterceptorClassMetadata<?> interceptorMetadata : interceptors) {
                     // in the case of CDI interceptors we only need to additionally validate passivation capability (if required)
-                    if (interceptorMetadata.getInterceptorFactory() instanceof CdiInterceptorFactory<?> && passivationCapabilityCheckRequired) {
-                        CdiInterceptorFactory<?> cdiInterceptorFactory = (CdiInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
+                    if (interceptorMetadata.getInterceptorFactory() instanceof CdiInterceptorFactory<?>
+                            && passivationCapabilityCheckRequired) {
+                        CdiInterceptorFactory<?> cdiInterceptorFactory = (CdiInterceptorFactory<?>) interceptorMetadata
+                                .getInterceptorFactory();
                         Interceptor<?> interceptor = cdiInterceptorFactory.getInterceptor();
 
-                        boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : Beans.isPassivationCapableDependency(interceptor);
+                        boolean isSerializable = (interceptor instanceof InterceptorImpl)
+                                ? ((InterceptorImpl<?>) interceptor).isSerializable()
+                                : Beans.isPassivationCapableDependency(interceptor);
                         if (!isSerializable) {
                             throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(classBean, interceptor);
                         }
@@ -217,14 +222,17 @@ public class Validator implements Service {
                         }
                         for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
                             Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                            validateInterceptorDecoratorInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager, classBean);
+                            validateInterceptorDecoratorInjectionPointPassivationCapable(injectionPoint, resolvedBean,
+                                    beanManager, classBean);
                         }
                     }
                     if (interceptorMetadata.getInterceptorFactory() instanceof PlainInterceptorFactory<?>) {
-                        PlainInterceptorFactory<?> factory = (PlainInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
+                        PlainInterceptorFactory<?> factory = (PlainInterceptorFactory<?>) interceptorMetadata
+                                .getInterceptorFactory();
                         Class<?> interceptorClass = interceptorMetadata.getJavaClass();
                         if (passivationCapabilityCheckRequired && !Reflections.isSerializable(interceptorClass)) {
-                            throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(this, interceptorClass.getName());
+                            throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(this,
+                                    interceptorClass.getName());
                         }
                         // if we can't get to the interceptor's BeanManager, we will use the bean's BM instead
                         InjectionTarget<?> injectionTarget = factory.getInjectionTarget();
@@ -235,7 +243,8 @@ public class Validator implements Service {
                             validateInjectionPoint(injectionPoint, beanManager);
                             if (passivationCapabilityCheckRequired) {
                                 Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                                validateInterceptorDecoratorInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager, classBean);
+                                validateInterceptorDecoratorInjectionPointPassivationCapable(injectionPoint, resolvedBean,
+                                        beanManager, classBean);
                             }
                         }
                     }
@@ -275,7 +284,7 @@ public class Validator implements Service {
     /**
      * Validate an injection point
      *
-     * @param ij          the injection point to validate
+     * @param ij the injection point to validate
      * @param beanManager the bean manager
      */
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
@@ -310,7 +319,8 @@ public class Validator implements Service {
             if (bean != null) {
                 throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(), bean);
             } else {
-                throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(), Reflections.<AnnotatedField<?>>cast(ij.getAnnotated()).getDeclaringType());
+                throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(),
+                        Reflections.<AnnotatedField<?>> cast(ij.getAnnotated()).getDeclaringType());
             }
         }
         checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
@@ -326,7 +336,8 @@ public class Validator implements Service {
         }
     }
 
-    public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean, MessageCallback<DefinitionException> messageCallback) {
+    public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean,
+            MessageCallback<DefinitionException> messageCallback) {
         // metadata injection points
         if (ij.getType().equals(InjectionPoint.class) && bean == null) {
             throw messageCallback.construct(ij, Formats.formatAsStackTraceElement(ij));
@@ -340,7 +351,8 @@ public class Validator implements Service {
                 throw messageCallback.construct(ij, Formats.formatAsStackTraceElement(ij));
             }
             if (bean instanceof AbstractClassBean<?>) {
-                checkBeanMetadataInjectionPoint(bean, ij, AnnotatedTypes.getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
+                checkBeanMetadataInjectionPoint(bean, ij,
+                        AnnotatedTypes.getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
             }
             if (bean instanceof ProducerMethod<?, ?>) {
                 ProducerMethod<?, ?> producerMethod = Reflections.cast(bean);
@@ -373,19 +385,21 @@ public class Validator implements Service {
         }
         if (resolvedBeans.size() > 1) {
             throw ValidatorLogger.LOG.injectionPointHasAmbiguousDependencies(
-                ij,
-                Formats.formatAnnotations(ij.getQualifiers()),
-                Formats.formatInjectionPointType(ij.getType()),
-                Formats.formatAsStackTraceElement(ij),
-                WeldCollections.toMultiRowString(resolvedBeans));
+                    ij,
+                    Formats.formatAnnotations(ij.getQualifiers()),
+                    Formats.formatInjectionPointType(ij.getType()),
+                    Formats.formatAsStackTraceElement(ij),
+                    WeldCollections.toMultiRowString(resolvedBeans));
         }
         // Account for the case this is disabled decorator
         if (!resolvedBeans.isEmpty()) {
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
             if (beanManager.isNormalScope(resolvedBean.getScope())) {
-                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean, beanManager.getServices(), false);
+                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean,
+                        beanManager.getServices(), false);
                 if (ue != null) {
-                    throw ValidatorLogger.LOG.injectionPointHasNonProxyableDependencies(ij, Formats.formatAsStackTraceElement(ij), ue);
+                    throw ValidatorLogger.LOG.injectionPointHasNonProxyableDependencies(ij,
+                            Formats.formatAsStackTraceElement(ij), ue);
                 }
             }
             if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
@@ -450,7 +464,8 @@ public class Validator implements Service {
             if (((ij.getMember() instanceof Field) && ij.isTransient())) {
                 return true;
             }
-            if (ij.getAnnotated() instanceof AnnotatedParameter<?> && ij.getAnnotated().isAnnotationPresent(TransientReference.class)) {
+            if (ij.getAnnotated() instanceof AnnotatedParameter<?>
+                    && ij.getAnnotated().isAnnotationPresent(TransientReference.class)) {
                 return true;
             }
             return false;
@@ -464,9 +479,11 @@ public class Validator implements Service {
         }
     }
 
-    public void validateInterceptorDecoratorInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager, Bean<?> bean) {
+    public void validateInterceptorDecoratorInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean,
+            BeanManagerImpl beanManager, Bean<?> bean) {
         if (!isInjectionPointPassivationCapable(ij, resolvedBean, beanManager)) {
-            throw ValidatorLogger.LOG.interceptorDecoratorInjectionPointHasNonSerializableDependency(bean, ij.getBean(), resolvedBean);
+            throw ValidatorLogger.LOG.interceptorDecoratorInjectionPointHasNonSerializableDependency(bean, ij.getBean(),
+                    resolvedBean);
         }
     }
 
@@ -509,7 +526,8 @@ public class Validator implements Service {
         }
     }
 
-    protected void validateBean(Bean<?> bean, Collection<CommonBean<?>> specializedBeans, BeanManagerImpl manager, List<RuntimeException> problems) {
+    protected void validateBean(Bean<?> bean, Collection<CommonBean<?>> specializedBeans, BeanManagerImpl manager,
+            List<RuntimeException> problems) {
         try {
             if (bean instanceof CommonBean<?>) {
                 validateRIBean((CommonBean<?>) bean, manager, specializedBeans);
@@ -530,7 +548,8 @@ public class Validator implements Service {
     protected void validateInterceptor(Interceptor<?> interceptor, BeanManagerImpl manager) {
         if (interceptor instanceof InterceptorImpl<?>) {
             EnhancedAnnotatedType<?> annotated = ((InterceptorImpl<?>) interceptor).getEnhancedAnnotated();
-            if (!BeanMethods.getObserverMethods(annotated).isEmpty() || !BeanMethods.getAsyncObserverMethods(annotated).isEmpty()) {
+            if (!BeanMethods.getObserverMethods(annotated).isEmpty()
+                    || !BeanMethods.getAsyncObserverMethods(annotated).isEmpty()) {
                 throw ValidatorLogger.LOG.interceptorsCannotHaveObserverMethods(interceptor);
             }
             if (!interceptor.getScope().equals(Dependent.class)) {
@@ -561,7 +580,8 @@ public class Validator implements Service {
         }
     }
 
-    protected void validateDecorator(Decorator<?> decorator, Collection<CommonBean<?>> specializedBeans, BeanManagerImpl manager) {
+    protected void validateDecorator(Decorator<?> decorator, Collection<CommonBean<?>> specializedBeans,
+            BeanManagerImpl manager) {
 
         if (decorator.getDecoratedTypes().isEmpty()) {
             throw ValidatorLogger.LOG.noDecoratedTypes(decorator);
@@ -580,7 +600,8 @@ public class Validator implements Service {
         if (delegateType instanceof ParameterizedType) {
             ParameterizedType parameterizedDelegateType = (ParameterizedType) delegateType;
             if (!Decorators.isPassivationCapable(decorator)) {
-                if (Instance.class.equals(parameterizedDelegateType.getRawType()) || Provider.class.equals(parameterizedDelegateType.getRawType())) {
+                if (Instance.class.equals(parameterizedDelegateType.getRawType())
+                        || Provider.class.equals(parameterizedDelegateType.getRawType())) {
                     throw ValidatorLogger.LOG.builtinBeanWithNonserializableDecorator(decorator, Instance.class.getName());
                 }
                 if (Event.class.equals(parameterizedDelegateType.getRawType())) {
@@ -598,7 +619,8 @@ public class Validator implements Service {
                 validateRIBean((CommonBean<?>) decorator, manager, specializedBeans);
 
                 // Following checks are not legal for custom decorator beans as we cannot rely on decorator bean class methods
-                if (!BeanMethods.getObserverMethods(annotated).isEmpty() || !BeanMethods.getAsyncObserverMethods(annotated).isEmpty()) {
+                if (!BeanMethods.getObserverMethods(annotated).isEmpty()
+                        || !BeanMethods.getAsyncObserverMethods(annotated).isEmpty()) {
                     throw ValidatorLogger.LOG.decoratorsCannotHaveObserverMethods(decorator);
                 }
                 while (annotated != null && annotated.getJavaClass() != Object.class) {
@@ -635,9 +657,11 @@ public class Validator implements Service {
         }
     }
 
-    protected void validateBeanName(String name, SetMultimap<String, Bean<?>> namedAccessibleBeans, List<String> accessibleNamespaces,
+    protected void validateBeanName(String name, SetMultimap<String, Bean<?>> namedAccessibleBeans,
+            List<String> accessibleNamespaces,
             BeanManagerImpl beanManager) {
-        Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object> resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager));
+        Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver()
+                .<Object> resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager));
         if (resolvedBeans.size() > 1) {
             throw ValidatorLogger.LOG.ambiguousElName(name, resolvedBeans);
         }
@@ -655,7 +679,8 @@ public class Validator implements Service {
             }
             for (Metadata<String> interceptorClassName : beansXml.getEnabledInterceptors()) {
                 if (!interceptorBeanClasses.contains(interceptorClassName.getValue())) {
-                    throw ValidatorLogger.LOG.interceptorClassDoesNotMatchInterceptorBean(interceptorClassName.getValue(), interceptorClassName.getLocation());
+                    throw ValidatorLogger.LOG.interceptorClassDoesNotMatchInterceptorBean(interceptorClassName.getValue(),
+                            interceptorClassName.getLocation());
                 }
             }
         }
@@ -670,7 +695,8 @@ public class Validator implements Service {
             }
             for (Metadata<String> decoratorClassName : beansXml.getEnabledDecorators()) {
                 if (!decoratorBeanClasses.contains(decoratorClassName.getValue())) {
-                    throw ValidatorLogger.LOG.decoratorClassNotBeanClassOfDecorator(decoratorClassName.getValue(), WeldCollections.toMultiRowString(decoratorBeanClasses));
+                    throw ValidatorLogger.LOG.decoratorClassNotBeanClassOfDecorator(decoratorClassName.getValue(),
+                            WeldCollections.toMultiRowString(decoratorBeanClasses));
                 }
             }
         }
@@ -681,7 +707,8 @@ public class Validator implements Service {
         if (beansXml != null && !beansXml.getEnabledAlternativeStereotypes().isEmpty()) {
             // prepare lookup structure
 
-            Map<String, Class<? extends Annotation>> loadedStereotypes = buildClassNameMap(beanManager.getEnabled().getAlternativeStereotypes());
+            Map<String, Class<? extends Annotation>> loadedStereotypes = buildClassNameMap(
+                    beanManager.getEnabled().getAlternativeStereotypes());
 
             for (Metadata<String> definition : beansXml.getEnabledAlternativeStereotypes()) {
                 Class<? extends Annotation> stereotype = loadedStereotypes.get(definition.getValue());
@@ -713,7 +740,8 @@ public class Validator implements Service {
                     throw ValidatorLogger.LOG.alternativeBeanClassNotClass(definition);
                 } else {
                     if (!isAlternativeBean(enabledClass, beansByClass) && !isAlternativeCandidate(enabledClass, beanManager)) {
-                        throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition.getValue(), definition.getLocation());
+                        throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition.getValue(),
+                                definition.getLocation());
                     }
                 }
             }
@@ -729,12 +757,14 @@ public class Validator implements Service {
         // <class> declares producer with alternative
         // Intentionally do not process the class hierarchy -
         for (Method declaredMethod : AccessController.doPrivileged(new GetDeclaredMethodsAction(enabledClass))) {
-            if (declaredMethod.isAnnotationPresent(Produces.class) && isAlternativeOrHasAlternativeStereotype(declaredMethod, beanManager)) {
+            if (declaredMethod.isAnnotationPresent(Produces.class)
+                    && isAlternativeOrHasAlternativeStereotype(declaredMethod, beanManager)) {
                 return true;
             }
         }
         for (Field declaredField : AccessController.doPrivileged(new GetDeclaredFieldsAction(enabledClass))) {
-            if (declaredField.isAnnotationPresent(Produces.class) && isAlternativeOrHasAlternativeStereotype(declaredField, beanManager)) {
+            if (declaredField.isAnnotationPresent(Produces.class)
+                    && isAlternativeOrHasAlternativeStereotype(declaredField, beanManager)) {
                 return true;
             }
         }
@@ -764,7 +794,8 @@ public class Validator implements Service {
     }
 
     private static boolean isAlternativeStereotype(BeanManagerImpl beanManager, Class<? extends Annotation> stereotype) {
-        final StereotypeModel<? extends Annotation> model = beanManager.getServices().get(MetaAnnotationStore.class).getStereotype(stereotype);
+        final StereotypeModel<? extends Annotation> model = beanManager.getServices().get(MetaAnnotationStore.class)
+                .getStereotype(stereotype);
         if (model.isValid() && model.isAlternative()) {
             return true;
         }
@@ -778,7 +809,8 @@ public class Validator implements Service {
         }
     }
 
-    protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers, BeanManagerImpl beanManager) {
+    protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers,
+            BeanManagerImpl beanManager) {
         for (ObserverInitializationContext<?, ?> omi : observers) {
             for (InjectionPoint ip : omi.getObserver().getInjectionPoints()) {
                 validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
@@ -791,16 +823,19 @@ public class Validator implements Service {
     private static void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type) {
         Type injectionPointType = injectionPoint.getType();
         if (injectionPointType instanceof Class<?> && type.equals(injectionPointType)) {
-            throw ValidatorLogger.LOG.injectionPointMustHaveTypeParameter(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
+            throw ValidatorLogger.LOG.injectionPointMustHaveTypeParameter(injectionPoint,
+                    Formats.formatAsStackTraceElement(injectionPoint));
         }
         if (injectionPointType instanceof ParameterizedType && !injectionPoint.isDelegate()) {
             ParameterizedType parameterizedType = (ParameterizedType) injectionPointType;
             if (type.equals(parameterizedType.getRawType())) {
                 if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>) {
-                    throw ValidatorLogger.LOG.injectionPointWithTypeVariable(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
+                    throw ValidatorLogger.LOG.injectionPointWithTypeVariable(injectionPoint,
+                            Formats.formatAsStackTraceElement(injectionPoint));
                 }
                 if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
-                    throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
+                    throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
+                            Formats.formatAsStackTraceElement(injectionPoint));
                 }
             }
         }
@@ -808,11 +843,13 @@ public class Validator implements Service {
 
     public static void checkBeanMetadataInjectionPoint(Object bean, InjectionPoint ip, Type expectedTypeArgument) {
         if (!(ip.getType() instanceof ParameterizedType)) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip,
+                    Formats.formatAsStackTraceElement(ip));
         }
         ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
         if (parameterizedType.getActualTypeArguments().length != 1) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip,
+                    Formats.formatAsStackTraceElement(ip));
         }
         Class<?> rawType = (Class<?>) parameterizedType.getRawType();
         Type typeArgument = parameterizedType.getActualTypeArguments()[0];
@@ -825,14 +862,16 @@ public class Validator implements Service {
          * automatically detects the problem and treats it as a definition error.
          */
         if (rawType.equals(Interceptor.class) && !(bean instanceof Interceptor<?>)) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip,
+                    Formats.formatAsStackTraceElement(ip));
         }
         /*
          * If a Decorator instance is injected into a bean instance other than a decorator instance, the container automatically
          * detects the problem and treats it as a definition error.
          */
         if (rawType.equals(Decorator.class) && !(bean instanceof Decorator<?>)) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip,
+                    Formats.formatAsStackTraceElement(ip));
         }
         Set<Annotation> qualifiers = ip.getQualifiers();
         if (qualifiers.contains(InterceptedLiteral.INSTANCE)) {
@@ -841,17 +880,20 @@ public class Validator implements Service {
              * instance, the container automatically detects the problem and treats it as a definition error.
              */
             if (!(bean instanceof Interceptor<?>)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Intercepted.class, Interceptor.class, ip, Formats.formatAsStackTraceElement(ip));
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Intercepted.class, Interceptor.class, ip,
+                        Formats.formatAsStackTraceElement(ip));
             }
             /*
              * If the injection point is a field, an initializer method parameter or a bean constructor of an interceptor, with
              * qualifier @Intercepted, then the type parameter of the injected Bean must be an unbounded wildcard.
              */
             if (!rawType.equals(Bean.class)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip,
+                        Formats.formatAsStackTraceElement(ip));
             }
             if (!Reflections.isUnboundedWildcard(typeArgument)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip, Formats.formatAsStackTraceElement(ip));
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip,
+                        Formats.formatAsStackTraceElement(ip));
             }
         }
         if (qualifiers.contains(DecoratedLiteral.INSTANCE)) {
@@ -860,7 +902,8 @@ public class Validator implements Service {
              * the container automatically detects the problem and treats it as a definition error.
              */
             if (!(bean instanceof Decorator<?>)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Decorated.class, Decorator.class, ip, Formats.formatAsStackTraceElement(ip));
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Decorated.class, Decorator.class, ip,
+                        Formats.formatAsStackTraceElement(ip));
             }
             Decorator<?> decorator = Reflections.cast(bean);
             /*
@@ -868,15 +911,18 @@ public class Validator implements Service {
              * qualifier @Decorated, then the type parameter of the injected Bean must be the same as the delegate type.
              */
             if (!rawType.equals(Bean.class)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip,
+                        Formats.formatAsStackTraceElement(ip));
             }
             if (!typeArgument.equals(decorator.getDelegateType())) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip, Formats.formatAsStackTraceElement(ip));
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip,
+                        Formats.formatAsStackTraceElement(ip));
             }
         }
         if (qualifiers.contains(Default.Literal.INSTANCE)) {
             /*
              * If the injection point is a field, an initializer method parameter or a bean constructor, with qualifier
+             *
              * @Default, then the type parameter of the injected Bean, Interceptor or Decorator must be the same as the type
              * declaring the injection point.
              *
@@ -887,7 +933,8 @@ public class Validator implements Service {
              * same as the disposed parameter.
              */
             if (!expectedTypeArgument.equals(typeArgument)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip, Formats.formatAsStackTraceElement(ip));
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip,
+                        Formats.formatAsStackTraceElement(ip));
             }
         }
     }
@@ -920,13 +967,15 @@ public class Validator implements Service {
      * resolves the InjectionPoints and adds the resolved beans to the set of
      * beans to be validated
      */
-    private static void reallyValidatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager, Set<Object> dependencyPath, Set<Bean<?>> validatedBeans) {
+    private static void reallyValidatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager, Set<Object> dependencyPath,
+            Set<Bean<?>> validatedBeans) {
         // see if we have already seen this bean in the dependency path
         if (dependencyPath.contains(bean)) {
             // create a list that shows the path to the bean
             List<Object> realDependencyPath = new ArrayList<Object>(dependencyPath);
             realDependencyPath.add(bean);
-            throw ValidatorLogger.LOG.pseudoScopedBeanHasCircularReferences(WeldCollections.toMultiRowString(realDependencyPath));
+            throw ValidatorLogger.LOG
+                    .pseudoScopedBeanHasCircularReferences(WeldCollections.toMultiRowString(realDependencyPath));
         }
         if (validatedBeans.contains(bean)) {
             return;
@@ -940,7 +989,7 @@ public class Validator implements Service {
             }
         }
         if (bean instanceof DecorableBean<?>) {
-            final List<Decorator<?>> decorators = Reflections.<DecorableBean<?>>cast(bean).getDecorators();
+            final List<Decorator<?>> decorators = Reflections.<DecorableBean<?>> cast(bean).getDecorators();
             if (!decorators.isEmpty()) {
                 for (final Decorator<?> decorator : decorators) {
                     reallyValidatePseudoScopedBean(decorator, beanManager, dependencyPath, validatedBeans);
@@ -957,7 +1006,8 @@ public class Validator implements Service {
         dependencyPath.remove(bean);
     }
 
-    private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Object> dependencyPath, Set<Bean<?>> validatedBeans) {
+    private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager,
+            Set<Object> dependencyPath, Set<Bean<?>> validatedBeans) {
         Set<Bean<?>> resolved = beanManager.getBeans(ij);
         Bean<?> bean = null;
         try {

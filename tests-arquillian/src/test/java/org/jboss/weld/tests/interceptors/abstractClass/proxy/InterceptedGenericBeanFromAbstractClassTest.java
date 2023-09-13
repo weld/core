@@ -37,8 +37,9 @@ public class InterceptedGenericBeanFromAbstractClassTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedGenericBeanFromAbstractClassTest.class))
-            .addPackage(InterceptedGenericBeanFromAbstractClassTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedGenericBeanFromAbstractClassTest.class))
+                .addPackage(InterceptedGenericBeanFromAbstractClassTest.class.getPackage());
     }
 
     @Inject

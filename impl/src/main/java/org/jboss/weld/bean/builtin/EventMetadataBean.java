@@ -35,7 +35,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class EventMetadataBean extends AbstractStaticallyDecorableBuiltInBean<EventMetadata> {
 
-    private static final Set<Type> TYPES = ImmutableSet.<Type>of(EventMetadata.class, Object.class);
+    private static final Set<Type> TYPES = ImmutableSet.<Type> of(EventMetadata.class, Object.class);
 
     private final CurrentEventMetadata currentEventMetadata;
 

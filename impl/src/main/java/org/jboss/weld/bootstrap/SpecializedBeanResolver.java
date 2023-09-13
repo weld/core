@@ -47,9 +47,11 @@ public class SpecializedBeanResolver {
         Iterable<T> transform(T bean, BeanDeployerEnvironment environment);
     }
 
-    private static final BootstrapTransform<AbstractClassBean<?>> CLASS_BEAN_TRANSFORM = (bean, environment) -> environment.getClassBeans(bean.getBeanClass().getSuperclass());
+    private static final BootstrapTransform<AbstractClassBean<?>> CLASS_BEAN_TRANSFORM = (bean, environment) -> environment
+            .getClassBeans(bean.getBeanClass().getSuperclass());
 
-    private static final BootstrapTransform<ProducerMethod<?, ?>> PRODUCER_METHOD_TRANSFORM = (bean, environment) -> environment.getProducerMethod(bean.getBeanClass().getSuperclass(), bean.getEnhancedAnnotated().getSignature());
+    private static final BootstrapTransform<ProducerMethod<?, ?>> PRODUCER_METHOD_TRANSFORM = (bean, environment) -> environment
+            .getProducerMethod(bean.getBeanClass().getSuperclass(), bean.getEnhancedAnnotated().getSignature());
 
     private <T extends Bean<?>> Set<T> getSpecializedBeans(T bean, BootstrapTransform<T> transform) {
         Set<T> beans = new HashSet<T>();

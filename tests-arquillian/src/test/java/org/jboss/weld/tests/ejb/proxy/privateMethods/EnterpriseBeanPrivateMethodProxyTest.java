@@ -45,21 +45,21 @@ public class EnterpriseBeanPrivateMethodProxyTest {
 
     @Deployment
     public static EnterpriseArchive getDeployment() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanPrivateMethodProxyTest.class,
-                Utils.ARCHIVE_TYPE.EAR));
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class,
+                Utils.getDeploymentNameAsHash(EnterpriseBeanPrivateMethodProxyTest.class,
+                        Utils.ARCHIVE_TYPE.EAR));
         ear.addAsModule(Testable.archiveToTest(ShrinkWrap.create(WebArchive.class, "test.war")
                 .addClasses(Foo.class, EnterpriseBeanPrivateMethodProxyTest.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")//.setManifest(new StringAsset("Manifest-Version: 1.0\nClass-Path: test-ejb.jar\n")))
         ));
         ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test-ejb1.jar")
                 .addClasses(BeanWithPrivateMethod.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-        );
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
         ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test-ejb2.jar")
                 .addClasses(TestedBean.class, SingletonSessionBean.class, SFSessionBean.class, SLSessionBean.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-        );
-        ear.addAsResource(EnterpriseBeanPrivateMethodProxyTest.class.getPackage(), "jboss-deployment-structure.xml", "jboss-deployment-structure.xml");
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
+        ear.addAsResource(EnterpriseBeanPrivateMethodProxyTest.class.getPackage(), "jboss-deployment-structure.xml",
+                "jboss-deployment-structure.xml");
         ear.addAsResource(EnterpriseBeanPrivateMethodProxyTest.class.getPackage(), "application.xml", "application.xml");
         return ear;
     }

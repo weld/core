@@ -57,7 +57,9 @@ public class SyntheticBeanTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticBeanTest.class)).intercept(SimpleInterceptor.class, LifecycleInterceptor.class).decorate(VehicleDecorator.class).addPackage(Simple.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticBeanTest.class))
+                .intercept(SimpleInterceptor.class, LifecycleInterceptor.class).decorate(VehicleDecorator.class)
+                .addPackage(Simple.class.getPackage())
                 .addAsServiceProvider(Extension.class, BeanExtension.class);
     }
 
@@ -117,7 +119,7 @@ public class SyntheticBeanTest {
         Bean<Lion> bean = cast(manager.resolve(manager.getBeans(Lion.class, Hungry.Literal.INSTANCE)));
         assertTrue(bean.getQualifiers().contains(Hungry.Literal.INSTANCE));
     }
-    
+
     @Test
     public void testSyntheticProducerMethod(@Hungry Tiger tiger) {
         assertNotNull(tiger);

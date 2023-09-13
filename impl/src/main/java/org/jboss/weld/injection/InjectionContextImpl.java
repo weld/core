@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.injection;
 
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+
 import org.jboss.weld.injection.spi.InjectionContext;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.InjectionTarget;
 
 /**
  * @author pmuir
@@ -33,7 +33,8 @@ public abstract class InjectionContextImpl<T> implements InjectionContext<T> {
     private final AnnotatedType<T> annotatedType;
     private final T target;
 
-    public InjectionContextImpl(BeanManagerImpl beanManager, InjectionTarget<T> injectionTarget, AnnotatedType<T> annotatedType, T target) {
+    public InjectionContextImpl(BeanManagerImpl beanManager, InjectionTarget<T> injectionTarget, AnnotatedType<T> annotatedType,
+            T target) {
         this.beanManager = beanManager;
         this.injectionTarget = injectionTarget;
         this.annotatedType = annotatedType;

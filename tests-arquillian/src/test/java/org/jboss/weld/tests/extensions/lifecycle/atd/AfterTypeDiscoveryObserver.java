@@ -26,7 +26,6 @@ import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 
-
 /**
  *
  * @author Martin Kouba
@@ -45,7 +44,7 @@ public class AfterTypeDiscoveryObserver implements Extension {
 
         // Bravo interceptor removed
         for (Iterator<Class<?>> iterator = event.getInterceptors().iterator(); iterator.hasNext();) {
-            if(BravoInterceptor.class.equals(iterator.next())) {
+            if (BravoInterceptor.class.equals(iterator.next())) {
                 iterator.remove();
             }
         }
@@ -59,13 +58,13 @@ public class AfterTypeDiscoveryObserver implements Extension {
 
         // Remove AlphaAlternative
         for (Iterator<Class<?>> iterator = event.getAlternatives().iterator(); iterator.hasNext();) {
-            if(AlphaAlternative.class.equals(iterator.next())) {
+            if (AlphaAlternative.class.equals(iterator.next())) {
                 iterator.remove();
             }
         }
         // Enable CharlieAlternative globally
         event.getAlternatives().add(0, CharlieAlternative.class);
-        
+
         // Remove alternative, interceptor and decorator via List.remove(Object)
         event.getAlternatives().remove(EchoAlternative.class);
         event.getDecorators().remove(EchoDecorator.class);

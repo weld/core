@@ -46,15 +46,17 @@ public class NotThrowingExceptionInterceptorInvalidContractTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotThrowingExceptionInterceptorInvalidContractTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(NotThrowingExceptionInterceptorInvalidContractTest.class))
                 .intercept(NotThrowingExceptionInterceptor.class)
                 .addClasses(Intercept.class, Service.class, ServiceImpl.class, NotThrowingExceptionInterceptor.class);
     }
 
     //WELD-580
     @Test
-         public void shouldHaveThrownDefinitionException() throws Exception {
+    public void shouldHaveThrownDefinitionException() throws Exception {
         // should throw deployment exception
         // currently does not works, see WELD-1401
-     }
+    }
 }

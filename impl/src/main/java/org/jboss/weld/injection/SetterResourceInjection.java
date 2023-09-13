@@ -50,7 +50,8 @@ class SetterResourceInjection<T, X> extends AbstractResourceInjection<T> {
     SetterResourceInjection(ParameterInjectionPoint<T, X> injectionPoint, ResourceReferenceFactory<T> factory) {
         super(factory);
         AnnotatedMethod<X> annotatedMethod = (AnnotatedMethod<X>) injectionPoint.getAnnotated().getDeclaringCallable();
-        accessibleMethod = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(annotatedMethod.getJavaMember()));
+        accessibleMethod = AccessController
+                .doPrivileged(new GetAccessibleCopyOfMember<Method>(annotatedMethod.getJavaMember()));
     }
 
     @Override

@@ -29,9 +29,9 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.context.DependentContext;
+import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
 import org.jboss.weld.contexts.WeldCreationalContext;
-import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
@@ -78,7 +78,8 @@ public class DependentContextImpl implements DependentContext {
                 ManagedBean<?> managedBean = (ManagedBean<?>) contextual;
                 if (managedBean.getProducer() instanceof BasicInjectionTarget<?>) {
                     BasicInjectionTarget<?> injectionTarget = (BasicInjectionTarget<?>) managedBean.getProducer();
-                    if (!injectionTarget.getLifecycleCallbackInvoker().hasPreDestroyMethods() && !injectionTarget.hasInterceptors()) {
+                    if (!injectionTarget.getLifecycleCallbackInvoker().hasPreDestroyMethods()
+                            && !injectionTarget.hasInterceptors()) {
                         // there is no @PreDestroy callback to call when destroying this dependent instance
                         // therefore, we do not need to keep the reference
                         return;
@@ -103,7 +104,8 @@ public class DependentContextImpl implements DependentContext {
         }
 
         // Only add the dependent instance if none of the conditions above is met
-        ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
+        ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance,
+                creationalContext, contextualStore);
         creationalContext.addDependentInstance(beanInstance);
     }
 

@@ -149,11 +149,13 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         return processInjectionPointObserved;
     }
 
-    public <T> ProcessAnnotatedTypeImpl<T> fireProcessAnnotatedType(BeanManagerImpl beanManager, SlimAnnotatedTypeContext<T> annotatedTypeContext) {
+    public <T> ProcessAnnotatedTypeImpl<T> fireProcessAnnotatedType(BeanManagerImpl beanManager,
+            SlimAnnotatedTypeContext<T> annotatedTypeContext) {
         if (!isProcessAnnotatedTypeObserved()) {
             return null;
         }
-        final Set<ContainerLifecycleEventObserverMethod<?>> observers = annotatedTypeContext.getResolvedProcessAnnotatedTypeObservers();
+        final Set<ContainerLifecycleEventObserverMethod<?>> observers = annotatedTypeContext
+                .getResolvedProcessAnnotatedTypeObservers();
         final SlimAnnotatedType<T> annotatedType = annotatedTypeContext.getAnnotatedType();
         // if the fast resolver resolved an empty set of observer methods, skip this event
         if (observers != null && observers.isEmpty()) {
@@ -191,11 +193,13 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     }
 
     /**
-     * Fires a {@link ProcessAnnotatedType}. Instead of using the default event dispatching mechanism, this method directly notifies
+     * Fires a {@link ProcessAnnotatedType}. Instead of using the default event dispatching mechanism, this method directly
+     * notifies
      * extension observers resolved by FastProcessAnnotatedTypeResolver.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ContainerLifecycleEventObserverMethod<?>> observers,
+    private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event,
+            Set<ContainerLifecycleEventObserverMethod<?>> observers,
             BeanManagerImpl beanManager) {
         List<Throwable> errors = new LinkedList<Throwable>();
         List<ContainerLifecycleEventObserverMethod<?>> sortedObserverMethods = new ArrayList<>(observers);
@@ -215,13 +219,15 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         }
     }
 
-    private boolean checkScopeInheritanceRules(SlimAnnotatedType<?> type, ContainerLifecycleEventObserverMethod<?> observer, BeanManagerImpl beanManager) {
+    private boolean checkScopeInheritanceRules(SlimAnnotatedType<?> type, ContainerLifecycleEventObserverMethod<?> observer,
+            BeanManagerImpl beanManager) {
         Collection<Class<? extends Annotation>> scopes;
         if (observer instanceof ExtensionObserverMethodImpl) {
             ExtensionObserverMethodImpl<?, ?> extensionObserver = (ExtensionObserverMethodImpl<?, ?>) observer;
             scopes = extensionObserver.getRequiredScopeAnnotations();
         } else {
-            scopes = observer.getRequiredAnnotations().stream().filter((a) -> beanManager.isScope(a)).collect(Collectors.toSet());
+            scopes = observer.getRequiredAnnotations().stream().filter((a) -> beanManager.isScope(a))
+                    .collect(Collectors.toSet());
         }
         if (!scopes.isEmpty() && scopes.size() == observer.getRequiredAnnotations().size()) {
             // this check only works if only scope annotations are listed within @WithAnnotations
@@ -245,7 +251,7 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
             if (bean instanceof ManagedBean<?>) {
                 ProcessManagedBeanImpl.fire(beanManager, (ManagedBean<?>) bean);
             } else if (bean instanceof SessionBean<?>) {
-                ProcessSessionBeanImpl.fire(beanManager, Reflections.<SessionBean<Object>>cast(bean));
+                ProcessSessionBeanImpl.fire(beanManager, Reflections.<SessionBean<Object>> cast(bean));
             } else if (bean instanceof ProducerField<?, ?>) {
                 ProcessProducerFieldImpl.fire(beanManager, (ProducerField<?, ?>) bean);
             } else if (bean instanceof ProducerMethod<?, ?>) {
@@ -260,7 +266,8 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         }
     }
 
-    public <T> ProcessBeanAttributesImpl<T> fireProcessBeanAttributes(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated,
+    public <T> ProcessBeanAttributesImpl<T> fireProcessBeanAttributes(BeanManagerImpl beanManager, BeanAttributes<T> attributes,
+            Annotated annotated,
             Type type) {
         if (isProcessBeanAttributesObserved()) {
             return ProcessBeanAttributesImpl.fire(beanManager, attributes, annotated, type);
@@ -274,7 +281,8 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         }
     }
 
-    public <X> InjectionTarget<X> fireProcessInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+    public <X> InjectionTarget<X> fireProcessInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType,
+            InjectionTarget<X> injectionTarget) {
         if (isProcessInjectionTargetObserved()) {
             return AbstractProcessInjectionTarget.fire(beanManager, annotatedType, injectionTarget);
         }
@@ -290,7 +298,8 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         return attributes;
     }
 
-    public <T, X> ParameterInjectionPointAttributes<T, X> fireProcessInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes,
+    public <T, X> ParameterInjectionPointAttributes<T, X> fireProcessInjectionPoint(
+            ParameterInjectionPointAttributes<T, X> injectionPointAttributes,
             Class<?> declaringComponentClass, BeanManagerImpl manager) {
         if (isProcessInjectionPointObserved()) {
             return ProcessInjectionPointImpl.fire(injectionPointAttributes, declaringComponentClass, manager);
@@ -302,11 +311,13 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         return fireProcessObserverMethod(beanManager, observer.getMethod().getAnnotated(), observer, null);
     }
 
-    public <T> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethod<T> observer, Extension extension) {
+    public <T> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethod<T> observer,
+            Extension extension) {
         return fireProcessObserverMethod(beanManager, null, observer, extension);
     }
 
-    private <T, X> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod,
+    private <T, X> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod,
+            ObserverMethod<T> observerMethod,
             Extension extension) {
         if (isProcessObserverMethodObserved()) {
             if (extension != null) {

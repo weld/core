@@ -16,8 +16,16 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType;
 
-import org.jboss.weld.tests.extensions.annotatedType.EcoFriendlyWashingMachine.EcoFriendlyWashingMachineLiteral;
-import org.jboss.weld.util.collections.Arrays2;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedCallable;
@@ -30,16 +38,9 @@ import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import org.jboss.weld.tests.extensions.annotatedType.EcoFriendlyWashingMachine.EcoFriendlyWashingMachineLiteral;
+import org.jboss.weld.util.collections.Arrays2;
 
 public class AnnotatedTypeExtension implements Extension {
 
@@ -78,7 +79,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(MarkerLiteral.INSTANCE);
+                return Collections.<Annotation> singleton(MarkerLiteral.INSTANCE);
             }
 
             public Type getBaseType() {
@@ -86,7 +87,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Arrays2.<Type>asSet(TumbleDryer.class, Object.class);
+                return Arrays2.<Type> asSet(TumbleDryer.class, Object.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -132,7 +133,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Arrays2.<Type>asSet(Plug.class, Object.class);
+                return Arrays2.<Type> asSet(Plug.class, Object.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -148,7 +149,6 @@ public class AnnotatedTypeExtension implements Extension {
             }
         };
         fields.add(plug);
-
 
         final List<AnnotatedParameter<TumbleDryer>> runningTimeParameters = new ArrayList<AnnotatedParameter<TumbleDryer>>();
         final AnnotatedMethod<TumbleDryer> runningTimeMethod = new AnnotatedMethod<TumbleDryer>() {
@@ -182,7 +182,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(InjectLiteral.INSTANCE);
+                return Collections.<Annotation> singleton(InjectLiteral.INSTANCE);
             }
 
             public Type getBaseType() {
@@ -190,7 +190,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Arrays2.<Type>asSet(TumbleDryer.class, Object.class);
+                return Arrays2.<Type> asSet(TumbleDryer.class, Object.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -223,7 +223,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(SpecialLiteral.INSTANCE);
+                return Collections.<Annotation> singleton(SpecialLiteral.INSTANCE);
             }
 
             public Type getBaseType() {
@@ -231,7 +231,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Collections.<Type>singleton(RunningTime.class);
+                return Collections.<Type> singleton(RunningTime.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -276,7 +276,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(InjectLiteral.INSTANCE);
+                return Collections.<Annotation> singleton(InjectLiteral.INSTANCE);
             }
 
             public Type getBaseType() {
@@ -284,7 +284,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Arrays2.<Type>asSet(TumbleDryer.class, Object.class);
+                return Arrays2.<Type> asSet(TumbleDryer.class, Object.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -307,7 +307,6 @@ public class AnnotatedTypeExtension implements Extension {
                 return 0;
             }
 
-
             public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
                 if (annotationType.equals(Special.class)) {
                     return annotationType.cast(SpecialLiteral.INSTANCE);
@@ -317,7 +316,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(SpecialLiteral.INSTANCE);
+                return Collections.<Annotation> singleton(SpecialLiteral.INSTANCE);
             }
 
             public Type getBaseType() {
@@ -325,7 +324,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Arrays2.<Type>asSet(Clothes.class, Object.class);
+                return Arrays2.<Type> asSet(Clothes.class, Object.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -374,7 +373,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(EcoFriendlyWashingMachineLiteral.INSTANCE);
+                return Collections.<Annotation> singleton(EcoFriendlyWashingMachineLiteral.INSTANCE);
             }
 
             public Type getBaseType() {
@@ -382,7 +381,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Arrays2.<Type>asSet(WashingMachine.class, Object.class);
+                return Arrays2.<Type> asSet(WashingMachine.class, Object.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -426,7 +425,7 @@ public class AnnotatedTypeExtension implements Extension {
             }
 
             public Set<Type> getTypeClosure() {
-                return Arrays2.<Type>asSet(WashingMachine.class, Object.class);
+                return Arrays2.<Type> asSet(WashingMachine.class, Object.class);
             }
 
             public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {

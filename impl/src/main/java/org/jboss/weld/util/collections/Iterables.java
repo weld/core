@@ -59,7 +59,7 @@ public final class Iterables {
      * Combine the iterables into a single one.
      */
     public static <T> Iterable<T> concat(Iterable<? extends T> a, Iterable<? extends T> b) {
-      return concat(Arrays.asList(a, b));
+        return concat(Arrays.asList(a, b));
     }
 
     /**
@@ -75,7 +75,8 @@ public final class Iterables {
         return () -> new Iterators.TransformingIterator<>(iterable.iterator(), function);
     }
 
-    public static <T, R> Iterable<R> flatMap(Iterable<T> iterable, Function<? super T, ? extends Iterable<? extends R>> function) {
+    public static <T, R> Iterable<R> flatMap(Iterable<T> iterable,
+            Function<? super T, ? extends Iterable<? extends R>> function) {
         return concat(transform(iterable, function));
     }
 

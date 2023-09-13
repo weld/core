@@ -21,7 +21,7 @@ import jakarta.ejb.Stateless;
 @Stateless
 public class SLSessionBean {
 
-    public void ping(){
+    public void ping() {
     }
 
 }

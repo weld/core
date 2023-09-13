@@ -37,7 +37,6 @@ public class BravoServiceDecorator implements BravoService {
     @Delegate
     private BravoService delegate;
 
-
     @Override
     public void run(Set<Integer> values) {
         ActionSequence.addAction(Set.class.getName());

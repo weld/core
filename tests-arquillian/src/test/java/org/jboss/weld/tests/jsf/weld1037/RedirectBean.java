@@ -30,7 +30,7 @@ import jakarta.inject.Named;
 @Named
 public class RedirectBean {
 
-    public void doRedirect(){
+    public void doRedirect() {
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("/someOtherPage.html");
         } catch (IOException e) {

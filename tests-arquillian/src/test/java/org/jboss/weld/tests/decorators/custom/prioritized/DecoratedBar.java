@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.decorators.custom.prioritized;
 
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.test.util.ActionSequence;
 
 @Dependent

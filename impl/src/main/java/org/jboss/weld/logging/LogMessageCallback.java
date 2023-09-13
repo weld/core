@@ -20,8 +20,10 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 
 /**
- * JBoss Logging is not using message keys and so it's not possible to reference the log message (a logger method annotated with {@link LogMessage} and
- * {@link Message}) and use it as a method parameter or construct it lazily. This callback should be used to work around this limitation.
+ * JBoss Logging is not using message keys and so it's not possible to reference the log message (a logger method annotated with
+ * {@link LogMessage} and
+ * {@link Message}) and use it as a method parameter or construct it lazily. This callback should be used to work around this
+ * limitation.
  *
  * Note that the method parameters are not checked and so the invocation may result in {@link ArrayIndexOutOfBoundsException}.
  *

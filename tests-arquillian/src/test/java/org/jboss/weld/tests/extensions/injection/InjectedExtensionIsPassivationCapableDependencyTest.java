@@ -25,10 +25,12 @@ public class InjectedExtensionIsPassivationCapableDependencyTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectedExtensionIsPassivationCapableDependencyTest.class))
-            .addClass(Utils.class)
-            .addPackage(InjectedExtensionIsPassivationCapableDependencyTest.class.getPackage())
-            .addAsServiceProvider(Extension.class, MyExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(InjectedExtensionIsPassivationCapableDependencyTest.class))
+                .addClass(Utils.class)
+                .addPackage(InjectedExtensionIsPassivationCapableDependencyTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, MyExtension.class);
     }
 
     @Inject

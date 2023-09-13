@@ -27,7 +27,8 @@ class TestAnnotatedParameter<X> extends AbstractTestAnnotatedElement implements 
     private final int position;
     private final AnnotatedCallable<X> declaringCallable;
 
-    TestAnnotatedParameter(AnnotatedCallable<X> declaringCallable, Class<?> type, int position, TestAnnotationStore annotations) {
+    TestAnnotatedParameter(AnnotatedCallable<X> declaringCallable, Class<?> type, int position,
+            TestAnnotationStore annotations) {
         super(type, annotations);
         this.declaringCallable = declaringCallable;
         this.position = position;

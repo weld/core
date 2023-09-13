@@ -28,10 +28,10 @@ import jakarta.inject.Inject;
  */
 @Dependent
 public class Observer {
-    
+
     @Inject
     Foo foo;
-    
+
     public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object payload) {
         // we need to use the bean here, to trigger initialization (and, later on, @PreDestroy)
         foo.ping();

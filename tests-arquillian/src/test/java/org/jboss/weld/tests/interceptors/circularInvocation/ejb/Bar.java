@@ -20,7 +20,7 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
 /**
- *@author Kirill Gaevskii
+ * @author Kirill Gaevskii
  */
 @Stateless
 public class Bar {

@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 final class AnnotationPresence {
 
-    private AnnotationPresence(){
+    private AnnotationPresence() {
     }
 
     static Stream<Annotation> allAnnotations(jakarta.enterprise.inject.spi.AnnotatedType<?> cdiClassDeclaration) {
@@ -41,11 +41,6 @@ final class AnnotationPresence {
                                         constructorAnnotations,
                                         Stream.concat(
                                                 methodParameterAnnotations,
-                                                constructorParameterAnnotations
-                                        )
-                                )
-                        )
-                )
-        );
+                                                constructorParameterAnnotations)))));
     }
 }

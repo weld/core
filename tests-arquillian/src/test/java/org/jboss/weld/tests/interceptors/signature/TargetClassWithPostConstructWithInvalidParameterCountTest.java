@@ -36,7 +36,9 @@ public class TargetClassWithPostConstructWithInvalidParameterCountTest extends A
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TargetClassWithPostConstructWithInvalidParameterCountTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(TargetClassWithPostConstructWithInvalidParameterCountTest.class))
                 .addClass(TargetClassWithPostConstructWithInvalidParameterCount.class)
                 .addClasses(AbstractSignatureTestBase.class);
     }

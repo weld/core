@@ -56,7 +56,8 @@ public class DefaultQualifierTest {
 
     @Test
     public void testBarHasDefaultQualifier(BeanManager beanManager) {
-        assertHasDefaultQualifier(beanManager, Bar.class, Any.Literal.INSTANCE, Default.Literal.INSTANCE, new NamedLiteral("bar"));
+        assertHasDefaultQualifier(beanManager, Bar.class, Any.Literal.INSTANCE, Default.Literal.INSTANCE,
+                new NamedLiteral("bar"));
     }
 
     @Test

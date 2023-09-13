@@ -1,13 +1,14 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Objects;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.types.Type;
 
-import java.util.Objects;
-
-class FieldInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Field, jakarta.enterprise.inject.spi.AnnotatedField<?>> implements FieldInfo {
+class FieldInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Field, jakarta.enterprise.inject.spi.AnnotatedField<?>>
+        implements FieldInfo {
     // only for equals/hashCode
     private final String className;
     private final String name;

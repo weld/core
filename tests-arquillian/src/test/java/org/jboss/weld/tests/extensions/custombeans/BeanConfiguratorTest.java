@@ -51,7 +51,8 @@ public class BeanConfiguratorTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanConfiguratorTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanConfiguratorTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(BeanConfiguratorTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, BuilderExtension.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -104,7 +105,8 @@ public class BeanConfiguratorTest {
         // same as above but with plain injection
         DependentBean.resetCounter();
         BuilderExtension.DISPOSED.set(false);
-        Instance<BeanInjectingSyntheticInteger> injectingBeanInstance = beanManager.createInstance().select(BeanInjectingSyntheticInteger.class);
+        Instance<BeanInjectingSyntheticInteger> injectingBeanInstance = beanManager.createInstance()
+                .select(BeanInjectingSyntheticInteger.class);
         BeanInjectingSyntheticInteger bean = injectingBeanInstance.get();
         assertNotNull(bean);
         Integer beanValue = bean.getNumber();
@@ -148,7 +150,8 @@ public class BeanConfiguratorTest {
         assertEquals(1, beans.size());
         Bean<Configuration> configBean = (Bean<Configuration>) beans.iterator().next();
         assertEquals(Dependent.class, configBean.getScope());
-        Configuration configuration = (Configuration) beanManager.getReference(configBean, Configuration.class, beanManager.createCreationalContext(configBean));
+        Configuration configuration = (Configuration) beanManager.getReference(configBean, Configuration.class,
+                beanManager.createCreationalContext(configBean));
         assertEquals(1, configuration.getId());
 
         beans = beanManager.getBeans(Integer.class, Bla.Literal.of("dependent"));

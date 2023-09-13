@@ -20,8 +20,11 @@ import jakarta.enterprise.inject.spi.BeanManager;
 
 public enum XmlSchema {
 
-    CDI10("beans_1_0.xsd", BeanManager.class.getClassLoader()), CDI11("beans_1_1.xsd", BeanManager.class.getClassLoader()), CDI20("beans_2_0.xsd",
-            BeanManager.class.getClassLoader()), WELD11("weld_1_1.xsd", BeansXmlStreamParser.class.getClassLoader());
+    CDI10("beans_1_0.xsd", BeanManager.class.getClassLoader()),
+    CDI11("beans_1_1.xsd", BeanManager.class.getClassLoader()),
+    CDI20("beans_2_0.xsd",
+            BeanManager.class.getClassLoader()),
+    WELD11("weld_1_1.xsd", BeansXmlStreamParser.class.getClassLoader());
 
     static final XmlSchema[] CDI11_SCHEMAS = { CDI10, WELD11, CDI11 };
 

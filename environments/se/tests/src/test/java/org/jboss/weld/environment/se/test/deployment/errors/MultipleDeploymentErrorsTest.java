@@ -41,7 +41,8 @@ public class MultipleDeploymentErrorsTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addPackage(MultipleDeploymentErrorsTest.class.getPackage())).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addPackage(MultipleDeploymentErrorsTest.class.getPackage())).build();
     }
 
     @Test

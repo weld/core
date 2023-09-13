@@ -18,11 +18,12 @@ package org.jboss.weld.environment.se;
 
 import jakarta.enterprise.inject.Vetoed;
 
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+import org.jboss.weld.environment.se.logging.WeldSELogger;
 
 /**
- * This is the main class that can be called from the command line for a WeldContainer SE app which makes use of the ContainerInitialized event. Something like:
+ * This is the main class that can be called from the command line for a WeldContainer SE app which makes use of the
+ * ContainerInitialized event. Something like:
  * <code>
  * java -cp weld-se-shaded.jar:my-app.jar org.jboss.weld.environment.se.StartMain arg1 arg2
  * </code>
@@ -55,7 +56,7 @@ public class StartMain {
     public static void main(String[] args) {
         try {
             new StartMain(args).go();
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             WeldSELogger.LOG.error("Application exited with an exception", t);
             System.exit(1);
         }

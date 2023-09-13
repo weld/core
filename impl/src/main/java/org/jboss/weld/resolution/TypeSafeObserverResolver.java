@@ -41,7 +41,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author Jozef Hartinger
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, List<ObserverMethod<?>>, ResolvedObservers<?>> {
+public class TypeSafeObserverResolver
+        extends TypeSafeResolver<Resolvable, ObserverMethod<?>, List<ObserverMethod<?>>, ResolvedObservers<?>> {
 
     private static class ObserverMethodComparator implements Comparator<ObserverMethod<?>>, Serializable {
 
@@ -59,7 +60,8 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     private final MetaAnnotationStore metaAnnotationStore;
     private final AssignabilityRules rules;
 
-    public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers, WeldConfiguration configuration) {
+    public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers,
+            WeldConfiguration configuration) {
         super(observers, configuration);
         this.metaAnnotationStore = metaAnnotationStore;
         this.rules = EventTypeAssignabilityRules.instance();
@@ -70,12 +72,14 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         if (!rules.matches(observer.getObservedType(), resolvable.getTypes())) {
             return false;
         }
-        if (!Beans.containsAllQualifiers(QualifierInstance.of(observer.getObservedQualifiers(), metaAnnotationStore), resolvable.getQualifiers())) {
+        if (!Beans.containsAllQualifiers(QualifierInstance.of(observer.getObservedQualifiers(), metaAnnotationStore),
+                resolvable.getQualifiers())) {
             return false;
         }
         if (observer instanceof ContainerLifecycleEventObserverMethod) {
             ContainerLifecycleEventObserverMethod<?> lifecycleObserver = (ContainerLifecycleEventObserverMethod<?>) observer;
-            if (resolvable instanceof ProcessAnnotatedTypeEventResolvable && !lifecycleObserver.getRequiredAnnotations().isEmpty()) {
+            if (resolvable instanceof ProcessAnnotatedTypeEventResolvable
+                    && !lifecycleObserver.getRequiredAnnotations().isEmpty()) {
                 // this is a ProcessAnnotatedType observer method with @WithAnnotations and a resolvable for ProcessAnnotatedType
                 ProcessAnnotatedTypeEventResolvable patResolvable = (ProcessAnnotatedTypeEventResolvable) resolvable;
                 return patResolvable.containsRequiredAnnotations(lifecycleObserver.getRequiredAnnotations());

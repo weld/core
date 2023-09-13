@@ -18,22 +18,16 @@ package org.jboss.weld.tests.injectionTarget.dispose;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Extension;
-
 import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-
 import org.jboss.arquillian.junit.Arquillian;
-
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-
 import org.jboss.weld.test.util.Utils;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 
 /**
@@ -41,7 +35,7 @@ import org.junit.runner.RunWith;
  * href="https://issues.jboss.org/browse/WELD-2580">WELD-2580</a>.
  *
  * @author <a href="https://about.me/lairdnelson"
- * target="_parent">Laird Nelson</a>
+ *         target="_parent">Laird Nelson</a>
  */
 @RunWith(Arquillian.class)
 public class InjectionTargetDisposeTest {
@@ -49,9 +43,9 @@ public class InjectionTargetDisposeTest {
     @Deployment
     public static final Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
-                                 Utils.getDeploymentNameAsHash(InjectionTargetDisposeTest.class))
-            .addPackage(InjectionTargetDisposeTest.class.getPackage())
-            .addAsServiceProvider(Extension.class, DisposingExtension.class);
+                Utils.getDeploymentNameAsHash(InjectionTargetDisposeTest.class))
+                .addPackage(InjectionTargetDisposeTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, DisposingExtension.class);
     }
 
     @Inject

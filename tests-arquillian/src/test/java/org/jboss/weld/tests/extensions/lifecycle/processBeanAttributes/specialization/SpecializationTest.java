@@ -45,7 +45,8 @@ public class SpecializationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpecializationTest.class)).addClasses(Foo.class, Bar.class, Baz.class, Alpha.class, Bravo.class, Charlie.class, VerifyingExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpecializationTest.class))
+                .addClasses(Foo.class, Bar.class, Baz.class, Alpha.class, Bravo.class, Charlie.class, VerifyingExtension.class)
                 .addClass(BeanUtilities.class).addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 
@@ -58,7 +59,8 @@ public class SpecializationTest {
     }
 
     private void validateCharlie(BeanAttributes<?> attributes) {
-        verifyQualifiers(attributes, Foo.Literal.INSTANCE, Bar.Literal.INSTANCE, Baz.Literal.INSTANCE, Any.Literal.INSTANCE, new NamedLiteral("alpha"));
+        verifyQualifiers(attributes, Foo.Literal.INSTANCE, Bar.Literal.INSTANCE, Baz.Literal.INSTANCE, Any.Literal.INSTANCE,
+                new NamedLiteral("alpha"));
         assertEquals("alpha", attributes.getName());
     }
 }

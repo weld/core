@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
-import jakarta.enterprise.context.RequestScoped;
 import java.io.Serializable;
+
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class Horse implements Serializable {

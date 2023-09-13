@@ -19,7 +19,6 @@ package org.jboss.weld.environment.servlet.jsf;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 
-
 /**
  * @author pmuir
  * @author alesj

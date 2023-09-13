@@ -16,12 +16,8 @@
  */
 package org.jboss.weld.tests.event.tx;
 
-
 import java.net.URL;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -35,12 +31,17 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class TxEventTest extends AbstractHtmlUnit {
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(TxEventTest.class, Utils.ARCHIVE_TYPE.WAR))
+        WebArchive war = ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(TxEventTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Foo.class, Updated.class)
                 .addAsWebInfResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
@@ -56,8 +57,8 @@ public class TxEventTest extends AbstractHtmlUnit {
     private URL url;
 
     /*
-    * description = "WBRI-401"
-    */
+     * description = "WBRI-401"
+     */
     @Test
     public void testRequestContextLifecycle() throws Exception {
         WebClient webClient = new WebClient();

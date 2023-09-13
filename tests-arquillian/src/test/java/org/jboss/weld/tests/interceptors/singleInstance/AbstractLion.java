@@ -27,7 +27,7 @@ public abstract class AbstractLion {
     public void setPostConstructInterceptor(Object postConstructInterceptor) {
         this.postConstructInterceptor = postConstructInterceptor;
     }
-    
+
     public Object foo() {
         return null;
     }

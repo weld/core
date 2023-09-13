@@ -1,12 +1,12 @@
 package org.jboss.weld.tests.unit.selector;
 
-import org.jboss.weld.tests.unit.Qux;
-import org.jboss.weld.tests.unit.selector.subpackage.Baz;
-import org.junit.Test;
-
 import static org.jboss.weld.metadata.Selectors.matchPath;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.jboss.weld.tests.unit.Qux;
+import org.jboss.weld.tests.unit.selector.subpackage.Baz;
+import org.junit.Test;
 
 public class SelectorTest {
 
@@ -16,7 +16,6 @@ public class SelectorTest {
     public void testSelector() {
         // Test whether a class name matches the same class name
         assertTrue(matchPath(Foo.class.getName(), Foo.class.getName()));
-
 
         // ---- Test non-deep matches ----
 

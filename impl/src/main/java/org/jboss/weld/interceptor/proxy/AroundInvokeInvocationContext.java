@@ -32,7 +32,8 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 
 /**
- * For AroundInvoke interception type we use a special type of InvocationContext. Unlike the default one, this one is does not track
+ * For AroundInvoke interception type we use a special type of InvocationContext. Unlike the default one, this one is does not
+ * track
  * the position of the interception in a mutable field but is instead immutable.
  *
  * This allows:
@@ -41,9 +42,12 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
  * <li>interception to continue in a different thread - implementing {@link jakarta.ejb.Asynchronous} with interceptors</li>
  * </ul>
  *
- * This however also requires that for each interceptor in the chain we create a new instance of {@link AroundInvokeInvocationContext}.
- * Context data and method parameters are mutable. We do not guard them anyhow - the expectation for them is to be effectively immutable
- * by only being modified before or after dispatch. We also assume that the dispatch safely propagates the state of {@link InvocationContext}
+ * This however also requires that for each interceptor in the chain we create a new instance of
+ * {@link AroundInvokeInvocationContext}.
+ * Context data and method parameters are mutable. We do not guard them anyhow - the expectation for them is to be effectively
+ * immutable
+ * by only being modified before or after dispatch. We also assume that the dispatch safely propagates the state of
+ * {@link InvocationContext}
  * from one thread to the other.
  *
  * @author Jozef Hartinger
@@ -53,19 +57,23 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
  */
 abstract class AroundInvokeInvocationContext extends AbstractInvocationContext {
 
-    public static AroundInvokeInvocationContext create(Object instance, Method method, Method proceed, Object[] args,  List<InterceptorMethodInvocation> chain,
+    public static AroundInvokeInvocationContext create(Object instance, Method method, Method proceed, Object[] args,
+            List<InterceptorMethodInvocation> chain,
             Set<Annotation> interceptorBindings, Stack stack) {
         CombinedInterceptorAndDecoratorStackMethodHandler currentHandler = (stack == null) ? null : stack.peek();
         if (chain.size() == 1) {
-            return new TerminalAroundInvokeInvocationContext(instance, method, proceed, args, null, interceptorBindings, currentHandler);
+            return new TerminalAroundInvokeInvocationContext(instance, method, proceed, args, null, interceptorBindings,
+                    currentHandler);
         } else {
-            return new NonTerminalAroundInvokeInvocationContext(instance, method, proceed, args, interceptorBindings, chain, currentHandler);
+            return new NonTerminalAroundInvokeInvocationContext(instance, method, proceed, args, interceptorBindings, chain,
+                    currentHandler);
         }
     }
 
     final CombinedInterceptorAndDecoratorStackMethodHandler currentHandler;
 
-    AroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters, Map<String, Object> contextData,
+    AroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
+            Map<String, Object> contextData,
             Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
         super(target, method, proceed, parameters, contextData, interceptorBindings);
         this.currentHandler = currentHandler;

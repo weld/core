@@ -41,9 +41,10 @@ public class TypeVariableMultiDimensionalArrayBeanTypeTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeVariableMultiDimensionalArrayBeanTypeTest.class))
-            .addClasses(TypeVariableMultiDimensionalArrayBeanTypeTest.class, Foo.class, CustomBeanType.class)
-            .addAsServiceProvider(Extension.class, BrokenExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeVariableMultiDimensionalArrayBeanTypeTest.class))
+                .addClasses(TypeVariableMultiDimensionalArrayBeanTypeTest.class, Foo.class, CustomBeanType.class)
+                .addAsServiceProvider(Extension.class, BrokenExtension.class);
     }
 
     @Test
@@ -53,7 +54,8 @@ public class TypeVariableMultiDimensionalArrayBeanTypeTest {
 
     public static class BrokenExtension<T> implements Extension {
         public void observe(@Observes AfterBeanDiscovery event) {
-            event.addBean(new CustomBeanType(new TypeLiteral<T[][][]>() {}.getType()));
+            event.addBean(new CustomBeanType(new TypeLiteral<T[][][]>() {
+            }.getType()));
         }
     }
 }

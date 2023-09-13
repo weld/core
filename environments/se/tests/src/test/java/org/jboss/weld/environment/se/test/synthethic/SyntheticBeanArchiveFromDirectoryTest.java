@@ -41,7 +41,9 @@ public class SyntheticBeanArchiveFromDirectoryTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(SyntheticBeanArchiveFromDirectoryTest.class)).addDirectory("alpha-dir")
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addClasses(SyntheticBeanArchiveFromDirectoryTest.class))
+                .addDirectory("alpha-dir")
                 .addClass(AlphaFromDirectory.class).addClass(BetaFromDirectory.class)
                 .buildAndUp().build();
     }
@@ -64,7 +66,7 @@ public class SyntheticBeanArchiveFromDirectoryTest {
     public void testAddPackageFromDirectoryRecursively() {
         try (WeldContainer container = new Weld()
                 .disableDiscovery()
-                .addPackages(true,AlphaFromDirectory.class.getPackage())
+                .addPackages(true, AlphaFromDirectory.class.getPackage())
                 .initialize()) {
             AlphaFromDirectory alpha = container.select(AlphaFromDirectory.class).get();
             Instance<BetaFromDirectory> betaInstance = container.select(BetaFromDirectory.class);

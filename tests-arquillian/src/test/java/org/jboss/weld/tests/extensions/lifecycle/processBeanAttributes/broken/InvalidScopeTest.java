@@ -35,12 +35,13 @@ public class InvalidScopeTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidScopeTest.class)).addClasses(Telephone.class, PlainOldAnnotation.class, InvalidScopeExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidScopeTest.class))
+                .addClasses(Telephone.class, PlainOldAnnotation.class, InvalidScopeExtension.class)
                 .addAsServiceProvider(Extension.class, InvalidScopeExtension.class);
     }
-    
+
     @Test
     public void testDeploymentWithInvalidScopeExtension() {
         // should throw definition exception
-     }
+    }
 }

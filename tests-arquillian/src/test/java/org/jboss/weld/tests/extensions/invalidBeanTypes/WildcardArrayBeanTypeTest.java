@@ -42,8 +42,8 @@ public class WildcardArrayBeanTypeTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WildcardArrayBeanTypeTest.class))
-            .addClasses(WildcardArrayBeanTypeTest.class, Foo.class, CustomBeanType.class)
-            .addAsServiceProvider(Extension.class, BrokenExtension.class);
+                .addClasses(WildcardArrayBeanTypeTest.class, Foo.class, CustomBeanType.class)
+                .addAsServiceProvider(Extension.class, BrokenExtension.class);
     }
 
     @Test
@@ -53,7 +53,8 @@ public class WildcardArrayBeanTypeTest {
 
     public static class BrokenExtension implements Extension {
         public void observe(@Observes AfterBeanDiscovery event) {
-            event.addBean(new CustomBeanType(new TypeLiteral<Foo<?>[]>() {}.getType()));
+            event.addBean(new CustomBeanType(new TypeLiteral<Foo<?>[]>() {
+            }.getType()));
         }
     }
 }

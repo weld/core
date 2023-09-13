@@ -16,6 +16,5 @@
  */
 package org.jboss.weld.tests.event.observer.validation.enterprise;
 
-class Egg
-{
+class Egg {
 }

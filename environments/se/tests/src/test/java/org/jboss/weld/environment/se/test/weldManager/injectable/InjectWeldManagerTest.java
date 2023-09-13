@@ -47,8 +47,9 @@ public class InjectWeldManagerTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
-            .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectWeldManagerTest.class))
-                .addClasses(InjectWeldManagerTest.class, SomeBean.class)).build();
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectWeldManagerTest.class))
+                        .addClasses(InjectWeldManagerTest.class, SomeBean.class))
+                .build();
     }
 
     @Test

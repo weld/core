@@ -1,5 +1,10 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.event.Observes;
@@ -7,22 +12,18 @@ import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanDisposer;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserver;
+
 import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This CDI extension allows execution of build compatible extensions (BCE) via portable extensions (PE)
  * by mapping phases of BCE onto PE.
  *
  * <p>
- *  This extension is by default disabled and integrators need to manually register it with Weld container when
- *  bootstrapping it. For SE and servlet, this is done directly in Weld. However, for EE integrators need to determine
- *  the root deployment and register the extension themselves.
+ * This extension is by default disabled and integrators need to manually register it with Weld container when
+ * bootstrapping it. For SE and servlet, this is done directly in Weld. However, for EE integrators need to determine
+ * the root deployment and register the extension themselves.
  * </p>
  */
 public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Extension {
@@ -72,7 +73,8 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                 try {
                     scopeAnnotation = SecurityActions.getConstructor(context.contextClass).newInstance().getScope();
                 } catch (InvocationTargetException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(context.contextClass, e.getCause().toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(context.contextClass,
+                            e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(context.contextClass, e.toString(), e);
                 }
@@ -121,7 +123,8 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
         }
     }
 
-    public void collectObservers(@Priority(Integer.MAX_VALUE) @Observes jakarta.enterprise.inject.spi.ProcessObserverMethod<?, ?> pom) {
+    public void collectObservers(
+            @Priority(Integer.MAX_VALUE) @Observes jakarta.enterprise.inject.spi.ProcessObserverMethod<?, ?> pom) {
         // for synthetic observers, this will run @Registration before @Synthesis is fully over, maybe change that?
         for (ExtensionPhaseRegistrationAction registrationAction : registrationActions) {
             registrationAction.run(pom);
@@ -150,7 +153,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             if (abd instanceof AfterBeanDiscoveryImpl) {
                 // specify the receiver class to be the BCE extension, linking the bean to it
                 // in EE env this affects the BM used for dynamic resolution inside bean creation method
-                configurator = ((AfterBeanDiscoveryImpl)abd).addBean(syntheticBean.extensionClass);
+                configurator = ((AfterBeanDiscoveryImpl) abd).addBean(syntheticBean.extensionClass);
             } else {
                 configurator = abd.addBean();
             }
@@ -169,27 +172,33 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                     SyntheticBeanCreator creator = SecurityActions.getConstructor(syntheticBean.creatorClass).newInstance();
                     return creator.create(lookup, new ParametersImpl(syntheticBean.params));
                 } catch (InvocationTargetException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass, e.getCause().toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass,
+                            e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass, e.toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass, e.toString(),
+                            e);
                 }
             });
             if (syntheticBean.disposerClass != null) {
                 configurator.disposeWith((object, lookup) -> {
                     try {
-                        SyntheticBeanDisposer disposer = SecurityActions.getConstructor(syntheticBean.disposerClass).newInstance();
+                        SyntheticBeanDisposer disposer = SecurityActions.getConstructor(syntheticBean.disposerClass)
+                                .newInstance();
                         disposer.dispose(object, lookup, new ParametersImpl(syntheticBean.params));
                     } catch (InvocationTargetException e) {
-                        throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass, e.getCause().toString(), e);
+                        throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass,
+                                e.getCause().toString(), e);
                     } catch (ReflectiveOperationException e) {
-                        throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass, e.toString(), e);
+                        throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass,
+                                e.toString(), e);
                     }
                 });
             }
         }
 
         for (SyntheticObserverBuilderImpl<?> syntheticObserver : syntheticObservers) {
-            jakarta.enterprise.inject.spi.configurator.ObserverMethodConfigurator<Object> configurator = abd.addObserverMethod();
+            jakarta.enterprise.inject.spi.configurator.ObserverMethodConfigurator<Object> configurator = abd
+                    .addObserverMethod();
             configurator.beanClass(syntheticObserver.declaringClass);
             configurator.observedType(syntheticObserver.eventType);
             configurator.qualifiers(syntheticObserver.qualifiers);
@@ -202,9 +211,11 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                     SyntheticObserver observer = SecurityActions.getConstructor(syntheticObserver.observerClass).newInstance();
                     observer.observe(eventContext, new ParametersImpl(syntheticObserver.params));
                 } catch (InvocationTargetException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass, e.getCause().toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass,
+                            e.getCause().toString(), e);
                 } catch (ReflectiveOperationException e) {
-                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass, e.toString(), e);
+                    throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass,
+                            e.toString(), e);
                 }
             });
         }

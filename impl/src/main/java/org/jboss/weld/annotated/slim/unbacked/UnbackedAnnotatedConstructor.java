@@ -22,24 +22,30 @@ import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
-public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> implements AnnotatedConstructor<X>, Serializable {
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR",
+        "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X>
+        implements AnnotatedConstructor<X>, Serializable {
 
-    public static <X> AnnotatedConstructor<X> of(AnnotatedConstructor<X> originalConstructor, UnbackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
-        return new UnbackedAnnotatedConstructor<X>(originalConstructor.getBaseType(), originalConstructor.getTypeClosure(), originalConstructor.getAnnotations(), declaringType,
+    public static <X> AnnotatedConstructor<X> of(AnnotatedConstructor<X> originalConstructor,
+            UnbackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
+        return new UnbackedAnnotatedConstructor<X>(originalConstructor.getBaseType(), originalConstructor.getTypeClosure(),
+                originalConstructor.getAnnotations(), declaringType,
                 originalConstructor.getParameters(), originalConstructor.getJavaMember(), cache);
     }
 
     private final Constructor<X> constructor;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public UnbackedAnnotatedConstructor(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, UnbackedAnnotatedType<X> declaringType,
+    public UnbackedAnnotatedConstructor(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations,
+            UnbackedAnnotatedType<X> declaringType,
             List<AnnotatedParameter<X>> originalParameters, Constructor<X> constructor, SharedObjectCache cache) {
         super(baseType, typeClosure, cache.getSharedSet(annotations), declaringType);
         this.constructor = constructor;
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(originalParameters.size());
         for (AnnotatedParameter<X> originalParameter : originalParameters) {
-            parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
+            parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(),
+                    originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
                     originalParameter.getPosition(), this));
         }
         this.parameters = ImmutableList.copyOf(parameters);
@@ -61,7 +67,8 @@ public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> 
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new UnbackedMemberIdentifier<X>(getDeclaringType(), AnnotatedTypes.createConstructorId(constructor, getAnnotations(), getParameters()));
+        return new UnbackedMemberIdentifier<X>(getDeclaringType(),
+                AnnotatedTypes.createConstructorId(constructor, getAnnotations(), getParameters()));
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {

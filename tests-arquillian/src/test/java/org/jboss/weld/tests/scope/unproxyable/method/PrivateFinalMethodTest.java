@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Tests that this valid deployment scenario is not erroneously considered invalid.
+ *
  * @author Jozef Hartinger
  *
  */
@@ -43,11 +44,12 @@ public class PrivateFinalMethodTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PrivateFinalMethodTest.class)).addClasses(Duck.class, DuckLake.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PrivateFinalMethodTest.class))
+                .addClasses(Duck.class, DuckLake.class);
     }
 
     @Test
     public void testPrivateFinalMethodValid(DuckLake lake) {
         assertFalse(lake.isEmpty());
-     }
+    }
 }

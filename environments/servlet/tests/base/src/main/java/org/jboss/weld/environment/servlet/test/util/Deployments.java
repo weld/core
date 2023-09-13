@@ -26,7 +26,8 @@ public class Deployments {
     public static final String DEFAULT_WEB_XML_PREFIX = DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY;
     public static final String DEFAULT_WEB_XML_SUFFIX = "</web-app>";
 
-    public static final Asset DEFAULT_WEB_XML = new ByteArrayAsset((DEFAULT_WEB_XML_PREFIX + DEFAULT_WEB_XML_SUFFIX).getBytes());
+    public static final Asset DEFAULT_WEB_XML = new ByteArrayAsset(
+            (DEFAULT_WEB_XML_PREFIX + DEFAULT_WEB_XML_SUFFIX).getBytes());
 
     public static final Asset EMPTY_FACES_CONFIG_XML = new ByteArrayAsset(
             "<faces-config version=\"2.0\" xmlns=\"http://java.sun.com/xml/ns/javaee\"></faces-config>".getBytes());
@@ -61,11 +62,13 @@ public class Deployments {
     }
 
     public static String toServlet(String servletName, Class<?> servletClass) {
-        return "<servlet><servlet-name>" + servletName + "</servlet-name><servlet-class>" + servletClass.getName() + "</servlet-class></servlet>";
+        return "<servlet><servlet-name>" + servletName + "</servlet-name><servlet-class>" + servletClass.getName()
+                + "</servlet-class></servlet>";
     }
 
     public static String toServletMapping(String servletName, String urlPattern) {
-        return "<servlet-mapping><servlet-name>" + servletName + "</servlet-name><url-pattern>" + urlPattern + "</url-pattern></servlet-mapping>";
+        return "<servlet-mapping><servlet-name>" + servletName + "</servlet-name><url-pattern>" + urlPattern
+                + "</url-pattern></servlet-mapping>";
     }
 
     public static String toServletAndMapping(String servletName, Class<?> servletClass, String urlPattern) {

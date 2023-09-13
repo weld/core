@@ -1,20 +1,20 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.function.Predicate;
+
 import jakarta.enterprise.inject.build.compatible.spi.ParameterConfig;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ParameterInfo;
-
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.function.Predicate;
 
 class ParameterConfigImpl implements ParameterConfig {
     private final jakarta.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator<?> configurator;
     private final BeanManager bm;
 
     ParameterConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator<?> configurator,
-                        BeanManager bm) {
+            BeanManager bm) {
         this.configurator = configurator;
         this.bm = bm;
     }

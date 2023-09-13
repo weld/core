@@ -47,7 +47,8 @@ public class WithAnnotationsTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WithAnnotationsTest.class)).addPackage(WithAnnotationsTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WithAnnotationsTest.class))
+                .addPackage(WithAnnotationsTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 
@@ -59,15 +60,15 @@ public class WithAnnotationsTest {
         assertNotNull(extension.getGroupType());
         assertEquals(Group.class, extension.getGroupType().getJavaClass());
     }
-    
+
     // We need to update WildFly ClassFileInfo first
     @Category(EmbeddedContainer.class)
     @Test
     public void testWithAnnotationsOnDefaultMethod() {
         assertNotNull(extension.getMyBeanType());
-        assertEquals(MyBean.class, extension.getMyBeanType().getJavaClass()); 
-        
+        assertEquals(MyBean.class, extension.getMyBeanType().getJavaClass());
+
         assertNotNull(extension.getMyBeanMetaType());
-        assertEquals(MyBeanMeta.class, extension.getMyBeanMetaType().getJavaClass()); 
+        assertEquals(MyBeanMeta.class, extension.getMyBeanMetaType().getJavaClass());
     }
 }

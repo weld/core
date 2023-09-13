@@ -22,12 +22,12 @@ import jakarta.enterprise.context.Dependent;
 @Dependent
 public class Beta {
 
-    public void ping(){
+    public void ping() {
 
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
 
     }
 }

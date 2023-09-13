@@ -38,7 +38,10 @@ public class ExtensionFieldMissingDependencyTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ExtensionFieldMissingDependencyTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(InvalidExtension.class, ActionSequence.class)
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(ExtensionFieldMissingDependencyTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(InvalidExtension.class, ActionSequence.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsServiceProvider(Extension.class, InvalidExtension.class);
     }

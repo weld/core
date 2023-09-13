@@ -16,6 +16,5 @@
  */
 package org.jboss.weld.tests.beanManager.injectionPoint;
 
-
 class Book<T> {
 }

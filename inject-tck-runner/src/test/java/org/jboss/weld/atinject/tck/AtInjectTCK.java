@@ -17,7 +17,11 @@
 
 package org.jboss.weld.atinject.tck;
 
-import junit.framework.Test;
+import java.util.Arrays;
+
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+
 import org.atinject.tck.Tck;
 import org.atinject.tck.auto.Car;
 import org.atinject.tck.auto.Convertible;
@@ -34,9 +38,7 @@ import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanManager;
-import java.util.Arrays;
+import junit.framework.Test;
 
 /**
  * Configure the AtInject TCK for use with the 299 RI
@@ -61,14 +63,14 @@ public class AtInjectTCK {
                 Cupholder.class,
                 FuelTank.class,
                 Tire.class,
-                SpareTire.class
-        ), Environments.SE);
+                SpareTire.class), Environments.SE);
         TestContainer container = new TestContainer(new FlatDeployment(archive, new AtInjectTCKExtension()));
 
         container.startContainer();
 
         // Our entry point is the single bean deployment archive
-        BeanManager beanManager = container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
+        BeanManager beanManager = container
+                .getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
 
         // Obtain a reference to the Car and pass it to the TCK to generate the testsuite
         Bean<?> bean = beanManager.resolve(beanManager.getBeans(Car.class));

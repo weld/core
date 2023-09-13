@@ -22,14 +22,13 @@ import jakarta.inject.Inject;
 
 /**
  * Not proxyable since no default constructor is present.
- * 
+ *
  * Whatsmore the bean uses constructor injection.
  */
 @Dependent
 public class BeanWithoutNoArgsConstructor implements DecoratedBean {
 
-    public @Inject
-    BeanWithoutNoArgsConstructor(Foo arg) {
+    public @Inject BeanWithoutNoArgsConstructor(Foo arg) {
     }
 
     @Override

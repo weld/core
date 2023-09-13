@@ -16,6 +16,14 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.Conversation;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,27 +38,20 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.context.ContextNotActiveException;
-import jakarta.enterprise.context.Conversation;
-import jakarta.enterprise.event.Event;
-import jakarta.inject.Inject;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 @RunWith(Arquillian.class)
 public class ContextTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContextTest.class)).addPackage(ContextTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContextTest.class))
+                .addPackage(ContextTest.class.getPackage()).addClass(Utils.class);
     }
 
     @Inject
     private BeanManagerImpl beanManager;
 
     /*
-    * description = "WELD-348"
-    */
+     * description = "WELD-348"
+     */
     @Test
     public void testCallToConversationWithContextNotActive() {
         ConversationContext conversationContext;
@@ -129,8 +130,8 @@ public class ContextTest {
     private Event<Mouse> mouseEvent;
 
     /*
-    * description = "WELD-480"
-    */
+     * description = "WELD-480"
+     */
     @Test
     public void testConditionalObserverOnNonActiveContext(Cat cat, final House house) {
         new WorkInInactiveContext(Utils.getActiveContext(beanManager, RequestContext.class)) {

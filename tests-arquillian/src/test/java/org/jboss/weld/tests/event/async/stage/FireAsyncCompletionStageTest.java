@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import jakarta.enterprise.event.Event;
-import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -82,7 +81,7 @@ public class FireAsyncCompletionStageTest {
             assertTrue(p.getThreadName().startsWith(CustomExecutorServices.PREFIX));
             // Current thread must come from simple executor
             p.setThreadName(Thread.currentThread().getName());
-        } , simpleExecutor).toCompletableFuture().get();
+        }, simpleExecutor).toCompletableFuture().get();
         assertEquals(FireAsyncCompletionStageTest.class.getName(), payload.getThreadName());
     }
 

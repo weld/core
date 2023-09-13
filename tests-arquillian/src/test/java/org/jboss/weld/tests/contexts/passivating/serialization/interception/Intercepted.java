@@ -17,19 +17,19 @@
 
 package org.jboss.weld.tests.contexts.passivating.serialization.interception;
 
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import jakarta.interceptor.InterceptorBinding;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
  *
  */
 @InterceptorBinding
 @Retention(RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface Intercepted {
 }

@@ -38,11 +38,11 @@ public class TypeVariableArrayProducerMethodTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TypeVariableArrayProducerMethodTest.class))
-            .addClass(TypeVariableArrayProducer.class);
+                .addClass(TypeVariableArrayProducer.class);
     }
 
     @Test
     public void testDeploymentWithTypeVariableArrayProducerMethod() {
         // should throw definition exception
-     }
+    }
 }

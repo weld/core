@@ -67,13 +67,15 @@ public interface WeldCreationalContext<T> extends org.jboss.weld.construction.ap
 
     /**
      * Destroys dependent instance
+     *
      * @param instance
      * @return true if the instance was destroyed, false otherwise
      */
     boolean destroyDependentInstance(T instance);
 
     /**
-     * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every {@link ResourceReference}
+     * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every
+     * {@link ResourceReference}
      * once this {@link CreationalContext} instance is released.
      */
     void addDependentResourceReference(ResourceReference<?> resourceReference);

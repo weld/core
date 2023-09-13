@@ -40,13 +40,13 @@ public class NestedWildcardProducerFieldTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NestedWildcardProducerFieldTest.class))
-            .addClass(NestedWildcardProducerFieldTest.class);
+                .addClass(NestedWildcardProducerFieldTest.class);
     }
 
     @Test
     public void testDeploymentWithNestedWildcardProducerField() {
         // should throw definition exception
-     }
+    }
 
     private static class Foo<T> {
     }

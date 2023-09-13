@@ -35,7 +35,9 @@ public class ImplicitScanBeanArchiveDirectoryTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(ImplicitScanBeanArchiveDirectoryTest.class)).addDirectory("alpha-dir")
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addClasses(ImplicitScanBeanArchiveDirectoryTest.class))
+                .addDirectory("alpha-dir")
                 .addClass(AlphaFromDirectory.class).buildAndUp().build();
     }
 

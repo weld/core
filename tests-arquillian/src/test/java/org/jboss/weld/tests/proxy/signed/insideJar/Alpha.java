@@ -20,6 +20,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Standard bean with no special setup - creating proxy of this anywhere should work.
+ *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped

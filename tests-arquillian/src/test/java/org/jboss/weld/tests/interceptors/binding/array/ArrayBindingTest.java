@@ -34,11 +34,12 @@ public class ArrayBindingTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ArrayBindingTest.class)).addPackage(ArrayBindingTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ArrayBindingTest.class))
+                .addPackage(ArrayBindingTest.class.getPackage());
     }
 
     @Test
     public void testDeploymentFails() {
         // should throw definition exception
-     }
+    }
 }

@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- *@author Kirill Gaevskii
+ * @author Kirill Gaevskii
  */
 @RunWith(Arquillian.class)
 public class InicializationBlockTest {
@@ -36,7 +36,8 @@ public class InicializationBlockTest {
     @Deployment
     @SuppressWarnings("rawtypes")
     public static Archive deployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InicializationBlockTest.class)).intercept(DummyInterceptor.class).addPackage(InicializationBlockTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InicializationBlockTest.class))
+                .intercept(DummyInterceptor.class).addPackage(InicializationBlockTest.class.getPackage());
     }
 
     @Test

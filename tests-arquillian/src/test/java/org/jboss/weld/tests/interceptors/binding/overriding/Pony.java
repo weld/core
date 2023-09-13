@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.interceptors.binding.overriding;
 
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.tests.interceptors.binding.overriding.Aging.Speed;
 
 @Aging(Speed.FAST)

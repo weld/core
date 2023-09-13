@@ -17,7 +17,6 @@
 
 package org.jboss.weld.tests.interceptors;
 
-
 import jakarta.enterprise.context.Dependent;
 
 /**

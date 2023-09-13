@@ -36,7 +36,6 @@ public class Foo implements Bean<String>, PassivationCapable {
 
     private final static Set<Annotation> BINDING_TYPES = new HashSet<Annotation>();
 
-
     static {
         TYPES.add(String.class);
         TYPES.add(Object.class);

@@ -24,9 +24,11 @@ import jakarta.enterprise.inject.spi.Extension;
 public class RegisteringExtension1 implements Extension {
 
     void registerApple(@Observes BeforeBeanDiscovery event, BeanManager manager) {
-        event.addAnnotatedType(new AnnotatedTypeWrapper<Apple>(manager.createAnnotatedType(Apple.class), Juicy.Literal.INSTANCE),
+        event.addAnnotatedType(
+                new AnnotatedTypeWrapper<Apple>(manager.createAnnotatedType(Apple.class), Juicy.Literal.INSTANCE),
                 Apple.class.getSimpleName() + "AnnotatedTypeWrapper");
-        event.addAnnotatedType(new AnnotatedTypeWrapper<Orange>(manager.createAnnotatedType(Orange.class), Juicy.Literal.INSTANCE),
+        event.addAnnotatedType(
+                new AnnotatedTypeWrapper<Orange>(manager.createAnnotatedType(Orange.class), Juicy.Literal.INSTANCE),
                 Orange.class.getSimpleName() + "AnnotatedTypeWrapper");
     }
 }

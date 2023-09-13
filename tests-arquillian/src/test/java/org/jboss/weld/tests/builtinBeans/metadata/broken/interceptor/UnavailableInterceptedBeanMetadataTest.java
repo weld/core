@@ -44,7 +44,9 @@ public class UnavailableInterceptedBeanMetadataTest {
 
     @Deployment(testable = false)
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(UnavailableInterceptedBeanMetadataTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(UnavailableInterceptedBeanMetadataTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(FooServlet.class, FooServletInterceptor.class, FooServletInterceptorBinding.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

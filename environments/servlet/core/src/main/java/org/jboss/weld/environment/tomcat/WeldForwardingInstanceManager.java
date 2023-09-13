@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.naming.NamingException;
+
 import jakarta.servlet.ServletContext;
 
 import org.apache.catalina.core.ApplicationContext;
@@ -58,7 +59,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
     }
 
     @Override
-    public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException, NamingException,
+    public Object newInstance(String fqcn, ClassLoader classLoader)
+            throws IllegalAccessException, InvocationTargetException, NamingException,
             InstantiationException, ClassNotFoundException, NoSuchMethodException {
         Object a = super.newInstance(fqcn, classLoader);
         secondProcessor.newInstance(a);
@@ -66,7 +68,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
     }
 
     @Override
-    public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException,
+    public Object newInstance(String fqcn)
+            throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException,
             ClassNotFoundException, NoSuchMethodException {
         Object a = super.newInstance(fqcn);
         secondProcessor.newInstance(a);
@@ -74,7 +77,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
     }
 
     @Override
-    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, NoSuchMethodException {
+    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException,
+            InstantiationException, NoSuchMethodException {
         Object a = super.newInstance(clazz);
         secondProcessor.newInstance(a);
         return a;
@@ -98,7 +102,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         try {
             // Hack into Tomcat to replace the InstanceManager using
             // reflection to access private fields
-            ApplicationContext appContext = (ApplicationContext) getContextFieldValue((ApplicationContextFacade) context, ApplicationContextFacade.class);
+            ApplicationContext appContext = (ApplicationContext) getContextFieldValue((ApplicationContextFacade) context,
+                    ApplicationContextFacade.class);
             return (StandardContext) getContextFieldValue(appContext, ApplicationContext.class);
         } catch (Exception e) {
             throw TomcatLogger.LOG.cannotGetStandardContext(e);
@@ -139,7 +144,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
 
     private static void setInstanceManager(StandardContext stdContext, InstanceManager instanceManager) {
         try {
-            Method method = SecurityActions.lookupMethod(stdContext.getClass(), INSTANCE_MANAGER_SETTER_NAME, InstanceManager.class);
+            Method method = SecurityActions.lookupMethod(stdContext.getClass(), INSTANCE_MANAGER_SETTER_NAME,
+                    InstanceManager.class);
             SecurityActions.ensureAccessible(method);
             try {
                 method.invoke(stdContext, instanceManager);

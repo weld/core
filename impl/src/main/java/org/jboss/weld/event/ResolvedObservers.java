@@ -38,7 +38,8 @@ import org.jboss.weld.util.collections.ImmutableList;
  */
 public class ResolvedObservers<T> {
 
-    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), false) {
+    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.emptyList(),
+            Collections.emptyList(), Collections.emptyList(), false) {
         public boolean isEmpty() {
             return true;
         }
@@ -54,7 +55,7 @@ public class ResolvedObservers<T> {
         List<ObserverMethod<? super T>> transactionObservers = new ArrayList<ObserverMethod<? super T>>();
         List<ObserverMethod<? super T>> asyncObservers = new ArrayList<ObserverMethod<? super T>>();
         for (ObserverMethod<? super T> observer : observers) {
-            if(observer.isAsync()) {
+            if (observer.isAsync()) {
                 asyncObservers.add(observer);
             } else if (TransactionPhase.IN_PROGRESS == observer.getTransactionPhase()) {
                 immediateSyncObservers.add(observer);
@@ -65,7 +66,8 @@ public class ResolvedObservers<T> {
                 metadataRequired = true;
             }
         }
-        return new ResolvedObservers<>(copyOf(immediateSyncObservers), copyOf(asyncObservers), copyOf(transactionObservers), metadataRequired);
+        return new ResolvedObservers<>(copyOf(immediateSyncObservers), copyOf(asyncObservers), copyOf(transactionObservers),
+                metadataRequired);
     }
 
     private final List<ObserverMethod<? super T>> immediateSyncObservers;
@@ -73,7 +75,9 @@ public class ResolvedObservers<T> {
     private final List<ObserverMethod<? super T>> transactionObservers;
     private final boolean metadataRequired;
 
-    private ResolvedObservers(List<ObserverMethod<? super T>> immediateSyncObservers, List<ObserverMethod<? super T>> asyncObservers, List<ObserverMethod<? super T>> transactionObservers, boolean metadataRequired) {
+    private ResolvedObservers(List<ObserverMethod<? super T>> immediateSyncObservers,
+            List<ObserverMethod<? super T>> asyncObservers, List<ObserverMethod<? super T>> transactionObservers,
+            boolean metadataRequired) {
         this.immediateSyncObservers = immediateSyncObservers;
         this.asyncObservers = asyncObservers;
         this.transactionObservers = transactionObservers;
@@ -105,7 +109,9 @@ public class ResolvedObservers<T> {
     }
 
     /**
-     * Indicates whether any of the resolved observer methods is either an extension-provided one or declares an explicit {@link EventMetadata} injection point.
+     * Indicates whether any of the resolved observer methods is either an extension-provided one or declares an explicit
+     * {@link EventMetadata} injection point.
+     *
      * @return true iff any of the resolved observer methods requires event metadata
      */
     boolean isMetadataRequired() {
@@ -114,6 +120,7 @@ public class ResolvedObservers<T> {
 
     /**
      * Indicates whether this object represents an empty set of observer methods.
+     *
      * @return true iff this object represents an empty set of observer methods
      */
     public boolean isEmpty() {
@@ -121,10 +128,12 @@ public class ResolvedObservers<T> {
     }
 
     /**
-     * Returns all observer methods. First part of the list consists of the ordered sequence of {@link TransactionPhase#IN_PROGRESS} observers followed by the
+     * Returns all observer methods. First part of the list consists of the ordered sequence of
+     * {@link TransactionPhase#IN_PROGRESS} observers followed by the
      * ordered sequence of async obervers followed by an ordered sequence of transactional observers.
      */
     public List<ObserverMethod<? super T>> getAllObservers() {
-        return ImmutableList.<ObserverMethod<? super T>> builder().addAll(immediateSyncObservers).addAll(asyncObservers).addAll(transactionObservers).build();
+        return ImmutableList.<ObserverMethod<? super T>> builder().addAll(immediateSyncObservers).addAll(asyncObservers)
+                .addAll(transactionObservers).build();
     }
 }

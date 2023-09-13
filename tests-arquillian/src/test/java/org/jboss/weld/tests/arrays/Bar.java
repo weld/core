@@ -17,12 +17,15 @@ public class Bar<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Bar bar = (Bar) o;
 
-        if (value != null ? !value.equals(bar.value) : bar.value != null) return false;
+        if (value != null ? !value.equals(bar.value) : bar.value != null)
+            return false;
 
         return true;
     }

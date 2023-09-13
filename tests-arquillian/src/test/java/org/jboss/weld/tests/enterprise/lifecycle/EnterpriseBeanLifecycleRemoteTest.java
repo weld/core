@@ -63,17 +63,17 @@ import com.gargoylesoftware.htmlunit.WebClient;
 public class EnterpriseBeanLifecycleRemoteTest {
     @Deployment(testable = false)
     public static Archive<?> deploy() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanLifecycleRemoteTest.class,
-                Utils.ARCHIVE_TYPE.EAR));
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class,
+                Utils.getDeploymentNameAsHash(EnterpriseBeanLifecycleRemoteTest.class,
+                        Utils.ARCHIVE_TYPE.EAR));
         ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
                 .addClass(RemoteClient.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").setManifest(new StringAsset("Manifest-Version: 1.0\nClass-Path: test-archive.jar\n"))
-        );
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .setManifest(new StringAsset("Manifest-Version: 1.0\nClass-Path: test-archive.jar\n")));
         ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test-archive.jar")
                 .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
                 .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-        );
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
         return ear;
     }
 

@@ -30,7 +30,8 @@ import java.util.stream.Collector;
 import org.jboss.weld.util.Preconditions;
 
 /**
- * Weld's immutable {@link List} implementations. Based on the size of the data, methods of this class may return {@link List} instances using various storage
+ * Weld's immutable {@link List} implementations. Based on the size of the data, methods of this class may return {@link List}
+ * instances using various storage
  * strategies in order to achieve the best performance / memory consumption balance.
  *
  * @author Jozef Hartinger
@@ -44,7 +45,8 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     }
 
     /**
-     * Creates an immutable list that consists of the given elements. This method should only be used in the varargs form. If there is a need to create
+     * Creates an immutable list that consists of the given elements. This method should only be used in the varargs form. If
+     * there is a need to create
      * an immutable list of an array of elements, {@link #copyOf(Object[])} should be used instead.
      *
      * @param elements the given elements
@@ -69,7 +71,8 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     }
 
     /**
-     * Creates an immutable list that consists of the elements in the given collection. If the given collection is already an immutable list,
+     * Creates an immutable list that consists of the elements in the given collection. If the given collection is already an
+     * immutable list,
      * it is returned directly.
      *
      * @param source the given collection
@@ -91,7 +94,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         if (source instanceof Collection<?>) {
             return copyOf((Collection<T>) source);
         }
-        return ImmutableList.<T>builder().addAll(source).build();
+        return ImmutableList.<T> builder().addAll(source).build();
     }
 
     @SuppressWarnings("unchecked")

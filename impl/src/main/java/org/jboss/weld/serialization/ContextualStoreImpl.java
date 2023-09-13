@@ -81,7 +81,7 @@ public class ContextualStoreImpl implements ContextualStore {
      * @return the contextual
      */
     public <C extends Contextual<I>, I> C getContextual(String id) {
-        return this.<C, I>getContextual(new StringBeanIdentifier(id));
+        return this.<C, I> getContextual(new StringBeanIdentifier(id));
     }
 
     @Override
@@ -125,7 +125,8 @@ public class ContextualStoreImpl implements ContextualStore {
                 synchronized (contextual) {
                     id = contextuals.get(contextual);
                     if (id == null) {
-                        id = new StringBeanIdentifier(new StringBuilder().append(GENERATED_ID_PREFIX).append(idGenerator.incrementAndGet()).toString());
+                        id = new StringBeanIdentifier(new StringBuilder().append(GENERATED_ID_PREFIX)
+                                .append(idGenerator.incrementAndGet()).toString());
                         contextuals.put(contextual, id);
                         contextualsInverse.put(id, contextual);
                     }
@@ -142,8 +143,10 @@ public class ContextualStoreImpl implements ContextualStore {
         return SerializableContextualFactory.create(contextId, Reflections.<C> cast(contextual), this, beanIdentifierIndex);
     }
 
-    public <C extends Contextual<I>, I> SerializableContextualInstance<C, I> getSerializableContextualInstance(Contextual<I> contextual, I instance, CreationalContext<I> creationalContext) {
-        return new SerializableContextualInstanceImpl<C, I>(Reflections.<C>cast(contextual), instance, creationalContext, this);
+    public <C extends Contextual<I>, I> SerializableContextualInstance<C, I> getSerializableContextualInstance(
+            Contextual<I> contextual, I instance, CreationalContext<I> creationalContext) {
+        return new SerializableContextualInstanceImpl<C, I>(Reflections.<C> cast(contextual), instance, creationalContext,
+                this);
     }
 
     public void cleanup() {

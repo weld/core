@@ -29,7 +29,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -49,19 +48,26 @@ public class GlobalDecoratorOrderingTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(GlobalDecoratorOrderingTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModule(getWebArchive()).addAsLibrary(getSharedLibrary());
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(GlobalDecoratorOrderingTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModule(getWebArchive()).addAsLibrary(getSharedLibrary());
     }
 
     public static Archive<?> getWebArchive() {
-        JavaArchive thirdPartyLibrary = ShrinkWrap.create(JavaArchive.class).addClasses(ThirdPartyDecorator.class, ThirdPartyDecoratorExtension.class).addAsServiceProvider(Extension.class, ThirdPartyDecoratorExtension.class);
+        JavaArchive thirdPartyLibrary = ShrinkWrap.create(JavaArchive.class)
+                .addClasses(ThirdPartyDecorator.class, ThirdPartyDecoratorExtension.class)
+                .addAsServiceProvider(Extension.class, ThirdPartyDecoratorExtension.class);
 
         BeansXml beans = new BeansXml(BeanDiscoveryMode.ALL);
         beans.decorators(LegacyDecorator1.class, LegacyDecorator2.class, LegacyDecorator3.class);
         return ShrinkWrap
                 .create(WebArchive.class, "test.war")
                 .addClasses(DecoratedImpl.class, LegacyDecorator1.class, LegacyDecorator2.class, LegacyDecorator3.class,
-                        WebApplicationGlobalDecorator.class, GlobalDecoratorOrderingTest.class, DecoratorRegisteringExtension.class)
-                .addAsWebInfResource(beans, "beans.xml").addAsServiceProvider(Extension.class, DecoratorRegisteringExtension.class)
+                        WebApplicationGlobalDecorator.class, GlobalDecoratorOrderingTest.class,
+                        DecoratorRegisteringExtension.class)
+                .addAsWebInfResource(beans, "beans.xml")
+                .addAsServiceProvider(Extension.class, DecoratorRegisteringExtension.class)
                 .addAsLibrary(thirdPartyLibrary);
     }
 

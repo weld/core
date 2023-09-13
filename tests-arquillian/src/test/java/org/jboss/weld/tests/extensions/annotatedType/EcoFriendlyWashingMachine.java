@@ -16,26 +16,28 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType;
 
-import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.inject.Qualifier;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({TYPE, METHOD, PARAMETER, FIELD})
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Qualifier;
+
+@Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
 @Documented
 @Qualifier
 public @interface EcoFriendlyWashingMachine {
 
     @SuppressWarnings("serial")
-    public static class EcoFriendlyWashingMachineLiteral extends AnnotationLiteral<EcoFriendlyWashingMachine> implements EcoFriendlyWashingMachine {
+    public static class EcoFriendlyWashingMachineLiteral extends AnnotationLiteral<EcoFriendlyWashingMachine>
+            implements EcoFriendlyWashingMachine {
 
         public static final EcoFriendlyWashingMachine INSTANCE = new EcoFriendlyWashingMachineLiteral();
 

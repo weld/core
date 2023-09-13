@@ -1,9 +1,10 @@
 package org.jboss.weld.environment.servlet.util;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
 
 /**
  * An ELResolver that behaves as though it is invisible, meaning it's

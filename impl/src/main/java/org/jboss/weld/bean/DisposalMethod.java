@@ -67,30 +67,34 @@ public class DisposalMethod<X, T> {
 
     private final MethodInvocationStrategy invocationStrategy;
 
-    public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
+    public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, EnhancedAnnotatedMethod<T, ? super X> method,
+            AbstractClassBean<X> declaringBean) {
         return new DisposalMethod<X, T>(manager, method, declaringBean);
     }
 
-    protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
-        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.DISPOSER,
+    protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod,
+            AbstractClassBean<X> declaringBean) {
+        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(
+                MethodInjectionPointType.DISPOSER,
                 enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, beanManager);
         this.beanManager = beanManager;
         this.declaringBean = declaringBean;
-        EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);
+        EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(
+                enhancedAnnotatedMethod);
         this.disposesParameter = enhancedDisposesParameter.slim();
         this.requiredQualifiers = getRequiredQualifiers(enhancedDisposesParameter);
         checkDisposalMethod(enhancedAnnotatedMethod, declaringBean);
         this.invocationStrategy = MethodInvocationStrategy.forDisposer(disposalMethodInjectionPoint, beanManager);
     }
 
-    private EnhancedAnnotatedParameter<?, ? super X> getEnhancedDisposesParameter(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
+    private EnhancedAnnotatedParameter<?, ? super X> getEnhancedDisposesParameter(
+            EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
         return enhancedAnnotatedMethod.getEnhancedParameters(Disposes.class).get(0);
     }
 
     public AnnotatedParameter<? super X> getDisposesParameter() {
         return disposesParameter;
     }
-
 
     public AnnotatedMethod<? super X> getAnnotated() {
         return disposalMethodInjectionPoint.getAnnotated();
@@ -100,10 +104,12 @@ public class DisposalMethod<X, T> {
         invocationStrategy.invoke(receiver, disposalMethodInjectionPoint, instance, beanManager, creationalContext);
     }
 
-    private void checkDisposalMethod(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
+    private void checkDisposalMethod(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod,
+            AbstractClassBean<X> declaringBean) {
         if (enhancedAnnotatedMethod.getEnhancedParameters(Disposes.class).size() > 1) {
             throw BeanLogger.LOG
-                    .multipleDisposeParams(disposalMethodInjectionPoint, Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
+                    .multipleDisposeParams(disposalMethodInjectionPoint,
+                            Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (enhancedAnnotatedMethod.getEnhancedParameters(Observes.class).size() > 0) {
             throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint,
@@ -118,15 +124,17 @@ public class DisposalMethod<X, T> {
                     Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (enhancedAnnotatedMethod.getAnnotation(Specializes.class) != null) {
-            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Specialized", DISPOSER_ANNOTATION, disposalMethodInjectionPoint,
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Specialized", DISPOSER_ANNOTATION,
+                    disposalMethodInjectionPoint,
                     Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (declaringBean instanceof SessionBean<?>) {
             SessionBean<?> sessionBean = (SessionBean<?>) declaringBean;
             Set<MethodSignature> localBusinessMethodSignatures = sessionBean.getLocalBusinessMethodSignatures();
             Set<MethodSignature> remoteBusinessMethodSignatures = sessionBean.getRemoteBusinessMethodSignatures();
-            if (!localBusinessMethodSignatures.contains(enhancedAnnotatedMethod.getSignature()) || remoteBusinessMethodSignatures
-                    .contains(enhancedAnnotatedMethod.getSignature())) {
+            if (!localBusinessMethodSignatures.contains(enhancedAnnotatedMethod.getSignature())
+                    || remoteBusinessMethodSignatures
+                            .contains(enhancedAnnotatedMethod.getSignature())) {
                 throw BeanLogger.LOG.methodNotBusinessMethod("Disposer", enhancedAnnotatedMethod, declaringBean,
                         Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
             }

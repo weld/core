@@ -25,62 +25,51 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
-public class ForwardingPhaseListener implements PhaseListener
-{
-   private static final long serialVersionUID = 7215399908914547315L;
+public class ForwardingPhaseListener implements PhaseListener {
+    private static final long serialVersionUID = 7215399908914547315L;
 
-   public void afterPhase(PhaseEvent event)
-   {
-      if (PhaseId.RESTORE_VIEW.equals(event.getPhaseId()))
-      {
-         if ("/conversations.xhtml".equals(getViewId(event)))
-         {
-            try {
-               HttpServletRequest request = (HttpServletRequest) event.getFacesContext().getExternalContext()
-                        .getRequest();
-               HttpServletResponse response = (HttpServletResponse) event.getFacesContext().getExternalContext()
-                        .getResponse();
-               request.getRequestDispatcher("/result.jsf").forward(request, response);
-               event.getFacesContext().responseComplete();
+    public void afterPhase(PhaseEvent event) {
+        if (PhaseId.RESTORE_VIEW.equals(event.getPhaseId())) {
+            if ("/conversations.xhtml".equals(getViewId(event))) {
+                try {
+                    HttpServletRequest request = (HttpServletRequest) event.getFacesContext().getExternalContext()
+                            .getRequest();
+                    HttpServletResponse response = (HttpServletResponse) event.getFacesContext().getExternalContext()
+                            .getResponse();
+                    request.getRequestDispatcher("/result.jsf").forward(request, response);
+                    event.getFacesContext().responseComplete();
+                } catch (Exception e) {
+                    throw new RuntimeException("blah", e);
+                }
             }
-            catch (Exception e) {
-               throw new RuntimeException("blah", e);
-            }
-         }
-      }
-   }
+        }
+    }
 
-   private String getViewId(PhaseEvent event)
-   {
-      UIViewRoot viewRoot = event.getFacesContext().getViewRoot();
-      return viewRoot == null ? null : viewRoot.getViewId();
-   }
+    private String getViewId(PhaseEvent event) {
+        UIViewRoot viewRoot = event.getFacesContext().getViewRoot();
+        return viewRoot == null ? null : viewRoot.getViewId();
+    }
 
-   public void beforePhase(PhaseEvent event)
-   {
-      if (PhaseId.RESTORE_VIEW.equals(event.getPhaseId()))
-      {
-         String uri = ((HttpServletRequest) event.getFacesContext().getExternalContext().getRequest()).getRequestURI();
-         if (uri.contains("missing-page-error"))
-         {
-            try {
-               HttpServletResponse response = (HttpServletResponse) event.getFacesContext().getExternalContext()
-                        .getResponse();
-               response.sendError(404);
-               event.getFacesContext().responseComplete();
+    public void beforePhase(PhaseEvent event) {
+        if (PhaseId.RESTORE_VIEW.equals(event.getPhaseId())) {
+            String uri = ((HttpServletRequest) event.getFacesContext().getExternalContext().getRequest()).getRequestURI();
+            if (uri.contains("missing-page-error")) {
+                try {
+                    HttpServletResponse response = (HttpServletResponse) event.getFacesContext().getExternalContext()
+                            .getResponse();
+                    response.sendError(404);
+                    event.getFacesContext().responseComplete();
+                } catch (Exception e) {
+                    throw new RuntimeException("blah", e);
+                }
             }
-            catch (Exception e) {
-               throw new RuntimeException("blah", e);
-            }
-         }
-      }
-   }
+        }
+    }
 
-   public PhaseId getPhaseId()
-   {
-      return PhaseId.ANY_PHASE;
-   }
+    public PhaseId getPhaseId() {
+        return PhaseId.ANY_PHASE;
+    }
 
 }

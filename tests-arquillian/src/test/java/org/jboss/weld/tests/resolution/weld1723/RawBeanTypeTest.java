@@ -31,10 +31,10 @@ import org.junit.runner.RunWith;
 
 /**
  * Testcase for WELD-1723
- * 
+ *
  * @author Jozef Hartinger
  * @author Alexander Langer
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @SuppressWarnings("rawtypes")
@@ -42,7 +42,8 @@ public class RawBeanTypeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RawBeanTypeTest.class)).addPackage(RawBeanTypeTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RawBeanTypeTest.class))
+                .addPackage(RawBeanTypeTest.class.getPackage());
     }
 
     @Inject

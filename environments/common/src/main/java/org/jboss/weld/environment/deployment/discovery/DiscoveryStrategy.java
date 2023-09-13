@@ -17,7 +17,6 @@
 package org.jboss.weld.environment.deployment.discovery;
 
 import java.lang.annotation.Annotation;
-
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
@@ -31,7 +30,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Matej Briškár
  * @author Martin Kouba
  * @author <a href="https://about.me/lairdnelson"
- * target="_parent">Laird Nelson</a>
+ *         target="_parent">Laird Nelson</a>
  */
 public interface DiscoveryStrategy {
 
@@ -56,12 +55,13 @@ public interface DiscoveryStrategy {
      * implementation may use when discovering beans.
      *
      * @param initialBeanDefiningAnnotations the initial {@link Set}
-     * of bean defining annotations
+     *        of bean defining annotations
      */
     void setInitialBeanDefiningAnnotations(Set<Class<? extends Annotation>> initialBeanDefiningAnnotations);
 
     /**
-     * Optionally, a client may set a custom scanner implementation. If not set, the impl is allowed to use anything it considers appropriate.
+     * Optionally, a client may set a custom scanner implementation. If not set, the impl is allowed to use anything it
+     * considers appropriate.
      *
      * @param beanArchiveScanner
      */

@@ -43,7 +43,8 @@ public class Observer {
         this.fooBar.add(event);
     }
 
-    public void observeFooBarBaz(@Observes @RepeatableQualifier("foo") @RepeatableQualifier("bar") @RepeatableQualifier("baz") String event) {
+    public void observeFooBarBaz(
+            @Observes @RepeatableQualifier("foo") @RepeatableQualifier("bar") @RepeatableQualifier("baz") String event) {
         this.fooBarBaz.add(event);
     }
 

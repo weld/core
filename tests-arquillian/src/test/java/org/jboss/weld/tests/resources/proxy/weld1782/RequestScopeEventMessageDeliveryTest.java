@@ -43,7 +43,10 @@ public class RequestScopeEventMessageDeliveryTest {
     @Deployment
     public static WebArchive createTestArchive() {
 
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RequestScopeEventMessageDeliveryTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(RequestScopeEventMessageDeliveryTest.class.getPackage());
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(RequestScopeEventMessageDeliveryTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(RequestScopeEventMessageDeliveryTest.class.getPackage());
     }
 
     @Inject

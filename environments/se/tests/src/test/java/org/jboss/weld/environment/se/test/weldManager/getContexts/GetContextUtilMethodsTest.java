@@ -57,8 +57,9 @@ public class GetContextUtilMethodsTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
-            .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetContextUtilMethodsTest.class))
-                .addClasses(GetContextUtilMethodsTest.class, TheLoneBean.class)).build();
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetContextUtilMethodsTest.class))
+                        .addClasses(GetContextUtilMethodsTest.class, TheLoneBean.class))
+                .build();
     }
 
     @Test
@@ -72,7 +73,8 @@ public class GetContextUtilMethodsTest {
             // it is dependent, singleton and application
             Collection<Context> activeContexts = manager.getActiveContexts();
             Assert.assertEquals(3, activeContexts.size());
-            Set<Class<? extends Annotation>> scopes = activeContexts.stream().map(t -> t.getScope()).collect(Collectors.toSet());
+            Set<Class<? extends Annotation>> scopes = activeContexts.stream().map(t -> t.getScope())
+                    .collect(Collectors.toSet());
             Assert.assertTrue(scopes.contains(Dependent.class));
             Assert.assertTrue(scopes.contains(Singleton.class));
             Assert.assertTrue(scopes.contains(ApplicationScoped.class));

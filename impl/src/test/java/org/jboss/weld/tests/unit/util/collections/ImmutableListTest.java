@@ -32,7 +32,7 @@ public class ImmutableListTest {
 
     @Test
     public void testBuilder() {
-        List<String> list = ImmutableList.<String>builder().add("foo").add("bar").add("baz").build();
+        List<String> list = ImmutableList.<String> builder().add("foo").add("bar").add("baz").build();
         Assert.assertEquals(3, list.size());
         Assert.assertEquals("foo", list.get(0));
         Assert.assertEquals("bar", list.get(1));
@@ -50,20 +50,20 @@ public class ImmutableListTest {
 
     @Test
     public void testAddAll() {
-        List<String> list = ImmutableList.<String>builder().addAll(new String[] { "foo", "bar", "baz" }).build();
+        List<String> list = ImmutableList.<String> builder().addAll(new String[] { "foo", "bar", "baz" }).build();
         Assert.assertEquals(3, list.size());
         Assert.assertEquals("foo", list.get(0));
         Assert.assertEquals("bar", list.get(1));
         Assert.assertEquals("baz", list.get(2));
 
-        List<String> list2 = ImmutableList.<String>builder().addAll(list).build();
+        List<String> list2 = ImmutableList.<String> builder().addAll(list).build();
         Assert.assertEquals(list, list2);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testAddNull() {
         String foo = null;
-        ImmutableList.<String>builder().add(foo).build();
+        ImmutableList.<String> builder().add(foo).build();
     }
 
     @Test

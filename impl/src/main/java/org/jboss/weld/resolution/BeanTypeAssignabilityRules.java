@@ -49,7 +49,8 @@ public class BeanTypeAssignabilityRules extends AbstractAssignabilityRules {
     public boolean matchesNoBoxing(Type requiredType, Type beanType) {
         /*
          * Special handling for array event types as eventType closure does not contain the type closure of array component type
-         * this is here for backwards compatibility - see ObserverMethodWithParametertizedTypeTest.testObserverMethodCanObserveArrayWildcard()
+         * this is here for backwards compatibility - see
+         * ObserverMethodWithParametertizedTypeTest.testObserverMethodCanObserveArrayWildcard()
          */
         if (Types.isArray(requiredType) && Types.isArray(beanType)) {
             return matchesNoBoxing(Types.getArrayComponentType(requiredType), Types.getArrayComponentType(beanType));

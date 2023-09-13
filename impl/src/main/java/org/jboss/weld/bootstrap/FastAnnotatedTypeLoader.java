@@ -42,9 +42,12 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * Specialized version of {@link AnnotatedTypeLoader}. This implementation uses {@link ClassFileServices} to avoid loading application classes that are not
- * needed for Weld. In addition, this implementation feeds {@link SlimAnnotatedTypeContext} with {@link ClassFileInfo} and resolved {@link ProcessAnnotatedType}
- * observer methods. If {@link ClassFileServices} is not sufficient to load an annotated type (e.g. superclass information missing from the index) then a fall back
+ * Specialized version of {@link AnnotatedTypeLoader}. This implementation uses {@link ClassFileServices} to avoid loading
+ * application classes that are not
+ * needed for Weld. In addition, this implementation feeds {@link SlimAnnotatedTypeContext} with {@link ClassFileInfo} and
+ * resolved {@link ProcessAnnotatedType}
+ * observer methods. If {@link ClassFileServices} is not sufficient to load an annotated type (e.g. superclass information
+ * missing from the index) then a fall back
  * to {@link AnnotatedTypeLoader} is performed.
  *
  * @author Jozef Hartinger
@@ -80,7 +83,8 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
             if (classFileInfo.isVetoed()) {
                 return null;
             }
-            if (classFileInfo.getNestingType().equals(NestingType.NESTED_LOCAL) || classFileInfo.getNestingType().equals(NestingType.NESTED_ANONYMOUS)) {
+            if (classFileInfo.getNestingType().equals(NestingType.NESTED_LOCAL)
+                    || classFileInfo.getNestingType().equals(NestingType.NESTED_ANONYMOUS)) {
                 return null;
             }
 
@@ -128,13 +132,16 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
         }
         return null;
     }
+
     // checking availability of ClassInfo.setFlags method is just workaround for JANDEX-37
     private boolean initCheckTypeModifiers() {
 
-        Class<?> classInfoclass = Reflections.loadClass(CLASSINFO_CLASS_NAME, new ClassLoaderResourceLoader(classFileServices.getClass().getClassLoader()));
+        Class<?> classInfoclass = Reflections.loadClass(CLASSINFO_CLASS_NAME,
+                new ClassLoaderResourceLoader(classFileServices.getClass().getClassLoader()));
         if (classInfoclass != null) {
             try {
-                Method setFlags = AccessController.doPrivileged(GetDeclaredMethodAction.of(classInfoclass, "setFlags", short.class));
+                Method setFlags = AccessController
+                        .doPrivileged(GetDeclaredMethodAction.of(classInfoclass, "setFlags", short.class));
                 return setFlags != null;
             } catch (Exception exceptionIgnored) {
                 BootstrapLogger.LOG.usingOldJandexVersion();

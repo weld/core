@@ -22,12 +22,11 @@ import jakarta.inject.Inject;
 import jakarta.interceptor.ExcludeDefaultInterceptors;
 import jakarta.interceptor.Interceptors;
 
-
 /**
  * @author Marius Bogoevici
  */
 @Stateless
-@Interceptors({EjbInterceptor.class, EjbInterceptor2.class})
+@Interceptors({ EjbInterceptor.class, EjbInterceptor2.class })
 public class SimpleImpl implements Simple {
     @Inject
     Helper helper;
@@ -37,7 +36,7 @@ public class SimpleImpl implements Simple {
     }
 
     @ExcludeDefaultInterceptors
-    @Interceptors({EjbInterceptor3.class, EjbInterceptor4.class})
+    @Interceptors({ EjbInterceptor3.class, EjbInterceptor4.class })
     public void doSomething() {
 
     }

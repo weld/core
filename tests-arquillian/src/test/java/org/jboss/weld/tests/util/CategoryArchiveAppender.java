@@ -31,9 +31,11 @@ import org.jboss.weld.tests.category.Integration;
  */
 public class CategoryArchiveAppender implements AuxiliaryArchiveAppender {
 
-    /* (non-Javadoc)
-    * @see org.jboss.arquillian.spi.AuxiliaryArchiveAppender#createAuxiliaryArchive()
-    */
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.arquillian.spi.AuxiliaryArchiveAppender#createAuxiliaryArchive()
+     */
     public Archive<?> createAuxiliaryArchive() {
         return ShrinkWrap.create(JavaArchive.class, "weld-core-test-categories.jar")
                 .addPackage(Integration.class.getPackage())

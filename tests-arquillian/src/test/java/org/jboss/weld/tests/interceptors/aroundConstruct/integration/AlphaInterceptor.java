@@ -29,34 +29,33 @@ public class AlphaInterceptor extends AbstractInterceptor {
 
     @AroundConstruct
     void aroundConstruct(InvocationContext ctx) {
-       checkConstructor(ctx.getConstructor());
+        checkConstructor(ctx.getConstructor());
 
-      // test parameters before construction
-      Object[] params = ctx.getParameters();
-      assertEquals(1, params.length);
-      assertEquals(-5, params[0]);
-      ctx.setParameters(new Integer[] {1});
+        // test parameters before construction
+        Object[] params = ctx.getParameters();
+        assertEquals(1, params.length);
+        assertEquals(-5, params[0]);
+        ctx.setParameters(new Integer[] { 1 });
 
-      // test context data before construction
-      ctx.getContextData().put(AlphaInterceptor.class.getName(), this);
-      ctx.getContextData().put("foo", AlphaInterceptor.class.getName());
+        // test context data before construction
+        ctx.getContextData().put(AlphaInterceptor.class.getName(), this);
+        ctx.getContextData().put("foo", AlphaInterceptor.class.getName());
 
+        proceed(ctx);
 
-      proceed(ctx);
+        // test context data after construction
+        assertTrue(ctx.getContextData().containsKey(AlphaInterceptor.class.getName()));
+        assertTrue(ctx.getContextData().containsKey(BravoInterceptor.class.getName()));
+        assertTrue(ctx.getContextData().containsKey(CharlieInterceptor.class.getName()));
+        assertTrue(ctx.getContextData().containsKey("foo"));
+        assertEquals(CharlieInterceptor.class.getName(), ctx.getContextData().get("foo"));
 
-      // test context data after construction
-      assertTrue(ctx.getContextData().containsKey(AlphaInterceptor.class.getName()));
-      assertTrue(ctx.getContextData().containsKey(BravoInterceptor.class.getName()));
-      assertTrue(ctx.getContextData().containsKey(CharlieInterceptor.class.getName()));
-      assertTrue(ctx.getContextData().containsKey("foo"));
-      assertEquals(CharlieInterceptor.class.getName(), ctx.getContextData().get("foo"));
+        // test parameters after construction
+        Object[] params2 = ctx.getParameters();
+        assertEquals(1, params2.length);
+        assertEquals(3, params2[0]);
 
-      // test parameters after construction
-      Object[] params2 = ctx.getParameters();
-      assertEquals(1, params2.length);
-      assertEquals(3, params2[0]);
-
-      checkConstructor(ctx.getConstructor());
+        checkConstructor(ctx.getConstructor());
     }
 
 }

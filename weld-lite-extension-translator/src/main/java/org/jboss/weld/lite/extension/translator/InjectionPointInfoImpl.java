@@ -1,14 +1,15 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.inject.build.compatible.spi.InjectionPointInfo;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.DeclarationInfo;
 import jakarta.enterprise.lang.model.types.Type;
-import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class InjectionPointInfoImpl implements InjectionPointInfo {
     private final jakarta.enterprise.inject.spi.InjectionPoint cdiInjectionPoint;

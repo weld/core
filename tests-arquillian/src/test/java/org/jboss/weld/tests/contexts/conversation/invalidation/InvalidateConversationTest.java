@@ -55,10 +55,12 @@ public class InvalidateConversationTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(InvalidateConversationTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addPackage(InvalidateConversationTest.class.getPackage())
-            .addClass(ActionSequence.class)
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(InvalidateConversationTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(InvalidateConversationTest.class.getPackage())
+                .addClass(ActionSequence.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test

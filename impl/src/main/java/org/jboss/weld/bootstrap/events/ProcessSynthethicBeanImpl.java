@@ -17,6 +17,7 @@
 package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
+
 import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Extension;

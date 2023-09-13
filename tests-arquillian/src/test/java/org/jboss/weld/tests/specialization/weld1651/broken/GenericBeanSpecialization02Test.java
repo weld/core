@@ -46,5 +46,5 @@ public class GenericBeanSpecialization02Test {
     @Test
     public void testDeploymentWithSpecializingBeanWithStricterBounds() {
         // should throw definition exception
-     }
+    }
 }

@@ -47,7 +47,7 @@ public class InterceptionFactoryTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptionFactoryTest.class))
-            .addPackage(InterceptionFactoryTest.class.getPackage());
+                .addPackage(InterceptionFactoryTest.class.getPackage());
     }
 
     @Test

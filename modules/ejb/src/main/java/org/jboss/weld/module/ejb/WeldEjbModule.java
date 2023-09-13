@@ -47,13 +47,15 @@ public class WeldEjbModule implements WeldModule {
     public void postServiceRegistration(PostServiceRegistrationContext ctx) {
         ctx.getServices().add(CurrentInvocationInjectionPoint.class, new CurrentInvocationInjectionPoint());
         ctx.registerPlugableValidator(new WeldEjbValidator());
-        ctx.getServices().get(ResourceInjectionFactory.class).addResourceInjectionProcessor(new EjbResourceInjectionProcessor());
+        ctx.getServices().get(ResourceInjectionFactory.class)
+                .addResourceInjectionProcessor(new EjbResourceInjectionProcessor());
     }
 
     @Override
     public void postContextRegistration(PostContextRegistrationContext ctx) {
         // Register the EJB Request context
-        ctx.addContext(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(ctx.getContextId()), EjbRequestContext.class,
+        ctx.addContext(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(ctx.getContextId()),
+                EjbRequestContext.class,
                 ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(EjbLiteral.INSTANCE).build()));
     }
 

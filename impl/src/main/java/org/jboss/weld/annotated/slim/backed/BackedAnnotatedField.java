@@ -20,17 +20,20 @@ import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR",
+        "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedField<X> extends BackedAnnotatedMember<X> implements AnnotatedField<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedField<X> of(Field field, BackedAnnotatedType<Y> declaringType, SharedObjectCache sharedObjectCache) {
+    public static <X, Y extends X> AnnotatedField<X> of(Field field, BackedAnnotatedType<Y> declaringType,
+            SharedObjectCache sharedObjectCache) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
         return new BackedAnnotatedField<X>(field.getGenericType(), field, downcastDeclaringType, sharedObjectCache);
     }
 
     private final Field field;
 
-    public BackedAnnotatedField(Type baseType, Field field, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+    public BackedAnnotatedField(Type baseType, Field field, BackedAnnotatedType<X> declaringType,
+            SharedObjectCache sharedObjectCache) {
         super(baseType, declaringType, sharedObjectCache);
         this.field = field;
     }

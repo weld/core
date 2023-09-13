@@ -83,6 +83,7 @@ public class WeldCollections {
      * Returns the supplied collection as a multi-row string with every toString() of every element of the collection
      * in its own row.
      * Example: toMultiRowString(Arrays.asList("aaa", "bbb", "ccc")) will return:
+     *
      * <pre>
      *   - aaa,
      *   - bbb,
@@ -114,13 +115,15 @@ public class WeldCollections {
     }
 
     /**
-     * Utility method for working with maps. Unlike {@link Map#putIfAbsent(Object, Object)} this method always returns the value that ends up store in the map
+     * Utility method for working with maps. Unlike {@link Map#putIfAbsent(Object, Object)} this method always returns the value
+     * that ends up store in the map
      * which is either the old value (if any was present) or the new value (if it was stored in the map).
      *
      * @param map the map
      * @param key the key
      * @param value the value
-     * @return the value that ends up store in the map which is either the old value (if any was present) or the new value (if it was stored in the map)
+     * @return the value that ends up store in the map which is either the old value (if any was present) or the new value (if
+     *         it was stored in the map)
      */
     public static <K, V> V putIfAbsent(Map<K, V> map, K key, V value) {
         V old = map.putIfAbsent(key, value);

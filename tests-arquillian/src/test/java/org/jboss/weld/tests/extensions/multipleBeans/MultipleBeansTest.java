@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
-
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Inject;
 
@@ -63,7 +62,8 @@ public class MultipleBeansTest {
         // test that the beans which have different producer methods produce
         // different values
         Assert.assertEquals("+Bob's content+", Utils.getReference(beanManager, String.class, new FormattedBlogLiteral("Bob")));
-        Assert.assertEquals("+Barry's content+", Utils.getReference(beanManager, String.class, new FormattedBlogLiteral("Barry")));
+        Assert.assertEquals("+Barry's content+",
+                Utils.getReference(beanManager, String.class, new FormattedBlogLiteral("Barry")));
     }
 
     @Test

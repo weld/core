@@ -35,11 +35,15 @@ public class PassivationCapabilityErrorCausedByExtensionDetectedTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PassivationCapabilityErrorCausedByExtensionDetectedTest.class)).addClasses(ModifyingExtension1.class, Laptop.class).addAsServiceProvider(Extension.class, ModifyingExtension1.class);
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(PassivationCapabilityErrorCausedByExtensionDetectedTest.class))
+                .addClasses(ModifyingExtension1.class, Laptop.class)
+                .addAsServiceProvider(Extension.class, ModifyingExtension1.class);
     }
 
     @Test
     public void testDeploymentProblemWithPassivationDueToExtension() {
         // should throw deployment exception
-     }
+    }
 }

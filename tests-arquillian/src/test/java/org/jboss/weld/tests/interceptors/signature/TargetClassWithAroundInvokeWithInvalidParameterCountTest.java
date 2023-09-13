@@ -37,13 +37,15 @@ public class TargetClassWithAroundInvokeWithInvalidParameterCountTest {
     // Can either be IllegalArgumentException (thrown by org.jboss.as.ee) or DefinitionException (thrown by Weld)
     @ShouldThrowException(Exception.class)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TargetClassWithAroundInvokeWithInvalidParameterCountTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(TargetClassWithAroundInvokeWithInvalidParameterCountTest.class))
                 .addClass(TargetClassWithAroundInvokeWithInvalidParameterCount.class);
     }
 
     @Test
     public void testDeploymentWithInvalidParamCount() {
         // should throw exception, either IllegalArg or Definition
-     }
+    }
 
 }

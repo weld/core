@@ -19,7 +19,6 @@ package org.jboss.weld.tests.proxy.weld56;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 
-
 @RequestScoped
 public class Foo {
 

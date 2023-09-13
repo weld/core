@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.tests.beanDeployment.mixed;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,12 +36,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RunWith(Arquillian.class)
 public class BootstrapTest {

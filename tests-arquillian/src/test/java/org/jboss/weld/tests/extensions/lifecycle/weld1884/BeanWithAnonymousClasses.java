@@ -32,12 +32,12 @@ public class BeanWithAnonymousClasses {
     };
 
     @SuppressWarnings("serial")
-    static Serializable serializable = new Serializable(){
+    static Serializable serializable = new Serializable() {
 
     };
 
     @SuppressWarnings("serial")
-    Serializable serializable2 = new Serializable(){
+    Serializable serializable2 = new Serializable() {
 
     };
 }

@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.tests.serialization.noncontextual;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,12 +32,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.context.spi.Contextual;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-
 @RunWith(Arquillian.class)
 public class SerializationTest {
 
@@ -39,20 +40,21 @@ public class SerializationTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SerializationTest.class)).addPackage(SerializationTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SerializationTest.class))
+                .addPackage(SerializationTest.class.getPackage());
     }
 
     /*
-    * description =
-    * "http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html"
-    */
+     * description =
+     * "http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html"
+     */
     @Test
     public void testSerializationOfEventInNonContextual() throws Exception {
 
         NonContextual instance = new NonContextual();
         beanManager.getInjectionTargetFactory(beanManager.createAnnotatedType(NonContextual.class))
                 .createInjectionTarget(null).inject(
-                instance, beanManager.createCreationalContext((Contextual<NonContextual>) null));
+                        instance, beanManager.createCreationalContext((Contextual<NonContextual>) null));
         new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(instance);
     }
 }

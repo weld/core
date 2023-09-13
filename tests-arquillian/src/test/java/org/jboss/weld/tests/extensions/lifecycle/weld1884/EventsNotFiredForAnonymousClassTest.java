@@ -50,7 +50,7 @@ public class EventsNotFiredForAnonymousClassTest {
     @Test
     public void processBeanEventNotFiredForAnonymousClass() {
         Optional<Class<?>> optionalValue = TestExtension.pbFiredValues.stream().filter(c -> c.isAnonymousClass()).findFirst();
-        assertFalse("ProcessBean event fired for "+ optionalValue.orElse(null), optionalValue.isPresent());
+        assertFalse("ProcessBean event fired for " + optionalValue.orElse(null), optionalValue.isPresent());
     }
 
 }

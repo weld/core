@@ -39,13 +39,15 @@ public class SyntheticArchiveDiscoveryModeChangeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).annotated().addPackages(true, SyntheticArchiveDiscoveryModeChangeTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class).annotated().addPackages(true,
+                SyntheticArchiveDiscoveryModeChangeTest.class.getPackage());
     }
 
     @Test
     public void testDiscoveryModeAnnotated() {
         Weld weld = new Weld();
-        weld.disableDiscovery().setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED).addPackages(Foo.class.getPackage(), Bar.class.getPackage());
+        weld.disableDiscovery().setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED).addPackages(Foo.class.getPackage(),
+                Bar.class.getPackage());
         try (WeldContainer container = weld.initialize()) {
             Assert.assertTrue(container.isRunning());
             Assert.assertTrue(container.select(Foo.class).isResolvable());
@@ -57,7 +59,8 @@ public class SyntheticArchiveDiscoveryModeChangeTest {
     public void testDiscoveryModeAll() {
         Weld weld = new Weld();
         // this is same as default
-        weld.disableDiscovery().setBeanDiscoveryMode(BeanDiscoveryMode.ALL).addPackages(Foo.class.getPackage(), Bar.class.getPackage());
+        weld.disableDiscovery().setBeanDiscoveryMode(BeanDiscoveryMode.ALL).addPackages(Foo.class.getPackage(),
+                Bar.class.getPackage());
         try (WeldContainer container = weld.initialize()) {
             Assert.assertTrue(container.isRunning());
             Assert.assertTrue(container.select(Foo.class).isResolvable());

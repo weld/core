@@ -46,7 +46,7 @@ public class InjectionException extends jakarta.enterprise.inject.InjectionExcep
      * exception. It is not recommended to use this constructor since the message
      * cannot be localized.
      *
-     * @param message   The error message
+     * @param message The error message
      * @param throwable The cause of the exception or wrapped throwable
      */
     public InjectionException(String message, Throwable throwable) {

@@ -46,7 +46,9 @@ public class CustomPassivatingScopeCalledWithSerializableParametersTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomPassivatingScopeCalledWithSerializableParametersTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(CustomPassivatingScopeCalledWithSerializableParametersTest.class))
                 .addPackage(CustomPassivatingScopeCalledWithSerializableParametersTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, ClusteringExtension.class, BarExtension.class);
     }

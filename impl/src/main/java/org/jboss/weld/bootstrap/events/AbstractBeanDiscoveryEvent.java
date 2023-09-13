@@ -40,7 +40,8 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
     private final Deployment deployment;
     private final Collection<ContextHolder<? extends Context>> contexts;
 
-    public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
+    public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, BeanDeploymentArchiveMapping bdaMapping,
+            Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, rawType, EMPTY_TYPES);
         this.bdaMapping = bdaMapping;
         this.deployment = deployment;
@@ -72,7 +73,6 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
     protected TypeStore getTypeStore() {
         return getDeployment().getServices().get(TypeStore.class);
     }
-
 
     protected BeanDeployment getOrCreateBeanDeployment(Class<?> clazz) {
         return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), bdaMapping, contexts, clazz);

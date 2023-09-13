@@ -45,70 +45,65 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @RunWith(Arquillian.class)
-public class SimpleInterceptorTest
-{
-   @Deployment
-   public static JavaArchive createDeployment()
-   {
-      return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleInterceptorTest.class))
-         .intercept(SimpleInterceptor.class, TwoBindingsInterceptor.class)
-         .decorate(SimpleDecorator.class)
-         .addPackage(SimpleInterceptorTest.class.getPackage());
-   }
+public class SimpleInterceptorTest {
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleInterceptorTest.class))
+                .intercept(SimpleInterceptor.class, TwoBindingsInterceptor.class)
+                .decorate(SimpleDecorator.class)
+                .addPackage(SimpleInterceptorTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   @Before
-   public void resetInterceptors()
-   {
-      SimpleInterceptor.aroundInvokeCalled = false;
-      SimpleInterceptor.postConstructCalled = false;
-      SimpleInterceptor.preDestroyCalled = false;
-      TwoBindingsInterceptor.aroundInvokeCalled = false;
-      SimpleBeanImpl.postConstructCalled = false;
-      SimpleBeanImpl.businessMethodInvoked = false;
-   }
-
+    @Before
+    public void resetInterceptors() {
+        SimpleInterceptor.aroundInvokeCalled = false;
+        SimpleInterceptor.postConstructCalled = false;
+        SimpleInterceptor.preDestroyCalled = false;
+        TwoBindingsInterceptor.aroundInvokeCalled = false;
+        SimpleBeanImpl.postConstructCalled = false;
+        SimpleBeanImpl.businessMethodInvoked = false;
+    }
 
     @Test
     public void testInterceptorModel() {
         TypeStore typeStore = new TypeStore();
-        InterceptorBindingModel<SecondaryInterceptionBinding> interceptorBindingModel
-                = new InterceptorBindingModel<SecondaryInterceptionBinding>(new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
+        InterceptorBindingModel<SecondaryInterceptionBinding> interceptorBindingModel = new InterceptorBindingModel<SecondaryInterceptionBinding>(
+                new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore),
+                        RegistrySingletonProvider.STATIC_INSTANCE).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
         Set<Annotation> annotations = interceptorBindingModel.getInheritedInterceptionBindingTypes();
         assert annotations.size() != 0;
     }
 
-   @Test
-   public void testSimpleInterceptor()
-   {
-      Bean bean = beanManager.getBeans(SimpleBeanImpl.class).iterator().next();
-      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
-      SimpleBeanImpl simpleBean = (SimpleBeanImpl) bean.create(creationalContext);
-      String result = simpleBean.doSomething();
-      assert "decorated-Hello!-decorated".equals(result);
-      bean.destroy(simpleBean, creationalContext);
-      assert SimpleInterceptor.aroundInvokeCalled;
-      assert !SimpleInterceptor.postConstructCalled;
-      assert !SimpleInterceptor.preDestroyCalled;
-      assert TwoBindingsInterceptor.aroundInvokeCalled;
-      assert SimpleBeanImpl.postConstructCalled;
-   }
+    @Test
+    public void testSimpleInterceptor() {
+        Bean bean = beanManager.getBeans(SimpleBeanImpl.class).iterator().next();
+        CreationalContext creationalContext = beanManager.createCreationalContext(bean);
+        SimpleBeanImpl simpleBean = (SimpleBeanImpl) bean.create(creationalContext);
+        String result = simpleBean.doSomething();
+        assert "decorated-Hello!-decorated".equals(result);
+        bean.destroy(simpleBean, creationalContext);
+        assert SimpleInterceptor.aroundInvokeCalled;
+        assert !SimpleInterceptor.postConstructCalled;
+        assert !SimpleInterceptor.preDestroyCalled;
+        assert TwoBindingsInterceptor.aroundInvokeCalled;
+        assert SimpleBeanImpl.postConstructCalled;
+    }
 
-   @Test
-   public void testSimpleInterceptorWithStereotype()
-   {
-      Bean bean = beanManager.getBeans(SimpleBeanWithStereotype.class).iterator().next();
-      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
-      SimpleBeanWithStereotype simpleBean = (SimpleBeanWithStereotype) bean.create(creationalContext);
-      String result = simpleBean.doSomething();
-      assert "Hello!".equals(result);
-      bean.destroy(simpleBean, creationalContext);
-      assert SimpleInterceptor.aroundInvokeCalled;
-      assert SimpleInterceptor.postConstructCalled;
-      assert SimpleInterceptor.preDestroyCalled;
-      assert TwoBindingsInterceptor.aroundInvokeCalled;
-      assert SimpleBeanWithStereotype.postConstructCalled;
-   }
+    @Test
+    public void testSimpleInterceptorWithStereotype() {
+        Bean bean = beanManager.getBeans(SimpleBeanWithStereotype.class).iterator().next();
+        CreationalContext creationalContext = beanManager.createCreationalContext(bean);
+        SimpleBeanWithStereotype simpleBean = (SimpleBeanWithStereotype) bean.create(creationalContext);
+        String result = simpleBean.doSomething();
+        assert "Hello!".equals(result);
+        bean.destroy(simpleBean, creationalContext);
+        assert SimpleInterceptor.aroundInvokeCalled;
+        assert SimpleInterceptor.postConstructCalled;
+        assert SimpleInterceptor.preDestroyCalled;
+        assert TwoBindingsInterceptor.aroundInvokeCalled;
+        assert SimpleBeanWithStereotype.postConstructCalled;
+    }
 }

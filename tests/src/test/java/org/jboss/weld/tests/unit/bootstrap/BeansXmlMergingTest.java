@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.unit.bootstrap;
 
+import static org.testng.Assert.*;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,8 +26,6 @@ import java.util.Collections;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.*;
 
 /**
  *
@@ -42,7 +42,8 @@ public class BeansXmlMergingTest {
         BeansXml beansXml = weldBootstrap.parse(Arrays.asList(url1, url1, url2), true);
 
         assertEquals(1, beansXml.getEnabledAlternativeStereotypes().size());
-        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Stereo", beansXml.getEnabledAlternativeStereotypes().get(0).getValue());
+        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Stereo",
+                beansXml.getEnabledAlternativeStereotypes().get(0).getValue());
 
         assertEquals(1, beansXml.getEnabledAlternativeClasses().size());
         assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Alt", beansXml.getEnabledAlternativeClasses().get(0).getValue());

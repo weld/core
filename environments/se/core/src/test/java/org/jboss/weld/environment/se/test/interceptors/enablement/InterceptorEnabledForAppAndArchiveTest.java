@@ -30,7 +30,9 @@ public class InterceptorEnabledForAppAndArchiveTest {
 
     @Test
     public void testInitialization() {
-        try (WeldContainer container = new Weld().disableDiscovery().beanClasses(TransasctionalService.class, TransactionalInterceptor.class).addInterceptor(TransactionalInterceptor.class)
+        try (WeldContainer container = new Weld().disableDiscovery()
+                .beanClasses(TransasctionalService.class, TransactionalInterceptor.class)
+                .addInterceptor(TransactionalInterceptor.class)
                 .initialize()) {
             ActionSequence.reset();
             container.select(TransasctionalService.class).get().ping();

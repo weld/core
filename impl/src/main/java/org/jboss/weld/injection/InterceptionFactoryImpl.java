@@ -52,7 +52,8 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
      * @param annotatedType
      * @return
      */
-    public static <F> InterceptionFactoryImpl<F> of(BeanManagerImpl beanManager, CreationalContext<?> creationalContext, AnnotatedType<F> annotatedType) {
+    public static <F> InterceptionFactoryImpl<F> of(BeanManagerImpl beanManager, CreationalContext<?> creationalContext,
+            AnnotatedType<F> annotatedType) {
         return new InterceptionFactoryImpl<>(beanManager, creationalContext, annotatedType);
     }
 
@@ -68,7 +69,8 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
 
     private boolean used;
 
-    private InterceptionFactoryImpl(BeanManagerImpl beanManager, CreationalContext<?> creationalContext, AnnotatedType<T> annotatedType) {
+    private InterceptionFactoryImpl(BeanManagerImpl beanManager, CreationalContext<?> creationalContext,
+            AnnotatedType<T> annotatedType) {
         this.beanManager = beanManager;
         this.creationalContext = creationalContext;
         this.annotatedType = annotatedType;
@@ -105,7 +107,8 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
             return instance;
         }
 
-        UnproxyableResolutionException exception = Proxies.getUnproxyableTypeException(annotatedType.getBaseType(), null, beanManager.getServices(),
+        UnproxyableResolutionException exception = Proxies.getUnproxyableTypeException(annotatedType.getBaseType(), null,
+                beanManager.getServices(),
                 ignoreFinalMethods);
         if (exception != null) {
             throw exception;
@@ -124,10 +127,11 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
 
         InterceptedProxyMethodHandler methodHandler = new InterceptedProxyMethodHandler(instance);
         methodHandler.setInterceptorMethodHandler(new InterceptorMethodHandler(
-                InterceptionContext.forNonConstructorInterception(data.getInterceptionModel(), creationalContext, beanManager, data.getSlimAnnotatedType())));
+                InterceptionContext.forNonConstructorInterception(data.getInterceptionModel(), creationalContext, beanManager,
+                        data.getSlimAnnotatedType())));
 
         T proxy = (System.getSecurityManager() == null) ? data.getInterceptedProxyFactory().run()
-            : AccessController.doPrivileged(data.getInterceptedProxyFactory());
+                : AccessController.doPrivileged(data.getInterceptedProxyFactory());
         ((ProxyObject) proxy).weld_setHandler(methodHandler);
         return proxy;
     }

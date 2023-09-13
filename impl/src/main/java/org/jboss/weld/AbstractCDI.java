@@ -41,7 +41,8 @@ import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to be identified using the
+ * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to
+ * be identified using the
  * {@link #getCallingClassName()} method.
  *
  * @author Jozef Hartinger
@@ -140,12 +141,14 @@ public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
 
     @Override
     public Comparator<Handler<?>> getPriorityComparator() {
-        return Reflections.cast(new PriorityComparator(BeanManagerProxy.unwrap(getBeanManager()).getServices().get(AnnotationApiAbstraction.class)));
+        return Reflections.cast(new PriorityComparator(
+                BeanManagerProxy.unwrap(getBeanManager()).getServices().get(AnnotationApiAbstraction.class)));
     }
 
     @Override
     public Comparator<Handle<?>> getHandlePriorityComparator() {
-        return new PriorityComparator(BeanManagerProxy.unwrap(getBeanManager()).getServices().get(AnnotationApiAbstraction.class));
+        return new PriorityComparator(
+                BeanManagerProxy.unwrap(getBeanManager()).getServices().get(AnnotationApiAbstraction.class));
     }
 
     /**

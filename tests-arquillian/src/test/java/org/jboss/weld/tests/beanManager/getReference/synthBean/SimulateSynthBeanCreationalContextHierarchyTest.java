@@ -9,6 +9,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,7 +31,8 @@ public class SimulateSynthBeanCreationalContextHierarchyTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimulateSynthBeanCreationalContextHierarchyTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimulateSynthBeanCreationalContextHierarchyTest.class))
                 .addPackage(SimulateSynthBeanCreationalContextHierarchyTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, MyExtension.class);
     }

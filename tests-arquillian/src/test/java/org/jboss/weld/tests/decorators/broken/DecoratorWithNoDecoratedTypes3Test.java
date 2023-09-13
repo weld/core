@@ -19,15 +19,15 @@ package org.jboss.weld.tests.decorators.broken;
 import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.enterprise.inject.spi.Extension;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
-import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,11 +40,12 @@ public class DecoratorWithNoDecoratedTypes3Test {
         return ShrinkWrap
                 .create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratorWithNoDecoratedTypes3Test.class))
                 .addClasses(Glue.class, GlueDecorator.class, GlueDecoratorExtension.class, ForwardingBeanAttributes.class,
-                        ForwardingInjectionPoint.class).addAsServiceProvider(Extension.class, GlueDecoratorExtension.class);
+                        ForwardingInjectionPoint.class)
+                .addAsServiceProvider(Extension.class, GlueDecoratorExtension.class);
     }
 
     @Test
     public void testDeploymentWithBadDecorator() {
         // should throw definition exception
-     }
+    }
 }

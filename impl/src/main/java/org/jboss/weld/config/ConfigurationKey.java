@@ -35,7 +35,8 @@ import org.jboss.weld.configuration.spi.ExternalConfiguration;
 public enum ConfigurationKey {
 
     /**
-     * Indicates whether ConcurrentDeployer and ConcurrentValidator should be enabled. If enabled, ConcurrentDeployer and ConcurrentValidator execute their
+     * Indicates whether ConcurrentDeployer and ConcurrentValidator should be enabled. If enabled, ConcurrentDeployer and
+     * ConcurrentValidator execute their
      * subtasks using {@link org.jboss.weld.manager.api.ExecutorServices} which can be configured separately.
      *
      * Otherwise, single-threaded version of Deployer and Validator are used.
@@ -46,7 +47,8 @@ public enum ConfigurationKey {
     CONCURRENT_DEPLOYMENT("org.jboss.weld.bootstrap.concurrentDeployment", true),
 
     /**
-     * The number of threads used by ContainerLifecycleEventPreloader. The ContainerLifecycleEventPreloader allows observer methods for container lifecycle
+     * The number of threads used by ContainerLifecycleEventPreloader. The ContainerLifecycleEventPreloader allows observer
+     * methods for container lifecycle
      * events to be resolved upfront while the deployment is waiting for classloader or reflection API.
      *
      * ContainerLifecycleEventPreloader has its own thread pool whose size is configured by this property.
@@ -57,10 +59,12 @@ public enum ConfigurationKey {
      *
      */
     @Description("Weld is capable of resolving observer methods for container lifecycle events in advance while bean deployer threads are blocked waiting for I/O operations. This option specifies the number of threads used for preloading. If set to 0, preloading is disabled.")
-    PRELOADER_THREAD_POOL_SIZE("org.jboss.weld.bootstrap.preloaderThreadPoolSize", Math.max(1, Runtime.getRuntime().availableProcessors() - 1)),
+    PRELOADER_THREAD_POOL_SIZE("org.jboss.weld.bootstrap.preloaderThreadPoolSize",
+            Math.max(1, Runtime.getRuntime().availableProcessors() - 1)),
 
     /**
-     * Allows an integrator to enable the non-portable mode. Non-portable mode is suggested by the specification to overcome problems with legacy applications
+     * Allows an integrator to enable the non-portable mode. Non-portable mode is suggested by the specification to overcome
+     * problems with legacy applications
      * not using CDI SPI properly.
      *
      * The non-portable mode is disabled by default.
@@ -87,15 +91,18 @@ public enum ConfigurationKey {
     EXECUTOR_THREAD_POOL_TYPE("org.jboss.weld.executor.threadPoolType", ""),
 
     /**
-     * Keep-alive time in seconds. Passed to the constructor of the ThreadPoolExecutor class, maximum time that excess idle threads will wait for new tasks
+     * Keep-alive time in seconds. Passed to the constructor of the ThreadPoolExecutor class, maximum time that excess idle
+     * threads will wait for new tasks
      * before terminating.
      */
     @Description("The maximum time the idle threads will wait for new tasks before terminating. Only used by <code>FIXED_TIMEOUT</code> thread pool type.")
     EXECUTOR_THREAD_POOL_KEEP_ALIVE_TIME("org.jboss.weld.executor.threadPoolKeepAliveTime", 60L),
 
     /**
-     * Weld caches resolved injection points in order to resolve them faster in the future. There exists a separate type safe resolver for beans,
-     * decorators, disposers, interceptors and observers. Each of them stores resolved injection points in its cache, which maximum size is bounded by a default
+     * Weld caches resolved injection points in order to resolve them faster in the future. There exists a separate type safe
+     * resolver for beans,
+     * decorators, disposers, interceptors and observers. Each of them stores resolved injection points in its cache, which
+     * maximum size is bounded by a default
      * value (common to all of them).
      *
      * @see <a href="https://issues.jboss.org/browse/WELD-1323">WELD-1323</a>
@@ -110,19 +117,22 @@ public enum ConfigurationKey {
     PROXY_DUMP("org.jboss.weld.proxy.dump", ""),
 
     /**
-     * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the container, using non-portable
+     * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the
+     * container, using non-portable
      * JVM APIs.
      */
     @Description("Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the container, using non-portable JVM APIs.")
     RELAXED_CONSTRUCTION("org.jboss.weld.construction.relaxed", false),
 
     /**
-     * Allows {@link ProxyInstantiator} to be selected explicitly. This is only intended for testing purposes and should never be set by an application.
+     * Allows {@link ProxyInstantiator} to be selected explicitly. This is only intended for testing purposes and should never
+     * be set by an application.
      */
     PROXY_INSTANTIATOR("org.jboss.weld.proxy.instantiator", ""),
 
     /**
-     * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the container, using non-portable
+     * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the
+     * container, using non-portable
      * JVM APIs.
      *
      * @deprecated this option is deprecated. RELAXED_CONSTRUCTION should be used instead
@@ -137,7 +147,8 @@ public enum ConfigurationKey {
     DISABLE_XML_VALIDATION("org.jboss.weld.xml.disableValidating", false),
 
     /**
-     * For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup. The optimization is disabled by default as it
+     * For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup. The
+     * optimization is disabled by default as it
      * does not match the {@linkjakarta.enterprise.context.spi.AlterableContext} contract.
      */
     @Description("For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup. The optimization is disabled by default.")
@@ -168,7 +179,8 @@ public enum ConfigurationKey {
     PROBE_EVENT_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.eventMonitor.excludeType", ""),
 
     /**
-     * This optimization is used to reduce the HTTP session replication overhead. However, the inconsistency detection mechanism may cause problems in some
+     * This optimization is used to reduce the HTTP session replication overhead. However, the inconsistency detection mechanism
+     * may cause problems in some
      * development environments.
      */
     @Description("This optimization is used to reduce the HTTP session replication overhead. However, the inconsistency detection mechanism may cause problems in some development environments.")
@@ -183,7 +195,8 @@ public enum ConfigurationKey {
     PROBE_EMBED_INFO_SNIPPET("org.jboss.weld.probe.embedInfoSnippet", true),
 
     /**
-     * If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a
+     * If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g.
+     * attributes of an HTTP session for a
      * session context).
      */
     @Description("If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a session context).")
@@ -211,25 +224,29 @@ public enum ConfigurationKey {
      */
     @Deprecated(since = "5.1.0.Final")
     @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_ALLOW_REMOTE_ADDRESS("org.jboss.weld.probe.allowRemoteAddress", "127.0.0.1|::1|::1%.+|0:0:0:0:0:0:0:1|0:0:0:0:0:0:0:1%.+"),
+    PROBE_ALLOW_REMOTE_ADDRESS("org.jboss.weld.probe.allowRemoteAddress",
+            "127.0.0.1|::1|::1%.+|0:0:0:0:0:0:0:1|0:0:0:0:0:0:0:1%.+"),
 
     /**
-     * Weld supports a non-standard workaround to be able to create proxies for Java types which declare non-private non-static final methods. These methods are
+     * Weld supports a non-standard workaround to be able to create proxies for Java types which declare non-private non-static
+     * final methods. These methods are
      * completely ignored during proxy generation, and should never be invoked upon the proxy instance!
      * <p>
-     * A regular expression. If an unproxyable type matches this pattern, the type is considered proxyable and final methods are ignored.
+     * A regular expression. If an unproxyable type matches this pattern, the type is considered proxyable and final methods are
+     * ignored.
      */
     @Description("Weld supports a non-standard workaround to be able to create proxies for Java types which declare non-private non-static final methods. A regular expression. If an unproxyable type matches this pattern, the type is considered proxyable and final methods are ignored.")
     PROXY_IGNORE_FINAL_METHODS("org.jboss.weld.proxy.ignoreFinalMethods", ""),
 
     /**
-     *  Conversation timeout in milliseconds. Default value is 600 000 ms.
+     * Conversation timeout in milliseconds. Default value is 600 000 ms.
      */
     @Description("The maximum inactivity time of conversation in milliseconds.")
     CONVERSATION_TIMEOUT("org.jboss.weld.conversation.timeout", 10 * 60 * 1000L),
 
     /**
-     *  Conversation concurrent access timeout in milliseconds represents maximum time to wait on the conversation concurrent lock. Default value is 1000 ms.
+     * Conversation concurrent access timeout in milliseconds represents maximum time to wait on the conversation concurrent
+     * lock. Default value is 1000 ms.
      */
     @Description("The maximum time to wait on the lock of conversation in milliseconds.")
     CONVERSATION_CONCURRENT_ACCESS_TIMEOUT("org.jboss.weld.conversation.concurrentAccessTimeout", 1000L),
@@ -237,26 +254,32 @@ public enum ConfigurationKey {
     /**
      * This configuration property should only be used if experiencing problems with rolling upgrades.
      * <p>
-     * The delimiter is used to abbreviate a bean archive identifier (which is usually derived from the archive name) before used as a part of an identifier of
+     * The delimiter is used to abbreviate a bean archive identifier (which is usually derived from the archive name) before
+     * used as a part of an identifier of
      * an internal component (such as bean). Note that the delimiter is used for all bean archives forming the application.
      * <p>
      * The abbreviation proceeds as follows:
      * <ul>
      * <li>Try to find the first occurrence of the specified delimiter</li>
      * <li>If not found, the identifier is not abbreviated</li>
-     * <li>If found, try to extract the archive suffix (`.war`, `.ear`, etc.) and the final value consists of the part before the delimiter and the archive
+     * <li>If found, try to extract the archive suffix (`.war`, `.ear`, etc.) and the final value consists of the part before
+     * the delimiter and the archive
      * suffix (if extracted)</li>
      * </ul>
      * <p>
-     * An example: Given an application with two versions going by the names <code>test__1.1.war</code> and <code>test__1.2.war</code>. Weld normally cannot
-     * support replication of <code>@SessionScoped</code> beans between these two deployments. Passing in this option with delimiter "__" will allow Weld to see
+     * An example: Given an application with two versions going by the names <code>test__1.1.war</code> and
+     * <code>test__1.2.war</code>. Weld normally cannot
+     * support replication of <code>@SessionScoped</code> beans between these two deployments. Passing in this option with
+     * delimiter "__" will allow Weld to see
      * both applications simply as test.war, hence allowing for session replication.
      */
     @Description("The delimiter is used to abbreviate a bean archive identifier before used as a part of an identifier of an internal component (such as bean).")
     ROLLING_UPGRADES_ID_DELIMITER("org.jboss.weld.clustering.rollingUpgradesIdDelimiter", ""),
 
     /**
-     * A regular expression. If a non-empty string, then all annotated types whose {@codejakarta.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()} matches this pattern are vetoed if not annotated with a bean defining annotation.
+     * A regular expression. If a non-empty string, then all annotated types whose
+     * {@codejakarta.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()} matches this pattern are vetoed if not
+     * annotated with a bean defining annotation.
      */
     @Description("A regular expression. If a non-empty string, then all annotated types whose <code>jakarta.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()</code> matches this pattern are vetoed if not annotated with a bean defining annotation.")
     VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation", ""),
@@ -273,18 +296,21 @@ public enum ConfigurationKey {
      * If set to <code>true</code>:
      * <ul>
      * <li>Weld is allowed to perform efficient cleanup and further optimizations after bootstrap</li>
-     * <li>{@link Bootstrap#endInitialization()} must be called after all EE components which support injection are installed (that means all relevant {@link ProcessInjectionTarget} events were already fired)</li>
+     * <li>{@link Bootstrap#endInitialization()} must be called after all EE components which support injection are installed
+     * (that means all relevant {@link ProcessInjectionTarget} events were already fired)</li>
      * </ul>
      * This property can only be set by integrators through {@link ExternalConfiguration}.
      */
     ALLOW_OPTIMIZED_CLEANUP("org.jboss.weld.bootstrap.allowOptimizedCleanup", false, true),
 
     /**
-     * A regular expression. If {@link #ALLOW_OPTIMIZED_CLEANUP} is set to true this property can be used to extend the set of beans which should never be
+     * A regular expression. If {@link #ALLOW_OPTIMIZED_CLEANUP} is set to true this property can be used to extend the set of
+     * beans which should never be
      * considered <strong>unused</strong>. {@link Bean#getBeanClass()} is used to match the pattern.
      *
      * <p>
-     * Two special values are considered. {@link UnusedBeans#ALL} (default value) means that all beans are excluded. If set to {@link UnusedBeans#NONE}, no
+     * Two special values are considered. {@link UnusedBeans#ALL} (default value) means that all beans are excluded. If set to
+     * {@link UnusedBeans#NONE}, no
      * beans are excluded.
      * </p>
      *
@@ -304,8 +330,10 @@ public enum ConfigurationKey {
     UNUSED_BEANS_EXCLUDE_TYPE("org.jboss.weld.bootstrap.unusedBeans.excludeType", UnusedBeans.ALL),
 
     /**
-     * A regular expression. If {@link #ALLOW_OPTIMIZED_CLEANUP} is set to true this property can be used to extend the set of beans which should never be
-     * considered <strong>unused</strong>. A bean is excluded if the corresponding {@link AnnotatedType}, or any member, is annotated with an annotation which
+     * A regular expression. If {@link #ALLOW_OPTIMIZED_CLEANUP} is set to true this property can be used to extend the set of
+     * beans which should never be
+     * considered <strong>unused</strong>. A bean is excluded if the corresponding {@link AnnotatedType}, or any member, is
+     * annotated with an annotation which
      * matches this pattern.
      *
      * <p>
@@ -328,8 +356,10 @@ public enum ConfigurationKey {
     UNUSED_BEANS_EXCLUDE_ANNOTATION("org.jboss.weld.bootstrap.unusedBeans.excludeAnnotation", "javax\\.ws\\.rs.*"),
 
     /**
-     * If set to true then when a contextual reference for a @SessionScoped or @ConversationScoped bean is obtained from a context backed by an HTTP session
-     * the instance is set again using HttpSession.setAttribute(). This allows to trigger session replication in some application servers.
+     * If set to true then when a contextual reference for a @SessionScoped or @ConversationScoped bean is obtained from a
+     * context backed by an HTTP session
+     * the instance is set again using HttpSession.setAttribute(). This allows to trigger session replication in some
+     * application servers.
      */
     @Description("If set to true then when a contextual reference for a @SessionScoped or @ConversationScoped bean is obtained from a context backed by an HTTP session the instance is set again using HttpSession.setAttribute(). This allows to trigger session replication in some application servers.")
     RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS("org.jboss.weld.context.resetHttpSessionAttributeOnBeanAccess", false),
@@ -419,7 +449,8 @@ public enum ConfigurationKey {
     /**
      *
      * @param valueType
-     * @return <code>true</code> if the given value type corresponds to the type of the default value, <code>false</code> otherwise
+     * @return <code>true</code> if the given value type corresponds to the type of the default value, <code>false</code>
+     *         otherwise
      */
     public boolean isValidValueType(Class<?> valueType) {
         return defaultValue.getClass().isAssignableFrom(valueType);
@@ -448,7 +479,8 @@ public enum ConfigurationKey {
      * @return <code>true</code> if the given value type is supported, <code>false</code> otherwise
      */
     public static boolean isValueTypeSupported(Class<?> valueType) {
-        return valueType.equals(String.class) || valueType.equals(Boolean.class) || valueType.equals(Integer.class) || valueType.equals(Long.class);
+        return valueType.equals(String.class) || valueType.equals(Boolean.class) || valueType.equals(Integer.class)
+                || valueType.equals(Long.class);
     }
 
     /**
@@ -464,6 +496,5 @@ public enum ConfigurationKey {
         }
         return null;
     }
-
 
 }

@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.smoke;
 
-
 import jakarta.enterprise.context.Dependent;
 
 /**

@@ -42,28 +42,30 @@ public class SharedObjectCache implements BootstrapService {
         return manager.getServices().get(SharedObjectCache.class);
     }
 
-    private final ComputingCache<Set<?>, Set<?>> sharedSets = ComputingCacheBuilder.newBuilder().build(new Function<Set<?>, Set<?>>() {
-        @Override
-        public Set<?> apply(Set<?> from) {
-            return ImmutableSet.copyOf(from);
-        }
-    });
+    private final ComputingCache<Set<?>, Set<?>> sharedSets = ComputingCacheBuilder.newBuilder()
+            .build(new Function<Set<?>, Set<?>>() {
+                @Override
+                public Set<?> apply(Set<?> from) {
+                    return ImmutableSet.copyOf(from);
+                }
+            });
 
     private final ComputingCache<Map<?, ?>, Map<?, ?>> sharedMaps = ComputingCacheBuilder.newBuilder().build(
             new Function<Map<?, ?>, Map<?, ?>>() {
                 @Override
                 public Map<?, ?> apply(Map<?, ?> from) {
-            return ImmutableMap.copyOf(from);
-        }
-    });
+                    return ImmutableMap.copyOf(from);
+                }
+            });
 
-    private final ComputingCache<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = ComputingCacheBuilder.newBuilder().build(
-            new Function<Type, LazyValueHolder<Set<Type>>>() {
-        @Override
-                public LazyValueHolder<Set<Type>> apply(Type input) {
-            return new TypeClosureLazyValueHolder(input);
-        }
-    });
+    private final ComputingCache<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = ComputingCacheBuilder.newBuilder()
+            .build(
+                    new Function<Type, LazyValueHolder<Set<Type>>>() {
+                        @Override
+                        public LazyValueHolder<Set<Type>> apply(Type input) {
+                            return new TypeClosureLazyValueHolder(input);
+                        }
+                    });
 
     public <T> Set<T> getSharedSet(Set<T> set) {
         return sharedSets.getCastValue(set);

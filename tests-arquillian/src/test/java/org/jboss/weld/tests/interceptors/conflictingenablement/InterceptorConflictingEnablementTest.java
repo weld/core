@@ -41,7 +41,8 @@ public class InterceptorConflictingEnablementTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorConflictingEnablementTest.class)).intercept(TransactionalInterceptor.class, LoggingInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorConflictingEnablementTest.class))
+                .intercept(TransactionalInterceptor.class, LoggingInterceptor.class)
                 .decorate(TestDecorator.class, AnotherTestDecorator.class)
                 .addPackage(InterceptorConflictingEnablementTest.class.getPackage()).addClass(ActionSequence.class);
     }

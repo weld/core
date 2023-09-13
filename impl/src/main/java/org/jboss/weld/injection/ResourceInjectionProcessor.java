@@ -53,16 +53,19 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
     /**
      * @param fieldInjectionPoint
      * @param beanManager
-     * @return {@link ResourceInjection} for static producer field or <code>null</code> if required services are not supported or the field is not annotated
+     * @return {@link ResourceInjection} for static producer field or <code>null</code> if required services are not supported
+     *         or the field is not annotated
      *         with the specific marker annotation
      * @see StaticEEResourceProducerField
      */
-    protected <T, X> ResourceInjection<T> createStaticProducerFieldResourceInjection(FieldInjectionPoint<T, X> fieldInjectionPoint, BeanManagerImpl beanManager) {
+    protected <T, X> ResourceInjection<T> createStaticProducerFieldResourceInjection(
+            FieldInjectionPoint<T, X> fieldInjectionPoint, BeanManagerImpl beanManager) {
 
         S injectionServices = getInjectionServices(beanManager);
         C processorContext = getProcessorContext(beanManager);
 
-        if (injectionServices != null && fieldInjectionPoint.getAnnotated().isAnnotationPresent(getMarkerAnnotation(processorContext))
+        if (injectionServices != null
+                && fieldInjectionPoint.getAnnotated().isAnnotationPresent(getMarkerAnnotation(processorContext))
                 && accept(fieldInjectionPoint.getAnnotated(), processorContext)) {
             return createFieldResourceInjection(fieldInjectionPoint, injectionServices, processorContext);
         }
@@ -76,7 +79,8 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
      * @param manager
      * @return the set of {@link ResourceInjection}s for the specified bean and type
      */
-    protected <T> Set<ResourceInjection<?>> createResourceInjections(Bean<?> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
+    protected <T> Set<ResourceInjection<?>> createResourceInjections(Bean<?> declaringBean, EnhancedAnnotatedType<T> type,
+            BeanManagerImpl manager) {
 
         S injectionServices = getInjectionServices(manager);
         C processorContext = getProcessorContext(manager);
@@ -84,7 +88,6 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
         if (injectionServices == null) {
             return Collections.emptySet();
         }
-
 
         Class<? extends Annotation> marker = getMarkerAnnotation(processorContext);
 
@@ -100,9 +103,11 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
      * @param beanManager
      * @return {@link ResourceInjection} for the given field
      */
-    private <T, X> ResourceInjection<T> createFieldResourceInjection(FieldInjectionPoint<T, X> fieldInjectionPoint, S injectionServices, C processorContext) {
-        return new FieldResourceInjection<T, X>(fieldInjectionPoint, Reflections.<ResourceReferenceFactory<T>> cast(getResourceReferenceFactory(
-                fieldInjectionPoint, injectionServices, processorContext)));
+    private <T, X> ResourceInjection<T> createFieldResourceInjection(FieldInjectionPoint<T, X> fieldInjectionPoint,
+            S injectionServices, C processorContext) {
+        return new FieldResourceInjection<T, X>(fieldInjectionPoint,
+                Reflections.<ResourceReferenceFactory<T>> cast(getResourceReferenceFactory(
+                        fieldInjectionPoint, injectionServices, processorContext)));
     }
 
     /**
@@ -111,17 +116,20 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
      * @param beanManager
      * @return {@link ResourceInjection} for the given setter method
      */
-    private <T, X> ResourceInjection<T> createSetterResourceInjection(ParameterInjectionPoint<T, X> parameterInjectionPoint, S injectionServices,
+    private <T, X> ResourceInjection<T> createSetterResourceInjection(ParameterInjectionPoint<T, X> parameterInjectionPoint,
+            S injectionServices,
             C processorContext) {
-        return new SetterResourceInjection<T, X>(parameterInjectionPoint, Reflections.<ResourceReferenceFactory<T>> cast(getResourceReferenceFactory(
-                parameterInjectionPoint, injectionServices, processorContext)));
+        return new SetterResourceInjection<T, X>(parameterInjectionPoint,
+                Reflections.<ResourceReferenceFactory<T>> cast(getResourceReferenceFactory(
+                        parameterInjectionPoint, injectionServices, processorContext)));
     }
 
     public Class<? extends Annotation> getMarkerAnnotation(BeanManagerImpl manager) {
         return getMarkerAnnotation(getProcessorContext(manager));
     }
 
-    protected abstract <T> ResourceReferenceFactory<T> getResourceReferenceFactory(InjectionPoint injectionPoint, S injectionServices, C processorContext);
+    protected abstract <T> ResourceReferenceFactory<T> getResourceReferenceFactory(InjectionPoint injectionPoint,
+            S injectionServices, C processorContext);
 
     protected abstract Class<? extends Annotation> getMarkerAnnotation(C processorContext);
 
@@ -130,7 +138,8 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
     protected abstract S getInjectionServices(BeanManagerImpl manager);
 
     protected <T> Set<ResourceInjection<?>> createResourceInjections(Iterable<EnhancedAnnotatedField<?, ? super T>> fields,
-            Iterable<EnhancedAnnotatedMethod<?, ? super T>> methods, Bean<?> declaringBean, Class<?> declaringClass, BeanManagerImpl manager) {
+            Iterable<EnhancedAnnotatedMethod<?, ? super T>> methods, Bean<?> declaringBean, Class<?> declaringClass,
+            BeanManagerImpl manager) {
         ImmutableSet.Builder<ResourceInjection<?>> resourceInjections = ImmutableSet.builder();
 
         S injectionServices = getInjectionServices(manager);
@@ -139,7 +148,9 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
         for (EnhancedAnnotatedField<?, ? super T> field : fields) {
             if (accept(field, processorContext)) {
                 resourceInjections.add(createFieldResourceInjection(
-                        InjectionPointFactory.silentInstance().createFieldInjectionPoint(field, declaringBean, declaringClass, manager), injectionServices,
+                        InjectionPointFactory.silentInstance().createFieldInjectionPoint(field, declaringBean, declaringClass,
+                                manager),
+                        injectionServices,
                         processorContext));
             }
         }
@@ -151,7 +162,8 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
                 EnhancedAnnotatedParameter<?, ?> parameter = method.getEnhancedParameters().get(0);
                 resourceInjections.add(createSetterResourceInjection(
                         InjectionPointFactory.silentInstance().createParameterInjectionPoint(parameter, declaringBean,
-                                declaringClass, manager), injectionServices, processorContext));
+                                declaringClass, manager),
+                        injectionServices, processorContext));
             }
         }
         return resourceInjections.build();

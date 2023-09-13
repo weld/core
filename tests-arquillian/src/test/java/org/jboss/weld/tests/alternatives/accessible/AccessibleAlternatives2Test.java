@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.alternatives.accessible;
 
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,9 +33,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
-
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
@@ -42,8 +42,11 @@ public class AccessibleAlternatives2Test {
     public static Archive<?> deploy() {
         JavaArchive lib = ShrinkWrap.create(BeanArchive.class)
                 .addClasses(IUser.class, AUser.class);
-        StringAsset beansXml = new StringAsset("<beans><alternatives><class>" + BUser.class.getName() + "</class></alternatives></beans>");
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AccessibleAlternatives2Test.class, Utils.ARCHIVE_TYPE.WAR))
+        StringAsset beansXml = new StringAsset(
+                "<beans><alternatives><class>" + BUser.class.getName() + "</class></alternatives></beans>");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(AccessibleAlternatives2Test.class, Utils.ARCHIVE_TYPE.WAR))
                 .addAsLibrary(lib)
                 .addAsWebInfResource(beansXml, "beans.xml")
                 .addClasses(BUser.class);

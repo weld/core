@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.tests.enterprise.proxyability;
 
-import jakarta.ejb.Stateless;
 import java.io.Serializable;
+
+import jakarta.ejb.Stateless;
 
 /**
  * Session Bean implementation class MyStatelessBean

@@ -60,7 +60,8 @@ public class ResourceInjector<T> extends DefaultInjector<T> {
     }
 
     @Override
-    public void inject(final T instance, final CreationalContext<T> ctx, final BeanManagerImpl manager, final SlimAnnotatedType<T> type, final InjectionTarget<T> injectionTarget) {
+    public void inject(final T instance, final CreationalContext<T> ctx, final BeanManagerImpl manager,
+            final SlimAnnotatedType<T> type, final InjectionTarget<T> injectionTarget) {
         new InjectionContextImpl<T>(manager, injectionTarget, type, instance) {
             @Override
             public void proceed() {

@@ -54,7 +54,8 @@ import org.jboss.weld.util.collections.WeldCollections;
  */
 public class InterceptionContext implements Serializable {
 
-    private static final Set<InterceptionType> METHOD_INTERCEPTION_TYPES = ImmutableSet.of(AROUND_INVOKE, AROUND_TIMEOUT, POST_CONSTRUCT, PRE_DESTROY, POST_ACTIVATE, PRE_PASSIVATE);
+    private static final Set<InterceptionType> METHOD_INTERCEPTION_TYPES = ImmutableSet.of(AROUND_INVOKE, AROUND_TIMEOUT,
+            POST_CONSTRUCT, PRE_DESTROY, POST_ACTIVATE, PRE_PASSIVATE);
 
     /**
      * The context returned by this method may be later reused for other interception types.
@@ -65,16 +66,20 @@ public class InterceptionContext implements Serializable {
      * @param type
      * @return the interception context to be used for the AroundConstruct chain
      */
-    public static InterceptionContext forConstructorInterception(InterceptionModel interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
+    public static InterceptionContext forConstructorInterception(InterceptionModel interceptionModel, CreationalContext<?> ctx,
+            BeanManagerImpl manager, SlimAnnotatedType<?> type) {
         return of(interceptionModel, ctx, manager, null, type);
     }
 
-    public static InterceptionContext forNonConstructorInterception(InterceptionModel interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
+    public static InterceptionContext forNonConstructorInterception(InterceptionModel interceptionModel,
+            CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
         return of(interceptionModel, ctx, manager, METHOD_INTERCEPTION_TYPES, type);
     }
 
-    private static InterceptionContext of(InterceptionModel interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes, SlimAnnotatedType<?> type) {
-        return new InterceptionContext(initInterceptorInstanceMap(interceptionModel, ctx, manager, interceptionTypes), manager, interceptionModel, type);
+    private static InterceptionContext of(InterceptionModel interceptionModel, CreationalContext<?> ctx,
+            BeanManagerImpl manager, Set<InterceptionType> interceptionTypes, SlimAnnotatedType<?> type) {
+        return new InterceptionContext(initInterceptorInstanceMap(interceptionModel, ctx, manager, interceptionTypes), manager,
+                interceptionModel, type);
     }
 
     private static final long serialVersionUID = 7500722360133273633L;
@@ -85,21 +90,24 @@ public class InterceptionContext implements Serializable {
     private final BeanManagerImpl manager;
     private final SlimAnnotatedType<?> annotatedType;
 
-    private InterceptionContext(Map<Serializable, Object> interceptorInstances, BeanManagerImpl manager, InterceptionModel interceptionModel, SlimAnnotatedType<?> type) {
+    private InterceptionContext(Map<Serializable, Object> interceptorInstances, BeanManagerImpl manager,
+            InterceptionModel interceptionModel, SlimAnnotatedType<?> type) {
         this.interceptorInstances = interceptorInstances;
         this.manager = manager;
         this.interceptionModel = interceptionModel;
         this.annotatedType = type;
     }
 
-    private static Map<Serializable, Object> initInterceptorInstanceMap(InterceptionModel model, CreationalContext ctx, BeanManagerImpl manager,
+    private static Map<Serializable, Object> initInterceptorInstanceMap(InterceptionModel model, CreationalContext ctx,
+            BeanManagerImpl manager,
             Set<InterceptionType> interceptionTypes) {
         Map<Serializable, Object> interceptorInstances = new HashMap<>();
         for (InterceptorClassMetadata<?> interceptor : model.getAllInterceptors()) {
             if (interceptionTypes != null) {
                 for (InterceptionType interceptionType : interceptionTypes) {
                     if (interceptor.isEligible(interceptionType) && !interceptorInstances.containsKey(interceptor.getKey())) {
-                        interceptorInstances.put(interceptor.getKey(), interceptor.getInterceptorFactory().create(ctx, manager));
+                        interceptorInstances.put(interceptor.getKey(),
+                                interceptor.getInterceptorFactory().create(ctx, manager));
                     }
                 }
             } else {
@@ -122,27 +130,35 @@ public class InterceptionContext implements Serializable {
         return new InterceptionContext(interceptorInstances, manager, interceptionModel, annotatedType);
     }
 
-    public List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(Object instance, Method method, InterceptionType interceptionType) {
-        List<? extends InterceptorClassMetadata<?>> interceptorList = interceptionModel.getInterceptors(interceptionType, method);
-        List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorList.size());
+    public List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(Object instance, Method method,
+            InterceptionType interceptionType) {
+        List<? extends InterceptorClassMetadata<?>> interceptorList = interceptionModel.getInterceptors(interceptionType,
+                method);
+        List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(
+                interceptorList.size());
         for (InterceptorClassMetadata<?> interceptorMetadata : interceptorList) {
-            interceptorInvocations.addAll(interceptorMetadata.getInterceptorInvocation(getInterceptorInstance(interceptorMetadata), interceptionType)
-                    .getInterceptorMethodInvocations());
+            interceptorInvocations.addAll(
+                    interceptorMetadata.getInterceptorInvocation(getInterceptorInstance(interceptorMetadata), interceptionType)
+                            .getInterceptorMethodInvocations());
         }
-        TargetClassInterceptorMetadata targetClassInterceptorMetadata = getInterceptionModel().getTargetClassInterceptorMetadata();
+        TargetClassInterceptorMetadata targetClassInterceptorMetadata = getInterceptionModel()
+                .getTargetClassInterceptorMetadata();
         if (targetClassInterceptorMetadata != null && targetClassInterceptorMetadata.isEligible(interceptionType)) {
             interceptorInvocations
-                    .addAll(targetClassInterceptorMetadata.getInterceptorInvocation(instance, interceptionType).getInterceptorMethodInvocations());
+                    .addAll(targetClassInterceptorMetadata.getInterceptorInvocation(instance, interceptionType)
+                            .getInterceptorMethodInvocations());
         }
         return ImmutableList.copyOf(interceptorInvocations);
     }
 
     public List<InterceptorMethodInvocation> buildInterceptorMethodInvocationsForConstructorInterception() {
         List<? extends InterceptorClassMetadata<?>> interceptorList = interceptionModel.getConstructorInvocationInterceptors();
-        List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorList.size());
+        List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(
+                interceptorList.size());
         for (InterceptorClassMetadata<?> metadata : interceptorList) {
             Object interceptorInstance = getInterceptorInstance(metadata);
-            InterceptorInvocation invocation = metadata.getInterceptorInvocation(interceptorInstance, InterceptionType.AROUND_CONSTRUCT);
+            InterceptorInvocation invocation = metadata.getInterceptorInvocation(interceptorInstance,
+                    InterceptionType.AROUND_CONSTRUCT);
             interceptorInvocations.addAll(invocation.getInterceptorMethodInvocations());
         }
         return ImmutableList.copyOf(interceptorInvocations);

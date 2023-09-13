@@ -53,18 +53,21 @@ public class BeanDiscoveryWithJandexIndexTest {
                 .addClasses(Dog.class, Cat.class, Cow.class);
         archives.add(archive01);
 
-        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
+        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
                 .addClasses(Plant.class, Tree.class, Stone.class);
         archive02.addAsManifestResource(createJandexIndexAsset(archive02), "jandex.idx");
         archives.add(archive02);
 
-        JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+        JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClasses(Flat.class, House.class, Apartment.class);
         archive03.addAsManifestResource(createJandexIndexAsset(archive03), "jandex.idx");
         archives.add(archive03);
 
         // Archive without index
-        JavaArchive archive04 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+        JavaArchive archive04 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClasses(Hat.class);
         archives.add(archive04);
 

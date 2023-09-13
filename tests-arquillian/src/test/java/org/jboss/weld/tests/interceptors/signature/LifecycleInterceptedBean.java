@@ -18,10 +18,10 @@
 package org.jboss.weld.tests.interceptors.signature;
 
 import jakarta.enterprise.context.Dependent;
-import org.junit.Assert;
 
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
+import org.junit.Assert;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

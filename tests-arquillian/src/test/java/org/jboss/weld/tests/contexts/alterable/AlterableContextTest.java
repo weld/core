@@ -37,9 +37,9 @@ import org.junit.runner.RunWith;
 
 /**
  * Tests for https://issues.jboss.org/browse/CDI-139
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class AlterableContextTest {
@@ -48,7 +48,8 @@ public class AlterableContextTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AlterableContextTest.class)).addPackage(AlterableContextTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AlterableContextTest.class))
+                .addPackage(AlterableContextTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, CustomScopeExtension.class);
     }
 

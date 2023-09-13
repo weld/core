@@ -20,15 +20,15 @@ import jakarta.annotation.PostConstruct;
 
 public abstract class Plant {
 
-	public static boolean postConstructCalled = false;
+    public static boolean postConstructCalled = false;
 
-	public Plant() {
-		super();
-	}
+    public Plant() {
+        super();
+    }
 
-	@PostConstruct
-	public void init() {
-		postConstructCalled = true;
-	}
+    @PostConstruct
+    public void init() {
+        postConstructCalled = true;
+    }
 
 }

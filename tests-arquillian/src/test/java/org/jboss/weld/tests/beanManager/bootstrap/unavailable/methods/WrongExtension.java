@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -163,12 +162,12 @@ public class WrongExtension implements Extension {
                 beanManager.createCreationalContext(null));
         beanManager.resolve(null);
         beanManager.resolveObserverMethods(new Foo());
-        beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<Transactional>() { });
+        beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<Transactional>() {
+        });
         beanManager.resolveDecorators(new HashSet<Type>(Collections.singletonList(Foo.class)));
         beanManager.validate(injectionPoint);
         beanManager.getPassivationCapableBean("foo");
     }
-
 
     private static class FooBean implements Bean<Foo> {
         @Override

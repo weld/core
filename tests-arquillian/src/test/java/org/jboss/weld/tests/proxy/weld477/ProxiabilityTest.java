@@ -38,8 +38,8 @@ public class ProxiabilityTest {
     }
 
     /*
-    * description = "WELD-477"
-    */
+     * description = "WELD-477"
+     */
     @Test
     public void testClassWithPrivateFinalMethodsProxyable(InjectedClass injectedClassInstance) {
         Assert.assertNotNull(injectedClassInstance.getDependency());

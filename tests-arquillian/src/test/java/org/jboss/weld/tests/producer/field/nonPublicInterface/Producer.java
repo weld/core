@@ -26,7 +26,7 @@ public class Producer {
     @Produces
     @Produced
     @RequestScoped
-    TestInterface produce(){
+    TestInterface produce() {
         return new TestInterfaceImpl();
     }
 

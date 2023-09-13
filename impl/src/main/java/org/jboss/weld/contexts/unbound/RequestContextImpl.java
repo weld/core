@@ -1,17 +1,16 @@
 package org.jboss.weld.contexts.unbound;
 
-import org.jboss.weld.contexts.AbstractUnboundContext;
-import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.contexts.beanstore.HashMapBeanStore;
-
-import jakarta.enterprise.context.RequestScoped;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.enterprise.context.RequestScoped;
+
+import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.contexts.AbstractUnboundContext;
+import org.jboss.weld.contexts.beanstore.HashMapBeanStore;
 import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 

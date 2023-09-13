@@ -28,7 +28,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 /**
  * InterceptorFactory that uses an {@link InjectionTarget} as a factory for interceptor instances.
  * <p>
- * This factory is used for interceptors that are not CDI beans - interceptors defined using the {@link Interceptors} annotation.
+ * This factory is used for interceptors that are not CDI beans - interceptors defined using the {@link Interceptors}
+ * annotation.
  *
  * @author Jozef Hartinger
  *

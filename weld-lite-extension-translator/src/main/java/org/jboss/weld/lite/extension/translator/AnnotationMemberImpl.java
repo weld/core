@@ -1,18 +1,19 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.AnnotationInfo;
-import jakarta.enterprise.lang.model.AnnotationMember;
-import jakarta.enterprise.lang.model.declarations.ClassInfo;
-import jakarta.enterprise.lang.model.types.Type;
-import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
-import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.AnnotationInfo;
+import jakarta.enterprise.lang.model.AnnotationMember;
+import jakarta.enterprise.lang.model.declarations.ClassInfo;
+import jakarta.enterprise.lang.model.types.Type;
+
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
+import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class AnnotationMemberImpl implements AnnotationMember {
     final Kind kind;

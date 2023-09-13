@@ -22,6 +22,7 @@ import jakarta.enterprise.inject.build.compatible.spi.Discovery;
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
 import jakarta.enterprise.inject.build.compatible.spi.ScannedClasses;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
+
 import org.jboss.cdi.lang.model.tck.LangModelVerifier;
 
 public class LangModelExtension implements BuildCompatibleExtension {

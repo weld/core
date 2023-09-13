@@ -24,7 +24,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
@@ -43,8 +42,6 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 @Category(Integration.class)
 public class CrossDeploymentTest {
-
-
 
     @Deployment(name = "d1", order = 1, testable = false)
     public static Archive<?> deploy() {

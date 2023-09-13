@@ -27,11 +27,9 @@ import jakarta.interceptor.InvocationContext;
 
 @EJBInterceptor
 @Interceptor
-public class EJBInterceptorImpl
-{
+public class EJBInterceptorImpl {
     @AroundInvoke
-    public Object intercept(final InvocationContext ic) throws Exception
-    {
+    public Object intercept(final InvocationContext ic) throws Exception {
         EJB3EndpointImpl.interceptorCalled = true;
         return ic.proceed();
     }

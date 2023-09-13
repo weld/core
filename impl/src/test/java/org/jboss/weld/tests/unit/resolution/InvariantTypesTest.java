@@ -86,21 +86,27 @@ public class InvariantTypesTest {
         assertTrue(InvariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(ints), ints));
     }
 
-
     @Test
     public void testRawTypeAssignableFromParameterizedType() {
-        assertFalse(InvariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, String.class, Integer.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, Object.class, Object.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(HashMap.class, Object.class, Object.class)));
+        assertFalse(
+                InvariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, String.class, Integer.class)));
+        assertFalse(
+                InvariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(Map.class, Object.class, Object.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(Map.class,
+                new ParameterizedTypeImpl(HashMap.class, Object.class, Object.class)));
         assertFalse(InvariantTypes.isAssignableFrom(Map.class, new ParameterizedTypeImpl(List.class, Object.class)));
     }
 
     @Test
     public void testRawTypeAssignableFromGenericArrayType() {
-        assertFalse(InvariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(List.class, Object.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(List.class, Integer.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(ArrayList.class, Integer.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new ArrayList[0].getClass(), new GenericArrayTypeImpl(List.class, Integer.class)));
+        assertFalse(
+                InvariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(List.class, Object.class)));
+        assertFalse(
+                InvariantTypes.isAssignableFrom(new List[0].getClass(), new GenericArrayTypeImpl(List.class, Integer.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new List[0].getClass(),
+                new GenericArrayTypeImpl(ArrayList.class, Integer.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new ArrayList[0].getClass(),
+                new GenericArrayTypeImpl(List.class, Integer.class)));
     }
 
     /*
@@ -108,10 +114,14 @@ public class InvariantTypesTest {
      */
     @Test
     public void testParameterizedTypeAssignableFromParameterizedType() {
-        assertTrue(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(Map.class, Number.class, String.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(HashMap.class, Number.class, String.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(Map.class, Integer.class, String.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(Map.class, Number.class, Object.class)));
+        assertTrue(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class),
+                new ParameterizedTypeImpl(Map.class, Number.class, String.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class),
+                new ParameterizedTypeImpl(HashMap.class, Number.class, String.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class),
+                new ParameterizedTypeImpl(Map.class, Integer.class, String.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class),
+                new ParameterizedTypeImpl(Map.class, Number.class, Object.class)));
     }
 
     /*
@@ -150,10 +160,15 @@ public class InvariantTypesTest {
      */
     @Test
     public void testGenericArrayTypeAssignableGenericArrayType() {
-        assertTrue(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new GenericArrayTypeImpl(List.class, Number.class)));
-        assertTrue(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Map.class, String.class, Runnable.class), new GenericArrayTypeImpl(Map.class, String.class, Runnable.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new GenericArrayTypeImpl(List.class, Integer.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), new GenericArrayTypeImpl(List.class, Object.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Map.class, Object.class, Object.class), new GenericArrayTypeImpl(Map.class, String.class, Runnable.class)));
+        assertTrue(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class),
+                new GenericArrayTypeImpl(List.class, Number.class)));
+        assertTrue(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Map.class, String.class, Runnable.class),
+                new GenericArrayTypeImpl(Map.class, String.class, Runnable.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class),
+                new GenericArrayTypeImpl(List.class, Integer.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class),
+                new GenericArrayTypeImpl(List.class, Object.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new GenericArrayTypeImpl(Map.class, Object.class, Object.class),
+                new GenericArrayTypeImpl(Map.class, String.class, Runnable.class)));
     }
 }

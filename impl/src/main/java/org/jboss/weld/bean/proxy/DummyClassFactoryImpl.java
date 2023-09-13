@@ -1,9 +1,9 @@
 package org.jboss.weld.bean.proxy;
 
+import java.security.ProtectionDomain;
+
 import org.jboss.classfilewriter.ClassFactory;
 import org.jboss.weld.bean.proxy.util.WeldDefaultProxyServices;
-
-import java.security.ProtectionDomain;
 
 /**
  * A dummy implementation which has only one purpose - to avoid instantiating {@code DefaultClassFactory.INSTANCE}.
@@ -22,7 +22,8 @@ class DummyClassFactoryImpl implements ClassFactory {
     static final DummyClassFactoryImpl INSTANCE = new DummyClassFactoryImpl();
 
     @Override
-    public Class<?> defineClass(ClassLoader loader, String name, byte[] b, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
+    public Class<?> defineClass(ClassLoader loader, String name, byte[] b, int off, int len, ProtectionDomain protectionDomain)
+            throws ClassFormatError {
         throw new UnsupportedOperationException("DummyClasFactoryImpl should not be used to define classes");
     }
 }

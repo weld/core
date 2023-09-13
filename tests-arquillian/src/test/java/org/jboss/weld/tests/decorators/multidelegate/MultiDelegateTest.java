@@ -51,5 +51,5 @@ public class MultiDelegateTest {
 
         assertEquals("Account2 withdraw", acc2.withdraw(BigDecimal.ZERO));
         assertTrue(Account2.triggered);
-     }
+    }
 }

@@ -19,7 +19,6 @@ package org.jboss.weld.environment.servlet;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
 
-
 /**
  * Abstract the web container setup notion.
  * e.g. Tomcat, Jetty, GAE, ...

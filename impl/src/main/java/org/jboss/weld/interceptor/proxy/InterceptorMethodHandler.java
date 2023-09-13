@@ -58,7 +58,8 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
         return null;
     }
 
-    protected Object executeInterception(Object instance, Method method, Method proceed, Object[] args, InterceptionType interceptionType, Stack stack) throws Throwable {
+    protected Object executeInterception(Object instance, Method method, Method proceed, Object[] args,
+            InterceptionType interceptionType, Stack stack) throws Throwable {
         CachedInterceptionChain chain = getInterceptionChain(instance, method, interceptionType);
         if (chain.interceptorMethods.isEmpty()) {
             // shortcut if there are no interceptors
@@ -74,12 +75,17 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
             return executeLifecycleInterception(instance, method, proceed, args, chain, stack);
         }
     }
-    protected Object executeLifecycleInterception(Object instance, Method method, Method proceed, Object[] args, CachedInterceptionChain chain, Stack stack) throws Throwable {
-        return new WeldInvocationContextImpl(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack).proceed();
+
+    protected Object executeLifecycleInterception(Object instance, Method method, Method proceed, Object[] args,
+            CachedInterceptionChain chain, Stack stack) throws Throwable {
+        return new WeldInvocationContextImpl(instance, method, proceed, args, chain.interceptorMethods,
+                chain.interceptorBindings, stack).proceed();
     }
 
-    protected Object executeAroundInvoke(Object instance, Method method, Method proceed, Object[] args, CachedInterceptionChain chain, Stack stack) throws Throwable {
-        org.jboss.weld.interceptor.WeldInvocationContext ctx = create(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack);
+    protected Object executeAroundInvoke(Object instance, Method method, Method proceed, Object[] args,
+            CachedInterceptionChain chain, Stack stack) throws Throwable {
+        org.jboss.weld.interceptor.WeldInvocationContext ctx = create(instance, method, proceed, args, chain.interceptorMethods,
+                chain.interceptorBindings, stack);
         try {
             return chain.interceptorMethods.get(0).invoke(ctx);
         } catch (InvocationTargetException e) {
@@ -91,8 +97,9 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
         if (method != null) {
             CachedInterceptionChain cachedChain = cachedChains.get(method);
             if (cachedChain == null) {
-                cachedChain = new CachedInterceptionChain(ctx.buildInterceptorMethodInvocations(instance, method, interceptionType), ctx.getInterceptionModel()
-                        .getMemberInterceptorBindings(method));
+                cachedChain = new CachedInterceptionChain(
+                        ctx.buildInterceptorMethodInvocations(instance, method, interceptionType), ctx.getInterceptionModel()
+                                .getMemberInterceptorBindings(method));
                 CachedInterceptionChain old = cachedChains.putIfAbsent(method, cachedChain);
                 if (old != null) {
                     cachedChain = old;
@@ -100,7 +107,8 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
             }
             return cachedChain;
         }
-        return new CachedInterceptionChain(ctx.buildInterceptorMethodInvocations(instance, null, interceptionType), ctx.getInterceptionModel().getClassInterceptorBindings());
+        return new CachedInterceptionChain(ctx.buildInterceptorMethodInvocations(instance, null, interceptionType),
+                ctx.getInterceptionModel().getClassInterceptorBindings());
     }
 
     private boolean isInterceptorMethod(Method method) {

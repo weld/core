@@ -4,6 +4,7 @@
 .settings
 .factorypath
 .vscode/
+.cache
 *.ipr
 .idea
 *.iws

@@ -42,14 +42,17 @@ public class GloballySelectedAlternativesWithSamePriorityTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(GloballySelectedAlternativesWithSamePriorityTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addPackage(GloballySelectedAlternativesWithSamePriorityTest.class.getPackage())
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(GloballySelectedAlternativesWithSamePriorityTest.class,
+                                Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(GloballySelectedAlternativesWithSamePriorityTest.class.getPackage())
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Inject
     Instance<Foo> fooInstance;
-    
+
     @Test
     public void testThatAmbiguousExceptionIsThrown() {
         Assert.assertFalse(fooInstance.isUnsatisfied());

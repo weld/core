@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Tests that UnproxyableResolutionException is thrown
+ *
  * @author Jozef Hartinger
  *
  */
@@ -39,11 +40,12 @@ public class NonPrivateNonStaticFinalMethodTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPrivateNonStaticFinalMethodTest.class)).addClasses(Swan.class, SwanLake.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPrivateNonStaticFinalMethodTest.class))
+                .addClasses(Swan.class, SwanLake.class);
     }
 
     @Test
     public void testDeploymentOfNonProvateFinalMethod() {
         // should throw deployment exception
-     }
+    }
 }

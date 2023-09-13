@@ -26,6 +26,7 @@ class BeanDeployments {
 
     // see org.jboss.as.weld.deployment.processors.ExternalBeanArchiveProcessor
     private static final String EXTERNAL_ARCHIVE_DENOMINATOR = ".external.";
+
     /**
      *
      * @param beanArchiveId

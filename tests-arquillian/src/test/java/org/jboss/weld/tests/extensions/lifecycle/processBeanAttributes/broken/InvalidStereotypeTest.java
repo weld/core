@@ -35,12 +35,13 @@ public class InvalidStereotypeTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidStereotypeTest.class)).addClasses(Telephone.class, PlainOldAnnotation.class, InvalidStereotypeExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidStereotypeTest.class))
+                .addClasses(Telephone.class, PlainOldAnnotation.class, InvalidStereotypeExtension.class)
                 .addAsServiceProvider(Extension.class, InvalidStereotypeExtension.class);
     }
-    
+
     @Test
     public void testDeploymentWithInvalidStereotypeException() {
         // should throw definition exception
-     }
+    }
 }

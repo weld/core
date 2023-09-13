@@ -16,18 +16,19 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.logging.BootstrapLogger;
-import org.jboss.weld.manager.BeanManagerImpl;
-
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+
+import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessSimpleInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X> {
 
     private InjectionTarget<X> injectionTarget;
 
-    public ProcessSimpleInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+    public ProcessSimpleInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType,
+            InjectionTarget<X> injectionTarget) {
         super(beanManager, annotatedType);
         this.injectionTarget = injectionTarget;
     }

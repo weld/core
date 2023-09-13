@@ -66,7 +66,8 @@ public abstract class AbstractDispatchingTestCase {
         assertEquals("true", getResponseAsString("main/validate"));
     }
 
-    private String getResponseAsString(String urlSuffix) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+    private String getResponseAsString(String urlSuffix)
+            throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         Page page = client.getPage(contextPath + urlSuffix);
         assertEquals(200, page.getWebResponse().getStatusCode());
         return page.getWebResponse().getContentAsString();

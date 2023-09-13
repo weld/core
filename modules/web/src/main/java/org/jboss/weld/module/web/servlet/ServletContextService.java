@@ -44,6 +44,7 @@ public class ServletContextService implements Service {
 
     /**
      * Obtains the {@link ServletContext} associated with this request.
+     *
      * @return the ServletContext associated with this request or null if there is no such association
      */
     public ServletContext getCurrentServletContext() {

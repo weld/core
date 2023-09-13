@@ -112,7 +112,8 @@ public class EventImpl<T> extends AbstractFacade<T, WeldEvent<T>> implements Wel
     private <U extends T> CompletionStage<U> fireAsyncInternal(U event, NotificationOptions options) {
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
-        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.metadata, options);
+        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.metadata,
+                options);
     }
 
     private CachedObservers getObservers(T event) {
@@ -134,7 +135,8 @@ public class EventImpl<T> extends AbstractFacade<T, WeldEvent<T>> implements Wel
     private CachedObservers createCachedObservers(Class<?> runtimeType) {
         final Type eventType = getEventType(runtimeType);
         // this performs type check
-        final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
+        final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier()
+                .resolveObserverMethods(eventType, getQualifiers());
         final EventMetadata metadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers());
         return new CachedObservers(runtimeType, observers, metadata);
     }
@@ -164,12 +166,14 @@ public class EventImpl<T> extends AbstractFacade<T, WeldEvent<T>> implements Wel
         }
         // This cast should be safe, we make sure that this method is only invoked on WeldEvent<Object>
         // and any type X will always extend Object
-        return (WeldEvent<X>)selectEvent(type, qualifiers);
+        return (WeldEvent<X>) selectEvent(type, qualifiers);
     }
 
     private <U extends T> WeldEvent<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
         getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
-        return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Event.class, subtype, getQualifiers(), newQualifiers),
+        return new EventImpl<U>(
+                new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), Event.class, subtype, getQualifiers(),
+                        newQualifiers),
                 getBeanManager());
     }
 
@@ -177,7 +181,8 @@ public class EventImpl<T> extends AbstractFacade<T, WeldEvent<T>> implements Wel
         Type resolvedType = runtimeType;
         if (Types.containsTypeVariable(resolvedType)) {
             /*
-             * If the container is unable to resolve the parameterized type of the event object, it uses the specified type to infer the parameterized type of the event types.
+             * If the container is unable to resolve the parameterized type of the event object, it uses the specified type to
+             * infer the parameterized type of the event types.
              */
             resolvedType = injectionPointTypeHierarchy.resolveType(resolvedType);
         }
@@ -188,8 +193,10 @@ public class EventImpl<T> extends AbstractFacade<T, WeldEvent<T>> implements Wel
              */
             Type canonicalEventType = Types.getCanonicalType(runtimeType);
             TypeResolver objectTypeResolver = new EventObjectTypeResolverBuilder(injectionPointTypeHierarchy.getResolver()
-                    .getResolvedTypeVariables(), new HierarchyDiscovery(canonicalEventType).getResolver()
-                    .getResolvedTypeVariables()).build();
+                    .getResolvedTypeVariables(),
+                    new HierarchyDiscovery(canonicalEventType).getResolver()
+                            .getResolvedTypeVariables())
+                    .build();
             resolvedType = objectTypeResolver.resolveType(canonicalEventType);
         }
         return resolvedType;

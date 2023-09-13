@@ -38,7 +38,8 @@ public class DefaultBeanNameTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DefaultBeanNameTest.class)).addPackage(DefaultBeanNameTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DefaultBeanNameTest.class))
+                .addPackage(DefaultBeanNameTest.class.getPackage());
     }
 
     @Test

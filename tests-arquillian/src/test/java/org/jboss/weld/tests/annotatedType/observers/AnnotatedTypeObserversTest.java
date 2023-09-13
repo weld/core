@@ -31,32 +31,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class AnnotatedTypeObserversTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeObserversTest.class)).addPackage(RoomsExtension.class.getPackage())
-            .addAsServiceProvider(Extension.class, RoomsExtension.class);
-   }
+public class AnnotatedTypeObserversTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeObserversTest.class))
+                .addPackage(RoomsExtension.class.getPackage())
+                .addAsServiceProvider(Extension.class, RoomsExtension.class);
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   @Inject
-   @RoomId("hall")
-   Room hall;
+    @Inject
+    @RoomId("hall")
+    Room hall;
 
-   @Inject
-   @RoomId("pit")
-   Room pit;
+    @Inject
+    @RoomId("pit")
+    Room pit;
 
-   @Test
-   public void testRoomObservers()
-   {
-      beanManager.getEvent().select(CleanEvent.class).fire(new CleanEvent());
+    @Test
+    public void testRoomObservers() {
+        beanManager.getEvent().select(CleanEvent.class).fire(new CleanEvent());
 
-      Assert.assertTrue(hall.isClean());
-      Assert.assertTrue(pit.isClean());
-   }
+        Assert.assertTrue(hall.isClean());
+        Assert.assertTrue(pit.isClean());
+    }
 }

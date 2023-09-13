@@ -74,7 +74,7 @@ public class Pomeranian implements PomeranianInterface, Serializable {
     }
 
     @Override
-    public void observeAndFail(@Observes(during=BEFORE_COMPLETION) @Gnarly Bark event) throws FooException {
+    public void observeAndFail(@Observes(during = BEFORE_COMPLETION) @Gnarly Bark event) throws FooException {
         Actions.add(BEFORE_COMPLETION);
         throw new FooException();
     }

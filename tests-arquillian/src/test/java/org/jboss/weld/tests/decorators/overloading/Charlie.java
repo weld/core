@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import jakarta.enterprise.context.Dependent;
+
 import org.jboss.weld.test.util.ActionSequence;
 
 /**

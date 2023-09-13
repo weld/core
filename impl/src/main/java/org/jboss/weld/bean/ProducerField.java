@@ -47,25 +47,29 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     /**
      * Creates a producer field
      *
-     * @param field         The underlying method abstraction
+     * @param field The underlying method abstraction
      * @param declaringBean The declaring bean abstraction
-     * @param beanManager   the current manager
+     * @param beanManager the current manager
      * @return A producer field
      */
-    public static <X, T> ProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <X, T> ProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field,
+            AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager,
+            ServiceRegistry services) {
         return new ProducerField<X, T>(attributes, field, declaringBean, disposalMethod, beanManager, services);
     }
-
 
     /**
      * Constructor
      *
-     * @param method        The producer field abstraction
+     * @param method The producer field abstraction
      * @param declaringBean The declaring bean
-     * @param manager       The Bean manager
+     * @param manager The Bean manager
      */
-    protected ProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
-        super(attributes, new StringBeanIdentifier(BeanIdentifiers.forProducerField(field, declaringBean)), declaringBean, manager, services);
+    protected ProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field,
+            AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager,
+            ServiceRegistry services) {
+        super(attributes, new StringBeanIdentifier(BeanIdentifiers.forProducerField(field, declaringBean)), declaringBean,
+                manager, services);
         this.enhancedAnnotatedField = field;
         this.annotatedField = field.slim();
         initType();
@@ -121,7 +125,8 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
 
     @Override
     public String toString() {
-        return "Producer Field [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
+        return "Producer Field [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers ["
+                + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
     }
 
     @Override

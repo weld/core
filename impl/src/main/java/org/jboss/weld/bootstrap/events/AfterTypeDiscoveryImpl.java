@@ -40,7 +40,8 @@ import org.jboss.weld.resources.ClassTransformer;
 
 public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements AfterTypeDiscovery {
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
+            Collection<ContextHolder<? extends Context>> contexts) {
         AfterTypeDiscoveryImpl event = new AfterTypeDiscoveryImpl(beanManager, bdaMapping, deployment, contexts);
         event.fire();
         event.finish();
@@ -51,7 +52,8 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     private final ClassTransformer transformer;
     private final SlimAnnotatedTypeStore store;
 
-    protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment,
+    protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, BeanDeploymentArchiveMapping bdaMapping,
+            Deployment deployment,
             Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, AfterTypeDiscovery.class, bdaMapping, deployment, contexts);
         this.builder = beanManager.getServices().get(GlobalEnablementBuilder.class);
@@ -88,7 +90,8 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     @Override
     public <T> AnnotatedTypeConfigurator<T> addAnnotatedType(Class<T> type, String id) {
         checkWithinObserverNotification();
-        AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(getBeanManager().createAnnotatedType(type));
+        AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(
+                getBeanManager().createAnnotatedType(type));
         additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));
         return configurator;
     }

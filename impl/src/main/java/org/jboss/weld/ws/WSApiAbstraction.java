@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.ws;
 
+import java.lang.annotation.Annotation;
+
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
-
-import java.lang.annotation.Annotation;
 
 public class WSApiAbstraction extends ApiAbstraction implements Service {
 

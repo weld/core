@@ -21,7 +21,8 @@ import java.util.function.Consumer;
 /**
  * A simple abstraction for computing cache.
  *
- * Implementations are not required to support recursive computations. A cache client must be aware that such computations may result in livelocks, inifinite
+ * Implementations are not required to support recursive computations. A cache client must be aware that such computations may
+ * result in livelocks, inifinite
  * loops and other undesired situations.
  *
  * @author Martin Kouba
@@ -75,6 +76,7 @@ public interface ComputingCache<K, V> {
 
     /**
      * Performs the given action for each cached value.
+     *
      * @param consumer the given action
      */
     void forEachValue(Consumer<? super V> consumer);

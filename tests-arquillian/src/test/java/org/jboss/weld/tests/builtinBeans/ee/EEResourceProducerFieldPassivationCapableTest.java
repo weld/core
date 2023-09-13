@@ -44,7 +44,10 @@ import org.junit.runner.RunWith;
 public class EEResourceProducerFieldPassivationCapableTest {
     @Deployment // changed to .war, from .jar
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(EEResourceProducerFieldPassivationCapableTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(EEResourceProducerFieldPassivationCapableTest.class,
+                                Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(EEResourceProducerFieldPassivationCapableTest.class.getPackage())
                 .addClass(Utils.class)
                 .addAsResource(
@@ -57,7 +60,8 @@ public class EEResourceProducerFieldPassivationCapableTest {
     @Ignore("Will work once we start testing with WFLY 11+, as there will be fix for JBTM-2449")
     public void testResource(@Produced UserTransaction userTransaction) throws Throwable {
         // invoke deserialization with special class loader as the underlying class will not be otherwise visible to Weld
-        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction), userTransaction.getClass().getClassLoader());
+        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction),
+                userTransaction.getClass().getClassLoader());
         Assert.assertTrue(checkUserTransaction(userTransaction1));
     }
 

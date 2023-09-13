@@ -29,8 +29,10 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * An implementation of {@link InjectionTarget} for classes that do not fulfill bean class requirements (e.g. are abstract or non-static inner classes).
- * Instances of these class can be injected using this implementation. If the application attempts to {@link #produce(CreationalContext)} a new instance of the
+ * An implementation of {@link InjectionTarget} for classes that do not fulfill bean class requirements (e.g. are abstract or
+ * non-static inner classes).
+ * Instances of these class can be injected using this implementation. If the application attempts to
+ * {@link #produce(CreationalContext)} a new instance of the
  * class, {@link CreationException} is thrown.
  *
  * @see WELD-1441
@@ -41,7 +43,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class NonProducibleInjectionTarget<T> extends BasicInjectionTarget<T> {
 
-    public static <T> NonProducibleInjectionTarget<T> create(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    public static <T> NonProducibleInjectionTarget<T> create(EnhancedAnnotatedType<T> type, Bean<T> bean,
+            BeanManagerImpl beanManager) {
         return create(type, bean, null, null, beanManager);
     }
 
@@ -64,13 +67,15 @@ public class NonProducibleInjectionTarget<T> extends BasicInjectionTarget<T> {
      * @param injector
      * @param invoker
      */
-    private NonProducibleInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector,
+    private NonProducibleInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Injector<T> injector,
             LifecycleCallbackInvoker<T> invoker) {
         super(type, bean, beanManager, injector, invoker);
     }
 
     @Override
-    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
+    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
+            Set<InjectionPoint> injectionPoints) {
         return null;
     }
 

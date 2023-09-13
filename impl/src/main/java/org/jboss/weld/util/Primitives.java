@@ -56,7 +56,8 @@ public final class Primitives {
         WRAPPER_TO_PRIMITIVE = ImmutableMap.copyOf(wrapperToPrimitive);
     }
 
-    private static void put(Map<Class<?>, Class<?>> primitiveToWrapper, Map<Class<?>, Class<?>> wrapperToPrimitive, Class<?> primitive, Class<?> wrapper) {
+    private static void put(Map<Class<?>, Class<?>> primitiveToWrapper, Map<Class<?>, Class<?>> wrapperToPrimitive,
+            Class<?> primitive, Class<?> wrapper) {
         primitiveToWrapper.put(primitive, wrapper);
         wrapperToPrimitive.put(wrapper, primitive);
     }

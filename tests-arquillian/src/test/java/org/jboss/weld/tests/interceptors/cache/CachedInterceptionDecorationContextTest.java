@@ -26,10 +26,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.contexts.cache.RequestScopedCache;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.junit.Assert;
 
 /**
  * Tests that {@link InterceptionDecorationContext} survives {@link RequestScopedCache} being flushed.
@@ -47,7 +46,9 @@ public class CachedInterceptionDecorationContextTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CachedInterceptionDecorationContextTest.class)).addPackage(CachedInterceptionDecorationContextTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(CachedInterceptionDecorationContextTest.class))
+                .addPackage(CachedInterceptionDecorationContextTest.class.getPackage());
     }
 
     @Test

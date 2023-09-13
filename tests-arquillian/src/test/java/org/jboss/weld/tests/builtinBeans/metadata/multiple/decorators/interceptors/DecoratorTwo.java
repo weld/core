@@ -26,7 +26,7 @@ import jakarta.inject.Inject;
 
 @Decorator
 @Priority(2)
-public class DecoratorTwo implements SomeInterface{
+public class DecoratorTwo implements SomeInterface {
 
     @Delegate
     @Inject

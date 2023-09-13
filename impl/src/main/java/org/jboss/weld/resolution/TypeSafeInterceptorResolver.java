@@ -31,7 +31,8 @@ import org.jboss.weld.util.Beans;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>, List<Interceptor<?>>, List<Interceptor<?>>> {
+public class TypeSafeInterceptorResolver
+        extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>, List<Interceptor<?>>, List<Interceptor<?>>> {
 
     private final BeanManagerImpl manager;
 
@@ -43,7 +44,8 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
     @Override
     protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean) {
         return bean.intercepts(resolvable.getInterceptionType())
-                && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager())
+                && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(),
+                        getManager())
                 && manager.getEnabled().isInterceptorEnabled(bean.getBeanClass());
     }
 

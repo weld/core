@@ -27,7 +27,7 @@ public class ImmutableSetTest {
 
     @Test
     public void testBuilder() {
-        Set<String> set = ImmutableSet.<String>builder().add("foo").add("bar").add("baz").build();
+        Set<String> set = ImmutableSet.<String> builder().add("foo").add("bar").add("baz").build();
         Assert.assertEquals(3, set.size());
         Assert.assertTrue(set.contains("foo"));
         Assert.assertTrue(set.contains("bar"));
@@ -36,7 +36,8 @@ public class ImmutableSetTest {
 
     @Test
     public void testCollector() {
-        Set<String> set = Stream.of("foo", "bar", "baz", "foo", "bar").map((string) -> string + string).collect(ImmutableSet.collector());
+        Set<String> set = Stream.of("foo", "bar", "baz", "foo", "bar").map((string) -> string + string)
+                .collect(ImmutableSet.collector());
         Assert.assertEquals(3, set.size());
         Assert.assertTrue(set.contains("foofoo"));
         Assert.assertTrue(set.contains("barbar"));
@@ -45,7 +46,7 @@ public class ImmutableSetTest {
 
     @Test
     public void testAddAll() {
-        Set<String> set = ImmutableSet.<String>builder().addAll(new String[] { "foo", "bar", "baz" }).build();
+        Set<String> set = ImmutableSet.<String> builder().addAll(new String[] { "foo", "bar", "baz" }).build();
         Assert.assertEquals(3, set.size());
         Assert.assertTrue(set.contains("foo"));
         Assert.assertTrue(set.contains("bar"));
@@ -55,6 +56,6 @@ public class ImmutableSetTest {
     @Test(expected = IllegalArgumentException.class)
     public void testAddNull() {
         String foo = null;
-        ImmutableSet.<String>builder().add(foo).build();
+        ImmutableSet.<String> builder().add(foo).build();
     }
 }

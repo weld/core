@@ -44,10 +44,11 @@ public class JandexDiscoveryStrategyDisabledTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         File oldJandex = Maven.resolver().resolve("org.jboss:jandex:1.0.3.Final").withTransitivity().asSingleFile();
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addPackage(JandexDiscoveryStrategyDisabledTest.class.getPackage()))
-            .add(oldJandex) //add prehistoric Jandex to CP
-            .addSystemProperty(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, "true") //disable jandex discovery strategy
-            .build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addPackage(JandexDiscoveryStrategyDisabledTest.class.getPackage()))
+                .add(oldJandex) //add prehistoric Jandex to CP
+                .addSystemProperty(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, "true") //disable jandex discovery strategy
+                .build();
     }
 
     @Test

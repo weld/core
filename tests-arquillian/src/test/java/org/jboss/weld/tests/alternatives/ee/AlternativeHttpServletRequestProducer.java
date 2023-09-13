@@ -363,7 +363,8 @@ public class AlternativeHttpServletRequestProducer {
             }
 
             @Override
-            public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+            public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
+                    throws IllegalStateException {
                 return null;
             }
 

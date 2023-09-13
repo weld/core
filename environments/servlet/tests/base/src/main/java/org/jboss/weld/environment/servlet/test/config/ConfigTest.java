@@ -31,6 +31,7 @@ public class ConfigTest extends ConfigTestBase {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return baseDeployment(DOSBean.class.getPackage()).addClasses(ConfigTest.class, ConfigTestBase.class, GoodBean.class, DOSBean.class);
+        return baseDeployment(DOSBean.class.getPackage()).addClasses(ConfigTest.class, ConfigTestBase.class, GoodBean.class,
+                DOSBean.class);
     }
 }

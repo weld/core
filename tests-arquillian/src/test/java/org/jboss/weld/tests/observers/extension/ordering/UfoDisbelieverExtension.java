@@ -17,12 +17,12 @@
 
 package org.jboss.weld.tests.observers.extension.ordering;
 
-import org.jboss.weld.test.util.ActionSequence;
-
 import jakarta.annotation.Priority;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+
+import org.jboss.weld.test.util.ActionSequence;
 
 public class UfoDisbelieverExtension implements Extension {
 

@@ -24,8 +24,8 @@ import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 
 /**
-* @author Marko Luksa
-*/
+ * @author Marko Luksa
+ */
 public class InactiveNormalScopeContext implements Context {
 
     public <T> T get(Contextual<T> contextual) {

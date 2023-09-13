@@ -20,18 +20,22 @@ import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR",
+        "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedField<X> extends UnbackedAnnotatedMember<X> implements AnnotatedField<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedField<X> of(AnnotatedField<X> originalField, UnbackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {
+    public static <X, Y extends X> AnnotatedField<X> of(AnnotatedField<X> originalField, UnbackedAnnotatedType<Y> declaringType,
+            SharedObjectCache cache) {
         UnbackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
-        return new UnbackedAnnotatedField<X>(originalField.getBaseType(), originalField.getTypeClosure(), cache.getSharedSet(originalField.getAnnotations()), originalField.getJavaMember(),
+        return new UnbackedAnnotatedField<X>(originalField.getBaseType(), originalField.getTypeClosure(),
+                cache.getSharedSet(originalField.getAnnotations()), originalField.getJavaMember(),
                 downcastDeclaringType);
     }
 
     private final Field field;
 
-    public UnbackedAnnotatedField(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, Field field, UnbackedAnnotatedType<X> declaringType) {
+    public UnbackedAnnotatedField(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, Field field,
+            UnbackedAnnotatedType<X> declaringType) {
         super(baseType, typeClosure, annotations, declaringType);
         this.field = field;
     }

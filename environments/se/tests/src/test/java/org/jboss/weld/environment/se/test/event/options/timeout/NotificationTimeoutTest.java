@@ -53,8 +53,11 @@ public class NotificationTimeoutTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotificationTimeoutTest.class))
-            .addPackage(NotificationTimeoutTest.class.getPackage()).addClass(IncompleteCustomExecutorServices.class)).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotificationTimeoutTest.class))
+                        .addPackage(NotificationTimeoutTest.class.getPackage())
+                        .addClass(IncompleteCustomExecutorServices.class))
+                .build();
     }
 
     @Test
@@ -64,13 +67,13 @@ public class NotificationTimeoutTest {
             BlockingQueue<Throwable> synchronizer = new LinkedBlockingQueue<>();
             CountDownLatch countdown = new CountDownLatch(2);
             container.event().select(CountDownLatch.class)
-                .fireAsync(countdown, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, 2000l))
-                .exceptionally((Throwable t) -> {
-                    // handle TimeoutException we got here
-                    SUCCESSION_OF_EVENTS.add("Timeout");
-                    synchronizer.add(t);
-                    return null;
-                });
+                    .fireAsync(countdown, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, 2000l))
+                    .exceptionally((Throwable t) -> {
+                        // handle TimeoutException we got here
+                        SUCCESSION_OF_EVENTS.add("Timeout");
+                        synchronizer.add(t);
+                        return null;
+                    });
             Throwable fromSynchronizer = synchronizer.poll(5, TimeUnit.SECONDS);
             Assert.assertNotNull(fromSynchronizer);
             Assert.assertTrue(fromSynchronizer.getCause().toString().contains(TimeoutException.class.getSimpleName()));
@@ -88,15 +91,15 @@ public class NotificationTimeoutTest {
             BlockingQueue<Throwable> synchronizer = new LinkedBlockingQueue<>();
             CountDownLatch countdown = new CountDownLatch(2);
             NotificationOptions options = NotificationOptions.builder().set(WeldNotificationOptions.TIMEOUT, "2000")
-                .set(WeldNotificationOptions.MODE, WeldNotificationOptions.NotificationMode.PARALLEL).build();
+                    .set(WeldNotificationOptions.MODE, WeldNotificationOptions.NotificationMode.PARALLEL).build();
             container.event().select(CountDownLatch.class)
-                .fireAsync(countdown, options)
-                .exceptionally((Throwable t) -> {
-                    // handle TimeoutException we got here
-                    SUCCESSION_OF_EVENTS.add("Timeout");
-                    synchronizer.add(t);
-                    return null;
-                });
+                    .fireAsync(countdown, options)
+                    .exceptionally((Throwable t) -> {
+                        // handle TimeoutException we got here
+                        SUCCESSION_OF_EVENTS.add("Timeout");
+                        synchronizer.add(t);
+                        return null;
+                    });
             Throwable fromSynchronizer = synchronizer.poll(5, TimeUnit.SECONDS);
             Assert.assertNotNull(fromSynchronizer);
             Assert.assertTrue(fromSynchronizer.getCause().toString().contains(TimeoutException.class.getSimpleName()));
@@ -114,7 +117,7 @@ public class NotificationTimeoutTest {
         CountDownLatch latch = new CountDownLatch(1);
         try (WeldContainer container = new Weld().initialize()) {
             container.event().select(CountDownLatch.class)
-                .fireAsync(latch, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, 1.2345));
+                    .fireAsync(latch, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, 1.2345));
             Assert.fail("Bad input valut should throw IllegalArgumentException.");
         } catch (IllegalArgumentException iae) {
             // expected, should throw IAE
@@ -133,12 +136,12 @@ public class NotificationTimeoutTest {
             BlockingQueue<String> synchronizer = new LinkedBlockingQueue<>();
             CountDownLatch countdown = new CountDownLatch(1);
             container.event().select(CountDownLatch.class)
-                .fireAsync(countdown, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, new Long(2000l)))
-                .thenRun(() -> synchronizer.add(success))
-                .exceptionally((Throwable t) -> { // only executes if the notification ended with exception
-                    synchronizer.add("Exception");
-                    return null;
-                });
+                    .fireAsync(countdown, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, new Long(2000l)))
+                    .thenRun(() -> synchronizer.add(success))
+                    .exceptionally((Throwable t) -> { // only executes if the notification ended with exception
+                        synchronizer.add("Exception");
+                        return null;
+                    });
             // wait for the observer to finish the job
             countdown.await();
             // assert that BlockingQueue has exactly one item indicating success
@@ -158,12 +161,12 @@ public class NotificationTimeoutTest {
             BlockingQueue<Throwable> synchronizer = new LinkedBlockingQueue<>();
             CountDownLatch countdown = new CountDownLatch(1);
             container.event().select(CountDownLatch.class)
-                .fireAsync(countdown, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, new Long(1000l)))
-                .exceptionally((Throwable t) -> {
-                    SUCCESSION_OF_EVENTS.add("Timeout");
-                    synchronizer.add(t);
-                    return null;
-                });
+                    .fireAsync(countdown, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, new Long(1000l)))
+                    .exceptionally((Throwable t) -> {
+                        SUCCESSION_OF_EVENTS.add("Timeout");
+                        synchronizer.add(t);
+                        return null;
+                    });
             Throwable fromSynchronizer = synchronizer.poll(5, TimeUnit.SECONDS);
             Assert.assertNotNull(fromSynchronizer);
             Assert.assertTrue(fromSynchronizer.getCause().toString().contains(TimeoutException.class.getSimpleName()));
@@ -178,10 +181,12 @@ public class NotificationTimeoutTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testCustomExecutorServiceNotImplementingTimerExecutor() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        Weld weld = new Weld().disableDiscovery().addBeanClasses(HardworkingObserver.class).addServices(new IncompleteCustomExecutorServices());
+        Weld weld = new Weld().disableDiscovery().addBeanClasses(HardworkingObserver.class)
+                .addServices(new IncompleteCustomExecutorServices());
         try (WeldContainer container = weld.initialize()) {
             try {
-                container.event().select(CountDownLatch.class).fireAsync(latch, NotificationOptions.of(WeldNotificationOptions.TIMEOUT, "2000"));
+                container.event().select(CountDownLatch.class).fireAsync(latch,
+                        NotificationOptions.of(WeldNotificationOptions.TIMEOUT, "2000"));
             } catch (IllegalArgumentException e) {
                 // expected, should throw IAE
                 Assert.assertFalse(latch.await(500, TimeUnit.MILLISECONDS));

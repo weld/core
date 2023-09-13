@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.types.ClassType;
+
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 

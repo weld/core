@@ -37,9 +37,13 @@ public abstract class MethodInjectionPoint<T, X> extends AbstractCallableInjecti
 
     protected MethodInjectionPointType type;
 
-    protected MethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedCallable<T, X, Method> callable, Bean<?> declaringBean, Class<?> declaringComponentClass,
-             InjectionPointFactory factory, BeanManagerImpl manager) {
-        super(callable, declaringBean, declaringComponentClass, MethodInjectionPointType.OBSERVER.equals(methodInjectionPointType) || MethodInjectionPointType.DISPOSER.equals(methodInjectionPointType), factory, manager);
+    protected MethodInjectionPoint(MethodInjectionPointType methodInjectionPointType,
+            EnhancedAnnotatedCallable<T, X, Method> callable, Bean<?> declaringBean, Class<?> declaringComponentClass,
+            InjectionPointFactory factory, BeanManagerImpl manager) {
+        super(callable, declaringBean, declaringComponentClass,
+                MethodInjectionPointType.OBSERVER.equals(methodInjectionPointType)
+                        || MethodInjectionPointType.DISPOSER.equals(methodInjectionPointType),
+                factory, manager);
         this.type = methodInjectionPointType;
     }
 
@@ -47,13 +51,15 @@ public abstract class MethodInjectionPoint<T, X> extends AbstractCallableInjecti
      * Invokes the method.
      *
      * @param receiver the instance to receive the method invocation or null if this is a static method
-     * @param specialValue value to be passed to the special parameter (observer or disposer parameter) or null if the method is not an observer or disposer
+     * @param specialValue value to be passed to the special parameter (observer or disposer parameter) or null if the method is
+     *        not an observer or disposer
      * @param manager the bean manager
      * @param ctx the creational context
      * @param exceptionTypeToThrow exception type to be used to wrap potential exceptions within
      * @return the value returned from the method
      */
-    public abstract T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow);
+    public abstract T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx,
+            Class<? extends RuntimeException> exceptionTypeToThrow);
 
     abstract T invoke(Object receiver, Object[] parameters, Class<? extends RuntimeException> exceptionTypeToThrow);
 
@@ -62,7 +68,10 @@ public abstract class MethodInjectionPoint<T, X> extends AbstractCallableInjecti
 
     public static enum MethodInjectionPointType {
 
-        INITIALIZER, PRODUCER, DISPOSER, OBSERVER;
+        INITIALIZER,
+        PRODUCER,
+        DISPOSER,
+        OBSERVER;
 
     }
 

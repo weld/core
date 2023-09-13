@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Tests that this valid deployment scenario is not erroneously considered invalid.
+ *
  * @author Jozef Hartinger
  *
  */
@@ -42,7 +43,8 @@ public class StaticFinalMethodTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StaticFinalMethodTest.class)).addClass(Goose.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(StaticFinalMethodTest.class))
+                .addClass(Goose.class);
     }
 
     @Test

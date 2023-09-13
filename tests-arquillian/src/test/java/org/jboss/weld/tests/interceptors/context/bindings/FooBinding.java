@@ -30,7 +30,7 @@ import jakarta.interceptor.InterceptorBinding;
 
 @InterceptorBinding
 @Inherited
-@Target({ TYPE, METHOD, CONSTRUCTOR})
+@Target({ TYPE, METHOD, CONSTRUCTOR })
 @Retention(RUNTIME)
 public @interface FooBinding {
 

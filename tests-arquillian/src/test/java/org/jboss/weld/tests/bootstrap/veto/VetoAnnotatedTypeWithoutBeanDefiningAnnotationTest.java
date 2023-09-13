@@ -37,9 +37,12 @@ public class VetoAnnotatedTypeWithoutBeanDefiningAnnotationTest {
     @Deployment
     public static Archive<?> createTestArchive() {
 
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Alpha.class, Bravo.class, Charlie.class, Delta.class, Delta.class, CustomScoped.class)
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClasses(Alpha.class, Bravo.class, Charlie.class, Delta.class, Delta.class, CustomScoped.class)
                 .addAsResource(PropertiesBuilder.newBuilder()
-                        .set(ConfigurationKey.VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION.get(), "org.jboss.weld.tests.bootstrap.veto.*").build(),
+                        .set(ConfigurationKey.VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION.get(),
+                                "org.jboss.weld.tests.bootstrap.veto.*")
+                        .build(),
                         "weld.properties");
     }
 
@@ -55,6 +58,5 @@ public class VetoAnnotatedTypeWithoutBeanDefiningAnnotationTest {
         assertFalse(instance.select(subtype).isUnsatisfied());
         assertFalse(instance.select(subtype).isAmbiguous());
     }
-
 
 }

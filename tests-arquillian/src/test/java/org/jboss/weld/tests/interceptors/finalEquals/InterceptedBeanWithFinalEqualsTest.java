@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.finalEquals;
 
+import static org.junit.Assert.assertEquals;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -26,9 +27,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-
-
 /**
  * @author Sebastian Graca, ISPiK S.A.
  */
@@ -36,7 +34,8 @@ import static org.junit.Assert.assertEquals;
 public class InterceptedBeanWithFinalEqualsTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedBeanWithFinalEqualsTest.class)).intercept(QuotingInterceptor.class).addPackage(InterceptedBeanWithFinalEqualsTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedBeanWithFinalEqualsTest.class))
+                .intercept(QuotingInterceptor.class).addPackage(InterceptedBeanWithFinalEqualsTest.class.getPackage());
     }
 
     @Test

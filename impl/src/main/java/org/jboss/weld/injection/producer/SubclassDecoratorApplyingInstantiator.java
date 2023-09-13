@@ -37,16 +37,19 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class SubclassDecoratorApplyingInstantiator<T> extends AbstractDecoratorApplyingInstantiator<T> {
 
-    public SubclassDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators, Class<? extends T> implementationClass) {
+    public SubclassDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean,
+            List<Decorator<?>> decorators, Class<? extends T> implementationClass) {
         super(contextId, delegate, bean, decorators, implementationClass);
     }
 
-    public SubclassDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
-        super(contextId, delegate, bean, decorators, Reflections.<Class<T>>cast(bean.getBeanClass()));
+    public SubclassDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean,
+            List<Decorator<?>> decorators) {
+        super(contextId, delegate, bean, decorators, Reflections.<Class<T>> cast(bean.getBeanClass()));
     }
 
     @Override
-    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager) {
+    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint,
+            BeanManagerImpl manager) {
         T outerDelegate = getOuterDelegate(instance, creationalContext, originalInjectionPoint, manager);
         registerOuterDecorator((ProxyObject) instance, outerDelegate);
         return instance;

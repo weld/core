@@ -19,8 +19,9 @@ package org.jboss.weld.tests.contexts.conversation.nonexistant;
 
 import static org.junit.Assert.assertTrue;
 
-import com.gargoylesoftware.htmlunit.TextPage;
-import com.gargoylesoftware.htmlunit.WebClient;
+import java.io.IOException;
+import java.net.URL;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -33,8 +34,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.net.URL;
+import com.gargoylesoftware.htmlunit.TextPage;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * Tests that in case of non-existent conversation ID, there is an {@code @Initialized} event fired for the newly
@@ -49,7 +50,9 @@ public class NonExistentConversationTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(NonExistentConversationTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(NonExistentConversationTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(NonExistentConversationTest.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 

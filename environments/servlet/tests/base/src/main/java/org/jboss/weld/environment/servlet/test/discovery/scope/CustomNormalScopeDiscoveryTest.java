@@ -37,7 +37,8 @@ public class CustomNormalScopeDiscoveryTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return Deployments.baseDeployment(new BeansXml(BeanDiscoveryMode.ANNOTATED)).addPackage(CustomNormalScopeDiscoveryTest.class.getPackage());
+        return Deployments.baseDeployment(new BeansXml(BeanDiscoveryMode.ANNOTATED))
+                .addPackage(CustomNormalScopeDiscoveryTest.class.getPackage());
     }
 
     @Inject

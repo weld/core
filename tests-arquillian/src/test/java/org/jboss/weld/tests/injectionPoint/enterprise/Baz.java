@@ -31,18 +31,18 @@ public class Baz {
     InjectionPoint injectionPoint;
 
     public boolean isIPAvailable() {
-        return injectionPoint != null ;
+        return injectionPoint != null;
     }
 
     public Bean<?> getInjectionPointMetadata() {
-        return injectionPoint != null  ? injectionPoint.getBean() : null;
+        return injectionPoint != null ? injectionPoint.getBean() : null;
     }
 
     public Type getInjectionPointType() {
-        return injectionPoint != null  ? injectionPoint.getType() : null;
+        return injectionPoint != null ? injectionPoint.getType() : null;
     }
 
     public Member getInjectionPointMember() {
-        return injectionPoint != null  ? injectionPoint.getMember() : null;
+        return injectionPoint != null ? injectionPoint.getMember() : null;
     }
 }

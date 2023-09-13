@@ -16,16 +16,17 @@
  */
 package org.jboss.weld.tests.instance.destroy.normal;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Stateful;
 import jakarta.enterprise.context.RequestScoped;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Stateful
 @RequestScoped
 public class SFSessionBean {
 
-    public void ping(){
+    public void ping() {
     }
 
     static final AtomicBoolean DESTROYED = new AtomicBoolean();

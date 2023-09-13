@@ -49,7 +49,8 @@ public class ExternalConfigurationConfigTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExternalConfigurationConfigTest.class)).addClass(MyExternalConfiguration.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExternalConfigurationConfigTest.class))
+                .addClass(MyExternalConfiguration.class)
                 .addAsServiceProvider(Service.class, MyExternalConfiguration.class);
     }
 

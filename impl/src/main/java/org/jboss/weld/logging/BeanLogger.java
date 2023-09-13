@@ -147,7 +147,8 @@ public interface BeanLogger extends WeldLogger {
 
     @SuppressWarnings({ "weldlog:method-sig", "weldlog:msg-value" })
     @Message(id = 40, value = "All stereotypes must specify the same scope or the bean must declare a scope - declared on {0}, declared stereotypes [{1}], possible scopes {2}{3}", format = Format.MESSAGE_FORMAT)
-    DefinitionException multipleScopesFoundFromStereotypes(Object declaredOn, Object stereotypes, Object possibleScopes, String stack);
+    DefinitionException multipleScopesFoundFromStereotypes(Object declaredOn, Object stereotypes, Object possibleScopes,
+            String stack);
 
     @Message(id = 41, value = "Specializing bean may not declare a bean name if it is declared by specialized bean\n  specializing: {0}\n  specialized: {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException nameNotAllowedOnSpecialization(Object specializing, Object specialized);
@@ -186,7 +187,8 @@ public interface BeanLogger extends WeldLogger {
     IllegalProductException nonSerializableProductError(Object param1, Object stackElement);
 
     @Message(id = 54, value = "Producers cannot produce unserializable instances for injection into an injection point that requires a passivation capable dependency\n  Producer:  {0}\n\tat {1}\n  Injection Point:  {2}\n\tat {3}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
-    IllegalProductException unserializableProductInjectionError(Object producer, Object producerStackElement, Object ip, Object ipStackElement);
+    IllegalProductException unserializableProductInjectionError(Object producer, Object producerStackElement, Object ip,
+            Object ipStackElement);
 
     @Message(id = 59, value = "No delegate injection point defined for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException noDelegateInjectionPoint(Object param1);

@@ -38,12 +38,13 @@ public class NonPassivationCapableEjbTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivationCapableEjbTest.class)).addPackage(Cup_Broken.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivationCapableEjbTest.class))
+                .addPackage(Cup_Broken.class.getPackage());
     }
 
     @Test
     public void testDeploymentOfSFSBWithNonPassivatingInjection() {
         // should throw deployment exception
-     }
+    }
 
 }

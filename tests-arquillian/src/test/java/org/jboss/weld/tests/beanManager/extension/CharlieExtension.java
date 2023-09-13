@@ -16,6 +16,5 @@
  */
 package org.jboss.weld.tests.beanManager.extension;
 
-
 public class CharlieExtension extends BravoExtension {
 }

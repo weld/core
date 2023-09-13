@@ -34,11 +34,12 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jboss.weld.logging.XmlLogger;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * This validator is thread safe and suitable for sharing between threads.
@@ -62,8 +63,7 @@ public class BeansXmlValidator implements ErrorHandler {
         cdi20Schema = initSchema(factory, XmlSchema.CDI20_SCHEMAS);
     }
 
-    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
-            justification = "False positive, see https://github.com/spotbugs/spotbugs/issues/259")
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", justification = "False positive, see https://github.com/spotbugs/spotbugs/issues/259")
     public void validate(URL beansXml, ErrorHandler errorHandler) {
         if (beansXml == null) {
             throw XmlLogger.LOG.loadError("unknown", null);
@@ -79,7 +79,8 @@ public class BeansXmlValidator implements ErrorHandler {
                 // The file is just acting as a marker file
                 return;
             }
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, Charset.forName(StandardCharsets.UTF_8.name())))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(in, Charset.forName(StandardCharsets.UTF_8.name())))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     if (line.contains(XmlSchema.CDI11.getFileName())) {

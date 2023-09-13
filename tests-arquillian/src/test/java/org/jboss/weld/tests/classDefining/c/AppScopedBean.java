@@ -17,10 +17,10 @@
 
 package org.jboss.weld.tests.classDefining.c;
 
-import org.jboss.weld.tests.classDefining.b.BeanInterface;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import org.jboss.weld.tests.classDefining.b.BeanInterface;
 
 @ApplicationScoped
 public class AppScopedBean {

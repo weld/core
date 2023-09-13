@@ -55,10 +55,13 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
     // The underlying method
     private final MethodInjectionPoint<T, ? super X> method;
 
-    public ProducerMethodProducer(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, DisposalMethod<?, ?> disposalMethod) {
+    public ProducerMethodProducer(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod,
+            DisposalMethod<?, ?> disposalMethod) {
         super(enhancedAnnotatedMethod, disposalMethod);
         // Note that for producer method injection points the declaring bean is the producer method itself
-        this.method = InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.PRODUCER, enhancedAnnotatedMethod, getBean(), enhancedAnnotatedMethod.getDeclaringType().getJavaClass(), null, getBeanManager());
+        this.method = InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.PRODUCER,
+                enhancedAnnotatedMethod, getBean(), enhancedAnnotatedMethod.getDeclaringType().getJavaClass(), null,
+                getBeanManager());
         checkProducerMethod(enhancedAnnotatedMethod);
         checkDelegateInjectionPoints();
     }
@@ -76,19 +79,22 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
         } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
             throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Disposes", this.method,
                     Formats.formatAsStackTraceElement(method.getJavaMember()));
-        } else if (getDeclaringBean() instanceof SessionBean<?> && !Modifier.isStatic(method.slim().getJavaMember().getModifiers())) {
+        } else if (getDeclaringBean() instanceof SessionBean<?>
+                && !Modifier.isStatic(method.slim().getJavaMember().getModifiers())) {
             boolean methodDeclaredOnTypes = false;
             for (Type type : getDeclaringBean().getTypes()) {
                 Class<?> clazz = Reflections.getRawType(type);
                 try {
-                    AccessController.doPrivileged(new GetMethodAction(clazz, method.getName(), method.getParameterTypesAsArray()));
+                    AccessController
+                            .doPrivileged(new GetMethodAction(clazz, method.getName(), method.getParameterTypesAsArray()));
                     methodDeclaredOnTypes = true;
                     break;
                 } catch (PrivilegedActionException ignored) {
                 }
             }
             if (!methodDeclaredOnTypes) {
-                throw BeanLogger.LOG.methodNotBusinessMethod("Producer", this, getDeclaringBean(), Formats.formatAsStackTraceElement(method.getJavaMember()));
+                throw BeanLogger.LOG.methodNotBusinessMethod("Producer", this, getDeclaringBean(),
+                        Formats.formatAsStackTraceElement(method.getJavaMember()));
             }
         }
     }
@@ -110,16 +116,20 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
 
     @Override
     protected DefinitionException producerWithInvalidTypeVariable(AnnotatedMember<?> member) {
-        return BeanLogger.LOG.producerMethodReturnTypeInvalidTypeVariable(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+        return BeanLogger.LOG.producerMethodReturnTypeInvalidTypeVariable(member,
+                Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 
     @Override
     protected DefinitionException producerWithInvalidWildcard(AnnotatedMember<?> member) {
-        return BeanLogger.LOG.producerMethodCannotHaveAWildcardReturnType(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+        return BeanLogger.LOG.producerMethodCannotHaveAWildcardReturnType(member,
+                Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 
     @Override
-    protected DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(AnnotatedMember<?> member) {
-        return BeanLogger.LOG.producerMethodWithTypeVariableReturnTypeMustBeDependent(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+    protected DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(
+            AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerMethodWithTypeVariableReturnTypeMustBeDependent(member,
+                Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 }

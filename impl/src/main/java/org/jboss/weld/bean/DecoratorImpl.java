@@ -41,12 +41,13 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     /**
      * Creates a decorator bean
      *
-     * @param <T>         The type
-     * @param clazz       The class
+     * @param <T> The type
+     * @param clazz The class
      * @param beanManager the current manager
      * @return a Bean
      */
-    public static <T> DecoratorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
+    public static <T> DecoratorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz,
+            BeanManagerImpl beanManager) {
         return new DecoratorImpl<T>(attributes, clazz, beanManager);
     }
 
@@ -119,6 +120,8 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
     @Override
     public String toString() {
-        return "Decorator [" + getBeanClass().toString() + "] decorates [" + Formats.formatTypes(getDecoratedTypes()) + "] with delegate type [" + Formats.formatType(getDelegateType()) + "] and delegate qualifiers [" + Formats.formatAnnotations(getDelegateQualifiers()) + "]";
+        return "Decorator [" + getBeanClass().toString() + "] decorates [" + Formats.formatTypes(getDecoratedTypes())
+                + "] with delegate type [" + Formats.formatType(getDelegateType()) + "] and delegate qualifiers ["
+                + Formats.formatAnnotations(getDelegateQualifiers()) + "]";
     }
 }

@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.synthethic.jarHandling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,9 +33,6 @@ import org.jboss.weld.environment.se.test.synthethic.jarHandling.foobar.ImplTwo;
 import org.jboss.weld.inject.WeldInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class SyntheticArchiveWithPackageFromJarTest {

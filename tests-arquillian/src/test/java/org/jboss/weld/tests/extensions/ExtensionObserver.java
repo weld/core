@@ -72,7 +72,9 @@ public class ExtensionObserver implements Extension {
         if (event instanceof AfterDeploymentValidation) {
             allAfterDeploymentValidation = true;
         }
-        if (event instanceof ProcessBean<?> && !(event instanceof ProcessProducerField<?, ?> || event instanceof ProcessProducerMethod<?, ?> || event instanceof ProcessManagedBean<?> || event instanceof ProcessSessionBean<?>)) {
+        if (event instanceof ProcessBean<?>
+                && !(event instanceof ProcessProducerField<?, ?> || event instanceof ProcessProducerMethod<?, ?>
+                        || event instanceof ProcessManagedBean<?> || event instanceof ProcessSessionBean<?>)) {
             allProcessBean = true;
         }
         if (event instanceof ProcessInjectionTarget<?>) {

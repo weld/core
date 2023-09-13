@@ -30,13 +30,14 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class InterfaceStaticMethodProxyTest {
-    
+
     @Inject
     Bar bar;
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterfaceStaticMethodProxyTest.class)).addPackage(InterfaceStaticMethodProxyTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterfaceStaticMethodProxyTest.class))
+                .addPackage(InterfaceStaticMethodProxyTest.class.getPackage());
     }
 
     @Test

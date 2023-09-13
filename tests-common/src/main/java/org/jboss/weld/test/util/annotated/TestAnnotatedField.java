@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.test.util.annotated;
 
+import java.lang.reflect.Field;
+
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.AnnotatedType;
-import java.lang.reflect.Field;
 
 /**
  * @author Stuart Douglas

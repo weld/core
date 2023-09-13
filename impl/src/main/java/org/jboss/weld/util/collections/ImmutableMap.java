@@ -151,17 +151,17 @@ public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
         }
 
         @Override
-        public BiConsumer<HashMapBuilder<K,V>, T> accumulator() {
+        public BiConsumer<HashMapBuilder<K, V>, T> accumulator() {
             return (b, i) -> b.put(keyMapper.apply(i), valueMapper.apply(i));
         }
 
         @Override
-        public BinaryOperator<HashMapBuilder<K,V>> combiner() {
+        public BinaryOperator<HashMapBuilder<K, V>> combiner() {
             return (builder1, builder2) -> builder1.putAll(builder2);
         }
 
         @Override
-        public Function<HashMapBuilder<K,V>, Map<K,V>> finisher() {
+        public Function<HashMapBuilder<K, V>, Map<K, V>> finisher() {
             return HashMapBuilder::build;
         }
 

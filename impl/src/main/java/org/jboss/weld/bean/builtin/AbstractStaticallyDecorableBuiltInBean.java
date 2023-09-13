@@ -49,7 +49,8 @@ public abstract class AbstractStaticallyDecorableBuiltInBean<T> extends Abstract
     protected Class<T> getProxyClass() {
         if (proxyClass == null) {
             // this should never happen
-            throw new IllegalStateException("No decorators were resolved for this bean at boot time however there are some now");
+            throw new IllegalStateException(
+                    "No decorators were resolved for this bean at boot time however there are some now");
         }
         return proxyClass;
     }

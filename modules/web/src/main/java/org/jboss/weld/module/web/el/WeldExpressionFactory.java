@@ -44,13 +44,16 @@ public class WeldExpressionFactory extends ForwardingExpressionFactory {
     }
 
     @Override
-    public ValueExpression createValueExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedType) {
+    public ValueExpression createValueExpression(ELContext context, String expression,
+            @SuppressWarnings("rawtypes") Class expectedType) {
         return new WeldValueExpression(super.createValueExpression(context, expression, expectedType));
     }
 
     @Override
-    public MethodExpression createMethodExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedReturnType, @SuppressWarnings("rawtypes") Class[] expectedParamTypes) {
-        return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
+    public MethodExpression createMethodExpression(ELContext context, String expression,
+            @SuppressWarnings("rawtypes") Class expectedReturnType, @SuppressWarnings("rawtypes") Class[] expectedParamTypes) {
+        return new WeldMethodExpression(
+                super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
     }
 
     // Satisfy checkstyle requirement for a hashcode method when there's an equals method

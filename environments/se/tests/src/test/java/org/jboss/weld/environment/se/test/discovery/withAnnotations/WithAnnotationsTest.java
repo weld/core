@@ -38,8 +38,11 @@ public class WithAnnotationsTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WithAnnotationsTest.class))
-                .addPackage(WithAnnotationsTest.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class)).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WithAnnotationsTest.class))
+                        .addPackage(WithAnnotationsTest.class.getPackage())
+                        .addAsServiceProvider(Extension.class, VerifyingExtension.class))
+                .build();
     }
 
     @Test

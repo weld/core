@@ -21,5 +21,5 @@ package org.jboss.weld.tests.unit.util.reflection.interfaceClosure;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 public interface AnotherBarInterface {
-    
+
 }

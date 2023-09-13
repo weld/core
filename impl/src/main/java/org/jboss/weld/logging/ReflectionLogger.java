@@ -103,7 +103,8 @@ public interface ReflectionLogger extends WeldLogger {
 
     // LOGTOOL-104 we had to change the cause type
     @Message(id = 622, value = "IllegalArgumentException invoking {2} on {1} ({0}) with parameters {3}", format = Format.MESSAGE_FORMAT)
-    WeldException illegalArgumentExceptionOnReflectionInvocation(Class<?> clazz, Object instance, Method method, String parameters, @Cause Throwable cause);
+    WeldException illegalArgumentExceptionOnReflectionInvocation(Class<?> clazz, Object instance, Method method,
+            String parameters, @Cause Throwable cause);
 
     @Message(id = 623, value = "Unknown type {0}.", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException unknownType(Type type);

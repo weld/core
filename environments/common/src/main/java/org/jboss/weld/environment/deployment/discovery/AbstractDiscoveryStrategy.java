@@ -49,7 +49,7 @@ import org.jboss.weld.util.ServiceLoader;
  * @author Martin Kouba
  * @author Jozef Hartinger
  * @author <a href="https://about.me/lairdnelson"
- * target="_parent">Laird Nelson</a>
+ *         target="_parent">Laird Nelson</a>
  */
 public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
@@ -78,8 +78,8 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
      * @param emptyBeansXmlDiscoveryMode
      */
     public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap,
-                                     Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
-                                     BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
+            BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         handlers = new LinkedList<BeanArchiveHandler>();
         setResourceLoader(resourceLoader);
         setBootstrap(bootstrap);
@@ -147,7 +147,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         for (Iterator<BeanArchiveBuilder> iterator = beanArchiveBuilders.iterator(); iterator.hasNext();) {
             BeanArchiveBuilder builder = iterator.next();
             BeansXml beansXml = builder.getBeansXml();
-            if(beansXml != null) {
+            if (beansXml != null) {
                 switch (beansXml.getBeanDiscoveryMode()) {
                     case ALL:
                         addToArchives(archives, processAllDiscovery(builder));
@@ -192,7 +192,8 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
     }
 
     /**
-     * Initialize the strategy before accessing found BeanArchiveBuilder builders. Best used for saving some information before the process method for each
+     * Initialize the strategy before accessing found BeanArchiveBuilder builders. Best used for saving some information before
+     * the process method for each
      * builder is called.
      */
     protected void beforeDiscovery(Collection<BeanArchiveBuilder> builders) {

@@ -68,6 +68,7 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T> {
 
     /**
      * {@link LazyValueHolder} that implements {@link java.io.Serializable}.
+     *
      * @author Jozef Hartinger
      *
      * @param <T> the lazily-computed type

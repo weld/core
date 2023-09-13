@@ -17,6 +17,12 @@
 
 package org.jboss.weld.tests.event.async.contextClassLoader;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,11 +32,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.event.Event;
-import jakarta.inject.Inject;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tests that async observer notification preserves TCCL that the original application had.
@@ -50,7 +51,8 @@ public class AsyncEventNotificationPreservesTCCLTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AsyncEventNotificationPreservesTCCLTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AsyncEventNotificationPreservesTCCLTest.class))
                 .addPackage(AsyncEventNotificationPreservesTCCLTest.class.getPackage());
     }
 

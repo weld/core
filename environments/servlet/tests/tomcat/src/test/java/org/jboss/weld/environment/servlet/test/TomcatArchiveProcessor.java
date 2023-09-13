@@ -28,7 +28,8 @@ import org.jboss.weld.environment.servlet.test.util.TomcatDeployments;
  * This processor adds Tomcat-specific resources to the test archive.
  *
  * <p>
- * Note that if a test deployment is not testable, i.e. {@link Deployment#testable()} is set to <code>false</code>, the processor is not invoked.
+ * Note that if a test deployment is not testable, i.e. {@link Deployment#testable()} is set to <code>false</code>, the
+ * processor is not invoked.
  * </p>
  *
  * @author Martin Kouba

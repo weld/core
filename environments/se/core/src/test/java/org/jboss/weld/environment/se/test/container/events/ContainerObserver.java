@@ -31,15 +31,18 @@ import org.jboss.weld.test.util.ActionSequence;
 public class ContainerObserver {
 
     public void onAppScopeInit(@Observes @Initialized(ApplicationScoped.class) Object event) {
-        ActionSequence.addAction(ApplicationScoped.class.getName(), event.getClass().getName() + ApplicationScoped.class.getName());
+        ActionSequence.addAction(ApplicationScoped.class.getName(),
+                event.getClass().getName() + ApplicationScoped.class.getName());
     }
 
     public void onAppScopeDestroy(@Observes @Destroyed(ApplicationScoped.class) Object event) {
-        ActionSequence.addAction(ApplicationScoped.class.getName(), event.getClass().getName() + ApplicationScoped.class.getName());
+        ActionSequence.addAction(ApplicationScoped.class.getName(),
+                event.getClass().getName() + ApplicationScoped.class.getName());
     }
 
     public void onAppScopeBeforeDestroy(@Observes @BeforeDestroyed(ApplicationScoped.class) Object event) {
-        ActionSequence.addAction(ApplicationScoped.class.getName(), event.getClass().getName() + ApplicationScoped.class.getName());
+        ActionSequence.addAction(ApplicationScoped.class.getName(),
+                event.getClass().getName() + ApplicationScoped.class.getName());
     }
 
     public void onContainerInitWithQualifier(@Observes @Initialized(ApplicationScoped.class) ContainerInitialized event) {
@@ -62,7 +65,8 @@ public class ContainerObserver {
         ActionSequence.addAction(event.getClass().getName() + event.getContainerId());
     }
 
-    public void onContainerBeforeShutdownWithQualifier(@Observes @BeforeDestroyed(ApplicationScoped.class) ContainerBeforeShutdown event) {
+    public void onContainerBeforeShutdownWithQualifier(
+            @Observes @BeforeDestroyed(ApplicationScoped.class) ContainerBeforeShutdown event) {
         ActionSequence.addAction(event.getClass().getName() + ApplicationScoped.class.getName() + event.getContainerId());
     }
 

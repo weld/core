@@ -74,7 +74,8 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
 
     public BeanManagerProxy(BeanManagerImpl manager) {
         this.manager = manager;
-        this.nonPortableMode = manager.getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.NON_PORTABLE_MODE);
+        this.nonPortableMode = manager.getServices().get(WeldConfiguration.class)
+                .getBooleanProperty(ConfigurationKey.NON_PORTABLE_MODE);
     }
 
     @Override
@@ -103,12 +104,14 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     @Override
     public Set<Bean<?>> getBeans(String name) {
         checkContainerState(GET_BEANS_METHOD_NAME);
+        String s = "test";
         return super.getBeans(name);
     }
 
     @Override
     public Bean<?> getPassivationCapableBean(String id) {
         checkContainerState("getPassivationCapableBean()");
+        String s = "test";
         return super.getPassivationCapableBean(id);
     }
 
@@ -168,7 +171,8 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     }
 
     @Override
-    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType,
+            InjectionTarget<X> injectionTarget) {
         return delegate().fireProcessInjectionTarget(annotatedType, injectionTarget);
     }
 

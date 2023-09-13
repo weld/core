@@ -22,9 +22,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Destroyed;
-
 import jakarta.enterprise.event.Shutdown;
 import jakarta.enterprise.inject.Any;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bootstrap.api.Environment;
@@ -46,7 +46,8 @@ public class WeldRuntime {
     private ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
     private String contextId;
 
-    public WeldRuntime(String contextId, BeanManagerImpl deploymentManager, ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
+    public WeldRuntime(String contextId, BeanManagerImpl deploymentManager,
+            ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
         this.contextId = contextId;
         this.deploymentManager = deploymentManager;
         this.bdaToBeanManagerMap = bdaToBeanManagerMap;
@@ -65,7 +66,8 @@ public class WeldRuntime {
             }
             // The container must destroy all contexts.
             // For non-web modules, fire @BeforeDestroyed event
-            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_BEFORE_DESTROYED, BeforeDestroyed.Literal.APPLICATION);
+            fireEventForNonWebModules(Object.class, ContextEvent.APPLICATION_BEFORE_DESTROYED,
+                    BeforeDestroyed.Literal.APPLICATION);
             deploymentManager.instance().select(ApplicationContext.class).get().invalidate();
             deploymentManager.instance().select(SingletonContext.class).get().invalidate();
 
@@ -88,18 +90,18 @@ public class WeldRuntime {
      */
     private void fireEventForNonWebModules(Type eventType, Object event, Annotation... qualifiers) {
         try {
-                BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
-                if (modules != null) {
-                    // fire event for non-web modules
-                    // web modules are handled by HttpContextLifecycle
-                    for (BeanDeploymentModule module : modules) {
-                        if (!module.isWebModule()) {
-                            module.fireEvent(eventType, event, qualifiers);
-                        }
+            BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
+            if (modules != null) {
+                // fire event for non-web modules
+                // web modules are handled by HttpContextLifecycle
+                for (BeanDeploymentModule module : modules) {
+                    if (!module.isWebModule()) {
+                        module.fireEvent(eventType, event, qualifiers);
                     }
                 }
-            } catch (Exception ignored) {
             }
+        } catch (Exception ignored) {
+        }
     }
 
     /**

@@ -32,7 +32,9 @@ public class ContainerLifecycleEventNotFiredIntoBeanTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContainerLifecycleEventNotFiredIntoBeanTest.class)).addClass(Foo.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContainerLifecycleEventNotFiredIntoBeanTest.class))
+                .addClass(Foo.class);
     }
 
     @Test

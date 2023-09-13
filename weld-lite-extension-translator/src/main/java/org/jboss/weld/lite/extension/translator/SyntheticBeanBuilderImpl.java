@@ -1,5 +1,10 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanBuilder;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
@@ -8,12 +13,8 @@ import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.types.Type;
 
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<SyntheticBeanBuilderImpl<T>> implements SyntheticBeanBuilder<T> {
+class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<SyntheticBeanBuilderImpl<T>>
+        implements SyntheticBeanBuilder<T> {
     Class<?> implementationClass;
     Set<java.lang.reflect.Type> types = new HashSet<>();
     Set<Annotation> qualifiers = new HashSet<>();
@@ -99,7 +100,8 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
 
     @Override
     public SyntheticBeanBuilder<T> stereotype(ClassInfo stereotypeAnnotation) {
-        this.stereotypes.add((Class<? extends Annotation>) ((ClassInfoImpl) stereotypeAnnotation).cdiDeclaration.getJavaClass());
+        this.stereotypes
+                .add((Class<? extends Annotation>) ((ClassInfoImpl) stereotypeAnnotation).cdiDeclaration.getJavaClass());
         return this;
     }
 

@@ -54,7 +54,9 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
     }
 
     private List<Method> initMethodList(List<? extends AnnotatedMethod<?>> methods) {
-        return methods.stream().map((method) -> AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method.getJavaMember()))).collect(ImmutableList.collector());
+        return methods.stream()
+                .map((method) -> AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method.getJavaMember())))
+                .collect(ImmutableList.collector());
     }
 
     @Override

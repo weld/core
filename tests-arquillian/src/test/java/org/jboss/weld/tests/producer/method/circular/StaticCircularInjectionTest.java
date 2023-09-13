@@ -45,8 +45,8 @@ public class StaticCircularInjectionTest {
     }
 
     /*
-    * description = "WELD-310"
-    */
+     * description = "WELD-310"
+     */
     @Test
     public void testProducerCalledOnBeanUnderConstruction() {
         foo.ping();

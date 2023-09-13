@@ -24,7 +24,8 @@ import java.util.Set;
 import org.jboss.weld.util.Preconditions;
 
 /**
- * Immutable {@link Set} implementation. This implementation uses open addressing with linear probing and a table size of the nearest power of two so that load
+ * Immutable {@link Set} implementation. This implementation uses open addressing with linear probing and a table size of the
+ * nearest power of two so that load
  * factor is below 0.75. The implementation is inspired by Guava's ImmutableSet implementation.
  *
  * @author Jozef Hartinger

@@ -38,8 +38,9 @@ public class InvocationContextProceedDelegationTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvocationContextProceedDelegationTest.class)).addClasses(Alpha.class, Bravo.class, DelegatingInterceptor.class,
-                Intercepted.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvocationContextProceedDelegationTest.class))
+                .addClasses(Alpha.class, Bravo.class, DelegatingInterceptor.class,
+                        Intercepted.class);
     }
 
     @Test

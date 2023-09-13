@@ -4,14 +4,15 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.context.bound.BoundConversationContext;
+import org.jboss.weld.context.bound.BoundRequest;
 import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.contexts.beanstore.BoundBeanStore;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.contexts.beanstore.SessionMapBeanStore;
-import org.jboss.weld.context.bound.BoundConversationContext;
-import org.jboss.weld.context.bound.BoundRequest;
 
-public class BoundConversationContextImpl extends AbstractConversationContext<BoundRequest, Map<String, Object>> implements BoundConversationContext {
+public class BoundConversationContextImpl extends AbstractConversationContext<BoundRequest, Map<String, Object>>
+        implements BoundConversationContext {
 
     // There is no need to store FQCN in a session key
     private static final String NAMING_SCHEME_PREFIX = "WELD_BC";

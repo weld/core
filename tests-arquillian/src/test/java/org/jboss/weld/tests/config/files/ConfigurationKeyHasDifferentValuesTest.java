@@ -44,24 +44,32 @@ public class ConfigurationKeyHasDifferentValuesTest {
 
         BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class);
         ejbJar.addClass(DummySessionBean.class)
-                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false").build(), "weld.properties");
+                .addAsResource(
+                        PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false").build(),
+                        "weld.properties");
 
         WebArchive war1 = Testable.archiveToTest(ShrinkWrap
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml"))
-                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true").build(), "weld.properties");
+                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true").build(),
+                        "weld.properties");
 
         WebArchive war2 = ShrinkWrap
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false").build(), "weld.properties");
+                .addAsResource(
+                        PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false").build(),
+                        "weld.properties");
 
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(ConfigurationKeyHasDifferentValuesTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(ejbJar, war1, war2);
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(ConfigurationKeyHasDifferentValuesTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModules(ejbJar, war1, war2);
     }
 
     @Test
     public void testDeploymentWithSeveralFilesWithContradictorySettings() {
         // should throw illegal state exception
-     }
+    }
 
 }

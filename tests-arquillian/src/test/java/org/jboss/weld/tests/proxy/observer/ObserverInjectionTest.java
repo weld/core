@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.proxy.observer;
 
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -10,8 +12,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.inject.Inject;
 
 @RunWith(Arquillian.class)
 public class ObserverInjectionTest {
@@ -25,8 +25,8 @@ public class ObserverInjectionTest {
     private BeanManagerImpl beanManager;
 
     /*
-    * description = "WELD-535"
-    */
+     * description = "WELD-535"
+     */
     @Test
     public void testInjectionHappens(SampleObserver sampleObserver) {
         Assert.assertFalse(sampleObserver.isInjectionAndObservationOccured());

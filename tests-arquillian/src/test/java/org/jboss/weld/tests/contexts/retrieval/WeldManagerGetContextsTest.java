@@ -1,9 +1,12 @@
 package org.jboss.weld.tests.contexts.retrieval;
 
+import java.util.Collection;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -15,8 +18,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collection;
-
 /**
  * Tests retrieval of registered instances of contexts for given scope annotations.
  *
@@ -27,7 +28,9 @@ public class WeldManagerGetContextsTest {
 
     @Deployment
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(WeldManagerGetContextsTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(WeldManagerGetContextsTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(WeldManagerGetContextsTest.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

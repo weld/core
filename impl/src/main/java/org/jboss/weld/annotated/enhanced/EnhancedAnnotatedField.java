@@ -39,6 +39,7 @@ public interface EnhancedAnnotatedField<T, X> extends EnhancedAnnotatedMember<T,
 
     /**
      * Returns a lightweight implementation of {@link AnnotatedField} with minimal memory footprint.
+     *
      * @return the slim version of this {@link AnnotatedField}
      */
     AnnotatedField<X> slim();

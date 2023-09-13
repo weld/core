@@ -35,12 +35,13 @@ public class InvalidQualifierTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidQualifierTest.class)).addClasses(Telephone.class, PlainOldAnnotation.class, InvalidQualifierExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidQualifierTest.class))
+                .addClasses(Telephone.class, PlainOldAnnotation.class, InvalidQualifierExtension.class)
                 .addAsServiceProvider(Extension.class, InvalidQualifierExtension.class);
     }
-    
+
     @Test
     public void testDeploymentWithInvalidQualifierExtension() {
         // should throw definition exception
-     }
+    }
 }

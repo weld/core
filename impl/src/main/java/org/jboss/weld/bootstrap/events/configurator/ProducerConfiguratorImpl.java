@@ -71,39 +71,39 @@ public class ProducerConfiguratorImpl<T> implements ProducerConfigurator<T>, Con
     }
 
     /**
-    *
-    *
-    * @param <T>
-    */
-   static class ProducerImpl<T> implements Producer<T> {
+     *
+     *
+     * @param <T>
+     */
+    static class ProducerImpl<T> implements Producer<T> {
 
-       private final Function<CreationalContext<T>, T> produceCallback;
+        private final Function<CreationalContext<T>, T> produceCallback;
 
-       private final Consumer<T> disposeCallback;
+        private final Consumer<T> disposeCallback;
 
-       private final Set<InjectionPoint> injectionPoints;
+        private final Set<InjectionPoint> injectionPoints;
 
-       ProducerImpl(ProducerConfiguratorImpl<T> configurator) {
-           this.injectionPoints = configurator.injectionPoints;
-           this.produceCallback = configurator.produceCallback;
-           this.disposeCallback = configurator.disposeCallback;
-       }
+        ProducerImpl(ProducerConfiguratorImpl<T> configurator) {
+            this.injectionPoints = configurator.injectionPoints;
+            this.produceCallback = configurator.produceCallback;
+            this.disposeCallback = configurator.disposeCallback;
+        }
 
-       @Override
-       public T produce(CreationalContext<T> ctx) {
-           return produceCallback.apply(ctx);
-       }
+        @Override
+        public T produce(CreationalContext<T> ctx) {
+            return produceCallback.apply(ctx);
+        }
 
-       @Override
-       public void dispose(T instance) {
-           disposeCallback.accept(instance);
-       }
+        @Override
+        public void dispose(T instance) {
+            disposeCallback.accept(instance);
+        }
 
-       @Override
-       public Set<InjectionPoint> getInjectionPoints() {
-           return injectionPoints;
-       }
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return injectionPoints;
+        }
 
-   }
+    }
 
 }

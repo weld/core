@@ -22,9 +22,5 @@ import jakarta.inject.Named;
 /**
  * @author Dan Allen
  */
-public
-@Named
-@Important
-@RequestScoped
-class NamedBeanWithBinding {
+public @Named @Important @RequestScoped class NamedBeanWithBinding {
 }

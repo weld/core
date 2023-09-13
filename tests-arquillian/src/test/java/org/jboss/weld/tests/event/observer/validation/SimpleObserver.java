@@ -17,8 +17,9 @@
 
 package org.jboss.weld.tests.event.observer.validation;
 
-import jakarta.enterprise.event.Observes;
 import java.io.File;
+
+import jakarta.enterprise.event.Observes;
 
 /**
  * @author Dan Allen

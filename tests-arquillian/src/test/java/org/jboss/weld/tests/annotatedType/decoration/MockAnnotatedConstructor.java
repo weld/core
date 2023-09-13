@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
-import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 import java.lang.reflect.Constructor;
+
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>

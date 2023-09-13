@@ -19,7 +19,8 @@ package org.jboss.weld.security;
 import java.lang.reflect.Constructor;
 import java.security.PrivilegedExceptionAction;
 
-public class GetDeclaredConstructorAction<T> extends AbstractGenericReflectionAction<T> implements PrivilegedExceptionAction<Constructor<T>> {
+public class GetDeclaredConstructorAction<T> extends AbstractGenericReflectionAction<T>
+        implements PrivilegedExceptionAction<Constructor<T>> {
 
     public static <T> GetDeclaredConstructorAction<T> of(Class<T> javaClass, Class<?>... parameterTypes) {
         return new GetDeclaredConstructorAction<T>(javaClass, parameterTypes);

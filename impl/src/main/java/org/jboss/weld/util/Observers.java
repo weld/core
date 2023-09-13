@@ -67,15 +67,21 @@ public class Observers {
     /*
      * Contains only top superinterfaces of each chain of container lifecycle event types.
      */
-    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = ImmutableSet.of(BeforeBeanDiscovery.class, AfterTypeDiscovery.class,
-            AfterBeanDiscovery.class, AfterDeploymentValidation.class, BeforeShutdown.class, ProcessAnnotatedType.class, ProcessInjectionPoint.class,
-            ProcessInjectionTarget.class, ProcessProducer.class, ProcessBeanAttributes.class, ProcessBean.class, ProcessObserverMethod.class);
+    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = ImmutableSet.of(
+            BeforeBeanDiscovery.class, AfterTypeDiscovery.class,
+            AfterBeanDiscovery.class, AfterDeploymentValidation.class, BeforeShutdown.class, ProcessAnnotatedType.class,
+            ProcessInjectionPoint.class,
+            ProcessInjectionTarget.class, ProcessProducer.class, ProcessBeanAttributes.class, ProcessBean.class,
+            ProcessObserverMethod.class);
     /*
      * Contains all container lifecycle event types
      */
-    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>> builder().addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
-            .addAll(ProcessSyntheticAnnotatedType.class, ProcessSessionBean.class, ProcessManagedBean.class, ProcessProducerMethod.class,
-                    ProcessProducerField.class, ProcessSyntheticBean.class, ProcessSyntheticObserverMethod.class, WeldAfterBeanDiscovery.class)
+    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>> builder()
+            .addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
+            .addAll(ProcessSyntheticAnnotatedType.class, ProcessSessionBean.class, ProcessManagedBean.class,
+                    ProcessProducerMethod.class,
+                    ProcessProducerField.class, ProcessSyntheticBean.class, ProcessSyntheticObserverMethod.class,
+                    WeldAfterBeanDiscovery.class)
             .build();
 
     private static final String NOTIFY_METHOD_NAME = "notify";
@@ -109,7 +115,8 @@ public class Observers {
     public static boolean isObserverMethodEnabled(ObserverMethod<?> method, BeanManagerImpl manager) {
         if (method instanceof ObserverMethodImpl<?, ?>) {
             Bean<?> declaringBean = Reflections.<ObserverMethodImpl<?, ?>> cast(method).getDeclaringBean();
-            return manager.getServices().get(SpecializationAndEnablementRegistry.class).isCandidateForLifecycleEvent(declaringBean);
+            return manager.getServices().get(SpecializationAndEnablementRegistry.class)
+                    .isCandidateForLifecycleEvent(declaringBean);
         }
         return true;
     }
@@ -121,7 +128,8 @@ public class Observers {
      * @param beanManager
      * @param originalObserverMethod observer method replaced by given observer method (this parameter is optional)
      */
-    public static void validateObserverMethod(ObserverMethod<?> observerMethod, BeanManager beanManager, ObserverMethod<?> originalObserverMethod) {
+    public static void validateObserverMethod(ObserverMethod<?> observerMethod, BeanManager beanManager,
+            ObserverMethod<?> originalObserverMethod) {
         Set<Annotation> qualifiers = observerMethod.getObservedQualifiers();
         if (observerMethod.getBeanClass() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getBeanClass", observerMethod);
@@ -139,13 +147,15 @@ public class Observers {
         if (originalObserverMethod != null && (!observerMethod.getBeanClass().equals(originalObserverMethod.getBeanClass()))) {
             throw EventLogger.LOG.beanClassMismatch(originalObserverMethod, observerMethod);
         }
-        if (!(observerMethod instanceof SyntheticObserverMethod) && !hasNotifyOverriden(observerMethod.getClass(), observerMethod)) {
+        if (!(observerMethod instanceof SyntheticObserverMethod)
+                && !hasNotifyOverriden(observerMethod.getClass(), observerMethod)) {
             throw EventLogger.LOG.notifyMethodNotImplemented(observerMethod);
         }
     }
 
     /**
-     * Determines whether the given observer method is either extension-provided or contains an injection point with {@link EventMetadata} type.
+     * Determines whether the given observer method is either extension-provided or contains an injection point with
+     * {@link EventMetadata} type.
      */
     public static boolean isEventMetadataRequired(ObserverMethod<?> observer) {
         if (observer instanceof EventMetadataAwareObserverMethod) {

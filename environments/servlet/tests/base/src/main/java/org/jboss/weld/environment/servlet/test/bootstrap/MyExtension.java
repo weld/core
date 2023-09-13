@@ -18,7 +18,6 @@ public class MyExtension implements Extension {
         events.add(event);
     }
 
-
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event) {
         events.add(event);
     }

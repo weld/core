@@ -16,18 +16,18 @@
  */
 package org.jboss.weld.tests.observers.extension;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Qualifier
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
@@ -42,7 +42,7 @@ public @interface Tall {
 
         public static final Literal FIVE_METERS = new Literal(5);
         public static final Literal SIX_METERS = new Literal(6);
-        
+
         private int height;
 
         private Literal(int height) {

@@ -42,7 +42,8 @@ public class Servlet extends HttpServlet {
             int destroyed = observer.getDestroyedSessionCount().get();
             req.getSession().invalidate();
             if (destroyed != observer.getDestroyedSessionCount().get()) {
-                throw new RuntimeException("@Destroyed(SessionScoped.class) called before the session context was actually destroyed");
+                throw new RuntimeException(
+                        "@Destroyed(SessionScoped.class) called before the session context was actually destroyed");
             }
         }
         resp.getWriter().append("Initialized sessions:").append(Integer.toString(observer.getInitializedSessionCount().get()));

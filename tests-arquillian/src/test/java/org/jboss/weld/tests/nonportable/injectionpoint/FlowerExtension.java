@@ -31,8 +31,8 @@ public class FlowerExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         Fig fig = (Fig) beanManager.getReference(
-            beanManager.resolve(beanManager.getBeans(Fig.class)), Object.class,
-            beanManager.createCreationalContext(null));
+                beanManager.resolve(beanManager.getBeans(Fig.class)), Object.class,
+                beanManager.createCreationalContext(null));
         pingResult = fig.bloom.ping();
     }
 

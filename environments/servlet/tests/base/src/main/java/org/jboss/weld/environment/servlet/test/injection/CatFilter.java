@@ -1,5 +1,7 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
+import java.io.IOException;
+
 import jakarta.inject.Inject;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -8,7 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class CatFilter implements Filter {
 
@@ -19,8 +20,10 @@ public class CatFilter implements Filter {
         isSewerNameOk();
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        ((HttpServletResponse) response).setStatus(isSewerNameOk() ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        ((HttpServletResponse) response)
+                .setStatus(isSewerNameOk() ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     public void destroy() {

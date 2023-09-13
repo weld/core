@@ -61,12 +61,13 @@ public class InspectServlet extends HttpServlet {
             } else {
                 long start = System.currentTimeMillis();
                 try {
-                    new Timer().setSleepInterval(100l).setDelay(2, TimeUnit.SECONDS).addStopCondition(new Timer.StopCondition() {
-                        @Override
-                        public boolean isSatisfied() {
-                            return stateHolder.isBusyAttemptMade();
-                        }
-                    }).start();
+                    new Timer().setSleepInterval(100l).setDelay(2, TimeUnit.SECONDS)
+                            .addStopCondition(new Timer.StopCondition() {
+                                @Override
+                                public boolean isSatisfied() {
+                                    return stateHolder.isBusyAttemptMade();
+                                }
+                            }).start();
                 } catch (InterruptedException e1) {
                     throw new IllegalStateException();
                 }

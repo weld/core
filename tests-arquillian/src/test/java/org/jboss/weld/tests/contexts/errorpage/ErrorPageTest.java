@@ -21,8 +21,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -31,6 +29,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -43,9 +42,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * <p>This test was mostly developed to test the scenario related to WELD-29.  Essentially
+ * <p>
+ * This test was mostly developed to test the scenario related to WELD-29. Essentially
  * a JSF action throws an exception, and the error page is then rendered during which
- * all relevant scopes for CDI are tested.</p>
+ * all relevant scopes for CDI are tested.
+ * </p>
  *
  * @author David Allen
  */
@@ -55,7 +56,7 @@ public class ErrorPageTest {
 
     @ArquillianResource
     private URL url;
-    
+
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ErrorPageTest.class, Utils.ARCHIVE_TYPE.WAR))
@@ -66,7 +67,7 @@ public class ErrorPageTest {
                 .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.xhtml", "storm.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-    
+
     @Test
     public void testActionMethodExceptionDoesNotDestroyContext() throws Exception {
         WebClient client = new WebClient();

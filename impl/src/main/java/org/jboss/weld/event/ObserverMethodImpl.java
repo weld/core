@@ -63,8 +63,10 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * <p>
- * Reference implementation for the ObserverMethod interface, which represents an observer method. Each observer method has an event type which is the class of
- * the event object being observed, and event binding types that are annotations applied to the event parameter to narrow the event notifications delivered.
+ * Reference implementation for the ObserverMethod interface, which represents an observer method. Each observer method has an
+ * event type which is the class of
+ * the event object being observed, and event binding types that are annotations applied to the event parameter to narrow the
+ * event notifications delivered.
  * </p>
  *
  * @author David Allen
@@ -77,7 +79,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
 
     public static final String ID_SEPARATOR = "-";
 
-    protected static final Set<Class<? extends Annotation>> SPECIAL_PARAM_MARKERS = ImmutableSet.of(Observes.class, ObservesAsync.class);
+    protected static final Set<Class<? extends Annotation>> SPECIAL_PARAM_MARKERS = ImmutableSet.of(Observes.class,
+            ObservesAsync.class);
 
     @SuppressWarnings("serial")
     private static final Type EVENT_METADATA_INSTANCE_TYPE = new TypeLiteral<Instance<EventMetadata>>() {
@@ -110,7 +113,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
      * @param declaringBean The observer bean
      * @param manager The Bean manager
      */
-    protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager,
+    protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean,
+            final BeanManagerImpl manager,
             final boolean isAsync) {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
@@ -169,7 +173,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
     }
 
     protected String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
-        return new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR)
+        return new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName())
+                .append(ID_SEPARATOR)
                 .append(createTypeId(declaringBean)).append(".").append(observer.getSignature()).toString();
     }
 
@@ -184,9 +189,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
         return typeId;
     }
 
-    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean,
+    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer,
+            RIBean<X> declaringBean,
             BeanManagerImpl manager) {
-        return InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.OBSERVER, observer, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
+        return InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.OBSERVER, observer,
+                declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
     }
 
     public Set<WeldInjectionPointAttributes<?, ?>> getInjectionPoints() {
@@ -201,7 +208,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
         List<EnhancedAnnotatedParameter<?, Y>> eventObjects = annotated.getEnhancedParameters(Observes.class);
         eventObjects.addAll(annotated.getEnhancedParameters(ObservesAsync.class));
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
-            throw EventLogger.LOG.invalidScopedConditionalObserver(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
+            throw EventLogger.LOG.invalidScopedConditionalObserver(this,
+                    Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         if (eventObjects.size() > 1) {
             throw EventLogger.LOG.multipleEventParameters(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
@@ -224,17 +232,21 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
         for (EnhancedAnnotatedParameter<?, ?> parameter : annotated.getEnhancedParameters()) {
             // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
-            if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !parameter.isAnnotationPresent(ObservesAsync.class) && !BeanManager.class.equals(parameter.getBaseType())) {
+            if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class)
+                    && !parameter.isAnnotationPresent(ObservesAsync.class)
+                    && !BeanManager.class.equals(parameter.getBaseType())) {
                 throw EventLogger.LOG.invalidInjectionPoint(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
             }
         }
 
     }
 
-    protected <Y> void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter, EnhancedAnnotatedMethod<T, Y> annotated) {
+    protected <Y> void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter,
+            EnhancedAnnotatedMethod<T, Y> annotated) {
         if (eventParameter.isAnnotationPresent(WithAnnotations.class)) {
             throw EventLogger.LOG
-                    .invalidWithAnnotations(this, Formats.formatAsStackTraceElement(eventParameter.getDeclaringEnhancedCallable().getJavaMember()));
+                    .invalidWithAnnotations(this,
+                            Formats.formatAsStackTraceElement(eventParameter.getDeclaringEnhancedCallable().getJavaMember()));
         }
     }
 
@@ -334,7 +346,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
     }
 
     /**
-     * Hooks allowing subclasses to perform additional logic just before and just after an event is delivered to an observer method.
+     * Hooks allowing subclasses to perform additional logic just before and just after an event is delivered to an observer
+     * method.
      */
     protected void preNotify(T event, Object receiver) {
     }

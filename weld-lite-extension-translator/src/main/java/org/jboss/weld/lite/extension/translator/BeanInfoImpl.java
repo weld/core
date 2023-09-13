@@ -1,5 +1,8 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.DisposerInfo;
@@ -13,10 +16,8 @@ import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.types.Type;
-import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class BeanInfoImpl implements BeanInfo {
     final jakarta.enterprise.inject.spi.Bean<?> cdiBean;
@@ -25,7 +26,7 @@ class BeanInfoImpl implements BeanInfo {
     final BeanManager bm;
 
     BeanInfoImpl(jakarta.enterprise.inject.spi.Bean<?> cdiBean, jakarta.enterprise.inject.spi.Annotated cdiDeclaration,
-                 jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDisposerDeclaration, BeanManager bm) {
+            jakarta.enterprise.inject.spi.AnnotatedParameter<?> cdiDisposerDeclaration, BeanManager bm) {
         this.cdiBean = cdiBean;
         this.cdiDeclaration = cdiDeclaration;
         this.cdiDisposerDeclaration = cdiDisposerDeclaration;

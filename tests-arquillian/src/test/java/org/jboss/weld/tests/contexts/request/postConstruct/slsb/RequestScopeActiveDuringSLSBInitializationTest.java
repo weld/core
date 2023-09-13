@@ -40,7 +40,9 @@ public class RequestScopeActiveDuringSLSBInitializationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(RequestScopeActiveDuringSLSBInitializationTest.class)).addPackage(RequestScopeActiveDuringSLSBInitializationTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(RequestScopeActiveDuringSLSBInitializationTest.class))
+                .addPackage(RequestScopeActiveDuringSLSBInitializationTest.class.getPackage());
     }
 
     @Test

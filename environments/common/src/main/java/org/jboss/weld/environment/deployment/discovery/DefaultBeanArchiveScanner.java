@@ -60,7 +60,8 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
      * @param resourceLoader
      * @param bootstrap
      */
-    public DefaultBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+    public DefaultBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap,
+            BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         super(bootstrap, emptyBeansXmlDiscoveryMode);
         this.resourceLoader = resourceLoader;
     }
@@ -98,10 +99,10 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
             CommonLogger.LOG.couldNotReadResource(url, e);
         }
 
-        if(PROCOTOL_FILE.equals(url.getProtocol())) {
+        if (PROCOTOL_FILE.equals(url.getProtocol())) {
             // Adapt file URL, e.g. "file:///home/weld/META-INF/beans.xml" becomes "/home/weld"
             ref = new File(uri.getSchemeSpecificPart()).getParentFile().getParent();
-        } else if(PROCOTOL_JAR.equals(url.getProtocol())) {
+        } else if (PROCOTOL_JAR.equals(url.getProtocol())) {
             // Attempt to adapt JAR file URL, e.g. "jar:file:/home/duke/duke.jar!/META-INF/beans.xml" becomes "/home/duke/duke.jar"
             // NOTE: Some class loaders may support nested jars, e.g. "jar:file:/home/duke/duke.jar!/lib/foo.jar!/META-INF/beans.xml" becomes
             // "/home/duke/duke.jar!/lib/foo.jar"
@@ -109,7 +110,7 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
             // The decoded part without protocol part, i.e. without "jar:"
             ref = uri.getSchemeSpecificPart();
 
-            if(ref.lastIndexOf(JAR_URL_SEPARATOR) > 0) {
+            if (ref.lastIndexOf(JAR_URL_SEPARATOR) > 0) {
                 ref = ref.substring(0, ref.lastIndexOf(JAR_URL_SEPARATOR));
             }
             ref = getBeanArchiveReferenceForJar(ref, url);
@@ -137,7 +138,7 @@ public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
             ClassLoader jnlpClassLoader = WeldResourceLoader.getClassLoader();
             Class<?> jnlpClClass = jnlpClassLoader.getClass();
 
-            try{
+            try {
                 // Detecting if running inside icedtea-web JNLP runtime
                 if (jnlpClClass.getName().equals("net.sourceforge.jnlp.runtime.classloader.JNLPClassLoader")) {
                     // Try to get field net.sourceforge.jnlp.runtime.JNLPClassLoader#tracker from icedtea-web 1.5

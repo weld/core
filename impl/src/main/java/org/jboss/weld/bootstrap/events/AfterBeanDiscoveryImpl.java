@@ -199,7 +199,6 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         }
     }
 
-
     private <T> void processBeanRegistration(BeanRegistration registration, GlobalEnablementBuilder globalEnablementBuilder) {
         Bean<?> bean = registration.initBean();
         BeanManagerImpl beanManager = registration.initBeanManager();
@@ -287,7 +286,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         validateObserverMethod(observerMethod, getBeanManager(), null);
         BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
         if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
-            ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observerMethod, registration.extension);
+            ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observerMethod,
+                    registration.extension);
             if (processedObserver != null) {
                 manager.addObserver(processedObserver);
             }
@@ -320,7 +320,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             return new BeanRegistration(null, null, interceptorBuilder, null);
         }
 
-        BeanRegistration(Bean<?> bean, BeanConfiguratorImpl<?> beanConfigurator, InterceptorConfiguratorImpl interceptorBuilder, Extension extension) {
+        BeanRegistration(Bean<?> bean, BeanConfiguratorImpl<?> beanConfigurator, InterceptorConfiguratorImpl interceptorBuilder,
+                Extension extension) {
             this.bean = bean;
             this.beanConfigurator = beanConfigurator;
             this.interceptorBuilder = interceptorBuilder;
@@ -370,7 +371,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             return new ObserverRegistration(null, configurator, extension);
         }
 
-        private ObserverRegistration(ObserverMethod<?> observerMethod, ObserverMethodConfiguratorImpl<?> observerMethodBuilder, Extension extension) {
+        private ObserverRegistration(ObserverMethod<?> observerMethod, ObserverMethodConfiguratorImpl<?> observerMethodBuilder,
+                Extension extension) {
             this.observerMethod = observerMethod;
             this.observerMethodConfigurator = observerMethodBuilder;
             this.extension = extension;
@@ -383,7 +385,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             try {
                 return observerMethodConfigurator.complete();
             } catch (Exception e) {
-                throw BootstrapLogger.LOG.unableToProcessConfigurator(ObserverMethodConfigurator.class.getSimpleName(), extension, e);
+                throw BootstrapLogger.LOG.unableToProcessConfigurator(ObserverMethodConfigurator.class.getSimpleName(),
+                        extension, e);
             }
         }
 

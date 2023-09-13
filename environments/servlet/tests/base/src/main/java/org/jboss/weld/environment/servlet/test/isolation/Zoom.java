@@ -27,6 +27,6 @@ import jakarta.interceptor.InterceptorBinding;
 
 @InterceptorBinding
 @Retention(RUNTIME)
-@Target({METHOD, TYPE})
+@Target({ METHOD, TYPE })
 public @interface Zoom {
 }

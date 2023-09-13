@@ -67,20 +67,24 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
     }
 
     private void registerAroundConstructCallback(CreationalContextImpl<T> ctx, BeanManagerImpl manager) {
-        final InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager, annotatedType);
+        final InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager,
+                annotatedType);
 
         AroundConstructCallback<T> callback = new AroundConstructCallback<T>() {
 
             @Override
-            public T aroundConstruct(final ConstructionHandle<T> handle, AnnotatedConstructor<T> constructor, Object[] parameters, Map<String, Object> data) {
+            public T aroundConstruct(final ConstructionHandle<T> handle, AnnotatedConstructor<T> constructor,
+                    Object[] parameters, Map<String, Object> data) {
                 /*
                  * The AroundConstruct interceptor method can access the constructed instance using InvocationContext.getTarget
                  * method after the InvocationContext.proceed completes.
                  */
                 final AtomicReference<T> target = new AtomicReference<T>();
 
-                List<InterceptorMethodInvocation> chain = interceptionContext.buildInterceptorMethodInvocationsForConstructorInterception();
-                InvocationContext invocationContext = new WeldInvocationContextImpl(constructor.getJavaMember(), parameters, data, chain, model.getMemberInterceptorBindings(getConstructor())) {
+                List<InterceptorMethodInvocation> chain = interceptionContext
+                        .buildInterceptorMethodInvocationsForConstructorInterception();
+                InvocationContext invocationContext = new WeldInvocationContextImpl(constructor.getJavaMember(), parameters,
+                        data, chain, model.getMemberInterceptorBindings(getConstructor())) {
 
                     @Override
                     protected Object interceptorChainCompleted() throws Exception {

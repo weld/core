@@ -44,11 +44,13 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
     private static final String LJAVA_LANG_REFLECT_METHOD = "Ljava/lang/reflect/Method;";
 
     @Override
-    public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName, final String[] parameterTypes,
+    public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName,
+            final String[] parameterTypes,
             ClassMethod staticConstructor) {
 
         String weldMemberName = WELD_MEMBER_PREFIX + METHOD_COUNT.incrementAndGet();
-        staticConstructor.getClassFile().addField(AccessFlag.PRIVATE | AccessFlag.STATIC, weldMemberName, LJAVA_LANG_REFLECT_METHOD);
+        staticConstructor.getClassFile().addField(AccessFlag.PRIVATE | AccessFlag.STATIC, weldMemberName,
+                LJAVA_LANG_REFLECT_METHOD);
 
         final CodeAttribute code = staticConstructor.getCodeAttribute();
 
@@ -60,8 +62,10 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
         methodCode.getstatic(classMethod.getClassFile().getName(), weldMemberName, LJAVA_LANG_REFLECT_METHOD);
     }
 
-    private void addInitMethod(final String declaringClass, final String methodName, final String[] parameterTypes, String weldMethodName, ClassFile classFile) {
-        ClassMethod initMethod = classFile.addMethod(AccessFlag.of(AccessFlag.PRIVATE, AccessFlag.STATIC), weldMethodName, LJAVA_LANG_REFLECT_METHOD);
+    private void addInitMethod(final String declaringClass, final String methodName, final String[] parameterTypes,
+            String weldMethodName, ClassFile classFile) {
+        ClassMethod initMethod = classFile.addMethod(AccessFlag.of(AccessFlag.PRIVATE, AccessFlag.STATIC), weldMethodName,
+                LJAVA_LANG_REFLECT_METHOD);
         final CodeAttribute code = initMethod.getCodeAttribute();
         BytecodeUtils.pushClassType(code, declaringClass);
         // now we have the class on the stack

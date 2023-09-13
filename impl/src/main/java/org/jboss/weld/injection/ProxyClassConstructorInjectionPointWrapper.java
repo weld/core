@@ -49,7 +49,9 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     private final Bean<?> bean;
     private final String contextId;
 
-    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, Class<?> declaringComponentClass, EnhancedAnnotatedConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
+    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, Class<?> declaringComponentClass,
+            EnhancedAnnotatedConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint,
+            BeanManagerImpl manager) {
         super(weldConstructor, declaringBean, declaringComponentClass, InjectionPointFactory.silentInstance(), manager);
         this.contextId = manager.getContextId();
         this.decorator = (declaringBean instanceof jakarta.enterprise.inject.spi.Decorator);
@@ -103,11 +105,11 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
         return originalConstructorInjectionPoint.getAnnotated();
     }
 
-
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((originalConstructorInjectionPoint == null) ? 0 : originalConstructorInjectionPoint.hashCode());
+        result = prime * result
+                + ((originalConstructorInjectionPoint == null) ? 0 : originalConstructorInjectionPoint.hashCode());
         return result;
     }
 

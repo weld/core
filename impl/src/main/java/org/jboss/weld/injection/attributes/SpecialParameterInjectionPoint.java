@@ -30,15 +30,18 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Jozef Hartinger
  *
  */
-public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Object> implements ParameterInjectionPoint<T, X> {
+public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Object>
+        implements ParameterInjectionPoint<T, X> {
 
-    public static <T, X> ParameterInjectionPoint<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    public static <T, X> ParameterInjectionPoint<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean,
+            Class<?> declaringComponentClass, BeanManagerImpl manager) {
         return new SpecialParameterInjectionPoint<T, X>(parameter, bean, declaringComponentClass, manager);
     }
 
     private final ParameterInjectionPointAttributes<T, X> attributes;
 
-    protected SpecialParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    protected SpecialParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean,
+            Class<?> declaringComponentClass, BeanManagerImpl manager) {
         this.attributes = InferringParameterInjectionPointAttributes.of(parameter, bean, declaringComponentClass, manager);
     }
 

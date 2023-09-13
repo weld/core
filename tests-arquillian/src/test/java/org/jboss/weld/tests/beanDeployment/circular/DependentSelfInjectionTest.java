@@ -24,6 +24,6 @@ public class DependentSelfInjectionTest {
     @Test
     public void testSelfInjectingBean() {
         // should throw deployment exception
-     }
+    }
 
 }

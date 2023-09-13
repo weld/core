@@ -60,7 +60,8 @@ public interface EjbSupport extends Service {
      * @param manager the bean manager
      * @return InjectionTarget implementation for a given session bean
      */
-    <T> BasicInjectionTarget<T> createSessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl manager);
+    <T> BasicInjectionTarget<T> createSessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean,
+            BeanManagerImpl manager);
 
     /**
      * Creates an {@link InjectionTarget} implementation for a message-driven bean.
@@ -70,7 +71,8 @@ public interface EjbSupport extends Service {
      * @param manager the bean manager
      * @return InjectionTarget implementation for a given message-driven bean
      */
-    <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> descriptor, BeanManagerImpl manager);
+    <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> descriptor,
+            BeanManagerImpl manager);
 
     /**
      * Creates session beans and registers them within the given environment.
@@ -79,7 +81,8 @@ public interface EjbSupport extends Service {
      * @param classes
      * @param manager
      */
-    void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> classes, BeanManagerImpl manager);
+    void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> classes,
+            BeanManagerImpl manager);
 
     /**
      * Returns the class object for the {@link jakarta.ejb.Timeout} annotation.
@@ -89,7 +92,8 @@ public interface EjbSupport extends Service {
     Class<? extends Annotation> getTimeoutAnnotation();
 
     /**
-     * Initializes interception model for MDBs and propagates them to {@link EjbServices#registerInterceptors(org.jboss.weld.ejb.spi.EjbDescriptor, org.jboss.weld.ejb.spi.InterceptorBindings)}.
+     * Initializes interception model for MDBs and propagates them to
+     * {@link EjbServices#registerInterceptors(org.jboss.weld.ejb.spi.EjbDescriptor, org.jboss.weld.ejb.spi.InterceptorBindings)}.
      *
      * @param environment
      * @param manager
@@ -114,13 +118,15 @@ public interface EjbSupport extends Service {
 
     /**
      * Returns a collection of all known EJB descriptors
+     *
      * @return a collection of all known EJB descriptors
      */
     Collection<? extends EjbDescriptor<?>> getEjbDescriptors();
 
     /**
      * @param instance
-     * @return <code>true</code> if the given instance represents an internal reference to a session bean (proxy), <code>false</code> otherwise
+     * @return <code>true</code> if the given instance represents an internal reference to a session bean (proxy),
+     *         <code>false</code> otherwise
      */
     boolean isSessionBeanProxy(Object instance);
 
@@ -135,7 +141,8 @@ public interface EjbSupport extends Service {
         }
 
         @Override
-        public <T> BasicInjectionTarget<T> createSessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl manager) {
+        public <T> BasicInjectionTarget<T> createSessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean,
+                BeanManagerImpl manager) {
             return fail();
         }
 
@@ -145,13 +152,15 @@ public interface EjbSupport extends Service {
         }
 
         @Override
-        public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> descriptor,
+        public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type,
+                EjbDescriptor<T> descriptor,
                 BeanManagerImpl manager) {
             return fail();
         }
 
         @Override
-        public void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> classes, BeanManagerImpl manager) {
+        public void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> classes,
+                BeanManagerImpl manager) {
         }
 
         @Override

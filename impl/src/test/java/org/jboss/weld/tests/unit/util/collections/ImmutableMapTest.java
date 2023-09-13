@@ -33,7 +33,8 @@ public class ImmutableMapTest {
 
     @Test
     public void testCollector() {
-        Map<Character, String> map = Stream.of("foo", "bar", "baz").collect(ImmutableMap.collector((e) -> e.charAt(0), Function.identity()));
+        Map<Character, String> map = Stream.of("foo", "bar", "baz")
+                .collect(ImmutableMap.collector((e) -> e.charAt(0), Function.identity()));
         assertEquals(2, map.size());
         assertEquals("foo", map.get('f'));
     }

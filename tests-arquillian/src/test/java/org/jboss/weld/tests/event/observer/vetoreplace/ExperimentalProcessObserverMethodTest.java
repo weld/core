@@ -39,8 +39,9 @@ public class ExperimentalProcessObserverMethodTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExperimentalProcessObserverMethodTest.class)).addPackage(ExperimentalProcessObserverMethodTest.class.getPackage()).addAsServiceProvider(
-                Extension.class, DummyExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExperimentalProcessObserverMethodTest.class))
+                .addPackage(ExperimentalProcessObserverMethodTest.class.getPackage()).addAsServiceProvider(
+                        Extension.class, DummyExtension.class);
     }
 
     @Test
@@ -56,22 +57,27 @@ public class ExperimentalProcessObserverMethodTest {
             public long longValue() {
                 return 0L;
             }
+
             @Override
             public int intValue() {
                 return 0;
             }
+
             @Override
             public float floatValue() {
                 return 0F;
             }
+
             @Override
             public double doubleValue() {
                 return 0D;
             }
         };
         Assert.assertEquals(0, manager.resolveObserverMethods(number, Experimental.Literal.INSTANCE).size());
-        Assert.assertEquals(0, manager.resolveObserverMethods(number, Experimental.Literal.INSTANCE, new NamedLiteral("experimental")).size());
+        Assert.assertEquals(0,
+                manager.resolveObserverMethods(number, Experimental.Literal.INSTANCE, new NamedLiteral("experimental")).size());
         Assert.assertEquals(0, manager.resolveObserverMethods(0, Experimental.Literal.INSTANCE).size());
-        Assert.assertEquals(1, manager.resolveObserverMethods(0, Experimental.Literal.INSTANCE, new NamedLiteral("experimental")).size());
+        Assert.assertEquals(1,
+                manager.resolveObserverMethods(0, Experimental.Literal.INSTANCE, new NamedLiteral("experimental")).size());
     }
 }

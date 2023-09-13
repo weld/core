@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -24,6 +23,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 /**
  * Class for constructing a new AnnotatedType. A new instance of builder must be
@@ -147,7 +148,8 @@ public class TestAnnotatedTypeBuilder<X> {
             }
         }
 
-        return new TestAnnotatedType<X>(underlying, typeAnnotations.create(), fieldAnnotations, methodAnnotations, methodParameterAnnotations, constructorAnnotations, constructorParameterAnnotations);
+        return new TestAnnotatedType<X>(underlying, typeAnnotations.create(), fieldAnnotations, methodAnnotations,
+                methodParameterAnnotations, constructorAnnotations, constructorParameterAnnotations);
     }
 
 }

@@ -16,16 +16,16 @@
  */
 package org.jboss.weld.tests.unit.reflection.annotation;
 
-import org.jboss.weld.util.reflection.Reflections;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
+
+import org.jboss.weld.util.reflection.Reflections;
+import org.junit.Assert;
+import org.junit.Test;
 
 @Synchronous
 public class AnnotationTest {
@@ -52,7 +52,7 @@ public class AnnotationTest {
 
     protected <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-        return Reflections.<T>cast(in.readObject());
+        return Reflections.<T> cast(in.readObject());
     }
 
 }

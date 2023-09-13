@@ -53,7 +53,8 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
 
     public ProducerFieldProducer(EnhancedAnnotatedField<T, ? super X> enhancedField, DisposalMethod<?, ?> disposalMethod) {
         super(enhancedField, disposalMethod);
-        this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(enhancedField.getJavaMember()));
+        this.accessibleField = AccessController
+                .doPrivileged(new GetAccessibleCopyOfMember<Field>(enhancedField.getJavaMember()));
         checkProducerField(enhancedField);
     }
 
@@ -98,16 +99,20 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
 
     @Override
     protected DefinitionException producerWithInvalidTypeVariable(AnnotatedMember<?> member) {
-        return BeanLogger.LOG.producerFieldTypeInvalidTypeVariable(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+        return BeanLogger.LOG.producerFieldTypeInvalidTypeVariable(member,
+                Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 
     @Override
     protected DefinitionException producerWithInvalidWildcard(AnnotatedMember<?> member) {
-        return BeanLogger.LOG.producerFieldCannotHaveAWildcardBeanType(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+        return BeanLogger.LOG.producerFieldCannotHaveAWildcardBeanType(member,
+                Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 
     @Override
-    protected DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(AnnotatedMember<?> member) {
-        return BeanLogger.LOG.producerFieldWithTypeVariableBeanTypeMustBeDependent(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+    protected DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(
+            AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerFieldWithTypeVariableBeanTypeMustBeDependent(member,
+                Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 }

@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.nonContextual;
 
+import java.util.logging.Logger;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
-import java.util.logging.Logger;
 
 @Dependent
 public class LogManager {

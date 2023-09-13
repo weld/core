@@ -32,10 +32,10 @@ public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Con
             }
         }
         /*
-        * Can't get a "real" Conversation, but we need to return something, so
-        * return this dummy Conversation which will simply throw a
-        * ContextNotActiveException for every method call as the spec requires.
-        */
+         * Can't get a "real" Conversation, but we need to return something, so
+         * return this dummy Conversation which will simply throw a
+         * ContextNotActiveException for every method call as the spec requires.
+         */
         return new ConversationImpl(beanManager);
     }
 

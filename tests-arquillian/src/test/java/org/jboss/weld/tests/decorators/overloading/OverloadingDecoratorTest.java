@@ -43,7 +43,8 @@ public class OverloadingDecoratorTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(OverloadingDecoratorTest.class)).decorate(AlphaServiceDecorator.class).decorate(BravoServiceDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(OverloadingDecoratorTest.class))
+                .decorate(AlphaServiceDecorator.class).decorate(BravoServiceDecorator.class)
                 .decorate(CharlieServiceDecorator.class).addPackage(OverloadingDecoratorTest.class.getPackage())
                 .addClass(ActionSequence.class);
     }

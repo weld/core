@@ -16,14 +16,14 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.atd.minvaluepriority;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class AfterTypeDiscoveryObserver implements Extension {
 

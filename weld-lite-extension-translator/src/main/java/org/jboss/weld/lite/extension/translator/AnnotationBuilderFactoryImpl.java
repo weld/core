@@ -1,11 +1,11 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+
 import jakarta.enterprise.inject.build.compatible.spi.AnnotationBuilder;
 import jakarta.enterprise.inject.build.compatible.spi.AnnotationBuilderFactory;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
-
-import java.lang.annotation.Annotation;
 
 final class AnnotationBuilderFactoryImpl implements AnnotationBuilderFactory {
 
@@ -22,6 +22,7 @@ final class AnnotationBuilderFactoryImpl implements AnnotationBuilderFactory {
 
     @Override
     public AnnotationBuilder create(ClassInfo annotationType) {
-        return new AnnotationBuilderImpl((Class<? extends Annotation>) ((ClassInfoImpl) annotationType).cdiDeclaration.getJavaClass(), bm);
+        return new AnnotationBuilderImpl(
+                (Class<? extends Annotation>) ((ClassInfoImpl) annotationType).cdiDeclaration.getJavaClass(), bm);
     }
 }

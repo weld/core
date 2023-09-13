@@ -16,16 +16,16 @@
  */
 package org.jboss.weld.tests.interceptors.binding.overriding;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import jakarta.interceptor.InterceptorBinding;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @InterceptorBinding
 @Inherited
@@ -35,9 +35,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Aging {
 
     Speed value();
-    
-    public enum Speed
-    {
-        FAST, SLOW
+
+    public enum Speed {
+        FAST,
+        SLOW
     }
 }

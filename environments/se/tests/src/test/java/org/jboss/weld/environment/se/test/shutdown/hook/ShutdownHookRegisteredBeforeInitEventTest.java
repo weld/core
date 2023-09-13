@@ -47,7 +47,7 @@ public class ShutdownHookRegisteredBeforeInitEventTest extends AbstractShutdownH
     @Deployment(managed = false, name = DEPLOYMENT_NAME)
     public static Archive<?> createTestArchive() {
         return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(AbstractShutdownHookTest.class,
-            ShutdownHookRegisteredBeforeInitEventTest.class, Foo.class, Observer.class)).build();
+                ShutdownHookRegisteredBeforeInitEventTest.class, Foo.class, Observer.class)).build();
     }
 
     @RunAsClient

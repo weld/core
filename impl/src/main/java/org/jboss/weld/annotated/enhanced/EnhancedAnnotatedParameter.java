@@ -33,6 +33,7 @@ public interface EnhancedAnnotatedParameter<T, X> extends EnhancedAnnotated<T, O
 
     /**
      * Returns a lightweight implementation of {@link AnnotatedParameter} with minimal memory footprint.
+     *
      * @return the slim version of this {@link AnnotatedParameter}
      */
     AnnotatedParameter<X> slim();

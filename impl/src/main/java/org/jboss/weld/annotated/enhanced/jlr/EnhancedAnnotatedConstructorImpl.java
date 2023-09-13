@@ -44,7 +44,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Pete Muir
  * @author Ales Justin
  */
-public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotatedCallable<T, T, Constructor<T>> implements EnhancedAnnotatedConstructor<T> {
+public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotatedCallable<T, T, Constructor<T>>
+        implements EnhancedAnnotatedConstructor<T> {
 
     // The list of parameter abstractions
     private final List<EnhancedAnnotatedParameter<?, T>> parameters;
@@ -53,8 +54,11 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
 
     private final AnnotatedConstructor<T> slim;
 
-    public static <T> EnhancedAnnotatedConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor, EnhancedAnnotatedType<T> declaringClass, ClassTransformer classTransformer) {
-        return new EnhancedAnnotatedConstructorImpl<T>(annotatedConstructor, buildAnnotationMap(annotatedConstructor.getAnnotations()), buildAnnotationMap(annotatedConstructor.getAnnotations()), declaringClass, classTransformer);
+    public static <T> EnhancedAnnotatedConstructor<T> of(AnnotatedConstructor<T> annotatedConstructor,
+            EnhancedAnnotatedType<T> declaringClass, ClassTransformer classTransformer) {
+        return new EnhancedAnnotatedConstructorImpl<T>(annotatedConstructor,
+                buildAnnotationMap(annotatedConstructor.getAnnotations()),
+                buildAnnotationMap(annotatedConstructor.getAnnotations()), declaringClass, classTransformer);
     }
 
     /**
@@ -62,17 +66,21 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
      * <p/>
      * Initializes the superclass with the build annotations map
      *
-     * @param constructor    The constructor method
+     * @param constructor The constructor method
      * @param declaringClass The declaring class
      */
-    private EnhancedAnnotatedConstructorImpl(AnnotatedConstructor<T> annotatedConstructor, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, EnhancedAnnotatedType<T> declaringClass, ClassTransformer classTransformer) {
+    private EnhancedAnnotatedConstructorImpl(AnnotatedConstructor<T> annotatedConstructor,
+            Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, EnhancedAnnotatedType<T> declaringClass,
+            ClassTransformer classTransformer) {
         super(annotatedConstructor, annotationMap, declaredAnnotationMap, classTransformer, declaringClass);
         this.slim = annotatedConstructor;
 
         ArrayList<EnhancedAnnotatedParameter<?, T>> parameters = new ArrayList<EnhancedAnnotatedParameter<?, T>>();
         validateParameterCount(annotatedConstructor);
         for (AnnotatedParameter<T> annotatedParameter : annotatedConstructor.getParameters()) {
-            EnhancedAnnotatedParameter<?, T> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this, classTransformer);
+            EnhancedAnnotatedParameter<?, T> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this,
+                    classTransformer);
             parameters.add(parameter);
         }
         this.parameters = immutableListView(parameters);
@@ -143,7 +151,8 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
 
         if (super.equals(other) && other instanceof EnhancedAnnotatedConstructor<?>) {
             EnhancedAnnotatedConstructor<?> that = (EnhancedAnnotatedConstructor<?>) other;
-            return this.getJavaMember().equals(that.getJavaMember()) && this.getEnhancedParameters().equals(that.getEnhancedParameters());
+            return this.getJavaMember().equals(that.getJavaMember())
+                    && this.getEnhancedParameters().equals(that.getEnhancedParameters());
         }
         return false;
     }

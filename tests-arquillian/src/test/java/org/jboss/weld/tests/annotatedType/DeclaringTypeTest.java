@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.tests.annotatedType;
 
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,12 +31,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.AnnotatedField;
-import jakarta.enterprise.inject.spi.AnnotatedMethod;
-import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
 
 /**
  * @author kkahn
@@ -55,7 +55,7 @@ public class DeclaringTypeTest {
             if (field.getJavaMember().getName().equals("parent")) {
                 Assert.assertEquals(Parent.class, field.getJavaMember().getDeclaringClass()); // OK - Returns Parent
                 // this assertion is commented out because the spec is not clear which type to return and the flat type actually makes more sense
-//                Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass()); // FAIL - Returns Child
+                //                Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass()); // FAIL - Returns Child
             } else {
                 Assert.fail("Unknown field " + field.getJavaMember());
             }
@@ -66,7 +66,7 @@ public class DeclaringTypeTest {
             if (method.getJavaMember().getName().equals("parentMethod")) {
                 Assert.assertEquals(Parent.class, method.getJavaMember().getDeclaringClass()); // OK - Returns Parent
                 // this assertion is commented out because the spec is not clear which type to return and the flat type actually makes more sense
-//                Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass()); // FAIL - Returns Child
+                //                Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass()); // FAIL - Returns Child
             } else {
                 Assert.fail("Unknown method " + method.getJavaMember());
             }

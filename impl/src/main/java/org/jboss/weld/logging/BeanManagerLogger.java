@@ -128,5 +128,4 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1336, value = "InjectionTargetFactory.configure() may not be called after createInjectionTarget() invocation. AnnotatedType used: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToConfigureInjectionTargetFactory(Object param1);
 
-
 }

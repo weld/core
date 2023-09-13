@@ -29,14 +29,16 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class ForwardingParameterInjectionPointAttributes<T, X> extends AbstractForwardingInjectionPointAttributes<T, Object> implements ParameterInjectionPointAttributes<T, X> {
+public class ForwardingParameterInjectionPointAttributes<T, X> extends AbstractForwardingInjectionPointAttributes<T, Object>
+        implements ParameterInjectionPointAttributes<T, X> {
 
     public static <T, X> ForwardingParameterInjectionPointAttributes<T, X> of(InjectionPoint ip) {
         if (ip instanceof ForwardingParameterInjectionPointAttributes<?, ?>) {
             return Reflections.cast(ip);
         }
         if (!(ip.getAnnotated() instanceof AnnotatedParameter<?>)) {
-            throw BeanLogger.LOG.invalidInjectionPointType(ForwardingParameterInjectionPointAttributes.class, ip.getAnnotated());
+            throw BeanLogger.LOG.invalidInjectionPointType(ForwardingParameterInjectionPointAttributes.class,
+                    ip.getAnnotated());
         }
         return new ForwardingParameterInjectionPointAttributes<T, X>(ip);
     }

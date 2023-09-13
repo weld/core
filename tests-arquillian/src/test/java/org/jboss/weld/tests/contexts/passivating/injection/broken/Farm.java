@@ -41,7 +41,7 @@ public class Farm implements Serializable {
     @Produces
     @Random
     @SessionScoped
-    public Sheep chooseRandomSheepFromDelivery(Truck truck,  @TransientReference Pasture pasture) {
+    public Sheep chooseRandomSheepFromDelivery(Truck truck, @TransientReference Pasture pasture) {
         return truck.getSheeps().get(0);
     }
 

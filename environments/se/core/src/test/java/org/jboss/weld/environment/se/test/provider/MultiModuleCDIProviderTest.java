@@ -35,7 +35,8 @@ public class MultiModuleCDIProviderTest extends AbstractCDIProviderTest {
 
     @Deployment
     public static Archive<?> getArchive() {
-        JavaArchive bda1 = ShrinkWrap.create(BeanArchive.class).addClasses(Boy.class, Chick.class, Child.class, Female.class, Girl.class, KarateClub.class, Male.class, Pretty.class, PrettyLiteral.class);
+        JavaArchive bda1 = ShrinkWrap.create(BeanArchive.class).addClasses(Boy.class, Chick.class, Child.class, Female.class,
+                Girl.class, KarateClub.class, Male.class, Pretty.class, PrettyLiteral.class);
         JavaArchive bda2 = ShrinkWrap.create(BeanArchive.class).addClasses(Foo.class);
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClass(KarateClubLocator.class);
         return ShrinkWrap.create(WeldSEClassPath.class).add(bda1, bda2, jar);

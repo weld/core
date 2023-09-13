@@ -36,7 +36,8 @@ import org.junit.runner.RunWith;
 public class EventSelectTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventSelectTest.class)).addPackage(EventSelectTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventSelectTest.class))
+                .addPackage(EventSelectTest.class.getPackage());
     }
 
     @Inject

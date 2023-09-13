@@ -61,11 +61,13 @@ public class EnhancedListenerShutdownTest {
     protected static final String TEST = "test";
     protected static final String ASSERT = "assert";
 
-    protected static final Asset TEST_WEB_XML = new StringAsset(DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY + toListener(TestListener.class.getName())
-            + toContextParam("WELD_CONTEXT_ID_KEY", TEST) + DEFAULT_WEB_XML_SUFFIX);
+    protected static final Asset TEST_WEB_XML = new StringAsset(
+            DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY + toListener(TestListener.class.getName())
+                    + toContextParam("WELD_CONTEXT_ID_KEY", TEST) + DEFAULT_WEB_XML_SUFFIX);
 
-    protected static final Asset ASSERT_WEB_XML = new StringAsset(DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY + toContextParam("WELD_CONTEXT_ID_KEY", ASSERT)
-            + DEFAULT_WEB_XML_SUFFIX);
+    protected static final Asset ASSERT_WEB_XML = new StringAsset(
+            DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY + toContextParam("WELD_CONTEXT_ID_KEY", ASSERT)
+                    + DEFAULT_WEB_XML_SUFFIX);
 
     @Deployment(name = TEST, managed = false)
     public static WebArchive createTestArchive() {
@@ -102,7 +104,8 @@ public class EnhancedListenerShutdownTest {
 
     @Test
     @InSequence(2)
-    public void testEnhancedListenerNotDestroyingWeldIfListenerRegistered(@ArquillianResource @OperateOnDeployment(TEST) URL testContext,
+    public void testEnhancedListenerNotDestroyingWeldIfListenerRegistered(
+            @ArquillianResource @OperateOnDeployment(TEST) URL testContext,
             @ArquillianResource @OperateOnDeployment(ASSERT) URL assertContext) throws IOException {
 
         // Init foo - set info archive deployment url

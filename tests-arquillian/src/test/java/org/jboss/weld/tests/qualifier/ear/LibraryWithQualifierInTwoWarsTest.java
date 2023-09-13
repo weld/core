@@ -47,16 +47,18 @@ public class LibraryWithQualifierInTwoWarsTest {
 
         // setup WARs
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
-            .addClasses(FooBean.class)
-            .addAsLibraries(annotationArchive);
+                .addClasses(FooBean.class)
+                .addAsLibraries(annotationArchive);
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
-            .addClasses(BarBean.class)
-            .addAsLibraries(annotationArchive);
+                .addClasses(BarBean.class)
+                .addAsLibraries(annotationArchive);
 
         // setup EAR
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(LibraryWithQualifierInTwoWarsTest.class, Utils.ARCHIVE_TYPE.EAR))
-            .addAsModules(war1, war2);
+        EnterpriseArchive ear = ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(LibraryWithQualifierInTwoWarsTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModules(war1, war2);
         return ear;
     }
 

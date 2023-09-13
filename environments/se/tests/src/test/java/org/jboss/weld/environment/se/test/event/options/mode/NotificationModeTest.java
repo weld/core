@@ -59,8 +59,10 @@ public class NotificationModeTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotificationModeTest.class))
-                .addPackage(NotificationModeTest.class.getPackage())).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotificationModeTest.class))
+                        .addPackage(NotificationModeTest.class.getPackage()))
+                .build();
     }
 
     @Test
@@ -91,7 +93,8 @@ public class NotificationModeTest {
             BlockingQueue<Message> synchronizer = new LinkedBlockingQueue<>();
             Set<String> threadNames = new CopyOnWriteArraySet<>();
             container.event().select(Message.class)
-                    .fireAsync(() -> threadNames.add(Thread.currentThread().getName()), WeldNotificationOptions.withParallelMode())
+                    .fireAsync(() -> threadNames.add(Thread.currentThread().getName()),
+                            WeldNotificationOptions.withParallelMode())
                     .thenAccept(synchronizer::add);
             Message message = synchronizer.poll(2, TimeUnit.SECONDS);
             assertNotNull(message);
@@ -124,7 +127,8 @@ public class NotificationModeTest {
         CountDownLatch latch = new CountDownLatch(1);
         try (WeldContainer container = createWeld()) {
             try {
-                container.event().select(Message.class).fireAsync(() -> latch.countDown(), NotificationOptions.of(WeldNotificationOptions.MODE, "unsupported"));
+                container.event().select(Message.class).fireAsync(() -> latch.countDown(),
+                        NotificationOptions.of(WeldNotificationOptions.MODE, "unsupported"));
                 fail("Notification should have failed ");
             } catch (IllegalArgumentException expected) {
             }
@@ -134,7 +138,8 @@ public class NotificationModeTest {
     }
 
     static WeldContainer createWeld() {
-        return new Weld().property(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get(), "FIXED").property(ConfigurationKey.EXECUTOR_THREAD_POOL_SIZE.get(), 3)
+        return new Weld().property(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get(), "FIXED")
+                .property(ConfigurationKey.EXECUTOR_THREAD_POOL_SIZE.get(), 3)
                 .initialize();
     }
 

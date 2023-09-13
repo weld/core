@@ -39,27 +39,27 @@ public interface InterceptorLogger extends WeldLogger {
     InterceptorLogger LOG = Logger.getMessageLogger(InterceptorLogger.class, Category.INTERCEPTOR.getName());
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1700, value = "Interceptor annotation class {0} not found, interception based on it is not enabled", format= Format.MESSAGE_FORMAT)
+    @Message(id = 1700, value = "Interceptor annotation class {0} not found, interception based on it is not enabled", format = Format.MESSAGE_FORMAT)
     void interceptorAnnotationClassNotFound(Object param1);
 
     @LogMessage(level = Level.TRACE)
-    @Message(id = 1701, value = "Invoking next interceptor in chain: {0}", format= Format.MESSAGE_FORMAT)
+    @Message(id = 1701, value = "Invoking next interceptor in chain: {0}", format = Format.MESSAGE_FORMAT)
     void invokingNextInterceptorInChain(Object param1);
 
     @Message(id = 1702, value = "Interceptor.getInterceptorBindings() returned null for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException nullInterceptorBindings(Object param1);
 
     @LogMessage(level = Level.INFO)
-    @Message(id = 1703, value = "Unable to determine the @Intercepted Bean<?> for {0}", format= Format.MESSAGE_FORMAT)
+    @Message(id = 1703, value = "Unable to determine the @Intercepted Bean<?> for {0}", format = Format.MESSAGE_FORMAT)
     void unableToDetermineInterceptedBean(Object injectionPoint);
 
-    @Message(id = 1704, value = "@Intercepted Bean<?> can only be injected into an interceptor: {0}", format= Format.MESSAGE_FORMAT)
+    @Message(id = 1704, value = "@Intercepted Bean<?> can only be injected into an interceptor: {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException interceptedBeanCanOnlyBeInjectedIntoInterceptor(Object injectionPoint);
 
-    @Message(id = 1705, value = "Target instance not created - one of the interceptor methods in the AroundConstruct chain did not invoke InvocationContext.proceed() for: {0}", format= Format.MESSAGE_FORMAT)
+    @Message(id = 1705, value = "Target instance not created - one of the interceptor methods in the AroundConstruct chain did not invoke InvocationContext.proceed() for: {0}", format = Format.MESSAGE_FORMAT)
     CreationException targetInstanceNotCreated(Object constructor);
 
-    @Message(id = 1706, value = "InterceptionFactory.createInterceptedInstance() may only be called once", format= Format.MESSAGE_FORMAT)
+    @Message(id = 1706, value = "InterceptionFactory.createInterceptedInstance() may only be called once", format = Format.MESSAGE_FORMAT)
     IllegalStateException interceptionFactoryNotReusable();
 
     @LogMessage(level = Level.DEBUG)
@@ -79,7 +79,7 @@ public interface InterceptorLogger extends WeldLogger {
     void interceptionFactoryInternalContainerConstruct(Object type);
 
     // not used anymore, we support this now, see WELD-2533 and WELD-2550
-    @Message(id = 1711, value = "InterceptionFactory is not supported on interfaces. Check InterceptionFactory<{0}>", format= Format.MESSAGE_FORMAT)
+    @Message(id = 1711, value = "InterceptionFactory is not supported on interfaces. Check InterceptionFactory<{0}>", format = Format.MESSAGE_FORMAT)
     IllegalStateException interceptionFactoryNotOnInstance(Object param1);
 
 }

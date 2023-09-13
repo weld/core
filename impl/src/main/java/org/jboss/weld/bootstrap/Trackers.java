@@ -86,7 +86,8 @@ final class Trackers {
         @Override
         public void split(String info) {
             Operation operation = operations.get(operations.size() - 1);
-            BootstrapLogger.TRACKER_LOG.debugf(" TIME %s:%s (%s ms)", operation.name, info, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - operation.start));
+            BootstrapLogger.TRACKER_LOG.debugf(" TIME %s:%s (%s ms)", operation.name, info,
+                    TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - operation.start));
         }
 
         public Tracker end() {

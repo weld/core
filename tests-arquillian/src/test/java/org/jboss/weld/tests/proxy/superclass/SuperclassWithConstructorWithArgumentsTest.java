@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
 public class SuperclassWithConstructorWithArgumentsTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SuperclassWithConstructorWithArgumentsTest.class)).addPackage(SuperclassWithConstructorWithArgumentsTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(SuperclassWithConstructorWithArgumentsTest.class))
+                .addPackage(SuperclassWithConstructorWithArgumentsTest.class.getPackage());
     }
 
     @Inject

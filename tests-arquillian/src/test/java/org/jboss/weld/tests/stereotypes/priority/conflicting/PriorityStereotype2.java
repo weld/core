@@ -17,14 +17,15 @@
 
 package org.jboss.weld.tests.stereotypes.priority.conflicting;
 
-import jakarta.annotation.Priority;
-import jakarta.enterprise.inject.Stereotype;
-import org.jboss.weld.tests.stereotypes.priority.PriorityStereotype;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import jakarta.annotation.Priority;
+import jakarta.enterprise.inject.Stereotype;
+
+import org.jboss.weld.tests.stereotypes.priority.PriorityStereotype;
 
 /**
  * Simple stereotype with priority different than {@link PriorityStereotype}.

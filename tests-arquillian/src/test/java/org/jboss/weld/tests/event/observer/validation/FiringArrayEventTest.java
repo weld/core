@@ -14,7 +14,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.junit.Assert;
@@ -52,8 +51,8 @@ public class FiringArrayEventTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(JavaArchive.class, "weld_events.jar")
-            .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
-            .addClasses(ArrayObserverBean.class, StringListObserverBean.class, StringListArrayObserverBean.class);
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+                .addClasses(ArrayObserverBean.class, StringListObserverBean.class, StringListArrayObserverBean.class);
     }
 
     @Before

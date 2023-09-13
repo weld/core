@@ -44,7 +44,8 @@ public class BeanAttributesTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanAttributesTest.class)).addPackage(BeanAttributesTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanAttributesTest.class))
+                .addPackage(BeanAttributesTest.class.getPackage());
     }
 
     @Test

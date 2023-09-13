@@ -39,10 +39,13 @@ public class MethodProducerFactory<X> extends AbstractProducerFactory<X> {
     }
 
     /**
-     * Producers returned from this method are not validated. This is an optimization for {@link ProducerMethod} whose injection points are validated anyway. Internal use only.
+     * Producers returned from this method are not validated. This is an optimization for {@link ProducerMethod} whose injection
+     * points are validated anyway. Internal use only.
      */
-    public <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean, DisposalMethod<X, T> disposalMethod) {
-        EnhancedAnnotatedMethod<T, X> enhancedMethod = getManager().getServices().get(MemberTransformer.class).loadEnhancedMember(method, getManager().getId());
+    public <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean,
+            DisposalMethod<X, T> disposalMethod) {
+        EnhancedAnnotatedMethod<T, X> enhancedMethod = getManager().getServices().get(MemberTransformer.class)
+                .loadEnhancedMember(method, getManager().getId());
         return new ProducerMethodProducer<X, T>(enhancedMethod, disposalMethod) {
 
             @Override

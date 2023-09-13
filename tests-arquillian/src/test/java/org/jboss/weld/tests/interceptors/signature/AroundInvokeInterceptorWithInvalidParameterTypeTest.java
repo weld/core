@@ -40,7 +40,9 @@ public class AroundInvokeInterceptorWithInvalidParameterTypeTest {
     // Can either be IllegalArgumentException (thrown by org.jboss.as.ee) or DefinitionException (thrown by Weld)
     @ShouldThrowException(Exception.class)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundInvokeInterceptorWithInvalidParameterTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(AroundInvokeInterceptorWithInvalidParameterTypeTest.class))
                 .intercept(MyInterceptor.class)
                 .addClasses(Intercept.class, MethodInterceptedBean.class);
     }
@@ -48,7 +50,7 @@ public class AroundInvokeInterceptorWithInvalidParameterTypeTest {
     @Test
     public void testDeploymentInterceptorWithInvalidParamType() {
         // should throw exception, either IllegalArg or Definition
-     }
+    }
 
     @Intercept
     @Interceptor

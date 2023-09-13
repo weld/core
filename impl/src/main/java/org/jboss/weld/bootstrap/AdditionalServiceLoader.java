@@ -36,14 +36,18 @@ import org.jboss.weld.util.Services;
  * Loads {@link Service} implementations using {@link ServiceLoader}.
  *
  * <p>
- * This can be used e.g. by a JTA library in weld-servlet environment to provide {@link org.jboss.weld.transaction.spi.TransactionServices} implementation which
- * would not otherwise be provided by weld-servlet. Deployment classloaders, TCCL and Weld's classloader are used to discover service implementations. If a
- * service provider is loadable from multiple classloaders (most likely in a Java SE application) the service class will be instantiated multiple times but only
+ * This can be used e.g. by a JTA library in weld-servlet environment to provide
+ * {@link org.jboss.weld.transaction.spi.TransactionServices} implementation which
+ * would not otherwise be provided by weld-servlet. Deployment classloaders, TCCL and Weld's classloader are used to discover
+ * service implementations. If a
+ * service provider is loadable from multiple classloaders (most likely in a Java SE application) the service class will be
+ * instantiated multiple times but only
  * the first instance will be used (see {@link Services#put(ServiceRegistry, Class, Service)}).
  * </p>
  *
  * <p>
- * Service implementation may specify their priority using {@link Priority}. Services with higher priority have precedence. Services that do not specify
+ * Service implementation may specify their priority using {@link Priority}. Services with higher priority have precedence.
+ * Services that do not specify
  * priority have the default priority of 4500.
  * </p>
  *
@@ -67,13 +71,15 @@ class AdditionalServiceLoader {
 
     /**
      * Discovers additional services using {@link ServiceLoader} and appends them to the given service registry.
+     *
      * @param registry the given service registry
      */
     void loadAdditionalServices(ServiceRegistry registry) {
         for (ResourceLoader loader : getResourceLoaders()) {
             for (Metadata<Service> metadata : ServiceLoader.load(Service.class, loader)) {
                 Service service = metadata.getValue();
-                for (Class<? extends Service> serviceInterface : Services.identifyServiceInterfaces(service.getClass(), new HashSet<>())) {
+                for (Class<? extends Service> serviceInterface : Services.identifyServiceInterfaces(service.getClass(),
+                        new HashSet<>())) {
                     Services.put(registry, serviceInterface, service);
                 }
             }

@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.classDefining;
 
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,8 +31,6 @@ import org.jboss.weld.tests.classDefining.c.AppScopedBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.inject.Inject;
 
 /**
  * Tests that we are able to define a proxy class for producer method that returns a type from different package.

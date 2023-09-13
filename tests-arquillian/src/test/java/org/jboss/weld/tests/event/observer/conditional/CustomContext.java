@@ -52,7 +52,7 @@ public class CustomContext implements Context {
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
         T instance = get(contextual);
         if (instance == null) {
-            if(creationalContext == null) {
+            if (creationalContext == null) {
                 throw new NullPointerException();
             }
             storage.put(contextual, new BeanInstance(contextual.create(creationalContext), creationalContext));

@@ -10,13 +10,13 @@ import jakarta.enterprise.inject.Produces;
 public class ArrayProducer {
 
     public static final Bar<Integer> INTEGER_BAR = new Bar<Integer>(Integer.MAX_VALUE);
-    public static final Bar<Integer>[] INTEGER_BAR_ARRAY = new Bar[]{new Bar<Integer>(1)};
+    public static final Bar<Integer>[] INTEGER_BAR_ARRAY = new Bar[] { new Bar<Integer>(1) };
     public static final Bar<String> STRING_BAR = new Bar<String>("string");
-    public static final Bar<String>[] STRING_BAR_ARRAY = new Bar[]{new Bar<String>("string")};
+    public static final Bar<String>[] STRING_BAR_ARRAY = new Bar[] { new Bar<String>("string") };
 
     @Produces
     public int[] produceIntArray() {
-        return new int[] {1, 2, 3};
+        return new int[] { 1, 2, 3 };
     }
 
     @Produces

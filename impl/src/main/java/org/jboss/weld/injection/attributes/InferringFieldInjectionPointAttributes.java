@@ -28,23 +28,28 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link EnhancedAnnotatedField}.
+ * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading
+ * {@link EnhancedAnnotatedField}.
  *
  * @author Jozef Hartinger
  *
  */
-public class InferringFieldInjectionPointAttributes<T, X> extends AbstractInferringInjectionPointAttributes<T, Field> implements FieldInjectionPointAttributes<T, X> {
+public class InferringFieldInjectionPointAttributes<T, X> extends AbstractInferringInjectionPointAttributes<T, Field>
+        implements FieldInjectionPointAttributes<T, X> {
 
     private static final long serialVersionUID = -3099189770772787108L;
 
-    public static <T, X> InferringFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    public static <T, X> InferringFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean,
+            Class<?> declaringComponentClass, BeanManagerImpl manager) {
         return new InferringFieldInjectionPointAttributes<T, X>(field, bean, declaringComponentClass, manager);
     }
 
     private final AnnotatedField<X> field;
 
-    protected InferringFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        super(field, manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(field.getQualifiers()), declaringComponentClass);
+    protected InferringFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean,
+            Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        super(field, manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(field.getQualifiers()),
+                declaringComponentClass);
         this.field = field.slim();
     }
 

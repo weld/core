@@ -10,7 +10,8 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public abstract class UnbackedAnnotatedMember<X> extends UnbackedAnnotated implements AnnotatedMember<X> {
 
-    public UnbackedAnnotatedMember(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, UnbackedAnnotatedType<X> declaringType) {
+    public UnbackedAnnotatedMember(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations,
+            UnbackedAnnotatedType<X> declaringType) {
         super(baseType, typeClosure, annotations);
         this.declaringType = declaringType;
     }

@@ -26,7 +26,7 @@ public abstract class AbstractService<S extends SuperFoo> {
     public S serviceDoSomething(final S param) {
         return param;
     }
-    
+
     public abstract S getParam();
 
 }

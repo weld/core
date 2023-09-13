@@ -57,6 +57,7 @@ public class DecoratorRegisteringExtension implements Extension {
                 return i;
             }
         }
-        throw new IllegalStateException("Expected decorator " + GloballyEnabledDecorator1.class.getName() + " not found within " + decorators);
+        throw new IllegalStateException(
+                "Expected decorator " + GloballyEnabledDecorator1.class.getName() + " not found within " + decorators);
     }
 }

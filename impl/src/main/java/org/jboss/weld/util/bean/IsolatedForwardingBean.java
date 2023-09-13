@@ -68,7 +68,7 @@ public abstract class IsolatedForwardingBean<T> extends ForwardingBeanAttributes
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof IsolatedForwardingBean<?>) {
-            return delegate().equals(Reflections.<IsolatedForwardingBean<?>>cast(obj).delegate());
+            return delegate().equals(Reflections.<IsolatedForwardingBean<?>> cast(obj).delegate());
         }
         return delegate().equals(obj);
     }

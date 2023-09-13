@@ -35,7 +35,8 @@ public class AroundConstructInterceptorLifecycleTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundConstructInterceptorLifecycleTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundConstructInterceptorLifecycleTest.class))
                 .intercept(AlphaInterceptor.class).addPackage(AroundConstructInterceptorLifecycleTest.class.getPackage())
                 .addClasses(Utils.class);
     }

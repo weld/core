@@ -19,12 +19,14 @@ package org.jboss.weld.annotated.enhanced;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.List;
+
 import jakarta.enterprise.inject.spi.AnnotatedCallable;
 
 /**
  * @author pmuir
  */
-public interface EnhancedAnnotatedCallable<T, X, S extends Member> extends EnhancedAnnotatedMember<T, X, S>, AnnotatedCallable<X> {
+public interface EnhancedAnnotatedCallable<T, X, S extends Member>
+        extends EnhancedAnnotatedMember<T, X, S>, AnnotatedCallable<X> {
 
     /**
      * Gets the abstracted parameters of the method
@@ -45,6 +47,7 @@ public interface EnhancedAnnotatedCallable<T, X, S extends Member> extends Enhan
 
     /**
      * Returns a lightweight implementation of {@link AnnotatedCallable} with minimal memory footprint.
+     *
      * @return the slim version of this {@link AnnotatedCallable}
      */
     AnnotatedCallable<X> slim();

@@ -34,7 +34,8 @@ public class SyntheticClassBean<T> extends AbstractSyntheticBean<T> {
 
     protected final InjectionTarget<T> producer;
 
-    public SyntheticClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
+    public SyntheticClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory,
+            BeanManagerImpl manager) {
         super(attributes, manager, beanClass);
         this.producer = factory.createInjectionTarget(this);
     }

@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.util;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,9 +91,9 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
      * Creates a new service loader for the given service type and class loader.
      *
      * @param service The interface or abstract class representing the service
-     * @param loader  The class loader to be used to load provider-configuration
-     *                files and provider classes, or null if the system class loader
-     *                (or, failing that, the bootstrap class loader) is to be used
+     * @param loader The class loader to be used to load provider-configuration
+     *        files and provider classes, or null if the system class loader
+     *        (or, failing that, the bootstrap class loader) is to be used
      * @return A new service loader
      */
     public static <S> ServiceLoader<S> load(Class<S> service, ClassLoader loader) {

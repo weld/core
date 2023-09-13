@@ -67,16 +67,19 @@ public class InterceptionFactoryDataCache implements Service {
 
             long idx = INDEX.incrementAndGet();
             String id = key.annotatedType.getJavaClass().getName() + "$$" + idx;
-            UnbackedAnnotatedType<?> slimAnnotatedType = classTransformer.getUnbackedAnnotatedType(key.annotatedType, beanManager.getId(), id);
+            UnbackedAnnotatedType<?> slimAnnotatedType = classTransformer.getUnbackedAnnotatedType(key.annotatedType,
+                    beanManager.getId(), id);
 
             EnhancedAnnotatedType<?> enhancedAnnotatedType = classTransformer.getEnhancedAnnotatedType(slimAnnotatedType);
 
             // Init interception model
-            new InterceptionModelInitializer(beanManager, enhancedAnnotatedType, Beans.getBeanConstructor(enhancedAnnotatedType), null).init();
+            new InterceptionModelInitializer(beanManager, enhancedAnnotatedType,
+                    Beans.getBeanConstructor(enhancedAnnotatedType), null).init();
             InterceptionModel interceptionModel = beanManager.getInterceptorModelRegistry().get(slimAnnotatedType);
 
             boolean hasNonConstructorInterceptors = interceptionModel != null
-                    && (interceptionModel.hasExternalNonConstructorInterceptors() || interceptionModel.hasTargetClassInterceptors());
+                    && (interceptionModel.hasExternalNonConstructorInterceptors()
+                            || interceptionModel.hasTargetClassInterceptors());
 
             if (!hasNonConstructorInterceptors) {
                 // There are no interceptors to apply
@@ -92,8 +95,10 @@ public class InterceptionFactoryDataCache implements Service {
                     interceptedMethodSignatures.add(MethodSignatureImpl.of(method));
                 }
             }
-            InterceptedProxyFactory<?> proxyFactory = new InterceptedProxyFactory<>(beanManager.getContextId(), enhancedAnnotatedType.getJavaClass(),
-                    Collections.singleton(enhancedAnnotatedType.getJavaClass()), enhancedMethodSignatures, interceptedMethodSignatures, "" + idx);
+            InterceptedProxyFactory<?> proxyFactory = new InterceptedProxyFactory<>(beanManager.getContextId(),
+                    enhancedAnnotatedType.getJavaClass(),
+                    Collections.singleton(enhancedAnnotatedType.getJavaClass()), enhancedMethodSignatures,
+                    interceptedMethodSignatures, "" + idx);
 
             InterceptionFactoryData data = new InterceptionFactoryData(proxyFactory, slimAnnotatedType, interceptionModel);
             return Optional.of(data);

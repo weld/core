@@ -16,19 +16,22 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import jakarta.enterprise.inject.spi.AnnotatedMember;
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+
+import jakarta.enterprise.inject.spi.AnnotatedMember;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 /**
  * @author Stuart Douglas
  */
-abstract class AbstractTestAnnotatedMember<X, M extends Member> extends AbstractTestAnnotatedElement implements AnnotatedMember<X> {
+abstract class AbstractTestAnnotatedMember<X, M extends Member> extends AbstractTestAnnotatedElement
+        implements AnnotatedMember<X> {
     private final AnnotatedType<X> declaringType;
     private final M javaMember;
 
-    protected AbstractTestAnnotatedMember(AnnotatedType<X> declaringType, M member, Class<?> memberType, TestAnnotationStore annotations) {
+    protected AbstractTestAnnotatedMember(AnnotatedType<X> declaringType, M member, Class<?> memberType,
+            TestAnnotationStore annotations) {
         super(memberType, annotations);
         this.declaringType = declaringType;
         this.javaMember = member;

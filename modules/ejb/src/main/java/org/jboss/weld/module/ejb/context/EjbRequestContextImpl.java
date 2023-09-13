@@ -1,17 +1,16 @@
 package org.jboss.weld.module.ejb.context;
 
-import org.jboss.weld.contexts.AbstractBoundContext;
-import org.jboss.weld.contexts.beanstore.NamingScheme;
-import org.jboss.weld.contexts.beanstore.SimpleNamingScheme;
-import org.jboss.weld.module.ejb.context.beanstore.InvocationContextBeanStore;
-import org.jboss.weld.contexts.cache.RequestScopedCache;
+import java.lang.annotation.Annotation;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.interceptor.InvocationContext;
 
-import java.lang.annotation.Annotation;
-
 import org.jboss.weld.context.ejb.EjbRequestContext;
+import org.jboss.weld.contexts.AbstractBoundContext;
+import org.jboss.weld.contexts.beanstore.NamingScheme;
+import org.jboss.weld.contexts.beanstore.SimpleNamingScheme;
+import org.jboss.weld.contexts.cache.RequestScopedCache;
+import org.jboss.weld.module.ejb.context.beanstore.InvocationContextBeanStore;
 
 public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContext> implements EjbRequestContext {
 

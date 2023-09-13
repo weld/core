@@ -28,7 +28,8 @@ import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.util.Preconditions;
 
 /**
- * A class used to store information about the bean archive and to build the {@link org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive}
+ * A class used to store information about the bean archive and to build the
+ * {@link org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive}
  * instance from the gathered information.
  *
  * @author Matej Briškár
@@ -96,7 +97,8 @@ public class BeanArchiveBuilder {
     }
 
     public BeanArchiveBuilder setAttribute(String key, Object value) {
-        attributes.put(key, value);        return this;
+        attributes.put(key, value);
+        return this;
     }
 
     public Object getAttribute(String key) {

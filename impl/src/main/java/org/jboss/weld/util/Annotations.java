@@ -27,6 +27,7 @@ import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Utility methods for working with annotations.
+ *
  * @author Jozef Hartinger
  *
  */
@@ -41,9 +42,10 @@ public class Annotations {
     /**
      * Returns the value {@link Method} of a repeatable annotation container or null if the given annotation is not a repeatable
      * annotation container.
+     *
      * @param annotation the given annotation
      * @return the value {@link Method} of a repeatable annotation container or null if the given annotation is not a repeatable
-     * annotation container
+     *         annotation container
      */
     public static Method getRepeatableAnnotationAccessor(Class<? extends Annotation> annotation) {
         Method value;

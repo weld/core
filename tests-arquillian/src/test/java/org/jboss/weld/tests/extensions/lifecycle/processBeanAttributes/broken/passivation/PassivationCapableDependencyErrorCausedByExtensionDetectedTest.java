@@ -32,9 +32,9 @@ import org.junit.runner.RunWith;
 /**
  * {@link Wheel}, which is a dependency of normal scoped {@link Bicycle} class, is turned into dependent bean (and thus it is no
  * longer a passivation capable dependency). Let's see if the container detects this.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class PassivationCapableDependencyErrorCausedByExtensionDetectedTest {
@@ -42,12 +42,15 @@ public class PassivationCapableDependencyErrorCausedByExtensionDetectedTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PassivationCapableDependencyErrorCausedByExtensionDetectedTest.class)).addClasses(ModifyingExtension2.class, Wheel.class, Bicycle.class)
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(PassivationCapableDependencyErrorCausedByExtensionDetectedTest.class))
+                .addClasses(ModifyingExtension2.class, Wheel.class, Bicycle.class)
                 .addAsServiceProvider(Extension.class, ModifyingExtension2.class);
     }
 
     @Test
     public void testDeploymentProblemWithPassivationDueToExtension() {
         // should throw deployment exception
-     }
+    }
 }

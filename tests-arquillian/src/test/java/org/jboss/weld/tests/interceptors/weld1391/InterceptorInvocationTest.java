@@ -44,7 +44,8 @@ public class InterceptorInvocationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorInvocationTest.class)).intercept(SimpleInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorInvocationTest.class))
+                .intercept(SimpleInterceptor.class)
                 .addPackage(InterceptorInvocationTest.class.getPackage()).addClass(ActionSequence.class);
     }
 

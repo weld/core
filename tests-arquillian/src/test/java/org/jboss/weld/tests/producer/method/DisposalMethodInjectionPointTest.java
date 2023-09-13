@@ -44,8 +44,8 @@ public class DisposalMethodInjectionPointTest {
     private BeanManagerImpl beanManager;
 
     /*
-    * description = "WELD-358"
-    */
+     * description = "WELD-358"
+     */
     @Test
     public void test() {
         BarProducer.reset();

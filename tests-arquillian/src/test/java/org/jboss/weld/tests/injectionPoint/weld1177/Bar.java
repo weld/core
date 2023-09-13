@@ -16,7 +16,6 @@ public class Bar {
     @Inject
     private InjectionPoint injectionPoint;
 
-
     public InjectionPoint getInjectionPoint() {
         return injectionPoint;
     }

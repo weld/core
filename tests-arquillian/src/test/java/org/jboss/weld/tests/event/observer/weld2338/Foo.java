@@ -20,10 +20,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Dummy bean used as additional injection point within observer
- * 
+ *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
 public class Foo {
-    
+
 }

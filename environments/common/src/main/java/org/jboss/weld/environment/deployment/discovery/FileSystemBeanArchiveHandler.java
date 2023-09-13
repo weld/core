@@ -59,7 +59,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
             file = new File(path);
         }
 
-        if(!file.canRead()) {
+        if (!file.canRead()) {
             return null;
         }
 
@@ -70,7 +70,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
             if (file.isDirectory()) {
                 handleDirectory(new DirectoryEntry().setFile(file), builder);
             } else {
-                if(nested) {
+                if (nested) {
                     handleNestedFile(path, file, builder);
                 } else {
                     handleFile(file, builder);
@@ -87,7 +87,8 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
         log.debugv("Handle archive file: {0}", file);
         try (ZipFile zip = new ZipFile(file)) {
             Enumeration<? extends ZipEntry> entries = zip.entries();
-            ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR);
+            ZipFileEntry entry = new ZipFileEntry(
+                    PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR);
             while (entries.hasMoreElements()) {
                 add(entry.setName(entries.nextElement().getName()), builder);
             }
@@ -99,7 +100,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
         File[] files = entry.getFile().listFiles();
         String parentPath = entry.getName();
         for (File child : files) {
-            if(entry.getName() != null ) {
+            if (entry.getName() != null) {
                 entry.setPath(entry.getName() + "/" + child.getName());
             } else {
                 entry.setPath(child.getName());
@@ -142,7 +143,8 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
                     }
                 } else if (zipEntry.getName().startsWith(nestedEntryName)) {
                     // Nested file entries
-                    add(getZipFileEntry(file, zipEntry).setName(zipEntry.getName().substring(nestedEntryName.length() + 1)), builder);
+                    add(getZipFileEntry(file, zipEntry).setName(zipEntry.getName().substring(nestedEntryName.length() + 1)),
+                            builder);
                 }
             }
         }
@@ -152,7 +154,8 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
         // Reconstruct the archive URL. It might be like either of the following:
         // "jar:file:/home/duke/duke.jar!/classes"
         // "jar:file:/home/duke/duke.jar!/lib/foo.jar"
-        return new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName());
+        return new ZipFileEntry(
+                PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName());
     }
 
     protected void add(Entry entry, BeanArchiveBuilder builder) throws MalformedURLException {

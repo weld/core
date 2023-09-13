@@ -39,7 +39,8 @@ import org.junit.runner.RunWith;
 public class AbstractMethodInDecoratorHierarchyTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AbstractMethodInDecoratorHierarchyTest.class)).decorate(MyDecorator.class).addPackage(AbstractMethodInDecoratorHierarchyTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AbstractMethodInDecoratorHierarchyTest.class))
+                .decorate(MyDecorator.class).addPackage(AbstractMethodInDecoratorHierarchyTest.class.getPackage());
     }
 
     @Inject

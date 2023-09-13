@@ -51,7 +51,8 @@ public class ExternalBeanAttributesFactory {
      */
     public static <T> BeanAttributes<T> of(BeanAttributes<T> source, BeanManager manager) {
         validateBeanAttributes(source, manager);
-        BeanAttributes<T> attributes = new ImmutableBeanAttributes<T>(defensiveCopy(source.getStereotypes()), source.isAlternative(), source.getName(),
+        BeanAttributes<T> attributes = new ImmutableBeanAttributes<T>(defensiveCopy(source.getStereotypes()),
+                source.isAlternative(), source.getName(),
                 defensiveCopy(source.getQualifiers()), defensiveCopy(source.getTypes()), source.getScope());
         return attributes;
     }
@@ -62,6 +63,7 @@ public class ExternalBeanAttributesFactory {
 
     /**
      * Validates {@link BeanAttributes}.
+     *
      * @param attributes {@link BeanAttributes} to validate
      */
     public static void validateBeanAttributes(BeanAttributes<?> attributes, BeanManager manager) {
@@ -72,7 +74,7 @@ public class ExternalBeanAttributesFactory {
     }
 
     public static void validateStereotypes(BeanAttributes<?> attributes, BeanManager manager) {
-        if(attributes.getStereotypes() == null) {
+        if (attributes.getStereotypes() == null) {
             throw MetadataLogger.LOG.stereotypesNull(attributes);
         }
         for (Class<? extends Annotation> annotation : attributes.getStereotypes()) {
@@ -88,7 +90,7 @@ public class ExternalBeanAttributesFactory {
     }
 
     public static void validateTypes(BeanAttributes<?> attributes, BeanManager manager) {
-        if(attributes.getTypes() == null) {
+        if (attributes.getTypes() == null) {
             throw MetadataLogger.LOG.typesNull(attributes);
         }
         if (attributes.getTypes().isEmpty()) {
@@ -116,7 +118,8 @@ public class ExternalBeanAttributesFactory {
     private static void checkBeanTypeForWildcardsAndTypeVariables(Type beanType, Type type, BeanAttributes<?> attributes) {
         if (type instanceof TypeVariable<?>) {
             if (!attributes.getScope().equals(Dependent.class)) {
-                throw MetadataLogger.LOG.beanWithParameterizedTypeContainingTypeVariablesMustBeDependentScoped(beanType, attributes);
+                throw MetadataLogger.LOG.beanWithParameterizedTypeContainingTypeVariablesMustBeDependentScoped(beanType,
+                        attributes);
             }
         } else if (type instanceof WildcardType) {
             throw MetadataLogger.LOG.parameterizedTypeContainingWildcardParameterIsNotAValidBeanType(beanType, attributes);
@@ -132,7 +135,7 @@ public class ExternalBeanAttributesFactory {
     }
 
     public static void validateScope(BeanAttributes<?> attributes, BeanManager manager) {
-        if(attributes.getScope() == null) {
+        if (attributes.getScope() == null) {
             throw MetadataLogger.LOG.scopeNull(attributes);
         }
         if (!manager.isScope(attributes.getScope())) {

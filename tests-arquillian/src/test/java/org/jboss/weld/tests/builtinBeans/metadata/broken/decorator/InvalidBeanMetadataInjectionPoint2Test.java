@@ -34,11 +34,12 @@ public class InvalidBeanMetadataInjectionPoint2Test {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidBeanMetadataInjectionPoint2Test.class)).addClasses(MilkProduct.class, MilkProductDecorator2.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidBeanMetadataInjectionPoint2Test.class))
+                .addClasses(MilkProduct.class, MilkProductDecorator2.class);
     }
 
     @Test
     public void testDeploymentFailsWithBadMetadata() {
         // should throw definition exception
-     }
+    }
 }

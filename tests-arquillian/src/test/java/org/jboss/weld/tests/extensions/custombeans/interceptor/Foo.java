@@ -26,7 +26,7 @@ public class Foo {
     }
 
     @MethodBinding
-    public void methodLevel(){
+    public void methodLevel() {
 
     }
 

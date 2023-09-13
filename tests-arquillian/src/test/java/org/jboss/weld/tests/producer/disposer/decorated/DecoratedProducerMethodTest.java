@@ -43,7 +43,8 @@ public class DecoratedProducerMethodTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(DecoratedProducerMethodTest.class.getPackage()).addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class).addPackage(DecoratedProducerMethodTest.class.getPackage())
+                .addClass(ActionSequence.class);
     }
 
     @Inject
@@ -73,7 +74,7 @@ public class DecoratedProducerMethodTest {
 
         // verify decorator invocation
         ActionSequence.assertSequenceDataContainsAll(PrivateWorker.class.getName(), ProtectedWorker.class.getName(),
-            PublicWorker.class.getName(), PackagePrivateWorker.class.getName(), WorkerDecorator.class.getName());
+                PublicWorker.class.getName(), PackagePrivateWorker.class.getName(), WorkerDecorator.class.getName());
         assertEquals(8, ActionSequence.getSequenceSize());
         ActionSequence.reset();
 

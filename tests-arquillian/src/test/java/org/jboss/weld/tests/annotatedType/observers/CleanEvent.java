@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.annotatedType.observers;
 
-public class CleanEvent
-{
+public class CleanEvent {
 
 }

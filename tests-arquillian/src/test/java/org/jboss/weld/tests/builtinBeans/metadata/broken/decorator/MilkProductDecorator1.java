@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.builtinBeans.metadata.broken.decorator;
 
 import jakarta.decorator.Delegate;
-import jakarta.enterprise.inject.Decorated;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.inject.Inject;

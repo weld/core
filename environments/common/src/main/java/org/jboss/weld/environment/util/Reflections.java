@@ -39,7 +39,8 @@ import org.jboss.weld.util.collections.ImmutableList;
  */
 public final class Reflections {
 
-    public static final List<Class<? extends Annotation>> META_ANNOTATIONS = ImmutableList.of(Stereotype.class, NormalScope.class);
+    public static final List<Class<? extends Annotation>> META_ANNOTATIONS = ImmutableList.of(Stereotype.class,
+            NormalScope.class);
 
     private Reflections() {
     }
@@ -116,7 +117,8 @@ public final class Reflections {
     }
 
     /**
-     * First try to load a class using the specified ResourceLoader. If not successful, try {@link Class#forName(String)} as a fallback.
+     * First try to load a class using the specified ResourceLoader. If not successful, try {@link Class#forName(String)} as a
+     * fallback.
      *
      * @param resourceLoader
      * @param className
@@ -140,9 +142,11 @@ public final class Reflections {
      *
      * @param annotations
      * @param metaAnnotationType
-     * @return <code>true</code> if any of the annotations specified has the given meta annotation type specified, <code>false</code> otherwise
+     * @return <code>true</code> if any of the annotations specified has the given meta annotation type specified,
+     *         <code>false</code> otherwise
      */
-    public static boolean hasBeanDefiningMetaAnnotationSpecified(Annotation[] annotations, Class<? extends Annotation> metaAnnotationType) {
+    public static boolean hasBeanDefiningMetaAnnotationSpecified(Annotation[] annotations,
+            Class<? extends Annotation> metaAnnotationType) {
         for (Annotation annotation : annotations) {
             if (annotation.annotationType().isAnnotationPresent(metaAnnotationType)) {
                 return true;
@@ -155,7 +159,8 @@ public final class Reflections {
         return containsAnnotation(annotations, requiredAnnotation, true);
     }
 
-    private static boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+    private static boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation,
+            boolean checkMetaAnnotations) {
         for (Annotation annotation : annotations) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (requiredAnnotation.equals(annotationType)) {
@@ -168,7 +173,8 @@ public final class Reflections {
         return false;
     }
 
-    public static boolean hasBeanDefiningAnnotation(Class<?> clazz, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+    public static boolean hasBeanDefiningAnnotation(Class<?> clazz,
+            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
         for (Class<? extends Annotation> beanDefiningAnnotation : initialBeanDefiningAnnotations) {
             if (clazz.isAnnotationPresent(beanDefiningAnnotation)) {
                 return true;

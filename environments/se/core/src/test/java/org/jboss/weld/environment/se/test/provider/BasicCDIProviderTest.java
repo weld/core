@@ -39,7 +39,8 @@ public class BasicCDIProviderTest extends AbstractCDIProviderTest {
 
     @Deployment
     public static Archive<?> getArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Boy.class, Chick.class, Child.class, Female.class, Girl.class, KarateClub.class, KarateClubLocator.class, Male.class, Pretty.class, PrettyLiteral.class);
+        return ShrinkWrap.create(BeanArchive.class).addClasses(Boy.class, Chick.class, Child.class, Female.class, Girl.class,
+                KarateClub.class, KarateClubLocator.class, Male.class, Pretty.class, PrettyLiteral.class);
     }
 
     @Test

@@ -1,14 +1,14 @@
 package org.jboss.weld.util;
 
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.InterceptorBindingModel;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-
 import java.lang.annotation.Annotation;
 import java.util.AbstractSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.InterceptorBindingModel;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
 /**
  * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
@@ -40,13 +40,13 @@ public class InterceptorBindingSet extends AbstractSet<Annotation> {
         return set.size();
     }
 
-
     public boolean contains(Object o) {
         if (o instanceof Annotation) {
             Annotation annotation = (Annotation) o;
 
             MetaAnnotationStore metaAnnotationStore = beanManager.getServices().get(MetaAnnotationStore.class);
-            InterceptorBindingModel<? extends Annotation> interceptorBindingModel = metaAnnotationStore.getInterceptorBindingModel(annotation.annotationType());
+            InterceptorBindingModel<? extends Annotation> interceptorBindingModel = metaAnnotationStore
+                    .getInterceptorBindingModel(annotation.annotationType());
 
             for (Annotation containedAnnotation : set) {
                 if (interceptorBindingModel.isEqual(annotation, containedAnnotation)) {

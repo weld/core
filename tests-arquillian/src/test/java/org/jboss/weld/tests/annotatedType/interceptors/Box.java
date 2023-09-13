@@ -1,8 +1,8 @@
 package org.jboss.weld.tests.annotatedType.interceptors;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.io.Serializable;
+
+import jakarta.enterprise.context.Dependent;
 
 @SuppressWarnings("serial")
 @Dependent

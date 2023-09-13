@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.extensions.qualifiers;
 
-import org.junit.Assert;
-
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
+
+import org.junit.Assert;
 
 public class QuickExtension implements Extension {
 

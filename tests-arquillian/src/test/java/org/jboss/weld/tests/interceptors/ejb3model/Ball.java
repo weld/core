@@ -26,7 +26,7 @@ import jakarta.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptors({Goalkeeper.class, Referee.class})
+@Interceptors({ Goalkeeper.class, Referee.class })
 @Dependent
 public class Ball {
     public static boolean played = false;

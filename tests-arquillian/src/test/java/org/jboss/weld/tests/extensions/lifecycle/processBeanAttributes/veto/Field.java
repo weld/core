@@ -20,9 +20,9 @@ import jakarta.enterprise.inject.Produces;
 
 /**
  * This bean is vetoed in the ProcessBeanAttributes phase.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 public class Field {
 

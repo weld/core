@@ -52,17 +52,18 @@ public class AdditionalServiceTest {
     public static Archive<?> createTestArchive() {
         @SuppressWarnings("rawtypes")
         Class[] classes = new Class[] {
-            AdditionalServiceTest.class,
-            AlphaImpl.class,
-            AlphaService.class,
-            Bravo1Service.class,
-            Bravo2Service.class,
-            BravoImpl.class,
-            ExecutorServices1.class,
-            ExecutorServices2.class,
-            DummyBean.class
+                AdditionalServiceTest.class,
+                AlphaImpl.class,
+                AlphaService.class,
+                Bravo1Service.class,
+                Bravo2Service.class,
+                BravoImpl.class,
+                ExecutorServices1.class,
+                ExecutorServices2.class,
+                DummyBean.class
         };
-        final JavaArchive bda1 = ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdditionalServiceTest.class, Utils.ARCHIVE_TYPE.WAR))
+        final JavaArchive bda1 = ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AdditionalServiceTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(classes).addAsServiceProvider(Service.class, ExecutorServices1.class);
         return ClassPath.builder().add(bda1).build();
     }

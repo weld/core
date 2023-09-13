@@ -49,10 +49,14 @@ public class CrossContextForwardTest {
     protected static final String SECOND = "second";
 
     protected static final Asset FORWARDING_WEB_XML = new ByteArrayAsset(extendDefaultWebXml(
-            toServletAndMapping("Forwarding Servlet", ForwardingServlet.class, "/forwarding") + toContextParam("WELD_CONTEXT_ID_KEY", FIRST)).getBytes());
+            toServletAndMapping("Forwarding Servlet", ForwardingServlet.class, "/forwarding")
+                    + toContextParam("WELD_CONTEXT_ID_KEY", FIRST))
+            .getBytes());
 
     protected static final Asset INCLUDED_WEB_XML = new ByteArrayAsset(extendDefaultWebXml(
-            toServletAndMapping("Included Servlet", IncludedServlet.class, "/included") + toContextParam("WELD_CONTEXT_ID_KEY", SECOND)).getBytes());
+            toServletAndMapping("Included Servlet", IncludedServlet.class, "/included")
+                    + toContextParam("WELD_CONTEXT_ID_KEY", SECOND))
+            .getBytes());
 
     @Deployment(name = CrossContextForwardTest.FIRST)
     public static WebArchive createFirstTestArchive() {

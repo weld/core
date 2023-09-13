@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resources;
 
-
 /**
  * A simple resource loader.
  * <p/>

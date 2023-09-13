@@ -17,13 +17,13 @@
 
 package org.jboss.weld.tests.stereotypes.priority;
 
-import jakarta.enterprise.inject.Alternative;
-import jakarta.enterprise.inject.Stereotype;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Stereotype;
 
 /**
  * Makes the bean {@code @Alternative} and declares {@code @SomeStereotype} so it inherits has {@code @Priority}

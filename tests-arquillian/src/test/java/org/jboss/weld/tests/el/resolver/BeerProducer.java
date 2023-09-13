@@ -22,17 +22,11 @@ import jakarta.inject.Named;
 
 @Dependent
 public class BeerProducer {
-    public
-    @Produces
-    @Named
-    Beer getBeerOnTap() {
+    public @Produces @Named Beer getBeerOnTap() {
         return new Beer("Dragon's Breathe", "IPA");
     }
 
-    public
-    @Produces
-    @Named
-    String getStyle() {
+    public @Produces @Named String getStyle() {
         return "Bogus!";
     }
 }

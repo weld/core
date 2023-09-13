@@ -1,10 +1,10 @@
 package org.jboss.weld.tests.proxy.observer;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import java.io.Serializable;
-
 
 @SessionScoped
 public class SampleObserver implements Serializable {

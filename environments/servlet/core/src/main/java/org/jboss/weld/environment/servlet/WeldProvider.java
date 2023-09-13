@@ -37,7 +37,8 @@ public class WeldProvider implements CDIProvider {
 
         /*
          * The BeanManager we are going to return when unable to precisely identify caller's BDA. We assume that all BDAs
-         * share the same classloader and therefore visibility is not a concern. The only difference this can make is per-BDA (CDI 1.0 style)
+         * share the same classloader and therefore visibility is not a concern. The only difference this can make is per-BDA
+         * (CDI 1.0 style)
          * enablement of alternatives / interceptors and decorators. Nothing we can do about that.
          */
         private final BeanManagerImpl fallbackBeanManager;

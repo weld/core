@@ -22,7 +22,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ConversationScoped;
 
-
 import org.jboss.weld.test.util.ActionSequence;
 
 /**
@@ -35,9 +34,9 @@ public class ConversationBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public void pong() {
-        
+
     }
-    
+
     @PostConstruct
     public void init() {
         ActionSequence.addAction("conversationCreated");

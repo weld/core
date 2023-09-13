@@ -2,7 +2,8 @@ package org.jboss.weld.lite.extension.translator.util.reflection;
 
 import java.util.Arrays;
 
-final class AnnotatedParameterizedTypeImpl extends AbstractEmptyAnnotatedType implements java.lang.reflect.AnnotatedParameterizedType {
+final class AnnotatedParameterizedTypeImpl extends AbstractEmptyAnnotatedType
+        implements java.lang.reflect.AnnotatedParameterizedType {
     private final java.lang.reflect.ParameterizedType parameterizedType;
 
     AnnotatedParameterizedTypeImpl(java.lang.reflect.ParameterizedType parameterizedType) {
@@ -18,8 +19,8 @@ final class AnnotatedParameterizedTypeImpl extends AbstractEmptyAnnotatedType im
 
     // added in Java 9
     /*
-    @Override
-    */
+     * @Override
+     */
     public java.lang.reflect.AnnotatedType getAnnotatedOwnerType() {
         java.lang.reflect.Type ownerType = parameterizedType.getOwnerType();
         return ownerType == null ? null : AnnotatedTypes.from(ownerType);

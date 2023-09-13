@@ -1,15 +1,15 @@
 package org.jboss.weld.injection;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.Set;
+
 import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.util.reflection.Reflections;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 public abstract class ForwardingInjectionPoint implements InjectionPoint {
     protected abstract InjectionPoint delegate();

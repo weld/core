@@ -47,7 +47,8 @@ public abstract class InjectableReferenceOptimizationTestBase {
                 .addAsServiceProvider(Extension.class, CustomScopeExtension.class)
                 .addAsResource(
                         PropertiesBuilder.newBuilder().set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true")
-                                .build(), "weld.properties");
+                                .build(),
+                        "weld.properties");
     }
 
     protected void assertIsProxy(Object beanInstance) {

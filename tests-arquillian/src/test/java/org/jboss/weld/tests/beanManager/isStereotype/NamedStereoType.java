@@ -25,7 +25,7 @@ import jakarta.enterprise.inject.Stereotype;
 import jakarta.inject.Named;
 
 @Stereotype
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Named
 public @interface NamedStereoType {

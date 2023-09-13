@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.interceptors.weld1019;
 
-import jakarta.inject.Named;
 import java.io.Serializable;
 
 /**

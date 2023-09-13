@@ -1,7 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.lang.model.AnnotationMember;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -9,13 +7,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import jakarta.enterprise.lang.model.AnnotationMember;
+
 final class AnnotationProxy {
 
     private AnnotationProxy() {
     }
 
     static <T extends Annotation> T create(Class<T> clazz, Map<String, AnnotationMember> members) {
-        Class<?>[] interfaces = new Class[]{clazz};
+        Class<?>[] interfaces = new Class[] { clazz };
         Map<String, Object> values = new HashMap<>();
         for (Map.Entry<String, AnnotationMember> member : members.entrySet()) {
             values.put(member.getKey(), ((AnnotationMemberImpl) member.getValue()).value);

@@ -35,7 +35,8 @@ public class IsolationDisabledTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        JavaArchive common = ShrinkWrap.create(JavaArchive.class).addClasses(IsolationDisabledTest.class, FooInterceptor.class, FooBinding.class);
+        JavaArchive common = ShrinkWrap.create(JavaArchive.class).addClasses(IsolationDisabledTest.class, FooInterceptor.class,
+                FooBinding.class);
         JavaArchive bda1 = ShrinkWrap.create(BeanArchive.class).addClass(Rorschach.class);
         JavaArchive bda2 = ShrinkWrap.create(BeanArchive.class).intercept(FooInterceptor.class).addClass(Comedian.class);
         return ClassPath.builder().add(common, bda1, bda2).build();

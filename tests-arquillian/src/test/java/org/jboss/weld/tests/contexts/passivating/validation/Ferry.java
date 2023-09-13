@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.tests.contexts.passivating.validation;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.io.Serializable;
+
+import jakarta.enterprise.context.Dependent;
 
 /**
  * This bean is passivation capable although it is not required to be (it does not declare a passivating scope).
- * 
+ *
  */
 @EnginePowered
 @Dependent

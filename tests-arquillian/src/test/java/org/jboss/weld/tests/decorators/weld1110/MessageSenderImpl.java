@@ -10,8 +10,8 @@ import jakarta.ws.rs.PathParam;
 public class MessageSenderImpl implements MessageSender {
 
     @GET
-	public String send(@PathParam("message") String message) {
-		return message;
-	}
+    public String send(@PathParam("message") String message) {
+        return message;
+    }
 
 }

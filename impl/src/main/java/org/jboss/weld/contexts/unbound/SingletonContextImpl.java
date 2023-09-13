@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.contexts.unbound;
 
-import org.jboss.weld.contexts.AbstractSharedContext;
-import org.jboss.weld.context.SingletonContext;
+import java.lang.annotation.Annotation;
 
 import jakarta.inject.Singleton;
 
-import java.lang.annotation.Annotation;
+import org.jboss.weld.context.SingletonContext;
+import org.jboss.weld.contexts.AbstractSharedContext;
 
 public class SingletonContextImpl extends AbstractSharedContext implements SingletonContext {
 

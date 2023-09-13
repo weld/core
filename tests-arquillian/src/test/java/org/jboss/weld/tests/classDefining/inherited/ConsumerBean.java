@@ -17,10 +17,10 @@
 
 package org.jboss.weld.tests.classDefining.inherited;
 
-import org.jboss.weld.tests.classDefining.inherited.extending.MyInterface;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import org.jboss.weld.tests.classDefining.inherited.extending.MyInterface;
 
 @ApplicationScoped
 public class ConsumerBean {

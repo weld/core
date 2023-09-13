@@ -47,7 +47,8 @@ public class BarBean implements Bean<Bar> {
 
     @Override
     public Bar create(CreationalContext<Bar> creationalContext) {
-        InjectionPoint injectionPointMetadata = (InjectionPoint) beanManager.getInjectableReference(injectionPoints.iterator().next(), creationalContext);
+        InjectionPoint injectionPointMetadata = (InjectionPoint) beanManager
+                .getInjectableReference(injectionPoints.iterator().next(), creationalContext);
         return new Bar(injectionPointMetadata);
     }
 

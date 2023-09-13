@@ -17,7 +17,6 @@
 
 package org.jboss.weld.tests.decorators.generic;
 
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;

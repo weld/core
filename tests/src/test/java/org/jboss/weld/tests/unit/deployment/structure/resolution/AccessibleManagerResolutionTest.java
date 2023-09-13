@@ -47,6 +47,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.ExpressionLanguageSupport;
 import org.jboss.weld.module.ObserverNotifierFactory;
+import org.jboss.weld.module.web.WeldWebModule;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.ReflectionCacheFactory;
@@ -56,7 +57,6 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.module.web.WeldWebModule;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -72,11 +72,12 @@ public class AccessibleManagerResolutionTest {
     @BeforeMethod
     public void beforeMethod() {
         BeanIdentifierIndex beanIdentifierIndex = new BeanIdentifierIndex();
-        beanIdentifierIndex.build(Collections.<Bean<?>>emptySet());
+        beanIdentifierIndex.build(Collections.<Bean<?>> emptySet());
         this.typeStore = new TypeStore();
-        this.classTransformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
+        this.classTransformer = new ClassTransformer(typeStore, new SharedObjectCache(),
+                ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
         this.services = new SimpleServiceRegistry();
-        
+
         this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         this.services.add(ContextualStore.class, new ContextualStoreImpl(STATIC_INSTANCE, beanIdentifierIndex));
         this.services.add(ClassTransformer.class, classTransformer);
@@ -84,22 +85,23 @@ public class AccessibleManagerResolutionTest {
         this.services.add(WeldConfiguration.class, new WeldConfiguration(this.services, new MockDeployment(services)));
         this.services.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
         this.services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
-        this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));
+        this.services.add(GlobalObserverNotifierService.class,
+                new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));
         this.services.add(ExpressionLanguageSupport.class, WeldWebModule.EL_SUPPORT);
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
         this.services.add(ProxyInstantiator.class, DefaultProxyInstantiator.INSTANCE);
         this.services.add(ResourceInjectionFactory.class, new ResourceInjectionFactory());
         this.services.add(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
-        
+
         // create BeanManagerImpl and initialize container
         root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
         Container.initialize(root, services);
-        
+
         // add injection target service; has to be done once container was initialized
         this.services.add(InjectionTargetService.class, new InjectionTargetService(root));
     }
-    
+
     @AfterMethod
     public void cleanup() {
         if (root != null) {

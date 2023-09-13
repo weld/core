@@ -45,7 +45,8 @@ import org.jboss.weld.util.reflection.Reflections;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * High-level representation of an injected constructor. This class does not need to be serializable because it is never injected.
+ * High-level representation of an injected constructor. This class does not need to be serializable because it is never
+ * injected.
  *
  * @author Pete Muir
  * @author Jozef Hartinger
@@ -59,11 +60,13 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
     private final ConstructorSignature signature;
     private final Constructor<T> accessibleConstructor;
 
-    protected ConstructorInjectionPoint(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, Class<?> declaringComponentClass, InjectionPointFactory factory, BeanManagerImpl manager) {
+    protected ConstructorInjectionPoint(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean,
+            Class<?> declaringComponentClass, InjectionPointFactory factory, BeanManagerImpl manager) {
         super(constructor, declaringBean, declaringComponentClass, false, factory, manager);
         this.constructor = constructor.slim();
         this.signature = constructor.getSignature();
-        this.accessibleConstructor = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Constructor<T>>(constructor.getJavaMember()));
+        this.accessibleConstructor = AccessController
+                .doPrivileged(new GetAccessibleCopyOfMember<Constructor<T>>(constructor.getJavaMember()));
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx) {
@@ -104,7 +107,8 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         }, getComponentConstructor(), parameters, new HashMap<String, Object>());
     }
 
-    private T invokeAroundConstructCallback(AroundConstructCallback<T> callback, ConstructionHandle<T> ctx, AnnotatedConstructor<T> constructor, Object[] parameters, Map<String, Object> data) {
+    private T invokeAroundConstructCallback(AroundConstructCallback<T> callback, ConstructionHandle<T> ctx,
+            AnnotatedConstructor<T> constructor, Object[] parameters, Map<String, Object> data) {
         try {
             return callback.aroundConstruct(ctx, constructor, parameters, data);
         } catch (RuntimeException e) {
@@ -136,7 +140,8 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
      * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    public Object[] getParameterValues(BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> transientReference) {
+    public Object[] getParameterValues(BeanManagerImpl manager, CreationalContext<?> ctx,
+            CreationalContext<?> transientReference) {
         if (getInjectionPoints().isEmpty()) {
             return Arrays2.EMPTY_ARRAY;
         }

@@ -26,7 +26,8 @@ public class LambdaConstructsTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LambdaConstructsTest.class)).addPackage(LambdaConstructsTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LambdaConstructsTest.class))
+                .addPackage(LambdaConstructsTest.class.getPackage());
     }
 
     @Test

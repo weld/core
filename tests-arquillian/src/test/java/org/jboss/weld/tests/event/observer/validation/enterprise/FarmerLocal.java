@@ -19,9 +19,8 @@ package org.jboss.weld.tests.event.observer.validation.enterprise;
 import jakarta.ejb.Local;
 import jakarta.enterprise.event.Observes;
 
-public @Local interface FarmerLocal
-{
-   
-   void observeEggLaying(@Observes Egg egg);
-   
+public @Local interface FarmerLocal {
+
+    void observeEggLaying(@Observes Egg egg);
+
 }

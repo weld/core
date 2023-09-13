@@ -112,7 +112,8 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
     public ObserverMethodConfigurator<T> read(AnnotatedMethod<?> method) {
         checkArgumentNotNull(method);
         Set<AnnotatedParameter<?>> eventParameters = method.getParameters().stream()
-                .filter((p) -> p.isAnnotationPresent(Observes.class) || p.isAnnotationPresent(ObservesAsync.class)).collect(Collectors.toSet());
+                .filter((p) -> p.isAnnotationPresent(Observes.class) || p.isAnnotationPresent(ObservesAsync.class))
+                .collect(Collectors.toSet());
         checkEventParams(eventParameters, method.getJavaMember());
         AnnotatedParameter<?> eventParameter = eventParameters.iterator().next();
         Observes observesAnnotation = eventParameter.getAnnotation(Observes.class);
@@ -243,103 +244,103 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
     }
 
     /**
-    *
-    *
-    * @param <T>
-    */
-   static class ImmutableObserverMethod<T> implements SyntheticObserverMethod<T> {
+     *
+     *
+     * @param <T>
+     */
+    static class ImmutableObserverMethod<T> implements SyntheticObserverMethod<T> {
 
-       private final Class<?> beanClass;
+        private final Class<?> beanClass;
 
-       private final Type observedType;
+        private final Type observedType;
 
-       private final Set<Annotation> observedQualifiers;
+        private final Set<Annotation> observedQualifiers;
 
-       private final Reception reception;
+        private final Reception reception;
 
-       private final TransactionPhase txPhase;
+        private final TransactionPhase txPhase;
 
-       private final int priority;
+        private final int priority;
 
-       private final boolean isAsync;
+        private final boolean isAsync;
 
-       private final EventConsumer<T> notifyCallback;
+        private final EventConsumer<T> notifyCallback;
 
-       /**
-        *
-        * @param configurator
-        */
-       ImmutableObserverMethod(ObserverMethodConfiguratorImpl<T> configurator) {
-           if (configurator.notifyCallback == null) {
-               throw EventLogger.LOG.notifyMethodNotImplemented(configurator);
-           }
-           this.beanClass = configurator.beanClass;
-           this.observedType = configurator.observedType;
-           this.observedQualifiers = ImmutableSet.copyOf(configurator.observedQualifiers);
-           this.reception = configurator.reception;
-           this.txPhase = configurator.txPhase;
-           this.priority = configurator.priority;
-           this.isAsync = configurator.isAsync;
-           this.notifyCallback = configurator.notifyCallback;
-       }
+        /**
+         *
+         * @param configurator
+         */
+        ImmutableObserverMethod(ObserverMethodConfiguratorImpl<T> configurator) {
+            if (configurator.notifyCallback == null) {
+                throw EventLogger.LOG.notifyMethodNotImplemented(configurator);
+            }
+            this.beanClass = configurator.beanClass;
+            this.observedType = configurator.observedType;
+            this.observedQualifiers = ImmutableSet.copyOf(configurator.observedQualifiers);
+            this.reception = configurator.reception;
+            this.txPhase = configurator.txPhase;
+            this.priority = configurator.priority;
+            this.isAsync = configurator.isAsync;
+            this.notifyCallback = configurator.notifyCallback;
+        }
 
-       @Override
-       public int getPriority() {
-           return priority;
-       }
+        @Override
+        public int getPriority() {
+            return priority;
+        }
 
-       @Override
-       public Class<?> getBeanClass() {
-           return beanClass;
-       }
+        @Override
+        public Class<?> getBeanClass() {
+            return beanClass;
+        }
 
-       @Override
-       public Type getObservedType() {
-           return observedType;
-       }
+        @Override
+        public Type getObservedType() {
+            return observedType;
+        }
 
-       @Override
-       public Set<Annotation> getObservedQualifiers() {
-           return observedQualifiers;
-       }
+        @Override
+        public Set<Annotation> getObservedQualifiers() {
+            return observedQualifiers;
+        }
 
-       @Override
-       public Reception getReception() {
-           return reception;
-       }
+        @Override
+        public Reception getReception() {
+            return reception;
+        }
 
-       @Override
-       public TransactionPhase getTransactionPhase() {
-           return txPhase;
-       }
+        @Override
+        public TransactionPhase getTransactionPhase() {
+            return txPhase;
+        }
 
-       @Override
-       public void notify(EventContext<T> eventContext) {
-           try {
-               notifyCallback.accept(eventContext);
-           } catch (Exception e) {
-               throw new ObserverException(e);
-           }
-       }
+        @Override
+        public void notify(EventContext<T> eventContext) {
+            try {
+                notifyCallback.accept(eventContext);
+            } catch (Exception e) {
+                throw new ObserverException(e);
+            }
+        }
 
-       @Override
-       public boolean isAsync() {
-           return isAsync;
-       }
+        @Override
+        public boolean isAsync() {
+            return isAsync;
+        }
 
-       @Override
-       public boolean isEventMetadataRequired() {
-           return true;
-       }
+        @Override
+        public boolean isEventMetadataRequired() {
+            return true;
+        }
 
-       @Override
-       public String toString() {
-           return "Configurator observer method [Bean class = " + getBeanClass()
-               + ", type = " + getObservedType()
-               + ", qualifiers =" + Formats.formatAnnotations(getObservedQualifiers())
-               + ", priority =" + getPriority() + ", async =" + isAsync()
-               + ", reception =" + getReception() + ", transaction phase =" + getTransactionPhase() + "]";
-       }
+        @Override
+        public String toString() {
+            return "Configurator observer method [Bean class = " + getBeanClass()
+                    + ", type = " + getObservedType()
+                    + ", qualifiers =" + Formats.formatAnnotations(getObservedQualifiers())
+                    + ", priority =" + getPriority() + ", async =" + isAsync()
+                    + ", reception =" + getReception() + ", transaction phase =" + getTransactionPhase() + "]";
+        }
 
-   }
+    }
 }

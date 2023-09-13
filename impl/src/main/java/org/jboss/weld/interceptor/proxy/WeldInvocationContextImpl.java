@@ -37,16 +37,20 @@ import org.jboss.weld.util.ForwardingInvocationContext;
 import org.jboss.weld.util.Preconditions;
 
 /**
- * Weld's {@link InvocationContext} implementation. This is a forwarding implementation that delegates most method calls to an underlying
+ * Weld's {@link InvocationContext} implementation. This is a forwarding implementation that delegates most method calls to an
+ * underlying
  * {@link InvocationContext}. This allows multiple interceptor chains to be combined.
  *
- * A call to {@link #proceed()} invokes the chain of intercepors in the given order. Once the chain finishes, the {@link #proceed()} method of the delegate is
- * invoked which results in the target method being invoked in case of {@link SimpleInvocationContext}. Otherwise, the delegate chain is run.
+ * A call to {@link #proceed()} invokes the chain of intercepors in the given order. Once the chain finishes, the
+ * {@link #proceed()} method of the delegate is
+ * invoked which results in the target method being invoked in case of {@link SimpleInvocationContext}. Otherwise, the delegate
+ * chain is run.
  *
  * @author Jozef Hartinger
  *
  */
-public class WeldInvocationContextImpl extends ForwardingInvocationContext implements org.jboss.weld.interceptor.WeldInvocationContext {
+public class WeldInvocationContextImpl extends ForwardingInvocationContext
+        implements org.jboss.weld.interceptor.WeldInvocationContext {
 
     private int position;
     private final List<InterceptorMethodInvocation> chain;
@@ -54,20 +58,25 @@ public class WeldInvocationContextImpl extends ForwardingInvocationContext imple
     private final InvocationContext delegate;
     private final Set<Annotation> interceptorBindings;
 
-    public WeldInvocationContextImpl(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings) {
-        this(new SimpleInvocationContext(constructor, parameters, contextData, interceptorBindings), chain, interceptorBindings, null);
+    public WeldInvocationContextImpl(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData,
+            List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings) {
+        this(new SimpleInvocationContext(constructor, parameters, contextData, interceptorBindings), chain, interceptorBindings,
+                null);
     }
 
-    public WeldInvocationContextImpl(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, Stack stack) {
-        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters, interceptorBindings), chain, interceptorBindings, (stack == null) ? null : stack.peek());
+    public WeldInvocationContextImpl(Object target, Method targetMethod, Method proceed, Object[] parameters,
+            List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, Stack stack) {
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters, interceptorBindings), chain,
+                interceptorBindings, (stack == null) ? null : stack.peek());
     }
 
-    public WeldInvocationContextImpl(InvocationContext delegate, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
+    public WeldInvocationContextImpl(InvocationContext delegate, List<InterceptorMethodInvocation> chain,
+            Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
         this.delegate = delegate;
         this.chain = chain;
         this.currentHandler = currentHandler;
         if (interceptorBindings == null) {
-            this.interceptorBindings = Collections.<Annotation>emptySet();
+            this.interceptorBindings = Collections.<Annotation> emptySet();
         } else {
             this.interceptorBindings = interceptorBindings;
         }

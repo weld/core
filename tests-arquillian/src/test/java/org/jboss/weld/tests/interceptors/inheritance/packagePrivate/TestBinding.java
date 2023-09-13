@@ -29,7 +29,7 @@ import jakarta.interceptor.InterceptorBinding;
  */
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface TestBinding {
-    
+
 }

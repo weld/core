@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.resolution.named;
 
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,9 +29,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.inject.Inject;
 
 /**
  * @author Dan Allen
@@ -47,13 +47,14 @@ public class NamedBeanTest {
     @Test
     public void testGetNamedBeanWithBinding() {
         Bean<?> bean = beanManager.resolve(beanManager.getBeans("namedBeanWithBinding"));
-        NamedBeanWithBinding instance = (NamedBeanWithBinding) beanManager.getReference(bean, Object.class, beanManager.createCreationalContext(bean));
+        NamedBeanWithBinding instance = (NamedBeanWithBinding) beanManager.getReference(bean, Object.class,
+                beanManager.createCreationalContext(bean));
         Assert.assertNotNull(instance);
     }
 
     /*
-    * description = "WELD-435"
-    */
+     * description = "WELD-435"
+     */
     @Test
     public void testNamedInjectedFieldUsesFieldName(NamedBeanConsumer consumer) {
         Assert.assertNotNull(consumer.getFoo());

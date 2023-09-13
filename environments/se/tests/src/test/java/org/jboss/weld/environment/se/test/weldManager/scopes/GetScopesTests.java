@@ -45,8 +45,9 @@ public class GetScopesTests {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
-            .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetScopesTests.class))
-                .addClasses(GetScopesTests.class, TheLoneBean.class)).build();
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetScopesTests.class))
+                        .addClasses(GetScopesTests.class, TheLoneBean.class))
+                .build();
     }
 
     @Test

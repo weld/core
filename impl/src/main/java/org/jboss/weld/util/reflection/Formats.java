@@ -108,19 +108,24 @@ public class Formats {
 
     public static String formatAsStackTraceElement(Member member) {
         return member.getDeclaringClass().getName()
-            + "." + (member instanceof Constructor<?> ? INIT_METHOD_NAME : member.getName())
-            + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
+                + "." + (member instanceof Constructor<?> ? INIT_METHOD_NAME : member.getName())
+                + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
     }
 
     /**
      * Try to get the line number associated with the given member.
      *
-     * The reflection API does not expose such an info and so we need to analyse the bytecode. Unfortunately, it seems there is no way to get this kind of
-     * information for fields. Moreover, the <code>LineNumberTable</code> attribute is just optional, i.e. the compiler is not required to store this
-     * information at all. See also <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.1">Java Virtual Machine Specification</a>
+     * The reflection API does not expose such an info and so we need to analyse the bytecode. Unfortunately, it seems there is
+     * no way to get this kind of
+     * information for fields. Moreover, the <code>LineNumberTable</code> attribute is just optional, i.e. the compiler is not
+     * required to store this
+     * information at all. See also <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.1">Java
+     * Virtual Machine Specification</a>
      *
-     * Implementation note: it wouldn't be appropriate to add a bytecode scanning dependency just for this functionality, therefore Apache BCEL included in
-     * Oracle JDK 1.5+ and OpenJDK 1.6+ is used. Other JVMs should not crash as we only use it if it's on the classpath and by means of reflection calls.
+     * Implementation note: it wouldn't be appropriate to add a bytecode scanning dependency just for this functionality,
+     * therefore Apache BCEL included in
+     * Oracle JDK 1.5+ and OpenJDK 1.6+ is used. Other JVMs should not crash as we only use it if it's on the classpath and by
+     * means of reflection calls.
      *
      * @param member
      * @param resourceLoader
@@ -139,7 +144,8 @@ public class Formats {
         }
 
         String classFile = member.getDeclaringClass().getName().replace('.', '/');
-        ClassLoaderResourceLoader classFileResourceLoader = new ClassLoaderResourceLoader(member.getDeclaringClass().getClassLoader());
+        ClassLoaderResourceLoader classFileResourceLoader = new ClassLoaderResourceLoader(
+                member.getDeclaringClass().getClassLoader());
         InputStream in = null;
 
         try {
@@ -217,7 +223,7 @@ public class Formats {
          * Applies the function to an object of type {@code F}, resulting in an
          * object of type String.
          *
-         * @param from     the source object
+         * @param from the source object
          * @param position the position in the list the object is at
          * @return the resulting object
          */
@@ -293,14 +299,15 @@ public class Formats {
         }
         if (baseType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) baseType;
-            return getClassName((Class<?>) parameterizedType.getRawType(), simpleNames) + formatActualTypeArguments(parameterizedType.getActualTypeArguments());
+            return getClassName((Class<?>) parameterizedType.getRawType(), simpleNames)
+                    + formatActualTypeArguments(parameterizedType.getActualTypeArguments());
         } else if (baseType instanceof WildcardType) {
             WildcardType wildcardType = (WildcardType) baseType;
             Type[] upperBound = wildcardType.getUpperBounds();
             Type[] lowerBound = wildcardType.getLowerBounds();
-            if(lowerBound.length == 0 && Reflections.isEmptyBoundArray(upperBound)) {
+            if (lowerBound.length == 0 && Reflections.isEmptyBoundArray(upperBound)) {
                 return WILDCARD;
-            } else if(lowerBound.length == 0) {
+            } else if (lowerBound.length == 0) {
                 return WILDCARD_UPPER_BOUND + formatType(upperBound[0], simpleNames);
             }
             return WILDCARD_LOWER_BOUND + formatType(lowerBound[0], simpleNames);
@@ -336,7 +343,8 @@ public class Formats {
         return formatTypes(baseTypes, true);
     }
 
-    public static String formatBusinessInterfaceDescriptors(Iterable<? extends BusinessInterfaceDescriptor<?>> businessInterfaceDescriptors) {
+    public static String formatBusinessInterfaceDescriptors(
+            Iterable<? extends BusinessInterfaceDescriptor<?>> businessInterfaceDescriptors) {
         return formatIterable(businessInterfaceDescriptors, new Function<BusinessInterfaceDescriptor<?>>() {
 
             @Override
@@ -515,7 +523,7 @@ public class Formats {
      */
     public static String getSimpleVersion() {
         Properties buildProperties = getBuildProperties();
-        if(buildProperties != null) {
+        if (buildProperties != null) {
             return buildProperties.getProperty(BUILD_PROPERTIES_VERSION);
         }
         return getManifestImplementationVersion();
@@ -598,34 +606,44 @@ public class Formats {
     }
 
     public static String formatAnnotatedType(AnnotatedType<?> type) {
-        return Formats.formatSimpleClassName(type) + " " + Formats.addSpaceIfNeeded(Formats.formatModifiers(type.getJavaClass().getModifiers()))
-                + Formats.formatAnnotations(type.getAnnotations()) + " class " + type.getJavaClass().getName() + Formats.formatActualTypeArguments(type.getBaseType());
+        return Formats.formatSimpleClassName(type) + " "
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(type.getJavaClass().getModifiers()))
+                + Formats.formatAnnotations(type.getAnnotations()) + " class " + type.getJavaClass().getName()
+                + Formats.formatActualTypeArguments(type.getBaseType());
     }
 
     public static String formatAnnotatedConstructor(AnnotatedConstructor<?> constructor) {
-        return Formats.formatSimpleClassName(constructor) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(constructor.getAnnotations()))
-                + Formats.addSpaceIfNeeded(Formats.formatModifiers(constructor.getJavaMember().getModifiers())) + constructor.getDeclaringType().getJavaClass().getName()
+        return Formats.formatSimpleClassName(constructor) + " "
+                + Formats.addSpaceIfNeeded(Formats.formatAnnotations(constructor.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(constructor.getJavaMember().getModifiers()))
+                + constructor.getDeclaringType().getJavaClass().getName()
                 + Formats.formatAsFormalParameterList(constructor.getParameters());
     }
 
     public static String formatAnnotatedField(AnnotatedField<?> field) {
-        return Formats.formatSimpleClassName(field) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations()))
-                + Formats.addSpaceIfNeeded(Formats.formatModifiers(field.getJavaMember().getModifiers())) + field.getDeclaringType().getJavaClass().getName() + "."
+        return Formats.formatSimpleClassName(field) + " "
+                + Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(field.getJavaMember().getModifiers()))
+                + field.getDeclaringType().getJavaClass().getName() + "."
                 + field.getJavaMember().getName();
     }
 
     public static String formatAnnotatedMethod(AnnotatedMethod<?> method) {
-        return Formats.formatSimpleClassName(method) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations()))
-                + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers())) + method.getDeclaringType().getJavaClass().getName() + "."
+        return Formats.formatSimpleClassName(method) + " "
+                + Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers()))
+                + method.getDeclaringType().getJavaClass().getName() + "."
                 + method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters());
     }
 
     public static String formatAnnotatedParameter(AnnotatedParameter<?> parameter) {
-        return Formats.formatSimpleClassName(parameter) + " Parameter " + (parameter.getPosition() + 1) + " of " + parameter.getDeclaringCallable().toString();
+        return Formats.formatSimpleClassName(parameter) + " Parameter " + (parameter.getPosition() + 1) + " of "
+                + parameter.getDeclaringCallable().toString();
     }
 
     /**
-     * Attempts to extract a name of a missing class loader dependency from an exception such as {@link NoClassDefFoundError} or {@link ClassNotFoundException}.
+     * Attempts to extract a name of a missing class loader dependency from an exception such as {@link NoClassDefFoundError} or
+     * {@link ClassNotFoundException}.
      */
     public static String getNameOfMissingClassLoaderDependency(Throwable e) {
         if (e instanceof NoClassDefFoundError) {
@@ -668,8 +686,7 @@ public class Formats {
         return typeVariable.getName() + UPPER_BOUND + formatType(bounds[0], simpleNames);
     }
 
-    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-            justification = "False positive, getBuildPropertiesResource() can return null in various situations")
+    @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", justification = "False positive, getBuildPropertiesResource() can return null in various situations")
     private static Properties getBuildProperties() {
         Properties buildProperties = null;
         try (InputStream in = getBuildPropertiesResource()) {
@@ -698,6 +715,5 @@ public class Formats {
             return null;
         }
     }
-
 
 }

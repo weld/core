@@ -53,7 +53,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Tomaz Cerar
  * @author Ales Justin
  */
-@SuppressWarnings({"ThrowableResultOfMethodCallIgnored", "NullableProblems"})
+@SuppressWarnings({ "ThrowableResultOfMethodCallIgnored", "NullableProblems" })
 public class Proxies {
 
     public static class TypeInfo {
@@ -80,10 +80,12 @@ public class Proxies {
         }
 
         // only invoked during object construction, arrays are then immutable
-        private TypeInfo add(Type type, List<Class<?>> foundInterfaces, List<Class<?>> foundClasses, Map<String, String> classToPackageMap) {
+        private TypeInfo add(Type type, List<Class<?>> foundInterfaces, List<Class<?>> foundClasses,
+                Map<String, String> classToPackageMap) {
             if (type instanceof Class<?>) {
                 Class<?> clazz = (Class<?>) type;
-                classToPackageMap.put(clazz.getName(), clazz.getPackage()==null?DEFAULT_PACKAGE:clazz.getPackage().getName());
+                classToPackageMap.put(clazz.getName(),
+                        clazz.getPackage() == null ? DEFAULT_PACKAGE : clazz.getPackage().getName());
                 if (clazz.isInterface()) {
                     foundInterfaces.add(clazz);
                 } else {
@@ -190,11 +192,13 @@ public class Proxies {
         return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean, services);
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types, ServiceRegistry services) {
+    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types,
+            ServiceRegistry services) {
         return getUnproxyableTypesExceptionInt(types, null, services);
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean, ServiceRegistry services, boolean ignoreFinalMethods) {
+    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean,
+            ServiceRegistry services, boolean ignoreFinalMethods) {
         if (type instanceof Class<?> || type instanceof ParameterizedType || type instanceof GenericArrayType) {
             return getUnproxyableClassException(Reflections.getRawType(type), declaringBean, services, ignoreFinalMethods);
         }
@@ -203,7 +207,8 @@ public class Proxies {
 
     // --- private
 
-    private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types, Bean<?> declaringBean, ServiceRegistry services) {
+    private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types,
+            Bean<?> declaringBean, ServiceRegistry services) {
         for (Type apiType : types) {
             if (Object.class.equals(apiType)) {
                 continue;
@@ -216,7 +221,8 @@ public class Proxies {
         return null;
     }
 
-    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean, ServiceRegistry services,
+    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean,
+            ServiceRegistry services,
             boolean ignoreFinalMethods) {
         if (clazz.isInterface()) {
             return null;
@@ -246,7 +252,8 @@ public class Proxies {
             }
         }
 
-        UnproxyableResolutionException exception = services.get(ProxyInstantiator.class).validateNoargConstructor(constructor, clazz, declaringBean);
+        UnproxyableResolutionException exception = services.get(ProxyInstantiator.class).validateNoargConstructor(constructor,
+                clazz, declaringBean);
         if (exception != null) {
             return exception;
         }
@@ -278,7 +285,8 @@ public class Proxies {
         return sorted;
     }
 
-    private static void processSuperinterface(Class<?> superinterface, Set<Class<?>> interfaces, LinkedHashSet<Class<?>> sorted) {
+    private static void processSuperinterface(Class<?> superinterface, Set<Class<?>> interfaces,
+            LinkedHashSet<Class<?>> sorted) {
         for (Class<?> interfaceClass : interfaces) {
             if (isInterfaceExtending(interfaceClass, superinterface)) {
                 processSuperinterface(interfaceClass, interfaces, sorted);

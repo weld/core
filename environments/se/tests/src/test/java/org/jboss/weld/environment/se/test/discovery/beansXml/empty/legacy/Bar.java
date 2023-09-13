@@ -19,7 +19,7 @@ package org.jboss.weld.environment.se.test.discovery.beansXml.empty.legacy;
 
 // no bean defining annotation - only discovered in "all" discovery mode
 public class Bar {
-    public void ping(){
+    public void ping() {
         // empty
     }
 }

@@ -45,7 +45,8 @@ public class SyntheticDecorator<T> extends SyntheticClassBean<T> implements Deco
     private final InjectionPoint delegate;
     private final Set<Type> decoratedTypes;
 
-    public SyntheticDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
+    public SyntheticDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory,
+            BeanManagerImpl manager) {
         super(attributes, beanClass, factory, manager);
         this.delegate = identifyDelegateInjectionPoint(getInjectionPoints());
         this.decoratedTypes = ImmutableSet.copyOf(getDecoratedTypes(attributes.getTypes()));

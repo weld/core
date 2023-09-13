@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.types.Type;
 import jakarta.enterprise.lang.model.types.WildcardType;
+
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 
 class WildcardTypeImpl extends TypeImpl<java.lang.reflect.AnnotatedWildcardType> implements WildcardType {
@@ -16,7 +17,7 @@ class WildcardTypeImpl extends TypeImpl<java.lang.reflect.AnnotatedWildcardType>
     }
 
     WildcardTypeImpl(java.lang.reflect.AnnotatedWildcardType reflectionType, AnnotationOverrides overrides,
-                     BeanManager bm) {
+            BeanManager bm) {
         super(reflectionType, overrides, bm);
         this.hasUpperBound = reflectionType.getAnnotatedLowerBounds().length == 0;
     }

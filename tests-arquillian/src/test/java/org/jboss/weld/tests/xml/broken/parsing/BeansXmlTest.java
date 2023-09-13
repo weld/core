@@ -9,7 +9,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 @RunWith(Arquillian.class)
 public class BeansXmlTest {
     @Deployment //@Expected(Exception.class)
@@ -18,7 +17,8 @@ public class BeansXmlTest {
                 .addPackage(BeansXmlTest.class.getPackage())
                 .addAsManifestResource(
                         new StringAsset(
-                                "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" xmlns:weld=\"http://jboss.org/schema/weld/beans\">\n" +
+                                "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" xmlns:weld=\"http://jboss.org/schema/weld/beans\">\n"
+                                        +
                                         "   <alternatives>\n" +
                                         "      <foo></foo>\n" +
                                         "   </alternatives>\n" +

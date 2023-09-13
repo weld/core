@@ -18,14 +18,18 @@ import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
-public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Constructor<X>> implements AnnotatedConstructor<X>, Serializable {
+@SuppressFBWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR",
+        "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Constructor<X>>
+        implements AnnotatedConstructor<X>, Serializable {
 
-    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType,
+            SharedObjectCache sharedObjectCache) {
         return new BackedAnnotatedConstructor<X>(constructor, declaringType, sharedObjectCache);
     }
 
-    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType,
+            SharedObjectCache sharedObjectCache) {
         super(constructor, constructor.getDeclaringClass(), declaringType, sharedObjectCache);
     }
 
@@ -39,8 +43,10 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
              * We are seeing either http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6520205 or
              * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5087240 or both.
              *
-             * It is difficult to detect and adapt to these bugs properly. Therefore, we pretend to see a no-args constructor. Although misleading, it is quite
-             * safe to do that since non-static inner classes are not CDI-managed beans anyway and CDI constructor injection into Enums is not supported.
+             * It is difficult to detect and adapt to these bugs properly. Therefore, we pretend to see a no-args constructor.
+             * Although misleading, it is quite
+             * safe to do that since non-static inner classes are not CDI-managed beans anyway and CDI constructor injection
+             * into Enums is not supported.
              */
             return Collections.emptyList();
         }

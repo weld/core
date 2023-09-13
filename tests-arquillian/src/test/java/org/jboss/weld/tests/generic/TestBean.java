@@ -37,7 +37,6 @@ public class TestBean {
     @Inject
     BoundedGenericBean<BaseClass> boundedGenericBaseField;
 
-
     public String echo(String param) {
         return genericStringField.echo(param);
     }

@@ -37,7 +37,9 @@ public class IncontainerTest {
 
     @Deployment
     public static WebArchive getDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(IncontainerTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Alpha.class, MarkerObtainer1.class, Foo.class, Marker.class)
+        WebArchive war = ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(IncontainerTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Alpha.class, MarkerObtainer1.class, Foo.class, Marker.class)
                 .addAsWebInfResource(new BeansXml(BeanDiscoveryMode.ALL).alternatives(Alpha.class), "beans.xml");
         JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class).addClasses(Bravo.class, MarkerObtainer2.class, Bar.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).alternatives(Bravo.class), "beans.xml");

@@ -55,7 +55,8 @@ class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
             if (!bean.getScope().equals(Dependent.class)) {
                 ctx.push(instance);
             }
-            ProxyFactory.setBeanInstance(bean.getBeanManager().getContextId(), instance, createEnterpriseTargetBeanInstance(), bean);
+            ProxyFactory.setBeanInstance(bean.getBeanManager().getContextId(), instance, createEnterpriseTargetBeanInstance(),
+                    bean);
             return instance;
         } catch (PrivilegedActionException e) {
             if (e.getCause() instanceof InstantiationException) {
@@ -72,7 +73,8 @@ class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
 
     protected EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance() {
         if (bean.getEjbDescriptor().isStateless() || bean.getEjbDescriptor().isSingleton()) {
-            return new InjectionPointPropagatingEnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean), bean.getBeanManager());
+            return new InjectionPointPropagatingEnterpriseTargetBeanInstance(bean.getBeanClass(),
+                    new EnterpriseBeanProxyMethodHandler<T>(bean), bean.getBeanManager());
         } else {
             return new EnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean));
         }

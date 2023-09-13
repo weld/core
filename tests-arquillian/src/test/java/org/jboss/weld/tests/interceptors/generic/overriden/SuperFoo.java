@@ -21,5 +21,5 @@ package org.jboss.weld.tests.interceptors.generic.overriden;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 public class SuperFoo {
-    
+
 }

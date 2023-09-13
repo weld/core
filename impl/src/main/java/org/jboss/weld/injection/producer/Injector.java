@@ -24,8 +24,8 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -38,7 +38,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public interface Injector<T> {
 
-    void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget);
+    void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type,
+            InjectionTarget<T> injectionTarget);
 
     /**
      * Add field/parameter injection points to the set of injection points of an InjectionTarget. The resulting set is returned

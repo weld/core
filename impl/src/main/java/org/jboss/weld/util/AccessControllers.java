@@ -32,7 +32,8 @@ public class AccessControllers {
     }
 
     /**
-     * Removes the ambiguity between {@link PrivilegedAction} and {@link PrivilegedExceptionAction} that normally occurs when a lambda is passed to
+     * Removes the ambiguity between {@link PrivilegedAction} and {@link PrivilegedExceptionAction} that normally occurs when a
+     * lambda is passed to
      * {@link AccessController#doPrivileged()}
      */
     public static <T> PrivilegedAction<T> action(PrivilegedAction<T> action) {

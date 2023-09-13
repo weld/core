@@ -61,8 +61,8 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
     private JandexClassFileServices classFileServices;
 
     public JandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap,
-                                   Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
-                                   BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
+            Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
+            BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {
         super(resourceLoader, bootstrap, initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
         registerHandler(new JandexIndexBeanArchiveHandler());
         registerHandler(new JandexFileSystemBeanArchiveHandler());
@@ -108,7 +108,8 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
         return builder.build();
     }
 
-    private Set<DotName> buildBeanDefiningAnnotationSet(Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, CompositeIndex index) {
+    private Set<DotName> buildBeanDefiningAnnotationSet(Set<Class<? extends Annotation>> initialBeanDefiningAnnotations,
+            CompositeIndex index) {
         ImmutableSet.Builder<DotName> beanDefiningAnnotations = ImmutableSet.builder();
         for (Class<? extends Annotation> annotation : initialBeanDefiningAnnotations) {
             final DotName annotationDotName = DotName.createSimple(annotation.getName());

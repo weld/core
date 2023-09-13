@@ -19,7 +19,7 @@ package org.jboss.weld.exceptions;
 
 /**
  * This exception occurs in cases where an object instance was expected, but
- * the reference was null.  A typical example is with a producer method that
+ * the reference was null. A typical example is with a producer method that
  * is not allowed to return null.
  *
  * @author David Allen

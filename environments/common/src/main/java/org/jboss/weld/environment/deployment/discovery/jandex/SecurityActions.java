@@ -61,11 +61,13 @@ final class SecurityActions {
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
-    static <T> T newConstructorInstance(Class<T> javaClass, Class<?>[] constructorParamTypes, Object... constructorParamInstances)
+    static <T> T newConstructorInstance(Class<T> javaClass, Class<?>[] constructorParamTypes,
+            Object... constructorParamInstances)
             throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if (System.getSecurityManager() != null) {
             try {
-                return AccessController.doPrivileged(ConstructorNewInstanceAction.of(javaClass, constructorParamTypes, constructorParamInstances));
+                return AccessController.doPrivileged(
+                        ConstructorNewInstanceAction.of(javaClass, constructorParamTypes, constructorParamInstances));
             } catch (PrivilegedActionException e) {
                 throw new WeldException(e.getCause());
             }

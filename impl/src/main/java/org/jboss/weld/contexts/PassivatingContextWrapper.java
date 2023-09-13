@@ -97,7 +97,8 @@ public class PassivatingContextWrapper {
         }
     }
 
-    private static class AlterableContextWrapper extends AbstractPassivatingContextWrapper<AlterableContext> implements AlterableContext {
+    private static class AlterableContextWrapper extends AbstractPassivatingContextWrapper<AlterableContext>
+            implements AlterableContext {
 
         public AlterableContextWrapper(AlterableContext context, ContextualStore store) {
             super(context, store);
@@ -110,7 +111,8 @@ public class PassivatingContextWrapper {
         }
     }
 
-    private static class WeldAlterableContextWrapper extends AbstractPassivatingContextWrapper<WeldAlterableContext> implements WeldAlterableContext {
+    private static class WeldAlterableContextWrapper extends AbstractPassivatingContextWrapper<WeldAlterableContext>
+            implements WeldAlterableContext {
 
         public WeldAlterableContextWrapper(WeldAlterableContext context, ContextualStore store) {
             super(context, store);

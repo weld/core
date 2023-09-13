@@ -34,12 +34,14 @@ public class NonPassivationCapableEventDecoratorTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivationCapableEventDecoratorTest.class)).decorate(EventDecorator.class)
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivationCapableEventDecoratorTest.class))
+                .decorate(EventDecorator.class)
                 .addClasses(NonPassivationCapableEventDecoratorTest.class, EventDecorator.class);
     }
 
     @Test
     public void testNonPasivationCapableEventDecorator() {
         // should throw deployment exception
-     }
+    }
 }

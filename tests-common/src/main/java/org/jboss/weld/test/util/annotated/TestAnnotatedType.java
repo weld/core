@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.test.util.annotated;
 
-import jakarta.enterprise.inject.spi.AnnotatedConstructor;
-import jakarta.enterprise.inject.spi.AnnotatedField;
-import jakarta.enterprise.inject.spi.AnnotatedMethod;
-import jakarta.enterprise.inject.spi.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,6 +23,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 
 /**
  * AnnotatedType implementation for adding beans in the BeforeBeanDiscovery
@@ -42,17 +43,23 @@ class TestAnnotatedType<X> extends AbstractTestAnnotatedElement implements Annot
 
     private final Class<X> javaClass;
 
-    TestAnnotatedType(Class<X> clazz, TestAnnotationStore typeAnnotations, Map<Field, TestAnnotationStore> fieldAnnotations, Map<Method, TestAnnotationStore> methodAnnotations, Map<Method, Map<Integer, TestAnnotationStore>> methodParameterAnnotations, Map<Constructor<X>, TestAnnotationStore> constructorAnnotations, Map<Constructor<X>, Map<Integer, TestAnnotationStore>> constructorParameterAnnotations) {
+    TestAnnotatedType(Class<X> clazz, TestAnnotationStore typeAnnotations, Map<Field, TestAnnotationStore> fieldAnnotations,
+            Map<Method, TestAnnotationStore> methodAnnotations,
+            Map<Method, Map<Integer, TestAnnotationStore>> methodParameterAnnotations,
+            Map<Constructor<X>, TestAnnotationStore> constructorAnnotations,
+            Map<Constructor<X>, Map<Integer, TestAnnotationStore>> constructorParameterAnnotations) {
         super(clazz, typeAnnotations);
         this.javaClass = clazz;
         this.constructors = new HashSet<AnnotatedConstructor<X>>();
         for (Constructor<?> c : clazz.getDeclaredConstructors()) {
-            TestAnnotatedConstructor<X> nc = new TestAnnotatedConstructor<X>(this, c, constructorAnnotations.get(c), constructorParameterAnnotations.get(c));
+            TestAnnotatedConstructor<X> nc = new TestAnnotatedConstructor<X>(this, c, constructorAnnotations.get(c),
+                    constructorParameterAnnotations.get(c));
             constructors.add(nc);
         }
         this.methods = new HashSet<AnnotatedMethod<? super X>>();
         for (Method m : clazz.getDeclaredMethods()) {
-            TestAnnotatedMethod<X> met = new TestAnnotatedMethod<X>(this, m, methodAnnotations.get(m), methodParameterAnnotations.get(m));
+            TestAnnotatedMethod<X> met = new TestAnnotatedMethod<X>(this, m, methodAnnotations.get(m),
+                    methodParameterAnnotations.get(m));
             methods.add(met);
         }
         this.fields = new HashSet<AnnotatedField<? super X>>();

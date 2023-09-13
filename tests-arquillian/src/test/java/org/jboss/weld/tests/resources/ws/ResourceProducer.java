@@ -22,10 +22,10 @@ import jakarta.xml.ws.WebServiceRef;
 
 @Dependent
 public class ResourceProducer {
-	
+
     @True
-	@Produces
-	@WebServiceRef(value=TranslatorService.class)
-	Translator translator;
+    @Produces
+    @WebServiceRef(value = TranslatorService.class)
+    Translator translator;
 
 }

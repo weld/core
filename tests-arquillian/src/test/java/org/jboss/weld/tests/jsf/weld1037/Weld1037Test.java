@@ -17,13 +17,12 @@
 
 package org.jboss.weld.tests.jsf.weld1037;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URL;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebClientOptions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -37,7 +36,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebClientOptions;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
@@ -67,6 +68,5 @@ public class Weld1037Test {
         Page page = client.getPage(url + "/doRedirect.faces");
         assertEquals("Expected redirect:", HttpServletResponse.SC_MOVED_TEMPORARILY, page.getWebResponse().getStatusCode());
     }
-
 
 }

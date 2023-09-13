@@ -27,10 +27,10 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
+import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.module.web.util.servlet.ServletUtils;
+import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 
 /**
  * Filter that handles conversation context activation if mapped by the application. Otherwise, conversation context is
@@ -44,7 +44,7 @@ import org.jboss.weld.module.web.util.servlet.ServletUtils;
  */
 public class ConversationFilter implements Filter {
 
-    public static final String CONVERSATION_FILTER_REGISTERED = ConversationFilter.class.getName() +  ".registered";
+    public static final String CONVERSATION_FILTER_REGISTERED = ConversationFilter.class.getName() + ".registered";
 
     @Inject
     private BeanManagerImpl manager;
@@ -60,7 +60,8 @@ public class ConversationFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
 

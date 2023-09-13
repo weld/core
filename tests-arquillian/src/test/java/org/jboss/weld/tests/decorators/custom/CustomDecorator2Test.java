@@ -40,7 +40,10 @@ public class CustomDecorator2Test {
                 .decorate(OuterWindowFrame.class)
                 .decorate(CustomWindowFrame.class)
                 .decorate(InnerWindowFrame.class)
-                .addAsManifestResource(new ByteArrayAsset("org.jboss.weld.tests.decorators.custom.CustomDecoratorDeploymentObserver".getBytes()), "services/jakarta.enterprise.inject.spi.Extension")
+                .addAsManifestResource(
+                        new ByteArrayAsset(
+                                "org.jboss.weld.tests.decorators.custom.CustomDecoratorDeploymentObserver".getBytes()),
+                        "services/jakarta.enterprise.inject.spi.Extension")
                 .addPackage(CustomDecorator2Test.class.getPackage())
                 .addClass(Utils.class);
     }

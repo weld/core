@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.ejb;
 
+import jakarta.enterprise.inject.spi.Extension;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,8 +30,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Extension;
 
 /**
  * Tests that it is possible to override ejb annotations through the SPI

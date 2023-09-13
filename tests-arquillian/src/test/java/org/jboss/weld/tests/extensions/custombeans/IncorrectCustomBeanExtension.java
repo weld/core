@@ -29,8 +29,8 @@ public class IncorrectCustomBeanExtension implements Extension {
     public void registerBeanWithNoCallback(@Observes AfterBeanDiscovery abd) {
         //register a new bean with no callback
         abd.addBean()
-            .beanClass(Charlie.class)
-            .addTransitiveTypeClosure(Charlie.class);
+                .beanClass(Charlie.class)
+                .addTransitiveTypeClosure(Charlie.class);
     }
 
 }

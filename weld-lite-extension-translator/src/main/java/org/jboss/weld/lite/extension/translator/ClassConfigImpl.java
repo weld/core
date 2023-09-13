@@ -1,5 +1,11 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
 import jakarta.enterprise.inject.build.compatible.spi.FieldConfig;
 import jakarta.enterprise.inject.build.compatible.spi.MethodConfig;
@@ -7,18 +13,12 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 class ClassConfigImpl implements ClassConfig {
     private final jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<?> configurator;
     private final BeanManager bm;
 
     ClassConfigImpl(jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator<?> configurator,
-                    BeanManager bm) {
+            BeanManager bm) {
         this.configurator = configurator;
         this.bm = bm;
     }

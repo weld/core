@@ -17,7 +17,6 @@
 
 package org.jboss.weld.tests.interceptors;
 
-
 /**
  * @author Marius Bogoevici
  */

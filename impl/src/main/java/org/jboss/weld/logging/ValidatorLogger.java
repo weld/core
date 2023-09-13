@@ -44,21 +44,28 @@ public interface ValidatorLogger extends WeldLogger {
 
     ValidatorLogger LOG = Logger.getMessageLogger(ValidatorLogger.class, Category.VALIDATOR.getName());
 
-    MessageCallback<DefinitionException> INJECTION_INTO_DISPOSER_METHOD = (t) -> ValidatorLogger.LOG.injectionIntoDisposerMethod(t[0], t[1]);
+    MessageCallback<DefinitionException> INJECTION_INTO_DISPOSER_METHOD = (t) -> ValidatorLogger.LOG
+            .injectionIntoDisposerMethod(t[0], t[1]);
 
     MessageCallback<DefinitionException> INJECTION_INTO_NON_BEAN = (t) -> ValidatorLogger.LOG.injectionIntoNonBean(t[0], t[1]);
 
-    MessageCallback<DeploymentException> INTERCEPTOR_SPECIFIED_TWICE = (t) -> ValidatorLogger.LOG.interceptorSpecifiedTwice(t[0], t[1], t[2]);
+    MessageCallback<DeploymentException> INTERCEPTOR_SPECIFIED_TWICE = (t) -> ValidatorLogger.LOG
+            .interceptorSpecifiedTwice(t[0], t[1], t[2]);
 
-    MessageCallback<DeploymentException> DECORATOR_SPECIFIED_TWICE = (t) -> ValidatorLogger.LOG.decoratorSpecifiedTwice(t[0], t[1], t[2]);
+    MessageCallback<DeploymentException> DECORATOR_SPECIFIED_TWICE = (t) -> ValidatorLogger.LOG.decoratorSpecifiedTwice(t[0],
+            t[1], t[2]);
 
-    MessageCallback<DeploymentException> ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES = (t) -> ValidatorLogger.LOG.alternativeClassSpecifiedMultipleTimes(t[0], t[1], t[2]);
+    MessageCallback<DeploymentException> ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES = (t) -> ValidatorLogger.LOG
+            .alternativeClassSpecifiedMultipleTimes(t[0], t[1], t[2]);
 
-    MessageCallback<DeploymentException> ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES = (t) -> ValidatorLogger.LOG.alternativeStereotypeSpecifiedMultipleTimes(t[0], t[1], t[2]);
+    MessageCallback<DeploymentException> ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES = (t) -> ValidatorLogger.LOG
+            .alternativeStereotypeSpecifiedMultipleTimes(t[0], t[1], t[2]);
 
-    LogMessageCallback INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE = (t) -> ValidatorLogger.LOG.interceptorEnabledForApplicationAndBeanArchive(t[0], t[1]);
+    LogMessageCallback INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE = (t) -> ValidatorLogger.LOG
+            .interceptorEnabledForApplicationAndBeanArchive(t[0], t[1]);
 
-    LogMessageCallback DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE = (t) -> ValidatorLogger.LOG.decoratorEnabledForApplicationAndBeanArchive(t[0], t[1]);
+    LogMessageCallback DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE = (t) -> ValidatorLogger.LOG
+            .decoratorEnabledForApplicationAndBeanArchive(t[0], t[1]);
 
     @Message(id = 1401, value = "Two beans cannot specialize the same bean {0}", format = Format.MESSAGE_FORMAT)
     InconsistentSpecializationException beanSpecializedTooManyTimes(Object param1);
@@ -82,10 +89,12 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException injectionPointWithTypeVariable(Object param1, Object stackElement);
 
     @Message(id = 1408, value = "Unsatisfied dependencies for type {2} with qualifiers {1}\n  at injection point {0}\n  at {3}\n{4}", format = Format.MESSAGE_FORMAT)
-    DeploymentException injectionPointHasUnsatisfiedDependencies(Object param1, Object param2, Object param3, Object param4, Object param5);
+    DeploymentException injectionPointHasUnsatisfiedDependencies(Object param1, Object param2, Object param3, Object param4,
+            Object param5);
 
     @Message(id = 1409, value = "Ambiguous dependencies for type {2} with qualifiers {1}\n  at injection point {0}\n  at {3}\n  Possible dependencies: {4}\n", format = Format.MESSAGE_FORMAT)
-    DeploymentException injectionPointHasAmbiguousDependencies(Object param1, Object param2, Object param3, Object param4, Object param5);
+    DeploymentException injectionPointHasAmbiguousDependencies(Object param1, Object param2, Object param3, Object param4,
+            Object param5);
 
     @Message(id = 1410, value = "The injection point has non-proxyable dependencies: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DeploymentException injectionPointHasNonProxyableDependencies(Object param1, Object stackElement, @Cause Throwable cause);
@@ -125,7 +134,7 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException disposalMethodsWithoutProducer(Object param1);
 
     @Message(id = 1425, value = "An injection point cannot have a wildcard type parameter: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException injectionPointHasWildcard(Object param1,  Object stackElement);
+    DefinitionException injectionPointHasWildcard(Object param1, Object stackElement);
 
     @Message(id = 1426, value = "An injection point must have a type parameter: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
     DefinitionException injectionPointMustHaveTypeParameter(Object param1, Object stackElement);
@@ -189,13 +198,16 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException decoratorsCannotHaveObserverMethods(Object param1);
 
     @Message(id = 1447, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not return {3}\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotReturnObject(Object param1, Object param2, Object param3, Object param4, Object stackElement);
+    DefinitionException interceptorMethodDoesNotReturnObject(Object param1, Object param2, Object param3, Object param4,
+            Object stackElement);
 
     @Message(id = 1448, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have exactly one parameter\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveExactlyOneParameter(Object param1, Object param2, Object param3, Object stackElement);
+    DefinitionException interceptorMethodDoesNotHaveExactlyOneParameter(Object param1, Object param2, Object param3,
+            Object stackElement);
 
     @Message(id = 1449, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but its single parameter is not a {3}\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveCorrectTypeOfParameter(Object param1, Object param2, Object param3, Object param4, Object stackElement);
+    DefinitionException interceptorMethodDoesNotHaveCorrectTypeOfParameter(Object param1, Object param2, Object param3,
+            Object param4, Object stackElement);
 
     @SuppressWarnings({ "weldlog:msg-value" })
     @Message(id = 1451, value = "jakarta.transaction.UserTransaction cannot be injected into an enterprise bean with container-managed transactions: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
@@ -208,7 +220,8 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException invalidBeanMetadataInjectionPointTypeArgument(Object param1, Object param2, Object stackElement);
 
     @Message(id = 1454, value = "{0} cannot be used at a Bean metadata injection point of a bean which is not {1}, {2}\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidBeanMetadataInjectionPointQualifier(Object param1, Object param2, Object param3, Object stackElement);
+    DefinitionException invalidBeanMetadataInjectionPointQualifier(Object param1, Object param2, Object param3,
+            Object stackElement);
 
     @Message(id = 1455, value = "{0} does not declare any decorated types.", format = Format.MESSAGE_FORMAT)
     DefinitionException noDecoratedTypes(Object param1);
@@ -229,10 +242,12 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException injectionIntoDisposerMethod(Object param1, Object stackElement);
 
     @Message(id = 1467, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not return {3} or {4}.\n\tat {5}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotReturnObjectOrVoid(Object param1, Object param2, Object param3, Object param4, Object param5, Object stackElement);
+    DefinitionException interceptorMethodDoesNotReturnObjectOrVoid(Object param1, Object param2, Object param3, Object param4,
+            Object param5, Object stackElement);
 
     @Message(id = 1468, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have a {3} return type.\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveVoidReturnType(Object param1, Object param2, Object param3, Object param4, Object stackElement);
+    DefinitionException interceptorMethodDoesNotHaveVoidReturnType(Object param1, Object param2, Object param3, Object param4,
+            Object stackElement);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1469, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have zero parameters.\n", format = Format.MESSAGE_FORMAT)
@@ -260,7 +275,8 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException interceptorOrDecoratorMustBeDependent(Object param1);
 
     @Message(id = 1477, value = "The bean {0} declares a passivating scope but has a(n) {1} with a non-passivation-capable dependency {2}", format = Format.MESSAGE_FORMAT)
-    UnserializableDependencyException interceptorDecoratorInjectionPointHasNonSerializableDependency(Object param1, Object param2, Object param3);
+    UnserializableDependencyException interceptorDecoratorInjectionPointHasNonSerializableDependency(Object param1,
+            Object param2, Object param3);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1478, value = "Interceptor {0} is enabled for the application and for the bean archive {1}. It will only be invoked in the @Priority part of the chain.", format = Format.MESSAGE_FORMAT)
@@ -286,6 +302,7 @@ public interface ValidatorLogger extends WeldLogger {
     // 1484 used in Weld 2
 
     @Message(id = 1485, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} and it declares more than one parameter.\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDeclaresMultipleParameters(Object param1, Object param2, Object param3, Object stackElement);
+    DefinitionException interceptorMethodDeclaresMultipleParameters(Object param1, Object param2, Object param3,
+            Object stackElement);
 
 }

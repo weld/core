@@ -46,7 +46,8 @@ public class Weld1823Test {
 
     @Deployment(testable = false)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1823Test.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(CDIBean.class.getPackage())
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1823Test.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(CDIBean.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
     }
 

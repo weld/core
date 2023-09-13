@@ -62,7 +62,8 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
             throw BeanLogger.LOG.methodNull();
         }
 
-        org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
+        org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType
+                .valueOf(interceptionType.name());
 
         if (internalInterceptionType.isLifecycleCallback()) {
             throw BeanLogger.LOG.interceptionTypeLifecycle(interceptionType.name());
@@ -78,7 +79,8 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
             throw BeanLogger.LOG.interceptionTypeNull();
         }
 
-        org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
+        org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType
+                .valueOf(interceptionType.name());
 
         if (!internalInterceptionType.isLifecycleCallback()) {
             throw BeanLogger.LOG.interceptionTypeNotLifecycle(interceptionType.name());
@@ -90,7 +92,8 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
         return extractCdiInterceptors(interceptionModel.getInterceptors(internalInterceptionType, null));
     }
 
-    private List<Interceptor<?>> extractCdiInterceptors(Collection<? extends InterceptorClassMetadata<?>> interceptorMetadatas) {
+    private List<Interceptor<?>> extractCdiInterceptors(
+            Collection<? extends InterceptorClassMetadata<?>> interceptorMetadatas) {
         // ignore interceptors which are not CDI interceptors
         ArrayList<Interceptor<?>> interceptors = new ArrayList<Interceptor<?>>();
         for (InterceptorClassMetadata<?> interceptorMetadata : interceptorMetadatas) {

@@ -144,4 +144,3 @@ public abstract class AbstractWeldELResolver extends ELResolver {
 
     protected abstract Namespace getRootNamespace();
 }
-

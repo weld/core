@@ -18,8 +18,7 @@ package org.jboss.weld.tests.contexts.session.availability;
 
 import java.io.IOException;
 import java.net.URL;
-import com.gargoylesoftware.htmlunit.WebClient;
-import org.junit.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -29,9 +28,12 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * @author Tomas Remes
@@ -48,15 +50,16 @@ public class SessionAvailabilityTest {
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(WebArchive.class,
-                Utils.getDeploymentNameAsHash(SessionAvailabilityTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(SessionAvailabilityTest.class.getPackage())
-                        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                Utils.getDeploymentNameAsHash(SessionAvailabilityTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(SessionAvailabilityTest.class.getPackage())
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test
     public void test() throws IOException {
         // set data to session - increment int
         String id1 = pageAsString("set=true");
-        //change session id 
+        //change session id
         String id2 = pageAsString("change=true");
         Assert.assertNotSame(id1, id2);
         String p = pageAsString("print=true");

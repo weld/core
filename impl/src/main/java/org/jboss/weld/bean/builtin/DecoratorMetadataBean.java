@@ -41,7 +41,8 @@ import org.jboss.weld.util.reflection.Reflections;
 public class DecoratorMetadataBean extends AbstractBuiltInMetadataBean<Decorator<?>> {
 
     public DecoratorMetadataBean(BeanManagerImpl beanManager) {
-        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Decorator.class, null)), Reflections.<Class<Decorator<?>>>cast(Decorator.class), beanManager);
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Decorator.class, null)),
+                Reflections.<Class<Decorator<?>>> cast(Decorator.class), beanManager);
     }
 
     @Override

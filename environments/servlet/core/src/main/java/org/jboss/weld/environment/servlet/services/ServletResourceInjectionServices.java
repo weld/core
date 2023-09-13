@@ -1,12 +1,12 @@
 package org.jboss.weld.environment.servlet.services;
 
-import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
-import org.jboss.weld.injection.spi.ResourceInjectionServices;
-import org.jboss.weld.injection.spi.helpers.AbstractResourceServices;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
+import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.injection.spi.helpers.AbstractResourceServices;
 
 public abstract class ServletResourceInjectionServices extends AbstractResourceServices implements ResourceInjectionServices {
 

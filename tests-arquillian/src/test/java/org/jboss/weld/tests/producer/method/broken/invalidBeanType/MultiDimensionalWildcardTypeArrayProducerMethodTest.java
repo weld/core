@@ -37,12 +37,14 @@ public class MultiDimensionalWildcardTypeArrayProducerMethodTest<T> {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MultiDimensionalWildcardTypeArrayProducerMethodTest.class))
-            .addClasses(Foo.class, MultiDimensionalWildcardTypeArrayProducer.class);
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(MultiDimensionalWildcardTypeArrayProducerMethodTest.class))
+                .addClasses(Foo.class, MultiDimensionalWildcardTypeArrayProducer.class);
     }
 
     @Test
     public void testDeploymentWithMultiDimensionalWildcardArrayProducerMethod() {
         // should throw definition exception
-     }
+    }
 }

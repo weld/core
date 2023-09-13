@@ -36,7 +36,8 @@ public class InterceptorMetadataImpl<T> extends AbstractInterceptorMetadata impl
     private final InterceptorFactory<T> reference;
     private final Class<T> javaClass;
 
-    public InterceptorMetadataImpl(Class<T> javaClass, InterceptorFactory<T> reference, Map<InterceptionType, List<Method>> interceptorMethodMap) {
+    public InterceptorMetadataImpl(Class<T> javaClass, InterceptorFactory<T> reference,
+            Map<InterceptionType, List<Method>> interceptorMethodMap) {
         super(interceptorMethodMap);
         this.reference = reference;
         this.javaClass = javaClass;

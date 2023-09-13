@@ -24,6 +24,6 @@ public class DependentSelfInjectionProducerTest {
     @Test
     public void testDependentLoopingProducer() {
         // should throw deployment exception
-     }
+    }
 
 }

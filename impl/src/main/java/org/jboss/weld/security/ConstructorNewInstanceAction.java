@@ -19,16 +19,19 @@ package org.jboss.weld.security;
 import java.lang.reflect.InvocationTargetException;
 import java.security.PrivilegedExceptionAction;
 
-public class ConstructorNewInstanceAction<T> extends AbstractGenericReflectionAction<T> implements PrivilegedExceptionAction<T> {
+public class ConstructorNewInstanceAction<T> extends AbstractGenericReflectionAction<T>
+        implements PrivilegedExceptionAction<T> {
 
     private final Class<?>[] constructorParamTypes;
     private final Object[] constructorParamInstances;
 
-    public static <T> ConstructorNewInstanceAction<T> of(Class<T> javaClass, Class<?>[] constructorParamTypes, Object... constructorParamInstances) {
+    public static <T> ConstructorNewInstanceAction<T> of(Class<T> javaClass, Class<?>[] constructorParamTypes,
+            Object... constructorParamInstances) {
         return new ConstructorNewInstanceAction<T>(javaClass, constructorParamTypes, constructorParamInstances);
     }
 
-    public ConstructorNewInstanceAction(Class<T> javaClass, Class<?>[] constructorParamTypes, Object... constructorParamInstances) {
+    public ConstructorNewInstanceAction(Class<T> javaClass, Class<?>[] constructorParamTypes,
+            Object... constructorParamInstances) {
         super(javaClass);
         this.constructorParamTypes = constructorParamTypes.clone();
         this.constructorParamInstances = constructorParamInstances;

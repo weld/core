@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-
 public abstract class AbstractDAOImpl<E> {
 
     private boolean saved;

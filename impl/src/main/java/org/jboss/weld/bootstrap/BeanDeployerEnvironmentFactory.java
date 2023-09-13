@@ -42,11 +42,14 @@ public class BeanDeployerEnvironmentFactory {
     }
 
     /**
-     * Creates a new threadsafe BeanDeployerEnvironment instance. These instances are used by {@link ConcurrentBeanDeployer} during bootstrap.
+     * Creates a new threadsafe BeanDeployerEnvironment instance. These instances are used by {@link ConcurrentBeanDeployer}
+     * during bootstrap.
      */
     public static BeanDeployerEnvironment newConcurrentEnvironment(BeanManagerImpl manager) {
-        return new BeanDeployerEnvironment(Collections.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
-                Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()), SetMultimap.<Class<?>, AbstractClassBean<?>> newConcurrentSetMultimap(),
+        return new BeanDeployerEnvironment(
+                Collections.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
+                SetMultimap.<Class<?>, AbstractClassBean<?>> newConcurrentSetMultimap(),
                 Collections.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
                 SetMultimap.<WeldMethodKey, ProducerMethod<?, ?>> newConcurrentSetMultimap(),
                 Collections.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),

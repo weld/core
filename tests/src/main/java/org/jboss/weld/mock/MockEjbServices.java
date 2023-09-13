@@ -24,7 +24,7 @@ import org.jboss.arquillian.container.weld.embedded.mock.MockEjBServices;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 
-public class MockEjbServices  extends MockEjBServices {
+public class MockEjbServices extends MockEjBServices {
 
     private static Set<EjbDescriptor<?>> descriptors = Collections.synchronizedSet(new HashSet<EjbDescriptor<?>>());
 

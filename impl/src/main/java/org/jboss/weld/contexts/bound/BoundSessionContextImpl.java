@@ -5,11 +5,11 @@ import java.util.Map;
 
 import jakarta.enterprise.context.SessionScoped;
 
+import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.contexts.AbstractBoundContext;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.contexts.beanstore.SessionMapBeanStore;
 import org.jboss.weld.contexts.beanstore.SimpleBeanIdentifierIndexNamingScheme;
-import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 

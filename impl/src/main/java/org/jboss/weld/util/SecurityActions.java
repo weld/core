@@ -31,7 +31,8 @@ final class SecurityActions {
     private SecurityActions() {
     }
 
-    static Constructor<?> getDeclaredConstructor(Class<?> javaClass, Class<?>... parameterTypes) throws NoSuchMethodException, PrivilegedActionException {
+    static Constructor<?> getDeclaredConstructor(Class<?> javaClass, Class<?>... parameterTypes)
+            throws NoSuchMethodException, PrivilegedActionException {
         if (System.getSecurityManager() != null) {
             return AccessController.doPrivileged(GetDeclaredConstructorAction.of(javaClass));
         } else {

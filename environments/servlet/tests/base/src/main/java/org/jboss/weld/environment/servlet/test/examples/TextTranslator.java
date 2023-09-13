@@ -2,7 +2,6 @@ package org.jboss.weld.environment.servlet.test.examples;
 
 import jakarta.inject.Inject;
 
-
 public class TextTranslator {
 
     private SentenceParser sentenceParser;

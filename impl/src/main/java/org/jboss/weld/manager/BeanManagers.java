@@ -20,7 +20,6 @@ import java.util.Comparator;
 
 import org.jboss.weld.manager.api.WeldManager;
 
-
 public final class BeanManagers {
 
     public static final Comparator<WeldManager> ID_COMPARATOR = (m1, m2) -> m1.getId().compareTo(m2.getId());

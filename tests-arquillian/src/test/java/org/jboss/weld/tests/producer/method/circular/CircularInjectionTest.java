@@ -44,8 +44,8 @@ public class CircularInjectionTest {
     }
 
     /*
-    * description = "WELD-310"
-    */
+     * description = "WELD-310"
+     */
     @Test
     public void testProducerCalledOnBeanUnderConstruction() {
         // should throw deployment exception

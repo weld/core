@@ -18,6 +18,5 @@ package org.jboss.weld.tests.event.observer.validation.enterprise;
 
 import jakarta.ejb.Local;
 
-public @Local interface LazyFarmerLocal
-{
+public @Local interface LazyFarmerLocal {
 }

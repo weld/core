@@ -17,12 +17,10 @@
 
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import org.junit.Assert;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -31,16 +29,21 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 /**
- * <p>Check what happens when session.invalidate() is called.</p>
+ * <p>
+ * Check what happens when session.invalidate() is called.
+ * </p>
  *
  * @author Pete Muir
  */
@@ -49,7 +52,8 @@ import java.util.Set;
 public class InvalidateSessionTest {
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(InvalidateSessionTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(InvalidateSessionTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Storm.class, SomeBean.class)
                 .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
@@ -61,15 +65,16 @@ public class InvalidateSessionTest {
     private URL url;
 
     /*
-    * description = "WELD-380, WELD-403"
-    */
+     * description = "WELD-380, WELD-403"
+     */
     @Test
     public void testInvalidateSessionCalled() throws Exception {
         WebClient client = new WebClient();
         client.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         HtmlPage page = client.getPage(getPath("/storm.xhtml"));
-        HtmlSubmitInput invalidateSessionButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "invalidateSessionButton");
+        HtmlSubmitInput invalidateSessionButton = getFirstMatchingElement(page, HtmlSubmitInput.class,
+                "invalidateSessionButton");
         page = invalidateSessionButton.click();
         HtmlInput inputField = getFirstMatchingElement(page, HtmlInput.class, "prop");
         Assert.assertEquals(Storm.PROPERTY_VALUE, inputField.getValueAttribute());
@@ -82,8 +87,8 @@ public class InvalidateSessionTest {
     }
 
     /*
-    * description = "WELD-461"
-    */
+     * description = "WELD-461"
+     */
     @Test
     public void testNoDoubleDestructionOnExternalRedirect() throws Exception {
         WebClient client = new WebClient();

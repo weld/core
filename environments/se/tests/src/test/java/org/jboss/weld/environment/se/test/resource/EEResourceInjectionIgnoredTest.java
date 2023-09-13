@@ -40,7 +40,9 @@ public class EEResourceInjectionIgnoredTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(EEResourceInjectionIgnoredTest.class, Golf.class, Delta.class)).build();
+        return ClassPath.builder().add(
+                ShrinkWrap.create(BeanArchive.class).addClasses(EEResourceInjectionIgnoredTest.class, Golf.class, Delta.class))
+                .build();
     }
 
     @Test

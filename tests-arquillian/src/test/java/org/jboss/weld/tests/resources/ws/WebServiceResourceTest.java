@@ -43,7 +43,8 @@ public class WebServiceResourceTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(WebServiceResourceTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(WebServiceResourceTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(WebServiceResourceTest.class.getPackage())
                 .addAsWebInfResource(
                         WebServiceResourceTest.class.getPackage(),

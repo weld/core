@@ -30,9 +30,9 @@ import org.junit.runner.RunWith;
 
 /**
  * @see https://issues.jboss.org/browse/WELD-1361
- * 
+ *
  * @author Matus Abaffy
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class FiringNullEventTest {
@@ -42,7 +42,8 @@ public class FiringNullEventTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(FiringNullEventTest.class)).addClass(FiringNullEventTest.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(FiringNullEventTest.class))
+                .addClass(FiringNullEventTest.class);
     }
 
     @Test(expected = IllegalArgumentException.class)

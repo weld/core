@@ -37,9 +37,10 @@ public class FacadeInjectionPoint extends ForwardingInjectionPoint implements Se
     private final Type type;
     private final Set<Annotation> qualifiers;
 
-    public FacadeInjectionPoint(BeanManagerImpl manager, InjectionPoint injectionPoint, Type rawType, Type subtype, Set<Annotation> existingQualifiers, Annotation[] newQualifiers) {
+    public FacadeInjectionPoint(BeanManagerImpl manager, InjectionPoint injectionPoint, Type rawType, Type subtype,
+            Set<Annotation> existingQualifiers, Annotation[] newQualifiers) {
         this.injectionPoint = injectionPoint;
-        this.type = new ParameterizedTypeImpl(rawType, new Type[]{subtype}, null);
+        this.type = new ParameterizedTypeImpl(rawType, new Type[] { subtype }, null);
         this.qualifiers = mergeInQualifiers(manager, existingQualifiers, newQualifiers);
     }
 

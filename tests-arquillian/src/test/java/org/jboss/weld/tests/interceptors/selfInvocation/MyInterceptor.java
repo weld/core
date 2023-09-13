@@ -28,6 +28,7 @@ import jakarta.interceptor.InvocationContext;
 public class MyInterceptor {
 
     public static int TIMES_INVOKED = 0;
+
     @AroundInvoke
     public Object doSomething(InvocationContext ic) throws Exception {
         TIMES_INVOKED++;

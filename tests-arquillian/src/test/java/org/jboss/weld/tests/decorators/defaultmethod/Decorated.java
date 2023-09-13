@@ -20,6 +20,6 @@ package org.jboss.weld.tests.decorators.defaultmethod;
 public interface Decorated {
     void doDecorated();
 
-    default void defaultDecorated(){
+    default void defaultDecorated() {
     }
 }

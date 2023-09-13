@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.resolution.circular;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.io.Serializable;
+
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 class Violation implements Serializable {

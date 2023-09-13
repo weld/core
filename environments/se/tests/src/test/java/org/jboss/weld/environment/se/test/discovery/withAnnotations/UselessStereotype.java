@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 import jakarta.enterprise.inject.Stereotype;
 
-@Target({PARAMETER})
+@Target({ PARAMETER })
 @Retention(RUNTIME)
 @Stereotype
 public @interface UselessStereotype {

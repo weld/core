@@ -57,10 +57,10 @@ public class BeanWithRepeatableQualifierTest {
     @Any
     private Instance<String> instance;
 
-
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventWithRepeatableQualifierTest.class)).addPackage(BeanWithRepeatableQualifierTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventWithRepeatableQualifierTest.class))
+                .addPackage(BeanWithRepeatableQualifierTest.class.getPackage());
     }
 
     @Test
@@ -99,7 +99,8 @@ public class BeanWithRepeatableQualifierTest {
 
     @Test
     public void testBeanManagerLookup(BeanManager manager) {
-        Assert.assertNotNull(manager.resolve(manager.getBeans(String.class, new Literal("foo"), new Literal("bar"), new Literal("baz"))));
+        Assert.assertNotNull(
+                manager.resolve(manager.getBeans(String.class, new Literal("foo"), new Literal("bar"), new Literal("baz"))));
         Assert.assertNotNull(manager.resolve(manager.getBeans(String.class, new Literal("foo"), new Literal("bar"))));
         Assert.assertTrue(manager.getBeans(String.class, new Literal("foo"), new Literal("qux")).isEmpty());
     }

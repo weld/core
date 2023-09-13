@@ -20,7 +20,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 
@@ -31,7 +30,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.contexts.session.availability.RequestScopedBean;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,9 +50,10 @@ public class ContextPropagationTest {
 
     @Deployment
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ContextPropagationTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addPackage(ContextPropagationTest.class.getPackage())
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ContextPropagationTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(ContextPropagationTest.class.getPackage())
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Inject

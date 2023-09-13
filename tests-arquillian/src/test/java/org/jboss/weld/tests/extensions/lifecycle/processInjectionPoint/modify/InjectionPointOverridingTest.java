@@ -35,7 +35,8 @@ public class InjectionPointOverridingTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointOverridingTest.class)).decorate(AnimalDecorator.class).addPackage(Dog.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionPointOverridingTest.class))
+                .decorate(AnimalDecorator.class).addPackage(Dog.class.getPackage())
                 .addAsServiceProvider(Extension.class, ModifyingExtension.class);
     }
 

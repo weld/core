@@ -144,7 +144,8 @@ public class BeansXmlMergeTest {
         includes.add(include);
         excludes.add(exclude);
 
-        return new BeansXmlImpl(alternativesClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), null,
+        return new BeansXmlImpl(alternativesClasses, alternativeStereotypes, decorators, interceptors,
+                new ScanningImpl(includes, excludes), null,
                 BeanDiscoveryMode.ALL, "1.1", false);
     }
 }

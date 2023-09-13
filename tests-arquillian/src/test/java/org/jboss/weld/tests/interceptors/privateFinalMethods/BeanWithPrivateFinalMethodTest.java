@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.privateFinalMethods;
 
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -26,8 +28,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.inject.Inject;
 
 /**
  * Tests that for classes which have private final methods an interceptor subclass can be created.
@@ -40,8 +40,7 @@ import jakarta.inject.Inject;
 public class BeanWithPrivateFinalMethodTest {
 
     @Deployment
-    public static JavaArchive createDeployment()
-    {
+    public static JavaArchive createDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanWithPrivateFinalMethodTest.class))
                 .addPackage(BeanWithPrivateFinalMethodTest.class.getPackage());
     }

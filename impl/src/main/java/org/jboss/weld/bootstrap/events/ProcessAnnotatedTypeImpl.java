@@ -51,7 +51,8 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
         this(beanManager, annotatedType, ProcessAnnotatedType.class);
     }
 
-    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, Class<? extends ProcessAnnotatedType> rawType) {
+    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType,
+            Class<? extends ProcessAnnotatedType> rawType) {
         this.manager = beanManager;
         this.annotatedType = annotatedType;
         this.originalAnnotatedType = annotatedType;
@@ -64,7 +65,8 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     }
 
     /**
-     * Call this method after all observer methods of this event have been invoked to get the final value of this {@link AnnotatedType}.
+     * Call this method after all observer methods of this event have been invoked to get the final value of this
+     * {@link AnnotatedType}.
      *
      * @return the resulting annotated type
      */
@@ -83,7 +85,8 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     @Override
     public void setAnnotatedType(AnnotatedType<X> type) {
         if (configurator != null) {
-            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessAnnotatedType.class.getSimpleName(), getReceiver());
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessAnnotatedType.class.getSimpleName(),
+                    getReceiver());
         }
         checkWithinObserverNotification();
         if (type == null) {
@@ -97,7 +100,8 @@ public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements Proce
     @Override
     public AnnotatedTypeConfigurator<X> configureAnnotatedType() {
         if (annotatedTypeSet) {
-            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessAnnotatedType.class.getSimpleName(), getReceiver());
+            throw BootstrapLogger.LOG.configuratorAndSetMethodBothCalled(ProcessAnnotatedType.class.getSimpleName(),
+                    getReceiver());
         }
         checkWithinObserverNotification();
         if (configurator == null) {

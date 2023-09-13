@@ -1,12 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.AnnotationInfo;
-import jakarta.enterprise.lang.model.declarations.MethodInfo;
-import jakarta.enterprise.lang.model.declarations.ParameterInfo;
-import jakarta.enterprise.lang.model.types.Type;
-import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -15,7 +8,16 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterprise.inject.spi.AnnotatedParameter<?>> implements ParameterInfo {
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.AnnotationInfo;
+import jakarta.enterprise.lang.model.declarations.MethodInfo;
+import jakarta.enterprise.lang.model.declarations.ParameterInfo;
+import jakarta.enterprise.lang.model.types.Type;
+
+import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
+
+class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterprise.inject.spi.AnnotatedParameter<?>>
+        implements ParameterInfo {
     // only for equals/hashCode and going back to the method
     private final MethodInfoImpl method;
     private final int position;
@@ -29,7 +31,8 @@ class ParameterInfoImpl extends DeclarationInfoImpl<Parameter, jakarta.enterpris
         this.isEnumConstructorParam = null;
     }
 
-    ParameterInfoImpl(Parameter reflectionDeclaration, MethodInfoImpl backReference, int position, boolean isEnumConstructorParam, BeanManager bm) {
+    ParameterInfoImpl(Parameter reflectionDeclaration, MethodInfoImpl backReference, int position,
+            boolean isEnumConstructorParam, BeanManager bm) {
         super(reflectionDeclaration, null, bm);
         this.method = backReference;
         this.position = position;

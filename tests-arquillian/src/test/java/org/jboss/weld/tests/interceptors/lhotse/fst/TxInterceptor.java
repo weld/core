@@ -17,10 +17,11 @@
 
 package org.jboss.weld.tests.interceptors.lhotse.fst;
 
+import java.io.Serializable;
+
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
-import java.io.Serializable;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

@@ -24,5 +24,5 @@ import jakarta.enterprise.inject.Vetoed;
  */
 @Vetoed
 public class Vehicle {
-    
+
 }

@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class NonPassivatingInjectionIntoPassivatingBeanTest {
@@ -40,7 +40,9 @@ public class NonPassivatingInjectionIntoPassivatingBeanTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingInjectionIntoPassivatingBeanTest.class)).intercept(BioInterceptor.class).decorate(AnimalDecorator.class)
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonPassivatingInjectionIntoPassivatingBeanTest.class))
+                .intercept(BioInterceptor.class).decorate(AnimalDecorator.class)
                 .addPackage(Sheep.class.getPackage());
     }
 

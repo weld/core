@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Tests that you can create a custom bean via (Weld)BeanConfigurator and give it a priority hence selecting it.
+ *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @RunWith(Arquillian.class)
@@ -39,8 +40,8 @@ public class CustomBeanPriorityTest {
     @Deployment
     public static JavaArchive createTestArchive() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomBeanPriorityTest.class))
-            .addClasses(CustomBeanPriorityTest.class, MyExtension.class, PlainFoo.class, FooAlternative.class)
-            .addAsServiceProvider(Extension.class, MyExtension.class);
+                .addClasses(CustomBeanPriorityTest.class, MyExtension.class, PlainFoo.class, FooAlternative.class)
+                .addAsServiceProvider(Extension.class, MyExtension.class);
     }
 
     @Inject

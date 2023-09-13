@@ -85,12 +85,14 @@ public class BeanDeployment {
     private final BeanDeployer beanDeployer;
     private final Collection<ContextHolder<? extends Context>> contexts;
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices,
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager,
+            ServiceRegistry deploymentServices,
             Collection<ContextHolder<? extends Context>> contexts) {
         this(beanDeploymentArchive, deploymentManager, deploymentServices, contexts, false);
     }
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices,
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager,
+            ServiceRegistry deploymentServices,
             Collection<ContextHolder<? extends Context>> contexts, boolean additionalBeanArchive) {
         this.beanDeploymentArchive = beanDeploymentArchive;
 
@@ -110,20 +112,24 @@ public class BeanDeployment {
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
-        this.beanManager = BeanManagerImpl.newManager(deploymentManager, BeanDeployments.getFinalId(beanDeploymentArchive.getId(),
-                services.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER)), services);
+        this.beanManager = BeanManagerImpl.newManager(deploymentManager,
+                BeanDeployments.getFinalId(beanDeploymentArchive.getId(),
+                        services.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER)),
+                services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
         services.add(InterceptionFactoryDataCache.class, new InterceptionFactoryDataCache(beanManager));
 
         services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager, beanDeploymentArchive);
         services.addIfAbsent(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
 
-        if (services.get(WeldConfiguration.class).getBooleanProperty(CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
+        if (services.get(WeldConfiguration.class).getBooleanProperty(CONCURRENT_DEPLOYMENT)
+                && services.contains(ExecutorServices.class)) {
             beanDeployer = new ConcurrentBeanDeployer(beanManager, deploymentServices);
         } else {
             beanDeployer = new BeanDeployer(beanManager, deploymentServices);
         }
-        beanManager.getServices().get(SpecializationAndEnablementRegistry.class).registerEnvironment(beanManager, beanDeployer.getEnvironment(),
+        beanManager.getServices().get(SpecializationAndEnablementRegistry.class).registerEnvironment(beanManager,
+                beanDeployer.getEnvironment(),
                 additionalBeanArchive);
 
         // Must at the Manager bean straight away, as it can be injected during startup!
@@ -146,7 +152,8 @@ public class BeanDeployment {
     }
 
     private Predicate<String> createFilter() {
-        if (getBeanDeploymentArchive().getBeansXml() == null || getBeanDeploymentArchive().getBeansXml().getScanning() == null) {
+        if (getBeanDeploymentArchive().getBeansXml() == null
+                || getBeanDeploymentArchive().getBeansXml().getScanning() == null) {
             return null;
         }
         Function<Metadata<Filter>, Predicate<String>> filterToPredicateFunction = new Function<Metadata<Filter>, Predicate<String>>() {
@@ -172,10 +179,13 @@ public class BeanDeployment {
         }
 
         /*
-         * Take a copy of the transformed collection, this means that the filter predicate is only built once per filter predicate
+         * Take a copy of the transformed collection, this means that the filter predicate is only built once per filter
+         * predicate
          */
-        Collection<Predicate<String>> includes = includeFilters.stream().map(filterToPredicateFunction).collect(Collectors.toList());
-        Collection<Predicate<String>> excludes = excludeFilters.stream().map(filterToPredicateFunction).collect(Collectors.toList());
+        Collection<Predicate<String>> includes = includeFilters.stream().map(filterToPredicateFunction)
+                .collect(Collectors.toList());
+        Collection<Predicate<String>> excludes = excludeFilters.stream().map(filterToPredicateFunction)
+                .collect(Collectors.toList());
         return new ScanningPredicate<String>(includes, excludes);
     }
 
@@ -209,9 +219,12 @@ public class BeanDeployment {
         beanManager.setEnabled(enablement);
 
         if (BootstrapLogger.LOG.isDebugEnabled()) {
-            BootstrapLogger.LOG.enabledAlternatives(this.beanManager, WeldCollections.toMultiRowString(enablement.getAllAlternatives()));
-            BootstrapLogger.LOG.enabledDecorators(this.beanManager, WeldCollections.toMultiRowString(enablement.getDecorators()));
-            BootstrapLogger.LOG.enabledInterceptors(this.beanManager, WeldCollections.toMultiRowString(enablement.getInterceptors()));
+            BootstrapLogger.LOG.enabledAlternatives(this.beanManager,
+                    WeldCollections.toMultiRowString(enablement.getAllAlternatives()));
+            BootstrapLogger.LOG.enabledDecorators(this.beanManager,
+                    WeldCollections.toMultiRowString(enablement.getDecorators()));
+            BootstrapLogger.LOG.enabledInterceptors(this.beanManager,
+                    WeldCollections.toMultiRowString(enablement.getInterceptors()));
         }
     }
 

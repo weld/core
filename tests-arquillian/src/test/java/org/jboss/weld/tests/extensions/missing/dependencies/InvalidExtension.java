@@ -31,5 +31,4 @@ public class InvalidExtension implements Extension {
         ActionSequence.addAction(InvalidExtension.class.getName());
     }
 
-
 }

@@ -35,12 +35,13 @@ public class InvalidTypesTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidTypesTest.class)).addClasses(Telephone.class, PlainOldAnnotation.class, InvalidTypesExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvalidTypesTest.class))
+                .addClasses(Telephone.class, PlainOldAnnotation.class, InvalidTypesExtension.class)
                 .addAsServiceProvider(Extension.class, InvalidTypesExtension.class);
     }
-    
+
     @Test
     public void testDeploymentWithInvalidTypes() {
         // should throw definition exception
-     }
+    }
 }

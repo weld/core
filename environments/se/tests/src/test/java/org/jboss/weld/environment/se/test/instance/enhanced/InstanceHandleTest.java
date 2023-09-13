@@ -23,9 +23,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.List;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Bean;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -40,10 +45,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Similar to {@link WeldInstanceTest} but uses purely CDI APIs
  *
@@ -54,8 +55,10 @@ public class InstanceHandleTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceHandleTest.class))
-                .addPackage(InstanceHandleTest.class.getPackage()).addClass(ActionSequence.class)).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceHandleTest.class))
+                        .addPackage(InstanceHandleTest.class.getPackage()).addClass(ActionSequence.class))
+                .build();
     }
 
     @Test
@@ -160,7 +163,7 @@ public class InstanceHandleTest {
 
             ActionSequence.reset();
             assertTrue(instance.isAmbiguous());
-            for (Iterator<? extends Instance.Handle<Processor>> iterator = instance.handles().iterator(); iterator.hasNext(); ) {
+            for (Iterator<? extends Instance.Handle<Processor>> iterator = instance.handles().iterator(); iterator.hasNext();) {
                 try (Instance.Handle<Processor> handle = iterator.next()) {
                     handle.get().ping();
                 }
@@ -176,7 +179,8 @@ public class InstanceHandleTest {
         ActionSequence.reset();
         try (WeldContainer container = new Weld().initialize()) {
 
-            Instance.Handle<Processor> processor = container.select(Processor.class).handlesStream().filter(h -> Dependent.class.equals(h.getBean().getScope()))
+            Instance.Handle<Processor> processor = container.select(Processor.class).handlesStream()
+                    .filter(h -> Dependent.class.equals(h.getBean().getScope()))
                     .findFirst().orElse(null);
             assertNull(ActionSequence.getSequenceData());
             assertNotNull(processor);
@@ -187,7 +191,8 @@ public class InstanceHandleTest {
             assertEquals(1, sequence.size());
             assertEquals("firstDestroy", sequence.get(0));
 
-            Instance.Handle<WithPriority> withPriority = container.select(WithPriority.class).handlesStream().sorted(container.getHandlePriorityComparator()).findFirst()
+            Instance.Handle<WithPriority> withPriority = container.select(WithPriority.class).handlesStream()
+                    .sorted(container.getHandlePriorityComparator()).findFirst()
                     .orElse(null);
             assertNotNull(withPriority);
             assertEquals(Priority3.class, withPriority.getBean().getBeanClass());

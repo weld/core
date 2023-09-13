@@ -40,14 +40,16 @@ import org.junit.Test;
 public class WeldClassTest {
 
     private final TypeStore typeStore = new TypeStore();
-    private final ClassTransformer transformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
+    private final ClassTransformer transformer = new ClassTransformer(typeStore, new SharedObjectCache(),
+            ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
 
     /*
-    * description = "WELD-216"
-    */
+     * description = "WELD-216"
+     */
     @Test
     public void testMemberClassWithGenericTypes() {
-        final AnnotatedType<?> at = transformer.getEnhancedAnnotatedType(new Kangaroo().procreate().getClass(), AnnotatedTypeIdentifier.NULL_BDA_ID);
+        final AnnotatedType<?> at = transformer.getEnhancedAnnotatedType(new Kangaroo().procreate().getClass(),
+                AnnotatedTypeIdentifier.NULL_BDA_ID);
         transformer.getEnhancedAnnotatedType(new ForwardingAnnotatedType() {
 
             @Override
@@ -58,17 +60,18 @@ public class WeldClassTest {
     }
 
     /*
-    * description = "WELD-216"
-    */
+     * description = "WELD-216"
+     */
     @Test
     /*
-    *  Not isolated, depends on someone else initializing Containers.
-    *
-    *  getUnproxyableClassException() catch(NoSuchMethodException)
-    *           InstantiatorFactory.useInstantiators() <-- Needs Containers
-    */
+     * Not isolated, depends on someone else initializing Containers.
+     *
+     * getUnproxyableClassException() catch(NoSuchMethodException)
+     * InstantiatorFactory.useInstantiators() <-- Needs Containers
+     */
     public void testLocalClassWithGenericTypes() {
-        final AnnotatedType<?> at = transformer.getEnhancedAnnotatedType(new Koala().procreate().getClass(), AnnotatedTypeIdentifier.NULL_BDA_ID);
+        final AnnotatedType<?> at = transformer.getEnhancedAnnotatedType(new Koala().procreate().getClass(),
+                AnnotatedTypeIdentifier.NULL_BDA_ID);
         transformer.getEnhancedAnnotatedType(new ForwardingAnnotatedType() {
 
             @Override
@@ -79,17 +82,18 @@ public class WeldClassTest {
     }
 
     /*
-    * description = "WELD-216"
-    */
+     * description = "WELD-216"
+     */
     @Test
     /*
-    *  Not isolated, depends on someone else initializing Containers.
-    *
-    *  getUnproxyableClassException() catch(NoSuchMethodException)
-    *           InstantiatorFactory.useInstantiators() <-- Needs Containers
-    */
+     * Not isolated, depends on someone else initializing Containers.
+     *
+     * getUnproxyableClassException() catch(NoSuchMethodException)
+     * InstantiatorFactory.useInstantiators() <-- Needs Containers
+     */
     public void testAnonymousClassWithGenericTypes() {
-        final AnnotatedType<?> at = transformer.getEnhancedAnnotatedType(new Possum().procreate().getClass(), AnnotatedTypeIdentifier.NULL_BDA_ID);
+        final AnnotatedType<?> at = transformer.getEnhancedAnnotatedType(new Possum().procreate().getClass(),
+                AnnotatedTypeIdentifier.NULL_BDA_ID);
         transformer.getEnhancedAnnotatedType(new ForwardingAnnotatedType() {
 
             @Override
@@ -101,7 +105,8 @@ public class WeldClassTest {
 
     @Test
     public void testDeclaredAnnotations() {
-        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class,
+                AnnotatedTypeIdentifier.NULL_BDA_ID);
         Assert.assertEquals(1, annotatedElement.getAnnotations().size());
         Assert.assertNotNull(annotatedElement.getAnnotation(Random.class));
         Assert.assertEquals(Order.class, annotatedElement.getJavaClass());
@@ -109,7 +114,8 @@ public class WeldClassTest {
 
     @Test
     public void testMetaAnnotations() {
-        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class,
+                AnnotatedTypeIdentifier.NULL_BDA_ID);
         Set<Annotation> annotations = annotatedElement.getMetaAnnotations(Qualifier.class);
         Assert.assertEquals(1, annotations.size());
         Iterator<Annotation> it = annotations.iterator();
@@ -119,10 +125,12 @@ public class WeldClassTest {
 
     @Test
     public void testEmpty() {
-        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class,
+                AnnotatedTypeIdentifier.NULL_BDA_ID);
         Assert.assertNull(annotatedElement.getAnnotation(Stereotype.class));
         Assert.assertEquals(0, annotatedElement.getMetaAnnotations(Stereotype.class).size());
-        EnhancedAnnotatedType<Antelope> classWithNoAnnotations = transformer.getEnhancedAnnotatedType(Antelope.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+        EnhancedAnnotatedType<Antelope> classWithNoAnnotations = transformer.getEnhancedAnnotatedType(Antelope.class,
+                AnnotatedTypeIdentifier.NULL_BDA_ID);
         Assert.assertEquals(0, classWithNoAnnotations.getAnnotations().size());
     }
 

@@ -42,9 +42,12 @@ public class NonDependentBeanWithParameterizedBeanTypeWithTypeVariableTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonDependentBeanWithParameterizedBeanTypeWithTypeVariableTest.class))
-            .addClasses(NonDependentBeanWithParameterizedBeanTypeWithTypeVariableTest.class, Foo.class, CustomBeanType.class)
-            .addAsServiceProvider(Extension.class, BrokenExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(NonDependentBeanWithParameterizedBeanTypeWithTypeVariableTest.class))
+                .addClasses(NonDependentBeanWithParameterizedBeanTypeWithTypeVariableTest.class, Foo.class,
+                        CustomBeanType.class)
+                .addAsServiceProvider(Extension.class, BrokenExtension.class);
     }
 
     @Test
@@ -54,7 +57,8 @@ public class NonDependentBeanWithParameterizedBeanTypeWithTypeVariableTest {
 
     public static class BrokenExtension<T> implements Extension {
         public void observe(@Observes AfterBeanDiscovery event) {
-            event.addBean(new CustomBeanType(new TypeLiteral<Foo<T>>() {}.getType(), RequestScoped.class));
+            event.addBean(new CustomBeanType(new TypeLiteral<Foo<T>>() {
+            }.getType(), RequestScoped.class));
         }
     }
 }

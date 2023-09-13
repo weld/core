@@ -21,7 +21,8 @@ import org.jboss.weld.event.ObserverMethodImpl;
 
 public class ObserverInitializationContext<T, X> {
 
-    public static <T, X> ObserverInitializationContext<T, X> of(ObserverMethodImpl<T, X> observer, EnhancedAnnotatedMethod<T, ? super X> annotated) {
+    public static <T, X> ObserverInitializationContext<T, X> of(ObserverMethodImpl<T, X> observer,
+            EnhancedAnnotatedMethod<T, ? super X> annotated) {
         return new ObserverInitializationContext<T, X>(observer, annotated);
     }
 

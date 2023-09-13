@@ -55,10 +55,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     /**
      * Constructor
      *
-     * @param type        The type
+     * @param type The type
      * @param beanManager The Bean manager
      */
-    protected AbstractClassBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanIdentifier identifier, BeanManagerImpl beanManager) {
+    protected AbstractClassBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanIdentifier identifier,
+            BeanManagerImpl beanManager) {
         super(attributes, identifier, beanManager);
         this.enhancedAnnotatedItem = type;
         this.annotatedType = type.slim();
@@ -170,6 +171,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
 
     @Override
     public void setProducer(Producer<T> producer) {
-        throw new IllegalArgumentException("Class bean " + this + " requires an InjectionTarget but a Producer was provided instead " + producer);
+        throw new IllegalArgumentException(
+                "Class bean " + this + " requires an InjectionTarget but a Producer was provided instead " + producer);
     }
 }

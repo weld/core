@@ -19,14 +19,12 @@ package org.jboss.weld.executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 /**
  * @author pmuir
  */
 public class SingleThreadExecutorServices extends AbstractExecutorServices {
 
     private final transient ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
-
 
     /**
      * Provides access to the executor service used for asynchronous tasks.
@@ -36,7 +34,6 @@ public class SingleThreadExecutorServices extends AbstractExecutorServices {
     public ExecutorService getTaskExecutor() {
         return taskExecutor;
     }
-
 
     @Override
     protected int getThreadPoolSize() {

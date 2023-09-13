@@ -61,7 +61,8 @@ public class ComplexAsyncEventTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ComplexAsyncEventTest.class)).addPackage(ComplexAsyncEventTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ComplexAsyncEventTest.class))
+                .addPackage(ComplexAsyncEventTest.class.getPackage());
     }
 
     @Inject

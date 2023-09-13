@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 
 /**
  * Each proxy maintains a single bean instance on which methods
- * are invoked.  Different types of bean instances can also
+ * are invoked. Different types of bean instances can also
  * be used to provide varying methods of obtaining the actual
  * instance from the container.
  *

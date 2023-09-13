@@ -7,7 +7,7 @@ import jakarta.enterprise.event.Observes;
 @ApplicationScoped
 public class ReEnabledTestObserver extends DisabledTestObserver {
     @Override
-        // reenables observation by overriding and adding @Observes
+    // reenables observation by overriding and adding @Observes
     void observe(@Observes TestEvent event) {
         super.observe(event);
     }

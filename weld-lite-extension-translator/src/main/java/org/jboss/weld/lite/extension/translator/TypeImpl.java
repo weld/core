@@ -1,15 +1,17 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.types.Type;
+
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
-import java.util.Arrays;
-import java.util.Objects;
-
-abstract class TypeImpl<ReflectionType extends java.lang.reflect.AnnotatedType> extends AnnotationTargetImpl<ReflectionType> implements Type {
+abstract class TypeImpl<ReflectionType extends java.lang.reflect.AnnotatedType> extends AnnotationTargetImpl<ReflectionType>
+        implements Type {
     TypeImpl(ReflectionType reflectionType, AnnotationOverrides overrides, BeanManager bm) {
         super(reflectionType, overrides, bm);
     }
@@ -18,7 +20,8 @@ abstract class TypeImpl<ReflectionType extends java.lang.reflect.AnnotatedType> 
         return fromReflectionType(reflectionType, null, bm);
     }
 
-    static Type fromReflectionType(java.lang.reflect.AnnotatedType reflectionType, AnnotationOverrides overrides, BeanManager bm) {
+    static Type fromReflectionType(java.lang.reflect.AnnotatedType reflectionType, AnnotationOverrides overrides,
+            BeanManager bm) {
         if (reflectionType instanceof java.lang.reflect.AnnotatedParameterizedType) {
             return new ParameterizedTypeImpl((java.lang.reflect.AnnotatedParameterizedType) reflectionType, overrides, bm);
         } else if (reflectionType instanceof java.lang.reflect.AnnotatedTypeVariable) {

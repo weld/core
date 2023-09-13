@@ -118,8 +118,10 @@ public class CustomDecorator implements Decorator<Object> {
 
         public CustomInjectionPoint() {
             TypeStore ts = new TypeStore();
-            ClassTransformer transformer = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts), RegistrySingletonProvider.STATIC_INSTANCE);
-            EnhancedAnnotatedType<?> targetClass = transformer.getEnhancedAnnotatedType(CustomWindowFrame.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+            ClassTransformer transformer = new ClassTransformer(ts, new SharedObjectCache(),
+                    ReflectionCacheFactory.newInstance(ts), RegistrySingletonProvider.STATIC_INSTANCE);
+            EnhancedAnnotatedType<?> targetClass = transformer.getEnhancedAnnotatedType(CustomWindowFrame.class,
+                    AnnotatedTypeIdentifier.NULL_BDA_ID);
             windowField = targetClass.getDeclaredEnhancedField("window");
         }
 

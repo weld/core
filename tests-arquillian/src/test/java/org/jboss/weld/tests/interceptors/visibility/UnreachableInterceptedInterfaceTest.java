@@ -14,13 +14,13 @@ import org.jboss.weld.tests.interceptors.visibility.unreachable.AbstractPanel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 @RunWith(Arquillian.class)
 public class UnreachableInterceptedInterfaceTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(UnreachableInterceptedInterfaceTest.class)).addPackage(UnreachableInterceptedInterfaceTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(UnreachableInterceptedInterfaceTest.class))
+                .addPackage(UnreachableInterceptedInterfaceTest.class.getPackage())
                 .addPackage(AbstractPanel.class.getPackage());
     }
 
@@ -32,6 +32,5 @@ public class UnreachableInterceptedInterfaceTest {
         panel.drawPanel();
         assertTrue(PanelInterceptor.called);
     }
-
 
 }

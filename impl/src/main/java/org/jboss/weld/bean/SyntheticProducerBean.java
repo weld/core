@@ -34,7 +34,8 @@ public class SyntheticProducerBean<T, X> extends AbstractSyntheticBean<T> {
 
     private final Producer<T> producer;
 
-    protected SyntheticProducerBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> factory, BeanManagerImpl manager) {
+    protected SyntheticProducerBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> factory,
+            BeanManagerImpl manager) {
         super(attributes, manager, beanClass);
         this.producer = factory.createProducer(this);
     }

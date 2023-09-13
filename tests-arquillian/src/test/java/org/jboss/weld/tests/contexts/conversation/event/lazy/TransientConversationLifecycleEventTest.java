@@ -49,7 +49,10 @@ public class TransientConversationLifecycleEventTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(TransientConversationLifecycleEventTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Servlet.class, ObservingBean.class, ConversationScopedBean.class)
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(TransientConversationLifecycleEventTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Servlet.class, ObservingBean.class, ConversationScopedBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(TransientConversationLifecycleEventTest.class.getPackage(), "web.xml", "web.xml");
     }

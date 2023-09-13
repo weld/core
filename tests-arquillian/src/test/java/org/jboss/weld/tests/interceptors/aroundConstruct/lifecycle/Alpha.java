@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.interceptors.aroundConstruct.lifecycle;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.io.Serializable;
+
+import jakarta.enterprise.context.Dependent;
 
 @SuppressWarnings("serial")
 @AlphaBinding

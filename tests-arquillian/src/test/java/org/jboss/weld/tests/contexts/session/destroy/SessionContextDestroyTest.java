@@ -48,7 +48,9 @@ public class SessionContextDestroyTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SessionContextDestroyTest.class, Utils.ARCHIVE_TYPE.WAR))
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(SessionContextDestroyTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(SessionContextDestroyTest.class.getPackage()).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 

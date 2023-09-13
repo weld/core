@@ -37,7 +37,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @param <S>
  * @author Pete Muir
  */
-public abstract class AbstractEnhancedAnnotatedMember<T, X, S extends Member> extends AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotatedMember<T, X, S> {
+public abstract class AbstractEnhancedAnnotatedMember<T, X, S extends Member> extends AbstractEnhancedAnnotated<T, S>
+        implements EnhancedAnnotatedMember<T, X, S> {
 
     // Cached string representation
     private String toString;
@@ -48,7 +49,10 @@ public abstract class AbstractEnhancedAnnotatedMember<T, X, S extends Member> ex
      *
      * @param annotationMap The annotation map
      */
-    protected AbstractEnhancedAnnotatedMember(AnnotatedMember<X> annotatedMember, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, EnhancedAnnotatedType<X> declaringType) {
+    protected AbstractEnhancedAnnotatedMember(AnnotatedMember<X> annotatedMember,
+            Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer,
+            EnhancedAnnotatedType<X> declaringType) {
         super(annotatedMember, annotationMap, declaredAnnotationMap, classTransformer);
         this.declaringType = declaringType;
     }
@@ -99,10 +103,11 @@ public abstract class AbstractEnhancedAnnotatedMember<T, X, S extends Member> ex
      * @param beanManager The Bean manager
      * @return The current value
      *
-    public T getValue(BeanManager beanManager)
-    {
-    return beanManager.getInstance(getRawType(), getMetaAnnotationsAsArray(BindingType.class));
-    }*/
+     *         public T getValue(BeanManager beanManager)
+     *         {
+     *         return beanManager.getInstance(getRawType(), getMetaAnnotationsAsArray(BindingType.class));
+     *         }
+     */
 
     /**
      * Gets the name of the member

@@ -46,7 +46,8 @@ class FieldResourceInjection<T, X> extends AbstractResourceInjection<T> {
      */
     FieldResourceInjection(FieldInjectionPoint<T, X> fieldInjectionPoint, ResourceReferenceFactory<T> factory) {
         super(factory);
-        this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(fieldInjectionPoint.getAnnotated().getJavaMember()));
+        this.accessibleField = AccessController
+                .doPrivileged(new GetAccessibleCopyOfMember<Field>(fieldInjectionPoint.getAnnotated().getJavaMember()));
     }
 
     @Override

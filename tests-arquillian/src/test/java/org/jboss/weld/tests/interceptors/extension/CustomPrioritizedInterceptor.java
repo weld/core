@@ -28,7 +28,8 @@ import jakarta.interceptor.InvocationContext;
 import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.tests.interceptors.extension.FooInterceptorBinding.FooInterceptorBindingLiteral;
 
-public class CustomPrioritizedInterceptor extends AbstractInterceptor<CustomPrioritizedInterceptor> implements PassivationCapable, Prioritized {
+public class CustomPrioritizedInterceptor extends AbstractInterceptor<CustomPrioritizedInterceptor>
+        implements PassivationCapable, Prioritized {
 
     private final int priority;
 
@@ -48,7 +49,8 @@ public class CustomPrioritizedInterceptor extends AbstractInterceptor<CustomPrio
         return InterceptionType.AROUND_INVOKE.equals(type);
     }
 
-    public Object intercept(InterceptionType type, CustomPrioritizedInterceptor instance, InvocationContext ctx) throws Exception {
+    public Object intercept(InterceptionType type, CustomPrioritizedInterceptor instance, InvocationContext ctx)
+            throws Exception {
         ActionSequence.addAction(CustomPrioritizedInterceptor.class.getName());
         return ctx.proceed();
     }

@@ -1,15 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.declarations.ClassInfo;
-import jakarta.enterprise.lang.model.declarations.FieldInfo;
-import jakarta.enterprise.lang.model.declarations.MethodInfo;
-import jakarta.enterprise.lang.model.declarations.PackageInfo;
-import jakarta.enterprise.lang.model.declarations.RecordComponentInfo;
-import jakarta.enterprise.lang.model.types.Type;
-import jakarta.enterprise.lang.model.types.TypeVariable;
-import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.declarations.ClassInfo;
+import jakarta.enterprise.lang.model.declarations.FieldInfo;
+import jakarta.enterprise.lang.model.declarations.MethodInfo;
+import jakarta.enterprise.lang.model.declarations.PackageInfo;
+import jakarta.enterprise.lang.model.declarations.RecordComponentInfo;
+import jakarta.enterprise.lang.model.types.Type;
+import jakarta.enterprise.lang.model.types.TypeVariable;
+
+import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inject.spi.AnnotatedType<?>> implements ClassInfo {
     // only for equals/hashCode

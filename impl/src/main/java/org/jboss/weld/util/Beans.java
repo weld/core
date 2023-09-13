@@ -199,8 +199,10 @@ public class Beans {
 
     public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings,
             Set<QualifierInstance> existingBindings, BeanManagerImpl manager) {
-        final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(QualifierInstance.of(expectedBindings, manager.getServices().get(MetaAnnotationStore.class)));
-        return expected.isEmpty() ? false : manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
+        final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(
+                QualifierInstance.of(expectedBindings, manager.getServices().get(MetaAnnotationStore.class)));
+        return expected.isEmpty() ? false
+                : manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
     }
 
     /**
@@ -238,7 +240,8 @@ public class Beans {
             }
             // For synthetic enabled alternatives, the ModuleEnablement may not yet be aware of them
             if (!isEnabled
-                    && ((bean instanceof WeldBean && ((WeldBean<?>) bean).getPriority() != null) || bean instanceof Prioritized)) {
+                    && ((bean instanceof WeldBean && ((WeldBean<?>) bean).getPriority() != null)
+                            || bean instanceof Prioritized)) {
                 isEnabled = true;
             }
             return isEnabled;
@@ -378,7 +381,8 @@ public class Beans {
         return annotatedItem.isAnnotationPresent(Decorator.class);
     }
 
-    public static Set<Annotation> mergeInQualifiers(BeanManagerImpl manager, Collection<Annotation> qualifiers, Annotation[] newQualifiers) {
+    public static Set<Annotation> mergeInQualifiers(BeanManagerImpl manager, Collection<Annotation> qualifiers,
+            Annotation[] newQualifiers) {
         Set<Annotation> result = new HashSet<Annotation>();
 
         if (qualifiers != null && !(qualifiers.isEmpty())) {
@@ -394,7 +398,7 @@ public class Beans {
                 Class<? extends Annotation> annotationType = qualifier.annotationType();
                 if (!annotationType.isAnnotationPresent(Repeatable.class)) {
                     for (Annotation annotation : checkedNewQualifiers) {
-                        if(annotationType.equals(annotation.annotationType())) {
+                        if (annotationType.equals(annotation.annotationType())) {
                             throw UtilLogger.LOG.redundantQualifier(qualifier, Arrays.toString(newQualifiers));
                         }
                     }
@@ -414,10 +418,10 @@ public class Beans {
     public static Set<Type> getTypes(EnhancedAnnotated<?, ?> annotated) {
         // array and primitive types require special treatment
         if (annotated.getJavaClass().isArray() || annotated.getJavaClass().isPrimitive()) {
-            return ImmutableSet.<Type>builder().addAll(annotated.getBaseType(), Object.class).build();
+            return ImmutableSet.<Type> builder().addAll(annotated.getBaseType(), Object.class).build();
         } else {
             if (annotated.isAnnotationPresent(Typed.class)) {
-                return ImmutableSet.<Type>builder().addAll(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()),
+                return ImmutableSet.<Type> builder().addAll(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()),
                         annotated.getJavaClass(), annotated.getAnnotation(Typed.class))).build();
             } else {
                 if (annotated.getJavaClass().isInterface()) {
@@ -438,7 +442,8 @@ public class Beans {
             if (tmp != null) {
                 types.add(tmp);
             } else {
-                throw BeanLogger.LOG.typedClassNotInHierarchy(specifiedClass.getName(), rawType, Formats.formatTypes(typeClosure.values()));
+                throw BeanLogger.LOG.typedClassNotInHierarchy(specifiedClass.getName(), rawType,
+                        Formats.formatTypes(typeClosure.values()));
             }
         }
         types.add(Object.class);
@@ -454,7 +459,8 @@ public class Beans {
     public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(AnnotatedType<?> annotatedType) {
         Class<?> javaClass = annotatedType.getJavaClass();
         return !javaClass.isEnum() && !Extension.class.isAssignableFrom(javaClass)
-                && Reflections.isTopLevelOrStaticNestedClass(javaClass) && !Reflections.isParameterizedTypeWithWildcard(javaClass)
+                && Reflections.isTopLevelOrStaticNestedClass(javaClass)
+                && !Reflections.isParameterizedTypeWithWildcard(javaClass)
                 && hasSimpleCdiConstructor(annotatedType);
     }
 
@@ -466,11 +472,13 @@ public class Beans {
      */
     public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo, boolean checkTypeModifiers) {
 
-        boolean isTypeManagedBean = ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0) && !classFileInfo.isAssignableTo(Extension.class)
+        boolean isTypeManagedBean = ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0)
+                && !classFileInfo.isAssignableTo(Extension.class)
                 && classFileInfo.hasCdiConstructor()
                 && (!Modifier.isAbstract(classFileInfo.getModifiers()) || classFileInfo.isAnnotationDeclared(Decorator.class));
         if (checkTypeModifiers) {
-            return isTypeManagedBean && (ClassFileInfo.NestingType.TOP_LEVEL.equals(classFileInfo.getNestingType()) || Modifier.isStatic(classFileInfo.getModifiers()));
+            return isTypeManagedBean && (ClassFileInfo.NestingType.TOP_LEVEL.equals(classFileInfo.getNestingType())
+                    || Modifier.isStatic(classFileInfo.getModifiers()));
         } else {
             return isTypeManagedBean;
         }
@@ -599,13 +607,15 @@ public class Beans {
     }
 
     public static boolean hasBuiltinScope(Bean<?> bean) {
-        return RequestScoped.class.equals(bean.getScope()) || SessionScoped.class.equals(bean.getScope()) || ApplicationScoped.class.equals(bean.getScope())
+        return RequestScoped.class.equals(bean.getScope()) || SessionScoped.class.equals(bean.getScope())
+                || ApplicationScoped.class.equals(bean.getScope())
                 || ConversationScoped.class.equals(bean.getScope()) || Dependent.class.equals(bean.getScope());
     }
 
     public static Class<? extends Annotation> getBeanDefiningAnnotationScope(AnnotatedType<?> annotatedType) {
         for (Annotation annotation : annotatedType.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(NormalScope.class) || annotation.annotationType().equals(Dependent.class)) {
+            if (annotation.annotationType().isAnnotationPresent(NormalScope.class)
+                    || annotation.annotationType().equals(Dependent.class)) {
                 return annotation.annotationType();
             }
         }
@@ -685,7 +695,8 @@ public class Beans {
     }
 
     /**
-     * A slightly optimized way to get the bean identifier - there is not need to call ContextualStore.putIfAbsent() for passivation capable beans because it's
+     * A slightly optimized way to get the bean identifier - there is not need to call ContextualStore.putIfAbsent() for
+     * passivation capable beans because it's
      * already called during bootstrap. See also {@link BeanManagerImpl#addBean(Bean)}.
      *
      * @param contextual
@@ -693,7 +704,8 @@ public class Beans {
      * @param serviceRegistry
      * @return the identifier for the given contextual
      */
-    private static BeanIdentifier getIdentifier(Contextual<?> contextual, ContextualStore contextualStore, ServiceRegistry serviceRegistry) {
+    private static BeanIdentifier getIdentifier(Contextual<?> contextual, ContextualStore contextualStore,
+            ServiceRegistry serviceRegistry) {
         if (contextual instanceof RIBean<?>) {
             return ((RIBean<?>) contextual).getIdentifier();
         }

@@ -71,7 +71,8 @@ public class GetAccessibleCopyOfMember<T extends AccessibleObject & Member> impl
         return declaringClass.getDeclaredMethod(method.getName(), method.getParameterTypes());
     }
 
-    private static Constructor<?> copyConstructor(Constructor<?> constructor, Class<?> declaringClass) throws NoSuchMethodException {
+    private static Constructor<?> copyConstructor(Constructor<?> constructor, Class<?> declaringClass)
+            throws NoSuchMethodException {
         return declaringClass.getDeclaredConstructor(constructor.getParameterTypes());
     }
 }

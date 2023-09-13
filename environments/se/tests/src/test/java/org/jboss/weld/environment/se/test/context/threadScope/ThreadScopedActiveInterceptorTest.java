@@ -38,7 +38,8 @@ public class ThreadScopedActiveInterceptorTest {
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
                 .add(ShrinkWrap.create(BeanArchive.class)
-                        .addClasses(ThreadScopedActiveInterceptorTest.class, Foo.class, Bar.class, Counter.class)).build();
+                        .addClasses(ThreadScopedActiveInterceptorTest.class, Foo.class, Bar.class, Counter.class))
+                .build();
     }
 
     @Test

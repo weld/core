@@ -22,7 +22,8 @@ public class IndirectSpecializationNameInheritedTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap
-                .create(WebArchive.class, Utils.getDeploymentNameAsHash(IndirectSpecializationNameInheritedTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(IndirectSpecializationNameInheritedTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(BeanA.class, BeanB.class, BeanC.class, IndirectSpecializationNameInheritedTest.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

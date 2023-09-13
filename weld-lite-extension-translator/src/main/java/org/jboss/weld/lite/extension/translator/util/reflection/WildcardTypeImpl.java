@@ -3,7 +3,7 @@ package org.jboss.weld.lite.extension.translator.util.reflection;
 import java.util.Arrays;
 
 final class WildcardTypeImpl implements java.lang.reflect.WildcardType {
-    private static final java.lang.reflect.Type[] NO_UPPER_BOUND = new java.lang.reflect.Type[]{Object.class};
+    private static final java.lang.reflect.Type[] NO_UPPER_BOUND = new java.lang.reflect.Type[] { Object.class };
     private static final java.lang.reflect.Type[] NO_LOWER_BOUND = new java.lang.reflect.Type[0];
     private static final java.lang.reflect.WildcardType UNBOUNDED = new WildcardTypeImpl(NO_UPPER_BOUND, NO_LOWER_BOUND);
 
@@ -12,11 +12,11 @@ final class WildcardTypeImpl implements java.lang.reflect.WildcardType {
     }
 
     static java.lang.reflect.WildcardType withUpperBound(java.lang.reflect.Type type) {
-        return new WildcardTypeImpl(new java.lang.reflect.Type[]{type}, NO_LOWER_BOUND);
+        return new WildcardTypeImpl(new java.lang.reflect.Type[] { type }, NO_LOWER_BOUND);
     }
 
     static java.lang.reflect.WildcardType withLowerBound(java.lang.reflect.Type type) {
-        return new WildcardTypeImpl(NO_UPPER_BOUND, new java.lang.reflect.Type[]{type});
+        return new WildcardTypeImpl(NO_UPPER_BOUND, new java.lang.reflect.Type[] { type });
     }
 
     private final java.lang.reflect.Type[] upperBounds;

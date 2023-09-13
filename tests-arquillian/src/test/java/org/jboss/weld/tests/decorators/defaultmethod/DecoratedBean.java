@@ -26,7 +26,6 @@ public class DecoratedBean implements Decorated {
         defaultDecorated();
     }
 
-
     @Override
     public void doDecorated() {
 

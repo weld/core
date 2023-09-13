@@ -33,11 +33,11 @@ public class SingletonSelfInjectionBean {
     public Integer methodA(Integer value) {
         return self.methodC(value);
     }
-    
+
     public Integer methodB(Integer value) {
         return this.methodC(value);
     }
-    
+
     @SelfIntercept
     public Integer methodC(Integer value) {
         return value;

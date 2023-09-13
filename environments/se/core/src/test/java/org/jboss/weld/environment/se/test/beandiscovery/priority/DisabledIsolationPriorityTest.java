@@ -24,5 +24,5 @@ public class DisabledIsolationPriorityTest extends PriorityTest {
     public boolean isArchiveIsolationEnabled() {
         return false;
     }
-    
+
 }

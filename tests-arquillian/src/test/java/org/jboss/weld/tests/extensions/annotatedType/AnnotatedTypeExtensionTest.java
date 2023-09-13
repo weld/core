@@ -16,6 +16,21 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Set;
+
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,20 +45,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.Any;
-import jakarta.enterprise.inject.spi.AnnotatedConstructor;
-import jakarta.enterprise.inject.spi.AnnotatedField;
-import jakarta.enterprise.inject.spi.AnnotatedMethod;
-import jakarta.enterprise.inject.spi.AnnotatedParameter;
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.Extension;
-import jakarta.enterprise.inject.spi.InjectionPoint;
-import jakarta.inject.Inject;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Set;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -67,8 +68,8 @@ public class AnnotatedTypeExtensionTest {
     }
 
     /*
-    * description = "WELD-371"
-    */
+     * description = "WELD-371"
+     */
     @Test
     public void testAnnotationsAreOverridden() {
         Bean<WashingMachine> bean = Utils.getBean(beanManager, WashingMachine.class, EcoFriendlyWashingMachineLiteral.INSTANCE);
@@ -98,7 +99,8 @@ public class AnnotatedTypeExtensionTest {
         Assert.assertFalse(containsMethod(tumbleDryerBean.getInjectionPoints(), "setHotAir", HotAir.class));
         Assert.assertNotNull(tumbleDryer.getRunningTime());
         Assert.assertNull(tumbleDryer.getHotAir());
-        AnnotatedMethod<?> runningTimeMethod = getMethod(tumbleDryerBean.getInjectionPoints(), "setRunningTime", RunningTime.class);
+        AnnotatedMethod<?> runningTimeMethod = getMethod(tumbleDryerBean.getInjectionPoints(), "setRunningTime",
+                RunningTime.class);
         Assert.assertTrue(runningTimeMethod.getParameters().get(0).isAnnotationPresent(Special.class));
         Assert.assertFalse(runningTimeMethod.getParameters().get(0).isAnnotationPresent(Original.class));
     }
@@ -124,7 +126,8 @@ public class AnnotatedTypeExtensionTest {
             if (ip.getAnnotated() instanceof AnnotatedParameter<?>) {
                 AnnotatedParameter<?> param = (AnnotatedParameter<?>) ip.getAnnotated();
                 if (param.getDeclaringCallable() instanceof AnnotatedConstructor<?>) {
-                    Class<?>[] parameterTypes = ((Constructor<?>) param.getDeclaringCallable().getJavaMember()).getParameterTypes();
+                    Class<?>[] parameterTypes = ((Constructor<?>) param.getDeclaringCallable().getJavaMember())
+                            .getParameterTypes();
                     if (Arrays.equals(parameters, parameterTypes)) {
                         return (AnnotatedConstructor<?>) param.getDeclaringCallable();
                     }

@@ -1,17 +1,17 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.inject.build.compatible.spi.InterceptorInfo;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.lang.model.AnnotationInfo;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 class InterceptorInfoImpl extends BeanInfoImpl implements InterceptorInfo {
     final jakarta.enterprise.inject.spi.Interceptor<?> cdiInterceptor;
 
     InterceptorInfoImpl(jakarta.enterprise.inject.spi.Interceptor<?> cdiInterceptor,
-                        jakarta.enterprise.inject.spi.Annotated cdiDeclaration, BeanManager bm) {
+            jakarta.enterprise.inject.spi.Annotated cdiDeclaration, BeanManager bm) {
         super(cdiInterceptor, cdiDeclaration, null, bm);
         this.cdiInterceptor = cdiInterceptor;
     }

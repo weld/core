@@ -35,8 +35,8 @@ public class ParameterizedTest {
     }
 
     /*
-    * description = "WELD-452"
-    */
+     * description = "WELD-452"
+     */
     @Test
     public void testEventQualifiersCorrect(TestBean testBean) {
         Assert.assertNotNull(testBean);

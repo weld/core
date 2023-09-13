@@ -57,7 +57,8 @@ public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(actualTypeArguments) ^ (ownerType == null ? 0 : ownerType.hashCode()) ^ (rawType == null ? 0 : rawType.hashCode());
+        return Arrays.hashCode(actualTypeArguments) ^ (ownerType == null ? 0 : ownerType.hashCode())
+                ^ (rawType == null ? 0 : rawType.hashCode());
     }
 
     @Override
@@ -68,7 +69,9 @@ public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
             ParameterizedType that = (ParameterizedType) obj;
             Type thatOwnerType = that.getOwnerType();
             Type thatRawType = that.getRawType();
-            return (ownerType == null ? thatOwnerType == null : ownerType.equals(thatOwnerType)) && (rawType == null ? thatRawType == null : rawType.equals(thatRawType)) && Arrays.equals(actualTypeArguments, that.getActualTypeArguments());
+            return (ownerType == null ? thatOwnerType == null : ownerType.equals(thatOwnerType))
+                    && (rawType == null ? thatRawType == null : rawType.equals(thatRawType))
+                    && Arrays.equals(actualTypeArguments, that.getActualTypeArguments());
         } else {
             return false;
         }

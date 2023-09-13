@@ -1,16 +1,17 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.AnnotationInfo;
-import jakarta.enterprise.lang.model.AnnotationTarget;
-import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.AnnotationInfo;
+import jakarta.enterprise.lang.model.AnnotationTarget;
+
+import org.jboss.weld.lite.extension.translator.util.AnnotationOverrides;
 
 abstract class AnnotationTargetImpl<Reflection extends java.lang.reflect.AnnotatedElement> implements AnnotationTarget {
     final Reflection reflection;

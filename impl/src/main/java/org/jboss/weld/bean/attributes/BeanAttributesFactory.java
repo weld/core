@@ -234,7 +234,8 @@ public class BeanAttributesFactory {
         }
 
         public BeanAttributes<T> build() {
-            return new ImmutableBeanAttributes<T>(mergedStereotypes.getStereotypes(), alternative, name, qualifiers, types, scope);
+            return new ImmutableBeanAttributes<T>(mergedStereotypes.getStereotypes(), alternative, name, qualifiers, types,
+                    scope);
         }
     }
 }

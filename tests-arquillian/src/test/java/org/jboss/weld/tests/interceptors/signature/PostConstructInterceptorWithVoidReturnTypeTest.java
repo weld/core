@@ -38,7 +38,8 @@ public class PostConstructInterceptorWithVoidReturnTypeTest extends AbstractSign
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PostConstructInterceptorWithVoidReturnTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(PostConstructInterceptorWithVoidReturnTypeTest.class))
                 .intercept(MyInterceptor.class)
                 .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, LifecycleInterceptedBean.class);
     }

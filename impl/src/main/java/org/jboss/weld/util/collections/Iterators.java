@@ -204,11 +204,12 @@ public final class Iterators {
 
         @Override
         public int previousIndex() {
-            return position -1;
+            return position - 1;
         }
 
         /**
          * Returns the element identified by the given index.
+         *
          * @param index the given index
          * @return element identified by the given index
          */

@@ -73,7 +73,8 @@ class InterceptionModelImpl implements InterceptionModel {
     @Override
     public List<InterceptorClassMetadata<?>> getInterceptors(InterceptionType interceptionType, Method method) {
         if (InterceptionType.AROUND_CONSTRUCT.equals(interceptionType)) {
-            throw new IllegalStateException("Cannot use getInterceptors() for @AroundConstruct interceptor lookup. Use getConstructorInvocationInterceptors() instead.");
+            throw new IllegalStateException(
+                    "Cannot use getInterceptors() for @AroundConstruct interceptor lookup. Use getConstructorInvocationInterceptors() instead.");
         }
         if (interceptionType.isLifecycleCallback() && method != null) {
             throw new IllegalArgumentException("On a lifecycle callback, the associated method must be null");
@@ -129,7 +130,8 @@ class InterceptionModelImpl implements InterceptionModel {
 
     @Override
     public boolean hasTargetClassInterceptors() {
-        return targetClassInterceptorMetadata != null && targetClassInterceptorMetadata != TargetClassInterceptorMetadata.EMPTY_INSTANCE;
+        return targetClassInterceptorMetadata != null
+                && targetClassInterceptorMetadata != TargetClassInterceptorMetadata.EMPTY_INSTANCE;
     }
 
     @Override

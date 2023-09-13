@@ -28,7 +28,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 @RunWith(Arquillian.class)
 //@IntegrationTest(runLocally = true)
 public class FinalClassMethodLevelInterceptorTest {
@@ -44,5 +43,5 @@ public class FinalClassMethodLevelInterceptorTest {
     @Test
     public void testFinalClassWithMethodLevelInterceptor() throws Exception {
         // should throw deployment exception
-     }
+    }
 }

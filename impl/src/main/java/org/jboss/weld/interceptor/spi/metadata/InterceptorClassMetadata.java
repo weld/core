@@ -38,6 +38,7 @@ public interface InterceptorClassMetadata<T> extends InterceptorMetadata {
 
     /**
      * Returns the class of this interceptor.
+     *
      * @return
      */
     Class<T> getJavaClass();

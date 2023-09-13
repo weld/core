@@ -51,7 +51,8 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param beansXml
      * @param accessibleBeanDeploymentArchives
      */
-    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml,
+            Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
         this(id, beanClasses, null, beansXml, beanDeploymentArchives, Collections.emptySet());
     }
 
@@ -64,7 +65,9 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param beanDeploymentArchives
      * @param loadedBeanClasses
      */
-    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> accessibleBeanDeploymentArchives, Collection<Class<?>> loadedBeanClasses) {
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses,
+            BeansXml beansXml, Set<WeldBeanDeploymentArchive> accessibleBeanDeploymentArchives,
+            Collection<Class<?>> loadedBeanClasses) {
         super(id);
         this.beanClasses = beanClasses;
         this.knownClasses = knownClasses;
@@ -90,7 +93,8 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param knownClasses
      * @param beansXml
      */
-    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses, BeansXml beansXml) {
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, Collection<String> knownClasses,
+            BeansXml beansXml) {
         this(id, beanClasses, knownClasses, beansXml, Collections.emptySet(), Collections.emptySet());
     }
 
@@ -119,7 +123,6 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
         return beansXml;
     }
 
-
     public synchronized void setAccessibleBeanDeploymentArchives(Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
         accessibleBeanDeploymentArchives = Collections.unmodifiableSet(new HashSet<>(beanDeploymentArchives));
     }
@@ -138,7 +141,8 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param archives
      * @return the "flat" bean deployment archive
      */
-    public static <T extends BeanDeploymentArchive> WeldBeanDeploymentArchive merge(CDI11Bootstrap bootstrap, Iterable<T> archives) {
+    public static <T extends BeanDeploymentArchive> WeldBeanDeploymentArchive merge(CDI11Bootstrap bootstrap,
+            Iterable<T> archives) {
         BeansXml mergedBeansXml = BeansXmlParser.mergeExisting(archives, true);
         Set<String> beanClasses = new HashSet<String>();
         for (BeanDeploymentArchive archive : archives) {

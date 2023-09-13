@@ -25,6 +25,6 @@ public class FooInterceptor {
 
     @AroundInvoke
     Object intercept(InvocationContext ctx) throws Exception {
-        return ! (Boolean) ctx.proceed();
+        return !(Boolean) ctx.proceed();
     }
 }

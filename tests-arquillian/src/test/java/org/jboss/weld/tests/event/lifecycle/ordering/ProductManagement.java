@@ -29,7 +29,8 @@ import jakarta.enterprise.inject.spi.ProcessProducer;
 import jakarta.enterprise.inject.spi.ProcessProducerMethod;
 
 /**
- * CDI defines this order (see Bean Discovery chapter) for producers: PIP -> PP -> PBA -> PPM (e.g. ProcessBean for producer methods)
+ * CDI defines this order (see Bean Discovery chapter) for producers: PIP -> PP -> PBA -> PPM (e.g. ProcessBean for producer
+ * methods)
  * And following order for ordinary beans: PIP -> PIT -> PBA -> PB
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
@@ -40,7 +41,7 @@ public class ProductManagement implements Extension {
     private List<Object> listOfBeanEvents = new ArrayList<>();
 
     // producer method observers
-    
+
     public void observePIP(@Observes ProcessInjectionPoint<PoorWorker, String> pip) {
         listOfProducerEvents.add(pip);
     }
@@ -59,10 +60,10 @@ public class ProductManagement implements Extension {
 
     // ordinary bean observers - PIP - PIT - PBA - PB
 
-    public void observePIPBean(@Observes ProcessInjectionPoint<PoorWorker,MassiveJugCoffee> pip) {
+    public void observePIPBean(@Observes ProcessInjectionPoint<PoorWorker, MassiveJugCoffee> pip) {
         listOfBeanEvents.add(pip);
     }
-    
+
     public void observePIT(@Observes ProcessInjectionTarget<PoorWorker> pit) {
         listOfBeanEvents.add(pit);
     }
@@ -74,11 +75,11 @@ public class ProductManagement implements Extension {
     public void observerPB(@Observes ProcessManagedBean<PoorWorker> pb) {
         listOfBeanEvents.add(pb);
     }
-    
+
     public List<Object> getListOfProducerEvents() {
         return listOfProducerEvents;
     }
-    
+
     public List<Object> getListOfBeanEvents() {
         return listOfBeanEvents;
     }

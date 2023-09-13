@@ -85,11 +85,13 @@ public class ClientProxyProvider {
                 return createClientProxy(input.bean, types.add(input.requestedType).build());
             }
             /*
-             * Requested type is not proxyable. Check whether a proxyable subtype exists within the set of bean types that we could use instead.
+             * Requested type is not proxyable. Check whether a proxyable subtype exists within the set of bean types that we
+             * could use instead.
              */
             Class<?> requestedRawType = Reflections.getRawType(input.requestedType);
             for (Type type : input.bean.getTypes()) {
-                if (requestedRawType.isAssignableFrom(Reflections.getRawType(type)) && Proxies.isTypeProxyable(type, services())) {
+                if (requestedRawType.isAssignableFrom(Reflections.getRawType(type))
+                        && Proxies.isTypeProxyable(type, services())) {
                     return createClientProxy(input.bean, types.add(type).build());
                 }
             }
@@ -185,7 +187,7 @@ public class ClientProxyProvider {
      * and superclass to the factory. Hooks in the MethodHandler and creates the
      * proxy.
      *
-     * @param bean      The bean to proxy
+     * @param bean The bean to proxy
      * @param beanIndex The index to the bean in the manager bean list
      * @return A Javassist proxy
      * @throws InstantiationException When the proxy couldn't be created
@@ -215,6 +217,7 @@ public class ClientProxyProvider {
         BeanLogger.LOG.lookedUpClientProxy(proxy.getClass(), bean);
         return proxy;
     }
+
     /**
      * Gets a client proxy for a bean
      * <p/>
@@ -229,9 +232,9 @@ public class ClientProxyProvider {
         T proxy = beanTypeClosureProxyPool.getCastValue(bean);
         if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
             /*
-             *  the bean may have a type that is not proxyable - this is not a problem as long as the unproxyable
-             *  type is not in the type closure of the requested type
-             *  https://issues.jboss.org/browse/WELD-1052
+             * the bean may have a type that is not proxyable - this is not a problem as long as the unproxyable
+             * type is not in the type closure of the requested type
+             * https://issues.jboss.org/browse/WELD-1052
              */
             proxy = requestedTypeClosureProxyPool.getCastValue(new RequestedTypeHolder(requestedType, bean));
             if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
@@ -242,7 +245,6 @@ public class ClientProxyProvider {
         return proxy;
     }
 
-
     /**
      * Gets a string representation
      *
@@ -250,7 +252,8 @@ public class ClientProxyProvider {
      */
     @Override
     public String toString() {
-        return "Proxy pool with " + beanTypeClosureProxyPool.size() + " bean type proxies and " + requestedTypeClosureProxyPool.size() + "injection point type proxies.";
+        return "Proxy pool with " + beanTypeClosureProxyPool.size() + " bean type proxies and "
+                + requestedTypeClosureProxyPool.size() + "injection point type proxies.";
     }
 
     public void clear() {

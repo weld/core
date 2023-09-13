@@ -17,7 +17,8 @@
 package org.jboss.weld.tests.unit.bootstrap.xml.cdi30;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+
+import java.util.Collection;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
@@ -27,8 +28,6 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.testng.annotations.Test;
-
-import java.util.Collection;
 
 public class Beans30XmlParsingTest {
 

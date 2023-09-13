@@ -44,7 +44,9 @@ public class RequestScopeEventTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(RequestScopeEventTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Servlet.class, ObservingBean.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(RequestScopeEventTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Servlet.class, ObservingBean.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test

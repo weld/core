@@ -18,5 +18,6 @@
 package org.jboss.weld.tests.proxy.weld1664;
 
 public interface IBar {
-    static void foo() { }
+    static void foo() {
+    }
 }

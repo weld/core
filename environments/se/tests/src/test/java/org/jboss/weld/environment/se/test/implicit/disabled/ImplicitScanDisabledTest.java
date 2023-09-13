@@ -37,13 +37,15 @@ public class ImplicitScanDisabledTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(ImplicitScanDisabledTest.class, Bravo.class))
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addClasses(ImplicitScanDisabledTest.class, Bravo.class))
                 .add(ShrinkWrap.create(JavaArchive.class).addClasses(Alpha.class)).build();
     }
 
     @Test
     public void testDiscovery() {
-        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.FALSE).initialize()) {
+        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.FALSE)
+                .initialize()) {
             // Beans from an implicit bean archive with no beans.xml file are not registered
             assertTrue(container.select(Alpha.class).isUnsatisfied());
             Bravo bravo = container.select(Bravo.class).get();

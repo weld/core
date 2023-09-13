@@ -20,12 +20,13 @@ import jakarta.ejb.Stateless;
 
 /**
  * This is no interface view EJB bean. Only public methods are allowed to be invoked (by spec).
+ *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @Stateless
 public class ProblematicBean {
-    
-    String ping(){
+
+    String ping() {
         return ProblematicBean.class.getSimpleName();
     }
 }

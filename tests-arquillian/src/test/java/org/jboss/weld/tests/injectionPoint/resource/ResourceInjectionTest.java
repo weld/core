@@ -47,7 +47,9 @@ public class ResourceInjectionTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ResourceInjectionTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(ResourceInjectionTest.class.getPackage())
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ResourceInjectionTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(ResourceInjectionTest.class.getPackage())
                 .addClass(ActionSequence.class)
                 .addAsWebInfResource(ResourceInjectionTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

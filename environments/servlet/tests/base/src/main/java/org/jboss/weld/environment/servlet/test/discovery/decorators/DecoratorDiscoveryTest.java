@@ -47,15 +47,15 @@ public class DecoratorDiscoveryTest {
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).decorators(ClassicDecorator.class),
                         "beans.xml")
-                        .addClasses(Dog.class, Cat.class);
+                .addClasses(Dog.class, Cat.class);
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(ClassicDecorator.class),
                         "beans.xml")
-                        .addClasses(Plant.class, Tree.class, ClassicDecorator.class);
+                .addClasses(Plant.class, Tree.class, ClassicDecorator.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).decorators(ClassicDecorator.class),
                         "beans.xml")
-                        .addClasses(Flat.class, House.class);
+                .addClasses(Flat.class, House.class);
         testArchive.addAsLibraries(archive01, archive02, archive03);
         return testArchive;
     }

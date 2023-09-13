@@ -44,8 +44,10 @@ public class CustomPrioritizedDecoratorTest {
         return ShrinkWrap
                 .create(BeanArchive.class)
                 .addClasses(Decorated.class, DecoratedBar.class, FooDecorator.class, CustomPrioritizedDecorator.class,
-                        CustomPrioritizedDecoratorExtension.class, LowPriorityGlobalDecorator.class, HighPriorityGlobalDecorator.class,
-                        ActionSequence.class).addAsServiceProvider(Extension.class, CustomPrioritizedDecoratorExtension.class);
+                        CustomPrioritizedDecoratorExtension.class, LowPriorityGlobalDecorator.class,
+                        HighPriorityGlobalDecorator.class,
+                        ActionSequence.class)
+                .addAsServiceProvider(Extension.class, CustomPrioritizedDecoratorExtension.class);
     }
 
     @Test

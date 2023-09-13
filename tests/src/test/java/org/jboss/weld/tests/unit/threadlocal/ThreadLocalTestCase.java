@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.unit.threadlocal;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,8 +16,6 @@ import jakarta.inject.Inject;
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 public class ThreadLocalTestCase {
 
@@ -39,9 +39,9 @@ public class ThreadLocalTestCase {
 
         try {
             manager.getReference(
-                testBean,
-                ThreadLocalTestCase.class,
-                manager.createCreationalContext(testBean));
+                    testBean,
+                    ThreadLocalTestCase.class,
+                    manager.createCreationalContext(testBean));
         } catch (RuntimeException e) {
             // Ignore, expected
         }
@@ -59,9 +59,9 @@ public class ThreadLocalTestCase {
         Bean<?> testBean = manager.resolve(manager.getBeans(Baz.class));
 
         Baz baz = cast(manager.getReference(
-            testBean,
-            Baz.class,
-            manager.createCreationalContext(testBean)));
+                testBean,
+                Baz.class,
+                manager.createCreationalContext(testBean)));
         baz.getBar().ping();
 
         container.stopContainer();
@@ -92,12 +92,12 @@ public class ThreadLocalTestCase {
         table.setAccessible(true);
 
         verifyThreadLocalValues(
-            extractThreadLocalValues(
-                threadLocalsField.get(thread), table));
+                extractThreadLocalValues(
+                        threadLocalsField.get(thread), table));
 
         verifyThreadLocalValues(
-            extractThreadLocalValues(
-                inheritableThreadLocalsField.get(thread), table));
+                extractThreadLocalValues(
+                        inheritableThreadLocalsField.get(thread), table));
 
     }
 
@@ -106,14 +106,14 @@ public class ThreadLocalTestCase {
             String keyName = String.valueOf(entry.getKey());
             if (keyName != null) {
                 Assert.assertFalse(
-                    keyName.startsWith("org.jboss.weld"),
-                    "ThreadLocal variable with key [" + keyName + "] with value[" + entry.getValue() + "] found");
+                        keyName.startsWith("org.jboss.weld"),
+                        "ThreadLocal variable with key [" + keyName + "] with value[" + entry.getValue() + "] found");
             }
         }
     }
 
     private Map<Object, Object> extractThreadLocalValues(Object map, Field internalTableField) throws NoSuchMethodException,
-        IllegalAccessException, NoSuchFieldException, InvocationTargetException {
+            IllegalAccessException, NoSuchFieldException, InvocationTargetException {
         Map<Object, Object> values = new HashMap<Object, Object>();
         if (map != null) {
             Method mapRemove = map.getClass().getDeclaredMethod("remove", new Class[] { ThreadLocal.class });

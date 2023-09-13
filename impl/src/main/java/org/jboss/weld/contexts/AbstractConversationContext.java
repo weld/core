@@ -67,7 +67,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     public static final String CONVERSATIONS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".conversations";
     public static final String DESTRUCTION_QUEUE_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".destructionQueue";
-    private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
+    private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName()
+            + ".currentConversation";
 
     private static final String PARAMETER_NAME = "cid";
 
@@ -100,11 +101,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         this.parameterName = new AtomicReference<String>(PARAMETER_NAME);
         WeldConfiguration configuration = services.get(WeldConfiguration.class);
         this.defaultTimeout = new AtomicLong(configuration.getLongProperty(ConfigurationKey.CONVERSATION_TIMEOUT));
-        this.concurrentAccessTimeout = new AtomicLong(configuration.getLongProperty(ConfigurationKey.CONVERSATION_CONCURRENT_ACCESS_TIMEOUT));
+        this.concurrentAccessTimeout = new AtomicLong(
+                configuration.getLongProperty(ConfigurationKey.CONVERSATION_CONCURRENT_ACCESS_TIMEOUT));
         this.associated = new ThreadLocal<R>();
         this.manager = Container.instance(contextId).deploymentManager();
         this.beanIdentifierIndex = services.get(BeanIdentifierIndex.class);
-        this.resetHttpSessionAttributeOnBeanAccess = configuration.getBooleanProperty(ConfigurationKey.RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS);
+        this.resetHttpSessionAttributeOnBeanAccess = configuration
+                .getBooleanProperty(ConfigurationKey.RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS);
     }
 
     @Override
@@ -141,7 +144,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     public boolean associate(R request) {
         this.associated.set(request);
         /*
-         * We need to delay attaching the bean store until activate() is called so that we can attach the correct conversation id. We may need access to the
+         * We need to delay attaching the bean store until activate() is called so that we can attach the correct conversation
+         * id. We may need access to the
          * conversation id generator and conversation map are initialized lazily.
          */
         return true;
@@ -169,11 +173,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
         // If necessary, store the conversation id generator and conversation map in the session
         Object conversationIdGenerator = getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
-        if (conversationIdGenerator != null && getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
+        if (conversationIdGenerator != null
+                && getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
             setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator, false);
         }
         Object conversationMap = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
-        if (conversationMap != null && (resetHttpSessionAttributeOnBeanAccess || getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null)) {
+        if (conversationMap != null && (resetHttpSessionAttributeOnBeanAccess
+                || getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null)) {
             setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
         }
     }
@@ -196,7 +202,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     protected void associateRequest(ManagedConversation conversation) {
         setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
 
-        NamingScheme namingScheme = new ConversationNamingScheme(getNamingSchemePrefix(), conversation.getId(), beanIdentifierIndex);
+        NamingScheme namingScheme = new ConversationNamingScheme(getNamingSchemePrefix(), conversation.getId(),
+                beanIdentifierIndex);
         setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
         getBeanStore().attach();
     }
@@ -261,7 +268,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             }
 
             try {
-                if (getCurrentConversation().isTransient() && getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) != null) {
+                if (getCurrentConversation().isTransient()
+                        && getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) != null) {
                     // WELD-1746 Don't destroy ended conversations - these must be destroyed in a synchronized block - see also cleanUpConversationMap()
                     destroy();
                 } else {
@@ -269,14 +277,17 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                     getCurrentConversation().touch();
                     if (!getBeanStore().isAttached()) {
                         /*
-                         * This was a transient conversation at the beginning of the request, so we need to update the CID it uses, and attach it. We also add
+                         * This was a transient conversation at the beginning of the request, so we need to update the CID it
+                         * uses, and attach it. We also add
                          * it to the conversations the session knows about.
                          */
-                        if (!(getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) instanceof ConversationNamingScheme)) {
+                        if (!(getRequestAttribute(getRequest(),
+                                ConversationNamingScheme.PARAMETER_NAME) instanceof ConversationNamingScheme)) {
                             throw ConversationLogger.LOG.conversationNamingSchemeNotFound();
                         }
-                        ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation()
-                                .getId());
+                        ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME))
+                                .setCid(getCurrentConversation()
+                                        .getId());
 
                         getBeanStore().attach();
                         getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
@@ -413,7 +424,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             if (fireEvents) {
                 conversationBeforeDestroyedEvent.get().fire(id);
             }
-            setBeanStore(createSessionBeanStore(new ConversationNamingScheme(getNamingSchemePrefix(), id, beanIdentifierIndex), session));
+            setBeanStore(createSessionBeanStore(new ConversationNamingScheme(getNamingSchemePrefix(), id, beanIdentifierIndex),
+                    session));
             getBeanStore().attach();
             destroy();
             getBeanStore().detach();
@@ -509,7 +521,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         R request = getRequest();
         Object attribute = getRequestAttribute(request, CURRENT_CONVERSATION_ATTRIBUTE_NAME);
         if (attribute == null || !(attribute instanceof ManagedConversation)) {
-            throw ConversationLogger.LOG.unableToLoadCurrentConversation(CURRENT_CONVERSATION_ATTRIBUTE_NAME, attribute, request);
+            throw ConversationLogger.LOG.unableToLoadCurrentConversation(CURRENT_CONVERSATION_ATTRIBUTE_NAME, attribute,
+                    request);
         }
         return (ManagedConversation) attribute;
     }
@@ -523,12 +536,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      * Set an attribute in the session.
      *
      * @param request the request to set the session attribute in
-     * @param name    the name of the attribute
-     * @param value   the value of the attribute
-     * @param create  if false, the attribute will only be set if the session
-     *                already exists, otherwise it will always be set
+     * @param name the name of the attribute
+     * @param value the value of the attribute
+     * @param create if false, the attribute will only be set if the session
+     *        already exists, otherwise it will always be set
      * @throws IllegalStateException if create is true, and the session can't be
-     *                               created
+     *         created
      */
     protected abstract void setSessionAttribute(R request, String name, Object value, boolean create);
 
@@ -536,12 +549,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      * Get an attribute value from the session.
      *
      * @param request the request to get the session attribute from
-     * @param name    the name of the attribute
-     * @param create  if false, the attribute will only be retrieved if the
-     *                session already exists, other wise it will always be retrieved
+     * @param name the name of the attribute
+     * @param create if false, the attribute will only be retrieved if the
+     *        session already exists, other wise it will always be retrieved
      * @return attribute
      * @throws IllegalStateException if create is true, and the session can't be
-     *                               created
+     *         created
      */
     protected abstract Object getSessionAttribute(R request, String name, boolean create);
 
@@ -549,10 +562,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      * Get an attribute value from the session.
      *
      * @param session the session to get the session attribute from
-     * @param name    the name of the attribute
+     * @param name the name of the attribute
      * @return attribute
      * @throws IllegalStateException if create is true, and the session can't be
-     *                               created
+     *         created
      */
     protected abstract Object getSessionAttributeFromSession(S session, String name);
 
@@ -560,7 +573,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      * Remove an attribute from the request.
      *
      * @param request the request to remove the attribute from
-     * @param name    the name of the attribute
+     * @param name the name of the attribute
      */
     protected abstract void removeRequestAttribute(R request, String name);
 
@@ -568,8 +581,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      * Set an attribute in the request.
      *
      * @param request the request to set the attribute from
-     * @param name    the name of the attribute
-     * @param value   the value of the attribute
+     * @param name the name of the attribute
+     * @param value the value of the attribute
      */
     protected abstract void setRequestAttribute(R request, String name, Object value);
 
@@ -577,7 +590,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      * Retrieve an attribute value from the request
      *
      * @param request the request to get the attribute from
-     * @param name    the name of the attribute to get
+     * @param name the name of the attribute to get
      * @return the value of the attribute
      */
     protected abstract Object getRequestAttribute(R request, String name);

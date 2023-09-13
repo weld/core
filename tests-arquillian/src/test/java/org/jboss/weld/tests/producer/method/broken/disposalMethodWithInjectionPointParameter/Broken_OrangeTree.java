@@ -33,6 +33,6 @@ public class Broken_OrangeTree {
     }
 
     public void disposeOrange(@Disposes @Juicy Orange orange, InjectionPoint ip) {
-        
+
     }
 }

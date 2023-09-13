@@ -124,7 +124,8 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
     public Set<Entry<K, Collection<V>>> entrySet() {
         ImmutableSet.Builder<Entry<K, Collection<V>>> builder = ImmutableSet.builder();
         for (Entry<K, C> entry : map.entrySet()) {
-            builder.add(new MultimapEntry<K, Collection<V>>(entry.getKey(), Multimaps.unmodifiableValueCollection(entry.getValue())));
+            builder.add(new MultimapEntry<K, Collection<V>>(entry.getKey(),
+                    Multimaps.unmodifiableValueCollection(entry.getValue())));
         }
         return builder.build();
     }

@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.proxy;
 
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,9 +29,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.inject.Inject;
 
 @RunWith(Arquillian.class)
 public class ProxyTest {
@@ -42,8 +42,8 @@ public class ProxyTest {
     private BeanManagerImpl beanManager;
 
     /*
-    * description = "WBRI-122"
-    */
+     * description = "WBRI-122"
+     */
     @Test
     public void testImplementationClassImplementsSerializable() {
         Bean<?> bean = beanManager.resolve(beanManager.getBeans("foo"));

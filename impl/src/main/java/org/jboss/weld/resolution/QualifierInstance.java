@@ -43,7 +43,8 @@ import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
- * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly faster equals/hashCode methods, that also
+ * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly faster
+ * equals/hashCode methods, that also
  * correctly handle non binding attributes.
  * <p>
  * Note that Weld is using this representation for interceptor bindings as well. See also
@@ -99,7 +100,7 @@ public class QualifierInstance {
     }
 
     private QualifierInstance(final Class<? extends Annotation> annotationClass) {
-        this(annotationClass, Collections.<String, Object>emptyMap());
+        this(annotationClass, Collections.<String, Object> emptyMap());
     }
 
     /**
@@ -151,12 +152,14 @@ public class QualifierInstance {
                             try {
                                 builder.put(m.getName(), m.invoke(instance));
                             } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException ex) {
-                                throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), ex);
+                                throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance,
+                                        Formats.formatAsStackTraceElement(method.getJavaMember()), ex);
                             }
                         }
                     }
                 } catch (InvocationTargetException | IllegalAccessException e) {
-                    throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance, Formats.formatAsStackTraceElement(method.getJavaMember()), e);
+                    throw ResolutionLogger.LOG.cannotCreateQualifierInstanceValues(instance,
+                            Formats.formatAsStackTraceElement(method.getJavaMember()), e);
                 }
             }
         }

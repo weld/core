@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.se.test.executor;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.executor.CommonForkJoinPoolExecutorServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

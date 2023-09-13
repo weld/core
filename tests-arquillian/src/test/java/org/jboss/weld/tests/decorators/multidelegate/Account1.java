@@ -16,15 +16,15 @@
  */
 package org.jboss.weld.tests.decorators.multidelegate;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.math.BigDecimal;
+
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Account1 implements Account {
 
     public static boolean triggered = false;
-    
+
     public String withdraw(BigDecimal amount) {
         triggered = true;
         return "Account1 withdraw";

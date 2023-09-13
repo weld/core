@@ -62,7 +62,8 @@ public class InterceptorConfiguratorImpl implements InterceptorConfigurator {
     }
 
     @Override
-    public InterceptorConfigurator intercept(InterceptionType interceptionType, Function<InvocationContext, Object> interceptorFunction) {
+    public InterceptorConfigurator intercept(InterceptionType interceptionType,
+            Function<InvocationContext, Object> interceptorFunction) {
         this.type = interceptionType;
         this.interceptorFunction = interceptorFunction;
         this.interceptorBiFunction = null;
@@ -70,7 +71,8 @@ public class InterceptorConfiguratorImpl implements InterceptorConfigurator {
     }
 
     @Override
-    public InterceptorConfigurator interceptWithMetadata(InterceptionType interceptionType, BiFunction<InvocationContext, Bean<?>, Object> interceptorFunction) {
+    public InterceptorConfigurator interceptWithMetadata(InterceptionType interceptionType,
+            BiFunction<InvocationContext, Bean<?>, Object> interceptorFunction) {
         this.type = interceptionType;
         this.interceptorBiFunction = interceptorFunction;
         this.interceptorFunction = null;

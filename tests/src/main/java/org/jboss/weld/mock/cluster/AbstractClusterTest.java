@@ -16,6 +16,15 @@
  */
 package org.jboss.weld.mock.cluster;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.Map;
+
 import org.jboss.arquillian.container.weld.embedded.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.embedded.mock.FlatDeployment;
 import org.jboss.arquillian.container.weld.embedded.mock.TestContainer;
@@ -28,15 +37,6 @@ import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.reflection.Reflections;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Map;
 
 public class AbstractClusterTest {
 
@@ -73,14 +73,16 @@ public class AbstractClusterTest {
     }
 
     protected static BeanManagerImpl getBeanManager(TestContainer container) {
-        return (BeanManagerImpl) container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
+        return (BeanManagerImpl) container
+                .getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
     }
 
     protected void use(int id) {
         SwitchableSingletonProvider.use(id);
     }
 
-    protected void replicateSession(int fromId, TestContainer fromContainer, int toId, TestContainer toContainer) throws Exception {
+    protected void replicateSession(int fromId, TestContainer fromContainer, int toId, TestContainer toContainer)
+            throws Exception {
         // Mimic replicating the session - first serialize the objects
         byte[] bytes = serialize(fromContainer.getSessionStore());
         use(toId);
@@ -91,7 +93,7 @@ public class AbstractClusterTest {
         sessionContext.dissociate(toContainer.getSessionStore());
 
         // then copy them into the other session store
-        toContainer.getSessionStore().putAll(Reflections.<Map<String, Object>>cast(deserialize(bytes)));
+        toContainer.getSessionStore().putAll(Reflections.<Map<String, Object>> cast(deserialize(bytes)));
         sessionContext.associate(toContainer.getSessionStore());
 
         // then activate again

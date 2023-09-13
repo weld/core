@@ -40,7 +40,9 @@ public class PostConstructInterceptorWithInvalidParameterTypeTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PostConstructInterceptorWithInvalidParameterTypeTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(PostConstructInterceptorWithInvalidParameterTypeTest.class))
                 .intercept(MyInterceptor.class)
                 .addClass(PostConstructInterceptorWithInvalidParameterTypeTest.class)
                 .addClasses(Lifecycle.class, LifecycleInterceptedBean.class);
@@ -49,7 +51,7 @@ public class PostConstructInterceptorWithInvalidParameterTypeTest {
     @Test
     public void testDeploymentInterceptorWithInvalidParamType() {
         // should throw exception, either IllegalArg or Definition
-     }
+    }
 
     @Lifecycle
     @Interceptor

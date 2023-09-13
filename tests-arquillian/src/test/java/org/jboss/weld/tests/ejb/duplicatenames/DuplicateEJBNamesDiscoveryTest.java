@@ -18,8 +18,6 @@ package org.jboss.weld.tests.ejb.duplicatenames;
 
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.Testable;
 import org.jboss.arquillian.junit.Arquillian;
@@ -31,6 +29,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -57,7 +56,9 @@ public class DuplicateEJBNamesDiscoveryTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(DuplicateEJBNamesDiscoveryTest.class);
 
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(DuplicateEJBNamesDiscoveryTest.class, Utils.ARCHIVE_TYPE.EAR))
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(DuplicateEJBNamesDiscoveryTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModules(jar1, jar2)
                 .addAsModule(Testable.archiveToTest(testWar));
     }

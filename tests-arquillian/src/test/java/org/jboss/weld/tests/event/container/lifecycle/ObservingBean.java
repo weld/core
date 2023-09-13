@@ -17,15 +17,15 @@
 
 package org.jboss.weld.tests.event.container.lifecycle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Shutdown;
 import jakarta.enterprise.event.Startup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @ApplicationScoped
 public class ObservingBean {

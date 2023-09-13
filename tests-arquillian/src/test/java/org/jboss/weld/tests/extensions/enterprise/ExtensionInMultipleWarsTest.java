@@ -47,14 +47,18 @@ public class ExtensionInMultipleWarsTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        JavaArchive lib = ShrinkWrap.create(JavaArchive.class).addClasses(TestExtension.class, TestBean.class).addAsServiceProvider(Extension.class,
-                TestExtension.class);
+        JavaArchive lib = ShrinkWrap.create(JavaArchive.class).addClasses(TestExtension.class, TestBean.class)
+                .addAsServiceProvider(Extension.class,
+                        TestExtension.class);
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war").addClass(TestServlet1.class).addAsLibraries(lib)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war").addClass(TestServlet2.class).addAsLibraries(lib)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(ExtensionInMultipleWarsTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(war1,
-                war2);
+        return ShrinkWrap
+                .create(EnterpriseArchive.class,
+                        Utils.getDeploymentNameAsHash(ExtensionInMultipleWarsTest.class, Utils.ARCHIVE_TYPE.EAR))
+                .addAsModules(war1,
+                        war2);
     }
 
     @ArquillianResource(TestServlet1.class)

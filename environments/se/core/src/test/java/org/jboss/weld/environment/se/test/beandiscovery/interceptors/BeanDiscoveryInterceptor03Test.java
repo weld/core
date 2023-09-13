@@ -48,13 +48,18 @@ public class BeanDiscoveryInterceptor03Test {
     public static Archive<?> getDeployment() {
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).interceptors(ScopedInterceptor.class, ClassicInterceptor.class), "beans.xml")
+                .addAsManifestResource(
+                        new BeansXml(BeanDiscoveryMode.ALL).interceptors(ScopedInterceptor.class, ClassicInterceptor.class),
+                        "beans.xml")
                 .addClasses(Dog.class, Cat.class, InterceptorBindingAnnotation.class);
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).interceptors(ScopedInterceptor.class, ClassicInterceptor.class), "beans.xml")
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).interceptors(ScopedInterceptor.class,
+                        ClassicInterceptor.class), "beans.xml")
                 .addClasses(Plant.class, Tree.class, Stone.class, ScopedInterceptor.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).interceptors(ScopedInterceptor.class, ClassicInterceptor.class), "beans.xml")
+                .addAsManifestResource(
+                        new BeansXml(BeanDiscoveryMode.NONE).interceptors(ScopedInterceptor.class, ClassicInterceptor.class),
+                        "beans.xml")
                 .addClasses(Flat.class, House.class, ClassicInterceptor.class);
         archives.add(archive01);
         archives.add(archive02);
@@ -65,6 +70,5 @@ public class BeanDiscoveryInterceptor03Test {
     @Test
     public void testAllBeanDiscovery() {
     }
-
 
 }

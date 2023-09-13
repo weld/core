@@ -33,13 +33,13 @@ import jakarta.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
-import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
+import org.jboss.weld.module.web.logging.ServletLogger;
+import org.jboss.weld.module.web.util.servlet.ServletUtils;
 import org.jboss.weld.servlet.api.InitParameters;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
-import org.jboss.weld.module.web.util.servlet.ServletUtils;
 
 /**
  * The initial Weld listener. It should always be registered as the first listener, before any
@@ -78,7 +78,8 @@ public class WeldInitialListener extends AbstractServletListener {
         if (beanManager == null) {
             String contextId = ctx.getInitParameter(Container.CONTEXT_ID_KEY);
             if (contextId != null) {
-                List<BeanManagerImpl> managers = new ArrayList<BeanManagerImpl>(Container.instance(contextId).beanDeploymentArchives().values());
+                List<BeanManagerImpl> managers = new ArrayList<BeanManagerImpl>(
+                        Container.instance(contextId).beanDeploymentArchives().values());
                 Collections.sort(managers, BeanManagers.ID_COMPARATOR);
                 beanManager = managers.get(0);
             }
@@ -92,7 +93,8 @@ public class WeldInitialListener extends AbstractServletListener {
         final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_INCLUDE, false);
         final boolean nestedInvocationGuard = getBooleanInitParameter(ctx, CONTEXT_IGNORE_GUARD_PARAMETER, true);
         final boolean lazyConversationContext = getBooleanInitParameter(ctx, CONVERSATION_CONTEXT_LAZY_PARAM, true);
-        this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes, lazyConversationContext, nestedInvocationGuard);
+        this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes, lazyConversationContext,
+                nestedInvocationGuard);
         if (Boolean.valueOf(ctx.getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
         }

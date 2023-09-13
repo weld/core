@@ -42,7 +42,8 @@ public class ListMultimap<K, V> extends AbstractMultimap<K, V, List<V>> {
     }
 
     /**
-     * Creates a new instance backed by a {@link HashMap} and {@link ArrayList}. All key-value mappings are copied from the input multimap.
+     * Creates a new instance backed by a {@link HashMap} and {@link ArrayList}. All key-value mappings are copied from the
+     * input multimap.
      *
      * @param multimap
      */

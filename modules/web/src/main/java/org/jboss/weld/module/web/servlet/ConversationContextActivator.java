@@ -31,16 +31,16 @@ import jakarta.enterprise.context.Initialized;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.module.web.context.http.LazyHttpConversationContextImpl;
+import org.jboss.weld.contexts.AbstractConversationContext;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.logging.ConversationLogger;
-import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.web.context.http.LazyHttpConversationContextImpl;
+import org.jboss.weld.module.web.logging.ServletLogger;
 
 /**
  * This component takes care of activation/deactivation of the conversation context for a servlet request.
@@ -58,7 +58,8 @@ public class ConversationContextActivator {
     private static final String CONVERSATION_PROPAGATION = "conversationPropagation";
     private static final String CONVERSATION_PROPAGATION_NONE = "none";
 
-    private static final String CONTEXT_ACTIVATED_IN_REQUEST = ConversationContextActivator.class.getName() + ".contextActivatedInRequest";
+    private static final String CONTEXT_ACTIVATED_IN_REQUEST = ConversationContextActivator.class.getName()
+            + ".contextActivatedInRequest";
 
     private final BeanManagerImpl beanManager;
     private HttpConversationContext httpConversationContextCache;
@@ -74,7 +75,8 @@ public class ConversationContextActivator {
     protected ConversationContextActivator(BeanManagerImpl beanManager, boolean lazy) {
         this.beanManager = beanManager;
         conversationInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, Initialized.Literal.CONVERSATION);
-        conversationBeforeDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, BeforeDestroyed.Literal.CONVERSATION);
+        conversationBeforeDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager,
+                BeforeDestroyed.Literal.CONVERSATION);
         conversationDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, Destroyed.Literal.CONVERSATION);
         lazyInitializationCallback = lazy ? conversationInitializedEvent::fire : null;
         this.lazy = lazy;
@@ -110,7 +112,8 @@ public class ConversationContextActivator {
             activate(conversationContext, request);
         } else {
             /*
-             * We may have previously been associated with a ConversationContext, but the reference to that context may have been lost during a Servlet forward
+             * We may have previously been associated with a ConversationContext, but the reference to that context may have
+             * been lost during a Servlet forward
              * WELD-877
              */
             conversationContext.dissociate(request);
@@ -195,9 +198,11 @@ public class ConversationContextActivator {
         if (contextsAttribute instanceof Map) {
             Map<String, List<ContextualInstance<?>>> contexts = cast(contextsAttribute);
             synchronized (contexts) {
-                FastEvent<String> beforeDestroyedEvent = FastEvent.of(String.class, beanManager, BeforeDestroyed.Literal.CONVERSATION);
+                FastEvent<String> beforeDestroyedEvent = FastEvent.of(String.class, beanManager,
+                        BeforeDestroyed.Literal.CONVERSATION);
                 FastEvent<String> destroyedEvent = FastEvent.of(String.class, beanManager, Destroyed.Literal.CONVERSATION);
-                for (Iterator<Entry<String, List<ContextualInstance<?>>>> iterator = contexts.entrySet().iterator(); iterator.hasNext();) {
+                for (Iterator<Entry<String, List<ContextualInstance<?>>>> iterator = contexts.entrySet().iterator(); iterator
+                        .hasNext();) {
                     Entry<String, List<ContextualInstance<?>>> entry = iterator.next();
                     beforeDestroyedEvent.fire(entry.getKey());
                     for (ContextualInstance<?> contextualInstance : entry.getValue()) {

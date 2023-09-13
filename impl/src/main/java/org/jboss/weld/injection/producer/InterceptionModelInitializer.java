@@ -66,7 +66,8 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class InterceptionModelInitializer<T> {
 
-    public static <T> InterceptionModelInitializer<T> of(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, Bean<?> bean) {
+    public static <T> InterceptionModelInitializer<T> of(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType,
+            Bean<?> bean) {
         return new InterceptionModelInitializer<T>(manager, annotatedType, Beans.getBeanConstructorStrict(annotatedType), bean);
     }
 
@@ -85,7 +86,8 @@ public class InterceptionModelInitializer<T> {
 
     private final WeldConfiguration configuration;
 
-    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, EnhancedAnnotatedConstructor<T> constructor, Bean<?> bean) {
+    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType,
+            EnhancedAnnotatedConstructor<T> constructor, Bean<?> bean) {
         this.constructor = constructor;
         this.manager = manager;
         this.reader = manager.getInterceptorMetadataReader();
@@ -114,7 +116,8 @@ public class InterceptionModelInitializer<T> {
                 throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(annotatedType.getJavaClass());
             }
             if (constructor != null && Reflections.isPrivate(constructor.getJavaMember())) {
-                throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass().getName(), constructor, annotatedType.getJavaClass()));
+                throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(
+                        annotatedType.getJavaClass().getName(), constructor, annotatedType.getJavaClass()));
             }
             manager.getInterceptorModelRegistry().put(annotatedType.slim(), interceptionModel);
         }
@@ -124,7 +127,8 @@ public class InterceptionModelInitializer<T> {
         if (!Beans.isInterceptor(annotatedType)) {
             TargetClassInterceptorMetadata interceptorClassMetadata = reader.getTargetClassInterceptorMetadata(annotatedType);
             builder.setTargetClassInterceptorMetadata(interceptorClassMetadata);
-            hasSerializationOrInvocationInterceptorMethods = interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
+            hasSerializationOrInvocationInterceptorMethods = interceptorClassMetadata
+                    .isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
                     || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT)
                     || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)
                     || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE);
@@ -166,11 +170,13 @@ public class InterceptionModelInitializer<T> {
         initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, null, qualifiers);
     }
 
-    private void initLifeCycleInterceptor(InterceptionType interceptionType, AnnotatedConstructor<?> constructor, Set<Annotation> annotations) {
+    private void initLifeCycleInterceptor(InterceptionType interceptionType, AnnotatedConstructor<?> constructor,
+            Set<Annotation> annotations) {
         List<Interceptor<?>> resolvedInterceptors = manager.resolveInterceptors(interceptionType, annotations);
         if (!resolvedInterceptors.isEmpty()) {
-            if(constructor != null) {
-                builder.interceptGlobal(interceptionType, constructor.getJavaMember(),  asInterceptorMetadata(resolvedInterceptors), annotations);
+            if (constructor != null) {
+                builder.interceptGlobal(interceptionType, constructor.getJavaMember(),
+                        asInterceptorMetadata(resolvedInterceptors), annotations);
             } else {
                 builder.interceptGlobal(interceptionType, null, asInterceptorMetadata(resolvedInterceptors), null);
             }
@@ -183,7 +189,8 @@ public class InterceptionModelInitializer<T> {
 
     private void initCdiBusinessMethodInterceptors(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
         for (EnhancedAnnotatedMethod<?, ?> method : businessMethods) {
-            initCdiBusinessMethodInterceptor(method, getMemberBindingAnnotations(classBindingAnnotations, method.getMetaAnnotations(InterceptorBinding.class)));
+            initCdiBusinessMethodInterceptor(method,
+                    getMemberBindingAnnotations(classBindingAnnotations, method.getMetaAnnotations(InterceptorBinding.class)));
         }
     }
 
@@ -195,23 +202,27 @@ public class InterceptionModelInitializer<T> {
         initInterceptor(InterceptionType.AROUND_TIMEOUT, method, methodBindingAnnotations);
     }
 
-    private void initInterceptor(InterceptionType interceptionType, AnnotatedMethod<?> method, Set<Annotation> methodBindingAnnotations) {
+    private void initInterceptor(InterceptionType interceptionType, AnnotatedMethod<?> method,
+            Set<Annotation> methodBindingAnnotations) {
         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(interceptionType, methodBindingAnnotations);
         if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
             Method javaMethod = method.getJavaMember();
             if (Reflections.isFinal(javaMethod)) {
                 if (configuration.isFinalMethodIgnored(javaMethod.getDeclaringClass().getName())) {
-                    BeanLogger.LOG.finalMethodNotIntercepted(javaMethod, methodBoundInterceptors.get(0).getBeanClass().getName());
+                    BeanLogger.LOG.finalMethodNotIntercepted(javaMethod,
+                            methodBoundInterceptors.get(0).getBeanClass().getName());
                 } else {
                     if (Reflections.isPrivate(javaMethod)) {
                         // private final methods are OK, we just ignore them and log a warning
                         BeanLogger.LOG.privateFinalMethodOnInterceptedBean(method.getDeclaringType(), method);
                     } else {
-                        throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                        throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method,
+                                methodBoundInterceptors.get(0).getBeanClass().getName());
                     }
                 }
             } else {
-                builder.interceptMethod(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors), methodBindingAnnotations);
+                builder.interceptMethod(interceptionType, javaMethod, asInterceptorMetadata(methodBoundInterceptors),
+                        methodBindingAnnotations);
             }
         }
     }
@@ -221,15 +232,18 @@ public class InterceptionModelInitializer<T> {
      */
 
     private void initCdiConstructorInterceptors(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-        Set<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations, constructor.getMetaAnnotations(InterceptorBinding.class));
+        Set<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations,
+                constructor.getMetaAnnotations(InterceptorBinding.class));
         if (constructorBindings.isEmpty()) {
             return;
         }
         initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, this.constructor, constructorBindings);
     }
 
-    private Set<Annotation> getMemberBindingAnnotations(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
-        Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(null, manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
+    private Set<Annotation> getMemberBindingAnnotations(
+            Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
+        Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(null, manager,
+                filterInterceptorBindings(manager, memberAnnotations), true, true);
         return mergeMemberInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).uniqueValues();
     }
 
@@ -252,20 +266,24 @@ public class InterceptionModelInitializer<T> {
      */
     private void initClassDeclaredEjbInterceptors() {
         Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
-        boolean excludeClassLevelAroundConstructInterceptors = constructor != null && constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
+        boolean excludeClassLevelAroundConstructInterceptors = constructor != null
+                && constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {
                 InterceptorClassMetadata<?> interceptor = reader.getPlainInterceptorMetadata(clazz);
                 for (InterceptionType interceptionType : InterceptionType.values()) {
-                    if (excludeClassLevelAroundConstructInterceptors && interceptionType.equals(InterceptionType.AROUND_CONSTRUCT)) {
+                    if (excludeClassLevelAroundConstructInterceptors
+                            && interceptionType.equals(InterceptionType.AROUND_CONSTRUCT)) {
                         /*
                          * @ExcludeClassInterceptors suppresses @AroundConstruct interceptors defined on class level
                          */
                         continue;
                     }
-                    if (interceptor.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType))) {
-                        builder.interceptGlobal(interceptionType, null, Collections.<InterceptorClassMetadata<?>>singleton(interceptor), null);
+                    if (interceptor
+                            .isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType))) {
+                        builder.interceptGlobal(interceptionType, null,
+                                Collections.<InterceptorClassMetadata<?>> singleton(interceptor), null);
                     }
                 }
             }
@@ -279,7 +297,8 @@ public class InterceptionModelInitializer<T> {
         Class<?>[] constructorDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
         if (constructorDeclaredInterceptors != null) {
             for (Class<?> clazz : constructorDeclaredInterceptors) {
-                builder.interceptGlobal(InterceptionType.AROUND_CONSTRUCT, null, Collections.<InterceptorClassMetadata<?>>singleton(reader.getPlainInterceptorMetadata(clazz)), null);
+                builder.interceptGlobal(InterceptionType.AROUND_CONSTRUCT, null,
+                        Collections.<InterceptorClassMetadata<?>> singleton(reader.getPlainInterceptorMetadata(clazz)), null);
             }
         }
     }
@@ -287,7 +306,8 @@ public class InterceptionModelInitializer<T> {
     private void initMethodDeclaredEjbInterceptors(AnnotatedMethod<?> method) {
         Method javaMethod = method.getJavaMember();
 
-        boolean excludeClassInterceptors = method.isAnnotationPresent(interceptorsApi.getExcludeClassInterceptorsAnnotationClass());
+        boolean excludeClassInterceptors = method
+                .isAnnotationPresent(interceptorsApi.getExcludeClassInterceptorsAnnotationClass());
         if (excludeClassInterceptors) {
             builder.addMethodIgnoringGlobalInterceptors(javaMethod);
         }
@@ -295,13 +315,15 @@ public class InterceptionModelInitializer<T> {
         Class<?>[] methodDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(method);
         if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
             if (Reflections.isFinal(method.getJavaMember())) {
-                throw new DeploymentException(BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodDeclaredInterceptors[0].getName()));
+                throw new DeploymentException(
+                        BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodDeclaredInterceptors[0].getName()));
             }
 
             InterceptionType interceptionType = isTimeoutAnnotationPresentOn(method)
                     ? InterceptionType.AROUND_TIMEOUT
                     : InterceptionType.AROUND_INVOKE;
-            builder.interceptMethod(interceptionType, javaMethod, getMethodDeclaredInterceptorMetadatas(methodDeclaredInterceptors), null);
+            builder.interceptMethod(interceptionType, javaMethod,
+                    getMethodDeclaredInterceptorMetadatas(methodDeclaredInterceptors), null);
         }
     }
 
@@ -321,7 +343,8 @@ public class InterceptionModelInitializer<T> {
      * Merges bean interceptor bindings (including inherited ones) with method interceptor bindings. Method interceptor bindings
      * override bean interceptor bindings. The bean binding map is not modified - a copy is used.
      */
-    protected Multimap<Class<? extends Annotation>, Annotation> mergeMemberInterceptorBindings(Multimap<Class<? extends Annotation>, Annotation> beanBindings,
+    protected Multimap<Class<? extends Annotation>, Annotation> mergeMemberInterceptorBindings(
+            Multimap<Class<? extends Annotation>, Annotation> beanBindings,
             Set<Annotation> methodBindingAnnotations) {
 
         Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = SetMultimap.newSetMultimap(beanBindings);

@@ -26,8 +26,6 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.interceptor.InvocationContext;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -35,14 +33,15 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.module.ejb.SessionBeanInterceptor;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
  * Verifies that {@link SessionBeanInterceptor} works fine.
- * 
+ *
  * @see WELD-1666
- * 
+ *
  * @author Jozef Hartinger
  *
  */
@@ -51,7 +50,8 @@ public class SessionBeanInterceptorTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SessionBeanInterceptorTest.class)).addPackage(SessionBeanInterceptorTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SessionBeanInterceptorTest.class))
+                .addPackage(SessionBeanInterceptorTest.class.getPackage());
     }
 
     @Test

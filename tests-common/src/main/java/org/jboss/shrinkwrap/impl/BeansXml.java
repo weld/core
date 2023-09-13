@@ -12,7 +12,9 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 
 public class BeansXml implements Asset {
 
-    public static final BeansXml SUPPRESSOR = new BeansXml(Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList(), Collections.<Exclude> emptyList()) {
+    public static final BeansXml SUPPRESSOR = new BeansXml(Collections.<Class<?>> emptyList(),
+            Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList(),
+            Collections.<Exclude> emptyList()) {
         @Override
         public BeanDiscoveryMode getBeanDiscoveryMode() {
             return BeanDiscoveryMode.NONE;
@@ -170,7 +172,8 @@ public class BeansXml implements Asset {
     }
 
     public BeansXml() {
-        this(new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Exclude>());
+        this(new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>(),
+                new ArrayList<Exclude>());
     }
 
     public BeansXml(BeanDiscoveryMode mode) {
@@ -178,7 +181,8 @@ public class BeansXml implements Asset {
         setBeanDiscoveryMode(mode);
     }
 
-    private BeansXml(List<Class<?>> alternatives, List<Class<?>> interceptors, List<Class<?>> decorators, List<Class<?>> stereotypes, List<Exclude> excludeFilters) {
+    private BeansXml(List<Class<?>> alternatives, List<Class<?>> interceptors, List<Class<?>> decorators,
+            List<Class<?>> stereotypes, List<Exclude> excludeFilters) {
         this.alternatives = alternatives;
         this.interceptors = interceptors;
         this.decorators = decorators;
@@ -237,16 +241,16 @@ public class BeansXml implements Asset {
     private void appendExcludeFilters(List<Exclude> filters, StringBuilder xml) {
         if (filters.size() > 0) {
             xml.append(OPENING_TAG_PREFIX).append(SCAN_ELEMENT_NAME).append(TAG_SUFFIX_NEW_LINE);
-            for(Exclude ex : filters) {
+            for (Exclude ex : filters) {
                 xml.append(OPENING_TAG_PREFIX).append(EXCLUDE_ELEMENT_NAME);
                 appendAttribute(NAME_ATTRIBUTE_NAME, ex.getClassFilter(), xml);
                 List<Exclude.Condition> conditions = ex.getConditions();
-                if(conditions.isEmpty()) {
+                if (conditions.isEmpty()) {
                     xml.append(TAG_SUFFIX_SELF_CLOSE_NEW_LINE);
                 } else {
                     xml.append(TAG_SUFFIX_NEW_LINE);
                     for (Exclude.Condition c : conditions) {
-                         xml.append(c.toString());
+                        xml.append(c.toString());
                     }
                     xml.append(CLOSING_TAG_PREFIX).append(EXCLUDE_ELEMENT_NAME).append(TAG_SUFFIX_NEW_LINE);
                 }
@@ -278,7 +282,8 @@ public class BeansXml implements Asset {
 
     private static void appendClasses(String name, List<Class<?>> classes, StringBuilder xml) {
         for (Class<?> clazz : classes) {
-            xml.append(OPENING_TAG_PREFIX).append(name).append(TAG_SUFFIX).append(clazz.getName()).append(CLOSING_TAG_PREFIX).append(name).append(TAG_SUFFIX_NEW_LINE);
+            xml.append(OPENING_TAG_PREFIX).append(name).append(TAG_SUFFIX).append(clazz.getName()).append(CLOSING_TAG_PREFIX)
+                    .append(name).append(TAG_SUFFIX_NEW_LINE);
         }
     }
 }

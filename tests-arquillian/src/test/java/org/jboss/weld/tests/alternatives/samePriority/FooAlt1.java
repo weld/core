@@ -28,5 +28,5 @@ import jakarta.enterprise.inject.Alternative;
 @Priority(10)
 @ApplicationScoped
 public class FooAlt1 extends Foo {
-    
+
 }

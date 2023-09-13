@@ -18,7 +18,6 @@ package org.jboss.weld.tests.contexts.application.event;
 
 import jakarta.servlet.ServletContext;
 
-import org.junit.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.Testable;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,6 +29,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -46,12 +46,16 @@ public class MultiWarTest {
 
     @Deployment
     public static EnterpriseArchive getDeployment() {
-        JavaArchive lib = ShrinkWrap.create(BeanArchive.class).addClasses(AbstractObserver.class, EventRepository.class, MultiObserver4.class);
-        WebArchive war1 = Testable.archiveToTest(ShrinkWrap.create(WebArchive.class, "test1.war").addClasses(MultiObserver1.class, MultiWarTest.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml"));
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war").addClasses(MultiObserver2.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        JavaArchive lib = ShrinkWrap.create(BeanArchive.class).addClasses(AbstractObserver.class, EventRepository.class,
+                MultiObserver4.class);
+        WebArchive war1 = Testable.archiveToTest(ShrinkWrap.create(WebArchive.class, "test1.war")
+                .addClasses(MultiObserver1.class, MultiWarTest.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml"));
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war").addClasses(MultiObserver2.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         JavaArchive ejb1 = ShrinkWrap.create(BeanArchive.class, "ejb1.jar").addClasses(MultiObserver3.class, TestEjb1.class);
         JavaArchive ejb2 = ShrinkWrap.create(BeanArchive.class, "ejb2.jar").addClasses(MultiObserver5.class, TestEjb2.class);
-        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(MultiWarTest.class, Utils.ARCHIVE_TYPE.EAR))
+        return ShrinkWrap
+                .create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(MultiWarTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModules(war1, war2, ejb1, ejb2)
                 .addAsLibrary(lib);
     }

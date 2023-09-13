@@ -41,12 +41,13 @@ public class GenericBeanRawSpecialization03Test {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericBeanRawSpecialization03Test.class)).addClasses(GenericBeanRawSpecialization03Test.class, MyBean.class,
-                MyRawBean.class, MyInterface.class, MySuperInterface.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericBeanRawSpecialization03Test.class))
+                .addClasses(GenericBeanRawSpecialization03Test.class, MyBean.class,
+                        MyRawBean.class, MyInterface.class, MySuperInterface.class);
     }
 
     @Test
     public void testDeploymentWithSpecializationOfRawType() {
         // should throw definition exception
-     }
+    }
 }

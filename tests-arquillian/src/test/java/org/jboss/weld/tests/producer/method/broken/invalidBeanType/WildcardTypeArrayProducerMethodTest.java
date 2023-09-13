@@ -38,11 +38,11 @@ public class WildcardTypeArrayProducerMethodTest {
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WildcardTypeArrayProducerMethodTest.class))
-            .addClasses(Foo.class, WildcardTypeArrayProducer.class);
+                .addClasses(Foo.class, WildcardTypeArrayProducer.class);
     }
 
     @Test
     public void testDeploymentWithWildcardArrayProducerMethod() {
         // should throw definition exception
-     }
+    }
 }

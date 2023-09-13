@@ -38,10 +38,12 @@ public class ServletBeansTest {
 
     @ArquillianResource
     private URL url;
-    
+
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletBeansTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Servlet.class, ServletBuiltinBeanInjectingBean.class)
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletBeansTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Servlet.class, ServletBuiltinBeanInjectingBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
@@ -56,7 +58,7 @@ public class ServletBeansTest {
         WebClient client = new WebClient();
         client.getPage(url + "/session");
     }
-    
+
     @Test
     public void testServletContext() throws Exception {
         WebClient client = new WebClient();

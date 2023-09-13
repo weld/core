@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Verify that extension which defines custom bean with no callback fails during deployment.
+ *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @RunWith(Arquillian.class)
@@ -39,12 +40,14 @@ public class BeanConfiguratorWithNoCallbackTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanConfiguratorWithNoCallbackTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addClasses(BeanConfiguratorWithNoCallbackTest.class, IncorrectCustomBeanExtension.class, Charlie.class)
-            .addAsServiceProvider(Extension.class, IncorrectCustomBeanExtension.class)
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(BeanConfiguratorWithNoCallbackTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(BeanConfiguratorWithNoCallbackTest.class, IncorrectCustomBeanExtension.class, Charlie.class)
+                .addAsServiceProvider(Extension.class, IncorrectCustomBeanExtension.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-    
+
     @Test
     public void testFailure() throws Exception {
         // throws exception, just verify this doesn't pass the deployment

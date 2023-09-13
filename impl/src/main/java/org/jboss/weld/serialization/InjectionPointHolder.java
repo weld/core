@@ -62,10 +62,12 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
             AnnotatedParameter<?> parameter = Reflections.cast(ip.getAnnotated());
             if (parameter.getDeclaringCallable() instanceof AnnotatedConstructor<?>) {
                 AnnotatedConstructor<?> constructor = Reflections.cast(parameter.getDeclaringCallable());
-                this.identifier = new ConstructorParameterInjectionPointIdentifier(contextId, ip.getBean(), parameter.getPosition(), constructor);
+                this.identifier = new ConstructorParameterInjectionPointIdentifier(contextId, ip.getBean(),
+                        parameter.getPosition(), constructor);
             } else if (parameter.getDeclaringCallable() instanceof AnnotatedMethod<?>) {
                 AnnotatedMethod<?> method = Reflections.cast(parameter.getDeclaringCallable());
-                this.identifier = new MethodParameterInjectionPointIdentifier(contextId, ip.getBean(), parameter.getPosition(), method);
+                this.identifier = new MethodParameterInjectionPointIdentifier(contextId, ip.getBean(), parameter.getPosition(),
+                        method);
             } else {
                 throw BeanLogger.LOG.invalidAnnotatedCallable(parameter.getDeclaringCallable());
             }
@@ -89,7 +91,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
     }
 
     /**
-     * Transient implementation of {@link InjectionPointIdentifier}. Holds an InjectionPint reference until serialized. After deserialization the reference is lost.
+     * Transient implementation of {@link InjectionPointIdentifier}. Holds an InjectionPint reference until serialized. After
+     * deserialization the reference is lost.
      *
      * @author Jozef Hartinger
      *
@@ -215,7 +218,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private final ConstructorHolder<?> constructor;
 
-        public ConstructorParameterInjectionPointIdentifier(String contextId, Bean<?> bean, int position, AnnotatedConstructor<?> constructor) {
+        public ConstructorParameterInjectionPointIdentifier(String contextId, Bean<?> bean, int position,
+                AnnotatedConstructor<?> constructor) {
             super(contextId, bean, position);
             this.constructor = ConstructorHolder.of(constructor.getJavaMember());
         }
@@ -236,7 +240,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private final MethodHolder method;
 
-        public MethodParameterInjectionPointIdentifier(String contextId, Bean<?> bean, int position, AnnotatedMethod<?> constructor) {
+        public MethodParameterInjectionPointIdentifier(String contextId, Bean<?> bean, int position,
+                AnnotatedMethod<?> constructor) {
             super(contextId, bean, position);
             this.method = MethodHolder.of(constructor);
         }

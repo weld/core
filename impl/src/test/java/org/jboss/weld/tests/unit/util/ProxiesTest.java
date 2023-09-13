@@ -33,15 +33,32 @@ import org.junit.Test;
  */
 public class ProxiesTest {
 
-    interface Bar {}
-    interface Baz extends Bar {}
-    interface SubBaz extends Baz {}
-    interface Foo extends Bar {}
-    interface SubFoo extends Foo, Baz, Serializable {}
-    interface Oops extends Foo, SubBaz {}
-    interface Incomplete1 extends Foo, Comparable<String> {};
-    interface Incomplete2 extends Comparable<String> {};
-    interface Incomplete3 extends Incomplete2 {};
+    interface Bar {
+    }
+
+    interface Baz extends Bar {
+    }
+
+    interface SubBaz extends Baz {
+    }
+
+    interface Foo extends Bar {
+    }
+
+    interface SubFoo extends Foo, Baz, Serializable {
+    }
+
+    interface Oops extends Foo, SubBaz {
+    }
+
+    interface Incomplete1 extends Foo, Comparable<String> {
+    };
+
+    interface Incomplete2 extends Comparable<String> {
+    };
+
+    interface Incomplete3 extends Incomplete2 {
+    };
 
     @Test
     public void testSortInterfacesHierarchy() {
@@ -56,7 +73,7 @@ public class ProxiesTest {
         interfaces.add(Oops.class);
         interfaces.add(Incomplete1.class);
         interfaces.add(Incomplete3.class);
-        Class<?>[] sorted = Proxies.sortInterfacesHierarchy(interfaces).toArray(new Class<?>[]{});
+        Class<?>[] sorted = Proxies.sortInterfacesHierarchy(interfaces).toArray(new Class<?>[] {});
         assertEquals(10, sorted.length);
         assertBefore(sorted, Oops.class, Foo.class, SubBaz.class, Bar.class, Baz.class);
         assertBefore(sorted, SubFoo.class, Foo.class, Bar.class, Baz.class, Serializable.class);
@@ -72,13 +89,13 @@ public class ProxiesTest {
         int idx1 = getIndex(clazz, sorted);
         for (Class<?> testClass : classes) {
             int idx2 = getIndex(testClass, sorted);
-            assertTrue(clazz + ":" + idx1 + " not before " + testClass + ":" + idx2,  idx1 < idx2);
+            assertTrue(clazz + ":" + idx1 + " not before " + testClass + ":" + idx2, idx1 < idx2);
         }
     }
 
     private int getIndex(Class<?> clazz, Class<?>[] sorted) {
         for (int i = 0; i < sorted.length; i++) {
-            if(sorted[i].equals(clazz)) {
+            if (sorted[i].equals(clazz)) {
                 return i;
             }
         }

@@ -2,7 +2,6 @@ package org.jboss.weld.tests.contexts;
 
 import org.jboss.weld.context.ManagedContext;
 
-
 public abstract class WorkInInactiveContext {
 
     private final ManagedContext context;

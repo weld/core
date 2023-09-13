@@ -19,7 +19,8 @@ package org.jboss.weld.logging;
 import org.jboss.logging.annotations.Message;
 
 /**
- * JBoss Logging is not using message keys and so it's not possible to reference the message (a message method annotated with {@link Message}) and use it as a
+ * JBoss Logging is not using message keys and so it's not possible to reference the message (a message method annotated with
+ * {@link Message}) and use it as a
  * method parameter or construct it lazily. This callback should be used to work around this limitation.
  *
  * Note that the method parameters are not checked and so the invocation may result in {@link ArrayIndexOutOfBoundsException}.

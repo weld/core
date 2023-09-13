@@ -45,7 +45,8 @@ public class InstanceIteratorTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceIteratorTest.class)).addPackage(InstanceIteratorTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceIteratorTest.class))
+                .addPackage(InstanceIteratorTest.class.getPackage())
                 .addClasses(ActionSequence.class, Utils.class);
     }
 

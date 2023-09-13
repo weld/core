@@ -20,10 +20,12 @@ package org.jboss.weld.tests.util;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+
 import org.jboss.weld.config.ConfigurationKey;
 
 /**
@@ -53,7 +55,8 @@ public class SystemPropertiesLoader {
         if (props != null) {
             for (Map.Entry<Object, Object> entry : props.entrySet()) {
                 if (ConfigurationKey.fromString(entry.getKey().toString()) != null) {
-                    System.setProperty(entry.getKey().toString(), ConfigurationKey.fromString(entry.getKey().toString()).getDefaultValue().toString());
+                    System.setProperty(entry.getKey().toString(),
+                            ConfigurationKey.fromString(entry.getKey().toString()).getDefaultValue().toString());
                 } else {
                     System.clearProperty(entry.getKey().toString());
                 }

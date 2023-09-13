@@ -75,7 +75,8 @@ public class WeldUnusedMetadataExtension implements Extension {
             return false;
         }
         for (InjectionPoint injectionPoint : componentInjectionPoints) {
-            if (beanManager.getBeanResolver().resolve(new ResolvableBuilder(injectionPoint, beanManager).create(), false).contains(bean)) {
+            if (beanManager.getBeanResolver().resolve(new ResolvableBuilder(injectionPoint, beanManager).create(), false)
+                    .contains(bean)) {
                 return true;
             }
         }
@@ -89,7 +90,8 @@ public class WeldUnusedMetadataExtension implements Extension {
         for (InjectionPoint injectionPoint : instanceInjectionPoints) {
             Type facadeType = getFacadeType(injectionPoint);
             if (facadeType != null) {
-                Resolvable resolvable = new ResolvableBuilder(facadeType, beanManager).addQualifiers(injectionPoint.getQualifiers())
+                Resolvable resolvable = new ResolvableBuilder(facadeType, beanManager)
+                        .addQualifiers(injectionPoint.getQualifiers())
                         .setDeclaringBean(injectionPoint.getBean()).create();
                 if (beanManager.getBeanResolver().resolve(resolvable, false).contains(bean)) {
                     return true;

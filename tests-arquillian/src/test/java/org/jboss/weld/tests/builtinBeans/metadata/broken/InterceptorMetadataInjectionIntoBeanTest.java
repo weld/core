@@ -37,13 +37,15 @@ public class InterceptorMetadataInjectionIntoBeanTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorMetadataInjectionIntoBeanTest.class)).addClass(InterceptorMetadataInjectionIntoBeanTest.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorMetadataInjectionIntoBeanTest.class))
+                .addClass(InterceptorMetadataInjectionIntoBeanTest.class);
     }
 
     @Test
     public void testBrokenInterceptorInjection() {
         // should throw definition exception
-     }
+    }
 
     @Dependent
     public static class BrokenBean {

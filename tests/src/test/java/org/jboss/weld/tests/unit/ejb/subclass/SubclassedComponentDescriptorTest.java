@@ -47,7 +47,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Verifies that Weld produces subclasses of EJB container-provided subclasses and that methods can be invoked on these subclasses.
+ * Verifies that Weld produces subclasses of EJB container-provided subclasses and that methods can be invoked on these
+ * subclasses.
  *
  * @author Jozef Hartinger
  * @see WELD-1667
@@ -57,11 +58,13 @@ public class SubclassedComponentDescriptorTest {
 
     private BeanManagerImpl manager;
     private TestContainer container;
-    
+
     @BeforeClass
     public void prepareContainer() {
-        final EjbDescriptor<Foo> fooDescriptor = new EjbDescriptorImpl<Foo>(Foo.class, Foo.class, EnhancedFoo.class, SessionBeanType.STATEFUL);
-        final EjbDescriptor<Bar> barDescriptor = new EjbDescriptorImpl<Bar>(Bar.class, BarLocal.class, EnhancedBar.class, SessionBeanType.STATEFUL);
+        final EjbDescriptor<Foo> fooDescriptor = new EjbDescriptorImpl<Foo>(Foo.class, Foo.class, EnhancedFoo.class,
+                SessionBeanType.STATEFUL);
+        final EjbDescriptor<Bar> barDescriptor = new EjbDescriptorImpl<Bar>(Bar.class, BarLocal.class, EnhancedBar.class,
+                SessionBeanType.STATEFUL);
         final EjbDescriptor<Baz> bazDescriptor = new EjbDescriptorImpl<Baz>(Baz.class, Baz.class, EnhancedBaz.class, null);
 
         final BeanDeploymentArchive bda = new BeanDeploymentArchiveImpl("1",
@@ -71,11 +74,10 @@ public class SubclassedComponentDescriptorTest {
                 BarDecorator.class,
                 BarInterceptor.class,
                 BarInterceptorBinding.class,
-                Baz.class
-            ) {
+                Baz.class) {
             @Override
             public Collection<EjbDescriptor<?>> getEjbs() {
-                return ImmutableSet.<EjbDescriptor<?>>of(fooDescriptor, barDescriptor, bazDescriptor);
+                return ImmutableSet.<EjbDescriptor<?>> of(fooDescriptor, barDescriptor, bazDescriptor);
             }
         };
 
@@ -84,6 +86,7 @@ public class SubclassedComponentDescriptorTest {
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 return bda;
             }
+
             @Override
             protected void configureServices(Environment environment) {
                 super.configureServices(environment);
@@ -95,7 +98,7 @@ public class SubclassedComponentDescriptorTest {
         container = new TestContainer(deployment).startContainer();
         manager = (BeanManagerImpl) container.getBeanManager(bda);
     }
-    
+
     @AfterClass
     public void cleanup() {
         container.stopContainer();
@@ -103,22 +106,25 @@ public class SubclassedComponentDescriptorTest {
 
     @Test
     public void testSubclassedComponentDescriptor() {
-        Foo foo = (Foo) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName())).produce(manager.createCreationalContext(null));
-        Bar bar = (Bar) manager.createInjectionTarget(manager.getEjbDescriptor(Bar.class.getSimpleName())).produce(manager.createCreationalContext(null));
-        Baz baz = (Baz) manager.createInjectionTarget(manager.getEjbDescriptor(Baz.class.getSimpleName())).produce(manager.createCreationalContext(null));
+        Foo foo = (Foo) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName()))
+                .produce(manager.createCreationalContext(null));
+        Bar bar = (Bar) manager.createInjectionTarget(manager.getEjbDescriptor(Bar.class.getSimpleName()))
+                .produce(manager.createCreationalContext(null));
+        Baz baz = (Baz) manager.createInjectionTarget(manager.getEjbDescriptor(Baz.class.getSimpleName()))
+                .produce(manager.createCreationalContext(null));
 
         assertEquals(foo.ping(), 1);
         assertEquals(bar.ping(), 3);
         assertEquals(baz.ping(), 1);
 
         assertTrue(foo instanceof Enhanced);
-        assertTrue(Reflections.<Enhanced>cast(foo).check());
+        assertTrue(Reflections.<Enhanced> cast(foo).check());
 
         assertTrue(bar instanceof Enhanced);
-        assertTrue(Reflections.<Enhanced>cast(bar).check());
+        assertTrue(Reflections.<Enhanced> cast(bar).check());
 
         assertTrue(baz instanceof Enhanced);
-        assertTrue(Reflections.<Enhanced>cast(baz).check());
+        assertTrue(Reflections.<Enhanced> cast(baz).check());
 
         assertNotNull(foo.getManager());
         assertNotNull(bar.getManager());
@@ -131,7 +137,8 @@ public class SubclassedComponentDescriptorTest {
 
     @Test
     public void testInterceptionModelForConstructor() {
-        BasicInjectionTarget<?> it = (BasicInjectionTarget<?>) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName()));
+        BasicInjectionTarget<?> it = (BasicInjectionTarget<?>) manager
+                .createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName()));
         InterceptionModel model = manager.getInterceptorModelRegistry().get(it.getAnnotated());
         assertNotNull(model);
         assertTrue(model.hasExternalConstructorInterceptors());
@@ -144,7 +151,8 @@ public class SubclassedComponentDescriptorTest {
         private final Class<?> localInterface;
         private final SessionBeanType type;
 
-        public EjbDescriptorImpl(Class<T> beanClass, Class<?> localInterface, Class<? extends T> componentSubclass, SessionBeanType type) {
+        public EjbDescriptorImpl(Class<T> beanClass, Class<?> localInterface, Class<? extends T> componentSubclass,
+                SessionBeanType type) {
             this.beanClass = beanClass;
             this.localInterface = localInterface;
             this.componentSubclass = componentSubclass;

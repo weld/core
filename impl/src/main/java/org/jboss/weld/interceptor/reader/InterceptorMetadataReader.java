@@ -15,7 +15,8 @@ import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 /**
- * InterceptorMetadata reader. The reader produces InterceptorMetadata instances for plain interceptors, CDI interceptors and components' target classes.
+ * InterceptorMetadata reader. The reader produces InterceptorMetadata instances for plain interceptors, CDI interceptors and
+ * components' target classes.
  * <p>
  * This class is thread-safe.
  *
@@ -37,7 +38,8 @@ public class InterceptorMetadataReader {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
             public InterceptorClassMetadata<?> apply(Class<?> key) {
-                EnhancedAnnotatedType<?> type = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(key, manager.getId());
+                EnhancedAnnotatedType<?> type = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(key,
+                        manager.getId());
                 InterceptorFactory<?> factory = PlainInterceptorFactory.of(key, manager);
                 return new InterceptorMetadataImpl(key, factory, InterceptorMetadataUtils.buildMethodMap(type, false, manager));
             }

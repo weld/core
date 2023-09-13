@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.annotated.enhanced;
 
-import org.jboss.weld.util.collections.Arrays2;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Stereotype;
@@ -24,9 +26,8 @@ import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.inject.Qualifier;
 import jakarta.inject.Scope;
 import jakarta.interceptor.InterceptorBinding;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
+
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
@@ -40,7 +41,8 @@ public interface EnhancedAnnotated<T, S> extends Annotated {
     /**
      * The set of meta-annotations to map
      */
-    Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = Arrays2.asSet(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class);
+    Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = Arrays2.asSet(Qualifier.class, Stereotype.class, Scope.class,
+            NormalScope.class, InterceptorBinding.class);
 
     /**
      * The set of declared meta-annotations to map
@@ -61,7 +63,7 @@ public interface EnhancedAnnotated<T, S> extends Annotated {
      * Gets the binding types for this element
      *
      * @returns A set of binding types present on the type. Returns an empty set
-     * if there are no matches.
+     *          if there are no matches.
      * @deprecated This reflection type should not know about JSR-299 binding
      *             types
      */
@@ -72,7 +74,7 @@ public interface EnhancedAnnotated<T, S> extends Annotated {
      * Gets the binding types for this element
      *
      * @returns An array of binding types present on the type. Returns an empty
-     * array if there are no matches.
+     *          array if there are no matches.
      * @deprecated This reflection type should not know about JSR-299 binding
      *             types
      */
@@ -151,6 +153,7 @@ public interface EnhancedAnnotated<T, S> extends Annotated {
 
     /**
      * Returns a lightweight implementation of {@link Annotated} with minimal memory footprint.
+     *
      * @return the slim version of this {@link Annotated}
      */
     Annotated slim();

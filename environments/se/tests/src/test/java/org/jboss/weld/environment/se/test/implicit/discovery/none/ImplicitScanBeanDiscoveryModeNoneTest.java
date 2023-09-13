@@ -39,13 +39,16 @@ public class ImplicitScanBeanDiscoveryModeNoneTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
-                .add(ShrinkWrap.create(JavaArchive.class).addClasses(Bong.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml"))
-                .add(ShrinkWrap.create(JavaArchive.class).addClasses(ImplicitScanBeanDiscoveryModeNoneTest.class, Bang.class)).build();
+                .add(ShrinkWrap.create(JavaArchive.class).addClasses(Bong.class)
+                        .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml"))
+                .add(ShrinkWrap.create(JavaArchive.class).addClasses(ImplicitScanBeanDiscoveryModeNoneTest.class, Bang.class))
+                .build();
     }
 
     @Test
     public void testDiscovery() {
-        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.TRUE).initialize()) {
+        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.TRUE)
+                .initialize()) {
             assertTrue(container.select(Bong.class).isUnsatisfied());
             Bang bang = container.select(Bang.class).get();
             assertNotNull(bang);

@@ -34,7 +34,9 @@ public class TransientReferenceDestroyedAfterInvocationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TransientReferenceDestroyedAfterInvocationTest.class)).addPackage(TransientReferenceDestroyedAfterInvocationTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(TransientReferenceDestroyedAfterInvocationTest.class))
+                .addPackage(TransientReferenceDestroyedAfterInvocationTest.class.getPackage());
     }
 
     @Test

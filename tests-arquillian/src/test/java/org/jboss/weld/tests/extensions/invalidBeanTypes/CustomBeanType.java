@@ -27,8 +27,8 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
 /**
-* @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
-*/
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
+ */
 public class CustomBeanType implements Bean<Object> {
 
     private Type type;

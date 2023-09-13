@@ -104,12 +104,10 @@ public class WeldBootstrap implements CDI11Bootstrap {
         return this;
     }
 
-
     @Override
     public synchronized BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
         return weldRuntime == null ? null : weldRuntime.getManager(beanDeploymentArchive);
     }
-
 
     @Override
     public synchronized void shutdown() {
@@ -139,7 +137,8 @@ public class WeldBootstrap implements CDI11Bootstrap {
         if (beansXmlValidator != null) {
             beansXmlValidator.validate(url);
         }
-        return new BeansXmlStreamParser(url, emptyBeansXmlDiscoveryMode).parse();    }
+        return new BeansXmlStreamParser(url, emptyBeansXmlDiscoveryMode).parse();
+    }
 
     @Override
     public BeansXml parse(Iterable<URL> urls, BeanDiscoveryMode emptyBeansXmlDiscoveryMode) {

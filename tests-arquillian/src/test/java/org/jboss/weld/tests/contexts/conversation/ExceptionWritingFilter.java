@@ -1,5 +1,8 @@
 package org.jboss.weld.tests.contexts.conversation;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import jakarta.enterprise.context.Conversation;
 import jakarta.enterprise.context.NonexistentConversationException;
 import jakarta.inject.Inject;
@@ -9,9 +12,6 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-
-import java.io.IOException;
-import java.io.PrintWriter;
 
 public class ExceptionWritingFilter implements Filter {
     @Inject
@@ -38,7 +38,6 @@ public class ExceptionWritingFilter implements Filter {
 
     public void init(FilterConfig filterConfig) throws ServletException {
     }
-
 
     private void writeNonexistenConversationException(ServletResponse response) throws IOException {
         response.setContentType("text/plain");

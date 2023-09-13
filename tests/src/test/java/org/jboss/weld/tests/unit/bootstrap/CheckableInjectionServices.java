@@ -44,7 +44,8 @@ public class CheckableInjectionServices implements InjectionServices {
             aroundInjectForFooCalled++;
             ((Foo) injectionContext.getTarget()).message = "hi!";
             if (injectionContext.getInjectionTarget().getInjectionPoints().size() == 1) {
-                injectionTargetCorrect = injectionContext.getInjectionTarget().getInjectionPoints().iterator().next().getType().equals(Bar.class);
+                injectionTargetCorrect = injectionContext.getInjectionTarget().getInjectionPoints().iterator().next().getType()
+                        .equals(Bar.class);
             }
         }
         injectionContext.proceed();

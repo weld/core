@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.annotatedType;
 
-
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $

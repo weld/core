@@ -111,10 +111,12 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
         }
         String actionUrl = super.getActionURL(facesContext, viewId);
         final ConversationContext ctx = getConversationContext(contextId);
-        if (ctx!= null && ctx.isActive() && !getSource().equals(Source.BOOKMARKABLE) && !ctx.getCurrentConversation().isTransient()) {
+        if (ctx != null && ctx.isActive() && !getSource().equals(Source.BOOKMARKABLE)
+                && !ctx.getCurrentConversation().isTransient()) {
             return new FacesUrlTransformer(actionUrl, facesContext)
-                .appendConversationIdIfNecessary(getConversationContext(contextId).getParameterName(), ctx.getCurrentConversation().getId())
-                .getUrl();
+                    .appendConversationIdIfNecessary(getConversationContext(contextId).getParameterName(),
+                            ctx.getCurrentConversation().getId())
+                    .getUrl();
         } else {
             return actionUrl;
         }
@@ -129,7 +131,8 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
     }
 
     @Override
-    public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
+    public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
+            boolean includeViewParams) {
         try {
             source.set(Source.BOOKMARKABLE);
             return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
@@ -139,7 +142,8 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
     }
 
     @Override
-    public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
+    public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
+            boolean includeViewParams) {
         try {
             source.set(Source.REDIRECT);
             return super.getRedirectURL(context, viewId, parameters, includeViewParams);

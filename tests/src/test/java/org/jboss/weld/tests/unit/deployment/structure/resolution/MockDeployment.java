@@ -42,7 +42,7 @@ public class MockDeployment implements Deployment {
 
     @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.<BeanDeploymentArchive>singleton(new BeanDeploymentArchive() {
+        return Collections.<BeanDeploymentArchive> singleton(new BeanDeploymentArchive() {
 
             @Override
             public ServiceRegistry getServices() {
@@ -90,7 +90,7 @@ public class MockDeployment implements Deployment {
 
     @Override
     public Iterable<Metadata<Extension>> getExtensions() {
-        return Collections.<Metadata<Extension>>emptyList();
+        return Collections.<Metadata<Extension>> emptyList();
     }
 
 }

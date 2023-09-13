@@ -44,7 +44,8 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
     }
 
     /**
-     * Creates a new instance backed by a {@link HashMap} and {@link HashSet}. All key-value mappings are copied from the input multimap. If any
+     * Creates a new instance backed by a {@link HashMap} and {@link HashSet}. All key-value mappings are copied from the input
+     * multimap. If any
      * collection of values in the input multimap contains duplicate elements, these are removed in the constructed multimap.
      *
      * @param multimap

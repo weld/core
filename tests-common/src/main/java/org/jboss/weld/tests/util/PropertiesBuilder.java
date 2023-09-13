@@ -40,7 +40,7 @@ public class PropertiesBuilder {
     }
 
     /**
-     * @param key   property key
+     * @param key property key
      * @param value property value
      * @return self
      */

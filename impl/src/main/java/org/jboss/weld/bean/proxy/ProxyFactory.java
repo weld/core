@@ -144,8 +144,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         this(contextId, proxiedBeanType, typeClosure, bean, false);
     }
 
-    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, boolean forceSuperClass) {
-        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean, forceSuperClass);
+    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean,
+            boolean forceSuperClass) {
+        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean,
+                forceSuperClass);
     }
 
     /**
@@ -153,14 +155,16 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * known, such as during de-serialization
      *
      * @param proxiedBeanType the super-class for this proxy class
-     * @param typeClosure     the bean types of the bean
-     * @param proxyName       the name of the proxy class
+     * @param typeClosure the bean types of the bean
+     * @param proxyName the name of the proxy class
      */
-    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
+    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName,
+            Bean<?> bean) {
         this(contextId, proxiedBeanType, typeClosure, proxyName, bean, false);
     }
 
-    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, boolean forceSuperClass) {
+    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName,
+            Bean<?> bean, boolean forceSuperClass) {
         this.bean = bean;
         this.contextId = contextId;
         this.proxiedBeanType = proxiedBeanType;
@@ -241,7 +245,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         return proxyPackage + '.' + getEnclosingPrefix(proxiedBeanType) + className;
     }
 
-    private static ProxyNameHolder createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
+    private static ProxyNameHolder createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo,
+            StringBuilder name) {
         String className;
         String proxyPackage = null;
         // we need a sorted collection without repetition, hence LinkedHashSet
@@ -298,7 +303,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     /**
      * Convenience method to set the underlying bean instance for a proxy.
      *
-     * @param proxy        the proxy instance
+     * @param proxy the proxy instance
      * @param beanInstance the instance of the bean
      */
     public static <T> void setBeanInstance(String contextId, T proxy, BeanInstance beanInstance, Bean<?> bean) {
@@ -468,7 +473,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         List<DeferredBytecode> initialValueBytecode = new ArrayList<DeferredBytecode>();
 
         // Workaround for IBM JVM - the ACC_STATIC flag should only be required for class file with version number 51.0 or above
-        ClassMethod staticConstructor = proxyClassType.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.STATIC), "<clinit>", "V");
+        ClassMethod staticConstructor = proxyClassType.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.STATIC),
+                "<clinit>", "V");
 
         addFields(proxyClassType, initialValueBytecode);
         addConstructors(proxyClassType, initialValueBytecode);
@@ -486,7 +492,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
         ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
 
-        if (proxiedBeanType.getPackage() == null || proxiedBeanType.getPackage().getName().isEmpty() || proxiedBeanType.equals(Object.class)) {
+        if (proxiedBeanType.getPackage() == null || proxiedBeanType.getPackage().getName().isEmpty()
+                || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
         } else if (System.getSecurityManager() != null) {
             ProtectionDomainCache cache = Container.instance(contextId).services().get(ProtectionDomainCache.class);
@@ -502,7 +509,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             // We need to use a (non-deprecated) method that avoids instantiating DefaultClassFactory.INSTANCE
             // If that happens, we will have module accessibility issues and the need to use --add-opens clausules
             // NOTE: the CL and ClassFactory are never really used to define the class, see WeldDefaultProxyServices
-            return new ClassFile(name, accessFlags, superclass, ProxyFactory.class.getClassLoader(), DummyClassFactoryImpl.INSTANCE, interfaces);
+            return new ClassFile(name, accessFlags, superclass, ProxyFactory.class.getClassLoader(),
+                    DummyClassFactoryImpl.INSTANCE, interfaces);
         } catch (Exception e) {
             throw BeanLogger.LOG.unableToCreateClassFile(name, e.getCause());
         }
@@ -525,7 +533,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * Adds a constructor for the proxy for each constructor declared by the base
      * bean type.
      *
-     * @param proxyClassType       the Javassist class for the proxy
+     * @param proxyClassType the Javassist class for the proxy
      * @param initialValueBytecode
      */
     protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
@@ -534,14 +542,17 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, !useConstructedFlag());
             } else {
                 boolean constructorFound = false;
-                for (Constructor<?> constructor : AccessController.doPrivileged(new GetDeclaredConstructorsAction(getBeanType()))) {
+                for (Constructor<?> constructor : AccessController
+                        .doPrivileged(new GetDeclaredConstructorsAction(getBeanType()))) {
                     if ((constructor.getModifiers() & Modifier.PRIVATE) == 0) {
                         constructorFound = true;
                         String[] exceptions = new String[constructor.getExceptionTypes().length];
                         for (int i = 0; i < exceptions.length; ++i) {
                             exceptions[i] = constructor.getExceptionTypes()[i].getName();
                         }
-                        ConstructorUtils.addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, DescriptorUtils.parameterDescriptors(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, !useConstructedFlag());
+                        ConstructorUtils.addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR,
+                                DescriptorUtils.parameterDescriptors(constructor.getParameterTypes()), exceptions,
+                                proxyClassType, initialValueBytecode, !useConstructedFlag());
                     }
                 }
                 if (!constructorFound) {
@@ -685,7 +696,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     }
 
-    protected void createSpecialMethodBody(ClassMethod proxyClassType, MethodInformation method, ClassMethod staticConstructor) {
+    protected void createSpecialMethodBody(ClassMethod proxyClassType, MethodInformation method,
+            ClassMethod staticConstructor) {
         createInterceptorBody(proxyClassType, method, staticConstructor);
     }
 
@@ -723,7 +735,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         cond.branchEnd(jumpMarker);
     }
 
-    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
+    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method,
+            ClassMethod staticConstructor) {
         createInterceptorBody(classMethod, method, staticConstructor);
     }
 
@@ -736,7 +749,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * return (RetType) methodHandler.invoke(this,param1,param2);
      *
      * @param classMethod the class method
-     * @param method      any JLR method
+     * @param method any JLR method
      * @return the method byte code
      */
     protected void createInterceptorBody(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
@@ -746,12 +759,13 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     /**
      * calls methodHandler.invoke for a given method
      *
-     * @param method                 The method information
-     * @param addReturnInstruction   set to true you want to return the result of
-     *                               the method invocation
+     * @param method The method information
+     * @param addReturnInstruction set to true you want to return the result of
+     *        the method invocation
      * @param bytecodeMethodResolver The resolver that returns the method to invoke
      */
-    protected void invokeMethodHandler(ClassMethod classMethod, MethodInformation method, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, ClassMethod staticConstructor) {
+    protected void invokeMethodHandler(ClassMethod classMethod, MethodInformation method, boolean addReturnInstruction,
+            BytecodeMethodResolver bytecodeMethodResolver, ClassMethod staticConstructor) {
         // now we need to build the bytecode. The order we do this in is as
         // follows:
         // load methodHandler
@@ -768,7 +782,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         b.aload(0);
         getMethodHandlerField(classMethod.getClassFile(), b);
         b.aload(0);
-        bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(), method.getParameterTypes(), staticConstructor);
+        bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(),
+                method.getParameterTypes(), staticConstructor);
         b.aconstNull();
 
         b.iconst(method.getParameterTypes().length);
@@ -794,8 +809,9 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         }
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT, new String[]{LJAVA_LANG_OBJECT,
-                LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT});
+        b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
+                new String[] { LJAVA_LANG_OBJECT,
+                        LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
         if (addReturnInstruction) {
             // now we need to return the appropriate type
             if (method.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
@@ -831,9 +847,9 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
             createInterceptorBody(proxyClassType.addMethod(getInstanceMethod), getInstanceMethodInfo, staticConstructor);
 
-
             MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
-            createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo, staticConstructor);
+            createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo,
+                    staticConstructor);
 
             Method setMethodHandlerMethod = ProxyObject.class.getMethod("weld_setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
@@ -850,7 +866,8 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         b.aload(0);
         b.aload(1);
         b.checkcast(getMethodHandlerType());
-        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(getMethodHandlerType()));
+        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME,
+                DescriptorUtils.makeDescriptor(getMethodHandlerType()));
         b.returnInstruction();
     }
 
@@ -869,19 +886,23 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * however the proxy is directly created without calling the constructor
      */
     private void addConstructorsForBeanWithPrivateConstructors(ClassFile proxyClassType) {
-        ClassMethod ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE);
+        ClassMethod ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR,
+                LJAVA_LANG_BYTE);
         CodeAttribute b = ctor.getCodeAttribute();
         b.aload(0);
         b.aconstNull();
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME,
+                "(" + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
 
-        ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE, LJAVA_LANG_BYTE);
+        ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR,
+                LJAVA_LANG_BYTE, LJAVA_LANG_BYTE);
         b = ctor.getCodeAttribute();
         b.aload(0);
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME,
+                "(" + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 
@@ -964,6 +985,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
         /**
          * Class name, never null
+         *
          * @return class name, never null
          */
         public String getClassName() {
@@ -972,6 +994,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
         /**
          * Package name, can be null
+         *
          * @return package name or null
          */
         public String getPackageName() {

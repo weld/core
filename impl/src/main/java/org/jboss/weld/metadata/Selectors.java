@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.metadata;
 
-
 /**
  * Algorithm taken from Apache Ant's SelectorUtils class and modified to handle
  * class hierarchies.
@@ -43,8 +42,8 @@ public class Selectors {
      * should rather use TokenizedPath
      *
      * @param pattern The pattern to match against. Must not be <code>null</code>
-     *                .
-     * @param str     The path to match, as a String. Must not be <code>null</code>.
+     *        .
+     * @param str The path to match, as a String. Must not be <code>null</code>.
      * @return <code>true</code> if the pattern matches against the string, or
      *         <code>false</code> otherwise.
      * @see TokenizedPath
@@ -60,11 +59,11 @@ public class Selectors {
      * If you need to call this method multiple times with the same pattern you
      * should rather use TokenizedPattern
      *
-     * @param pattern         The pattern to match against. Must not be <code>null</code>
-     *                        .
-     * @param str             The path to match, as a String. Must not be <code>null</code>.
+     * @param pattern The pattern to match against. Must not be <code>null</code>
+     *        .
+     * @param str The path to match, as a String. Must not be <code>null</code>.
      * @param isCaseSensitive Whether or not matching should be performed case
-     *                        sensitively.
+     *        sensitively.
      * @return <code>true</code> if the pattern matches against the string, or
      *         <code>false</code> otherwise.
      * @see TokenizedPattern
@@ -151,8 +150,7 @@ public class Selectors {
             int patLength = (patIdxTmp - patIdxStart - 1);
             int strLength = (strIdxEnd - strIdxStart + 1);
             int foundIdx = -1;
-            strLoop:
-            for (int i = 0; i <= strLength - patLength; i++) {
+            strLoop: for (int i = 0; i <= strLength - patLength; i++) {
                 for (int j = 0; j < patLength; j++) {
                     String subPat = tokenizedPattern[patIdxStart + j + 1];
                     String subStr = strDirs[strIdxStart + i + j];
@@ -192,17 +190,17 @@ public class Selectors {
      * '*' means zero or more characters<br>
      * '?' means one and only one character
      *
-     * @param pattern       The pattern to match against.
-     *                      Must not be <code>null</code>.
-     * @param str           The string which must be matched against the pattern.
-     *                      Must not be <code>null</code>.
+     * @param pattern The pattern to match against.
+     *        Must not be <code>null</code>.
+     * @param str The string which must be matched against the pattern.
+     *        Must not be <code>null</code>.
      * @param caseSensitive Whether or not matching should be performed
-     *                      case sensitively.
+     *        case sensitively.
      * @return <code>true</code> if the string matches against the pattern,
      *         or <code>false</code> otherwise.
      */
     public static boolean match(String pattern, String str,
-                                boolean caseSensitive) {
+            boolean caseSensitive) {
         char[] patArr = pattern.toCharArray();
         char[] strArr = str.toCharArray();
         int patIdxStart = 0;
@@ -299,8 +297,7 @@ public class Selectors {
             int patLength = (patIdxTmp - patIdxStart - 1);
             int strLength = (strIdxEnd - strIdxStart + 1);
             int foundIdx = -1;
-            strLoop:
-            for (int i = 0; i <= strLength - patLength; i++) {
+            strLoop: for (int i = 0; i <= strLength - patLength; i++) {
                 for (int j = 0; j < patLength; j++) {
                     ch = patArr[patIdxStart + j + 1];
                     if (ch != '?') {
@@ -336,7 +333,6 @@ public class Selectors {
         }
         return true;
     }
-
 
     /**
      * Tokenize the the string as a package hierarchy

@@ -60,7 +60,8 @@ public class WeldModules implements Service {
                 .sorted((m1, m2) -> m1.getName().compareTo(m2.getName()))
                 .collect(ImmutableList.collector());
         this.validators = Collections.emptySet();
-        BootstrapLogger.LOG.debugv("Using Weld modules: {0}", modules.stream().map(m -> m.getName()).collect(Collectors.toList()));
+        BootstrapLogger.LOG.debugv("Using Weld modules: {0}",
+                modules.stream().map(m -> m.getName()).collect(Collectors.toList()));
     }
 
     public void postServiceRegistration(final String contextId, final ServiceRegistry services) {
@@ -87,7 +88,8 @@ public class WeldModules implements Service {
         this.validators = ImmutableSet.copyOf(validators);
     }
 
-    public void postContextRegistration(final String contextId, final ServiceRegistry services, final List<ContextHolder<? extends Context>> contexts) {
+    public void postContextRegistration(final String contextId, final ServiceRegistry services,
+            final List<ContextHolder<? extends Context>> contexts) {
         final PostContextRegistrationContext ctx = new PostContextRegistrationContext() {
             @Override
             public String getContextId() {
@@ -109,7 +111,8 @@ public class WeldModules implements Service {
         }
     }
 
-    public void postBeanArchiveServiceRegistration(final ServiceRegistry services, final BeanManagerImpl manager, final BeanDeploymentArchive archive) {
+    public void postBeanArchiveServiceRegistration(final ServiceRegistry services, final BeanManagerImpl manager,
+            final BeanDeploymentArchive archive) {
         final PostBeanArchiveServiceRegistrationContext ctx = new PostBeanArchiveServiceRegistrationContext() {
 
             @Override

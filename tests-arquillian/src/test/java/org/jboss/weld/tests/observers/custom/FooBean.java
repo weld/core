@@ -18,13 +18,14 @@
 package org.jboss.weld.tests.observers.custom;
 
 import java.util.concurrent.CountDownLatch;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
 
 @ApplicationScoped
 public class FooBean {
 
-    public void observeLatch(@ObservesAsync CountDownLatch latch){
+    public void observeLatch(@ObservesAsync CountDownLatch latch) {
         //noop, just for reading from extension
     }
 }

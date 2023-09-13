@@ -24,7 +24,6 @@ import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.junit.Test;
@@ -55,10 +54,9 @@ public class ObserverMethodParameterInjectionValidationTest {
      * WELD-001324 Argument bean must not be null
      *
      * @param beanManager the bean manager
-    public void testNullInjectionOnObserverMethod(BeanManager beanManager)
-    {
-    beanManager.fireEvent("message");
-    }
+     *        public void testNullInjectionOnObserverMethod(BeanManager beanManager)
+     *        {
+     *        beanManager.fireEvent("message");
+     *        }
      */
 }
-

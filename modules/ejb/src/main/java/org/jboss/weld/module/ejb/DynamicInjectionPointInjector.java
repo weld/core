@@ -32,7 +32,8 @@ import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * {@link Injector} implementation which prepares {@link DynamicInjectionPoint} to be injected into stateless session beans or singleton session beans.
+ * {@link Injector} implementation which prepares {@link DynamicInjectionPoint} to be injected into stateless session beans or
+ * singleton session beans.
  *
  * @see DefaultInjector
  * @see https://issues.jboss.org/browse/WELD-1177
@@ -52,7 +53,8 @@ class DynamicInjectionPointInjector<T> extends DefaultInjector<T> {
     }
 
     @Override
-    public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget) {
+    public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type,
+            InjectionTarget<T> injectionTarget) {
         ThreadLocalStackReference<InjectionPoint> stack = null;
         if (pushDynamicInjectionPoints) {
             stack = currentInjectionPoint.push(new DynamicInjectionPoint(manager));
@@ -73,8 +75,8 @@ class DynamicInjectionPointInjector<T> extends DefaultInjector<T> {
     }
 
     private boolean hasInjectionPointMetadata(Set<InjectionPoint> injectionPoints) {
-        for(InjectionPoint injectionPoint : injectionPoints){
-            if(injectionPoint.getType() == InjectionPoint.class){
+        for (InjectionPoint injectionPoint : injectionPoints) {
+            if (injectionPoint.getType() == InjectionPoint.class) {
                 return true;
             }
         }

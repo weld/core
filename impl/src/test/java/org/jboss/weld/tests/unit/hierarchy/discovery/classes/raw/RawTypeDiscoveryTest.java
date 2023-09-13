@@ -25,6 +25,7 @@ import org.junit.Test;
 
 /**
  * Testcase for WELD-1740
+ *
  * @author Jozef Hartinger
  *
  */

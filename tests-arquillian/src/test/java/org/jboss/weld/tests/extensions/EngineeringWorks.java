@@ -26,5 +26,4 @@ public abstract class EngineeringWorks implements Station {
     @Delegate
     Station delegate;
 
-
 }

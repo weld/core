@@ -40,8 +40,9 @@ public class EnabledAlternativeValidatedTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnabledAlternativeValidatedTest.class)).alternate(FilePrinter.class).addClass(
-                FilePrinter.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnabledAlternativeValidatedTest.class))
+                .alternate(FilePrinter.class).addClass(
+                        FilePrinter.class);
     }
 
     @Test

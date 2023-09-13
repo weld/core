@@ -27,9 +27,9 @@ public class BeanPreDestroyTest {
                 .addPackage(BeanPreDestroyTest.class.getPackage())
                 .addClass(Reflections.class);
     }
-    
+
     @Test
-    public void destroyCalledWithBeanCreate(BeanManagerImpl beanManager){
+    public void destroyCalledWithBeanCreate(BeanManagerImpl beanManager) {
         SomeBean.destroyCalled = false;
         Set<Bean<?>> beans = beanManager.getBeans(SomeBean.class);
         Bean<SomeBean> bean = Reflections.cast(beanManager.resolve(beans));
@@ -37,12 +37,12 @@ public class BeanPreDestroyTest {
         bean.destroy(instance, null);
         assertTrue(SomeBean.destroyCalled);
     }
-    
+
     @Test
-    public void destroyCalledWithBeanManagerGetReference(BeanManagerImpl beanManager){
+    public void destroyCalledWithBeanManagerGetReference(BeanManagerImpl beanManager) {
         SomeBean.destroyCalled = false;
         Set<Bean<?>> beans = beanManager.getBeans(SomeBean.class);
-        Bean<SomeBean> bean = Reflections.cast(beanManager.resolve(beans));   
+        Bean<SomeBean> bean = Reflections.cast(beanManager.resolve(beans));
         CreationalContext<SomeBean> ctx = beanManager.createCreationalContext(bean);
         SomeBean instance = (SomeBean) beanManager.getReference(bean, SomeBean.class, ctx);
         bean.destroy(instance, ctx);

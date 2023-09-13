@@ -32,7 +32,8 @@ import org.junit.Test;
 public class StereotypeDiscoveryTestBase {
 
     public static WebArchive baseTestArchive() {
-        return Deployments.baseDeployment(new BeansXml(BeanDiscoveryMode.ANNOTATED)).addPackage(StereotypeDiscoveryTestBase.class.getPackage());
+        return Deployments.baseDeployment(new BeansXml(BeanDiscoveryMode.ANNOTATED))
+                .addPackage(StereotypeDiscoveryTestBase.class.getPackage());
     }
 
     @Inject

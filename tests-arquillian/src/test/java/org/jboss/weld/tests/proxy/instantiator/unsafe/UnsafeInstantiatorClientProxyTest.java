@@ -33,7 +33,10 @@ public class UnsafeInstantiatorClientProxyTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(UnsafeInstantiatorClientProxyTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(UnsafeInstantiatorClientProxyTest.class.getPackage())
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(UnsafeInstantiatorClientProxyTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(UnsafeInstantiatorClientProxyTest.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "org.jboss.weld.enableUnsafeProxies")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

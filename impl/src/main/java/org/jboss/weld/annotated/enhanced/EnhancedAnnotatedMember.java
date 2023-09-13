@@ -36,6 +36,7 @@ public interface EnhancedAnnotatedMember<T, X, S extends Member> extends Enhance
 
     /**
      * Returns a lightweight implementation of {@link AnnotatedMember} with minimal memory footprint.
+     *
      * @return the slim version of this {@link AnnotatedMember}
      */
     AnnotatedMember<X> slim();

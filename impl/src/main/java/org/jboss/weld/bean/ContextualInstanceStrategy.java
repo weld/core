@@ -39,16 +39,20 @@ import org.jboss.weld.util.reflection.Reflections;
  * This component allows optimized strategies for obtaining contextual instances of a given bean to be plugged in.
  *
  * By default a contextual instance of a bean is obtained by first obtaining the context for bean's scope and then by
- * calling {@link Context#get(jakarta.enterprise.context.spi.Contextual)} or {@link Context#get(jakarta.enterprise.context.spi.Contextual, CreationalContext)}
+ * calling {@link Context#get(jakarta.enterprise.context.spi.Contextual)} or
+ * {@link Context#get(jakarta.enterprise.context.spi.Contextual, CreationalContext)}
  * on the given context. This algorithm matches the {@link #defaultStrategy()} implementation.
  *
  * In addition, specialized implementations are provided.
  *
- * For {@link ApplicationScoped} beans a special strategy is used which caches application-scoped bean instances in a volatile field. This implementation respects
+ * For {@link ApplicationScoped} beans a special strategy is used which caches application-scoped bean instances in a volatile
+ * field. This implementation respects
  * the possibility of an instance being destroyed via {@link AlterableContext} and the cached instance is flushed in such case.
  *
- * For {@link SessionScoped}, {@link ConversationScoped} and {@link RequestScoped} beans a special strategy is used which caches contextual bean instances in
- * a {@link ThreadLocal}. This implementation respects the possibility of an instance being destroyed via {@link AlterableContext} and the cached instance is
+ * For {@link SessionScoped}, {@link ConversationScoped} and {@link RequestScoped} beans a special strategy is used which caches
+ * contextual bean instances in
+ * a {@link ThreadLocal}. This implementation respects the possibility of an instance being destroyed via
+ * {@link AlterableContext} and the cached instance is
  * flushed in such case. This is done indirectly by {@link RequestScopedCache}.
  *
  * @author Jozef Hartinger
@@ -151,7 +155,8 @@ public abstract class ContextualInstanceStrategy<T> {
 
     private static class CachingContextualInstanceStrategy<T> extends DefaultContextualInstanceStrategy<T> {
 
-        private static final Set<Class<? extends Annotation>> CACHEABLE_SCOPES = ImmutableSet.of(RequestScoped.class, ConversationScoped.class,
+        private static final Set<Class<? extends Annotation>> CACHEABLE_SCOPES = ImmutableSet.of(RequestScoped.class,
+                ConversationScoped.class,
                 SessionScoped.class);
         private final ThreadLocal<T> cache = new ThreadLocal<T>();
 

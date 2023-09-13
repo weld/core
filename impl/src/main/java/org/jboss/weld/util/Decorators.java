@@ -64,14 +64,16 @@ public class Decorators {
     }
 
     /**
-     * Determines the set of {@link InvokableAnnotatedMethod}s representing decorated methods of the specified decorator. A decorated method
+     * Determines the set of {@link InvokableAnnotatedMethod}s representing decorated methods of the specified decorator. A
+     * decorated method
      * is any method declared by a decorated type which is implemented by the decorator.
      *
      * @param beanManager the bean manager
      * @param decorator the specified decorator
      * @return the set of {@link InvokableAnnotatedMethod}s representing decorated methods of the specified decorator
      */
-    public static Set<InvokableAnnotatedMethod<?>> getDecoratorMethods(BeanManagerImpl beanManager, WeldDecorator<?> decorator) {
+    public static Set<InvokableAnnotatedMethod<?>> getDecoratorMethods(BeanManagerImpl beanManager,
+            WeldDecorator<?> decorator) {
         ImmutableSet.Builder<InvokableAnnotatedMethod<?>> builder = ImmutableSet.builder();
         for (Type type : decorator.getDecoratedTypes()) {
             EnhancedAnnotatedType<?> weldClass = getEnhancedAnnotatedTypeOfDecoratedType(beanManager, type);
@@ -94,7 +96,8 @@ public class Decorators {
         throw BeanLogger.LOG.unableToProcessDecoratedType(type);
     }
 
-    public static WeldInjectionPointAttributes<?, ?> findDelegateInjectionPoint(AnnotatedType<?> type, Iterable<InjectionPoint> injectionPoints) {
+    public static WeldInjectionPointAttributes<?, ?> findDelegateInjectionPoint(AnnotatedType<?> type,
+            Iterable<InjectionPoint> injectionPoints) {
         WeldInjectionPointAttributes<?, ?> result = null;
         for (InjectionPoint injectionPoint : injectionPoints) {
             if (injectionPoint.isDelegate()) {
@@ -110,9 +113,11 @@ public class Decorators {
         return result;
     }
 
-    public static <T> T getOuterDelegate(Bean<T> bean, T instance, CreationalContext<T> creationalContext, Class<T> proxyClass, InjectionPoint originalInjectionPoint, BeanManagerImpl manager, List<Decorator<?>> decorators) {
+    public static <T> T getOuterDelegate(Bean<T> bean, T instance, CreationalContext<T> creationalContext, Class<T> proxyClass,
+            InjectionPoint originalInjectionPoint, BeanManagerImpl manager, List<Decorator<?>> decorators) {
         TargetBeanInstance beanInstance = new TargetBeanInstance(bean, instance);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, proxyClass, manager, manager.getServices().get(ContextualStore.class), decorators);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, proxyClass, manager,
+                manager.getServices().get(ContextualStore.class), decorators);
         DecorationHelper.push(decorationHelper);
         try {
             final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
@@ -136,7 +141,7 @@ public class Decorators {
         Set<Type> types = new HierarchyDiscovery(decorator.getDelegateType()).getTypeClosure();
 
         for (Type decoratedType : decorator.getDecoratedTypes()) {
-            if(!types.contains(decoratedType)) {
+            if (!types.contains(decoratedType)) {
                 throw BeanLogger.LOG.delegateMustSupportEveryDecoratedType(decoratedType, decorator);
             }
         }
@@ -150,7 +155,8 @@ public class Decorators {
      * @param delegateType
      * @throws DefinitionException If any of the abstract methods is not declared by the decorated types
      */
-    public static <T> void checkAbstractMethods(Set<Type> decoratedTypes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+    public static <T> void checkAbstractMethods(Set<Type> decoratedTypes, EnhancedAnnotatedType<T> type,
+            BeanManagerImpl beanManager) {
 
         if (decoratedTypes == null) {
             decoratedTypes = new HashSet<Type>(type.getInterfaceClosure());
@@ -161,7 +167,8 @@ public class Decorators {
 
         for (Type decoratedType : decoratedTypes) {
             for (EnhancedAnnotatedMethod<?, ?> method : ClassTransformer.instance(beanManager)
-                    .getEnhancedAnnotatedType(Reflections.getRawType(decoratedType), beanManager.getId()).getEnhancedMethods()) {
+                    .getEnhancedAnnotatedType(Reflections.getRawType(decoratedType), beanManager.getId())
+                    .getEnhancedMethods()) {
                 signatures.add(method.getSignature());
             }
         }
@@ -170,7 +177,8 @@ public class Decorators {
             if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
                 MethodSignature methodSignature = method.getSignature();
                 if (!signatures.contains(methodSignature)) {
-                    throw BeanLogger.LOG.abstractMethodMustMatchDecoratedType(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
+                    throw BeanLogger.LOG.abstractMethodMustMatchDecoratedType(method,
+                            Formats.formatAsStackTraceElement(method.getJavaMember()));
                 }
             }
         }
@@ -178,12 +186,13 @@ public class Decorators {
 
     /**
      * Indicates whether a {@link Decorator} is passivation capable or not.
+     *
      * @return
      */
     public static boolean isPassivationCapable(Decorator<?> decorator) {
         if (decorator instanceof CustomDecoratorWrapper<?>) {
             // unwrap
-            decorator = Reflections.<CustomDecoratorWrapper<?>>cast(decorator).delegate();
+            decorator = Reflections.<CustomDecoratorWrapper<?>> cast(decorator).delegate();
         }
         if (decorator instanceof DecoratorImpl<?>) {
             DecoratorImpl<?> weldDecorator = (DecoratorImpl<?>) decorator;

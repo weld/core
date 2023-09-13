@@ -55,7 +55,8 @@ public class ListenerInjectionTest {
                                 + BatServlet.class.getName()
                                 + "</servlet-class></servlet> <servlet-mapping><servlet-name>Bat Servlet</servlet-name><url-pattern>/bat</url-pattern></servlet-mapping>")
                         .getBytes());
-        return baseDeployment(webXml).addClasses(BatRequestListener.class, BatSessionListener.class, BatServletContextListener.class, BatListener.class, BatServlet.class, Sewer.class);
+        return baseDeployment(webXml).addClasses(BatRequestListener.class, BatSessionListener.class,
+                BatServletContextListener.class, BatListener.class, BatServlet.class, Sewer.class);
     }
 
     @Test

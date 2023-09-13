@@ -1,9 +1,10 @@
 package org.jboss.weld.tests.enterprise.lifecycle;
 
+import java.io.Serializable;
+
 import jakarta.decorator.Decorator;
 import jakarta.decorator.Delegate;
 import jakarta.inject.Inject;
-import java.io.Serializable;
 
 @Decorator
 public abstract class AlarmedChickenHutch implements ChickenHutch, Serializable {

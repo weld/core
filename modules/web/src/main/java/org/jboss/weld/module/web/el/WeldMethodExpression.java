@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.module.web.el;
 
-import org.jboss.weld.module.web.util.el.ForwardingMethodExpression;
+import static org.jboss.weld.module.web.el.ELCreationalContextStack.getCreationalContextStore;
 
 import jakarta.el.ELContext;
 import jakarta.el.MethodExpression;
 import jakarta.el.MethodInfo;
 
-import static org.jboss.weld.module.web.el.ELCreationalContextStack.getCreationalContextStore;
+import org.jboss.weld.module.web.util.el.ForwardingMethodExpression;
 
 /**
  * @author pmuir

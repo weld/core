@@ -35,7 +35,9 @@ public class AddPassivationCapableBeanWithNullIdTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AddPassivationCapableBeanWithNullIdTest.class)).addPackage(AddPassivationCapableBeanWithNullIdTest.class.getPackage())
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AddPassivationCapableBeanWithNullIdTest.class))
+                .addPackage(AddPassivationCapableBeanWithNullIdTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, SomeExtension.class);
     }
 

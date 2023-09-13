@@ -40,8 +40,8 @@ import org.jboss.weld.util.reflection.Reflections;
 class DecoratedMethods {
 
     /*
-     *  We use this marker because ConcurrentMap does not support null values but we want to keep track of
-     *  methods for which there is no decorated method declared by the decorator.
+     * We use this marker because ConcurrentMap does not support null values but we want to keep track of
+     * methods for which there is no decorated method declared by the decorator.
      */
     private static final Object NULL_MARKER = new Object();
 
@@ -111,7 +111,8 @@ class DecoratedMethods {
             Type decoratedMethodParamType = decoratedMethod.getJavaMember().getGenericParameterTypes()[i];
             Type candidateParamType = candidate.getGenericParameterTypes()[i];
             if (Types.containsTypeVariable(decoratedMethodParamType) || Types.containsTypeVariable(candidateParamType)) {
-                if (!decoratedMethod.getJavaMember().getParameterTypes()[i].isAssignableFrom(candidate.getParameterTypes()[i])) {
+                if (!decoratedMethod.getJavaMember().getParameterTypes()[i]
+                        .isAssignableFrom(candidate.getParameterTypes()[i])) {
                     return false;
                 }
             } else {
@@ -125,7 +126,8 @@ class DecoratedMethods {
 
     private boolean isMoreSpecific(InvokableAnnotatedMethod<?> candidate, InvokableAnnotatedMethod<?> mostSpecific) {
         for (int i = 0; i < candidate.getJavaMember().getGenericParameterTypes().length; i++) {
-            if (Types.isMoreSpecific(candidate.getJavaMember().getGenericParameterTypes()[i], mostSpecific.getJavaMember().getGenericParameterTypes()[i])) {
+            if (Types.isMoreSpecific(candidate.getJavaMember().getGenericParameterTypes()[i],
+                    mostSpecific.getJavaMember().getGenericParameterTypes()[i])) {
                 return true;
             }
         }

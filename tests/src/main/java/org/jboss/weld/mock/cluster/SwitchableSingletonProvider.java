@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.mock.cluster;
 
-import org.jboss.weld.bootstrap.api.Singleton;
-import org.jboss.weld.bootstrap.api.SingletonProvider;
-
 import java.util.Hashtable;
 import java.util.Map;
+
+import org.jboss.weld.bootstrap.api.Singleton;
+import org.jboss.weld.bootstrap.api.SingletonProvider;
 
 public class SwitchableSingletonProvider extends SingletonProvider {
 

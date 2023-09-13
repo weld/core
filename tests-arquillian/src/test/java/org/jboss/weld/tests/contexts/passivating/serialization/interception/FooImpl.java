@@ -47,7 +47,7 @@ public class FooImpl implements Foo, Serializable {
 
     }
 
-    private void methodThatIsPrivate(){
+    private void methodThatIsPrivate() {
         // class will have to use PrivateMethodHandler, see WELD-2574
     }
 }

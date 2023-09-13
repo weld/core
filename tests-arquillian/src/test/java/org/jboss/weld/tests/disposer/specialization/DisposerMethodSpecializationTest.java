@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @see WELD-1071
  * @author Jozef Hartinger
  *
@@ -40,11 +40,12 @@ public class DisposerMethodSpecializationTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerMethodSpecializationTest.class)).addPackage(Gearbox.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerMethodSpecializationTest.class))
+                .addPackage(Gearbox.class.getPackage());
     }
 
     @Test
     public void testDeploymentWithSpecializedDisposerMethod() {
         // should throw definition exception
-     }
+    }
 }

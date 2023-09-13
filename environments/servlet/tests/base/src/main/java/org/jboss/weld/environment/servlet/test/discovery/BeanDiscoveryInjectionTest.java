@@ -37,11 +37,14 @@ public class BeanDiscoveryInjectionTest {
     @Deployment
     public static WebArchive createTestArchive() {
         WebArchive testArchive = Deployments.baseDeployment().addClass(BeanDiscoveryInjectionTest.class);
-        JavaArchive archive01 = ShrinkWrap.create(JavaArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+        JavaArchive archive01 = ShrinkWrap.create(JavaArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClasses(Dog.class, Cat.class, Cow.class);
-        JavaArchive archive02 = ShrinkWrap.create(JavaArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
+        JavaArchive archive02 = ShrinkWrap.create(JavaArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
                 .addClasses(Plant.class, Tree.class, Stone.class);
-        JavaArchive archive03 = ShrinkWrap.create(JavaArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml")
+        JavaArchive archive03 = ShrinkWrap.create(JavaArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml")
                 .addClasses(Flat.class, House.class);
         testArchive.addAsLibraries(archive01, archive02, archive03);
         return testArchive;

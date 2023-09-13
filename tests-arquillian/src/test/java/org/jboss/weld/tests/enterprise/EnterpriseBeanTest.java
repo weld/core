@@ -54,8 +54,8 @@ public class EnterpriseBeanTest {
     private BeanManagerImpl beanManager;
 
     /*
-    * description="WELD-326"
-    */
+     * description="WELD-326"
+     */
     @Test
     public void testInvocationExceptionIsUnwrapped(Fedora fedora) {
         try {
@@ -69,8 +69,8 @@ public class EnterpriseBeanTest {
     }
 
     /*
-    * description="WBRI-275"
-    */
+     * description="WBRI-275"
+     */
     @Test
     public void testSLSBBusinessMethodThrowsRuntimeException(Fedora fedora) {
         try {
@@ -84,8 +84,8 @@ public class EnterpriseBeanTest {
     }
 
     /*
-    * description = "WELD-364"
-    */
+     * description = "WELD-364"
+     */
     @Test
     public void testEJBRemoteInterfacesOkForObservers(Scottish scottish) {
         Feed feed = new Feed();
@@ -94,16 +94,16 @@ public class EnterpriseBeanTest {
     }
 
     /*
-    * description = "WELD-381"
-    */
+     * description = "WELD-381"
+     */
     @Test
     public void testGenericEJBWorks(ResultClient client) {
         Assert.assertEquals("pete", client.lookupPete().getUsername());
     }
 
     /*
-    * description = "Test for passivation of SFSB"
-    */
+     * description = "Test for passivation of SFSB"
+     */
     @Test
     public void testPassivationOfEjbs(HelloAction action) {
         action.executeRequest();
@@ -112,8 +112,8 @@ public class EnterpriseBeanTest {
     }
 
     /*
-    * description = "Simple test for no-interface views"
-    */
+     * description = "Simple test for no-interface views"
+     */
     @Test
     public void testNoInterfaceView(Castle castle) {
         castle.ping();

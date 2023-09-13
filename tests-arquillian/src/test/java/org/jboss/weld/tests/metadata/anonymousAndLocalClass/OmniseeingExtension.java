@@ -26,17 +26,17 @@ import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
  *
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
-public class OmniseeingExtension implements Extension{
-    
+public class OmniseeingExtension implements Extension {
+
     public static int LOCAL_CLASS_OBSERVED = 0;
     public static int ANONYMOUS_CLASS_OBSERVED = 0;
-    
-    public void observePAT(@Observes ProcessAnnotatedType<?> pat){
+
+    public void observePAT(@Observes ProcessAnnotatedType<?> pat) {
         if (pat.getAnnotatedType().getJavaClass().isLocalClass()) {
-            LOCAL_CLASS_OBSERVED ++;
+            LOCAL_CLASS_OBSERVED++;
         }
         if (pat.getAnnotatedType().getJavaClass().isAnonymousClass()) {
-            ANONYMOUS_CLASS_OBSERVED ++;
+            ANONYMOUS_CLASS_OBSERVED++;
         }
     }
 }

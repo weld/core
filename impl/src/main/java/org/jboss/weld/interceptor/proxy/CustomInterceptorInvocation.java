@@ -7,7 +7,6 @@ import jakarta.enterprise.inject.spi.InterceptionType;
 import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.interceptor.InvocationContext;
 
-
 /**
  * @author Marius Bogoevici
  */
@@ -19,7 +18,8 @@ public class CustomInterceptorInvocation<T> implements InterceptorInvocation {
 
     private final InterceptionType interceptionType;
 
-    public CustomInterceptorInvocation(Interceptor<T> interceptorBeanInstance, T interceptorInstance, InterceptionType interceptionType) {
+    public CustomInterceptorInvocation(Interceptor<T> interceptorBeanInstance, T interceptorInstance,
+            InterceptionType interceptionType) {
         this.interceptorBeanInstance = interceptorBeanInstance;
         this.interceptorInstance = interceptorInstance;
         this.interceptionType = interceptionType;
@@ -27,7 +27,7 @@ public class CustomInterceptorInvocation<T> implements InterceptorInvocation {
 
     @Override
     public List<InterceptorMethodInvocation> getInterceptorMethodInvocations() {
-        return Collections.<InterceptorMethodInvocation>singletonList(new CustomInterceptorMethodInvocation());
+        return Collections.<InterceptorMethodInvocation> singletonList(new CustomInterceptorMethodInvocation());
     }
 
     private class CustomInterceptorMethodInvocation implements InterceptorMethodInvocation {

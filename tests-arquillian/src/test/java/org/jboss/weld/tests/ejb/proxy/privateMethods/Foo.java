@@ -31,15 +31,15 @@ public class Foo {
     @Inject
     SingletonSessionBean singletonSessionBean;
 
-    public boolean pingStatefulSessionBean(){
+    public boolean pingStatefulSessionBean() {
         return sfSessionBean.ping();
     }
 
-    public boolean pingStatelessSessionBean(){
+    public boolean pingStatelessSessionBean() {
         return slSessionBean.ping();
     }
 
-    public boolean pingSingletonSessionBean(){
+    public boolean pingSingletonSessionBean() {
         return singletonSessionBean.ping();
     }
 

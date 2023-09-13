@@ -21,5 +21,5 @@ package org.jboss.weld.environment.se.test.discovery.synthetic.bdm.hiddenPackage
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 public class Bar {
-    
+
 }

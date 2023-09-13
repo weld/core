@@ -26,16 +26,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
-*
-* @author Martin Kouba
-* @see WELD-1577
-*/
+ *
+ * @author Martin Kouba
+ * @see WELD-1577
+ */
 @RunWith(Arquillian.class)
 public class ProducerBridgeMethodTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProducerBridgeMethodTest.class)).addClasses(Foo.class, Bar.class, BravoProducer.class, BasicProducer.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProducerBridgeMethodTest.class))
+                .addClasses(Foo.class, Bar.class, BravoProducer.class, BasicProducer.class);
     }
 
     @Test

@@ -46,8 +46,9 @@ public class LifecycleEventOrderingTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LifecycleEventOrderingTest.class)).addPackage(LifecycleEventOrderingTest.class.getPackage())
-            .addAsServiceProvider(Extension.class, ProductManagement.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(LifecycleEventOrderingTest.class))
+                .addPackage(LifecycleEventOrderingTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, ProductManagement.class);
     }
 
     @Inject

@@ -42,7 +42,8 @@ public class InjectionTargetDecorationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionTargetDecorationTest.class)).decorate(BuildingDecorator1.class, BuildingDecorator2.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionTargetDecorationTest.class))
+                .decorate(BuildingDecorator1.class, BuildingDecorator2.class)
                 .addPackage(InjectionTargetDecorationTest.class.getPackage());
     }
 
@@ -66,6 +67,6 @@ public class InjectionTargetDecorationTest {
         InjectionTarget<AbstractClass> it = manager.getInjectionTargetFactory(manager.createAnnotatedType(AbstractClass.class))
                 .createInjectionTarget(null);
         ConcreteClass instance = new ConcreteClass();
-        it.inject(instance, manager.<AbstractClass>createCreationalContext(null));
+        it.inject(instance, manager.<AbstractClass> createCreationalContext(null));
     }
 }

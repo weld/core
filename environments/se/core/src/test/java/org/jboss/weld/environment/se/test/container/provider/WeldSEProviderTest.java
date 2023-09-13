@@ -19,7 +19,6 @@ package org.jboss.weld.environment.se.test.container.provider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -75,7 +74,8 @@ public class WeldSEProviderTest {
     @Test
     public void testExtension() {
         TestExtension.reset();
-        try (WeldContainer weldContainer = new Weld().disableDiscovery().beanClasses(Foo.class).addExtension(new TestExtension()).initialize()) {
+        try (WeldContainer weldContainer = new Weld().disableDiscovery().beanClasses(Foo.class)
+                .addExtension(new TestExtension()).initialize()) {
             BeanManager beanManager = TestExtension.beanManagerReference.get();
             assertNotNull(beanManager);
             Bean<?> fooBean = TestExtension.fooBeanReference.get();

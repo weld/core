@@ -46,7 +46,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 /**
- * See also WELD-2448. If multiple deployments share a proxy class from static module (JSF impl in this test case) and each deployment uses a different value
+ * See also WELD-2448. If multiple deployments share a proxy class from static module (JSF impl in this test case) and each
+ * deployment uses a different value
  * for {@link ConfigurationKey#RELAXED_CONSTRUCTION} the proxy instance might not be initialized corretly.
  *
  * @author Martin Kouba

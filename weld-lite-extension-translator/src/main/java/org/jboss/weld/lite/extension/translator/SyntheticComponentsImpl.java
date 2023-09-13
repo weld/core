@@ -1,12 +1,12 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.List;
+
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanBuilder;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserverBuilder;
 import jakarta.enterprise.lang.model.types.Type;
-
-import java.util.List;
 
 class SyntheticComponentsImpl implements SyntheticComponents {
     final List<SyntheticBeanBuilderImpl<?>> syntheticBeans;
@@ -14,7 +14,8 @@ class SyntheticComponentsImpl implements SyntheticComponents {
     final Class<? extends BuildCompatibleExtension> extensionClass;
 
     SyntheticComponentsImpl(List<SyntheticBeanBuilderImpl<?>> syntheticBeans,
-            List<SyntheticObserverBuilderImpl<?>> syntheticObservers, Class<? extends BuildCompatibleExtension> extensionClass) {
+            List<SyntheticObserverBuilderImpl<?>> syntheticObservers,
+            Class<? extends BuildCompatibleExtension> extensionClass) {
         this.syntheticBeans = syntheticBeans;
         this.syntheticObservers = syntheticObservers;
         this.extensionClass = extensionClass;

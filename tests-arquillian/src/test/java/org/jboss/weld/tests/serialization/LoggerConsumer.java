@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.tests.serialization;
 
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.logging.Logger;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 
 @SessionScoped
 public class LoggerConsumer implements Serializable {

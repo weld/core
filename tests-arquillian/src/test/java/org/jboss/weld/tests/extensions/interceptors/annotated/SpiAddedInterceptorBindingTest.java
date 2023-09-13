@@ -37,7 +37,8 @@ public class SpiAddedInterceptorBindingTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpiAddedInterceptorBindingTest.class)).intercept(QuickInterceptor.class).intercept(SlowInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpiAddedInterceptorBindingTest.class))
+                .intercept(QuickInterceptor.class).intercept(SlowInterceptor.class)
                 .addPackage(SpiAddedInterceptorBindingTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, QuickExtension.class);
     }

@@ -23,7 +23,7 @@ import jakarta.enterprise.context.ApplicationScoped;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @ApplicationScoped
-public class ActualImpl extends AbstractPackagePrivateClass<Integer>{
+public class ActualImpl extends AbstractPackagePrivateClass<Integer> {
 
     @TestBinding
     @Override

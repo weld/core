@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.environment.undertow;
 
+import java.util.EventListener;
+
+import jakarta.servlet.ServletContext;
+
+import org.jboss.weld.environment.servlet.logging.UndertowLogger;
+
 import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.FilterInfo;
@@ -23,12 +29,6 @@ import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ListenerInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
-
-import java.util.EventListener;
-
-import jakarta.servlet.ServletContext;
-
-import org.jboss.weld.environment.servlet.logging.UndertowLogger;
 
 /**
  * Undertow extension that hooks into undertow's instance creation and delegates to Weld.
@@ -47,20 +47,23 @@ public class WeldServletExtension implements ServletExtension {
         // Servlet injection
         for (ServletInfo servlet : deploymentInfo.getServlets().values()) {
             UndertowLogger.LOG.installingCdiSupport(servlet.getServletClass());
-            servlet.setInstanceFactory(WeldInstanceFactory.of(servlet.getInstanceFactory(), servletContext, servlet.getServletClass()));
+            servlet.setInstanceFactory(
+                    WeldInstanceFactory.of(servlet.getInstanceFactory(), servletContext, servlet.getServletClass()));
         }
         try {
             // Filter injection
             for (FilterInfo filter : deploymentInfo.getFilters().values()) {
                 UndertowLogger.LOG.installingCdiSupport(filter.getFilterClass());
-                filter.setInstanceFactory(WeldInstanceFactory.of(filter.getInstanceFactory(), servletContext, filter.getFilterClass()));
+                filter.setInstanceFactory(
+                        WeldInstanceFactory.of(filter.getInstanceFactory(), servletContext, filter.getFilterClass()));
             }
             // Listener injection
             for (ListenerInfo listener : deploymentInfo.getListeners()) {
                 UndertowLogger.LOG.installingCdiSupport(listener.getListenerClass());
                 InstanceFactory<? extends EventListener> instanceFactory = listener.getInstanceFactory();
                 if (!(instanceFactory instanceof ImmediateInstanceFactory)) {
-                    listener.setInstanceFactory(WeldInstanceFactory.of(instanceFactory, servletContext, listener.getListenerClass()));
+                    listener.setInstanceFactory(
+                            WeldInstanceFactory.of(instanceFactory, servletContext, listener.getListenerClass()));
                 }
             }
             servletContext.setAttribute(INSTALLED, INSTALLED_FULL);

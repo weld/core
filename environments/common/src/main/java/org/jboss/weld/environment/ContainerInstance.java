@@ -27,7 +27,8 @@ import jakarta.enterprise.inject.spi.BeanManager;
 public interface ContainerInstance {
 
     /**
-     * Returns a BeanManager used by this container. If the container uses multiple BeanManager instances it is not defined which of them is returned.
+     * Returns a BeanManager used by this container. If the container uses multiple BeanManager instances it is not defined
+     * which of them is returned.
      *
      * @return beanManager
      */

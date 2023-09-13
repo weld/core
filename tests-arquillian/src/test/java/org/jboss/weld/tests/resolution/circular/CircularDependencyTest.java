@@ -39,10 +39,10 @@ public class CircularDependencyTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CircularDependencyTest.class))
-            .addPackage(CircularDependencyTest.class.getPackage())
-            .addAsResource(PropertiesBuilder.newBuilder()
-                .set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true")
-                .build(), "weld.properties");
+                .addPackage(CircularDependencyTest.class.getPackage())
+                .addAsResource(PropertiesBuilder.newBuilder()
+                        .set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true")
+                        .build(), "weld.properties");
     }
 
     @Test
@@ -53,7 +53,8 @@ public class CircularDependencyTest {
     }
 
     @Test
-    public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean(DependentSelfConsumingDependentProducer producer) throws Exception {
+    public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean(
+            DependentSelfConsumingDependentProducer producer) throws Exception {
         producer.ping();
     }
 

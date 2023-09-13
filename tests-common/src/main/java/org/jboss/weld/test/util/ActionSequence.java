@@ -374,7 +374,7 @@ public final class ActionSequence {
      *
      * @param expected
      * @throws IllegalStateException
-     *             if there is no default sequence
+     *         if there is no default sequence
      */
     public static void assertSequenceDataEquals(List<String> expected) {
         checkDefaultSequenceExists();
@@ -387,7 +387,7 @@ public final class ActionSequence {
      *
      * @param expected
      * @throws IllegalStateException
-     *             if there is no default sequence
+     *         if there is no default sequence
      */
     public static void assertSequenceDataEquals(String... expected) {
         checkDefaultSequenceExists();
@@ -400,7 +400,7 @@ public final class ActionSequence {
      *
      * @param expected
      * @throws IllegalStateException
-     *             if there is no default sequence
+     *         if there is no default sequence
      */
     public static void assertSequenceDataEquals(Class<?>... expected) {
         checkDefaultSequenceExists();
@@ -414,7 +414,7 @@ public final class ActionSequence {
      *
      * @param expected
      * @throws IllegalStateException
-     *             if there is no default sequence
+     *         if there is no default sequence
      */
     public static void assertSequenceDataContainsAll(Collection<String> expected) {
         checkDefaultSequenceExists();
@@ -428,7 +428,7 @@ public final class ActionSequence {
      *
      * @param expected
      * @throws IllegalStateException
-     *             if there is no default sequence
+     *         if there is no default sequence
      */
     public static void assertSequenceDataContainsAll(String... expected) {
         checkDefaultSequenceExists();
@@ -443,7 +443,7 @@ public final class ActionSequence {
      *
      * @param expected
      * @throws IllegalStateException
-     *             if there is no default sequence
+     *         if there is no default sequence
      */
     public static void assertSequenceDataContainsAll(Class<?>... expected) {
         checkDefaultSequenceExists();
@@ -472,9 +472,9 @@ public final class ActionSequence {
 
         /**
          * @param <F>
-         *            the input type of this function
+         *        the input type of this function
          * @param <T>
-         *            the output type of this function
+         *        the output type of this function
          */
         public interface Function<F, T> {
             /**
@@ -488,7 +488,7 @@ public final class ActionSequence {
          * {@code fromCollection}.
          *
          * @throws IllegalArgumentException
-         *             in case of a null argument
+         *         in case of a null argument
          */
         public static <F, T> List<T> transform(
                 final Function<? super F, ? extends T> function,

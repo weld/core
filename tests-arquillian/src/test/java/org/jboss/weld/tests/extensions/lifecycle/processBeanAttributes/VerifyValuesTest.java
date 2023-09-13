@@ -54,7 +54,8 @@ public class VerifyValuesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VerifyValuesTest.class)).alternate(Alpha.class, BravoProducer.class, CharlieProducer.class).addPackage(Alpha.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VerifyValuesTest.class))
+                .alternate(Alpha.class, BravoProducer.class, CharlieProducer.class).addPackage(Alpha.class.getPackage())
                 .addClass(BeanUtilities.class).addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

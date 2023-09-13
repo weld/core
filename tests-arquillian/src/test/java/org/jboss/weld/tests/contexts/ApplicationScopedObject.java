@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.tests.contexts;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ApplicationScopedObject {

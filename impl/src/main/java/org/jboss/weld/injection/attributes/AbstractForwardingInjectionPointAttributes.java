@@ -23,7 +23,8 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 
-public abstract class AbstractForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint implements WeldInjectionPointAttributes<T, S>, Serializable {
+public abstract class AbstractForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint
+        implements WeldInjectionPointAttributes<T, S>, Serializable {
 
     private static final long serialVersionUID = -7540261474875045335L;
 

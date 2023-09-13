@@ -32,7 +32,8 @@ import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
- * Jandex implementation of the {@link ClassFileServices}), which is a service that is a faster alternative to get info about class without a need to load it
+ * Jandex implementation of the {@link ClassFileServices}), which is a service that is a faster alternative to get info about
+ * class without a need to load it
  * with ClassLoader.
  *
  * @author Matej Briškár

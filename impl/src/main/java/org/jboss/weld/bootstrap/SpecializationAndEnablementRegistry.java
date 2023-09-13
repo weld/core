@@ -64,7 +64,8 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
             return result;
         }
 
-        private void buildAccessibleBeanDeployerEnvironments(BeanManagerImpl manager, Collection<BeanDeployerEnvironment> result) {
+        private void buildAccessibleBeanDeployerEnvironments(BeanManagerImpl manager,
+                Collection<BeanDeployerEnvironment> result) {
             for (BeanManagerImpl accessibleManager : manager.getAccessibleManagers()) {
                 BeanDeployerEnvironment environment = environmentByManager.get(accessibleManager);
                 if (!result.contains(environment)) {
@@ -115,7 +116,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
     // maps specializing beans to the set of specialized beans
     private final ComputingCache<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
     // fast lookup structure that allows us to figure out if a given bean is specialized in any of the bean deployments
-    private final ConcurrentHashMap<AbstractBean<?, ?>, LongAdder> specializedBeansMap = new ConcurrentHashMap<AbstractBean<?,?>, LongAdder>();
+    private final ConcurrentHashMap<AbstractBean<?, ?>, LongAdder> specializedBeansMap = new ConcurrentHashMap<AbstractBean<?, ?>, LongAdder>();
 
     public SpecializationAndEnablementRegistry() {
         ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
@@ -180,16 +181,21 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         return isEnabledInAnyBeanDeployment(bean) && !isSpecializedInAnyBeanDeployment(bean);
     }
 
-    public void registerEnvironment(BeanManagerImpl manager, BeanDeployerEnvironment environment, boolean additionalBeanArchive) {
+    public void registerEnvironment(BeanManagerImpl manager, BeanDeployerEnvironment environment,
+            boolean additionalBeanArchive) {
         if ((specializedBeanResolvers.size() > 0) && !additionalBeanArchive) {
             /*
-             * An environment should not be added after we started resolving specialized beans. However we cannot avoid that completely
-             * in certain situations e.g. when a bean is added through AfterBeanDiscovery (otherwise a chicken-egg problem emerges between
-             * determining which beans are enabled which is needed for firing ProcessBean events and resolving specialization of AfterBeanDiscovery-added beans)
+             * An environment should not be added after we started resolving specialized beans. However we cannot avoid that
+             * completely
+             * in certain situations e.g. when a bean is added through AfterBeanDiscovery (otherwise a chicken-egg problem
+             * emerges between
+             * determining which beans are enabled which is needed for firing ProcessBean events and resolving specialization of
+             * AfterBeanDiscovery-added beans)
              *
              * As a result beans added through AfterBeanDiscovery cannot be specialized.
              */
-            throw new IllegalStateException(this.getClass().getName() + ".registerEnvironment() must not be called after specialization resolution begins");
+            throw new IllegalStateException(this.getClass().getName()
+                    + ".registerEnvironment() must not be called after specialization resolution begins");
         }
         if (environment == null) {
             throw new IllegalArgumentException("Environment must not be null");
@@ -214,8 +220,9 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
                 .entrySet()
                 .stream()
                 .collect(
-                        Collectors.toMap(Entry<AbstractBean<?, ?>, LongAdder>::getKey, (Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry
-                                .getValue().longValue()));
+                        Collectors.toMap(Entry<AbstractBean<?, ?>, LongAdder>::getKey,
+                                (Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry
+                                        .getValue().longValue()));
     }
 
 }

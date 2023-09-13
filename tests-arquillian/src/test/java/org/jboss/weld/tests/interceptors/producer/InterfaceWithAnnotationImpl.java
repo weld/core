@@ -22,7 +22,6 @@ import jakarta.enterprise.inject.Vetoed;
 @Vetoed
 public class InterfaceWithAnnotationImpl implements InterfaceWithAnnotation {
 
-
     // this method makes the class unproxyable because it is final
     private final String gandalfMethod() {
         return "You shall not proxy me!";

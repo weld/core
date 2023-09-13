@@ -113,7 +113,8 @@ public class BeanIdentifierIndexTest {
             beans.add(DummyBean.of(i + ".foo"));
         }
         index.build(beans);
-        assertEquals("BeanIdentifierIndex [hash=-1733773048, indexed=3] \n     0: 0.foo\n     1: 1.foo\n     2: 2.foo\n", index.getDebugInfo());
+        assertEquals("BeanIdentifierIndex [hash=-1733773048, indexed=3] \n     0: 0.foo\n     1: 1.foo\n     2: 2.foo\n",
+                index.getDebugInfo());
     }
 
     private static class DummyBean<T> extends CommonBean<T> {

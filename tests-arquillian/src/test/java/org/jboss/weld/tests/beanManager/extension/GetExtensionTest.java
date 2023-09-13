@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @see CDI-99
- * 
+ *
  * @author Jozef Hartinger
  *
  */
@@ -50,7 +50,8 @@ public class GetExtensionTest {
         return ShrinkWrap
                 .create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetExtensionTest.class))
                 .addPackage(GetExtensionTest.class.getPackage())
-                .addAsServiceProvider(Extension.class, AlphaExtension.class, BravoExtension.class, CharlieExtension.class, VerifyingExtension.class);
+                .addAsServiceProvider(Extension.class, AlphaExtension.class, BravoExtension.class, CharlieExtension.class,
+                        VerifyingExtension.class);
     }
 
     @Test
@@ -58,18 +59,18 @@ public class GetExtensionTest {
         assertEquals(VerifyingExtension.STATE, alpha.getState());
         assertEquals(VerifyingExtension.STATE, manager.getExtension(AlphaExtension.class).getState());
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testNoInstanceAvailable() {
         manager.getExtension(InactiveExtension.class);
     }
-    
+
     @Test
     public void testAmbiguousExtensions() {
         assertTrue(manager.getExtension(BravoExtension.class) instanceof BravoExtension);
         assertFalse(manager.getExtension(BravoExtension.class) instanceof CharlieExtension);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testWithNull() {
         manager.getExtension(null);

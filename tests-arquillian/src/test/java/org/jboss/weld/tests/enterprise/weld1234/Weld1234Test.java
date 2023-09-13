@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.enterprise.weld1234;
 
+import static org.junit.Assert.fail;
+
 import jakarta.ejb.NoSuchEJBException;
 import jakarta.inject.Inject;
 
@@ -30,8 +32,6 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.fail;
 
 /**
  *

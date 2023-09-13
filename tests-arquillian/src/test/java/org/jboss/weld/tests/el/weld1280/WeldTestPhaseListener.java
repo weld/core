@@ -10,8 +10,8 @@ import jakarta.faces.event.PhaseListener;
 public class WeldTestPhaseListener implements PhaseListener {
 
     /**
-	 *
-	 */
+     *
+     */
     private static final long serialVersionUID = 1L;
 
     @Override

@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.environment.se.test.discovery.beanDefiningAnnotations;
 
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -28,12 +33,6 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * Adds new bean defining annotations in Weld SE, then leaves discovery on and asserts that beans were found.
@@ -50,17 +49,18 @@ public class AdditionalBeanDefiningAnnotationsTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addPackage(AdditionalBeanDefiningAnnotationsTest.class.getPackage()))
-            .build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class).addPackage(AdditionalBeanDefiningAnnotationsTest.class.getPackage()))
+                .build();
     }
 
     @Test
     public void testNewBeanDefiningAnnotationWorks() {
         Weld weld = new Weld()
-            .disableDiscovery()
-            .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
-            .addPackages(Bar.class.getPackage())
-            .addBeanDefiningAnnotations(NewBeanDefiningAnnotation.class);
+                .disableDiscovery()
+                .setBeanDiscoveryMode(BeanDiscoveryMode.ANNOTATED)
+                .addPackages(Bar.class.getPackage())
+                .addBeanDefiningAnnotations(NewBeanDefiningAnnotation.class);
 
         try (WeldContainer container = weld.initialize()) {
             Assert.assertTrue(container.isRunning());

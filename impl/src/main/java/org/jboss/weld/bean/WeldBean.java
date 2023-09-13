@@ -36,6 +36,7 @@ public interface WeldBean<T> extends Bean<T> {
 
     /**
      * Used for custom beans registered via WeldBeanConfigurator.
+     *
      * @return bean priority or null if not set or overriden
      */
     default Integer getPriority() {

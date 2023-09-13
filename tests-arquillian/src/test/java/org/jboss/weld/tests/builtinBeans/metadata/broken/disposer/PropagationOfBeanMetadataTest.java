@@ -39,12 +39,13 @@ public class PropagationOfBeanMetadataTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PropagationOfBeanMetadataTest.class)).addPackage(
-                PropagationOfBeanMetadataTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PropagationOfBeanMetadataTest.class))
+                .addPackage(
+                        PropagationOfBeanMetadataTest.class.getPackage());
     }
 
     @Test
     public void testDeploymentFailsWithBadDisposer() throws Exception {
         // should throw definition exception
-     }
+    }
 }

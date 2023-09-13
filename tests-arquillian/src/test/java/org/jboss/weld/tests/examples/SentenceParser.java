@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.examples;
 
-import jakarta.enterprise.context.Dependent;
-
 import java.util.Arrays;
 import java.util.List;
+
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class SentenceParser {

@@ -51,10 +51,12 @@ public class AlternativeDiscoveryTest {
 
         WebArchive testArchive = Deployments.baseDeployment().addClass(AlternativeDiscoveryTest.class);
 
-        JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).alternatives(AlternativeDog.class), "beans.xml")
+        JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).alternatives(AlternativeDog.class), "beans.xml")
                 .addClasses(Dog.class, AlternativeDog.class, DogInterface.class, Cat.class);
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).alternatives(AlternativeTree.class), "beans.xml")
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).alternatives(AlternativeTree.class),
+                        "beans.xml")
                 .addClasses(Tree.class, AlternativeTree.class, Plant.class, Stone.class, AlternativeStone.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).alternatives(AlternativeFlat.class), "beans.xml")

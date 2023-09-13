@@ -34,9 +34,9 @@ import org.junit.runner.RunWith;
 /**
  * Verifies that an interceptor that is passivation capable while having non-passivation capable dependencies is allowed
  * provided it does not intercept a bean declaring passivation scope.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class InterceptorWithNonPassivationCapableDependenciesTest {
@@ -46,13 +46,17 @@ public class InterceptorWithNonPassivationCapableDependenciesTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorWithNonPassivationCapableDependenciesTest.class)).intercept(EnginePoweredInterceptor.class)
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(InterceptorWithNonPassivationCapableDependenciesTest.class))
+                .intercept(EnginePoweredInterceptor.class)
                 .addClasses(Engine.class, EnginePowered.class, EnginePoweredInterceptor.class, Ferry.class, Vessel.class);
     }
 
     @Test
     public void test() {
         // it is enough to verify that the deployment passes validation and deploys
-        assertEquals(1, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new EnginePowered.EnginePoweredLiteral()).size());
+        assertEquals(1,
+                manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new EnginePowered.EnginePoweredLiteral()).size());
     }
 }

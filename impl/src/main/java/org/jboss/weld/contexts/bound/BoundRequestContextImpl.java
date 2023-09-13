@@ -5,11 +5,11 @@ import java.util.Map;
 
 import jakarta.enterprise.context.RequestScoped;
 
+import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.contexts.AbstractBoundContext;
 import org.jboss.weld.contexts.beanstore.MapBeanStore;
 import org.jboss.weld.contexts.beanstore.NamingScheme;
 import org.jboss.weld.contexts.beanstore.SimpleNamingScheme;
-import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.contexts.cache.RequestScopedCache;
 
 public class BoundRequestContextImpl extends AbstractBoundContext<Map<String, Object>> implements BoundRequestContext {

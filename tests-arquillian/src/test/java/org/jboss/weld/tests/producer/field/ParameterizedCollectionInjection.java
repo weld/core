@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.producer.field;
 
+import java.util.Collection;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import java.util.Collection;
 
 @Dependent
 public class ParameterizedCollectionInjection {

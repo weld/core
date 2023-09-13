@@ -43,7 +43,8 @@ public class CustomPrioritizedAlternativeTest {
     @Deployment
     public static JavaArchive createTestArchive() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomPrioritizedAlternativeTest.class))
-                .addClasses(CustomPrioritizedAlternativeFoo.class, CustomPrioritizedAlternativeExtension.class, Bar.class, Bla.class, Foo.class)
+                .addClasses(CustomPrioritizedAlternativeFoo.class, CustomPrioritizedAlternativeExtension.class, Bar.class,
+                        Bla.class, Foo.class)
                 .addAsServiceProvider(Extension.class, CustomPrioritizedAlternativeExtension.class);
     }
 

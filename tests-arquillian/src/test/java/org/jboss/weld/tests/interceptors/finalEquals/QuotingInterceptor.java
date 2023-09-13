@@ -20,7 +20,6 @@ import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 
-
 /**
  * @author Sebastian Graca, ISPiK S.A.
  */

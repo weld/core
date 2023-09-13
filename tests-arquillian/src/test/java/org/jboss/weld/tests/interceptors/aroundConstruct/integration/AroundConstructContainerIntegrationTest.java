@@ -39,8 +39,11 @@ public class AroundConstructContainerIntegrationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundConstructContainerIntegrationTest.class)).addPackage(AroundConstructContainerIntegrationTest.class.getPackage())
-                .addAsManifestResource(AroundConstructContainerIntegrationTest.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(AroundConstructContainerIntegrationTest.class))
+                .addPackage(AroundConstructContainerIntegrationTest.class.getPackage())
+                .addAsManifestResource(AroundConstructContainerIntegrationTest.class.getPackage(), "ejb-jar.xml",
+                        "ejb-jar.xml");
     }
 
     /**

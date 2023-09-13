@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.beanManager.bootstrap;
 
-
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

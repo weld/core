@@ -36,7 +36,8 @@ import org.jboss.weld.logging.Category;
  */
 @MessageLogger(projectCode = "LITE-EXTENSION-TRANSLATOR-")
 public interface LiteExtensionTranslatorLogger extends BasicLogger {
-    LiteExtensionTranslatorLogger LOG = Logger.getMessageLogger(LiteExtensionTranslatorLogger.class, Category.LITE_EXTENSION_TRANSLATOR.getName());
+    LiteExtensionTranslatorLogger LOG = Logger.getMessageLogger(LiteExtensionTranslatorLogger.class,
+            Category.LITE_EXTENSION_TRANSLATOR.getName());
 
     @Message(id = 0, value = "Unable to instantiate object from class {0} via no-args constructor. The exception was: {1}", format = Message.Format.MESSAGE_FORMAT)
     IllegalStateException unableToInstantiateObject(Class<?> classToInstantiate, String exception, @Cause Throwable cause);
@@ -45,7 +46,8 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     IllegalArgumentException unexpectedMethodArgument(Object argument);
 
     @Message(id = 2, value = "{0} methods can't declare a parameter of type {1}, found at {2}. Method name - {3}", format = Message.Format.MESSAGE_FORMAT)
-    IllegalArgumentException invalidMethodParameter(Object phaseString, Object paramTypeString, Object declaringClassName, Object methodName);
+    IllegalArgumentException invalidMethodParameter(Object phaseString, Object paramTypeString, Object declaringClassName,
+            Object methodName);
 
     @Message(id = 3, value = "Unknown declaration {0}", format = Message.Format.MESSAGE_FORMAT)
     IllegalArgumentException unknownDeclaration(Object cdiDeclaration);
@@ -64,7 +66,8 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     IllegalStateException unknownQueryParameter(Object query);
 
     @Message(id = 8, value = "Unable to invoke extension method {0} with arguments {1}. The exception was: {2}", format = Message.Format.MESSAGE_FORMAT)
-    IllegalStateException unableToInvokeExtensionMethod(Object method, Object arguments, String exception, @Cause Exception cause);
+    IllegalStateException unableToInvokeExtensionMethod(Object method, Object arguments, String exception,
+            @Cause Exception cause);
 
     @Message(id = 9, value = "Unable to load class with name {0}. The exception was: {1}", format = Message.Format.MESSAGE_FORMAT)
     IllegalStateException cannotLoadClassByName(Object className, String exception, @Cause Throwable cause);
@@ -88,7 +91,8 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     IllegalArgumentException illegalAnnotationMemberType(Object type);
 
     @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 16, value = "AnnotationBuilderFactoryImpl wasn't initialized properly before using it. This can be caused by attempted usage outside of build compatible extension cycle. " +
+    @Message(id = 16, value = "AnnotationBuilderFactoryImpl wasn't initialized properly before using it. This can be caused by attempted usage outside of build compatible extension cycle. "
+            +
             "The init process will use a fallback method.", format = Message.Format.MESSAGE_FORMAT)
     void annotationFactoryInstanceNotInitialized();
 

@@ -13,27 +13,26 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 @RunWith(Arquillian.class)
 public class Weld1368Test {
 
-	@Inject
-	private TestBean1 testBean1;
+    @Inject
+    private TestBean1 testBean1;
 
-	@Deployment
-	public static JavaArchive createDeployment() {
+    @Deployment
+    public static JavaArchive createDeployment() {
 
-		return ShrinkWrap.create(JavaArchive.class)
-				.addPackage(Weld1368Test.class.getPackage())
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap.create(JavaArchive.class)
+                .addPackage(Weld1368Test.class.getPackage())
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
-	}
-	
-	@Test
-	public void testSpecializes() {
-            String name1 = TestBean3.class.getName();
-            String name2 = this.testBean1.getClass().getName();
-            Assert.assertEquals(name1, name2);
-	}
+    }
+
+    @Test
+    public void testSpecializes() {
+        String name1 = TestBean3.class.getName();
+        String name2 = this.testBean1.getClass().getName();
+        Assert.assertEquals(name1, name2);
+    }
 
 }

@@ -1,8 +1,8 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.build.compatible.spi.Parameters;
-
 import java.util.Map;
+
+import jakarta.enterprise.inject.build.compatible.spi.Parameters;
 
 class ParametersImpl implements Parameters {
     private final Map<String, Object> data;

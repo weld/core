@@ -44,13 +44,15 @@ public final class DefaultProxyInstantiator implements ProxyInstantiator {
     }
 
     @Override
-    public <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz, Bean<?> declaringBean)
+    public <T> UnproxyableResolutionException validateNoargConstructor(Constructor<T> constructor, Class<?> clazz,
+            Bean<?> declaringBean)
             throws UnproxyableResolutionException {
         if (constructor == null) {
             return ValidatorLogger.LOG.notProxyableNoConstructor(clazz, Proxies.getDeclaringBeanInfo(declaringBean));
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
-            return new UnproxyableResolutionException(ValidatorLogger.LOG.notProxyablePrivateConstructor(clazz.getName(), constructor,
-                    Proxies.getDeclaringBeanInfo(declaringBean)));
+            return new UnproxyableResolutionException(
+                    ValidatorLogger.LOG.notProxyablePrivateConstructor(clazz.getName(), constructor,
+                            Proxies.getDeclaringBeanInfo(declaringBean)));
         }
         return null;
     }

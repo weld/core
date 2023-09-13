@@ -41,7 +41,8 @@ public class ExtensionWithBrokenAsyncObserverTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExtensionWithBrokenAsyncObserverTest.class)).addPackage(ExtensionWithBrokenAsyncObserverTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExtensionWithBrokenAsyncObserverTest.class))
+                .addPackage(ExtensionWithBrokenAsyncObserverTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, ExtensionWithBrokenAsyncObserver.class);
     }
 

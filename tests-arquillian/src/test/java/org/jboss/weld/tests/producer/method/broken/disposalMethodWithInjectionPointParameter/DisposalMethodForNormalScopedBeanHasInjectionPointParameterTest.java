@@ -34,11 +34,14 @@ public class DisposalMethodForNormalScopedBeanHasInjectionPointParameterTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposalMethodForNormalScopedBeanHasInjectionPointParameterTest.class)).addPackage(Orange.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(DisposalMethodForNormalScopedBeanHasInjectionPointParameterTest.class))
+                .addPackage(Orange.class.getPackage());
     }
 
     @Test
     public void testDeploymentWithDisposerWithInjectionPoint() {
         // should throw definition exception
-     }
+    }
 }

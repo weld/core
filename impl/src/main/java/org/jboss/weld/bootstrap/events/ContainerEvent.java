@@ -51,7 +51,8 @@ public abstract class ContainerEvent implements NotificationListener {
     }
 
     /**
-     * Checks that this event is currently being delivered to an extension. Otherwise, {@link IllegalStateException} is thrown. This guarantees that methods of
+     * Checks that this event is currently being delivered to an extension. Otherwise, {@link IllegalStateException} is thrown.
+     * This guarantees that methods of
      * container lifecycle events are not called outside of extension observer method invocations.
      *
      * @throws IllegalStateException if this method is not called within extension observer method invocation

@@ -43,23 +43,23 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
- * 
+ *
  * Reproduces deadlock between creation locks in the application and session context.
- * 
+ *
  * Two pairs of beans are constructed in parallel:
  *
  * SessionScopedFoo -> ApplicationScopedFoo
  * ApplicationScopedBar -> SessionScopedBar
  *
- * We use a {@link CountDownLatch} to simulate that both threads get into state when the first bean of the pair 
+ * We use a {@link CountDownLatch} to simulate that both threads get into state when the first bean of the pair
  * (SessionScopedFoo and ApplicationScopedFoo) is created and before the dependency is created. This causes deadlock
  * because the first thread
  *
  * - owns the session lock
  * - waits for application lock
  *
- *  whereas the second thread
- * 
+ * whereas the second thread
+ *
  * - owns the application lock
  * - waits for the session lock
  *
@@ -69,18 +69,20 @@ import com.gargoylesoftware.htmlunit.WebClient;
 @RunWith(Arquillian.class)
 @Category(Integration.class)
 public class ContextDeadlockTest {
-    
+
     @ArquillianResource
     private volatile URL url;
 
     private final WebClient client = new WebClient();
-    
+
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ContextDeadlockTest.class, Utils.ARCHIVE_TYPE.WAR))
-                .addClasses(AbstractBean.class, ApplicationScopedFoo.class, ApplicationScopedBar.class, SessionScopedFoo.class, SessionScopedBar.class,
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ContextDeadlockTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(AbstractBean.class, ApplicationScopedFoo.class, ApplicationScopedBar.class, SessionScopedFoo.class,
+                        SessionScopedBar.class,
                         TestServlet.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

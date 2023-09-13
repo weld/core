@@ -33,7 +33,8 @@ public class InjectionTargetInitializationContext<T> {
     private final EnhancedAnnotatedType<T> enhancedAnnotatedType;
     private final BasicInjectionTarget<T> injectionTarget;
 
-    public InjectionTargetInitializationContext(EnhancedAnnotatedType<T> enhancedAnnotatedType, BasicInjectionTarget<T> injectionTarget) {
+    public InjectionTargetInitializationContext(EnhancedAnnotatedType<T> enhancedAnnotatedType,
+            BasicInjectionTarget<T> injectionTarget) {
         this.enhancedAnnotatedType = enhancedAnnotatedType;
         this.injectionTarget = injectionTarget;
     }

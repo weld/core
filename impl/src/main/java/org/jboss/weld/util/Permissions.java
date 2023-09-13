@@ -34,7 +34,8 @@ public class Permissions {
      * Determines whether the specified permission is permitted.
      *
      * @param permission
-     * @return <tt>false<tt> if the specified permission is not permitted, based on the current security policy; <tt>true<tt> otherwise
+     * @return <tt>false<tt> if the specified permission is not permitted, based on the current security policy; <tt>true<tt>
+     *         otherwise
      */
     public static boolean hasPermission(Permission permission) {
         SecurityManager security = System.getSecurityManager();

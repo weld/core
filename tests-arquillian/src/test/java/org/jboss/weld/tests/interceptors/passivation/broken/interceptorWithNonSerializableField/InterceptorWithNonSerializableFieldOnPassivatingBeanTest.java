@@ -38,7 +38,9 @@ public class InterceptorWithNonSerializableFieldOnPassivatingBeanTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorWithNonSerializableFieldOnPassivatingBeanTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(InterceptorWithNonSerializableFieldOnPassivatingBeanTest.class))
                 .intercept(Defender.class)
                 .addPackage(InterceptorWithNonSerializableFieldOnPassivatingBeanTest.class.getPackage());
     }
@@ -46,5 +48,5 @@ public class InterceptorWithNonSerializableFieldOnPassivatingBeanTest {
     @Test
     public void testDeploymentWithNonSerializableFieldForPassivation() throws Exception {
         // should throw deployment exception
-     }
+    }
 }

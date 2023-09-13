@@ -43,7 +43,8 @@ public class DisposerMethodThrowsExceptionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerMethodThrowsExceptionTest.class)).addClasses(Producer.class, Product.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerMethodThrowsExceptionTest.class))
+                .addClasses(Producer.class, Product.class);
     }
 
     @Test

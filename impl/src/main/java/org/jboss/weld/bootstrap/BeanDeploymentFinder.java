@@ -45,7 +45,8 @@ public final class BeanDeploymentFinder {
      * @param contexts
      * @param deploymentManager
      */
-    public BeanDeploymentFinder(BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts,
+    public BeanDeploymentFinder(BeanDeploymentArchiveMapping bdaMapping, Deployment deployment,
+            Collection<ContextHolder<? extends Context>> contexts,
             BeanManagerImpl deploymentManager) {
         this.bdaMapping = bdaMapping;
         this.deployment = deployment;

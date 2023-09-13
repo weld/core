@@ -55,6 +55,7 @@ public final class ContextualInstance {
      * <code>
      * manager.getContext(bean.getScope()).get(bean);
      * </code>
+     *
      * @param bean the given bean
      * @param manager the beanManager
      * @return contextual instance of a given bean or null if none exists

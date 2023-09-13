@@ -36,9 +36,9 @@ import org.junit.runner.RunWith;
 /**
  * Verifies that a decorator that is passivation capable while having non-passivation capable dependencies is allowed
  * provided it does not intercept a bean declaring passivation scope.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class DecoratorWithNonPassivationCapableDependenciesTest {
@@ -48,7 +48,10 @@ public class DecoratorWithNonPassivationCapableDependenciesTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratorWithNonPassivationCapableDependenciesTest.class)).decorate(VesselDecorator.class)
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(DecoratorWithNonPassivationCapableDependenciesTest.class))
+                .decorate(VesselDecorator.class)
                 .addClasses(Engine.class, Ferry.class, Vessel.class, VesselDecorator.class);
     }
 

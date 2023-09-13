@@ -43,7 +43,6 @@ public class ContainerContext {
         this.manager = manager;
     }
 
-
     public ServletContext getServletContext() {
         return servletContext;
     }

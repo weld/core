@@ -30,9 +30,11 @@ public class FilterPredicate implements Predicate<String> {
     public FilterPredicate(Metadata<Filter> filter, ResourceLoader resourceLoader) {
         boolean active = true;
         if (filter.getValue().getClassAvailableActivations() != null) {
-            for (Metadata<ClassAvailableActivation> classAvailableActivation : filter.getValue().getClassAvailableActivations()) {
+            for (Metadata<ClassAvailableActivation> classAvailableActivation : filter.getValue()
+                    .getClassAvailableActivations()) {
                 if (classAvailableActivation.getValue() == null) {
-                    throw new IllegalStateException("Class available activation metadata not available at " + classAvailableActivation);
+                    throw new IllegalStateException(
+                            "Class available activation metadata not available at " + classAvailableActivation);
                 }
                 String className = classAvailableActivation.getValue().getClassName();
                 if (className == null) {
@@ -46,9 +48,11 @@ public class FilterPredicate implements Predicate<String> {
             }
         }
         if (filter.getValue().getSystemPropertyActivations() != null) {
-            for (Metadata<SystemPropertyActivation> systemPropertyActivation : filter.getValue().getSystemPropertyActivations()) {
+            for (Metadata<SystemPropertyActivation> systemPropertyActivation : filter.getValue()
+                    .getSystemPropertyActivations()) {
                 if (systemPropertyActivation.getValue() == null) {
-                    throw new IllegalStateException("System property activation metadata not available at " + systemPropertyActivation);
+                    throw new IllegalStateException(
+                            "System property activation metadata not available at " + systemPropertyActivation);
                 }
                 String propertyName = systemPropertyActivation.getValue().getName();
                 String requiredPropertyValue = systemPropertyActivation.getValue().getValue();
@@ -58,7 +62,8 @@ public class FilterPredicate implements Predicate<String> {
                 boolean propertyNameInverted = isInverted(propertyName);
 
                 if (propertyNameInverted && requiredPropertyValue != null) {
-                    throw new IllegalStateException("Cannot invert property name and specify property value at " + systemPropertyActivation);
+                    throw new IllegalStateException(
+                            "Cannot invert property name and specify property value at " + systemPropertyActivation);
                 }
 
                 if (propertyNameInverted) {
@@ -81,7 +86,7 @@ public class FilterPredicate implements Predicate<String> {
         if (filter.getValue() instanceof WeldFilter) {
             WeldFilter weldFilter = (WeldFilter) filter.getValue();
             if ((weldFilter.getName() != null && weldFilter.getPattern() != null)
-             || (weldFilter.getName() == null && weldFilter.getPattern() == null)) {
+                    || (weldFilter.getName() == null && weldFilter.getPattern() == null)) {
                 throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
             }
             if (weldFilter.getPattern() != null) {
@@ -193,7 +198,8 @@ public class FilterPredicate implements Predicate<String> {
     }
 
     private abstract static class CDI11Matcher implements Matcher {
-        private static final Pattern CDI11_EXCLUDE_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
+        private static final Pattern CDI11_EXCLUDE_PATTERN = Pattern
+                .compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
         protected final String expression;
 
         private CDI11Matcher(String expression, Metadata<Filter> filter) {

@@ -37,7 +37,8 @@ public class InterceptorWithRepeatableBindingsTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorWithRepeatableBindingsTest.class)).intercept(IncrementingInterceptor.class).addPackage(InterceptorWithRepeatableBindingsTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorWithRepeatableBindingsTest.class))
+                .intercept(IncrementingInterceptor.class).addPackage(InterceptorWithRepeatableBindingsTest.class.getPackage());
     }
 
     @Test

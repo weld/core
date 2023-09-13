@@ -27,7 +27,6 @@ import jakarta.jws.WebService;
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 @WebService(name = "EndpointIface", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
-public interface EndpointIface
-{
-   String echo(final String message);
+public interface EndpointIface {
+    String echo(final String message);
 }

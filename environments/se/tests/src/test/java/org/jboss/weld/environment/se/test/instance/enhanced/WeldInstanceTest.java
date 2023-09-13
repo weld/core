@@ -22,8 +22,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.List;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.Bean;
+
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -40,10 +45,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  * @author Martin Kouba
@@ -53,8 +54,10 @@ public class WeldInstanceTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceTest.class))
-                .addPackage(WeldInstanceTest.class.getPackage()).addClass(ActionSequence.class)).build();
+        return ClassPath.builder()
+                .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WeldInstanceTest.class))
+                        .addPackage(WeldInstanceTest.class.getPackage()).addClass(ActionSequence.class))
+                .build();
     }
 
     @Test
@@ -159,7 +162,7 @@ public class WeldInstanceTest {
 
             ActionSequence.reset();
             assertTrue(instance.isAmbiguous());
-            for (Iterator<Handler<Processor>> iterator = instance.handlers().iterator(); iterator.hasNext(); ) {
+            for (Iterator<Handler<Processor>> iterator = instance.handlers().iterator(); iterator.hasNext();) {
                 try (Handler<Processor> handler = iterator.next()) {
                     handler.get().ping();
                 }
@@ -175,7 +178,8 @@ public class WeldInstanceTest {
         ActionSequence.reset();
         try (WeldContainer container = new Weld().initialize()) {
 
-            Handler<Processor> processor = container.select(Processor.class).handlersStream().filter(h -> Dependent.class.equals(h.getBean().getScope()))
+            Handler<Processor> processor = container.select(Processor.class).handlersStream()
+                    .filter(h -> Dependent.class.equals(h.getBean().getScope()))
                     .findFirst().orElse(null);
             assertNull(ActionSequence.getSequenceData());
             assertNotNull(processor);
@@ -186,7 +190,8 @@ public class WeldInstanceTest {
             assertEquals(1, sequence.size());
             assertEquals("firstDestroy", sequence.get(0));
 
-            Handler<WithPriority> withPriority = container.select(WithPriority.class).handlersStream().sorted(container.getPriorityComparator()).findFirst()
+            Handler<WithPriority> withPriority = container.select(WithPriority.class).handlersStream()
+                    .sorted(container.getPriorityComparator()).findFirst()
                     .orElse(null);
             assertNotNull(withPriority);
             assertEquals(Priority3.class, withPriority.getBean().getBeanClass());

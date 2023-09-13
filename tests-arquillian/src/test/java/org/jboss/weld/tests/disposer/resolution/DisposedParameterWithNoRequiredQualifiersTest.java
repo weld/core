@@ -35,7 +35,9 @@ public class DisposedParameterWithNoRequiredQualifiersTest {
 
     @Deployment
     public static Archive<?> createTestDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposedParameterWithNoRequiredQualifiersTest.class)).addClasses(Goal.class, GoalProducer.class, Lead.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposedParameterWithNoRequiredQualifiersTest.class))
+                .addClasses(Goal.class, GoalProducer.class, Lead.class);
     }
 
     @Test

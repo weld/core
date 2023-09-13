@@ -40,17 +40,19 @@ public class DecoratorWithPrivateConstructorTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
-            .add(ShrinkWrap.create(BeanArchive.class)
-                .addPackage(DecoratorWithPrivateConstructorTest.class.getPackage())).build();
+                .add(ShrinkWrap.create(BeanArchive.class)
+                        .addPackage(DecoratorWithPrivateConstructorTest.class.getPackage()))
+                .build();
     }
 
     @Test(expected = DeploymentException.class)
     public void testExceptionIsThrownWithoutRelaxedMode() {
         Weld weld = new Weld();
-        try (WeldContainer container = weld.disableDiscovery().addPackages(DecoratorWithPrivateConstructorTest.class.getPackage())
-            // NOTE: in SE this is by default true
-            .property("org.jboss.weld.construction.relaxed", false)
-            .initialize()) {
+        try (WeldContainer container = weld.disableDiscovery()
+                .addPackages(DecoratorWithPrivateConstructorTest.class.getPackage())
+                // NOTE: in SE this is by default true
+                .property("org.jboss.weld.construction.relaxed", false)
+                .initialize()) {
             container.select(ImplementingBean.class).get().ping();
         }
     }
@@ -58,9 +60,10 @@ public class DecoratorWithPrivateConstructorTest {
     @Test(expected = DeploymentException.class)
     public void testExceptionIsThrownWithRelaxedMode() {
         Weld weld = new Weld();
-        try (WeldContainer container = weld.disableDiscovery().addPackages(DecoratorWithPrivateConstructorTest.class.getPackage())
-            .property("org.jboss.weld.construction.relaxed", true)
-            .initialize()) {
+        try (WeldContainer container = weld.disableDiscovery()
+                .addPackages(DecoratorWithPrivateConstructorTest.class.getPackage())
+                .property("org.jboss.weld.construction.relaxed", true)
+                .initialize()) {
             container.select(ImplementingBean.class).get().ping();
         }
     }

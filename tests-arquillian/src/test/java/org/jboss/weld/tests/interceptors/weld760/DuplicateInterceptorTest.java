@@ -20,14 +20,16 @@ public class DuplicateInterceptorTest {
     @Deployment
     public static Archive<?> deploy() {
         Archive jar = ShrinkWrap.create(JavaArchive.class)
-            .addClasses(MySuperClass.class);
+                .addClasses(MySuperClass.class);
 
         Archive beanArchive = ShrinkWrap.create(BeanArchive.class)
-            .intercept(MyInterceptor.class)
-            .addClasses(MyObject.class, MyManagedBean.class, MyInterceptor.class, MyInterceptorBinding.class, MyStereotype.class);
+                .intercept(MyInterceptor.class)
+                .addClasses(MyObject.class, MyManagedBean.class, MyInterceptor.class, MyInterceptorBinding.class,
+                        MyStereotype.class);
 
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(DuplicateInterceptorTest.class, Utils.ARCHIVE_TYPE.WAR))
-            .addAsLibraries(jar, beanArchive);
+        return ShrinkWrap
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(DuplicateInterceptorTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addAsLibraries(jar, beanArchive);
     }
 
     @Test

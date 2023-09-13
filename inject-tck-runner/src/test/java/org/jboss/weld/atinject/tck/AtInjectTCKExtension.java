@@ -17,19 +17,20 @@
 
 package org.jboss.weld.atinject.tck;
 
-import org.atinject.tck.auto.Convertible;
-import org.atinject.tck.auto.Drivers;
-import org.atinject.tck.auto.DriversSeat;
-import org.atinject.tck.auto.accessories.SpareTire;
-import org.jboss.weld.literal.NamedLiteral;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+
+import org.atinject.tck.auto.Convertible;
+import org.atinject.tck.auto.Drivers;
+import org.atinject.tck.auto.DriversSeat;
+import org.atinject.tck.auto.accessories.SpareTire;
+import org.jboss.weld.literal.NamedLiteral;
 
 public class AtInjectTCKExtension implements Extension {
     public void convertible(@Observes ProcessAnnotatedType<Convertible> pat) {

@@ -39,24 +39,24 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 import jakarta.inject.Inject;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * This test verifies, that a container lifecycle event method invocation throws {@link IllegalStateException} if performed outside of an extension observer
+ * This test verifies, that a container lifecycle event method invocation throws {@link IllegalStateException} if performed
+ * outside of an extension observer
  * method.
- * 
+ *
  * @author Jozef Hartinger
- * 
- * See also WELD-1614
+ *
+ *         See also WELD-1614
  */
 @RunWith(Arquillian.class)
 public class ContainerLifecycleEventInvocationOutsideObserverTest {
@@ -68,7 +68,10 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContainerLifecycleEventInvocationOutsideObserverTest.class)).addPackage(ContainerLifecycleEventInvocationOutsideObserverTest.class.getPackage())
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(ContainerLifecycleEventInvocationOutsideObserverTest.class))
+                .addPackage(ContainerLifecycleEventInvocationOutsideObserverTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 
@@ -187,7 +190,7 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
             }
         }.run();
     }
-    
+
     private static class DummyBean implements Bean<Object> {
 
         @Override
@@ -201,7 +204,7 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
 
         @Override
         public Set<Type> getTypes() {
-            return Collections.<Type>singleton(Object.class);
+            return Collections.<Type> singleton(Object.class);
         }
 
         @Override
@@ -294,6 +297,6 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
         public void notify(Object event) {
             // noop
         }
-        
+
     }
 }

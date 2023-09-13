@@ -11,7 +11,7 @@ class ExtensionPhaseEnhancementAction {
     private final Consumer<jakarta.enterprise.inject.spi.ProcessAnnotatedType<?>> acceptor;
 
     ExtensionPhaseEnhancementAction(Set<Class<?>> types, boolean withSubtypes, Set<Class<? extends Annotation>> withAnnotations,
-                                    Consumer<jakarta.enterprise.inject.spi.ProcessAnnotatedType<?>> acceptor) {
+            Consumer<jakarta.enterprise.inject.spi.ProcessAnnotatedType<?>> acceptor) {
         this.types = types;
         this.withSubtypes = withSubtypes;
         this.withAnnotations = withAnnotations;

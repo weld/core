@@ -17,6 +17,7 @@
 package org.jboss.weld.annotated.enhanced;
 
 import java.lang.reflect.Constructor;
+
 import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
@@ -24,12 +25,14 @@ import jakarta.enterprise.inject.spi.AnnotatedConstructor;
  *
  * @author Pete Muir
  */
-public interface EnhancedAnnotatedConstructor<T> extends EnhancedAnnotatedCallable<T, T, Constructor<T>>, AnnotatedConstructor<T> {
+public interface EnhancedAnnotatedConstructor<T>
+        extends EnhancedAnnotatedCallable<T, T, Constructor<T>>, AnnotatedConstructor<T> {
 
     ConstructorSignature getSignature();
 
     /**
      * Returns a lightweight implementation of {@link AnnotatedConstructor} with minimal memory footprint.
+     *
      * @return the slim version of this {@link AnnotatedConstructor}
      */
     AnnotatedConstructor<T> slim();

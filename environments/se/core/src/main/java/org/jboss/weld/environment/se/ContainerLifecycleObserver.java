@@ -67,8 +67,10 @@ import org.jboss.weld.util.reflection.Reflections;
 /**
  * Represents a synthetic container lifecycle event observer.
  * <p>
- * For parameterized container lifecycele events (such as {@link ProcessAnnotatedType} and {@link ProcessProducerMethod}) it is possible to specify the observed
- * container lifecycle event type, e.g. by means of {@link TypeLiteral}. To receive notifications for all observer methods with observed event type of
+ * For parameterized container lifecycele events (such as {@link ProcessAnnotatedType} and {@link ProcessProducerMethod}) it is
+ * possible to specify the observed
+ * container lifecycle event type, e.g. by means of {@link TypeLiteral}. To receive notifications for all observer methods with
+ * observed event type of
  * {@link String}:
  *
  * <pre>
@@ -115,7 +117,8 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
      * @return a new container lifecycle observer
      * @see AfterBeanDiscovery
      */
-    public static ContainerLifecycleObserver<WeldAfterBeanDiscovery> afterBeanDiscovery(Consumer<WeldAfterBeanDiscovery> callback) {
+    public static ContainerLifecycleObserver<WeldAfterBeanDiscovery> afterBeanDiscovery(
+            Consumer<WeldAfterBeanDiscovery> callback) {
         return afterBeanDiscovery().notify(callback);
     }
 
@@ -154,7 +157,8 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
      * @return a new container lifecycle observer
      * @see AfterDeploymentValidation
      */
-    public static ContainerLifecycleObserver<AfterDeploymentValidation> afterDeploymentValidation(Consumer<AfterDeploymentValidation> callback) {
+    public static ContainerLifecycleObserver<AfterDeploymentValidation> afterDeploymentValidation(
+            Consumer<AfterDeploymentValidation> callback) {
         return afterDeploymentValidation().notify(callback);
     }
 
@@ -492,7 +496,8 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
 
     private volatile SyntheticExtension extension;
 
-    private ContainerLifecycleObserver(int priority, Type observedType, BiConsumer<T, BeanManager> callbackWithBeanManager, Consumer<T> callback,
+    private ContainerLifecycleObserver(int priority, Type observedType, BiConsumer<T, BeanManager> callbackWithBeanManager,
+            Consumer<T> callback,
             Collection<Class<? extends Annotation>> requiredAnnotations) {
         this.priority = priority;
         this.observedType = observedType;
@@ -631,7 +636,8 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
         }
 
         /**
-         * The annotations are only considered for {@link ProcessAnnotatedType}, i.e. they are ignored for other container lifecycle events.
+         * The annotations are only considered for {@link ProcessAnnotatedType}, i.e. they are ignored for other container
+         * lifecycle events.
          *
          * @param annotations
          * @return self
@@ -645,7 +651,8 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
         }
 
         /**
-         * Set a callback used during observer notification. The first callback parameter is an event object and the second parameter is a {@link BeanManager}
+         * Set a callback used during observer notification. The first callback parameter is an event object and the second
+         * parameter is a {@link BeanManager}
          * instance.
          * <p>
          * This is a terminal operation.

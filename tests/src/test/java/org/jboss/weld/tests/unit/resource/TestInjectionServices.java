@@ -56,7 +56,8 @@ class TestInjectionServices implements InjectionServices {
 
     @Override
     public <T> void aroundInject(InjectionContext<T> injectionContext) {
-        if (injectionContext.getTarget() == null && injectionContext.getAnnotatedType().getJavaClass().equals(InjectedClass.class)) {
+        if (injectionContext.getTarget() == null
+                && injectionContext.getAnnotatedType().getJavaClass().equals(InjectedClass.class)) {
             setField(new SpecialResource(RESOURCE_NAME));
         }
     }

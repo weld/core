@@ -35,8 +35,8 @@ public class EventQualifierTest {
     }
 
     /*
-    * description = "WELD-226"
-    */
+     * description = "WELD-226"
+     */
     @Test
     public void testDefaultQualifierNotRequired(Bar bar) {
         bar.fireWithNoQualifiers();

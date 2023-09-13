@@ -47,8 +47,8 @@ public class BytecodeUtils {
     /**
      * Adds the correct load instruction based on the type descriptor
      *
-     * @param code     the bytecode to add the instruction to
-     * @param type     the type of the variable
+     * @param code the bytecode to add the instruction to
+     * @param type the type of the variable
      * @param variable the variable number
      */
     public static void addLoadInstruction(CodeAttribute code, String type, int variable) {
@@ -77,10 +77,10 @@ public class BytecodeUtils {
      * Pushes a class type onto the stack from the string representation This can
      * also handle primitives
      *
-     * @param b         the bytecode
+     * @param b the bytecode
      * @param classType the type descriptor for the class or primitive to push.
-     *                  This will accept both the java.lang.Object form and the
-     *                  Ljava/lang/Object; form
+     *        This will accept both the java.lang.Object form and the
+     *        Ljava/lang/Object; form
      */
     public static void pushClassType(CodeAttribute b, String classType) {
         if (classType.length() != 1) {

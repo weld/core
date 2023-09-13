@@ -1,13 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.lang.model.declarations.ClassInfo;
-import jakarta.enterprise.lang.model.declarations.MethodInfo;
-import jakarta.enterprise.lang.model.declarations.ParameterInfo;
-import jakarta.enterprise.lang.model.types.Type;
-import jakarta.enterprise.lang.model.types.TypeVariable;
-import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
-
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +9,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-class MethodInfoImpl extends DeclarationInfoImpl<java.lang.reflect.Executable, jakarta.enterprise.inject.spi.AnnotatedCallable<?>> implements MethodInfo {
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.lang.model.declarations.ClassInfo;
+import jakarta.enterprise.lang.model.declarations.MethodInfo;
+import jakarta.enterprise.lang.model.declarations.ParameterInfo;
+import jakarta.enterprise.lang.model.types.Type;
+import jakarta.enterprise.lang.model.types.TypeVariable;
+
+import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
+
+class MethodInfoImpl
+        extends DeclarationInfoImpl<java.lang.reflect.Executable, jakarta.enterprise.inject.spi.AnnotatedCallable<?>>
+        implements MethodInfo {
     // only for equals/hashCode
     private final String className;
     private final String name;

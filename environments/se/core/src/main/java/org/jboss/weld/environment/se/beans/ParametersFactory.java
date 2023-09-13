@@ -71,11 +71,11 @@ public class ParametersFactory {
      * StartMain passes in the command line args here.
      *
      * @param args The command line arguments. If null is given then an empty
-     *             array will be used instead.
+     *        array will be used instead.
      */
     public void setArgs(String[] args) {
         if (args == null) {
-            args = new String[]{};
+            args = new String[] {};
         }
         this.args = args;
         this.argsList = Collections.unmodifiableList(new ArrayList<String>(Arrays.asList(args)));

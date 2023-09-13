@@ -16,21 +16,22 @@
  */
 package org.jboss.weld.environment.se.test.events;
 
-import jakarta.inject.Qualifier;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import jakarta.inject.Qualifier;
+
 /**
  * @author Peter Royle
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({PARAMETER, METHOD, FIELD, TYPE})
+@Target({ PARAMETER, METHOD, FIELD, TYPE })
 public @interface EventQualifier1 {
 }

@@ -45,12 +45,12 @@ public class InterceptorMetadataUtils {
          *
          * This will be revisited as part of https://issues.jboss.org/browse/WELD-1401
          *
-        if (interceptionType == InterceptionType.AROUND_CONSTRUCT) {
-            throw new DefinitionException(ValidatorMessage.AROUND_CONSTRUCT_INTERCEPTOR_METHOD_NOT_ALLOWED_ON_TARGET_CLASS,
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName());
-        }
-        */
+         * if (interceptionType == InterceptionType.AROUND_CONSTRUCT) {
+         * throw new DefinitionException(ValidatorMessage.AROUND_CONSTRUCT_INTERCEPTOR_METHOD_NOT_ALLOWED_ON_TARGET_CLASS,
+         * javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+         * interceptionType.annotationClassName());
+         * }
+         */
         /*
          * Again, we relax the check and allow both void and Object return types as we cannot distinguish between
          * a managed bean and an interceptor class.
@@ -87,8 +87,10 @@ public class InterceptorMetadataUtils {
 
     private static boolean isValidInterceptorClassLifecycleInterceptorMethod(InterceptionType interceptionType, Method method) {
         if (!Object.class.equals(method.getReturnType()) && !Void.TYPE.equals(method.getReturnType())) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObjectOrVoid(method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), Void.TYPE.getName(), OBJECT_CLASS_NAME, Formats.formatAsStackTraceElement(method));
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObjectOrVoid(method.getName(),
+                    method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), Void.TYPE.getName(), OBJECT_CLASS_NAME,
+                    Formats.formatAsStackTraceElement(method));
         }
 
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -98,33 +100,41 @@ public class InterceptorMetadataUtils {
             if (InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
                 return true;
             }
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), InvocationContext.class.getName(), Formats.formatAsStackTraceElement(method));
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(method.getName(),
+                    method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), InvocationContext.class.getName(),
+                    Formats.formatAsStackTraceElement(method));
         } else {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(method.getName(), method.getDeclaringClass().getName(),
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(method.getName(),
+                    method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Formats.formatAsStackTraceElement(method));
         }
     }
 
     private static boolean isValidBusinessMethodInterceptorMethod(InterceptionType interceptionType, Method method) {
         if (!Object.class.equals(method.getReturnType())) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObject(method.getName(), method.getDeclaringClass().getName(),
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObject(method.getName(),
+                    method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), OBJECT_CLASS_NAME, Formats.formatAsStackTraceElement(method));
         }
 
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length != 1) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(method.getName(), method.getDeclaringClass().getName(),
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(method.getName(),
+                    method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Formats.formatAsStackTraceElement(method));
         }
         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), InvocationContext.class.getName(), Formats.formatAsStackTraceElement(method));
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(method.getName(),
+                    method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), InvocationContext.class.getName(),
+                    Formats.formatAsStackTraceElement(method));
         }
         return true;
     }
 
-    public static Map<InterceptionType, List<Method>> buildMethodMap(EnhancedAnnotatedType<?> type, boolean forTargetClass, BeanManagerImpl manager) {
+    public static Map<InterceptionType, List<Method>> buildMethodMap(EnhancedAnnotatedType<?> type, boolean forTargetClass,
+            BeanManagerImpl manager) {
         ImmutableMap.Builder<InterceptionType, List<Method>> builder = null;
         for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
             List<Method> value = BeanMethods.getInterceptorMethods(type, interceptionType, forTargetClass);

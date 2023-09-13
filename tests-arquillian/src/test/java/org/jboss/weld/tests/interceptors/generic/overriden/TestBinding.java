@@ -28,8 +28,8 @@ import jakarta.interceptor.InterceptorBinding;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 @InterceptorBinding
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestBinding {
-    
+
 }

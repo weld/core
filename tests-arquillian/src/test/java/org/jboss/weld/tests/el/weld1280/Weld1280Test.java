@@ -35,7 +35,8 @@ public class Weld1280Test {
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
 
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1280Test.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(WeldTestPhaseListener.class, HelloBean.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1280Test.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(WeldTestPhaseListener.class, HelloBean.class)
                 .addAsWebResource(Weld1280Test.class.getPackage(), "index.xhtml", "index.xhtml")
                 .addAsWebInfResource(Weld1280Test.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(Weld1280Test.class.getPackage(), "faces-config.xml", "faces-config.xml")

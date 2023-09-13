@@ -48,9 +48,11 @@ public class Servlet extends HttpServlet {
             conversation.end();
         }
         bean.setFoo("baz");
-        resp.getWriter().append("Initialized conversations:").append(Integer.toString(observer.getInitializedConversationCount().get()));
+        resp.getWriter().append("Initialized conversations:")
+                .append(Integer.toString(observer.getInitializedConversationCount().get()));
         resp.getWriter().append('\n');
-        resp.getWriter().append("Destroyed conversations:").append(Integer.toString(observer.getDestroyedConversationCount().get()));
+        resp.getWriter().append("Destroyed conversations:")
+                .append(Integer.toString(observer.getDestroyedConversationCount().get()));
         resp.getWriter().append('\n');
         resp.getWriter().append("cid:").append(conversation.getId());
         resp.setContentType("text/plain");

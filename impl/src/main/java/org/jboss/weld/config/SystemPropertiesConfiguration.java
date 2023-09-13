@@ -20,7 +20,8 @@ import static org.jboss.weld.config.WeldConfiguration.checkRequiredType;
 import static org.jboss.weld.config.WeldConfiguration.getSystemProperty;
 
 /**
- * If a configuration property needs to be accessed before the Weld container initializes, the system property is so far the only option.
+ * If a configuration property needs to be accessed before the Weld container initializes, the system property is so far the
+ * only option.
  *
  * @author Martin Kouba
  * @see ConfigurationKey

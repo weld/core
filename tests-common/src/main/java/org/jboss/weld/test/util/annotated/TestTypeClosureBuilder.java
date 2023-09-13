@@ -35,8 +35,7 @@ class TestTypeClosureBuilder {
         do {
             types.add(c);
             c = c.getSuperclass();
-        }
-        while (c != null);
+        } while (c != null);
         Collections.addAll(types, beanType.getInterfaces());
         return this;
     }

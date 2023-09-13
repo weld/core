@@ -44,7 +44,8 @@ public class ImplicitScanSmokeTest {
 
     @Test
     public void testDiscovery() {
-        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.TRUE).initialize()) {
+        try (WeldContainer container = new Weld().property(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, Boolean.TRUE)
+                .initialize()) {
             Foo foo = container.select(Foo.class).get();
             assertNotNull(foo);
             assertEquals(1, foo.ping());

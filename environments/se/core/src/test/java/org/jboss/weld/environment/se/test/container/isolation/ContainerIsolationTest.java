@@ -16,10 +16,9 @@
  */
 package org.jboss.weld.environment.se.test.container.isolation;
 
-import org.junit.Assert;
-
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

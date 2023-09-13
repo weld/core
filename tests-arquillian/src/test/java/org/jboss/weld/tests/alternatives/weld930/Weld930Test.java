@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Marko Luksa
  * @author Jozef Hartinger
- * 
+ *
  * @see https://issues.jboss.org/browse/WELD-930
  * @see https://issues.jboss.org/browse/WELD-1180
  * @see http://docs.jboss.org/cdi/spec/1.0/html/injectionelresolution.html#ambigdependencies

@@ -33,8 +33,10 @@ import org.junit.runner.RunWith;
  * Verify the <code>org.jboss.weld.environment.servlet.EnhancedListener</code> works correctly on its own, i.e. if the
  * <code>org.jboss.weld.environment.servlet.Listener</code> is not configured in web.xml.
  *
- * Note that the test suite is using both Listener and EnhancedListener for all the tests. For Tomcat prior to 7.0.52 a workaround was required in embedded mode
- * due to Maven Surefire classloading issues. See also <a href="http://maven.apache.org/surefire/maven-surefire-plugin/examples/class-loading.html">Classloading
+ * Note that the test suite is using both Listener and EnhancedListener for all the tests. For Tomcat prior to 7.0.52 a
+ * workaround was required in embedded mode
+ * due to Maven Surefire classloading issues. See also
+ * <a href="http://maven.apache.org/surefire/maven-surefire-plugin/examples/class-loading.html">Classloading
  * and Forking in Maven Surefire</a>.
  *
  * @author Martin Kouba
@@ -42,7 +44,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class EnhancedListenerTest {
 
-    public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
+    public static final Asset WEB_XML = new ByteArrayAsset(
+            (Deployments.DEFAULT_WEB_XML_START + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
 
     @Deployment
     public static WebArchive createTestArchive() {

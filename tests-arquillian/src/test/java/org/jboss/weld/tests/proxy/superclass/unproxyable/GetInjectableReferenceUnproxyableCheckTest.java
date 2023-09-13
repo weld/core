@@ -33,8 +33,10 @@ public class GetInjectableReferenceUnproxyableCheckTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetInjectableReferenceUnproxyableCheckTest.class))
-                .addPackage(GetInjectableReferenceUnproxyableCheckTest.class.getPackage()).addClasses(SimpleBean.class, NotSimpleConstructorClass.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(GetInjectableReferenceUnproxyableCheckTest.class))
+                .addPackage(GetInjectableReferenceUnproxyableCheckTest.class.getPackage())
+                .addClasses(SimpleBean.class, NotSimpleConstructorClass.class);
     }
 
     @Test

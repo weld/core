@@ -41,7 +41,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Tests that TCCL is set to null when running in SE with enabled discovery (in which case we use ForkJoinPool and hence CommonForkJoinPoolExecutorServices)
+ * Tests that TCCL is set to null when running in SE with enabled discovery (in which case we use ForkJoinPool and hence
+ * CommonForkJoinPoolExecutorServices)
  *
  * @see WELD-2494
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
@@ -52,18 +53,19 @@ public class ContextClassLoaderNullifiedTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class)
-            .addClasses(ContextClassLoaderNullifiedTest.class, DummyBean.class))
-            .build();
+                .addClasses(ContextClassLoaderNullifiedTest.class, DummyBean.class))
+                .build();
     }
 
     @Test
     public void testTcclNullifiedInSeEnvironment() {
         Weld weld = new Weld()
-            // in case default changes, make sure this tests uses ForkJoinPool
-            .addProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.toString(), ExecutorServicesFactory.ThreadPoolType.COMMON.toString());
+                // in case default changes, make sure this tests uses ForkJoinPool
+                .addProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.toString(),
+                        ExecutorServicesFactory.ThreadPoolType.COMMON.toString());
         try (WeldContainer container = weld.initialize()) {
             AtomicBoolean isTCCLNull = new AtomicBoolean(false);
-            
+
             // retrieve service and use it to invoke Callable
             ServiceRegistry registry = BeanManagerProxy.unwrap(container.getBeanManager()).getServices();
             ExecutorServices es = registry.get(ExecutorServices.class);

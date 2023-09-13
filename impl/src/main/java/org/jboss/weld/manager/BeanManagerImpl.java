@@ -221,7 +221,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
 
     /*
-     * These data structures are all non-transitive in terms of bean deployment archive accessibility, and the configuration for this bean deployment archive
+     * These data structures are all non-transitive in terms of bean deployment archive accessibility, and the configuration for
+     * this bean deployment archive
      */
     private transient volatile ModuleEnablement enabled;
 
@@ -230,7 +231,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
 
     /*
-     * These services are scoped to this bean archive only, but use data structures that are transitive accessible from other bean deployment archives
+     * These services are scoped to this bean archive only, but use data structures that are transitive accessible from other
+     * bean deployment archives
      */
     private final transient TypeSafeBeanResolver beanResolver;
     private final transient TypeSafeDecoratorResolver decoratorResolver;
@@ -239,7 +241,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ELResolver weldELResolver;
 
     /*
-     * Lenient instances do not perform event type checking - this is required for firing container lifecycle events. Strict instances do perform event type
+     * Lenient instances do not perform event type checking - this is required for firing container lifecycle events. Strict
+     * instances do perform event type
      * checking and are used for firing application an extension events.
      */
     private final transient ObserverNotifier accessibleLenientObserverNotifier;
@@ -251,7 +254,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
 
     /*
-     * These data structures are scoped to this bean deployment archive only and represent the beans, decorators, interceptors, namespaces and observers
+     * These data structures are scoped to this bean deployment archive only and represent the beans, decorators, interceptors,
+     * namespaces and observers
      * deployed in this bean deployment archive
      */
     private final transient List<Bean<?>> enabledBeans;
@@ -315,22 +319,29 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         Map<Class<? extends Annotation>, List<Context>> contexts = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
 
         return new BeanManagerImpl(serviceRegistry, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(),
-                new CopyOnWriteArrayList<Decorator<?>>(), new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(),
-                new CopyOnWriteArrayList<String>(), new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(), new ClientProxyProvider(contextId), contexts,
+                new CopyOnWriteArrayList<Decorator<?>>(), new CopyOnWriteArrayList<Interceptor<?>>(),
+                new CopyOnWriteArrayList<ObserverMethod<?>>(),
+                new CopyOnWriteArrayList<String>(), new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
+                new ClientProxyProvider(contextId), contexts,
                 ModuleEnablement.EMPTY_ENABLEMENT, id, new AtomicInteger(), new HashSet<BeanManagerImpl>(), contextId);
     }
 
     public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services) {
-        return new BeanManagerImpl(services, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Decorator<?>>(),
-                new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(), new CopyOnWriteArrayList<String>(),
-                rootManager.getEnterpriseBeans(), rootManager.getClientProxyProvider(), rootManager.getContexts(), ModuleEnablement.EMPTY_ENABLEMENT, id,
+        return new BeanManagerImpl(services, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(),
+                new CopyOnWriteArrayList<Decorator<?>>(),
+                new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(),
+                new CopyOnWriteArrayList<String>(),
+                rootManager.getEnterpriseBeans(), rootManager.getClientProxyProvider(), rootManager.getContexts(),
+                ModuleEnablement.EMPTY_ENABLEMENT, id,
                 new AtomicInteger(), rootManager.managers, rootManager.contextId);
     }
 
-    private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<Bean<?>> transitiveBeans, List<Decorator<?>> decorators,
+    private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<Bean<?>> transitiveBeans,
+            List<Decorator<?>> decorators,
             List<Interceptor<?>> interceptors, List<ObserverMethod<?>> observers, List<String> namespaces,
             Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, ClientProxyProvider clientProxyProvider,
-            Map<Class<? extends Annotation>, List<Context>> contexts, ModuleEnablement enabled, String id, AtomicInteger childIds,
+            Map<Class<? extends Annotation>, List<Context>> contexts, ModuleEnablement enabled, String id,
+            AtomicInteger childIds,
             Set<BeanManagerImpl> managers, String contextId) {
         this.services = serviceRegistry;
         this.enabledBeans = beans;
@@ -354,14 +365,19 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         BeanTransform beanTransform = new BeanTransform(this);
         this.beanResolver = new TypeSafeBeanResolver(this, createDynamicAccessibleIterable(beanTransform));
-        this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(BeanManagerImpl::getDecorators));
-        this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(BeanManagerImpl::getInterceptors));
+        this.decoratorResolver = new TypeSafeDecoratorResolver(this,
+                createDynamicGlobalIterable(BeanManagerImpl::getDecorators));
+        this.interceptorResolver = new TypeSafeInterceptorResolver(this,
+                createDynamicGlobalIterable(BeanManagerImpl::getInterceptors));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
-        this.weldELResolver = services.getOptional(ExpressionLanguageSupport.class).map(el -> el.createElResolver(this)).orElse(null);
+        this.weldELResolver = services.getOptional(ExpressionLanguageSupport.class).map(el -> el.createElResolver(this))
+                .orElse(null);
 
-        TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
+        TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(
+                getServices().get(MetaAnnotationStore.class),
                 createDynamicAccessibleIterable(BeanManagerImpl::getObservers), getServices().get(WeldConfiguration.class));
-        this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class).create(contextId, accessibleObserverResolver, getServices(),
+        this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class).create(contextId,
+                accessibleObserverResolver, getServices(),
                 false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
@@ -370,10 +386,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.containerLifecycleEvents = serviceRegistry.get(ContainerLifecycleEvents.class);
         this.registry = getServices().get(SpecializationAndEnablementRegistry.class);
         this.currentInjectionPoint = getServices().get(CurrentInjectionPoint.class);
-        this.clientProxyOptimization = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION);
-        this.requestInitializedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Initialized.Literal.REQUEST));
-        this.requestBeforeDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, BeforeDestroyed.Literal.REQUEST));
-        this.requestDestroyedEvent = LazyValueHolder.forSupplier(() -> FastEvent.of(Object.class, this, Destroyed.Literal.REQUEST));
+        this.clientProxyOptimization = getServices().get(WeldConfiguration.class)
+                .getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION);
+        this.requestInitializedEvent = LazyValueHolder
+                .forSupplier(() -> FastEvent.of(Object.class, this, Initialized.Literal.REQUEST));
+        this.requestBeforeDestroyedEvent = LazyValueHolder
+                .forSupplier(() -> FastEvent.of(Object.class, this, BeforeDestroyed.Literal.REQUEST));
+        this.requestDestroyedEvent = LazyValueHolder
+                .forSupplier(() -> FastEvent.of(Object.class, this, Destroyed.Literal.REQUEST));
 
         this.validationFailureCallbacks = new CopyOnWriteArrayList<>();
         this.specializedBeans = new CopyOnWriteArrayList<>();
@@ -424,7 +444,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Helper method which allows to recognize if bean was created by BeanConfigurator and has any priority set. Note that such bean will not implement
+     * Helper method which allows to recognize if bean was created by BeanConfigurator and has any priority set. Note that such
+     * bean will not implement
      * Prioritized interface.
      */
     private boolean isConfiguratorBeanWithPriority(Bean<?> bean) {
@@ -454,7 +475,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 }
                 registerBeanNamespace(bean);
                 // SessionBeans and most built in beans aren't resolvable transitively
-                if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof AbstractBuiltInBean<?>))) {
+                if (bean instanceof ExtensionBean || bean instanceof SessionBean
+                        || (!(bean instanceof AbstractBuiltInBean<?>))) {
                     transitiveBeans.add(bean);
                 }
             }
@@ -469,7 +491,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        return ImmutableSet.copyOf(globalStrictObserverNotifier.resolveObserverMethods(event.getClass(), bindings).getAllObservers());
+        return ImmutableSet
+                .copyOf(globalStrictObserverNotifier.resolveObserverMethods(event.getClass(), bindings).getAllObservers());
     }
 
     public void addInterceptor(Interceptor<?> bean) {
@@ -502,12 +525,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Bean<?>> getBeans(Type beanType, Set<Annotation> qualifiers) {
-        return beanResolver.resolve(new ResolvableBuilder(beanType, this).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+        return beanResolver.resolve(new ResolvableBuilder(beanType, this).addQualifiers(qualifiers).create(),
+                isCacheable(qualifiers));
     }
 
     public Set<Bean<?>> getBeans(InjectionPoint injectionPoint) {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
-        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint,
+                registerInjectionPoint);
         try {
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
             return beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
@@ -614,7 +639,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Gets an active context of the given scope. Throws an exception if there are no active contexts found or if there are too many matches
+     * Gets an active context of the given scope. Throws an exception if there are no active contexts found or if there are too
+     * many matches
      *
      * @throws IllegalStateException if there are multiple active scopes for a given context
      * @param scopeType The scope to match
@@ -632,7 +658,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public Collection<Context> getContexts(Class<? extends Annotation> scopeType) {
-         return Collections.unmodifiableList(contexts.get(scopeType));
+        return Collections.unmodifiableList(contexts.get(scopeType));
     }
 
     public Context getUnwrappedContext(Class<? extends Annotation> scopeType) {
@@ -706,7 +732,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * The name of this method was misleading, use {@link #getInjectableReference(InjectionPoint, Bean, CreationalContext)} instead.
+     * The name of this method was misleading, use {@link #getInjectableReference(InjectionPoint, Bean, CreationalContext)}
+     * instead.
      *
      * @param injectionPoint
      * @param resolvedBean
@@ -727,14 +754,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @param creationalContext the creationalContext
      * @return the injectable reference
      */
-    public Object getInjectableReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
+    public Object getInjectableReference(InjectionPoint injectionPoint, Bean<?> resolvedBean,
+            CreationalContext<?> creationalContext) {
         Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
         Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
 
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
 
-        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint,
+                registerInjectionPoint);
         try {
             Type requestedType = null;
             if (injectionPoint != null) {
@@ -754,7 +783,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                         weldCreationalContext = (CreationalContextImpl<?>) creationalContext;
                     }
 
-                    if (weldCreationalContext != null && Dependent.class.equals(bean.getScope()) && isNormalScope(resolvedBean.getScope())) {
+                    if (weldCreationalContext != null && Dependent.class.equals(bean.getScope())
+                            && isNormalScope(resolvedBean.getScope())) {
                         bean = findNormalScopedDependant(weldCreationalContext);
                     }
 
@@ -816,12 +846,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers) {
         checkResolveDecoratorsArguments(types);
-        return decoratorResolver.resolve(new DecoratorResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+        return decoratorResolver.resolve(
+                new DecoratorResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(),
+                isCacheable(qualifiers));
     }
 
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> qualifiers) {
         checkResolveDecoratorsArguments(types);
-        return decoratorResolver.resolve(new DecoratorResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true);
+        return decoratorResolver
+                .resolve(new DecoratorResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true);
     }
 
     private void checkResolveDecoratorsArguments(Set<Type> types) {
@@ -831,7 +864,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Resolves a list of interceptors based on interception type and interceptor bindings. Transitive interceptor bindings of the interceptor bindings passed
+     * Resolves a list of interceptors based on interception type and interceptor bindings. Transitive interceptor bindings of
+     * the interceptor bindings passed
      * as a parameter are considered in the resolution process.
      *
      * @param type The interception type to resolve
@@ -849,13 +883,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 throw BeanManagerLogger.LOG.notInterceptorBindingType(annotation);
             }
         }
-        Set<Annotation> flattenedInterceptorBindings = Interceptors.flattenInterceptorBindings(null, this, Arrays.asList(interceptorBindings), true, true);
+        Set<Annotation> flattenedInterceptorBindings = Interceptors.flattenInterceptorBindings(null, this,
+                Arrays.asList(interceptorBindings), true, true);
         return resolveInterceptors(type, flattenedInterceptorBindings);
     }
 
     /**
-     * Resolves a list of interceptors based on interception type and interceptor bindings. Transitive interceptor bindings of the interceptor bindings passed
-     * as a parameter are NOT considered in the resolution process. Therefore, the caller is responsible for filtering of transitive interceptor bindings in
+     * Resolves a list of interceptors based on interception type and interceptor bindings. Transitive interceptor bindings of
+     * the interceptor bindings passed
+     * as a parameter are NOT considered in the resolution process. Therefore, the caller is responsible for filtering of
+     * transitive interceptor bindings in
      * order to comply with interceptor binding inheritance and overriding (See JSR-346 9.5.2). This is a Weld-specific method.
      *
      * @param type The interception type to resolve
@@ -864,7 +901,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Collection<Annotation> interceptorBindings) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class, this).setInterceptionType(type)
+        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class, this)
+                .setInterceptionType(type)
                 .addQualifiers(interceptorBindings).create();
         return interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindings));
     }
@@ -1027,7 +1065,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
-        InterceptorBindingModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType);
+        InterceptorBindingModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class)
+                .getInterceptorBindingModel(bindingType);
         if (model.isValid()) {
             return model.getMetaAnnotations();
         } else {
@@ -1047,7 +1086,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
-        final StereotypeModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getStereotype(stereotype);
+        final StereotypeModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class)
+                .getStereotype(stereotype);
         if (model.isValid()) {
             return model.getMetaAnnotations();
         } else {
@@ -1122,12 +1162,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> AnnotatedType<T> createAnnotatedType(Class<T> type, String id) {
-        return getServices().get(ClassTransformer.class).getBackedAnnotatedType(type, BeanManagerLookupService.lookupBeanManager(type, this).getId(), id);
+        return getServices().get(ClassTransformer.class).getBackedAnnotatedType(type,
+                BeanManagerLookupService.lookupBeanManager(type, this).getId(), id);
     }
 
     @Override
     public <T> void disposeAnnotatedType(Class<T> type, String id) {
-        getServices().get(ClassTransformer.class).disposeBackedAnnotatedType(type, BeanManagerLookupService.lookupBeanManager(type, this).getId(), id);
+        getServices().get(ClassTransformer.class).disposeBackedAnnotatedType(type,
+                BeanManagerLookupService.lookupBeanManager(type, this).getId(), id);
     }
 
     @Override
@@ -1186,7 +1228,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             beanSet = null;
         }
         this.validationFailureCallbacks.clear();
-        boolean isOptimizedCleanupAllowed = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.ALLOW_OPTIMIZED_CLEANUP);
+        boolean isOptimizedCleanupAllowed = getServices().get(WeldConfiguration.class)
+                .getBooleanProperty(ConfigurationKey.ALLOW_OPTIMIZED_CLEANUP);
         // Drop removable container lifecycle event observers
         if (!observers.isEmpty()) {
             observers.removeIf((o) -> {
@@ -1196,8 +1239,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 // Do not drop BeforeShutdown
                         && !BeforeShutdown.class.equals(Reflections.getRawType(o.getObservedType()))
                 // Note that some integrators may call Bootstrap.endInitialization() before all EE components are installed
-                        && (isOptimizedCleanupAllowed || (!ProcessInjectionPoint.class.equals(Reflections.getRawType(o.getObservedType()))
-                                && !ProcessInjectionTarget.class.equals(Reflections.getRawType(o.getObservedType()))));
+                        && (isOptimizedCleanupAllowed
+                                || (!ProcessInjectionPoint.class.equals(Reflections.getRawType(o.getObservedType()))
+                                        && !ProcessInjectionTarget.class.equals(Reflections.getRawType(o.getObservedType()))));
             });
         }
         if (isOptimizedCleanupAllowed) {
@@ -1225,7 +1269,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType,
+            InjectionTarget<X> injectionTarget) {
         return services.get(ContainerLifecycleEvents.class).fireProcessInjectionTarget(this, annotatedType, injectionTarget);
     }
 
@@ -1381,7 +1426,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> injectionTargetFactory) {
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass,
+            InjectionTargetFactory<T> injectionTargetFactory) {
         return SyntheticBeanFactory.create(attributes, beanClass, injectionTargetFactory, this);
     }
 
@@ -1404,7 +1450,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public ParameterInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedParameter<?> parameter) {
         AnnotatedTypeValidator.validateAnnotatedParameter(parameter);
-        EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class).loadEnhancedParameter(parameter, getId());
+        EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class)
+                .loadEnhancedParameter(parameter, getId());
         return validateInjectionPoint(InferringParameterInjectionPointAttributes.of(enhancedParameter, null,
                 parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
     }
@@ -1460,7 +1507,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public boolean areInterceptorBindingsEquivalent(Annotation interceptorBinding1, Annotation interceptorBinding2) {
-        return Bindings.areInterceptorBindingsEquivalent(interceptorBinding1, interceptorBinding2, services.get(MetaAnnotationStore.class));
+        return Bindings.areInterceptorBindingsEquivalent(interceptorBinding1, interceptorBinding2,
+                services.get(MetaAnnotationStore.class));
     }
 
     @Override
@@ -1481,7 +1529,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Creates an {@link InjectionTargetFactory} for a given type. The {@link BeanManager} for the {@link InjectionTarget} will be inferred using
+     * Creates an {@link InjectionTargetFactory} for a given type. The {@link BeanManager} for the {@link InjectionTarget} will
+     * be inferred using
      * {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
      */
     @Override
@@ -1565,10 +1614,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     private void removeUnusedBeans() {
-        String excludeTypeProperty = getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.UNUSED_BEANS_EXCLUDE_TYPE);
+        String excludeTypeProperty = getServices().get(WeldConfiguration.class)
+                .getStringProperty(ConfigurationKey.UNUSED_BEANS_EXCLUDE_TYPE);
 
         if (UnusedBeans.isEnabled(excludeTypeProperty)) {
-            String excludeAnnotationProperty = getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.UNUSED_BEANS_EXCLUDE_ANNOTATION);
+            String excludeAnnotationProperty = getServices().get(WeldConfiguration.class)
+                    .getStringProperty(ConfigurationKey.UNUSED_BEANS_EXCLUDE_ANNOTATION);
             // Init exclude patterns
             Pattern excludeAnnotation = excludeAnnotationProperty.isEmpty() ? null : Pattern.compile(excludeAnnotationProperty);
             Pattern excludeType = UnusedBeans.excludeNone(excludeTypeProperty) ? null : Pattern.compile(excludeTypeProperty);
@@ -1595,7 +1646,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             for (Bean<?> bean : enabledBeans) {
                 bean = Beans.unwrap(bean);
                 // Built-in bean, extension, interceptor, decorator, session bean
-                if (bean instanceof AbstractBuiltInBean || bean instanceof ExtensionBean || bean instanceof Interceptor || bean instanceof Decorator
+                if (bean instanceof AbstractBuiltInBean || bean instanceof ExtensionBean || bean instanceof Interceptor
+                        || bean instanceof Decorator
                         || bean instanceof SessionBean) {
                     continue;
                 }
@@ -1617,7 +1669,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 }
                 // Is resolved for an injection point
                 if (validator.isResolved(bean) || (metadataExtension != null
-                        && (metadataExtension.isInjectedByEEComponent(bean, this) || metadataExtension.isInstanceResolvedBean(bean, this)))) {
+                        && (metadataExtension.isInjectedByEEComponent(bean, this)
+                                || metadataExtension.isInstanceResolvedBean(bean, this)))) {
                     continue;
                 }
                 // The type is annotated with an exclude annotation
@@ -1678,7 +1731,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private boolean hasExcludeAnnotation(AbstractClassBean<?> classBean, Pattern excludeAnnotation) {
         AnnotatedType<?> annotatedType = classBean.getAnnotated();
-        return hasExcludeAnnotation(annotatedType, excludeAnnotation) || anyHasExcludeAnnotation(annotatedType.getMethods(), excludeAnnotation)
+        return hasExcludeAnnotation(annotatedType, excludeAnnotation)
+                || anyHasExcludeAnnotation(annotatedType.getMethods(), excludeAnnotation)
                 || anyHasExcludeAnnotation(annotatedType.getFields(), excludeAnnotation)
                 || anyHasExcludeAnnotation(annotatedType.getConstructors(), excludeAnnotation);
     }

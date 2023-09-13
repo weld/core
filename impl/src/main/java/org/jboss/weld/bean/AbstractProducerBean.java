@@ -64,9 +64,10 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * Constructor
      *
      * @param declaringBean The declaring bean
-     * @param beanManager   The Bean manager
+     * @param beanManager The Bean manager
      */
-    public AbstractProducerBean(BeanAttributes<T> attributes, BeanIdentifier identifier, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public AbstractProducerBean(BeanAttributes<T> attributes, BeanIdentifier identifier, AbstractClassBean<X> declaringBean,
+            BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, identifier, beanManager);
         this.declaringBean = declaringBean;
     }
@@ -86,7 +87,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             this.type = getEnhancedAnnotated().getJavaClass();
         } catch (ClassCastException e) {
             Type type = Beans.getDeclaredBeanType(getClass());
-            throw BeanLogger.LOG.producerCastError(getEnhancedAnnotated().getJavaClass(), (type == null ? " unknown " : type), e);
+            throw BeanLogger.LOG.producerCastError(getEnhancedAnnotated().getJavaClass(), (type == null ? " unknown " : type),
+                    e);
         }
     }
 
@@ -101,7 +103,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     private void initPassivationCapable() {
-        this.passivationCapableBean = !Reflections.isFinal(getEnhancedAnnotated().getJavaClass()) || Reflections.isSerializable(getEnhancedAnnotated().getJavaClass());
+        this.passivationCapableBean = !Reflections.isFinal(getEnhancedAnnotated().getJavaClass())
+                || Reflections.isSerializable(getEnhancedAnnotated().getJavaClass());
         if (isNormalScoped()) {
             this.passivationCapableDependency = true;
         } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
@@ -133,7 +136,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      */
     protected T checkReturnValue(T instance) {
         if (instance == null && !isDependent()) {
-            throw BeanLogger.LOG.nullNotAllowedFromProducer(getProducer(), Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
+            throw BeanLogger.LOG.nullNotAllowedFromProducer(getProducer(),
+                    Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
         }
         if (instance == null) {
             InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
@@ -146,13 +150,16 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         }
         if (instance != null && !(instance instanceof Serializable)) {
             if (beanManager.isPassivatingScope(getScope())) {
-                throw BeanLogger.LOG.nonSerializableProductError(getProducer(), Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
+                throw BeanLogger.LOG.nonSerializableProductError(getProducer(),
+                        Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
             }
             InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
-            if (injectionPoint != null && injectionPoint.getBean() != null && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
+            if (injectionPoint != null && injectionPoint.getBean() != null
+                    && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
                 // Transient field is passivation capable injection point
                 if (!(injectionPoint.getMember() instanceof Field) || !injectionPoint.isTransient()) {
-                    throw BeanLogger.LOG.unserializableProductInjectionError(this, Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()),
+                    throw BeanLogger.LOG.unserializableProductInjectionError(this,
+                            Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()),
                             injectionPoint, Formats.formatAsStackTraceElement(injectionPoint.getMember()));
                 }
             }

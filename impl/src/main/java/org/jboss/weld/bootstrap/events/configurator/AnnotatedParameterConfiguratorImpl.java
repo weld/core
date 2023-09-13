@@ -26,7 +26,8 @@ import jakarta.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator
  *
  * @param <T>
  */
-public class AnnotatedParameterConfiguratorImpl<T> extends AnnotatedConfigurator<T, AnnotatedParameter<T>, AnnotatedParameterConfiguratorImpl<T>>
+public class AnnotatedParameterConfiguratorImpl<T>
+        extends AnnotatedConfigurator<T, AnnotatedParameter<T>, AnnotatedParameterConfiguratorImpl<T>>
         implements AnnotatedParameterConfigurator<T> {
 
     /**

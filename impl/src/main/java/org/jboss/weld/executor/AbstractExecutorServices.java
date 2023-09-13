@@ -40,11 +40,12 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
 
     private static final long SHUTDOWN_TIMEOUT = 60L;
 
-    private final ScheduledExecutorService timerExecutor =
-        Executors.newScheduledThreadPool(1, new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), "weld-timer-"));
+    private final ScheduledExecutorService timerExecutor = Executors.newScheduledThreadPool(1,
+            new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), "weld-timer-"));
 
     /**
      * Returns a singleton instance of ScheduledExecutorService.
+     *
      * @return A managed instance of ScheduledExecutorService
      */
     @Override
@@ -56,7 +57,7 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
     public <T> List<Future<T>> invokeAllAndCheckForExceptions(Collection<? extends Callable<T>> tasks) {
         try {
             // the cast is needed to compile this expression in JDK 8, works without it on JDK 10+
-            return checkForExceptions(getTaskExecutor().invokeAll((Collection<? extends Callable<T>>)wrap(tasks)));
+            return checkForExceptions(getTaskExecutor().invokeAll((Collection<? extends Callable<T>>) wrap(tasks)));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new DeploymentException(e);
@@ -87,7 +88,8 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
     }
 
     /**
-     * Indicates the maximum number of threads in this thread pool. If the value is unknown or if the max number of threads is not bounded this method should
+     * Indicates the maximum number of threads in this thread pool. If the value is unknown or if the max number of threads is
+     * not bounded this method should
      * return -1
      */
     protected abstract int getThreadPoolSize();
@@ -135,7 +137,8 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
     }
 
     /**
-     * This method is invoked with the body of {@link AbstractExecutorServices#invokeAllAndCheckForExceptions(java.util.Collection)}
+     * This method is invoked with the body of
+     * {@link AbstractExecutorServices#invokeAllAndCheckForExceptions(java.util.Collection)}
      *
      * It allows to wrap the tasks with some additional logic. For instance, Weld's {@link CommonForkJoinPoolExecutorServices}
      * overrides this in order to set TCCL to null prior to execution.

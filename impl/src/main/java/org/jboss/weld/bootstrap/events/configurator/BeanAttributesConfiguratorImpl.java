@@ -222,7 +222,8 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributes<T> complete() {
-        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, name, initQualifiers(qualifiers), ImmutableSet.copyOf(types),
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, name, initQualifiers(qualifiers),
+                ImmutableSet.copyOf(types),
                 initScope());
     }
 

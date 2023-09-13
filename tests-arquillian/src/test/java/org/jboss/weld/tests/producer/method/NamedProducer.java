@@ -25,12 +25,12 @@ public class NamedProducer {
     @Named("itoen")
     @Produces
     public String[] createName() {
-        return new String[]{"oh", "otya"};
+        return new String[] { "oh", "otya" };
     }
 
     @Named("iemon")
     @Produces
     public String[] createName2() {
-        return new String[]{"fukujyuen", "iemon", "otya"};
+        return new String[] { "fukujyuen", "iemon", "otya" };
     }
 }

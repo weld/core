@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.extensions;
 
+import java.util.Set;
+
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.BeforeShutdown;
@@ -23,7 +25,6 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
-import java.util.Set;
 
 public class WoodlandExtension implements Extension {
 

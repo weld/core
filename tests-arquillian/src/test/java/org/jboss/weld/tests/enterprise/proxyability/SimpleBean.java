@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.tests.enterprise.proxyability;
 
+import java.io.Serializable;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
-import java.io.Serializable;
 
 @SessionScoped
 public class SimpleBean implements Serializable {

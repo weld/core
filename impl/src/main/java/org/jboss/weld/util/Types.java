@@ -202,7 +202,8 @@ public class Types {
     }
 
     /**
-     * Determines whether the given type is an actual type. A type is considered actual if it is a raw type, a parameterized type
+     * Determines whether the given type is an actual type. A type is considered actual if it is a raw type, a parameterized
+     * type
      * or an array type.
      *
      * @param type the given type
@@ -306,10 +307,11 @@ public class Types {
      *
      * @param type1
      * @param type2
-     * @return <code>true</code> if the first type is more specific than the second type (is a subtype of), <code>false</code> otherwise
+     * @return <code>true</code> if the first type is more specific than the second type (is a subtype of), <code>false</code>
+     *         otherwise
      */
     public static boolean isMoreSpecific(Type type1, Type type2) {
-        if(type1.equals(type2)) {
+        if (type1.equals(type2)) {
             return false;
         }
         return CovariantTypes.isAssignableFrom(type2, type1);

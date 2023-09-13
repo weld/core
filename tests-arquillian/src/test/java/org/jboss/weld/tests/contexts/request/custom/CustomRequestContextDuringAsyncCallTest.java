@@ -52,8 +52,11 @@ public class CustomRequestContextDuringAsyncCallTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(CustomRequestContextDuringAsyncCallTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(
-                CustomRequestContextDuringAsyncCallTest.class.getPackage())
+        return ShrinkWrap
+                .create(WebArchive.class,
+                        Utils.getDeploymentNameAsHash(CustomRequestContextDuringAsyncCallTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addPackage(
+                        CustomRequestContextDuringAsyncCallTest.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsServiceProvider(Extension.class, CustomContextExtension.class);
     }

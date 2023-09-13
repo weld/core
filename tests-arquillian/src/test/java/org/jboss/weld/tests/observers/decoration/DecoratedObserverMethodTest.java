@@ -36,27 +36,28 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class DecoratedObserverMethodTest {
-    
+
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(DecoratedObserverMethodTest.class.getPackage()).addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class).addPackage(DecoratedObserverMethodTest.class.getPackage())
+                .addClass(ActionSequence.class);
     }
-    
+
     @Inject
     private Event<Job> event;
-    
+
     @Inject
     PrivateWorker privateWorker;
-    
+
     @Inject
     ProtectedWorker protectedWorker;
-    
+
     @Inject
     PublicWorker publicWorker;
-    
+
     @Inject
     PackagePrivateWorker packPrivateWorker;
-    
+
     @Test
     public void testObserverUsesContextualReference() {
         ActionSequence.reset();
@@ -66,11 +67,11 @@ public class DecoratedObserverMethodTest {
         protectedWorker.doStuff();
         publicWorker.doStuff();
         packPrivateWorker.doStuff();
-        ActionSequence.assertSequenceDataContainsAll(PrivateWorker.class.getName(), ProtectedWorker.class.getName(), 
-            PublicWorker.class.getName(), PackagePrivateWorker.class.getName(), WorkerDecorator.class.getName());
+        ActionSequence.assertSequenceDataContainsAll(PrivateWorker.class.getName(), ProtectedWorker.class.getName(),
+                PublicWorker.class.getName(), PackagePrivateWorker.class.getName(), WorkerDecorator.class.getName());
         assertTrue(ActionSequence.getSequenceSize() == 8);
         ActionSequence.reset();
-      
+
         // fire event to trigger observers
         event.fire(new Job());
         int expectedFieldValue = 1;

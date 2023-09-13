@@ -55,7 +55,9 @@ public class SystemPropertiesConfigTest {
 
     @Deployment(testable = false, order = 0, name = JAR_DEPLOYMENT)
     public static Archive<?> createSystemPropertiesLoaderArchive() {
-        JavaArchive testDeployment = ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SystemPropertiesConfigTest.class)).addClasses(SystemPropertiesLoader.class, PropertiesBuilder.class);
+        JavaArchive testDeployment = ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(SystemPropertiesConfigTest.class))
+                .addClasses(SystemPropertiesLoader.class, PropertiesBuilder.class);
         PropertiesBuilder.newBuilder()
                 .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
                 .set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true").addAsSystemProperties(testDeployment);

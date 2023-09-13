@@ -38,14 +38,15 @@ public class ObserverFactory {
     /**
      * Creates an observer
      *
-     * @param method        The observer method abstraction
+     * @param method The observer method abstraction
      * @param declaringBean The declaring bean
-     * @param manager       The Bean manager
+     * @param manager The Bean manager
      * @return An observer implementation built from the method abstraction
      */
-    public static <T, X> ObserverMethodImpl<T, X> create(EnhancedAnnotatedMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager, boolean isAsync) {
+    public static <T, X> ObserverMethodImpl<T, X> create(EnhancedAnnotatedMethod<T, ? super X> method, RIBean<X> declaringBean,
+            BeanManagerImpl manager, boolean isAsync) {
         if (declaringBean instanceof ExtensionBean) {
-                return new ExtensionObserverMethodImpl<T, X>(method, declaringBean, manager, isAsync);
+            return new ExtensionObserverMethodImpl<T, X>(method, declaringBean, manager, isAsync);
         }
         return new ObserverMethodImpl<T, X>(method, declaringBean, manager, isAsync);
     }

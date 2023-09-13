@@ -47,8 +47,8 @@ public class IsolationDisabledTest extends ArchiveIsolationOverrideTestBase {
                         .decorators(CameraDecorator.class)
                         .alternatives(RangefinderCamera.class)
                         .excludeFilters(
-                                Exclude.exact(PinholeCamera.class).ifClassAvailable(DSLR.class)
-                        ), "beans.xml")
+                                Exclude.exact(PinholeCamera.class).ifClassAvailable(DSLR.class)),
+                        "beans.xml")
                 .addClasses(ZoomInterceptor.class, CameraDecorator.class, RangefinderCamera.class);
 
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
@@ -95,7 +95,7 @@ public class IsolationDisabledTest extends ArchiveIsolationOverrideTestBase {
 
     private Set<Class<?>> getBeanClasses(BeanManager bm, Type beanType, Annotation... annotations) {
         Set<Class<?>> classes = new HashSet<Class<?>>();
-        for(Bean<?> bean : bm.getBeans(beanType, annotations)) {
+        for (Bean<?> bean : bm.getBeans(beanType, annotations)) {
             classes.add(bean.getBeanClass());
         }
         return classes;

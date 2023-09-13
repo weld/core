@@ -37,7 +37,8 @@ public class RequestScopedActiveInterceptorTest {
     public static Archive<?> createTestArchive() {
         return ClassPath.builder()
                 .add(ShrinkWrap.create(BeanArchive.class)
-                        .addClasses(RequestScopedActiveInterceptorTest.class, Foo.class, Bar.class, Baz.class)).build();
+                        .addClasses(RequestScopedActiveInterceptorTest.class, Foo.class, Bar.class, Baz.class))
+                .build();
     }
 
     @Test

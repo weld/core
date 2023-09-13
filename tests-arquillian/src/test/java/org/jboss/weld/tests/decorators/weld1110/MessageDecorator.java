@@ -9,11 +9,12 @@ import jakarta.inject.Inject;
 @Decorator
 public abstract class MessageDecorator implements MessageSender, Serializable {
 
-	@Inject @Delegate
-	private MessageSender sender;
+    @Inject
+    @Delegate
+    private MessageSender sender;
 
-	public String send(String message) {
-		String msg = "Decorated " + message;
-		return sender.send(msg);
-	}
+    public String send(String message) {
+        String msg = "Decorated " + message;
+        return sender.send(msg);
+    }
 }

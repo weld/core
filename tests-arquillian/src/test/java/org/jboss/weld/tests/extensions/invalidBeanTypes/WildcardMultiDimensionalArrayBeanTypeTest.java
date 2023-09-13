@@ -41,9 +41,10 @@ public class WildcardMultiDimensionalArrayBeanTypeTest {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WildcardMultiDimensionalArrayBeanTypeTest.class))
-            .addClasses(WildcardMultiDimensionalArrayBeanTypeTest.class, Foo.class, CustomBeanType.class)
-            .addAsServiceProvider(Extension.class, BrokenExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(WildcardMultiDimensionalArrayBeanTypeTest.class))
+                .addClasses(WildcardMultiDimensionalArrayBeanTypeTest.class, Foo.class, CustomBeanType.class)
+                .addAsServiceProvider(Extension.class, BrokenExtension.class);
     }
 
     @Test
@@ -53,7 +54,8 @@ public class WildcardMultiDimensionalArrayBeanTypeTest {
 
     public static class BrokenExtension implements Extension {
         public void observe(@Observes AfterBeanDiscovery event) {
-            event.addBean(new CustomBeanType(new TypeLiteral<Foo<?>[][][]>() {}.getType()));
+            event.addBean(new CustomBeanType(new TypeLiteral<Foo<?>[][][]>() {
+            }.getType()));
         }
     }
 }

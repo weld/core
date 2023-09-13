@@ -38,7 +38,8 @@ public class EjbDecoratorTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EjbDecoratorTest.class)).decorate(Decorator1.class, Decorator2.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EjbDecoratorTest.class))
+                .decorate(Decorator1.class, Decorator2.class)
                 .addPackage(EjbDecoratorTest.class.getPackage()).addClass(ActionSequence.class);
     }
 
@@ -57,7 +58,7 @@ public class EjbDecoratorTest {
 
         sessionBean.start();
 
-        testDecoratorsInvoked( NormalScopedStatefulCar.class);
+        testDecoratorsInvoked(NormalScopedStatefulCar.class);
     }
 
     @Test

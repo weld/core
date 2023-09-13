@@ -113,7 +113,9 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public <S> CreationalContextImpl<S> getProducerReceiverCreationalContext(Contextual<S> contextual) {
-        return new CreationalContextImpl<S>(contextual, incompleteInstances != null ? new HashMap<Contextual<?>, Object>(incompleteInstances) : null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
+        return new CreationalContextImpl<S>(contextual,
+                incompleteInstances != null ? new HashMap<Contextual<?>, Object>(incompleteInstances) : null,
+                Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
     }
 
     public <S> S getIncompleteInstance(Contextual<S> bean) {
@@ -196,16 +198,22 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
                     /*
                      * This non-serializable instance is a dependency of a passivation capable enclosing bean. This means that:
                      *
-                     * 1) The dependency was injected into a transient field, constructor or initializer injection point of the enclosing bean instance
-                     * (otherwise it would not pass deployment validation) and is no longer retained by the enclosing bean instance. In that case we can safely
+                     * 1) The dependency was injected into a transient field, constructor or initializer injection point of the
+                     * enclosing bean instance
+                     * (otherwise it would not pass deployment validation) and is no longer retained by the enclosing bean
+                     * instance. In that case we can safely
                      * destroy the dependent instance now.
                      *
-                     * 2) Same as above but the enclosing bean instance retained a reference in a field that Weld has no control of. If that is the case and the
-                     * bean class does not implement serialization properly, serialization of the bean instance is going to fail anyway so it is safe to destroy
+                     * 2) Same as above but the enclosing bean instance retained a reference in a field that Weld has no control
+                     * of. If that is the case and the
+                     * bean class does not implement serialization properly, serialization of the bean instance is going to fail
+                     * anyway so it is safe to destroy
                      * the dependent instance now.
                      *
-                     * 3) Same as above but the bean class implements serialization properly (writeObject) so that it is able to reconstruct the state of the
-                     * injected dependency on activation. If that's the case we would probably won't be able to destroy the dependency later on anyway since the
+                     * 3) Same as above but the bean class implements serialization properly (writeObject) so that it is able to
+                     * reconstruct the state of the
+                     * injected dependency on activation. If that's the case we would probably won't be able to destroy the
+                     * dependency later on anyway since the
                      * identity of the dependent instance would change. Destroying it now may be risky in certain circumstances.
                      *
                      * @see https://issues.jboss.org/browse/WELD-1076
@@ -216,14 +224,16 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             }
         }
         // Return a serialization proxy for an "empty" instance
-        if (parentCreationalContext == null && dependentInstances.isEmpty() && (parentDependentInstances == null || parentDependentInstances.isEmpty())) {
+        if (parentCreationalContext == null && dependentInstances.isEmpty()
+                && (parentDependentInstances == null || parentDependentInstances.isEmpty())) {
             return SERIALIZATION_PROXY;
         }
         return this;
     }
 
     /**
-     * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every {@link ResourceReference} once this
+     * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every
+     * {@link ResourceReference} once this
      * {@link CreationalContext} instance is released.
      */
     public void addDependentResourceReference(ResourceReference<?> resourceReference) {
@@ -287,7 +297,8 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     /**
      *
-     * @return the interception context used for Weld-managed AroundConstruct interceptors or <code>null</code> if no such interceptors were applied
+     * @return the interception context used for Weld-managed AroundConstruct interceptors or <code>null</code> if no such
+     *         interceptors were applied
      */
     public InterceptionContext getAroundConstructInterceptionContext() {
         return aroundConstructInterceptionContext;

@@ -25,8 +25,8 @@ final class AnnotatedWildcardTypeImpl extends AbstractEmptyAnnotatedType impleme
 
     // added in Java 9
     /*
-    @Override
-    */
+     * @Override
+     */
     public java.lang.reflect.AnnotatedType getAnnotatedOwnerType() {
         return null;
     }

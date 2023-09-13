@@ -31,7 +31,7 @@ import jakarta.interceptor.InvocationContext;
 public class VeryImportantPhoneCall {
 
     public static boolean INTERCEPTOR_INVOKED = false;
-    
+
     @AroundInvoke
     public Object aroundInvoke(final InvocationContext invocation) throws Exception {
         INTERCEPTOR_INVOKED = true;

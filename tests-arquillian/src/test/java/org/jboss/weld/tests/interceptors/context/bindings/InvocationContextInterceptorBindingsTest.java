@@ -39,7 +39,9 @@ public class InvocationContextInterceptorBindingsTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvocationContextInterceptorBindingsTest.class)).addPackage(InvocationContextInterceptorBindingsTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvocationContextInterceptorBindingsTest.class))
+                .addPackage(InvocationContextInterceptorBindingsTest.class.getPackage());
     }
 
     @Test

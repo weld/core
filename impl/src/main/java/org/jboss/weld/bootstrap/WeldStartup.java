@@ -1,19 +1,19 @@
-    /*
- * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/*
+* JBoss, Home of Professional Open Source
+* Copyright 2013, Red Hat, Inc., and individual contributors
+* by the @authors tag. See the copyright.txt in the distribution for a
+* full listing of individual contributors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* http://www.apache.org/licenses/LICENSE-2.0
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.config.ConfigurationKey.ROLLING_UPGRADES_ID_DELIMITER;
@@ -161,7 +161,6 @@ public class WeldStartup {
     private String contextId;
     private final Tracker tracker = Trackers.create();
 
-
     public WeldStartup() {
     }
 
@@ -187,7 +186,7 @@ public class WeldStartup {
         registry.add(WeldConfiguration.class, configuration);
 
         String finalContextId = BeanDeployments.getFinalId(contextId,
-            registry.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER));
+                registry.get(WeldConfiguration.class).getStringProperty(ROLLING_UPGRADES_ID_DELIMITER));
         this.contextId = finalContextId;
         this.deployment = deployment;
         this.environment = environment;
@@ -230,7 +229,8 @@ public class WeldStartup {
 
         this.deploymentManager = BeanManagerImpl.newRootManager(finalContextId, "deployment", registry);
 
-        Container.initialize(finalContextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()), environment);
+        Container.initialize(finalContextId, deploymentManager,
+                ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()), environment);
         getContainer().setState(ContainerState.STARTING);
 
         tracker.start(Tracker.OP_CONTEXTS);
@@ -241,7 +241,8 @@ public class WeldStartup {
         this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts, bdaMapping);
 
         if (deployment instanceof CDI11Deployment) {
-            registry.add(BeanManagerLookupService.class, new BeanManagerLookupService((CDI11Deployment) deployment, bdaMapping.getBdaToBeanManagerMap()));
+            registry.add(BeanManagerLookupService.class,
+                    new BeanManagerLookupService((CDI11Deployment) deployment, bdaMapping.getBdaToBeanManagerMap()));
         } else {
             BootstrapLogger.LOG.legacyDeploymentMetadataProvided();
         }
@@ -336,7 +337,8 @@ public class WeldStartup {
          * Setup Validator
          */
         Validator validator;
-        if (configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
+        if (configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT)
+                && services.contains(ExecutorServices.class)) {
             validator = new ConcurrentValidator(modules.getPluggableValidators(), executor,
                     UnusedBeans.isEnabled(configuration) ? new ConcurrentHashMap<>() : null);
         } else {
@@ -354,9 +356,11 @@ public class WeldStartup {
         ContainerLifecycleEventPreloader preloader = null;
         int preloaderThreadPoolSize = configuration.getIntegerProperty(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE);
         if (preloaderThreadPoolSize > 0 && Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP)) {
-            preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
+            preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize,
+                    observerNotificationService.getGlobalLenientObserverNotifier());
         }
-        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));
+        services.add(ContainerLifecycleEvents.class,
+                new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));
         if (environment.isEEModulesAware()) {
             services.add(BeanDeploymentModules.class, new BeanDeploymentModules(contextId, services));
         }
@@ -368,7 +372,8 @@ public class WeldStartup {
         if (classFileServices != null) {
             final GlobalObserverNotifierService observers = services.get(GlobalObserverNotifierService.class);
             try {
-                final FastProcessAnnotatedTypeResolver resolver = new FastProcessAnnotatedTypeResolver(observers.getAllObserverMethods());
+                final FastProcessAnnotatedTypeResolver resolver = new FastProcessAnnotatedTypeResolver(
+                        observers.getAllObserverMethods());
                 services.add(FastProcessAnnotatedTypeResolver.class, resolver);
             } catch (UnsupportedObserverMethodException e) {
                 BootstrapLogger.LOG.notUsingFastResolver(e.getObserver());
@@ -385,7 +390,8 @@ public class WeldStartup {
 
         Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(getBeanDeployments());
 
-        ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, bdaMapping, contexts);
+        ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, bdaMapping,
+                contexts);
         extensionBeanDeployer.addExtensions(extensions);
         extensionBeanDeployer.deployBeans();
 
@@ -428,7 +434,6 @@ public class WeldStartup {
         tracker.end();
     }
 
-
     public void deployBeans() {
         tracker.start(Tracker.OP_DEPLOY_BEANS);
         for (BeanDeployment deployment : getBeanDeployments()) {
@@ -462,7 +467,7 @@ public class WeldStartup {
         flushCaches();
 
         // If needed, recreate enablement once again - extensions may have registered interceptors, decorators and alternatives
-        if(deployment.getServices().getRequired(GlobalEnablementBuilder.class).isDirty()) {
+        if (deployment.getServices().getRequired(GlobalEnablementBuilder.class).isDirty()) {
             for (BeanDeployment beanDeployment : getBeanDeployments()) {
                 beanDeployment.createEnablement();
             }
@@ -543,13 +548,13 @@ public class WeldStartup {
             // clean up decorators
             for (Decorator<?> decorator : beanManager.getDecorators()) {
                 if (decorator instanceof DecoratorImpl<?>) {
-                    Reflections.<DecoratorImpl<?>>cast(decorator).cleanupAfterBoot();
+                    Reflections.<DecoratorImpl<?>> cast(decorator).cleanupAfterBoot();
                 }
             }
             // clean up interceptors
             for (Interceptor<?> interceptor : beanManager.getInterceptors()) {
                 if (interceptor instanceof InterceptorImpl<?>) {
-                    Reflections.<InterceptorImpl<?>>cast(interceptor).cleanupAfterBoot();
+                    Reflections.<InterceptorImpl<?>> cast(interceptor).cleanupAfterBoot();
                 }
             }
         }
@@ -619,27 +624,36 @@ public class WeldStartup {
         BeanIdentifierIndex beanIdentifierIndex = services.get(BeanIdentifierIndex.class);
 
         /*
-        * Register a full set of bound and unbound contexts. Although we may not use all of
-        * these (e.g. if we are running in a servlet environment) they may be
-        * useful for an application.
-        */
-        Set<Annotation> boundQualifires = ImmutableSet.<Annotation>builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(BoundLiteral.INSTANCE).build();
-        Set<Annotation> unboundQualifiers = ImmutableSet.<Annotation>builder().addAll(Bindings.DEFAULT_QUALIFIERS).add(UnboundLiteral.INSTANCE).build();
-        contexts.add(new ContextHolder<ApplicationContext>(new ApplicationContextImpl(contextId), ApplicationContext.class, unboundQualifiers));
-        contexts.add(new ContextHolder<SingletonContext>(new SingletonContextImpl(contextId), SingletonContext.class, unboundQualifiers));
-        contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(contextId, beanIdentifierIndex), BoundSessionContext.class, boundQualifires));
-        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId, services), BoundConversationContext.class, boundQualifires));
-        contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(contextId), BoundRequestContext.class, boundQualifires));
-        contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(contextId), RequestContext.class, unboundQualifiers));
-        contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, unboundQualifiers));
+         * Register a full set of bound and unbound contexts. Although we may not use all of
+         * these (e.g. if we are running in a servlet environment) they may be
+         * useful for an application.
+         */
+        Set<Annotation> boundQualifires = ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS)
+                .add(BoundLiteral.INSTANCE).build();
+        Set<Annotation> unboundQualifiers = ImmutableSet.<Annotation> builder().addAll(Bindings.DEFAULT_QUALIFIERS)
+                .add(UnboundLiteral.INSTANCE).build();
+        contexts.add(new ContextHolder<ApplicationContext>(new ApplicationContextImpl(contextId), ApplicationContext.class,
+                unboundQualifiers));
+        contexts.add(new ContextHolder<SingletonContext>(new SingletonContextImpl(contextId), SingletonContext.class,
+                unboundQualifiers));
+        contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(contextId, beanIdentifierIndex),
+                BoundSessionContext.class, boundQualifires));
+        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId, services),
+                BoundConversationContext.class, boundQualifires));
+        contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(contextId), BoundRequestContext.class,
+                boundQualifires));
+        contexts.add(
+                new ContextHolder<RequestContext>(new RequestContextImpl(contextId), RequestContext.class, unboundQualifiers));
+        contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)),
+                DependentContext.class, unboundQualifiers));
 
         services.get(WeldModules.class).postContextRegistration(contextId, services, contexts);
 
         /*
-        * Register the contexts with the bean manager and add the beans to the
-        * deployment manager so that they are easily accessible (contexts are app
-        * scoped)
-        */
+         * Register the contexts with the bean manager and add the beans to the
+         * deployment manager so that they are easily accessible (contexts are app
+         * scoped)
+         */
         for (ContextHolder<? extends Context> context : contexts) {
             deploymentManager.addContext(context.getContext());
             deploymentManager.addBean(ContextBean.of(context, deploymentManager));
@@ -648,7 +662,8 @@ public class WeldStartup {
         return contexts;
     }
 
-    protected static void verifyServices(ServiceRegistry services, Set<Class<? extends Service>> requiredServices, Object target) {
+    protected static void verifyServices(ServiceRegistry services, Set<Class<? extends Service>> requiredServices,
+            Object target) {
         for (Class<? extends Service> serviceType : requiredServices) {
             if (!services.contains(serviceType)) {
                 throw BootstrapLogger.LOG.unspecifiedRequiredService(serviceType.getName(), target);

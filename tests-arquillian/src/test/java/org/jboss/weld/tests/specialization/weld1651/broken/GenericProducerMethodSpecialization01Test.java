@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 /**
  * @author Matus Abaffy
  */
@@ -36,12 +37,13 @@ public class GenericProducerMethodSpecialization01Test {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericProducerMethodSpecialization01Test.class))
+        return ShrinkWrap
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericProducerMethodSpecialization01Test.class))
                 .addClasses(ProducerBean1.class, SpecializingProducerBean1.class);
     }
 
     @Test
     public void testDeploymentWithSpecializingProducerMethodWithStricterReturnType() {
         // should throw definition exception
-     }
+    }
 }

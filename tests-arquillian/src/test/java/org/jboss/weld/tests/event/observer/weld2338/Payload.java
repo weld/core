@@ -21,5 +21,5 @@ package org.jboss.weld.tests.event.observer.weld2338;
  * @author <a href="mailto:manovotn@redhat.com">Matej Novotny</a>
  */
 public class Payload {
-    
+
 }

@@ -52,45 +52,57 @@ import org.jboss.weld.util.collections.WeldCollections;
  */
 public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> {
 
-    public static <T> SubclassedComponentInstantiator<T> forSubclassedEjb(EnhancedAnnotatedType<T> componentType, EnhancedAnnotatedType<T> subclass, Bean<T> bean, BeanManagerImpl manager) {
+    public static <T> SubclassedComponentInstantiator<T> forSubclassedEjb(EnhancedAnnotatedType<T> componentType,
+            EnhancedAnnotatedType<T> subclass, Bean<T> bean, BeanManagerImpl manager) {
         final EnhancedAnnotatedConstructor<T> componentConstructor = Beans.getBeanConstructor(componentType);
-        final EnhancedAnnotatedConstructor<T> subclassConstructor = findMatchingConstructor(componentConstructor.getSignature(), subclass);
-        final ConstructorInjectionPoint<T> cip = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, componentType.getJavaClass(), subclassConstructor, manager);
+        final EnhancedAnnotatedConstructor<T> subclassConstructor = findMatchingConstructor(componentConstructor.getSignature(),
+                subclass);
+        final ConstructorInjectionPoint<T> cip = InjectionPointFactory.instance().createConstructorInjectionPoint(bean,
+                componentType.getJavaClass(), subclassConstructor, manager);
         return new SubclassedComponentInstantiator<T>(cip, componentConstructor.getJavaMember());
     }
 
-    public static <T> SubclassedComponentInstantiator<T> forInterceptedDecoratedBean(EnhancedAnnotatedType<T> type, Bean<T> bean, AbstractInstantiator<T> delegate, BeanManagerImpl manager) {
+    public static <T> SubclassedComponentInstantiator<T> forInterceptedDecoratedBean(EnhancedAnnotatedType<T> type,
+            Bean<T> bean, AbstractInstantiator<T> delegate, BeanManagerImpl manager) {
         return new SubclassedComponentInstantiator<T>(type, bean, delegate.getConstructorInjectionPoint(), manager);
     }
 
-    private static <T> EnhancedAnnotatedConstructor<T> findMatchingConstructor(ConstructorSignature componentConstructor, EnhancedAnnotatedType<T> subclass) {
+    private static <T> EnhancedAnnotatedConstructor<T> findMatchingConstructor(ConstructorSignature componentConstructor,
+            EnhancedAnnotatedType<T> subclass) {
         return subclass.getDeclaredEnhancedConstructor(componentConstructor);
     }
 
     private final ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint;
     private final Constructor<T> componentClassConstructor;
 
-    private SubclassedComponentInstantiator(ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint, Constructor<T> componentClassConstructor) {
+    private SubclassedComponentInstantiator(ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint,
+            Constructor<T> componentClassConstructor) {
         this.proxyClassConstructorInjectionPoint = proxyClassConstructorInjectionPoint;
         this.componentClassConstructor = componentClassConstructor;
     }
 
-    protected SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, ConstructorInjectionPoint<T> originalConstructor, BeanManagerImpl manager) {
-        EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass = initEnhancedSubclass(manager, type, bean, originalConstructor);
-        this.proxyClassConstructorInjectionPoint = new ProxyClassConstructorInjectionPointWrapper<T>(bean, type.getJavaClass(), constructorForEnhancedSubclass, originalConstructor, manager);
+    protected SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean,
+            ConstructorInjectionPoint<T> originalConstructor, BeanManagerImpl manager) {
+        EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass = initEnhancedSubclass(manager, type, bean,
+                originalConstructor);
+        this.proxyClassConstructorInjectionPoint = new ProxyClassConstructorInjectionPointWrapper<T>(bean, type.getJavaClass(),
+                constructorForEnhancedSubclass, originalConstructor, manager);
         this.componentClassConstructor = originalConstructor.getAnnotated().getJavaMember();
     }
 
-    protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, EnhancedAnnotatedType<T> type, Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
+    protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, EnhancedAnnotatedType<T> type,
+            Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
         ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
-        EnhancedAnnotatedType<T> enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass(type, bean, manager), type.slim().getIdentifier().getBdaId());
+        EnhancedAnnotatedType<T> enhancedSubclass = transformer
+                .getEnhancedAnnotatedType(createEnhancedSubclass(type, bean, manager), type.slim().getIdentifier().getBdaId());
         return findMatchingConstructor(originalConstructorInjectionPoint.getSignature(), enhancedSubclass);
     }
 
     protected Class<T> createEnhancedSubclass(EnhancedAnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
         Set<InterceptionModel> models = getInterceptionModelsForType(type, manager, bean);
         Set<MethodSignature> enhancedMethodSignatures = new HashSet<MethodSignature>();
-        Set<MethodSignature> interceptedMethodSignatures = (models == null) ? enhancedMethodSignatures : new HashSet<MethodSignature>();
+        Set<MethodSignature> interceptedMethodSignatures = (models == null) ? enhancedMethodSignatures
+                : new HashSet<MethodSignature>();
 
         for (AnnotatedMethod<?> method : Beans.getInterceptableMethods(type)) {
             enhancedMethodSignatures.add(MethodSignatureImpl.of(method));
@@ -106,14 +118,16 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
 
         Set<Type> types = null;
         if (bean == null) {
-            types = Collections.<Type>singleton(type.getJavaClass());
+            types = Collections.<Type> singleton(type.getJavaClass());
         } else {
             types = bean.getTypes();
         }
-        return new InterceptedSubclassFactory<T>(manager.getContextId(), type.getJavaClass(), types, bean, enhancedMethodSignatures, interceptedMethodSignatures).getProxyClass();
+        return new InterceptedSubclassFactory<T>(manager.getContextId(), type.getJavaClass(), types, bean,
+                enhancedMethodSignatures, interceptedMethodSignatures).getProxyClass();
     }
 
-    private Set<InterceptionModel> getInterceptionModelsForType(EnhancedAnnotatedType<T> type, BeanManagerImpl manager, Bean<?> bean) {
+    private Set<InterceptionModel> getInterceptionModelsForType(EnhancedAnnotatedType<T> type, BeanManagerImpl manager,
+            Bean<?> bean) {
         // if the bean has decorators consider all methods as intercepted
         if (bean != null && !manager.resolveDecorators(bean.getTypes(), bean.getQualifiers()).isEmpty()) {
             return null;
@@ -125,7 +139,8 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
             WeldCollections.addIfNotNull(models, manager.getInterceptorModelRegistry().get(slimType));
         }
         for (InterceptionModel model : models) {
-            if (model.hasTargetClassInterceptors() && model.getTargetClassInterceptorMetadata().isEligible(InterceptionType.AROUND_INVOKE)) {
+            if (model.hasTargetClassInterceptors()
+                    && model.getTargetClassInterceptorMetadata().isEligible(InterceptionType.AROUND_INVOKE)) {
                 // this means that all methods are intercepted
                 // returning null here means that all methods will be overridden and will delegate to MethodHandler
                 return null;

@@ -34,7 +34,8 @@ import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * Encapsulates various strategies for invoking a method injection point. The default implementation supports all the possible scenarios including dependency
+ * Encapsulates various strategies for invoking a method injection point. The default implementation supports all the possible
+ * scenarios including dependency
  * injection to parameters. In addition, there are optimized implementations for commonly used scenarios such as:
  * <ul>
  * <li>an observer method with event parameter only</li>
@@ -47,15 +48,20 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public abstract class MethodInvocationStrategy {
 
-    private static final MethodInvocationStrategy DISPOSER_DEFAULT_STRATEGY = new DefaultMethodInvocationStrategy(IllegalArgumentException.class);
+    private static final MethodInvocationStrategy DISPOSER_DEFAULT_STRATEGY = new DefaultMethodInvocationStrategy(
+            IllegalArgumentException.class);
 
-    private static final MethodInvocationStrategy DISPOSER_SIMPLE_STRATEGY = new SimpleMethodInvocationStrategy(IllegalArgumentException.class);
+    private static final MethodInvocationStrategy DISPOSER_SIMPLE_STRATEGY = new SimpleMethodInvocationStrategy(
+            IllegalArgumentException.class);
 
-    private static final MethodInvocationStrategy OBSERVER_DEFAULT_STRATEGY = new DefaultMethodInvocationStrategy(ObserverException.class);
+    private static final MethodInvocationStrategy OBSERVER_DEFAULT_STRATEGY = new DefaultMethodInvocationStrategy(
+            ObserverException.class);
 
-    private static final MethodInvocationStrategy OBSERVER_SIMPLE_STRATEGY = new SimpleMethodInvocationStrategy(ObserverException.class);
+    private static final MethodInvocationStrategy OBSERVER_SIMPLE_STRATEGY = new SimpleMethodInvocationStrategy(
+            ObserverException.class);
 
-    private static final MethodInvocationStrategy OBSERVER_EVENT_PLUS_BEAN_MANAGER_STRATEGY = new SpecialParamPlusBeanManagerStrategy(ObserverException.class);
+    private static final MethodInvocationStrategy OBSERVER_EVENT_PLUS_BEAN_MANAGER_STRATEGY = new SpecialParamPlusBeanManagerStrategy(
+            ObserverException.class);
 
     protected final Class<? extends RuntimeException> exceptionTypeToThrow;
 
@@ -101,7 +107,8 @@ public abstract class MethodInvocationStrategy {
      * in {@code InterceptedSubclassFactory#invokeMethodHandler()} but requires special handling here since observers
      * can be private and final and we cannot override them on proxies.
      *
-     * All implementations of {@link MethodInvocationStrategy#invoke(Object, MethodInjectionPoint, Object, BeanManagerImpl, CreationalContext)}
+     * All implementations of
+     * {@link MethodInvocationStrategy#invoke(Object, MethodInjectionPoint, Object, BeanManagerImpl, CreationalContext)}
      * should call this method prior to invoking observer itself in order to start the interception context and
      * if this method returns true, {@link #endInterceptionContext()} should be invoked right after observer method
      * invocation to tear down the context from stack.
@@ -113,7 +120,8 @@ public abstract class MethodInvocationStrategy {
             ProxyObject proxy = (ProxyObject) receiver;
             MethodHandler methodHandler = proxy.weld_getHandler();
             if (methodHandler instanceof CombinedInterceptorAndDecoratorStackMethodHandler) {
-                InterceptionDecorationContext.startIfNotOnTop((CombinedInterceptorAndDecoratorStackMethodHandler)methodHandler);
+                InterceptionDecorationContext
+                        .startIfNotOnTop((CombinedInterceptorAndDecoratorStackMethodHandler) methodHandler);
                 return true;
             }
         }
@@ -134,7 +142,8 @@ public abstract class MethodInvocationStrategy {
         }
 
         @Override
-        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager,
+                CreationalContext<?> creationalContext) {
             boolean release = creationalContext == null;
             if (release) {
                 creationalContext = manager.createCreationalContext(null);
@@ -163,7 +172,8 @@ public abstract class MethodInvocationStrategy {
         }
 
         @Override
-        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager,
+                CreationalContext<?> creationalContext) {
             boolean interceptionContextStarted = startInterceptionContextIfNeeded(receiver, method);
             method.invoke(receiver, instance, manager, creationalContext, exceptionTypeToThrow);
             if (interceptionContextStarted) {
@@ -173,7 +183,8 @@ public abstract class MethodInvocationStrategy {
     }
 
     /**
-     * Optimized invocation strategy that supports methods with exactly two parameters: special parameter plus {@link BeanManager} injection point.
+     * Optimized invocation strategy that supports methods with exactly two parameters: special parameter plus
+     * {@link BeanManager} injection point.
      */
     private static class SpecialParamPlusBeanManagerStrategy extends MethodInvocationStrategy {
 
@@ -182,7 +193,8 @@ public abstract class MethodInvocationStrategy {
         }
 
         @Override
-        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager,
+                CreationalContext<?> creationalContext) {
             boolean interceptionContextStarted = startInterceptionContextIfNeeded(receiver, method);
             method.invoke(receiver, new Object[] { instance, new BeanManagerProxy(manager) }, exceptionTypeToThrow);
             if (interceptionContextStarted) {
@@ -192,7 +204,8 @@ public abstract class MethodInvocationStrategy {
     }
 
     /**
-     * Optimized invocation strategy that supports observer methods with exactly two parameters: event parameter plus {@link EventMetadata} injection point.
+     * Optimized invocation strategy that supports observer methods with exactly two parameters: event parameter plus
+     * {@link EventMetadata} injection point.
      */
     private static class EventPlusMetadataStrategy extends MethodInvocationStrategy {
 
@@ -203,7 +216,8 @@ public abstract class MethodInvocationStrategy {
         }
 
         @Override
-        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+        public <T> void invoke(Object receiver, MethodInjectionPoint<?, ?> method, T instance, BeanManagerImpl manager,
+                CreationalContext<?> creationalContext) {
             boolean interceptionContextStarted = startInterceptionContextIfNeeded(receiver, method);
             method.invoke(receiver, new Object[] { instance, metadata.peek() }, ObserverException.class);
             if (interceptionContextStarted) {

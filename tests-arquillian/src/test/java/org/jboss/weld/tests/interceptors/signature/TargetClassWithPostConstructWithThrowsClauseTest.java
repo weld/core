@@ -34,7 +34,9 @@ public class TargetClassWithPostConstructWithThrowsClauseTest extends AbstractSi
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(TargetClassWithPostConstructWithThrowsClauseTest.class))
+        return ShrinkWrap
+                .create(BeanArchive.class,
+                        Utils.getDeploymentNameAsHash(TargetClassWithPostConstructWithThrowsClauseTest.class))
                 .addClass(TargetClassWithPostConstructWithThrowsClause.class)
                 .addClass(AbstractSignatureTestBase.class);
     }

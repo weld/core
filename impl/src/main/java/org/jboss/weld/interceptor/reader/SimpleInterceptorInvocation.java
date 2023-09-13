@@ -37,14 +37,16 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
     private final boolean targetClass;
     private final InterceptionType interceptionType;
 
-    public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, List<Method> interceptorMethods, boolean targetClass) {
+    public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, List<Method> interceptorMethods,
+            boolean targetClass) {
         this.instance = instance;
         this.interceptionType = interceptionType;
         this.targetClass = targetClass;
 
         if (interceptorMethods.size() == 1) {
             // Very often there will be only one interceptor method
-            interceptorMethodInvocations = ImmutableList.<InterceptorMethodInvocation> of(new SimpleMethodInvocation(interceptorMethods.get(0)));
+            interceptorMethodInvocations = ImmutableList
+                    .<InterceptorMethodInvocation> of(new SimpleMethodInvocation(interceptorMethods.get(0)));
         } else {
             ImmutableList.Builder<InterceptorMethodInvocation> builder = ImmutableList.builder();
             for (Method method : interceptorMethods) {
@@ -71,8 +73,7 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
         public Object invoke(InvocationContext invocationContext) throws Exception {
             if (invocationContext != null) {
                 return method.invoke(instance, invocationContext);
-            }
-            else {
+            } else {
                 return method.invoke(instance);
             }
         }

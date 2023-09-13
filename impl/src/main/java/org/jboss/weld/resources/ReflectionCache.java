@@ -70,6 +70,7 @@ public interface ReflectionCache extends Service {
 
         /**
          * Retrieves repeatable annotations held by this container annotation instance.
+         *
          * @return repeatable annotations held by this container annotation instance
          * @throws IllegalStateException if this annotation class is not a repeatable annotation container
          */

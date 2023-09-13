@@ -33,102 +33,93 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.util.AnnotationLiteral;
 
-public class RoomsExtension implements Extension
-{
-   private static class ApplicationScopedLiteral extends AnnotationLiteral<ApplicationScoped> implements ApplicationScoped {} 
+public class RoomsExtension implements Extension {
+    private static class ApplicationScopedLiteral extends AnnotationLiteral<ApplicationScoped> implements ApplicationScoped {
+    }
 
-   private void removeRoomBean(@Observes ProcessAnnotatedType<Room> pat) {
-      if(!pat.getAnnotatedType().isAnnotationPresent(RoomId.class)) {
-         pat.veto();
-      }
-   }
-   
-   private void addRoomAnnotatedTypes(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-      
-      AnnotatedType<Room> wrapped = bm.createAnnotatedType(Room.class);
-      String hallID = "hall";
-      String pitID = "pit";
-      bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, hallID), hallID);
-      bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, pitID), pitID);
-   }
-   
-   private static class RoomAnnotatedTypeWrapper implements AnnotatedType<Room> {
+    private void removeRoomBean(@Observes ProcessAnnotatedType<Room> pat) {
+        if (!pat.getAnnotatedType().isAnnotationPresent(RoomId.class)) {
+            pat.veto();
+        }
+    }
 
-      private AnnotatedType<Room> wrapped;
-      private String id;
-      
-      private RoomAnnotatedTypeWrapper(AnnotatedType<Room> wrapped, String id) {
-         this.wrapped = wrapped;
-         this.id = id;
-      }
-      
-      @Override
-      public Type getBaseType()
-      {
-         return wrapped.getBaseType();
-      }
+    private void addRoomAnnotatedTypes(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
 
-      @Override
-      public Set<Type> getTypeClosure()
-      {
-         return wrapped.getTypeClosure();
-      }
+        AnnotatedType<Room> wrapped = bm.createAnnotatedType(Room.class);
+        String hallID = "hall";
+        String pitID = "pit";
+        bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, hallID), hallID);
+        bbd.addAnnotatedType(new RoomAnnotatedTypeWrapper(wrapped, pitID), pitID);
+    }
 
-      @Override
-      public <T extends Annotation> T getAnnotation(Class<T> annotationType)
-      {
-         if (ApplicationScoped.class.isAssignableFrom(annotationType)) {
-            return (T) new ApplicationScopedLiteral();
-         }
-         if (RoomId.class.isAssignableFrom(annotationType)) {
-            return (T) new RoomId.RoomIdLiteral(id);
-         }
-         return wrapped.getAnnotation(annotationType);
-      }
+    private static class RoomAnnotatedTypeWrapper implements AnnotatedType<Room> {
 
-      @Override
-      public Set<Annotation> getAnnotations()
-      {
-         Set<Annotation> ret = new HashSet<Annotation> ();
-         
-         ret.add(getAnnotation(ApplicationScoped.class));
-         ret.add(getAnnotation(RoomId.class));
-         
-         return ret;
-      }
+        private AnnotatedType<Room> wrapped;
+        private String id;
 
-      @Override
-      public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-      {
-         if (ApplicationScoped.class.isAssignableFrom(annotationType) || RoomId.class.isAssignableFrom(annotationType)) {
-            return true; 
-         }
-         
-         return wrapped.isAnnotationPresent(annotationType);
-      }
+        private RoomAnnotatedTypeWrapper(AnnotatedType<Room> wrapped, String id) {
+            this.wrapped = wrapped;
+            this.id = id;
+        }
 
-      @Override
-      public Class<Room> getJavaClass()
-      {
-         return wrapped.getJavaClass();
-      }
+        @Override
+        public Type getBaseType() {
+            return wrapped.getBaseType();
+        }
 
-      @Override
-      public Set<AnnotatedConstructor<Room>> getConstructors()
-      {
-         return wrapped.getConstructors();
-      }
+        @Override
+        public Set<Type> getTypeClosure() {
+            return wrapped.getTypeClosure();
+        }
 
-      @Override
-      public Set<AnnotatedMethod<? super Room>> getMethods()
-      {
-         return wrapped.getMethods();
-      }
+        @Override
+        public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+            if (ApplicationScoped.class.isAssignableFrom(annotationType)) {
+                return (T) new ApplicationScopedLiteral();
+            }
+            if (RoomId.class.isAssignableFrom(annotationType)) {
+                return (T) new RoomId.RoomIdLiteral(id);
+            }
+            return wrapped.getAnnotation(annotationType);
+        }
 
-      @Override
-      public Set<AnnotatedField<? super Room>> getFields()
-      {
-         return wrapped.getFields();
-      }
-   }
+        @Override
+        public Set<Annotation> getAnnotations() {
+            Set<Annotation> ret = new HashSet<Annotation>();
+
+            ret.add(getAnnotation(ApplicationScoped.class));
+            ret.add(getAnnotation(RoomId.class));
+
+            return ret;
+        }
+
+        @Override
+        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+            if (ApplicationScoped.class.isAssignableFrom(annotationType) || RoomId.class.isAssignableFrom(annotationType)) {
+                return true;
+            }
+
+            return wrapped.isAnnotationPresent(annotationType);
+        }
+
+        @Override
+        public Class<Room> getJavaClass() {
+            return wrapped.getJavaClass();
+        }
+
+        @Override
+        public Set<AnnotatedConstructor<Room>> getConstructors() {
+            return wrapped.getConstructors();
+        }
+
+        @Override
+        public Set<AnnotatedMethod<? super Room>> getMethods() {
+            return wrapped.getMethods();
+        }
+
+        @Override
+        public Set<AnnotatedField<? super Room>> getFields() {
+            return wrapped.getFields();
+        }
+    }
 }

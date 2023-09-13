@@ -37,4 +37,3 @@ public class BarImpl implements Bar {
         this.foo = foo;
     }
 }
-

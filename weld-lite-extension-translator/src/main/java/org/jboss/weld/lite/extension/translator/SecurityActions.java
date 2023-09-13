@@ -17,17 +17,17 @@
 
 package org.jboss.weld.lite.extension.translator;
 
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.security.GetConstructorAction;
-import org.jboss.weld.security.GetDeclaredConstructorsAction;
-import org.jboss.weld.security.SetAccessibleAction;
-import org.jboss.weld.util.reflection.Reflections;
-
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
+
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.GetConstructorAction;
+import org.jboss.weld.security.GetDeclaredConstructorsAction;
+import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Matej Novotny

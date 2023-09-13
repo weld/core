@@ -84,7 +84,8 @@ class Item implements Comparable<Item> {
         int p2 = o.priority.get();
         if (p1 == p2) {
             /*
-             * The spec does not specify what happens if two records have the same priority. Instead of giving random results, we compare the records based on
+             * The spec does not specify what happens if two records have the same priority. Instead of giving random results,
+             * we compare the records based on
              * their class name lexicographically.
              */
             return javaClass.getName().compareTo(o.javaClass.getName());

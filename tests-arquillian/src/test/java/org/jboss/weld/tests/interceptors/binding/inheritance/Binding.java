@@ -33,9 +33,12 @@ import jakarta.interceptor.InterceptorBinding;
 public @interface Binding {
 
     Type value();
-    
-    public enum Type
-    {
-        ALPHA, BRAVO, CHARLIE, DELTA, ECHO
+
+    public enum Type {
+        ALPHA,
+        BRAVO,
+        CHARLIE,
+        DELTA,
+        ECHO
     }
 }

@@ -28,7 +28,8 @@ import jakarta.inject.Inject;
 public abstract class LargeAmountAccount extends AbstractAccount {
 
     @Inject
-    @Large @Delegate
+    @Large
+    @Delegate
     private Account<Double> delegate;
 
     public void withdraw(Double amount) {

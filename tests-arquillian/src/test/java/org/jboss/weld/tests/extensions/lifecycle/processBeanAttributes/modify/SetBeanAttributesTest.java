@@ -48,7 +48,8 @@ public class SetBeanAttributesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SetBeanAttributesTest.class)).alternate(Cat.class).addPackage(Cat.class.getPackage()).addClass(BeanUtilities.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SetBeanAttributesTest.class))
+                .alternate(Cat.class).addPackage(Cat.class.getPackage()).addClass(BeanUtilities.class)
                 .addAsServiceProvider(Extension.class, ModifyingExtension.class);
     }
 

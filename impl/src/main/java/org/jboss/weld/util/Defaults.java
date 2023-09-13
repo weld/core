@@ -52,8 +52,8 @@ public final class Defaults {
      */
     @SuppressWarnings("unchecked")
     public static <T> T getJlsDefaultValue(Class<T> type) {
-        if(!type.isPrimitive()) {
-           return null;
+        if (!type.isPrimitive()) {
+            return null;
         }
         return (T) JLS_PRIMITIVE_DEFAULT_VALUES.get(type);
     }

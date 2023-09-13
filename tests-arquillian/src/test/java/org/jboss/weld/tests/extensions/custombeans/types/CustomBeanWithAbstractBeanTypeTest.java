@@ -46,7 +46,8 @@ public class CustomBeanWithAbstractBeanTypeTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomBeanWithAbstractBeanTypeTest.class))
-                .addPackage(CustomBeanWithAbstractBeanTypeTest.class.getPackage()).addAsServiceProvider(Extension.class, MyMapExtension.class);
+                .addPackage(CustomBeanWithAbstractBeanTypeTest.class.getPackage())
+                .addAsServiceProvider(Extension.class, MyMapExtension.class);
     }
 
     @Test

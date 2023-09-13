@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Test related to WELD-746, verifies inherited observer methods that is not
- * part of their business interface causes DefinitionException 
+ * part of their business interface causes DefinitionException
  */
 @RunWith(Arquillian.class)
 public class InheritedObserverMethodNotInBusinessInterfaceValidationTest {
@@ -38,8 +38,8 @@ public class InheritedObserverMethodNotInBusinessInterfaceValidationTest {
     public static JavaArchive getDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addClasses(Egg.class, Farmer.class, FarmerLocal.class, 
-                      LazyFarmer.class, LazyFarmerLocal.class);
+                .addClasses(Egg.class, Farmer.class, FarmerLocal.class,
+                        LazyFarmer.class, LazyFarmerLocal.class);
     }
 
     @Test
@@ -47,4 +47,3 @@ public class InheritedObserverMethodNotInBusinessInterfaceValidationTest {
         // Arquillian ShouldThrowException marks it as allowed, does not stop @Test from execution
     }
 }
-

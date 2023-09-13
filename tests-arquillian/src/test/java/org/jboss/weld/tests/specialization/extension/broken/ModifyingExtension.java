@@ -55,7 +55,7 @@ public class ModifyingExtension implements Extension {
 
             @Override
             public Set<Annotation> getAnnotations() {
-                return Collections.<Annotation>singleton(qualifierInstance);
+                return Collections.<Annotation> singleton(qualifierInstance);
             }
 
             @Override

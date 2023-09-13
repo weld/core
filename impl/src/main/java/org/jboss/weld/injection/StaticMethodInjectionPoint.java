@@ -50,7 +50,8 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
     private final AnnotatedMethod<X> annotatedMethod;
     final Method accessibleMethod;
 
-    StaticMethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
+    StaticMethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedMethod<T, X> enhancedMethod,
+            Bean<?> declaringBean, Class<?> declaringComponentClass,
             Set<Class<? extends Annotation>> specialParameterMarkers, InjectionPointFactory factory, BeanManagerImpl manager) {
         super(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, factory, manager);
         this.accessibleMethod = SecurityActions.getAccessibleCopyOfMethod(enhancedMethod.getJavaMember());
@@ -58,7 +59,8 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
         this.specialInjectionPointIndex = initSpecialInjectionPointIndex(enhancedMethod, specialParameterMarkers);
     }
 
-    private static <X> int initSpecialInjectionPointIndex(EnhancedAnnotatedMethod<?, X> enhancedMethod, Set<Class<? extends Annotation>> specialParameterMarkers) {
+    private static <X> int initSpecialInjectionPointIndex(EnhancedAnnotatedMethod<?, X> enhancedMethod,
+            Set<Class<? extends Annotation>> specialParameterMarkers) {
         if (specialParameterMarkers == null || specialParameterMarkers.isEmpty()) {
             return -1;
         }
@@ -70,7 +72,8 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
             }
         }
         if (parameters.isEmpty()) {
-            throw new org.jboss.weld.exceptions.IllegalArgumentException("Not a disposer nor observer method: " + enhancedMethod);
+            throw new org.jboss.weld.exceptions.IllegalArgumentException(
+                    "Not a disposer nor observer method: " + enhancedMethod);
         }
         return parameters.get(0).getPosition();
     }
@@ -82,7 +85,8 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
             transientReferenceContext = manager.createCreationalContext(null);
         }
         try {
-            return invoke(receiver, getParameterValues(specialValue, manager, ctx, transientReferenceContext), exceptionTypeToThrow);
+            return invoke(receiver, getParameterValues(specialValue, manager, ctx, transientReferenceContext),
+                    exceptionTypeToThrow);
         } finally {
             if (hasTransientReferenceParameter) {
                 transientReferenceContext.release();
@@ -114,7 +118,8 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
      * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> transientReferenceContext) {
+    protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx,
+            CreationalContext<?> transientReferenceContext) {
         if (getInjectionPoints().isEmpty()) {
             if (specialInjectionPointIndex == -1) {
                 return Arrays2.EMPTY_ARRAY;

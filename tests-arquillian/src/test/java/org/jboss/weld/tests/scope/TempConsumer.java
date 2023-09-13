@@ -37,5 +37,4 @@ public class TempConsumer {
         return uselessTemp;
     }
 
-
 }

@@ -26,14 +26,12 @@ import jakarta.jws.WebService;
 /**
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-@WebService(name = "POJOEndpoint", serviceName="POJOEndpointService", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
-public class POJOEndpointImpl implements EndpointIface
-{
+@WebService(name = "POJOEndpoint", serviceName = "POJOEndpointService", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
+public class POJOEndpointImpl implements EndpointIface {
     static boolean interceptorCalled;
 
     @POJOInterceptor
-    public String echo(final String message)
-    {
+    public String echo(final String message) {
         return interceptorCalled ? message + " (including POJO interceptor)" : message;
     }
 }

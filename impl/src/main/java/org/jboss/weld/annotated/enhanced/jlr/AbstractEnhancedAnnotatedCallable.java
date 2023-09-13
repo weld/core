@@ -35,9 +35,13 @@ import org.jboss.weld.resources.ClassTransformer;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public abstract class AbstractEnhancedAnnotatedCallable<T, X, S extends Member> extends AbstractEnhancedAnnotatedMember<T, X, S> implements EnhancedAnnotatedCallable<T, X, S> {
+public abstract class AbstractEnhancedAnnotatedCallable<T, X, S extends Member> extends AbstractEnhancedAnnotatedMember<T, X, S>
+        implements EnhancedAnnotatedCallable<T, X, S> {
 
-    protected AbstractEnhancedAnnotatedCallable(AnnotatedCallable<X> annotatedCallable, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, EnhancedAnnotatedType<X> declaringType) {
+    protected AbstractEnhancedAnnotatedCallable(AnnotatedCallable<X> annotatedCallable,
+            Map<Class<? extends Annotation>, Annotation> annotationMap,
+            Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer,
+            EnhancedAnnotatedType<X> declaringType) {
         super(annotatedCallable, annotationMap, declaredAnnotationMap, classTransformer, declaringType);
     }
 
@@ -55,7 +59,8 @@ public abstract class AbstractEnhancedAnnotatedCallable<T, X, S extends Member> 
             // For enums, BackedAnnotatedConstructor sets parameters to an empty list, so we shouldn't throw the DefinitionException
             Class<?> declaringClass = callable.getDeclaringType().getJavaClass();
             if (!declaringClass.isEnum() && !declaringClass.isMemberClass()) {
-                throw ReflectionLogger.LOG.incorrectNumberOfAnnotatedParametersMethod(callable.getParameters().size(), callable, callable.getParameters(), Arrays.asList(parameterTypes));
+                throw ReflectionLogger.LOG.incorrectNumberOfAnnotatedParametersMethod(callable.getParameters().size(), callable,
+                        callable.getParameters(), Arrays.asList(parameterTypes));
             }
         }
     }

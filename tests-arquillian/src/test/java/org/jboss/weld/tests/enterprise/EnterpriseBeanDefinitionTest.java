@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.enterprise;
 
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,9 +31,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import jakarta.enterprise.inject.spi.Bean;
-import jakarta.inject.Inject;
 
 @RunWith(Arquillian.class)
 @Category(Integration.class) // all EJB tests need to use this category because the arquillian-weld-ee container does not implement EjbDescriptor.isPassivationCapable()
@@ -46,8 +46,8 @@ public class EnterpriseBeanDefinitionTest {
     private BeanManagerImpl beanManager;
 
     /*
-    * description="WELD-305"
-    */
+     * description="WELD-305"
+     */
     @Test
     public void testSuperInterfacesAreBeanTypes() {
         Bean<?> bean = Utils.getBean(beanManager, Dog.class);

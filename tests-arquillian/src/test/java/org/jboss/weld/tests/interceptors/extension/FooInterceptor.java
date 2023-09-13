@@ -22,9 +22,9 @@ import jakarta.interceptor.InvocationContext;
 
 /**
  * This is not an interceptor (it misses required annotations). The CustomInterceptor delegates to instances of this class.
- * 
+ *
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class FooInterceptor implements Serializable {

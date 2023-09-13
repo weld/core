@@ -33,7 +33,8 @@ import jakarta.interceptor.InterceptorBinding;
 @Retention(RUNTIME)
 public @interface BuilderInterceptorBinding {
 
-    public static class BuilderInterceptorBindingLiteral extends AnnotationLiteral<BuilderInterceptorBinding> implements BuilderInterceptorBinding {
+    public static class BuilderInterceptorBindingLiteral extends AnnotationLiteral<BuilderInterceptorBinding>
+            implements BuilderInterceptorBinding {
 
     }
 }

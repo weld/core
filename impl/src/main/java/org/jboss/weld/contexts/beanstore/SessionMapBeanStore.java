@@ -25,8 +25,10 @@ import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
- * A {@link MapBeanStore} whose {@link LockStore} is associated with the key {@value #LOCK_STORE_KEY} in the provided map and so may be shared across several
- * stores used within a single "session". Moreover {@link BeanStore#get(BeanIdentifier)} not only searches the cached bean store in {@link AttributeBeanStore}
+ * A {@link MapBeanStore} whose {@link LockStore} is associated with the key {@value #LOCK_STORE_KEY} in the provided map and so
+ * may be shared across several
+ * stores used within a single "session". Moreover {@link BeanStore#get(BeanIdentifier)} not only searches the cached bean store
+ * in {@link AttributeBeanStore}
  * but also the underlying map.
  *
  * @author Martin Kouba

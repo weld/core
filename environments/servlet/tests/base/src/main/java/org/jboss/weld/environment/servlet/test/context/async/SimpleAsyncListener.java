@@ -57,7 +57,7 @@ public class SimpleAsyncListener implements AsyncListener {
         onStartAsyncCalled = true;
     }
 
-    public static void reset(){
+    public static void reset() {
         onCompleteCalled = false;
         onTimeoutCalled = false;
         onErrorCalled = false;

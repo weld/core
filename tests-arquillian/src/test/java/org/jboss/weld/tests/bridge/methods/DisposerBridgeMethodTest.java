@@ -35,7 +35,8 @@ public class DisposerBridgeMethodTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerBridgeMethodTest.class)).addClasses(Foo.class, Bar.class, AlphaDisposer.class, BasicDisposer.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerBridgeMethodTest.class))
+                .addClasses(Foo.class, Bar.class, AlphaDisposer.class, BasicDisposer.class);
     }
 
     @Test

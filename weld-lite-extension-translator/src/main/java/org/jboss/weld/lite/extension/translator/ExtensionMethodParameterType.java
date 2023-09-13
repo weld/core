@@ -1,5 +1,9 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
+
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
 import jakarta.enterprise.inject.build.compatible.spi.FieldConfig;
@@ -14,11 +18,8 @@ import jakarta.enterprise.inject.build.compatible.spi.Types;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
-import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Set;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 enum ExtensionMethodParameterType {
     META_ANNOTATIONS(MetaAnnotations.class, false, ExtensionPhase.DISCOVERY),
