@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.bean;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.Decorator;
@@ -23,6 +30,7 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.enterprise.inject.spi.Producer;
 import jakarta.enterprise.invoke.Invokable;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -34,13 +42,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -210,7 +211,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
                 }
                 MethodSignature signature = MethodSignatureImpl.of(method);
                 if (!encounteredMethods.contains(signature) &&
-                        (hasClassLevelInvokableAnnotation || method.getAnnotations().stream().anyMatch(a -> isInvokableAnnotation(a.annotationType(), metaAnnotationStore)))) {
+                        (hasClassLevelInvokableAnnotation || method.getAnnotations().stream()
+                                .anyMatch(a -> isInvokableAnnotation(a.annotationType(), metaAnnotationStore)))) {
                     invokableMethods.add(method);
                 }
                 encounteredMethods.add(signature);
@@ -227,7 +229,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
      * @param invokableCandidate annotation class to inspect
      * @return true if the annotation is considered {@link Invokable}, false otherwise
      */
-    private boolean isInvokableAnnotation(Class<? extends Annotation> invokableCandidate, MetaAnnotationStore metaAnnotationStore) {
+    private boolean isInvokableAnnotation(Class<? extends Annotation> invokableCandidate,
+            MetaAnnotationStore metaAnnotationStore) {
         if (invokableCandidate.equals(Invokable.class)) {
             return true;
         } else {

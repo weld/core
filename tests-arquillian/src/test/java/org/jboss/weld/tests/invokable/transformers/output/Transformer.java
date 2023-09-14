@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.invokable.transformers.output;
 
-
 /**
  * Offers various transformation methods
  */

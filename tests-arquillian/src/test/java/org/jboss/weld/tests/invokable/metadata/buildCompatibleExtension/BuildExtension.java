@@ -7,6 +7,7 @@ import jakarta.enterprise.inject.build.compatible.spi.Discovery;
 import jakarta.enterprise.inject.build.compatible.spi.Enhancement;
 import jakarta.enterprise.inject.build.compatible.spi.MetaAnnotations;
 import jakarta.enterprise.inject.build.compatible.spi.Registration;
+
 import org.jboss.weld.tests.invokable.metadata.common.ClassLevelDirectDeclaration;
 import org.jboss.weld.tests.invokable.metadata.common.ClassLevelIndirectDeclaration;
 import org.jboss.weld.tests.invokable.metadata.common.ClassLevelViaExtension;

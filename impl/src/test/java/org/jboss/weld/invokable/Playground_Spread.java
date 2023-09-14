@@ -40,7 +40,7 @@ public class Playground_Spread {
         }
         System.out.println("!!!!!!! 4 " + mh.type());
 
-        System.out.println(mh.invoke(new CleanupActions(), new Playground_Spread(), new Object[] {null}));
+        System.out.println(mh.invoke(new CleanupActions(), new Playground_Spread(), new Object[] { null }));
     }
 
     public String hello(int param) {

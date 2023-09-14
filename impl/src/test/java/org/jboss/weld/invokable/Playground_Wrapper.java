@@ -1,10 +1,10 @@
 package org.jboss.weld.invokable;
 
-import jakarta.enterprise.invoke.Invoker;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
+
+import jakarta.enterprise.invoke.Invoker;
 
 public class Playground_Wrapper {
     public static void main(String[] args) throws Throwable {
@@ -13,11 +13,12 @@ public class Playground_Wrapper {
 
         InvokerImpl<?, ?> invoker = new InvokerImpl<>(mh);
 
-        MethodHandle mh2 = MethodHandleUtils.createMethodHandle(Playground_Wrapper.class.getMethod("wrap", Playground_Wrapper.class, Object[].class, Invoker.class));
+        MethodHandle mh2 = MethodHandleUtils.createMethodHandle(
+                Playground_Wrapper.class.getMethod("wrap", Playground_Wrapper.class, Object[].class, Invoker.class));
         mh = MethodHandles.insertArguments(mh2, 2, invoker);
         System.out.println("!!!!!!! 2 " + mh.type());
 
-        System.out.println(mh.invoke(new Playground_Wrapper(), new Object[] {42}));
+        System.out.println(mh.invoke(new Playground_Wrapper(), new Object[] { 42 }));
     }
 
     public static String wrap(Playground_Wrapper instance, Object[] arguments, Invoker<Playground_Wrapper, String> invoker) {

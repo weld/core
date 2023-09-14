@@ -7,7 +7,7 @@ import jakarta.enterprise.invoke.Invokable;
 @Invokable
 public class ClassLevelDirectDeclaration {
 
-    public void ping(){
+    public void ping() {
 
     }
 

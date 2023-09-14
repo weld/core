@@ -1,6 +1,7 @@
 package org.jboss.weld.tests.invokable;
 
 import jakarta.enterprise.invoke.Invoker;
+
 import org.jboss.weld.tests.invokable.common.SimpleBean;
 import org.jboss.weld.tests.invokable.common.TransformableBean;
 import org.jboss.weld.tests.invokable.common.TrulyExceptionalBean;
@@ -109,7 +110,8 @@ public class SynthBean {
         this.argTransformerWithConsumerInvoker = argTransformerWithConsumerInvoker;
     }
 
-    public void setStaticArgTransformerWithConsumerInvoker(Invoker<TransformableBean, ?> staticArgTransformerWithConsumerInvoker) {
+    public void setStaticArgTransformerWithConsumerInvoker(
+            Invoker<TransformableBean, ?> staticArgTransformerWithConsumerInvoker) {
         this.staticArgTransformerWithConsumerInvoker = staticArgTransformerWithConsumerInvoker;
     }
 
@@ -117,7 +119,8 @@ public class SynthBean {
         this.instanceTransformerInvoker = instanceTransformerInvoker;
     }
 
-    public void setInstanceTransformerWithConsumerInvoker(Invoker<TransformableBean, ?> instanceTransformerWithConsumerInvoker) {
+    public void setInstanceTransformerWithConsumerInvoker(
+            Invoker<TransformableBean, ?> instanceTransformerWithConsumerInvoker) {
         this.instanceTransformerWithConsumerInvoker = instanceTransformerWithConsumerInvoker;
     }
 

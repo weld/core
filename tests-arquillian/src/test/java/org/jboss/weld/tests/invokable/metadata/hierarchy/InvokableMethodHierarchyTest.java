@@ -3,6 +3,7 @@ package org.jboss.weld.tests.invokable.metadata.hierarchy;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,7 +32,8 @@ public class InvokableMethodHierarchyTest {
         Assert.assertEquals(2, extension.getChildInvokableMethod().size());
         for (AnnotatedMethod<? super Child> method : extension.getChildInvokableMethod()) {
             String methodName = method.getJavaMember().getName();
-            Assert.assertTrue(extension.getChildInvokableMethod().toString(), methodName.equals("child") || methodName.equals("commonAncestor"));
+            Assert.assertTrue(extension.getChildInvokableMethod().toString(),
+                    methodName.equals("child") || methodName.equals("commonAncestor"));
         }
     }
 }

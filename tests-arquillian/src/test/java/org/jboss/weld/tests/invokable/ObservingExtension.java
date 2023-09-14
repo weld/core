@@ -1,10 +1,13 @@
 package org.jboss.weld.tests.invokable;
 
+import java.util.Collection;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
+
 import org.jboss.weld.tests.invokable.common.ArgTransformer;
 import org.jboss.weld.tests.invokable.common.ExceptionTransformer;
 import org.jboss.weld.tests.invokable.common.FooArg;
@@ -15,8 +18,6 @@ import org.jboss.weld.tests.invokable.common.SimpleBean;
 import org.jboss.weld.tests.invokable.common.TransformableBean;
 import org.jboss.weld.tests.invokable.common.TrulyExceptionalBean;
 import org.junit.Assert;
-
-import java.util.Collection;
 
 public class ObservingExtension implements Extension {
 
@@ -147,7 +148,6 @@ public class ObservingExtension implements Extension {
     private Invoker<SimpleBean, ?> invocationWrapperInvoker;
     private Invoker<SimpleBean, ?> staticInvocationWrapperInvoker;
 
-
     public void createNoTransformationInvokers(@Observes ProcessManagedBean<SimpleBean> pmb) {
         Collection<AnnotatedMethod<? super SimpleBean>> invokableMethods = pmb.getInvokableMethods();
         Assert.assertEquals(2, invokableMethods.size());
@@ -156,12 +156,14 @@ public class ObservingExtension implements Extension {
                 staticNoTransformationInvoker = pmb.createInvoker(invokableMethod).build();
                 staticInstanceLookupInvoker = pmb.createInvoker(invokableMethod).setInstanceLookup().build();
                 staticArgLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                staticLookupAllInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).setInstanceLookup().build();
+                staticLookupAllInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
+                        .setInstanceLookup().build();
             } else {
                 noTransformationInvoker = pmb.createInvoker(invokableMethod).build();
                 instanceLookupInvoker = pmb.createInvoker(invokableMethod).setInstanceLookup().build();
                 argLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                lookupAllInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).setInstanceLookup().build();
+                lookupAllInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
+                        .setInstanceLookup().build();
             }
         }
     }

@@ -1,11 +1,11 @@
 package org.jboss.weld.invokable;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Instance;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
 
 class CleanupActions implements Consumer<Runnable> {
     private final List<Runnable> cleanupTasks = new ArrayList<>();

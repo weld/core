@@ -1,9 +1,9 @@
 package org.jboss.weld.invokable;
 
+import java.lang.invoke.MethodHandle;
+
 import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.invoke.Invoker;
-
-import java.lang.invoke.MethodHandle;
 
 public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
     private final MethodHandle mh;

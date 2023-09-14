@@ -1,10 +1,10 @@
 package org.jboss.weld.tests.invokable.lookup;
 
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import jakarta.enterprise.util.Nonbinding;
+import jakarta.inject.Qualifier;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier

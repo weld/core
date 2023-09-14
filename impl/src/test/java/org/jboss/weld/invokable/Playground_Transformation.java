@@ -19,7 +19,8 @@ public class Playground_Transformation {
         int instanceArguments = isStaticMethod ? 0 : 1;
 
         // target instance
-        Method instanceTransformer = Playground_Transformation.class.getMethod("transformInstance", Playground_Transformation.class, Consumer.class);
+        Method instanceTransformer = Playground_Transformation.class.getMethod("transformInstance",
+                Playground_Transformation.class, Consumer.class);
         if (instanceTransformer != null && !isStaticMethod) {
             MethodHandle transformer = MethodHandles.lookup().unreflect(instanceTransformer);
             if (transformer.type().parameterCount() == 1) { // no cleanup

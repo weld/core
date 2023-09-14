@@ -1,13 +1,14 @@
 package org.jboss.weld.tests.invokable.transformers.input;
 
+import java.util.Collection;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
-import org.junit.Assert;
 
-import java.util.Collection;
+import org.junit.Assert;
 
 public class ObservingExtension implements Extension {
 

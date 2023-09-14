@@ -6,7 +6,7 @@ import jakarta.enterprise.invoke.Invokable;
 @ApplicationScoped
 public class MethodLevelDirectDeclaration {
 
-    public void ping(){
+    public void ping() {
 
     }
 

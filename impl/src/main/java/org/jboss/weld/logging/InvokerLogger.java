@@ -12,7 +12,7 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
  * Message IDs: 002000 - 002099
  */
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
-public interface InvokerLogger extends WeldLogger{
+public interface InvokerLogger extends WeldLogger {
 
     @Message(id = 2000, value = "TBD {0}", format = Message.Format.MESSAGE_FORMAT)
     IllegalArgumentException tbd(Object param1);

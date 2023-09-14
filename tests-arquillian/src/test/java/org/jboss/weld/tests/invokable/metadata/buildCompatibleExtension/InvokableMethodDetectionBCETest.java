@@ -1,6 +1,7 @@
 package org.jboss.weld.tests.invokable.metadata.buildCompatibleExtension;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,7 +26,6 @@ public class InvokableMethodDetectionBCETest {
                 .addPackage(UnannotatedBean.class.getPackage())
                 .addAsServiceProvider(BuildCompatibleExtension.class, BuildExtension.class);
     }
-
 
     @Test
     public void testAnnotationDetected() {

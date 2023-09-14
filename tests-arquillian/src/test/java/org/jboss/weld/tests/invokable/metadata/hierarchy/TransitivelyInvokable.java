@@ -1,11 +1,10 @@
 package org.jboss.weld.tests.invokable.metadata.hierarchy;
 
-import jakarta.enterprise.invoke.Invokable;
-import jakarta.enterprise.util.AnnotationLiteral;
-
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import jakarta.enterprise.invoke.Invokable;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 @Invokable
 @Retention(RetentionPolicy.RUNTIME)

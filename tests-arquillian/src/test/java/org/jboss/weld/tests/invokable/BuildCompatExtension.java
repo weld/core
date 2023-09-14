@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.invokable;
 
+import java.util.Collection;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
@@ -12,6 +14,7 @@ import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents;
 import jakarta.enterprise.invoke.Invoker;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
+
 import org.jboss.weld.tests.invokable.common.ArgTransformer;
 import org.jboss.weld.tests.invokable.common.ExceptionTransformer;
 import org.jboss.weld.tests.invokable.common.FooArg;
@@ -22,8 +25,6 @@ import org.jboss.weld.tests.invokable.common.SimpleBean;
 import org.jboss.weld.tests.invokable.common.TransformableBean;
 import org.jboss.weld.tests.invokable.common.TrulyExceptionalBean;
 import org.junit.Assert;
-
-import java.util.Collection;
 
 public class BuildCompatExtension implements BuildCompatibleExtension {
 
@@ -139,12 +140,14 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
                 staticNoTransformationInvoker = b.createInvoker(invokableMethod).build();
                 staticInstanceLookupInvoker = b.createInvoker(invokableMethod).setInstanceLookup().build();
                 staticArgLookupInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                staticLookupAllInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).setInstanceLookup().build();
+                staticLookupAllInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
+                        .setInstanceLookup().build();
             } else {
                 noTransformationInvoker = b.createInvoker(invokableMethod).build();
                 instanceLookupInvoker = b.createInvoker(invokableMethod).setInstanceLookup().build();
                 argLookupInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                lookupAllInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).setInstanceLookup().build();
+                lookupAllInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
+                        .setInstanceLookup().build();
             }
         }
     }
@@ -271,14 +274,17 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
             result.setArgTransformingInvoker(parameters.get(argTransformingInvokerString, Invoker.class));
             result.setStaticArgTransformingInvoker(parameters.get(staticArgTransformingInvokerString, Invoker.class));
             result.setArgTransformerWithConsumerInvoker(parameters.get(argTransformerWithConsumerInvokerString, Invoker.class));
-            result.setStaticArgTransformerWithConsumerInvoker(parameters.get(staticArgTransformerWithConsumerInvokerString, Invoker.class));
+            result.setStaticArgTransformerWithConsumerInvoker(
+                    parameters.get(staticArgTransformerWithConsumerInvokerString, Invoker.class));
             result.setInstanceTransformerInvoker(parameters.get(instanceTransformerInvokerString, Invoker.class));
-            result.setInstanceTransformerWithConsumerInvoker(parameters.get(instanceTransformerWithConsumerInvokerString, Invoker.class));
+            result.setInstanceTransformerWithConsumerInvoker(
+                    parameters.get(instanceTransformerWithConsumerInvokerString, Invoker.class));
             result.setInstanceTransformerNoParamInvoker(parameters.get(instanceTransformerNoParamInvokerString, Invoker.class));
             result.setReturnTransformerInvoker(parameters.get(returnTransformerInvokerString, Invoker.class));
             result.setReturnTransformerNoParamInvoker(parameters.get(returnTransformerNoParamInvokerString, Invoker.class));
             result.setStaticReturnTransformerInvoker(parameters.get(staticReturnTransformerInvokerString, Invoker.class));
-            result.setStaticReturnTransformerNoParamInvoker(parameters.get(staticReturnTransformerNoParamInvokerString, Invoker.class));
+            result.setStaticReturnTransformerNoParamInvoker(
+                    parameters.get(staticReturnTransformerNoParamInvokerString, Invoker.class));
             result.setExceptionTransformerInvoker(parameters.get(exceptionTransformerInvokerString, Invoker.class));
             result.setStaticExceptionTransformerInvoker(parameters.get(staticExceptionTransformerInvokerString, Invoker.class));
             result.setInvocationWrapperInvoker(parameters.get(invocationWrapperInvokerString, Invoker.class));

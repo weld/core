@@ -1,11 +1,12 @@
 package org.jboss.weld.metadata.cache;
 
-import jakarta.enterprise.invoke.Invokable;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
-
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
+
+import jakarta.enterprise.invoke.Invokable;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 
 public class InvokableModel<T extends Annotation> extends AnnotationModel<T> {
 

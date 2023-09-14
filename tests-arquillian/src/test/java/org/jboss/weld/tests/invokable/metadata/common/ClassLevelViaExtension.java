@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @DefinitelyNotInvokable // should become @Invokable via extension
 public class ClassLevelViaExtension {
 
-    public void ping(){
+    public void ping() {
 
     }
 
