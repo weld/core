@@ -1,9 +1,9 @@
 package org.jboss.weld.invokable;
 
+import java.lang.reflect.Method;
+
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.invoke.Invoker;
-
-import java.lang.reflect.Method;
 
 public class InvokerBuilderImpl<B> extends AbstractInvokerBuilder<B, Invoker<B, ?>> {
 

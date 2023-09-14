@@ -1,13 +1,14 @@
 package org.jboss.weld.tests.invokable.transformers.output;
 
+import java.util.Collection;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
-import org.junit.Assert;
 
-import java.util.Collection;
+import org.junit.Assert;
 
 public class ObservingExtension implements Extension {
 
@@ -33,6 +34,7 @@ public class ObservingExtension implements Extension {
     public Invoker<ExceptionalBean, ?> getTransformException2() {
         return transformException2;
     }
+
     public Invoker<ExceptionalBean, ?> getTransformException3() {
         return transformException3;
     }

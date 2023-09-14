@@ -1,11 +1,14 @@
 package org.jboss.weld.tests.invokable.metadata;
 
+import java.util.Collection;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
+
 import org.jboss.weld.tests.invokable.metadata.common.ClassLevelDirectDeclaration;
 import org.jboss.weld.tests.invokable.metadata.common.ClassLevelIndirectDeclaration;
 import org.jboss.weld.tests.invokable.metadata.common.ClassLevelViaExtension;
@@ -16,8 +19,6 @@ import org.jboss.weld.tests.invokable.metadata.common.MethodLevelViaExtension;
 import org.jboss.weld.tests.invokable.metadata.common.TransitivelyInvokable;
 import org.jboss.weld.tests.invokable.metadata.common.UnannotatedBean;
 
-import java.util.Collection;
-
 public class ObservingExtension implements Extension {
 
     private Collection<AnnotatedMethod<? super ClassLevelDirectDeclaration>> classDirectMethods;
@@ -27,8 +28,6 @@ public class ObservingExtension implements Extension {
     private Collection<AnnotatedMethod<? super ClassLevelViaExtension>> classExtensionMethods;
     private Collection<AnnotatedMethod<? super MethodLevelViaExtension>> methodExtensionMethods;
     private Collection<AnnotatedMethod<? super UnannotatedBean>> unannotatedBeanMethods;
-
-
 
     public void processBean1(@Observes ProcessManagedBean<ClassLevelDirectDeclaration> pmb) {
         classDirectMethods = pmb.getInvokableMethods();
@@ -74,7 +73,6 @@ public class ObservingExtension implements Extension {
     public Collection<AnnotatedMethod<? super ClassLevelIndirectDeclaration>> getClassIndirectMethods() {
         return classIndirectMethods;
     }
-
 
     public Collection<AnnotatedMethod<? super MethodLevelDirectDeclaration>> getMethodDirectMethods() {
         return methodDirectMethods;

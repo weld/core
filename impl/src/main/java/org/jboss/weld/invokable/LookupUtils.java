@@ -1,16 +1,17 @@
 package org.jboss.weld.invokable;
 
-import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.Instance;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Named;
-import org.jboss.weld.inject.WeldInstance;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Named;
+
+import org.jboss.weld.inject.WeldInstance;
 
 class LookupUtils {
     private LookupUtils() {

@@ -8,7 +8,7 @@ public class InvocationWrapper {
         Object result1 = invoker.invoke(instance, arguments);
         Object result2 = invoker.invoke(instance, arguments);
         if (result1 instanceof String && result2 instanceof String) {
-            return (String)result1 + result2;
+            return (String) result1 + result2;
         } else {
             throw new AssertionError();
         }

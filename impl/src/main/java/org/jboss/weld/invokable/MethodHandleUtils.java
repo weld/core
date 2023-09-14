@@ -1,9 +1,5 @@
 package org.jboss.weld.invokable;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.DeploymentException;
-import jakarta.enterprise.invoke.Invoker;
-
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -14,6 +10,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.invoke.Invoker;
 
 class MethodHandleUtils {
     private MethodHandleUtils() {
@@ -47,8 +47,10 @@ class MethodHandleUtils {
     }
 
     static MethodHandle createMethodHandle(Method method) {
-        MethodHandles.Lookup lookup = Modifier.isPublic(method.getModifiers()) && Modifier.isPublic(method.getDeclaringClass().getModifiers())
-                ? MethodHandles.publicLookup() : MethodHandles.lookup();
+        MethodHandles.Lookup lookup = Modifier.isPublic(method.getModifiers())
+                && Modifier.isPublic(method.getDeclaringClass().getModifiers())
+                        ? MethodHandles.publicLookup()
+                        : MethodHandles.lookup();
 
         try {
             return lookup.unreflect(method);
@@ -59,8 +61,10 @@ class MethodHandleUtils {
     }
 
     static MethodHandle createMethodHandle(Constructor<?> constructor) {
-        MethodHandles.Lookup lookup = Modifier.isPublic(constructor.getModifiers()) && Modifier.isPublic(constructor.getDeclaringClass().getModifiers())
-                ? MethodHandles.publicLookup() : MethodHandles.lookup();
+        MethodHandles.Lookup lookup = Modifier.isPublic(constructor.getModifiers())
+                && Modifier.isPublic(constructor.getDeclaringClass().getModifiers())
+                        ? MethodHandles.publicLookup()
+                        : MethodHandles.lookup();
 
         try {
             return lookup.unreflectConstructor(constructor);
@@ -70,7 +74,8 @@ class MethodHandleUtils {
         }
     }
 
-    static MethodHandle createMethodHandleFromTransformer(Method targetMethod, TransformerMetadata transformer, Class<?> transformationArgType) {
+    static MethodHandle createMethodHandleFromTransformer(Method targetMethod, TransformerMetadata transformer,
+            Class<?> transformationArgType) {
         List<Method> matchingMethods = new ArrayList<>();
         // transformers must be `public` and may be inherited (if not `static`)
         for (Method m : transformer.getDeclaringClass().getMethods()) {
@@ -120,9 +125,11 @@ class MethodHandleUtils {
                 // if not assignable, then we need to apply a return value transformer which hides the value in an exception
                 MethodHandle throwReturnValue = THROW_VALUE_CARRYING_EXCEPTION;
                 // cast return value of the custom method we use to whatever the original method expects - we'll never use it anyway
-                throwReturnValue = throwReturnValue.asType(throwReturnValue.type().changeReturnType(targetMethod.getReturnType()));
+                throwReturnValue = throwReturnValue
+                        .asType(throwReturnValue.type().changeReturnType(targetMethod.getReturnType()));
                 // adapt the parameter type as well, we don't really care what it is, we just store it and throw it
-                throwReturnValue = throwReturnValue.asType(throwReturnValue.type().changeParameterType(0, result.type().returnType()));
+                throwReturnValue = throwReturnValue
+                        .asType(throwReturnValue.type().changeParameterType(0, result.type().returnType()));
                 result = MethodHandles.filterReturnValue(result, throwReturnValue);
             }
         }
@@ -141,43 +148,53 @@ class MethodHandleUtils {
             // input transformers need to validate assignability of their return type versus original arg type
             if (!transformationArgType.isAssignableFrom(m.getReturnType())) {
                 // TODO better exception
-                throw new DeploymentException("Input transformer " + transformer + " has a return value that is not assignable to expected class: " + transformationArgType);
+                throw new DeploymentException("Input transformer " + transformer
+                        + " has a return value that is not assignable to expected class: " + transformationArgType);
             }
             // instance method is no-param, otherwise its 1-2 with second being Consumer<Runnable>
-            if (!Modifier.isStatic(m.getModifiers()) ) {
+            if (!Modifier.isStatic(m.getModifiers())) {
                 if (paramCount != 0) {
                     // TODO better exception
-                    throw new DeploymentException("Non-static input transformers are expected to have zero input parameters! Transformer: " + transformer);
+                    throw new DeploymentException(
+                            "Non-static input transformers are expected to have zero input parameters! Transformer: "
+                                    + transformer);
                 }
             } else {
                 if (paramCount > 2) {
                     // TODO better exception
-                    throw new DeploymentException("Static input transformers can only have one or two parameters. " + transformer);
+                    throw new DeploymentException(
+                            "Static input transformers can only have one or two parameters. " + transformer);
                 }
                 if (paramCount == 2) {
                     // we do not validate type param of Consumer, i.e. if it's exactly Consumer<Runnable>
                     if (!Consumer.class.equals(m.getParameters()[1].getType())) {
                         // TODO better exception
-                        throw new DeploymentException("Static input transformers with two parameters can only have Consumer<Runnable> as their second parameter! " + transformer);
+                        throw new DeploymentException(
+                                "Static input transformers with two parameters can only have Consumer<Runnable> as their second parameter! "
+                                        + transformer);
                     }
                 }
             }
         } else if (transformer.isOutputTransformer()) {
             // output transformers need to validate assignability of their INPUT
             // this also means instance methods need no validation in this regard
-            if (!Modifier.isStatic(m.getModifiers()) ) {
+            if (!Modifier.isStatic(m.getModifiers())) {
                 if (paramCount != 0) {
                     // TODO better exception
-                    throw new DeploymentException("Non-static output transformers are expected to have zero input parameters! Transformer: " + transformer);
+                    throw new DeploymentException(
+                            "Non-static output transformers are expected to have zero input parameters! Transformer: "
+                                    + transformer);
                 }
             } else {
                 if (paramCount != 1) {
                     // TODO better exception
-                    throw new DeploymentException("Static output transformers are expected to have one input parameter! Transformer: " + transformer);
+                    throw new DeploymentException(
+                            "Static output transformers are expected to have one input parameter! Transformer: " + transformer);
                 }
                 if (!m.getParameters()[0].getType().isAssignableFrom(transformationArgType)) {
                     // TODO better exception
-                    throw new DeploymentException("Output transformer " + transformer + " parameter is not assignable to the expected type " + transformationArgType);
+                    throw new DeploymentException("Output transformer " + transformer
+                            + " parameter is not assignable to the expected type " + transformationArgType);
                 }
             }
         } else {
@@ -190,7 +207,8 @@ class MethodHandleUtils {
                 // OK
             } else {
                 // TODO better exception
-                throw new DeploymentException("Invocation wrapper has unexpected parameters " + transformer + "\nExpected param types are: " + transformationArgType + ", Object[], Invoker.class");
+                throw new DeploymentException("Invocation wrapper has unexpected parameters " + transformer
+                        + "\nExpected param types are: " + transformationArgType + ", Object[], Invoker.class");
             }
         }
     }

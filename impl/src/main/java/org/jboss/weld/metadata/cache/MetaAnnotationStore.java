@@ -227,7 +227,7 @@ public class MetaAnnotationStore implements Service {
      * <p/>
      * Adds the model if it is not present.
      *
-     * @param <T>         The type
+     * @param <T> The type
      * @param annotation The annotation class
      * @return The invokable model
      */

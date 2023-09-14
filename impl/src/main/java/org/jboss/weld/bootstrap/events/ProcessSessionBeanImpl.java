@@ -23,9 +23,9 @@ import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessSessionBean;
 import jakarta.enterprise.inject.spi.SessionBeanType;
-
 import jakarta.enterprise.invoke.Invoker;
 import jakarta.enterprise.invoke.InvokerBuilder;
+
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.invokable.InvokerBuilderImpl;
 import org.jboss.weld.logging.BootstrapLogger;
@@ -80,6 +80,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
             // TODO better exception
             throw new IllegalArgumentException("Not an invokable method: " + annotatedMethod);
         }
-        return new InvokerBuilderImpl<>(getBean().getEjbDescriptor().getBeanClass(), annotatedMethod.getJavaMember(), getBeanManager());
+        return new InvokerBuilderImpl<>(getBean().getEjbDescriptor().getBeanClass(), annotatedMethod.getJavaMember(),
+                getBeanManager());
     }
 }

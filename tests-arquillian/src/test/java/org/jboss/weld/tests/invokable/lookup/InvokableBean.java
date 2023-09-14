@@ -22,11 +22,11 @@ public class InvokableBean {
         return a;
     }
 
-    public String correctLookup (@MyQualifier1("noMatter") @MyQualifier4("binding") String a, @MyQualifier2 String b) {
+    public String correctLookup(@MyQualifier1("noMatter") @MyQualifier4("binding") String a, @MyQualifier2 String b) {
         return a + b;
     }
 
-    public String lookupWithRegisteredQualifier (@ToBeQualifier String a) {
+    public String lookupWithRegisteredQualifier(@ToBeQualifier String a) {
         return a;
     }
 }

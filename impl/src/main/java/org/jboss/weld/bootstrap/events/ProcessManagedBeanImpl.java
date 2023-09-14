@@ -16,17 +16,18 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
+
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
 import jakarta.enterprise.invoke.InvokerBuilder;
+
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.invokable.InvokerBuilderImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.ProcessManagedBean;
-import java.lang.reflect.Type;
-import java.util.Collection;
 
 public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, ManagedBean<X>> implements ProcessManagedBean<X> {
 

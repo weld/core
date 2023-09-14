@@ -1,16 +1,15 @@
 package org.jboss.weld.tests.invokable.metadata.hierarchy;
 
+import java.util.Collection;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 
-import java.util.Collection;
-
 public class ObservingExtension implements Extension {
 
     private Collection<AnnotatedMethod<? super Child>> childInvokableMethod;
-
 
     public void processBean1(@Observes ProcessManagedBean<Child> pmb) {
         childInvokableMethod = pmb.getInvokableMethods();

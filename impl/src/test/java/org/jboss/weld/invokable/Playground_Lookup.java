@@ -4,14 +4,14 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
 public class Playground_Lookup {
     public static void main(String[] args) throws Throwable {
-        MethodHandle lookupMethod = MethodHandleUtils.createMethodHandle(Playground_Lookup.class.getMethod("lookup", CleanupActions.class));
+        MethodHandle lookupMethod = MethodHandleUtils
+                .createMethodHandle(Playground_Lookup.class.getMethod("lookup", CleanupActions.class));
 
-        Method targetMethod = Playground_Lookup.class.getMethod("hello", CleanupActions.class, Playground_Lookup.class, int.class, long.class, char.class);
+        Method targetMethod = Playground_Lookup.class.getMethod("hello", CleanupActions.class, Playground_Lookup.class,
+                int.class, long.class, char.class);
         boolean isStaticMethod = false;
 
         MethodHandle mh = MethodHandleUtils.createMethodHandle(targetMethod);
@@ -39,7 +39,7 @@ public class Playground_Lookup {
 
         // arguments lookup
         // backwards iteration for correct construction of the resulting parameter list
-        boolean[] argumentsLookup = {true, false, true};
+        boolean[] argumentsLookup = { true, false, true };
         for (int i = argumentsLookup.length - 1; i >= 0; i--) {
             if (argumentsLookup[i]) {
                 Class<?> type = originalType.parameterType(i + (isStaticMethod ? 1 : 2));

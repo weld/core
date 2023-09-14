@@ -1,6 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.Priority;
@@ -19,11 +20,10 @@ import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.types.Type;
-import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
+
 import org.jboss.weld.bean.ClassBean;
 import org.jboss.weld.invokable.InvokerInfoBuilder;
-
-import java.util.Collections;
+import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class BeanInfoImpl implements BeanInfo {
     final jakarta.enterprise.inject.spi.Bean<?> cdiBean;
@@ -167,7 +167,8 @@ class BeanInfoImpl implements BeanInfo {
     public InvokerBuilder<InvokerInfo> createInvoker(MethodInfo methodInfo) {
         if (methodInfo.isConstructor()) {
             // TODO better exception
-            throw new IllegalArgumentException("Constructor methods are not valid candidates for Invokers. MethodInfo: " + methodInfo);
+            throw new IllegalArgumentException(
+                    "Constructor methods are not valid candidates for Invokers. MethodInfo: " + methodInfo);
         }
         if (methodInfo instanceof MethodInfoImpl) {
             // at this point we can be sure it is a Method, not a Constructor, so we cast it

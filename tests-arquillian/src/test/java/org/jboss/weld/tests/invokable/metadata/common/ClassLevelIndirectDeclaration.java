@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @TransitivelyInvokable
 public class ClassLevelIndirectDeclaration {
 
-    public void ping(){
+    public void ping() {
 
     }
 

@@ -5,7 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MethodLevelIndirectDeclaration {
 
-    public void ping(){
+    public void ping() {
 
     }
 

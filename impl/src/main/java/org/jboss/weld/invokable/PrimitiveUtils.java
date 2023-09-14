@@ -14,8 +14,7 @@ class PrimitiveUtils {
             Map.entry(long.class, 0L),
             Map.entry(float.class, 0.0F),
             Map.entry(double.class, 0.0),
-            Map.entry(char.class, (char) 0)
-    );
+            Map.entry(char.class, (char) 0));
 
     static boolean hasPrimitive(Class<?>[] types) {
         for (Class<?> type : types) {

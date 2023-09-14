@@ -1,8 +1,5 @@
 package org.jboss.weld.invokable;
 
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.invoke.InvokerBuilder;
-
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -11,6 +8,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.invoke.InvokerBuilder;
 
 // TODO deployment-time validation of configured lookups
 abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
@@ -47,7 +47,8 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     public InvokerBuilder<T> setArgumentLookup(int position) {
         if (position >= argLookup.length) {
             // TODO better exception
-            throw new IllegalArgumentException("Error attempting to set CDI argument lookup for arg number " + position + " while the number of method args is " + argLookup.length);
+            throw new IllegalArgumentException("Error attempting to set CDI argument lookup for arg number " + position
+                    + " while the number of method args is " + argLookup.length);
         }
         argLookup[position] = true;
         return this;
@@ -67,7 +68,8 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     public InvokerBuilder<T> setArgumentTransformer(int position, Class<?> clazz, String methodName) {
         if (position >= argTransformers.length) {
             // TODO better exception
-            throw new IllegalArgumentException("Error attempting to set an argument lookup. Number of method args: " + argLookup.length + " arg position: " + position);
+            throw new IllegalArgumentException("Error attempting to set an argument lookup. Number of method args: "
+                    + argLookup.length + " arg position: " + position);
         }
         if (argTransformers[position] != null) {
             // TODO better exception
@@ -142,7 +144,8 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
             if (instanceTransformerMethod.type().parameterCount() == 1) { // no cleanup
                 mh = MethodHandles.filterArguments(mh, 0, instanceTransformerMethod);
             } else if (instanceTransformerMethod.type().parameterCount() == 2) { // cleanup
-                instanceTransformerMethod = instanceTransformerMethod.asType(instanceTransformerMethod.type().changeParameterType(1, CleanupActions.class));
+                instanceTransformerMethod = instanceTransformerMethod
+                        .asType(instanceTransformerMethod.type().changeParameterType(1, CleanupActions.class));
                 mh = MethodHandles.collectArguments(mh, 0, instanceTransformerMethod);
                 instanceArguments++;
             } else {
@@ -163,7 +166,8 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
             if (argTransformerMethod.type().parameterCount() == 1) { // no cleanup
                 mh = MethodHandles.filterArguments(mh, position, argTransformerMethod);
             } else if (argTransformerMethod.type().parameterCount() == 2) { // cleanup
-                argTransformerMethod = argTransformerMethod.asType(argTransformerMethod.type().changeParameterType(1, CleanupActions.class));
+                argTransformerMethod = argTransformerMethod
+                        .asType(argTransformerMethod.type().changeParameterType(1, CleanupActions.class));
                 mh = MethodHandles.collectArguments(mh, position, argTransformerMethod);
             } else {
                 // internal error, this should not pass validation

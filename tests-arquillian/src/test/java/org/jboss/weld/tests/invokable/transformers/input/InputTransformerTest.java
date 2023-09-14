@@ -2,6 +2,7 @@ package org.jboss.weld.tests.invokable.transformers.input;
 
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -32,15 +33,15 @@ public class InputTransformerTest {
     public void testArgTransformerAssignability() {
         Beta result;
         // test initial state without transformers
-        result = (Beta) extension.getNoTransformer().invoke(bean, new Object[]{0});
+        result = (Beta) extension.getNoTransformer().invoke(bean, new Object[] { 0 });
         Assert.assertEquals("0", result.ping());
         Assert.assertEquals(Integer.valueOf(0), result.getInteger());
 
         // apply transformers, invoke method params are now String instead of original Number
-        result = (Beta) extension.getTransformArg1().invoke(bean, new Object[]{"42"});
+        result = (Beta) extension.getTransformArg1().invoke(bean, new Object[] { "42" });
         Assert.assertEquals("42", result.ping());
         Assert.assertEquals(Integer.valueOf(0), result.getInteger());
-        result = (Beta) extension.getTransformArg2().invoke(bean, new Object[]{"42"});
+        result = (Beta) extension.getTransformArg2().invoke(bean, new Object[] { "42" });
         Assert.assertEquals("42", result.ping());
         Assert.assertEquals(Integer.valueOf(0), result.getInteger());
     }
@@ -49,15 +50,15 @@ public class InputTransformerTest {
     public void testInstanceTransformerAssignability() {
         Beta result;
         // test initial state without transformers
-        result = (Beta) extension.getNoTransformer().invoke(bean, new Object[]{0});
+        result = (Beta) extension.getNoTransformer().invoke(bean, new Object[] { 0 });
         Assert.assertEquals("0", result.ping());
         Assert.assertEquals(Integer.valueOf(0), result.getInteger());
 
         // apply transformers, instance parameter is now null
-        result = (Beta) extension.getTransformInstance1().invoke(null, new Object[]{42});
+        result = (Beta) extension.getTransformInstance1().invoke(null, new Object[] { 42 });
         Assert.assertEquals("42", result.ping());
         Assert.assertEquals(Integer.valueOf(100), result.getInteger());
-        result = (Beta) extension.getTransformInstance2().invoke(null, new Object[]{42});
+        result = (Beta) extension.getTransformInstance2().invoke(null, new Object[] { 42 });
         Assert.assertEquals("42", result.ping());
         Assert.assertEquals(Integer.valueOf(100), result.getInteger());
     }

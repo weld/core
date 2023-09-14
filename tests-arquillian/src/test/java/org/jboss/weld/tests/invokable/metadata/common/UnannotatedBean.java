@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class UnannotatedBean {
 
-    public void ping(){
+    public void ping() {
 
     }
 
