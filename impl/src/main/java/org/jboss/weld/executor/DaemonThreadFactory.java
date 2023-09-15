@@ -44,4 +44,9 @@ public class DaemonThreadFactory implements ThreadFactory {
         thread.setDaemon(true);
         return thread;
     }
+
+    // Holder class to postpone thread group creation until when it's needed.
+    public static class ThreadPoolHolder {
+        public static final ThreadGroup WELD_WORKERS_THREAD_GROUP = new ThreadGroup(WELD_WORKERS);
+    }
 }
