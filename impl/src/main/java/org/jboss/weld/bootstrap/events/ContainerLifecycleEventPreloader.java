@@ -51,12 +51,15 @@ public class ContainerLifecycleEventPreloader {
         }
     }
 
+    // Keep static to only initialize the group once.
+    private static final ThreadGroup THREAD_GROUP = new ThreadGroup("weld-preloaders");
+
     private final ExecutorService executor;
     private final ObserverNotifier notifier;
 
     public ContainerLifecycleEventPreloader(int threadPoolSize, ObserverNotifier notifier) {
         this.executor = Executors.newFixedThreadPool(threadPoolSize,
-                new DaemonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
+                new DaemonThreadFactory(THREAD_GROUP, "weld-preloader-"));
         this.notifier = notifier;
     }
 
