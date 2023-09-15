@@ -1,9 +1,10 @@
 package org.jboss.weld.examples.translator;
 
+import java.io.Serializable;
+
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import java.io.Serializable;
 
 @Dependent
 public class TextTranslator implements Serializable {

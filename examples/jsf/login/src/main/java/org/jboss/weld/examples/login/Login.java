@@ -1,5 +1,8 @@
 package org.jboss.weld.examples.login;
 
+import java.io.Serializable;
+import java.util.List;
+
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.faces.application.FacesMessage;
@@ -8,8 +11,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.io.Serializable;
-import java.util.List;
 
 @SessionScoped
 @Named
@@ -28,7 +29,10 @@ public class Login implements Serializable {
     @SuppressWarnings("unchecked")
     public void login() {
 
-        List<Person> results = userDatabase.createQuery("select u from Person u where u.username=:username and u.password=:password").setParameter("username", credentials.getUsername()).setParameter("password", credentials.getPassword()).getResultList();
+        List<Person> results = userDatabase
+                .createQuery("select u from Person u where u.username=:username and u.password=:password")
+                .setParameter("username", credentials.getUsername()).setParameter("password", credentials.getPassword())
+                .getResultList();
 
         if (!results.isEmpty()) {
             currentUser = results.get(0);

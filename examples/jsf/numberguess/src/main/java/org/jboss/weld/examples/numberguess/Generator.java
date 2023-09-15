@@ -1,6 +1,5 @@
 package org.jboss.weld.examples.numberguess;
 
-
 import java.io.Serializable;
 
 import jakarta.enterprise.context.ApplicationScoped;
