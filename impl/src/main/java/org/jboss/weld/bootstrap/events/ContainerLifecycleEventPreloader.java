@@ -56,7 +56,7 @@ public class ContainerLifecycleEventPreloader {
 
     public ContainerLifecycleEventPreloader(int threadPoolSize, ObserverNotifier notifier) {
         this.executor = Executors.newFixedThreadPool(threadPoolSize,
-                new DaemonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
+                new DaemonThreadFactory("weld-preloader-"));
         this.notifier = notifier;
     }
 
