@@ -27,7 +27,7 @@ public class CustomExecutorServices extends AbstractExecutorServices {
     static final String PREFIX = "weld-worker-test";
 
     private final transient ExecutorService taskExecutor = Executors
-            .newSingleThreadExecutor(new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), PREFIX));
+            .newSingleThreadExecutor(new DaemonThreadFactory(PREFIX));
 
     /**
      * Provides access to the executor service used for asynchronous tasks.

@@ -36,7 +36,8 @@ public class FixedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     public FixedThreadPoolExecutorServices(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
-        this.executor = Executors.newFixedThreadPool(threadPoolSize, new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), "weld-worker-"));
+        this.executor = Executors.newFixedThreadPool(threadPoolSize,
+                new DaemonThreadFactory("weld-worker-"));
         BootstrapLogger.LOG.threadsInUse(threadPoolSize);
     }
 
