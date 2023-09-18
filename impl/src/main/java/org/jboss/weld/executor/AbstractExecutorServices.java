@@ -41,7 +41,7 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
     private static final long SHUTDOWN_TIMEOUT = 60L;
 
     private final ScheduledExecutorService timerExecutor = Executors.newScheduledThreadPool(1,
-            new DaemonThreadFactory(new ThreadGroup(DaemonThreadFactory.WELD_WORKERS), "weld-timer-"));
+            new DaemonThreadFactory("weld-timer-"));
 
     /**
      * Returns a singleton instance of ScheduledExecutorService.
