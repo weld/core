@@ -27,20 +27,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DaemonThreadFactory implements ThreadFactory {
 
-    public static final String WELD_WORKERS = "weld-workers";
-
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String threadNamePrefix;
-    private final ThreadGroup threadGroup;
 
-    public DaemonThreadFactory(ThreadGroup threadGroup, String threadNamePrefix) {
-        this.threadGroup = threadGroup;
+    public DaemonThreadFactory(String threadNamePrefix) {
         this.threadNamePrefix = threadNamePrefix;
     }
 
     @Override
     public Thread newThread(Runnable r) {
-        Thread thread = new Thread(threadGroup, r, threadNamePrefix + threadNumber.getAndIncrement());
+        Thread thread = new Thread(r, threadNamePrefix + threadNumber.getAndIncrement());
         thread.setDaemon(true);
         return thread;
     }
