@@ -34,6 +34,12 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests now deprecated functionality, can be altered/removed once we no longer provide
+ * {@link org.jboss.weld.interceptor.WeldInvocationContext#INTERCEPTOR_BINDINGS_KEY}
+ * <p/>
+ * See https://issues.redhat.com/browse/WELD-2756
+ */
 @RunWith(Arquillian.class)
 public class InvocationContextInterceptorBindingsTest {
 

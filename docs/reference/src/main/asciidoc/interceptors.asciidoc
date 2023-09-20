@@ -339,6 +339,9 @@ Therefore, we recommend the use of CDI-style interceptor bindings.
 === Enhanced version of `jakarta.interceptor.InvocationContext`
 
 For even more control over interceptors, Weld offers enhanced version of `jakarta.interceptor.InvocationContext` - `org.jboss.weld.interceptor.WeldInvocationContext`.
+
+NOTE: *The functionality described below is deprecated since Weld 6 and will be removed in the future. Users should instead use newly added methods directly from `jakarta.interceptor.InvocationContext`, hence removing the need to use Weld specific APIs for this purpose.*
+
 It comes with two additional methods - `getInterceptorBindings` and `getInterceptorBindingsByType(Class<T> annotationType)`.
 You shouldn't need this in most cases, but it comes handy when working with `@Nonbinding` values in interceptor binding annotations.
 
