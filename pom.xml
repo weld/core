@@ -61,7 +61,7 @@
         <arquillian.jetty.version>1.0.0.Final</arquillian.jetty.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Version of the CDI 4.x release TCK -->
-        <cdi.tck-4-0.version>4.0.10</cdi.tck-4-0.version>
+        <cdi.tck-4-1.version>4.1.0.Alpha5</cdi.tck-4-1.version>
         <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
         <!-- We can also use our own file, needed for relaxed mode testing (see WeldMethodInterceptor) -->
         <!-- Our variant is under src/test/tck/tck-tests.xml -->
