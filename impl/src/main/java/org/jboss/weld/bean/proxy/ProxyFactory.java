@@ -260,6 +260,13 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             }
             interfaces.add(mostSpecificClass.getSimpleName());
         }
+        // if the bean class is a non-public one (i.e. pack private), we prioritize placing proxy in the same package
+        // we skip built-in beans are those are often for jakarta.* classes and end up in Weld's default package anyway
+        if (proxyPackage == null && bean != null
+                && !Modifier.isPublic(bean.getBeanClass().getModifiers())
+                && !(bean instanceof AbstractBuiltInBean)) {
+            proxyPackage = bean.getBeanClass().getPackage().getName();
+        }
         final Set<String> declaringClasses = new HashSet<>();
         for (Class<?> type : typeInfo.getInterfaces()) {
             Class<?> declaringClass = type.getDeclaringClass();
@@ -271,7 +278,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 proxyPackage = typeInfo.getPackageNameForClass(type);
             }
         }
-        // no need to sort the set, because we copied and already sorted one
+        // no need to sort the set, because we copied already sorted set
         Iterator<String> iterator = interfaces.iterator();
         while (iterator.hasNext()) {
             name.append(iterator.next());
