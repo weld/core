@@ -2,7 +2,7 @@ name: Weld CI
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ 5.1 ]
     # Do not run for non-code changes
     paths-ignore:
       - '.gitignore'
@@ -24,13 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Download WildFly
         run: |
-          # wget https://ci.wildfly.org/guestAuth/repository/download/WF_WildflyPreviewNightly/latest.lastSuccessful/wildfly-preview-latest-SNAPSHOT.zip
-          # unzip wildfly-preview-latest-SNAPSHOT.zip
-          wget https://ci.wildfly.org/guestAuth/repository/download/WF_Nightly/latest.lastSuccessful/wildfly-latest-SNAPSHOT.zip
-          unzip wildfly-latest-SNAPSHOT.zip
-          # ZIP contains two more ZIPs, sources and actual WFLY
-          rm wildfly-*-src.zip
-          rm wildfly-latest-SNAPSHOT.zip
+          wget https://github.com/wildfly/wildfly/releases/download/29.0.1.Final/wildfly-29.0.1.Final.zip
           unzip wildfly-*.zip -d container
           cd container
           mv ./* wildfly/
