@@ -49,5 +49,9 @@ public class WeldManagerGetContextsTest {
         contexts = weldManager.getContexts(RequestScoped.class);
         Assert.assertEquals(4, contexts.size());
         Assert.assertEquals(1, contexts.stream().filter(c -> c.isActive()).count());
+
+        // try to get contexts for scope that has none registered
+        contexts = weldManager.getContexts(CustomScope.class);
+        Assert.assertEquals(0, contexts.size());
     }
 }
