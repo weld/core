@@ -658,7 +658,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public Collection<Context> getContexts(Class<? extends Annotation> scopeType) {
-        return Collections.unmodifiableList(contexts.get(scopeType));
+        List<Context> found = this.contexts.get(scopeType);
+        return found != null ? Collections.unmodifiableList(found) : Collections.EMPTY_LIST;
     }
 
     public Context getUnwrappedContext(Class<? extends Annotation> scopeType) {
