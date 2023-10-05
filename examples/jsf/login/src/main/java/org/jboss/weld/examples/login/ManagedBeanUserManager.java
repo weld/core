@@ -1,13 +1,14 @@
 package org.jboss.weld.examples.login;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.UserTransaction;
-import java.util.List;
-import java.util.logging.Logger;
 
 @Named("userManager")
 @RequestScoped
@@ -45,7 +46,7 @@ public class ManagedBeanUserManager implements UserManager {
 
     @Override
     public String addUser() throws Exception {
-        if(newUser.getName().isEmpty() || newUser.getUsername().isEmpty() || newUser.getPassword().isEmpty()){
+        if (newUser.getName().isEmpty() || newUser.getUsername().isEmpty() || newUser.getPassword().isEmpty()) {
             return "/users.xhtml?faces-redirect=true";
         }
         try {
