@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jboss.weld.examples</groupId>
         <artifactId>weld-examples-parent</artifactId>
-        <version>5.1.2.Final</version>
+        <version>5.1.3-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <groupId>org.jboss.weld.examples.jsf.translator</groupId>
