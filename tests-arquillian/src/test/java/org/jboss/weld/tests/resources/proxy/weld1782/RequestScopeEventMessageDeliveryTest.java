@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -59,6 +60,9 @@ public class RequestScopeEventMessageDeliveryTest {
     private Controller controller;
 
     @Test
+    // Temporarily disabled due to flaky CI results, see WELD-2760
+    // Note that there is a very similar test in TCKs (with same class name) so we don't even lose coverage
+    @Ignore
     public void testEventsFired() throws Exception {
 
         AbstractMessageListener.reset();
