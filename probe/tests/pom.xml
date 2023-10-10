@@ -3,14 +3,14 @@
     <parent>
         <artifactId>weld-probe-parent</artifactId>
         <groupId>org.jboss.weld.probe</groupId>
-        <version>3.1.10-SNAPSHOT</version>
+        <version>3.1.10.Final</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.probe</groupId>
     <artifactId>weld-probe-tests</artifactId>
-    <version>3.1.10-SNAPSHOT</version>
+    <version>3.1.10.Final</version>
 
     <properties>
         <json.version>1.1.4</json.version>
