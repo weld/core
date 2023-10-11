@@ -1,11 +1,9 @@
 package org.jboss.weld.tests.invokable.lookup;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.invoke.Invokable;
 
 @ApplicationScoped
 @MyQualifier1("myBean")
-@Invokable
 public class InvokableBean {
 
     public String instanceLookup() {

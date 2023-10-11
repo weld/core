@@ -1,7 +1,6 @@
 package org.jboss.weld.lite.extension.translator;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.Priority;
@@ -21,7 +20,6 @@ import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.types.Type;
 
-import org.jboss.weld.bean.ClassBean;
 import org.jboss.weld.invokable.InvokerInfoBuilder;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
@@ -152,18 +150,6 @@ class BeanInfoImpl implements BeanInfo {
     }
 
     @Override
-    public Collection<MethodInfo> invokableMethods() {
-        // delegate for class beans, empty collection otherwise
-        if (cdiBean instanceof ClassBean) {
-            return ((ClassBean<?>) cdiBean).getInvokableMethods()
-                    .stream()
-                    .map(annotatedMethod -> new MethodInfoImpl(annotatedMethod, bm)).collect(Collectors.toList());
-        } else {
-            return Collections.EMPTY_LIST;
-        }
-    }
-
-    @Override
     public InvokerBuilder<InvokerInfo> createInvoker(MethodInfo methodInfo) {
         if (methodInfo.isConstructor()) {
             // TODO better exception
@@ -173,10 +159,6 @@ class BeanInfoImpl implements BeanInfo {
         if (methodInfo instanceof MethodInfoImpl) {
             // at this point we can be sure it is a Method, not a Constructor, so we cast it
             AnnotatedMethod<?> cdiMethod = (AnnotatedMethod<?>) ((MethodInfoImpl) methodInfo).cdiDeclaration;
-            if (!((ClassBean<?>) cdiBean).getInvokableMethods().contains(cdiMethod)) {
-                // TODO better exception
-                throw new IllegalArgumentException("Not an invokable method: " + methodInfo);
-            }
             return new InvokerInfoBuilder<>(cdiBean.getBeanClass(), cdiMethod.getJavaMember(), bm);
         } else {
             // TODO better exception

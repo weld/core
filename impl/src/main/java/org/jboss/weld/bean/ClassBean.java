@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import java.util.Collection;
-
-import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionTarget;
@@ -64,11 +61,4 @@ public interface ClassBean<T> extends WeldBean<T> {
      * @return the injection target
      */
     InjectionTarget<T> getProducer();
-
-    /**
-     * Returns a subset of methods of this class bean for which an invoker might be registered.
-     *
-     * @return a collection of annotated methods for which an invoker can be registered
-     */
-    Collection<AnnotatedMethod<? super T>> getInvokableMethods();
 }

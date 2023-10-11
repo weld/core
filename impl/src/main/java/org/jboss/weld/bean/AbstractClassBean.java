@@ -16,10 +16,8 @@
  */
 package org.jboss.weld.bean;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,17 +27,13 @@ import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.enterprise.inject.spi.Producer;
-import jakarta.enterprise.invoke.Invokable;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
 
@@ -74,7 +68,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
         this.enhancedAnnotatedItem = type;
         this.annotatedType = type.slim();
         initType();
-        initInvokableMethods();
     }
 
     /**
@@ -184,62 +177,5 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     public void setProducer(Producer<T> producer) {
         throw new IllegalArgumentException(
                 "Class bean " + this + " requires an InjectionTarget but a Producer was provided instead " + producer);
-    }
-
-    private void initInvokableMethods() {
-        invokableMethods = new HashSet<>();
-        // this collection is used to detect overriden methods; return type checking should not be needed in this case
-        Collection<MethodSignature> encounteredMethods = new HashSet<>();
-        MetaAnnotationStore metaAnnotationStore = getBeanManager().getServices().get(MetaAnnotationStore.class);
-
-        EnhancedAnnotatedType<? super T> type = enhancedAnnotatedItem;
-        while (type != null) {
-            // inspect all class-level annotations and look for any invokable annotation
-            boolean hasClassLevelInvokableAnnotation = false;
-            for (Annotation an : type.getAnnotations()) {
-                if (isInvokableAnnotation(an.annotationType(), metaAnnotationStore)) {
-                    hasClassLevelInvokableAnnotation = true;
-                    break;
-                }
-            }
-
-            // iterate over all methods, if they belong to this type and either have the annotation or we know of a class
-            // level invokable annotation, we register them
-            for (AnnotatedMethod<? super T> method : type.getMethods()) {
-                if (!method.getDeclaringType().equals(type)) {
-                    continue;
-                }
-                MethodSignature signature = MethodSignatureImpl.of(method);
-                if (!encounteredMethods.contains(signature) &&
-                        (hasClassLevelInvokableAnnotation || method.getAnnotations().stream()
-                                .anyMatch(a -> isInvokableAnnotation(a.annotationType(), metaAnnotationStore)))) {
-                    invokableMethods.add(method);
-                }
-                encounteredMethods.add(signature);
-            }
-
-            // inspect super class in the same fashion
-            type = type.getEnhancedSuperclass();
-        }
-    }
-
-    /**
-     * Checks if the given annotation, or any annotation declared on this annotation, is {@link Invokable}.
-     *
-     * @param invokableCandidate annotation class to inspect
-     * @return true if the annotation is considered {@link Invokable}, false otherwise
-     */
-    private boolean isInvokableAnnotation(Class<? extends Annotation> invokableCandidate,
-            MetaAnnotationStore metaAnnotationStore) {
-        if (invokableCandidate.equals(Invokable.class)) {
-            return true;
-        } else {
-            // validity here means that the annotation contains @Invokable meta-annotation
-            // this accounts for both, actually present annotation in code, and added via extension
-            if (metaAnnotationStore.getInvokableModel(invokableCandidate).isValid()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

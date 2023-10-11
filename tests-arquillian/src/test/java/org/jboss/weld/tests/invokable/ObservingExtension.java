@@ -149,8 +149,8 @@ public class ObservingExtension implements Extension {
     private Invoker<SimpleBean, ?> staticInvocationWrapperInvoker;
 
     public void createNoTransformationInvokers(@Observes ProcessManagedBean<SimpleBean> pmb) {
-        Collection<AnnotatedMethod<? super SimpleBean>> invokableMethods = pmb.getInvokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<AnnotatedMethod<? super SimpleBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super SimpleBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
                 staticNoTransformationInvoker = pmb.createInvoker(invokableMethod).build();
@@ -158,7 +158,7 @@ public class ObservingExtension implements Extension {
                 staticArgLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
                 staticLookupAllInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
                         .setInstanceLookup().build();
-            } else {
+            } else if (invokableMethod.getJavaMember().getName().contains("ping")) {
                 noTransformationInvoker = pmb.createInvoker(invokableMethod).build();
                 instanceLookupInvoker = pmb.createInvoker(invokableMethod).setInstanceLookup().build();
                 argLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
@@ -169,8 +169,8 @@ public class ObservingExtension implements Extension {
     }
 
     public void createArgTransformationInvokers(@Observes ProcessManagedBean<TransformableBean> pmb) {
-        Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getInvokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
                 staticArgTransformingInvoker = pmb.createInvoker(invokableMethod)
@@ -181,7 +181,7 @@ public class ObservingExtension implements Extension {
                         .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
                         .setArgumentTransformer(1, ArgTransformer.class, "transform2") // static transformer method with Consumer
                         .build();
-            } else {
+            } else if (invokableMethod.getJavaMember().getName().contains("ping")) {
                 argTransformingInvoker = pmb.createInvoker(invokableMethod)
                         .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
                         .setArgumentTransformer(1, ArgTransformer.class, "transform") // static transformer method
@@ -195,8 +195,8 @@ public class ObservingExtension implements Extension {
     }
 
     public void createInstanceTransformationInvokers(@Observes ProcessManagedBean<TransformableBean> pmb) {
-        Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getInvokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
                 instanceTransformerInvoker = pmb.createInvoker(invokableMethod)
@@ -213,8 +213,8 @@ public class ObservingExtension implements Extension {
     }
 
     public void createReturnValueTransformationInvokers(@Observes ProcessManagedBean<TransformableBean> pmb) {
-        Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getInvokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
                 returnTransformerInvoker = pmb.createInvoker(invokableMethod)
@@ -224,7 +224,7 @@ public class ObservingExtension implements Extension {
                         .setReturnValueTransformer(String.class, "strip")
                         .build();
 
-            } else {
+            } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
                 staticReturnTransformerInvoker = pmb.createInvoker(invokableMethod)
                         .setReturnValueTransformer(ReturnValueTransformer.class, "transform")
                         .build();
@@ -236,7 +236,7 @@ public class ObservingExtension implements Extension {
     }
 
     public void createExceptionTransformationInvokers(@Observes ProcessManagedBean<TrulyExceptionalBean> pmb) {
-        Collection<AnnotatedMethod<? super TrulyExceptionalBean>> invokableMethods = pmb.getInvokableMethods();
+        Collection<AnnotatedMethod<? super TrulyExceptionalBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(2, invokableMethods.size());
         for (AnnotatedMethod<? super TrulyExceptionalBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
@@ -244,7 +244,7 @@ public class ObservingExtension implements Extension {
                         .setExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
 
-            } else {
+            } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
                 staticExceptionTransformerInvoker = pmb.createInvoker(invokableMethod)
                         .setExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
@@ -253,15 +253,15 @@ public class ObservingExtension implements Extension {
     }
 
     public void createInvocationWrapperInvokers(@Observes ProcessManagedBean<SimpleBean> pmb) {
-        Collection<AnnotatedMethod<? super SimpleBean>> invokableMethods = pmb.getInvokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<AnnotatedMethod<? super SimpleBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super SimpleBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
                 invocationWrapperInvoker = pmb.createInvoker(invokableMethod)
                         .setInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
 
-            } else {
+            } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
                 staticInvocationWrapperInvoker = pmb.createInvoker(invokableMethod)
                         .setInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();

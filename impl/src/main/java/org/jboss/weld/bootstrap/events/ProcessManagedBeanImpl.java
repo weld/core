@@ -17,7 +17,6 @@
 package org.jboss.weld.bootstrap.events;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
 
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -48,17 +47,8 @@ public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, Manag
     }
 
     @Override
-    public Collection<AnnotatedMethod<? super X>> getInvokableMethods() {
-        return getBean().getInvokableMethods();
-    }
-
-    @Override
     public InvokerBuilder<Invoker<X, ?>> createInvoker(AnnotatedMethod<? super X> annotatedMethod) {
         checkWithinObserverNotification();
-        if (!getBean().getInvokableMethods().contains(annotatedMethod)) {
-            // TODO better exception
-            throw new IllegalArgumentException("Not an invokable method: " + annotatedMethod);
-        }
         return new InvokerBuilderImpl<>(getBean().getType(), annotatedMethod.getJavaMember(), getBeanManager());
     }
 

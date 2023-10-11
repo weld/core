@@ -2,19 +2,16 @@ package org.jboss.weld.tests.invokable.common;
 
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.invoke.Invokable;
 
 @Dependent
 public class SimpleBean {
 
     public static int preDestroyInvoked = 0;
 
-    @Invokable
     public String ping(String s, int i) {
         return s + i;
     }
 
-    @Invokable
     public static String staticPing(String s, int i) {
         return s + i;
     }

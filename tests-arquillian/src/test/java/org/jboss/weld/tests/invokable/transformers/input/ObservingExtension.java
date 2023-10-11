@@ -39,22 +39,25 @@ public class ObservingExtension implements Extension {
     }
 
     public void observe(@Observes ProcessManagedBean<ActualBean> pmb) {
-        Collection<AnnotatedMethod<? super ActualBean>> invokableMethods = pmb.getInvokableMethods();
-        Assert.assertEquals(1, invokableMethods.size());
-        AnnotatedMethod<? super ActualBean> invokableMethod = invokableMethods.iterator().next();
-        noTransformer = pmb.createInvoker(invokableMethod).build();
-        transformInstance1 = pmb.createInvoker(invokableMethod)
-                .setInstanceTransformer(Transformer.class, "transformInstance1")
-                .build();
-        transformInstance2 = pmb.createInvoker(invokableMethod)
-                .setInstanceTransformer(Transformer.class, "transformInstance2")
-                .build();
+        Collection<AnnotatedMethod<? super ActualBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
+        Assert.assertEquals(2, invokableMethods.size());
+        for (AnnotatedMethod<? super ActualBean> invokableMethod : invokableMethods) {
+            if (invokableMethod.getJavaMember().getName().contains("ping")) {
+                noTransformer = pmb.createInvoker(invokableMethod).build();
+                transformInstance1 = pmb.createInvoker(invokableMethod)
+                        .setInstanceTransformer(Transformer.class, "transformInstance1")
+                        .build();
+                transformInstance2 = pmb.createInvoker(invokableMethod)
+                        .setInstanceTransformer(Transformer.class, "transformInstance2")
+                        .build();
 
-        transformArg1 = pmb.createInvoker(invokableMethod)
-                .setArgumentTransformer(0, Transformer.class, "transformArg1")
-                .build();
-        transformArg2 = pmb.createInvoker(invokableMethod)
-                .setArgumentTransformer(0, Transformer.class, "transformArg2")
-                .build();
+                transformArg1 = pmb.createInvoker(invokableMethod)
+                        .setArgumentTransformer(0, Transformer.class, "transformArg1")
+                        .build();
+                transformArg2 = pmb.createInvoker(invokableMethod)
+                        .setArgumentTransformer(0, Transformer.class, "transformArg2")
+                        .build();
+            }
+        }
     }
 }

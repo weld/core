@@ -44,7 +44,7 @@ public class ObservingExtension implements Extension {
     }
 
     public void observe(@Observes ProcessManagedBean<ActualBean> pmb) {
-        Collection<AnnotatedMethod<? super ActualBean>> invokableMethods = pmb.getInvokableMethods();
+        Collection<AnnotatedMethod<? super ActualBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(1, invokableMethods.size());
         AnnotatedMethod<? super ActualBean> invokableMethod = invokableMethods.iterator().next();
         noTransformer = pmb.createInvoker(invokableMethod).build();
@@ -57,7 +57,7 @@ public class ObservingExtension implements Extension {
     }
 
     public void observeExceptionally(@Observes ProcessManagedBean<ExceptionalBean> pmb) {
-        Collection<AnnotatedMethod<? super ExceptionalBean>> invokableMethods = pmb.getInvokableMethods();
+        Collection<AnnotatedMethod<? super ExceptionalBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(1, invokableMethods.size());
         AnnotatedMethod<? super ExceptionalBean> invokableMethod = invokableMethods.iterator().next();
 

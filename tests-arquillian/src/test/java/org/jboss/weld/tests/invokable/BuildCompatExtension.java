@@ -133,8 +133,8 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
 
     @Registration(types = SimpleBean.class)
     public void createNoTransformationInvokers(BeanInfo b) {
-        Collection<MethodInfo> invokableMethods = b.invokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("staticPing")) {
                 staticNoTransformationInvoker = b.createInvoker(invokableMethod).build();
@@ -142,7 +142,7 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
                 staticArgLookupInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
                 staticLookupAllInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
                         .setInstanceLookup().build();
-            } else {
+            } else if (invokableMethod.name().contains("ping")) {
                 noTransformationInvoker = b.createInvoker(invokableMethod).build();
                 instanceLookupInvoker = b.createInvoker(invokableMethod).setInstanceLookup().build();
                 argLookupInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
@@ -154,8 +154,8 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
 
     @Registration(types = TransformableBean.class)
     public void createArgTransformationInvokers(BeanInfo b) {
-        Collection<MethodInfo> invokableMethods = b.invokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("staticPing")) {
                 staticArgTransformingInvoker = b.createInvoker(invokableMethod)
@@ -166,7 +166,7 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
                         .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
                         .setArgumentTransformer(1, ArgTransformer.class, "transform2") // static transformer method with Consumer
                         .build();
-            } else {
+            } else if (invokableMethod.name().contains("ping")) {
                 argTransformingInvoker = b.createInvoker(invokableMethod)
                         .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
                         .setArgumentTransformer(1, ArgTransformer.class, "transform") // static transformer method
@@ -181,8 +181,8 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
 
     @Registration(types = TransformableBean.class)
     public void createInstanceTransformationInvokers(BeanInfo b) {
-        Collection<MethodInfo> invokableMethods = b.invokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("ping")) {
                 instanceTransformerInvoker = b.createInvoker(invokableMethod)
@@ -200,8 +200,8 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
 
     @Registration(types = TransformableBean.class)
     public void createReturnValueTransformationInvokers(BeanInfo b) {
-        Collection<MethodInfo> invokableMethods = b.invokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("ping")) {
                 returnTransformerInvoker = b.createInvoker(invokableMethod)
@@ -211,7 +211,7 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
                         .setReturnValueTransformer(String.class, "strip")
                         .build();
 
-            } else {
+            } else if (invokableMethod.name().contains("staticPing")) {
                 staticReturnTransformerInvoker = b.createInvoker(invokableMethod)
                         .setReturnValueTransformer(ReturnValueTransformer.class, "transform")
                         .build();
@@ -224,7 +224,7 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
 
     @Registration(types = TrulyExceptionalBean.class)
     public void createExceptionTransformationInvokers(BeanInfo b) {
-        Collection<MethodInfo> invokableMethods = b.invokableMethods();
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
         Assert.assertEquals(2, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("ping")) {
@@ -232,7 +232,7 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
                         .setExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
 
-            } else {
+            } else if (invokableMethod.name().contains("staticPing")) {
                 staticExceptionTransformerInvoker = b.createInvoker(invokableMethod)
                         .setExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
@@ -242,15 +242,15 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
 
     @Registration(types = SimpleBean.class)
     public void createInvocationWrapperInvokers(BeanInfo b) {
-        Collection<MethodInfo> invokableMethods = b.invokableMethods();
-        Assert.assertEquals(2, invokableMethods.size());
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
+        Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("ping")) {
                 invocationWrapperInvoker = b.createInvoker(invokableMethod)
                         .setInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
 
-            } else {
+            } else if (invokableMethod.name().contains("staticPing")) {
                 staticInvocationWrapperInvoker = b.createInvoker(invokableMethod)
                         .setInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
