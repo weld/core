@@ -1129,11 +1129,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public boolean isInvokableMarker(Class<? extends Annotation> annotationType) {
-        return getServices().get(MetaAnnotationStore.class).getInvokableModel(annotationType).isValid();
-    }
-
-    @Override
     public ELResolver getELResolver() {
         if (weldELResolver == null) {
             throw BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class, id);

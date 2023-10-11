@@ -51,11 +51,6 @@ class MetaAnnotationsImpl implements MetaAnnotations {
     }
 
     @Override
-    public void addInvokable(Class<? extends Annotation> aClass) {
-        bbd.addInvokable(aClass);
-    }
-
-    @Override
     public void addContext(Class<? extends Annotation> scopeAnnotation,
             Class<? extends jakarta.enterprise.context.spi.AlterableContext> contextClass) {
         contexts.add(new ContextData(scopeAnnotation, null, contextClass));

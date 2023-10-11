@@ -32,7 +32,6 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.events.configurator.AnnotatedTypeConfiguratorImpl;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
-import org.jboss.weld.literal.InvokableLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.QualifierLiteral;
 import org.jboss.weld.literal.ScopeLiteral;
@@ -84,15 +83,6 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
         BootstrapLogger.LOG.addInterceptorBindingCalled(getReceiver(), bindingType);
-    }
-
-    @Override
-    public void addInvokable(Class<? extends Annotation> aClass) {
-        checkWithinObserverNotification();
-        getTypeStore().add(aClass, InvokableLiteral.INSTANCE);
-        getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(aClass);
-        getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(aClass);
-        BootstrapLogger.LOG.addInvokableCalled(getReceiver(), aClass);
     }
 
     @Override

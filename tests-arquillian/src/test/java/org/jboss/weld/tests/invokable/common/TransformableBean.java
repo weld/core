@@ -1,7 +1,6 @@
 package org.jboss.weld.tests.invokable.common;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.invoke.Invokable;
 
 @ApplicationScoped
 public class TransformableBean {
@@ -18,7 +17,6 @@ public class TransformableBean {
         return transformed;
     }
 
-    @Invokable
     public String ping(FooArg foo, String s) {
         String result = foo.getString() + s;
         if (transformed) {
@@ -28,7 +26,6 @@ public class TransformableBean {
         }
     }
 
-    @Invokable
     public static String staticPing(FooArg foo, String s) {
         return foo.getString() + s;
     }

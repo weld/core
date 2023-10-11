@@ -40,7 +40,7 @@ public class InvokerRegistreringExtension implements Extension {
     }
 
     public void createInvokers(@Observes ProcessManagedBean<InvokableBean> pmb) {
-        Collection<AnnotatedMethod<? super InvokableBean>> invokableMethods = pmb.getInvokableMethods();
+        Collection<AnnotatedMethod<? super InvokableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(5, invokableMethods.size());
         for (AnnotatedMethod<? super InvokableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("instanceLookup")) {

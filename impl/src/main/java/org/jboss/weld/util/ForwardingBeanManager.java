@@ -145,11 +145,6 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
-    public boolean isInvokableMarker(Class<? extends Annotation> annotationType) {
-        return delegate().isInvokableMarker(annotationType);
-    }
-
-    @Override
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
         return delegate().getInterceptorBindingDefinition(bindingType);
     }
