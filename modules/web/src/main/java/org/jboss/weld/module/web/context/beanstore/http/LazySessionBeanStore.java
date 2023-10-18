@@ -85,10 +85,10 @@ public class LazySessionBeanStore extends AbstractSessionBeanStore {
         try {
             return SessionHolder.getSession(request, create);
         } catch (IllegalStateException e) {
-            // If container can't create an underlying session, invalidate the
-            // current one
+            // If container can't create an underlying session, invalidate the current one
             detach();
-            return null;
+            // re-throw the exception to properly show cause and message
+            throw e;
         }
     }
 
