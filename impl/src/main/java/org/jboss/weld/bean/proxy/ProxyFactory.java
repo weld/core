@@ -209,11 +209,11 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 }
             }
             if (typeModified) {
-                //this bean has interfaces that the base type is not assignable to
-                //which can happen with some creative use of the SPI
-                //interface only bean.
+                // This bean has interfaces that the base type is not assignable to.
+                // One example of this is an EJB bean using @Local and declaring an interface it doesn't implement.
+                // Another case is a CDI bean with type added via ProcessBeanAttributes which isn't directly implemented.
                 StringBuilder name = new StringBuilder(typeInfo.getSuperClass().getSimpleName() + "$");
-                holder = createCompoundProxyName(contextId, bean, typeInfo, name);
+                holder = createCompoundProxyName(contextId, bean, typeInfo, name, bean.getBeanClass().getPackage().getName());
             } else {
                 holder = new ProxyNameHolder(null, typeInfo.getSuperClass().getSimpleName(), bean);
             }
@@ -247,13 +247,19 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private static ProxyNameHolder createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo,
             StringBuilder name) {
+        return createCompoundProxyName(contextId, bean, typeInfo, name, null);
+    }
+
+    private static ProxyNameHolder createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo,
+            StringBuilder name, String knownProxyPackage) {
         String className;
-        String proxyPackage = null;
+        String proxyPackage = knownProxyPackage;
         // we need a sorted collection without repetition, hence LinkedHashSet
         final Set<String> interfaces = new LinkedHashSet<>();
         // for producers, try to determine the most specific class and make sure the proxy starts with the same package and class
         if (bean != null && bean instanceof AbstractProducerBean) {
             Class<?> mostSpecificClass = ((AbstractProducerBean) bean).getType();
+            // for producers, always override the proxy package
             proxyPackage = mostSpecificClass.getPackage().getName();
             if (mostSpecificClass.getDeclaringClass() != null) {
                 interfaces.add(mostSpecificClass.getDeclaringClass().getSimpleName());
