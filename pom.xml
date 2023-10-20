@@ -90,7 +90,7 @@
         <shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
-        <weld.api.version>5.0.SP3</weld.api.version>
+        <weld.api.version>6.0.Alpha1</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.0.Alpha5</wildfly.arquillian.version>
     </properties>
@@ -122,13 +122,6 @@
                 <artifactId>groovy-all</artifactId>
                 <version>${groovy.version}</version>
                 <type>pom</type>
-            </dependency>
-
-            <!-- TODO this needs to be eventually declared via Weld API -->
-            <dependency>
-                <groupId>jakarta.enterprise</groupId>
-                <artifactId>jakarta.enterprise.cdi-api</artifactId>
-                <version>4.1.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
