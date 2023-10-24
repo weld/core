@@ -31,6 +31,9 @@
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
         as the release plugin won't deal with double evaluation -->
         <weld.update.version>6.0.0-SNAPSHOT</weld.update.version>
+        <!-- These are *NOT* automatically updated and should be reviewed if the relevant profile is to be used -->
+        <cdi.update.version>4.1.0.Alpha1</cdi.update.version>
+        <interceptors.update.version>2.2.0-RC1</interceptors.update.version>
     </properties>
 
     <dependencies>
@@ -68,6 +71,21 @@
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-ext-lib</artifactId>
             <version>${cdi.tck-4-0.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>${cdi.update.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.lang-model</artifactId>
+            <version>${cdi.update.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.interceptor</groupId>
+            <artifactId>jakarta.interceptor-api</artifactId>
+            <version>2.2.0-RC1</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -189,6 +207,91 @@
             </build>
         </profile>
         <profile>
+            <!-- Updates CDI API and Interceptors API in target WFLY distribution -->
+            <!-- This is mainly useful when developing against early CDI versions adding new APIs that aren't in WFLY -->
+            <id>update-jakarta-apis</id>
+            <build>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-jakarta-apis</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <property file="${basedir}/local.build.properties" />
+                                        <property file="${basedir}/build.properties" />
+                                        <property name="jboss.home" value="${env.JBOSS_HOME}" />
+
+                                        <echo>
+
+                                            =========================================================================
+
+                                            Updating CDI module and Interceptors API module
+
+                                            CDI version: ${cdi.update.version}
+                                            Interceptors version: ${interceptors.update.version}
+
+                                            JBOSS_HOME: ${jboss.home}
+
+                                            =========================================================================
+
+                                        </echo>
+
+                                        <available file="${jboss.home}/modules/system" property="module.dir" value="${jboss.home}/modules/system/layers/base/jakarta/enterprise/api" />
+                                        <available file="${jboss.home}/modules/system" property="module.interceptor.dir" value="${jboss.home}/modules/system/layers/base/jakarta/interceptor/api" />
+
+                                        <property name="module.dir" value="${jboss.home}/modules//system/layers/base/jakarta/enterprise/api" />
+                                        <property name="module.interceptor.dir" value="${jboss.home}/modules//system/layers/base/jakarta/interceptor/api" />
+
+                                        <property name="cdi.api.file" value="jakarta.enterprise.cdi-api-${cdi.update.version}.jar" />
+                                        <property name="cdi.lang.model.file" value="jakarta.enterprise.lang-model-${cdi.update.version}.jar" />
+                                        <property name="interceptor.api.file" value="jakarta.interceptor-api-${interceptors.update.version}.jar" />
+
+                                        <delete>
+                                            <fileset dir="${module.dir}/main" includes="*.jar" />
+                                            <fileset dir="${module.interceptor.dir}/main" includes="*.jar" />
+                                        </delete>
+
+                                        <copy todir="${module.dir}/main" overwrite="true">
+                                            <fileset dir="target/dependency/lib">
+                                                <include name="${cdi.api.file}" />
+                                                <include name="${cdi.lang.model.file}" />
+                                            </fileset>
+                                        </copy>
+
+                                        <copy todir="${module.interceptor.dir}/main" overwrite="true">
+                                            <fileset dir="target/dependency/lib">
+                                                <include name="${interceptor.api.file}" />
+                                            </fileset>
+                                        </copy>
+
+
+                                        <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.cdi-api.*?&quot;" replace="path=&quot;${cdi.api.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.lang-model.*?&quot;" replace="path=&quot;${cdi.lang.model.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.interceptor.dir}/main/module.xml" match="path=&quot;jakarta.interceptor-api.*?&quot;" replace="path=&quot;${interceptor.api.file}&quot;" byline="true" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>install-cdi-tck-ext-lib</id>
             <activation>
                 <property>
@@ -239,7 +342,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
+                            <includeArtifactIds>jakarta.enterprise.cdi-api,jakarta.enterprise.lang-model,jakarta.interceptor-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>

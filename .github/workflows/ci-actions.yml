@@ -53,7 +53,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/container/*'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean package -Pupdate-jboss-as -Dtck -f jboss-as/pom.xml
+          mvn clean package -Pupdate-jboss-as -Pupdate-jakarta-apis -Dtck -f jboss-as/pom.xml
       - name: Zip Patched WildFly
         run: |
           cd container/
