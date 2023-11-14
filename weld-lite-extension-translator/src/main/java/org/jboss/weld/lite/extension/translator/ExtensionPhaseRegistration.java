@@ -61,8 +61,13 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
                             disposer = ((jakarta.enterprise.inject.spi.ProcessProducerMethod<?, ?>) pb)
                                     .getAnnotatedDisposedParameter();
                         }
-
-                        argument = new BeanInfoImpl(pb.getBean(), pb.getAnnotated(), disposer, beanManager);
+                        if (pb.getBean() instanceof jakarta.enterprise.inject.spi.Interceptor) {
+                            jakarta.enterprise.inject.spi.Interceptor<?> cdiInterceptor = (jakarta.enterprise.inject.spi.Interceptor<?>) pb
+                                    .getBean();
+                            argument = new InterceptorInfoImpl(cdiInterceptor, pb.getAnnotated(), beanManager);
+                        } else {
+                            argument = new BeanInfoImpl(pb.getBean(), pb.getAnnotated(), disposer, beanManager);
+                        }
                     } else {
                         argument = argumentForExtensionMethod(parameter, method);
                     }
