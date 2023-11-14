@@ -137,6 +137,9 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
 
         MethodHandle mh = MethodHandleUtils.createMethodHandle(method);
 
+        // single, array-typed parameter at the end for variable arity methods
+        mh = mh.asFixedArity();
+
         // instance transformer
         if (instanceTransformer != null && !isStaticMethod) {
             MethodHandle instanceTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(method,

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.SkipIfPortableExtensionPresent;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.DeploymentException;
 import jakarta.interceptor.Interceptor;
 
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
@@ -116,7 +118,17 @@ class ExtensionInvoker {
         Class<?> extensionClass = extensionClasses.get(method.getDeclaringClass().getName());
         Object extensionClassInstance = extensionClassInstances.get(extensionClass);
 
-        method.invoke(extensionClassInstance, arguments.toArray());
+        try {
+            method.invoke(extensionClassInstance, arguments.toArray());
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof DefinitionException) {
+                throw (DefinitionException) e.getCause();
+            } else if (e.getCause() instanceof DeploymentException) {
+                throw (DeploymentException) e.getCause();
+            } else {
+                throw e;
+            }
+        }
     }
 
     void clear() {

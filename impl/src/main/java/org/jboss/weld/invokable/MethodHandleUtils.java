@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -12,8 +13,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.DeploymentException;
 import jakarta.enterprise.invoke.Invoker;
+
+import org.jboss.weld.exceptions.DeploymentException;
 
 class MethodHandleUtils {
     private MethodHandleUtils() {
@@ -46,14 +48,27 @@ class MethodHandleUtils {
         }
     }
 
-    static MethodHandle createMethodHandle(Method method) {
-        MethodHandles.Lookup lookup = Modifier.isPublic(method.getModifiers())
-                && Modifier.isPublic(method.getDeclaringClass().getModifiers())
-                        ? MethodHandles.publicLookup()
-                        : MethodHandles.lookup();
+    private static MethodHandles.Lookup lookupFor(Executable method) throws IllegalAccessException {
+        if (Modifier.isPublic(method.getModifiers()) && Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
+            return MethodHandles.publicLookup();
+        }
 
+        // to create a method handle for a `protected`, package-private or `private` method,
+        // we need a private lookup in the declaring class
+        Module thisModule = MethodHandleUtils.class.getModule();
+        Class<?> targetClass = method.getDeclaringClass();
+        Module targetModule = targetClass.getModule();
+        if (!thisModule.canRead(targetModule)) {
+            // we need to read the other module in order to have privateLookup access
+            // see javadoc for MethodHandles.privateLookupIn()
+            thisModule.addReads(targetModule);
+        }
+        return MethodHandles.privateLookupIn(targetClass, MethodHandles.lookup());
+    }
+
+    static MethodHandle createMethodHandle(Method method) {
         try {
-            return lookup.unreflect(method);
+            return lookupFor(method).unreflect(method);
         } catch (ReflectiveOperationException e) {
             // TODO proper exception handling
             throw new RuntimeException(e);
@@ -61,13 +76,8 @@ class MethodHandleUtils {
     }
 
     static MethodHandle createMethodHandle(Constructor<?> constructor) {
-        MethodHandles.Lookup lookup = Modifier.isPublic(constructor.getModifiers())
-                && Modifier.isPublic(constructor.getDeclaringClass().getModifiers())
-                        ? MethodHandles.publicLookup()
-                        : MethodHandles.lookup();
-
         try {
-            return lookup.unreflectConstructor(constructor);
+            return lookupFor(constructor).unreflectConstructor(constructor);
         } catch (ReflectiveOperationException e) {
             // TODO proper exception handling
             throw new RuntimeException(e);
