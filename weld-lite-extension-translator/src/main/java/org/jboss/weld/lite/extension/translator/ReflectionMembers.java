@@ -26,17 +26,19 @@ class ReflectionMembers {
     }
 
     private static void forEachSuperclass(Class<?> clazz, Consumer<Class<?>> action) {
+        // an interface may be inherited multiple times, but we only want to process it once
+        Set<Class<?>> alreadySeen = new HashSet<>();
         Queue<Class<?>> workQueue = new ArrayDeque<>();
         workQueue.add(clazz);
         while (!workQueue.isEmpty()) {
             Class<?> item = workQueue.remove();
-
-            if (item.equals(Object.class)) {
+            if (alreadySeen.contains(item)) {
                 continue;
             }
+            alreadySeen.add(item);
 
             Class<?> superclass = item.getSuperclass();
-            if (superclass != null) {
+            if (superclass != null && !Object.class.equals(superclass)) {
                 workQueue.add(superclass);
             }
             workQueue.addAll(Arrays.asList(item.getInterfaces()));
