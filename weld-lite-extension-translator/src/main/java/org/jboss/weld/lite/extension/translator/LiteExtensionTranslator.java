@@ -239,6 +239,8 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             enhancementActions.clear();
             registrationActions.clear();
 
+            ReflectionMembers.clearCaches();
+
             this.bm = null;
         }
     }
