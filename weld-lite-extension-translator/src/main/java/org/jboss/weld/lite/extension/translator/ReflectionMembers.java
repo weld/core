@@ -1,11 +1,12 @@
 package org.jboss.weld.lite.extension.translator;
 
-import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
 class ReflectionMembers {
@@ -13,16 +14,28 @@ class ReflectionMembers {
     private ReflectionMembers() {
     }
 
-    static Set<Method> allMethods(Class<?> clazz) {
-        Set<Method> result = new HashSet<>();
-        forEachSuperclass(clazz, it -> result.addAll(Arrays.asList(it.getDeclaredMethods())));
-        return result;
+    static ConcurrentMap<Class<?>, Set<java.lang.reflect.Method>> cachedMethods = new ConcurrentHashMap<>();
+    static ConcurrentMap<Class<?>, Set<java.lang.reflect.Field>> cachedFields = new ConcurrentHashMap<>();
+
+    static Set<java.lang.reflect.Method> allMethods(Class<?> clazz) {
+        return cachedMethods.computeIfAbsent(clazz, ignored -> {
+            Set<java.lang.reflect.Method> result = new HashSet<>();
+            forEachSuperclass(clazz, it -> result.addAll(Arrays.asList(it.getDeclaredMethods())));
+            return result;
+        });
     }
 
     static Set<java.lang.reflect.Field> allFields(Class<?> clazz) {
-        Set<java.lang.reflect.Field> result = new HashSet<>();
-        forEachSuperclass(clazz, it -> result.addAll(Arrays.asList(it.getDeclaredFields())));
-        return result;
+        return cachedFields.computeIfAbsent(clazz, ignored -> {
+            Set<java.lang.reflect.Field> result = new HashSet<>();
+            forEachSuperclass(clazz, it -> result.addAll(Arrays.asList(it.getDeclaredFields())));
+            return result;
+        });
+    }
+
+    static void clearCaches() {
+        cachedMethods.clear();
+        cachedFields.clear();
     }
 
     private static void forEachSuperclass(Class<?> clazz, Consumer<Class<?>> action) {

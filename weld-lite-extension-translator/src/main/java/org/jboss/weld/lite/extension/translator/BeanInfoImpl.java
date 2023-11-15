@@ -180,7 +180,6 @@ class BeanInfoImpl implements BeanInfo {
             AnnotatedMethod<?> cdiMethod = (AnnotatedMethod<?>) ((MethodInfoImpl) methodInfo).cdiDeclaration;
 
             // verify that the `methodInfo` belongs to this bean
-            // TODO inefficient when many invokers are created for methods of a single bean
             if (!ReflectionMembers.allMethods(cdiBean.getBeanClass()).contains(cdiMethod.getJavaMember())) {
                 throw new DeploymentException("Method does not belong to bean " + cdiBean.getBeanClass().getName()
                         + ": " + methodInfo);
