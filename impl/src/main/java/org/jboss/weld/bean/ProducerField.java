@@ -96,6 +96,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
                 return ProducerField.this;
             }
         });
+        processExplicitPriority();
     }
 
     @Override

@@ -24,6 +24,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.AnnotatedMember;
@@ -59,6 +60,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     // Passivation flags
     private boolean passivationCapableBean;
     private boolean passivationCapableDependency;
+    protected Integer explicitPriority;
 
     /**
      * Constructor
@@ -217,4 +219,15 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     @Override
     public abstract EnhancedAnnotatedMember<T, ?, S> getEnhancedAnnotated();
+
+    @Override
+    public Integer getPriority() {
+        return explicitPriority;
+    }
+
+    // requires initialized getAnnotated() hence subclasses need to invoke this manually
+    protected void processExplicitPriority() {
+        Priority annotation = getAnnotated() == null ? null : getAnnotated().getAnnotation(Priority.class);
+        this.explicitPriority = annotation == null ? null : annotation.value();
+    }
 }

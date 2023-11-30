@@ -35,9 +35,11 @@ public interface WeldBean<T> extends Bean<T> {
     BeanIdentifier getIdentifier();
 
     /**
-     * Used for custom beans registered via WeldBeanConfigurator.
+     * Used for custom beans registered via WeldBeanConfigurator and for {@link ProducerField} and {@link ProducerMethod}
+     * if they explicitly declare the {@link jakarta.annotation.Priority} annotation.
+     * All other implementations will return {@code null} by default.
      *
-     * @return bean priority or null if not set or overriden
+     * @return bean priority or null if not set or overridden
      */
     default Integer getPriority() {
         return null;

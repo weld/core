@@ -110,9 +110,18 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         public Set<Bean<?>> resolveAlternatives(Set<Bean<?>> alternatives) {
             int highestPriority = Integer.MIN_VALUE;
             Set<Bean<?>> selectedAlternativesWithHighestPriority = new HashSet<Bean<?>>();
-
             for (Bean<?> bean : alternatives) {
-                Integer priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
+                Integer priority;
+                if (bean instanceof AbstractProducerBean) {
+                    // first check for explicit priority declaration on producers
+                    priority = ((AbstractProducerBean<?, ?, ?>) bean).getPriority();
+                    // if not found, fall back to priority on declaring bean
+                    if (priority == null) {
+                        priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
+                    }
+                } else {
+                    priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
+                }
                 if (priority == null) {
                     // not all the beans left are alternatives with a priority - we are not able to resolve
                     return ImmutableSet.copyOf(alternatives);
