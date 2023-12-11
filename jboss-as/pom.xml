@@ -32,7 +32,7 @@
         as the release plugin won't deal with double evaluation -->
         <weld.update.version>6.0.0-SNAPSHOT</weld.update.version>
         <!-- These are *NOT* automatically updated and should be reviewed if the relevant profile is to be used -->
-        <cdi.update.version>4.1.0.Alpha1</cdi.update.version>
+        <cdi.update.version>4.1.0-M1</cdi.update.version>
         <interceptors.update.version>2.2.0-RC1</interceptors.update.version>
     </properties>
 
@@ -79,13 +79,18 @@
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
+            <version>${cdi.update.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.lang-model</artifactId>
             <version>${cdi.update.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.interceptor</groupId>
             <artifactId>jakarta.interceptor-api</artifactId>
-            <version>2.2.0-RC1</version>
+            <version>${interceptors.update.version}</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -251,6 +256,7 @@
                                         <property name="module.interceptor.dir" value="${jboss.home}/modules//system/layers/base/jakarta/interceptor/api" />
 
                                         <property name="cdi.api.file" value="jakarta.enterprise.cdi-api-${cdi.update.version}.jar" />
+                                        <property name="cdi.el.api.file" value="jakarta.enterprise.cdi-el-api-${cdi.update.version}.jar" />
                                         <property name="cdi.lang.model.file" value="jakarta.enterprise.lang-model-${cdi.update.version}.jar" />
                                         <property name="interceptor.api.file" value="jakarta.interceptor-api-${interceptors.update.version}.jar" />
 
@@ -263,6 +269,7 @@
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${cdi.api.file}" />
                                                 <include name="${cdi.lang.model.file}" />
+                                                <include name="${cdi.el.api.file}" />
                                             </fileset>
                                         </copy>
 
@@ -272,8 +279,8 @@
                                             </fileset>
                                         </copy>
 
-
-                                        <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.cdi-api.*?&quot;" replace="path=&quot;${cdi.api.file}&quot;" byline="true" />
+                                        <!-- WFLY doesn't yet have dep. on the EL API part of CDI, this forcibly adds it -->
+                                        <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.cdi-api.*?&quot;" replace="path=&quot;${cdi.api.file}&quot;/>&lt;resource-root path=&quot;${cdi.el.api.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.lang-model.*?&quot;" replace="path=&quot;${cdi.lang.model.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.interceptor.dir}/main/module.xml" match="path=&quot;jakarta.interceptor-api.*?&quot;" replace="path=&quot;${interceptor.api.file}&quot;" byline="true" />
                                     </target>
@@ -342,7 +349,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                            <includeArtifactIds>jakarta.enterprise.cdi-api,jakarta.enterprise.lang-model,jakarta.interceptor-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
+                            <includeArtifactIds>jakarta.enterprise.cdi-api,jakarta.enterprise.cdi-el-api,jakarta.enterprise.lang-model,jakarta.interceptor-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
