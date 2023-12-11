@@ -47,13 +47,14 @@ import jakarta.enterprise.inject.spi.InterceptionType;
 import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 import jakarta.enterprise.inject.spi.ProducerFactory;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 
 /**
  * Forwarding implementation of {@link BeanManager}.
  *
  * @author Martin Kouba
  */
-public abstract class ForwardingBeanManager implements BeanManager, Serializable {
+public abstract class ForwardingBeanManager implements ELAwareBeanManager, Serializable {
 
     private static final long serialVersionUID = -3116833950882475733L;
 
