@@ -88,11 +88,14 @@ import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.interceptor.reader.PlainInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.invokable.AbstractInvokerBuilder;
+import org.jboss.weld.invokable.ConfiguredLookup;
 import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.logging.BeanLogger;
@@ -499,6 +502,7 @@ public class Validator implements Service {
         validateDisposalMethods(deployment.getBeanDeployer().getEnvironment());
         validateObserverMethods(deployment.getBeanDeployer().getEnvironment().getObservers(), manager);
         validateBeanNames(manager);
+        validateInvokers(manager);
     }
 
     public void validateSpecialization(BeanManagerImpl manager) {
@@ -1027,6 +1031,45 @@ public class Validator implements Service {
                     }
                 }
             }
+        }
+    }
+
+    private void validateInvokers(BeanManagerImpl manager) {
+        List<DeploymentException> errors = new ArrayList<>();
+
+        WeldInstance<Object> instance = manager.createInstance();
+        for (AbstractInvokerBuilder<?, ?> invoker : manager.getInvokers()) {
+            Class<?> reflectionBeanClass = invoker.getBeanClass().getJavaClass();
+            Method reflectionMethod = invoker.getMethod().getReflection();
+
+            for (ConfiguredLookup config : invoker.getConfiguredLookups()) {
+                WeldInstance<Object> lookup = instance.select(config.type, config.qualifiers);
+                if (lookup.isUnsatisfied()) {
+                    if (config.isInstanceLookup()) {
+                        errors.add(ValidatorLogger.LOG.invokerUnsatisfiedInstanceLookup(
+                                reflectionBeanClass, reflectionMethod));
+                    } else {
+                        errors.add(ValidatorLogger.LOG.invokerUnsatisfiedArgumentLookup(
+                                reflectionBeanClass, reflectionMethod, config.position));
+                    }
+                } else if (lookup.isAmbiguous()) {
+                    if (config.isInstanceLookup()) {
+                        errors.add(ValidatorLogger.LOG.invokerAmbiguousInstanceLookup(
+                                reflectionBeanClass, reflectionMethod));
+                    } else {
+                        errors.add(ValidatorLogger.LOG.invokerAmbiguousArgumentLookup(
+                                reflectionBeanClass, reflectionMethod, config.position));
+                    }
+                }
+            }
+        }
+
+        manager.forgetInvokersAfterValidation();
+
+        if (errors.size() == 1) {
+            throw errors.get(0);
+        } else if (errors.size() > 1) {
+            throw new DeploymentException(errors);
         }
     }
 

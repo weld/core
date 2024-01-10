@@ -20,18 +20,6 @@ public class BeanProducer {
     }
 
     @Produces
-    @MyQualifier5
-    public String produceAmbig1() {
-        throw new IllegalStateException("Ambiguous producer should never be invoked");
-    }
-
-    @Produces
-    @MyQualifier5
-    public String produceAmbig2() {
-        throw new IllegalStateException("Ambiguous producer should never be invoked");
-    }
-
-    @Produces
     public String producePlain() {
         throw new IllegalStateException("No qualifier producer should never be invoked");
     }

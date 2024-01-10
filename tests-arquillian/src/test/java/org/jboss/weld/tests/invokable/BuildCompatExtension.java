@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+import jakarta.enterprise.inject.build.compatible.spi.InvokerFactory;
 import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.build.compatible.spi.Parameters;
 import jakarta.enterprise.inject.build.compatible.spi.Registration;
@@ -15,6 +16,7 @@ import jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents;
 import jakarta.enterprise.invoke.Invoker;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 
+import org.jboss.weld.invoke.WeldInvokerBuilder;
 import org.jboss.weld.tests.invokable.common.ArgTransformer;
 import org.jboss.weld.tests.invokable.common.ExceptionTransformer;
 import org.jboss.weld.tests.invokable.common.FooArg;
@@ -132,127 +134,135 @@ public class BuildCompatExtension implements BuildCompatibleExtension {
     }
 
     @Registration(types = SimpleBean.class)
-    public void createNoTransformationInvokers(BeanInfo b) {
+    public void createNoTransformationInvokers(BeanInfo b, InvokerFactory invokers) {
         Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
         Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("staticPing")) {
-                staticNoTransformationInvoker = b.createInvoker(invokableMethod).build();
-                staticInstanceLookupInvoker = b.createInvoker(invokableMethod).setInstanceLookup().build();
-                staticArgLookupInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                staticLookupAllInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
-                        .setInstanceLookup().build();
+                staticNoTransformationInvoker = invokers.createInvoker(b, invokableMethod).build();
+                staticInstanceLookupInvoker = invokers.createInvoker(b, invokableMethod).withInstanceLookup().build();
+                staticArgLookupInvoker = invokers.createInvoker(b, invokableMethod).withArgumentLookup(0).withArgumentLookup(1)
+                        .build();
+                staticLookupAllInvoker = invokers.createInvoker(b, invokableMethod).withArgumentLookup(0).withArgumentLookup(1)
+                        .withInstanceLookup().build();
             } else if (invokableMethod.name().contains("ping")) {
-                noTransformationInvoker = b.createInvoker(invokableMethod).build();
-                instanceLookupInvoker = b.createInvoker(invokableMethod).setInstanceLookup().build();
-                argLookupInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                lookupAllInvoker = b.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
-                        .setInstanceLookup().build();
+                noTransformationInvoker = invokers.createInvoker(b, invokableMethod).build();
+                instanceLookupInvoker = invokers.createInvoker(b, invokableMethod).withInstanceLookup().build();
+                argLookupInvoker = invokers.createInvoker(b, invokableMethod).withArgumentLookup(0).withArgumentLookup(1)
+                        .build();
+                lookupAllInvoker = invokers.createInvoker(b, invokableMethod).withArgumentLookup(0).withArgumentLookup(1)
+                        .withInstanceLookup().build();
             }
         }
     }
 
     @Registration(types = TransformableBean.class)
-    public void createArgTransformationInvokers(BeanInfo b) {
+    public void createArgTransformationInvokers(BeanInfo b, InvokerFactory invokers) {
         Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
         Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("staticPing")) {
-                staticArgTransformingInvoker = b.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform") // static transformer method
+                staticArgTransformingInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
                         .build();
-                staticArgTransformerWithConsumerInvoker = b.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform2") // static transformer method with Consumer
+                staticArgTransformerWithConsumerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b,
+                        invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform2") // static Transformer method with Consumer
                         .build();
             } else if (invokableMethod.name().contains("ping")) {
-                argTransformingInvoker = b.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform") // static transformer method
+                argTransformingInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
                         .build();
-                argTransformerWithConsumerInvoker = b.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform2") // static transformer method with Consumer
-                        .build();
-            }
-        }
-    }
-
-    @Registration(types = TransformableBean.class)
-    public void createInstanceTransformationInvokers(BeanInfo b) {
-        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
-        Assert.assertEquals(4, invokableMethods.size());
-        for (MethodInfo invokableMethod : invokableMethods) {
-            if (invokableMethod.name().contains("ping")) {
-                instanceTransformerInvoker = b.createInvoker(invokableMethod)
-                        .setInstanceTransformer(InstanceTransformer.class, "transform")
-                        .build();
-                instanceTransformerWithConsumerInvoker = b.createInvoker(invokableMethod)
-                        .setInstanceTransformer(InstanceTransformer.class, "transform2")
-                        .build();
-                instanceTransformerNoParamInvoker = b.createInvoker(invokableMethod)
-                        .setInstanceTransformer(TransformableBean.class, "setTransformed")
+                argTransformerWithConsumerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b,
+                        invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform2") // static Transformer method with Consumer
                         .build();
             }
         }
     }
 
     @Registration(types = TransformableBean.class)
-    public void createReturnValueTransformationInvokers(BeanInfo b) {
+    public void createInstanceTransformationInvokers(BeanInfo b, InvokerFactory invokers) {
         Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
         Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("ping")) {
-                returnTransformerInvoker = b.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(ReturnValueTransformer.class, "transform")
+                instanceTransformerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withInstanceTransformer(InstanceTransformer.class, "transform")
                         .build();
-                returnTransformerNoParamInvoker = b.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(String.class, "strip")
+                instanceTransformerWithConsumerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b,
+                        invokableMethod))
+                        .withInstanceTransformer(InstanceTransformer.class, "transform2")
+                        .build();
+                instanceTransformerNoParamInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b,
+                        invokableMethod))
+                        .withInstanceTransformer(TransformableBean.class, "setTransformed")
+                        .build();
+            }
+        }
+    }
+
+    @Registration(types = TransformableBean.class)
+    public void createReturnValueTransformationInvokers(BeanInfo b, InvokerFactory invokers) {
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
+        Assert.assertEquals(4, invokableMethods.size());
+        for (MethodInfo invokableMethod : invokableMethods) {
+            if (invokableMethod.name().contains("ping")) {
+                returnTransformerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withReturnValueTransformer(ReturnValueTransformer.class, "transform")
+                        .build();
+                returnTransformerNoParamInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withReturnValueTransformer(String.class, "strip")
                         .build();
 
             } else if (invokableMethod.name().contains("staticPing")) {
-                staticReturnTransformerInvoker = b.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(ReturnValueTransformer.class, "transform")
+                staticReturnTransformerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withReturnValueTransformer(ReturnValueTransformer.class, "transform")
                         .build();
-                staticReturnTransformerNoParamInvoker = b.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(String.class, "strip")
+                staticReturnTransformerNoParamInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b,
+                        invokableMethod))
+                        .withReturnValueTransformer(String.class, "strip")
                         .build();
             }
         }
     }
 
     @Registration(types = TrulyExceptionalBean.class)
-    public void createExceptionTransformationInvokers(BeanInfo b) {
+    public void createExceptionTransformationInvokers(BeanInfo b, InvokerFactory invokers) {
         Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
         Assert.assertEquals(2, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("ping")) {
-                exceptionTransformerInvoker = b.createInvoker(invokableMethod)
-                        .setExceptionTransformer(ExceptionTransformer.class, "transform")
+                exceptionTransformerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
 
             } else if (invokableMethod.name().contains("staticPing")) {
-                staticExceptionTransformerInvoker = b.createInvoker(invokableMethod)
-                        .setExceptionTransformer(ExceptionTransformer.class, "transform")
+                staticExceptionTransformerInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b,
+                        invokableMethod))
+                        .withExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
             }
         }
     }
 
     @Registration(types = SimpleBean.class)
-    public void createInvocationWrapperInvokers(BeanInfo b) {
+    public void createInvocationWrapperInvokers(BeanInfo b, InvokerFactory invokers) {
         Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
         Assert.assertEquals(4, invokableMethods.size());
         for (MethodInfo invokableMethod : invokableMethods) {
             if (invokableMethod.name().contains("ping")) {
-                invocationWrapperInvoker = b.createInvoker(invokableMethod)
-                        .setInvocationWrapper(InvocationWrapper.class, "transform")
+                invocationWrapperInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
 
             } else if (invokableMethod.name().contains("staticPing")) {
-                staticInvocationWrapperInvoker = b.createInvoker(invokableMethod)
-                        .setInvocationWrapper(InvocationWrapper.class, "transform")
+                staticInvocationWrapperInvoker = ((WeldInvokerBuilder<InvokerInfo>) invokers.createInvoker(b, invokableMethod))
+                        .withInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
             }
         }

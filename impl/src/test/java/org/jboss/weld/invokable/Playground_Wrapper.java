@@ -21,7 +21,8 @@ public class Playground_Wrapper {
         System.out.println(mh.invoke(new Playground_Wrapper(), new Object[] { 42 }));
     }
 
-    public static String wrap(Playground_Wrapper instance, Object[] arguments, Invoker<Playground_Wrapper, String> invoker) {
+    public static String wrap(Playground_Wrapper instance, Object[] arguments, Invoker<Playground_Wrapper, String> invoker)
+            throws Exception {
         return "wrapped_" + instance + "_" + Arrays.toString(arguments) + "___" + invoker.invoke(instance, arguments);
     }
 

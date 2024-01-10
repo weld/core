@@ -8,6 +8,7 @@ import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
 import jakarta.enterprise.inject.build.compatible.spi.FieldConfig;
 import jakarta.enterprise.inject.build.compatible.spi.InterceptorInfo;
+import jakarta.enterprise.inject.build.compatible.spi.InvokerFactory;
 import jakarta.enterprise.inject.build.compatible.spi.Messages;
 import jakarta.enterprise.inject.build.compatible.spi.MetaAnnotations;
 import jakarta.enterprise.inject.build.compatible.spi.MethodConfig;
@@ -36,6 +37,8 @@ enum ExtensionMethodParameterType {
     BEAN_INFO(BeanInfo.class, true, ExtensionPhase.REGISTRATION),
     INTERCEPTOR_INFO(InterceptorInfo.class, true, ExtensionPhase.REGISTRATION),
     OBSERVER_INFO(ObserverInfo.class, true, ExtensionPhase.REGISTRATION),
+
+    INVOKER_FACTORY(InvokerFactory.class, false, ExtensionPhase.REGISTRATION),
 
     SYNTHETIC_COMPONENTS(SyntheticComponents.class, false, ExtensionPhase.SYNTHESIS),
 

@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.invokable.lookup;
+package org.jboss.weld.tests.invokable.lookup.ambiguous;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

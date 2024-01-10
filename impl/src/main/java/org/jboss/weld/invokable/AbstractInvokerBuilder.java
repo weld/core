@@ -5,19 +5,19 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.invoke.InvokerBuilder;
 
-// TODO deployment-time validation of configured lookups
-abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
+import org.jboss.weld.invoke.WeldInvokerBuilder;
+import org.jboss.weld.manager.BeanManagerImpl;
 
-    final Class<B> beanClass;
-    // work with reflection representation so that we can re-use this logic from within BCE
-    final Method method;
+public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder<T> {
+    final AnnotatedType<B> beanClass;
+    final TargetMethod method;
 
     boolean instanceLookup;
     boolean[] argLookup;
@@ -29,35 +29,36 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
 
     final BeanManager beanManager;
 
-    public AbstractInvokerBuilder(Class<B> beanClass, Method method, BeanManager beanManager) {
+    AbstractInvokerBuilder(AnnotatedType<B> beanClass, TargetMethod method, BeanManagerImpl beanManager) {
         this.beanClass = beanClass;
         this.method = method;
         this.argLookup = new boolean[method.getParameterCount()];
         this.argTransformers = new TransformerMetadata[method.getParameterCount()];
         this.beanManager = beanManager;
+        beanManager.addInvoker(this);
     }
 
     @Override
-    public InvokerBuilder<T> setInstanceLookup() {
+    public WeldInvokerBuilder<T> withInstanceLookup() {
         this.instanceLookup = true;
         return this;
     }
 
     @Override
-    public InvokerBuilder<T> setArgumentLookup(int position) {
-        if (position >= argLookup.length) {
-            // TODO better exception
-            throw new IllegalArgumentException("Error attempting to set CDI argument lookup for arg number " + position
-                    + " while the number of method args is " + argLookup.length);
+    public WeldInvokerBuilder<T> withArgumentLookup(int position) {
+        if (position < 0 || position >= argLookup.length) {
+            // TODO better exception, use Logger interface
+            throw new IllegalArgumentException("Cannot lookup argument " + position
+                    + ", the number of method parameters is " + argLookup.length);
         }
         argLookup[position] = true;
         return this;
     }
 
     @Override
-    public InvokerBuilder<T> setInstanceTransformer(Class<?> clazz, String methodName) {
+    public WeldInvokerBuilder<T> withInstanceTransformer(Class<?> clazz, String methodName) {
         if (instanceTransformer != null) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new IllegalStateException("Instance transformer already set");
         }
         this.instanceTransformer = new TransformerMetadata(clazz, methodName, TransformerType.INSTANCE);
@@ -65,14 +66,14 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     }
 
     @Override
-    public InvokerBuilder<T> setArgumentTransformer(int position, Class<?> clazz, String methodName) {
-        if (position >= argTransformers.length) {
-            // TODO better exception
-            throw new IllegalArgumentException("Error attempting to set an argument lookup. Number of method args: "
-                    + argLookup.length + " arg position: " + position);
+    public WeldInvokerBuilder<T> withArgumentTransformer(int position, Class<?> clazz, String methodName) {
+        if (position < 0 || position >= argTransformers.length) {
+            // TODO better exception, use Logger interface
+            throw new IllegalArgumentException("Cannot transform argument " + position
+                    + ", the number of method parameters is " + argLookup.length);
         }
         if (argTransformers[position] != null) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new IllegalStateException("Argument transformer " + position + " already set");
         }
         this.argTransformers[position] = new TransformerMetadata(clazz, methodName, TransformerType.ARGUMENT);
@@ -80,9 +81,9 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     }
 
     @Override
-    public InvokerBuilder<T> setReturnValueTransformer(Class<?> clazz, String methodName) {
+    public WeldInvokerBuilder<T> withReturnValueTransformer(Class<?> clazz, String methodName) {
         if (returnValueTransformer != null) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new IllegalStateException("Return value transformer already set");
         }
         this.returnValueTransformer = new TransformerMetadata(clazz, methodName, TransformerType.RETURN_VALUE);
@@ -90,9 +91,9 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     }
 
     @Override
-    public InvokerBuilder<T> setExceptionTransformer(Class<?> clazz, String methodName) {
+    public WeldInvokerBuilder<T> withExceptionTransformer(Class<?> clazz, String methodName) {
         if (exceptionTransformer != null) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new IllegalStateException("Exception transformer already set");
         }
         this.exceptionTransformer = new TransformerMetadata(clazz, methodName, TransformerType.EXCEPTION);
@@ -100,9 +101,9 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     }
 
     @Override
-    public InvokerBuilder<T> setInvocationWrapper(Class<?> clazz, String methodName) {
+    public WeldInvokerBuilder<T> withInvocationWrapper(Class<?> clazz, String methodName) {
         if (invocationWrapper != null) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new IllegalStateException("Invocation wrapper already set");
         }
         this.invocationWrapper = new TransformerMetadata(clazz, methodName, TransformerType.WRAPPER);
@@ -110,7 +111,7 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     }
 
     private boolean requiresCleanup() {
-        boolean isStaticMethod = Modifier.isStatic(method.getModifiers());
+        boolean isStaticMethod = method.isStatic();
         if (instanceTransformer != null && !isStaticMethod) {
             return true;
         }
@@ -131,19 +132,22 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
     }
 
     InvokerImpl<B, ?> doBuild() {
-        boolean isStaticMethod = Modifier.isStatic(method.getModifiers());
+        Class<B> reflectionBeanClass = beanClass.getJavaClass();
+        Method reflectionMethod = method.getReflection();
+
+        boolean isStaticMethod = method.isStatic();
         int instanceArguments = isStaticMethod ? 0 : 1;
         boolean requiresCleanup = requiresCleanup();
 
-        MethodHandle mh = MethodHandleUtils.createMethodHandle(method);
+        MethodHandle mh = MethodHandleUtils.createMethodHandle(reflectionMethod);
 
         // single, array-typed parameter at the end for variable arity methods
         mh = mh.asFixedArity();
 
         // instance transformer
         if (instanceTransformer != null && !isStaticMethod) {
-            MethodHandle instanceTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(method,
-                    instanceTransformer, beanClass);
+            MethodHandle instanceTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
+                    instanceTransformer, reflectionBeanClass);
             if (instanceTransformerMethod.type().parameterCount() == 1) { // no cleanup
                 mh = MethodHandles.filterArguments(mh, 0, instanceTransformerMethod);
             } else if (instanceTransformerMethod.type().parameterCount() == 2) { // cleanup
@@ -164,8 +168,8 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
                 continue;
             }
             int position = instanceArguments + i;
-            MethodHandle argTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(method,
-                    argTransformers[i], method.getParameterTypes()[i]);
+            MethodHandle argTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
+                    argTransformers[i], reflectionMethod.getParameterTypes()[i]);
             if (argTransformerMethod.type().parameterCount() == 1) { // no cleanup
                 mh = MethodHandles.filterArguments(mh, position, argTransformerMethod);
             } else if (argTransformerMethod.type().parameterCount() == 2) { // cleanup
@@ -180,14 +184,14 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
 
         // return type transformer
         if (returnValueTransformer != null) {
-            MethodHandle returnValueTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(method,
-                    returnValueTransformer, method.getReturnType());
+            MethodHandle returnValueTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
+                    returnValueTransformer, reflectionMethod.getReturnType());
             mh = MethodHandles.filterReturnValue(mh, returnValueTransformerMethod);
         }
 
         // exception transformer
         if (exceptionTransformer != null) {
-            MethodHandle exceptionTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(method,
+            MethodHandle exceptionTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
                     exceptionTransformer, Throwable.class);
             mh = MethodHandles.catchException(mh, Throwable.class, exceptionTransformerMethod);
         }
@@ -228,9 +232,9 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
 
         // instance lookup
         if (instanceLookup && !isStaticMethod) {
-            Type type = beanClass;
             Class<?> parameterType = typeBeforeLookups.parameterType(1);
-            Annotation[] qualifiers = LookupUtils.classQualifiers(beanClass, beanManager);
+            Type type = reflectionBeanClass;
+            Annotation[] qualifiers = LookupUtils.extractQualifiers(beanClass.getAnnotations(), beanManager);
             MethodHandle instanceLookupMethod = MethodHandleUtils.LOOKUP;
             instanceLookupMethod = MethodHandles.insertArguments(instanceLookupMethod, 1, beanManager, type, qualifiers);
             instanceLookupMethod = instanceLookupMethod.asType(instanceLookupMethod.type().changeReturnType(parameterType));
@@ -246,10 +250,9 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
                 continue;
             }
             int position = positionsBeforeArguments + i;
-            Parameter parameter = method.getParameters()[i];
-            Type type = parameter.getParameterizedType();
             Class<?> parameterType = typeBeforeLookups.parameterType(i + (isStaticMethod ? 1 : 2));
-            Annotation[] qualifiers = LookupUtils.parameterQualifiers(parameter, beanManager);
+            Type type = reflectionMethod.getParameters()[i].getParameterizedType();
+            Annotation[] qualifiers = LookupUtils.extractQualifiers(method.getParameterAnnotations(i), beanManager);
             MethodHandle argumentLookupMethod = MethodHandleUtils.LOOKUP;
             argumentLookupMethod = MethodHandles.insertArguments(argumentLookupMethod, 1, beanManager, type, qualifiers);
             argumentLookupMethod = argumentLookupMethod.asType(argumentLookupMethod.type().changeReturnType(parameterType));
@@ -309,13 +312,19 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         }
 
         // replace `null` values in the arguments array with zero values
-        // on positions where the method accepts a primitive type
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        if (PrimitiveUtils.hasPrimitive(parameterTypes)) {
-            MethodHandle replacePrimitiveNulls = MethodHandleUtils.REPLACE_PRIMITIVE_NULLS;
-            replacePrimitiveNulls = MethodHandles.insertArguments(replacePrimitiveNulls, 1, (Object) parameterTypes);
-            mh = MethodHandles.filterArguments(mh, requiresCleanup ? 2 : 1, replacePrimitiveNulls);
+        // on positions where the method has an argument lookup configured
+        // (this is just to prevent a NPE in method handles internals)
+        Class<?>[] parameterTypes = reflectionMethod.getParameterTypes();
+        if (LookupUtils.hasPrimitiveArgLookup(parameterTypes, argLookup)) {
+            MethodHandle replaceNulls = MethodHandleUtils.REPLACE_PRIMITIVE_LOOKUP_NULLS;
+            replaceNulls = MethodHandles.insertArguments(replaceNulls, 1, parameterTypes, argLookup);
+            mh = MethodHandles.filterArguments(mh, requiresCleanup ? 2 : 1, replaceNulls);
         }
+
+        // trim argument array if needed
+        MethodHandle trimArgumentArray = MethodHandles.insertArguments(MethodHandleUtils.TRIM_ARRAY_TO_SIZE,
+                1, reflectionMethod.getParameterCount());
+        mh = MethodHandles.filterArguments(mh, requiresCleanup ? 2 : 1, trimArgumentArray);
 
         // instantiate `CleanupActions`
         if (requiresCleanup) {
@@ -326,12 +335,37 @@ abstract class AbstractInvokerBuilder<B, T> implements InvokerBuilder<T> {
         if (invocationWrapper != null) {
             InvokerImpl<?, ?> invoker = new InvokerImpl<>(mh);
 
-            MethodHandle invocationWrapperMethod = MethodHandleUtils.createMethodHandleFromTransformer(method,
-                    invocationWrapper, beanClass);
+            MethodHandle invocationWrapperMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
+                    invocationWrapper, reflectionBeanClass);
 
             mh = MethodHandles.insertArguments(invocationWrapperMethod, 2, invoker);
         }
 
         return new InvokerImpl<>(mh);
+    }
+
+    // the following methods are exposed for deployment validation
+
+    public AnnotatedType<B> getBeanClass() {
+        return beanClass;
+    }
+
+    public TargetMethod getMethod() {
+        return method;
+    }
+
+    public List<ConfiguredLookup> getConfiguredLookups() {
+        List<ConfiguredLookup> result = new ArrayList<>();
+        if (instanceLookup) {
+            result.add(new ConfiguredLookup(-1, beanClass.getJavaClass(),
+                    LookupUtils.extractQualifiers(beanClass.getAnnotations(), beanManager)));
+        }
+        for (int i = 0; i < argLookup.length; i++) {
+            if (argLookup[i]) {
+                result.add(new ConfiguredLookup(i, method.getParameterType(i),
+                        LookupUtils.extractQualifiers(method.getParameterAnnotations(i), beanManager)));
+            }
+        }
+        return result;
     }
 }

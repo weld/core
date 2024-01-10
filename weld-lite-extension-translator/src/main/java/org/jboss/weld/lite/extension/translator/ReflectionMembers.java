@@ -1,5 +1,7 @@
 package org.jboss.weld.lite.extension.translator;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,7 +22,10 @@ class ReflectionMembers {
     static Set<java.lang.reflect.Method> allMethods(Class<?> clazz) {
         return cachedMethods.computeIfAbsent(clazz, ignored -> {
             Set<java.lang.reflect.Method> result = new HashSet<>();
-            forEachSuperclass(clazz, it -> result.addAll(Arrays.asList(it.getDeclaredMethods())));
+            forEachSuperclass(clazz, it -> {
+                Method[] methods = SecurityActions.getDeclaredMethods(it);
+                result.addAll(Arrays.asList(methods));
+            });
             return result;
         });
     }
@@ -28,7 +33,10 @@ class ReflectionMembers {
     static Set<java.lang.reflect.Field> allFields(Class<?> clazz) {
         return cachedFields.computeIfAbsent(clazz, ignored -> {
             Set<java.lang.reflect.Field> result = new HashSet<>();
-            forEachSuperclass(clazz, it -> result.addAll(Arrays.asList(it.getDeclaredFields())));
+            forEachSuperclass(clazz, it -> {
+                Field[] fields = SecurityActions.getDeclaredFields(it);
+                result.addAll(Arrays.asList(fields));
+            });
             return result;
         });
     }

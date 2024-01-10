@@ -1,14 +1,16 @@
 package org.jboss.weld.invokable;
 
-import java.lang.reflect.Method;
-
 import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
+
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 
 public class InvokerInfoBuilder<B> extends AbstractInvokerBuilder<B, InvokerInfo> {
 
-    public InvokerInfoBuilder(Class<B> beanClass, Method method, BeanManager beanManager) {
-        super(beanClass, method, beanManager);
+    public InvokerInfoBuilder(AnnotatedType<B> beanClass, TargetMethod method, BeanManager beanManager) {
+        super(beanClass, method, (BeanManagerImpl) ((WeldManager) beanManager).unwrap());
     }
 
     @Override

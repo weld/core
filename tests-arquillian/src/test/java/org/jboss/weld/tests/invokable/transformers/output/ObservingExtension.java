@@ -8,6 +8,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
 
+import org.jboss.weld.invoke.WeldInvokerBuilder;
 import org.junit.Assert;
 
 public class ObservingExtension implements Extension {
@@ -48,11 +49,11 @@ public class ObservingExtension implements Extension {
         Assert.assertEquals(1, invokableMethods.size());
         AnnotatedMethod<? super ActualBean> invokableMethod = invokableMethods.iterator().next();
         noTransformer = pmb.createInvoker(invokableMethod).build();
-        transformReturnType1 = pmb.createInvoker(invokableMethod)
-                .setReturnValueTransformer(Transformer.class, "transformReturn1")
+        transformReturnType1 = ((WeldInvokerBuilder<Invoker<ActualBean, ?>>) pmb.createInvoker(invokableMethod))
+                .withReturnValueTransformer(Transformer.class, "transformReturn1")
                 .build();
-        transformReturnType2 = pmb.createInvoker(invokableMethod)
-                .setReturnValueTransformer(Transformer.class, "transformReturn2")
+        transformReturnType2 = ((WeldInvokerBuilder<Invoker<ActualBean, ?>>) pmb.createInvoker(invokableMethod))
+                .withReturnValueTransformer(Transformer.class, "transformReturn2")
                 .build();
     }
 
@@ -61,14 +62,14 @@ public class ObservingExtension implements Extension {
         Assert.assertEquals(1, invokableMethods.size());
         AnnotatedMethod<? super ExceptionalBean> invokableMethod = invokableMethods.iterator().next();
 
-        transformException1 = pmb.createInvoker(invokableMethod)
-                .setExceptionTransformer(Transformer.class, "transformException1")
+        transformException1 = ((WeldInvokerBuilder<Invoker<ExceptionalBean, ?>>) pmb.createInvoker(invokableMethod))
+                .withExceptionTransformer(Transformer.class, "transformException1")
                 .build();
-        transformException2 = pmb.createInvoker(invokableMethod)
-                .setExceptionTransformer(Transformer.class, "transformException2")
+        transformException2 = ((WeldInvokerBuilder<Invoker<ExceptionalBean, ?>>) pmb.createInvoker(invokableMethod))
+                .withExceptionTransformer(Transformer.class, "transformException2")
                 .build();
-        transformException3 = pmb.createInvoker(invokableMethod)
-                .setExceptionTransformer(Transformer.class, "transformException3")
+        transformException3 = ((WeldInvokerBuilder<Invoker<ExceptionalBean, ?>>) pmb.createInvoker(invokableMethod))
+                .withExceptionTransformer(Transformer.class, "transformException3")
                 .build();
     }
 }

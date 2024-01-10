@@ -25,8 +25,9 @@ class MethodHandleUtils {
     static final MethodHandle CLEANUP_FOR_VOID;
     static final MethodHandle CLEANUP_FOR_NONVOID;
     static final MethodHandle LOOKUP;
-    static final MethodHandle REPLACE_PRIMITIVE_NULLS;
+    static final MethodHandle REPLACE_PRIMITIVE_LOOKUP_NULLS;
     static final MethodHandle THROW_VALUE_CARRYING_EXCEPTION;
+    static final MethodHandle TRIM_ARRAY_TO_SIZE;
 
     static {
         try {
@@ -38,10 +39,12 @@ class MethodHandleUtils {
                     runName, Throwable.class, Object.class, CleanupActions.class));
             LOOKUP = createMethodHandle(LookupUtils.class.getDeclaredMethod(
                     "lookup", CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
-            REPLACE_PRIMITIVE_NULLS = MethodHandleUtils.createMethodHandle(PrimitiveUtils.class.getDeclaredMethod(
-                    "replacePrimitiveNulls", Object[].class, Class[].class));
+            REPLACE_PRIMITIVE_LOOKUP_NULLS = MethodHandleUtils.createMethodHandle(LookupUtils.class.getDeclaredMethod(
+                    "replacePrimitiveLookupNulls", Object[].class, Class[].class, boolean[].class));
             THROW_VALUE_CARRYING_EXCEPTION = createMethodHandle(ValueCarryingException.class.getDeclaredMethod(
                     "throwReturnValue", Object.class));
+            TRIM_ARRAY_TO_SIZE = createMethodHandle(ArrayUtils.class.getDeclaredMethod(
+                    "trimArrayToSize", Object[].class, int.class));
         } catch (NoSuchMethodException e) {
             // should never happen
             throw new IllegalStateException("Unable to locate Weld internal helper method", e);
@@ -100,11 +103,11 @@ class MethodHandleUtils {
             }
         }
         if (matchingMethods.isEmpty()) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new DeploymentException(transformer + ": no method found");
         }
         if (matchingMethods.size() > 1) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new DeploymentException(transformer + ": more than one method found: " + matchingMethods);
         }
         Method method = matchingMethods.get(0);
@@ -149,7 +152,7 @@ class MethodHandleUtils {
     private static void validateTransformerMethod(Method m, TransformerMetadata transformer, Class<?> transformationArgType) {
         // all transformers have to be public to ensure accessibility
         if (!Modifier.isPublic(m.getModifiers())) {
-            // TODO better exception
+            // TODO better exception, use Logger interface
             throw new DeploymentException("All invocation transformers need to be public - " + transformer);
         }
 
@@ -157,28 +160,28 @@ class MethodHandleUtils {
         if (transformer.isInputTransformer()) {
             // input transformers need to validate assignability of their return type versus original arg type
             if (!transformationArgType.isAssignableFrom(m.getReturnType())) {
-                // TODO better exception
+                // TODO better exception, use Logger interface
                 throw new DeploymentException("Input transformer " + transformer
                         + " has a return value that is not assignable to expected class: " + transformationArgType);
             }
             // instance method is no-param, otherwise its 1-2 with second being Consumer<Runnable>
             if (!Modifier.isStatic(m.getModifiers())) {
                 if (paramCount != 0) {
-                    // TODO better exception
+                    // TODO better exception, use Logger interface
                     throw new DeploymentException(
                             "Non-static input transformers are expected to have zero input parameters! Transformer: "
                                     + transformer);
                 }
             } else {
                 if (paramCount > 2) {
-                    // TODO better exception
+                    // TODO better exception, use Logger interface
                     throw new DeploymentException(
                             "Static input transformers can only have one or two parameters. " + transformer);
                 }
                 if (paramCount == 2) {
                     // we do not validate type param of Consumer, i.e. if it's exactly Consumer<Runnable>
                     if (!Consumer.class.equals(m.getParameters()[1].getType())) {
-                        // TODO better exception
+                        // TODO better exception, use Logger interface
                         throw new DeploymentException(
                                 "Static input transformers with two parameters can only have Consumer<Runnable> as their second parameter! "
                                         + transformer);
@@ -190,19 +193,19 @@ class MethodHandleUtils {
             // this also means instance methods need no validation in this regard
             if (!Modifier.isStatic(m.getModifiers())) {
                 if (paramCount != 0) {
-                    // TODO better exception
+                    // TODO better exception, use Logger interface
                     throw new DeploymentException(
                             "Non-static output transformers are expected to have zero input parameters! Transformer: "
                                     + transformer);
                 }
             } else {
                 if (paramCount != 1) {
-                    // TODO better exception
+                    // TODO better exception, use Logger interface
                     throw new DeploymentException(
                             "Static output transformers are expected to have one input parameter! Transformer: " + transformer);
                 }
                 if (!m.getParameters()[0].getType().isAssignableFrom(transformationArgType)) {
-                    // TODO better exception
+                    // TODO better exception, use Logger interface
                     throw new DeploymentException("Output transformer " + transformer
                             + " parameter is not assignable to the expected type " + transformationArgType);
                 }
@@ -216,7 +219,7 @@ class MethodHandleUtils {
                     && params[2].equals(Invoker.class)) {
                 // OK
             } else {
-                // TODO better exception
+                // TODO better exception, use Logger interface
                 throw new DeploymentException("Invocation wrapper has unexpected parameters " + transformer
                         + "\nExpected param types are: " + transformationArgType + ", Object[], Invoker.class");
             }
