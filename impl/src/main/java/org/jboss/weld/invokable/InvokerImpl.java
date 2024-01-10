@@ -13,7 +13,7 @@ public class InvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
     }
 
     @Override
-    public R invoke(T instance, Object[] arguments) {
+    public R invoke(T instance, Object[] arguments) throws Exception {
         try {
             return (R) mh.invoke(instance, arguments);
         } catch (ValueCarryingException e) {

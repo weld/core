@@ -30,7 +30,7 @@ public class InputTransformerTest {
     ActualBean bean;
 
     @Test
-    public void testArgTransformerAssignability() {
+    public void testArgTransformerAssignability() throws Exception {
         Beta result;
         // test initial state without transformers
         result = (Beta) extension.getNoTransformer().invoke(bean, new Object[] { 0 });
@@ -47,7 +47,7 @@ public class InputTransformerTest {
     }
 
     @Test
-    public void testInstanceTransformerAssignability() {
+    public void testInstanceTransformerAssignability() throws Exception {
         Beta result;
         // test initial state without transformers
         result = (Beta) extension.getNoTransformer().invoke(bean, new Object[] { 0 });

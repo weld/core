@@ -33,7 +33,7 @@ public class OutputTransformerTest {
     ExceptionalBean exceptionalBean;
 
     @Test
-    public void testReturnTypeTransformerAssignability() {
+    public void testReturnTypeTransformerAssignability() throws Exception {
         Beta betaResult;
         // test initial state without transformers
         betaResult = (Beta) extension.getNoTransformer().invoke(bean, new Object[] { 0 });
@@ -52,7 +52,7 @@ public class OutputTransformerTest {
     }
 
     @Test
-    public void testExceptionTransformerAssignability() {
+    public void testExceptionTransformerAssignability() throws Exception {
         // apply transformers, first one swallows exception and returns Beta
         Object result;
         result = extension.getTransformException1().invoke(exceptionalBean, new Object[] { 10 });

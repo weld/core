@@ -285,4 +285,15 @@ public abstract class ForwardingBeanManager implements ELAwareBeanManager, Seria
         return delegate().createInstance();
     }
 
+    @Override
+    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType,
+            Set<Annotation> requiredQualifiers) {
+        return delegate().isMatchingBean(beanTypes, beanQualifiers, requiredType, requiredQualifiers);
+    }
+
+    @Override
+    public boolean isMatchingEvent(Type eventType, Set<Annotation> eventQualifiers, Type observedEventType,
+            Set<Annotation> observedEventQualifiers) {
+        return delegate().isMatchingEvent(eventType, eventQualifiers, observedEventType, observedEventQualifiers);
+    }
 }

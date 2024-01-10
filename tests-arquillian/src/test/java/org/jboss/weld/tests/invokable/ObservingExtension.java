@@ -8,6 +8,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
 
+import org.jboss.weld.invoke.WeldInvokerBuilder;
 import org.jboss.weld.tests.invokable.common.ArgTransformer;
 import org.jboss.weld.tests.invokable.common.ExceptionTransformer;
 import org.jboss.weld.tests.invokable.common.FooArg;
@@ -154,16 +155,16 @@ public class ObservingExtension implements Extension {
         for (AnnotatedMethod<? super SimpleBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
                 staticNoTransformationInvoker = pmb.createInvoker(invokableMethod).build();
-                staticInstanceLookupInvoker = pmb.createInvoker(invokableMethod).setInstanceLookup().build();
-                staticArgLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                staticLookupAllInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
-                        .setInstanceLookup().build();
+                staticInstanceLookupInvoker = pmb.createInvoker(invokableMethod).withInstanceLookup().build();
+                staticArgLookupInvoker = pmb.createInvoker(invokableMethod).withArgumentLookup(0).withArgumentLookup(1).build();
+                staticLookupAllInvoker = pmb.createInvoker(invokableMethod).withArgumentLookup(0).withArgumentLookup(1)
+                        .withInstanceLookup().build();
             } else if (invokableMethod.getJavaMember().getName().contains("ping")) {
                 noTransformationInvoker = pmb.createInvoker(invokableMethod).build();
-                instanceLookupInvoker = pmb.createInvoker(invokableMethod).setInstanceLookup().build();
-                argLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
-                lookupAllInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1)
-                        .setInstanceLookup().build();
+                instanceLookupInvoker = pmb.createInvoker(invokableMethod).withInstanceLookup().build();
+                argLookupInvoker = pmb.createInvoker(invokableMethod).withArgumentLookup(0).withArgumentLookup(1).build();
+                lookupAllInvoker = pmb.createInvoker(invokableMethod).withArgumentLookup(0).withArgumentLookup(1)
+                        .withInstanceLookup().build();
             }
         }
     }
@@ -173,22 +174,26 @@ public class ObservingExtension implements Extension {
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticArgTransformingInvoker = pmb.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform") // static transformer method
+                staticArgTransformingInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
                         .build();
-                staticArgTransformerWithConsumerInvoker = pmb.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform2") // static transformer method with Consumer
+                staticArgTransformerWithConsumerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform2") // static Transformer method with Consumer
                         .build();
             } else if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                argTransformingInvoker = pmb.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform") // static transformer method
+                argTransformingInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
                         .build();
-                argTransformerWithConsumerInvoker = pmb.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static transformer method
-                        .setArgumentTransformer(1, ArgTransformer.class, "transform2") // static transformer method with Consumer
+                argTransformerWithConsumerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform2") // static Transformer method with Consumer
                         .build();
             }
         }
@@ -199,14 +204,17 @@ public class ObservingExtension implements Extension {
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                instanceTransformerInvoker = pmb.createInvoker(invokableMethod)
-                        .setInstanceTransformer(InstanceTransformer.class, "transform")
+                instanceTransformerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withInstanceTransformer(InstanceTransformer.class, "transform")
                         .build();
-                instanceTransformerWithConsumerInvoker = pmb.createInvoker(invokableMethod)
-                        .setInstanceTransformer(InstanceTransformer.class, "transform2")
+                instanceTransformerWithConsumerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withInstanceTransformer(InstanceTransformer.class, "transform2")
                         .build();
-                instanceTransformerNoParamInvoker = pmb.createInvoker(invokableMethod)
-                        .setInstanceTransformer(TransformableBean.class, "setTransformed")
+                instanceTransformerNoParamInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withInstanceTransformer(TransformableBean.class, "setTransformed")
                         .build();
             }
         }
@@ -217,19 +225,23 @@ public class ObservingExtension implements Extension {
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                returnTransformerInvoker = pmb.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(ReturnValueTransformer.class, "transform")
+                returnTransformerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withReturnValueTransformer(ReturnValueTransformer.class, "transform")
                         .build();
-                returnTransformerNoParamInvoker = pmb.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(String.class, "strip")
+                returnTransformerNoParamInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withReturnValueTransformer(String.class, "strip")
                         .build();
 
             } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticReturnTransformerInvoker = pmb.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(ReturnValueTransformer.class, "transform")
+                staticReturnTransformerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withReturnValueTransformer(ReturnValueTransformer.class, "transform")
                         .build();
-                staticReturnTransformerNoParamInvoker = pmb.createInvoker(invokableMethod)
-                        .setReturnValueTransformer(String.class, "strip")
+                staticReturnTransformerNoParamInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withReturnValueTransformer(String.class, "strip")
                         .build();
             }
         }
@@ -240,13 +252,15 @@ public class ObservingExtension implements Extension {
         Assert.assertEquals(2, invokableMethods.size());
         for (AnnotatedMethod<? super TrulyExceptionalBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                exceptionTransformerInvoker = pmb.createInvoker(invokableMethod)
-                        .setExceptionTransformer(ExceptionTransformer.class, "transform")
+                exceptionTransformerInvoker = ((WeldInvokerBuilder<Invoker<TrulyExceptionalBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
 
             } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticExceptionTransformerInvoker = pmb.createInvoker(invokableMethod)
-                        .setExceptionTransformer(ExceptionTransformer.class, "transform")
+                staticExceptionTransformerInvoker = ((WeldInvokerBuilder<Invoker<TrulyExceptionalBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
             }
         }
@@ -257,13 +271,14 @@ public class ObservingExtension implements Extension {
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super SimpleBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                invocationWrapperInvoker = pmb.createInvoker(invokableMethod)
-                        .setInvocationWrapper(InvocationWrapper.class, "transform")
+                invocationWrapperInvoker = ((WeldInvokerBuilder<Invoker<SimpleBean, ?>>) pmb.createInvoker(invokableMethod))
+                        .withInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
 
             } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticInvocationWrapperInvoker = pmb.createInvoker(invokableMethod)
-                        .setInvocationWrapper(InvocationWrapper.class, "transform")
+                staticInvocationWrapperInvoker = ((WeldInvokerBuilder<Invoker<SimpleBean, ?>>) pmb
+                        .createInvoker(invokableMethod))
+                        .withInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
             }
         }

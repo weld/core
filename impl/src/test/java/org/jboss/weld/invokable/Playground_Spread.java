@@ -31,16 +31,15 @@ public class Playground_Spread {
         }
         System.out.println("!!!!!!! 3 " + mh.type());
 
-        Class<?>[] parameterTypes = targetMethod.getParameterTypes();
-        if (PrimitiveUtils.hasPrimitive(parameterTypes)) {
-            MethodHandle replacePrimitiveNulls = MethodHandleUtils.createMethodHandle(PrimitiveUtils.class.getDeclaredMethod(
-                    "replacePrimitiveNulls", Object[].class, Class[].class));
-            replacePrimitiveNulls = MethodHandles.insertArguments(replacePrimitiveNulls, 1, (Object) parameterTypes);
-            mh = MethodHandles.filterArguments(mh, 2, replacePrimitiveNulls);
-        }
+        // trim argument array if needed
+        Method trimArrayToSize = ArrayUtils.class.getDeclaredMethod("trimArrayToSize", Object[].class, int.class);
+        MethodHandle trimmer = MethodHandleUtils.createMethodHandle(trimArrayToSize);
+        trimmer = MethodHandles.insertArguments(trimmer, 1, targetMethod.getParameterCount());
+        mh = MethodHandles.filterArguments(mh, 2, trimmer);
         System.out.println("!!!!!!! 4 " + mh.type());
 
-        System.out.println(mh.invoke(new CleanupActions(), new Playground_Spread(), new Object[] { null }));
+        System.out.println(
+                mh.invoke(new CleanupActions(), new Playground_Spread(), new Object[] { 1, 2, null, "3", new Object() }));
     }
 
     public String hello(int param) {

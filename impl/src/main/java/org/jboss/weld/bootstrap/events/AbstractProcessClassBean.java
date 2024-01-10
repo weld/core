@@ -16,12 +16,22 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.Decorator;
+import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.enterprise.inject.spi.ProcessBean;
+import jakarta.enterprise.invoke.Invoker;
+import jakarta.enterprise.invoke.InvokerBuilder;
 
 import org.jboss.weld.bean.ClassBean;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.invokable.InvokerBuilderImpl;
+import org.jboss.weld.invokable.TargetMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class AbstractProcessClassBean<X, B extends ClassBean<X>> extends AbstractDefinitionContainerEvent
@@ -42,6 +52,33 @@ public abstract class AbstractProcessClassBean<X, B extends ClassBean<X>> extend
     public B getBean() {
         checkWithinObserverNotification();
         return bean;
+    }
+
+    public InvokerBuilder<Invoker<X, ?>> createInvoker(AnnotatedMethod<? super X> annotatedMethod) {
+        checkWithinObserverNotification();
+
+        ClassBean<X> bean = getBean();
+        if (bean instanceof Interceptor) {
+            throw new DeploymentException("Cannot build invoker for an interceptor: " + bean);
+        }
+        if (bean instanceof Decorator) {
+            throw new DeploymentException("Cannot build invoker for a decorator: " + bean);
+        }
+
+        Method method = annotatedMethod.getJavaMember();
+        if (Modifier.isPrivate(method.getModifiers())) {
+            throw new DeploymentException("Cannot build invoker for a private method: " + annotatedMethod);
+        }
+        if ("java.lang.Object".equals(method.getDeclaringClass().getName())
+                && !"toString".equals(method.getName())) {
+            throw new DeploymentException("Cannot build invoker for a method declared on java.lang.Object: " + annotatedMethod);
+        }
+
+        if (!bean.getAnnotated().getMethods().contains(annotatedMethod)) {
+            throw new DeploymentException("Method does not belong to bean " + bean + ": " + annotatedMethod);
+        }
+
+        return new InvokerBuilderImpl<>(bean.getAnnotated(), new TargetMethod(annotatedMethod), getBeanManager());
     }
 
 }

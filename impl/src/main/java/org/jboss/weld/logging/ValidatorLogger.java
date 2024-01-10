@@ -305,4 +305,15 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException interceptorMethodDeclaresMultipleParameters(Object param1, Object param2, Object param3,
             Object stackElement);
 
+    @Message(id = 1486, value = "Instance lookup configured for target bean {0} and target method {1} is unsatisfied", format = Format.MESSAGE_FORMAT)
+    DeploymentException invokerUnsatisfiedInstanceLookup(Class<?> beanClass, Method method);
+
+    @Message(id = 1487, value = "Instance lookup configured for target bean {0} and target method {1} is ambiguous", format = Format.MESSAGE_FORMAT)
+    DeploymentException invokerAmbiguousInstanceLookup(Class<?> beanClass, Method method);
+
+    @Message(id = 1488, value = "Argument lookup configured for target bean {0} and parameter {2} of target method {1} is unsatisfied", format = Format.MESSAGE_FORMAT)
+    DeploymentException invokerUnsatisfiedArgumentLookup(Class<?> beanClass, Method method, int position);
+
+    @Message(id = 1489, value = "Argument lookup configured for target bean {0} and parameter {2} of target method {1} is ambiguous", format = Format.MESSAGE_FORMAT)
+    DeploymentException invokerAmbiguousArgumentLookup(Class<?> beanClass, Method method, int position);
 }

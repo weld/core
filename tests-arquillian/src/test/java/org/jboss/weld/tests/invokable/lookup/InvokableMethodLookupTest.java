@@ -2,10 +2,7 @@ package org.jboss.weld.tests.invokable.lookup;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import jakarta.enterprise.inject.AmbiguousResolutionException;
-import jakarta.enterprise.inject.UnsatisfiedResolutionException;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Inject;
 
@@ -36,14 +33,14 @@ public class InvokableMethodLookupTest {
     InvokableBean bean;
 
     @Test
-    public void testInstanceLookupWithQualifiers() {
+    public void testInstanceLookupWithQualifiers() throws Exception {
         Object invokerResult = extension.getInstanceLookupInvoker().invoke(null, new Object[] {});
         assertTrue(invokerResult instanceof String);
         assertEquals(InvokableBean.class.getSimpleName(), invokerResult);
     }
 
     @Test
-    public void testCorrectArgLookupWithQualifiers() {
+    public void testCorrectArgLookupWithQualifiers() throws Exception {
         Object invokerResult = extension.getCorrectLookupInvoker().invoke(bean, new Object[] { null, null });
         assertTrue(invokerResult instanceof String);
         assertEquals(
@@ -52,29 +49,9 @@ public class InvokableMethodLookupTest {
     }
 
     @Test
-    public void testLookupWithRegisteredQualifier() {
+    public void testLookupWithRegisteredQualifier() throws Exception {
         Object invokerResult = extension.getLookupWithRegisteredQualifier().invoke(bean, new Object[] { null });
         assertTrue(invokerResult instanceof String);
         assertEquals(ToBeQualifier.class.getSimpleName(), invokerResult);
-    }
-
-    @Test
-    public void testUnsatisfiedLookupWithQualifier() {
-        try {
-            Object invokerResult = extension.getUnsatisfiedLookupInvoker().invoke(bean, new Object[] { null });
-            fail();
-        } catch (UnsatisfiedResolutionException e) {
-            // expected
-        }
-    }
-
-    @Test
-    public void testAmbigLookupWithQualifiers() {
-        try {
-            Object invokerResult = extension.getAmbiguousLookupInvoker().invoke(bean, new Object[] { null });
-            fail();
-        } catch (AmbiguousResolutionException e) {
-            // expected
-        }
     }
 }

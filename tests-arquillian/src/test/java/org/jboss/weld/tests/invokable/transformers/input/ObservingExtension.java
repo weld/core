@@ -8,6 +8,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
 
+import org.jboss.weld.invoke.WeldInvokerBuilder;
 import org.junit.Assert;
 
 public class ObservingExtension implements Extension {
@@ -44,18 +45,18 @@ public class ObservingExtension implements Extension {
         for (AnnotatedMethod<? super ActualBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
                 noTransformer = pmb.createInvoker(invokableMethod).build();
-                transformInstance1 = pmb.createInvoker(invokableMethod)
-                        .setInstanceTransformer(Transformer.class, "transformInstance1")
+                transformInstance1 = ((WeldInvokerBuilder<Invoker<ActualBean, ?>>) pmb.createInvoker(invokableMethod))
+                        .withInstanceTransformer(Transformer.class, "transformInstance1")
                         .build();
-                transformInstance2 = pmb.createInvoker(invokableMethod)
-                        .setInstanceTransformer(Transformer.class, "transformInstance2")
+                transformInstance2 = ((WeldInvokerBuilder<Invoker<ActualBean, ?>>) pmb.createInvoker(invokableMethod))
+                        .withInstanceTransformer(Transformer.class, "transformInstance2")
                         .build();
 
-                transformArg1 = pmb.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, Transformer.class, "transformArg1")
+                transformArg1 = ((WeldInvokerBuilder<Invoker<ActualBean, ?>>) pmb.createInvoker(invokableMethod))
+                        .withArgumentTransformer(0, Transformer.class, "transformArg1")
                         .build();
-                transformArg2 = pmb.createInvoker(invokableMethod)
-                        .setArgumentTransformer(0, Transformer.class, "transformArg2")
+                transformArg2 = ((WeldInvokerBuilder<Invoker<ActualBean, ?>>) pmb.createInvoker(invokableMethod))
+                        .withArgumentTransformer(0, Transformer.class, "transformArg2")
                         .build();
             }
         }

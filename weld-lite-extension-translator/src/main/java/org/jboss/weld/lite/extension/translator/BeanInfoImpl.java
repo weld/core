@@ -1,6 +1,5 @@
 package org.jboss.weld.lite.extension.translator;
 
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -8,22 +7,17 @@ import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
 import jakarta.enterprise.inject.build.compatible.spi.DisposerInfo;
 import jakarta.enterprise.inject.build.compatible.spi.InjectionPointInfo;
-import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.build.compatible.spi.ScopeInfo;
 import jakarta.enterprise.inject.build.compatible.spi.StereotypeInfo;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.InjectionPoint;
-import jakarta.enterprise.invoke.InvokerBuilder;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.types.Type;
 
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.invokable.InvokerInfoBuilder;
 import org.jboss.weld.lite.extension.translator.util.reflection.AnnotatedTypes;
 
 class BeanInfoImpl implements BeanInfo {
@@ -150,45 +144,6 @@ class BeanInfoImpl implements BeanInfo {
                 .stream()
                 .map((InjectionPoint cdiInjectionPoint) -> new InjectionPointInfoImpl(cdiInjectionPoint, bm))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public InvokerBuilder<InvokerInfo> createInvoker(MethodInfo methodInfo) {
-        if (!isClassBean()) {
-            throw new DeploymentException("Cannot build invoker for a bean which is not a managed bean: " + this);
-        }
-        if (isInterceptor()) {
-            throw new DeploymentException("Cannot build invoker for an interceptor: " + this);
-        }
-        if (cdiBean instanceof Decorator) { // not representable in BCE, but can theoretically happen
-            throw new DeploymentException("Cannot build invoker for a decorator: " + this);
-        }
-
-        if (methodInfo.isConstructor()) {
-            throw new DeploymentException("Cannot build invoker for a constructor: " + methodInfo);
-        }
-        if (Modifier.isPrivate(methodInfo.modifiers())) {
-            throw new DeploymentException("Cannot build invoker for a private method: " + methodInfo);
-        }
-        if ("java.lang.Object".equals(methodInfo.declaringClass().name())
-                && !"toString".equals(methodInfo.name())) {
-            throw new DeploymentException("Cannot build invoker for a method declared on java.lang.Object: " + methodInfo);
-        }
-
-        if (methodInfo instanceof MethodInfoImpl) {
-            // at this point we can be sure it is a Method, not a Constructor, so we cast it
-            AnnotatedMethod<?> cdiMethod = (AnnotatedMethod<?>) ((MethodInfoImpl) methodInfo).cdiDeclaration;
-
-            // verify that the `methodInfo` belongs to this bean
-            if (!ReflectionMembers.allMethods(cdiBean.getBeanClass()).contains(cdiMethod.getJavaMember())) {
-                throw new DeploymentException("Method does not belong to bean " + cdiBean.getBeanClass().getName()
-                        + ": " + methodInfo);
-            }
-
-            return new InvokerInfoBuilder<>(cdiBean.getBeanClass(), cdiMethod.getJavaMember(), bm);
-        } else {
-            throw new DeploymentException("Custom implementations of MethodInfo are not supported!");
-        }
     }
 
     @Override

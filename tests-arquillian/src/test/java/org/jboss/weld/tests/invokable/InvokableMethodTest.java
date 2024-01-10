@@ -44,7 +44,7 @@ public class InvokableMethodTest {
     TrulyExceptionalBean trulyExceptionalBean;
 
     @Test
-    public void testSimpleInvokableMethod() {
+    public void testSimpleInvokableMethod() throws Exception {
         SimpleBean.resetDestroyCounter();
         HelperBean.clearDestroyedCounters();
 
@@ -74,7 +74,7 @@ public class InvokableMethodTest {
     }
 
     @Test
-    public void testSimpleStaticInvokableMethod() {
+    public void testSimpleStaticInvokableMethod() throws Exception {
         SimpleBean.resetDestroyCounter();
         HelperBean.clearDestroyedCounters();
 
@@ -105,7 +105,7 @@ public class InvokableMethodTest {
     }
 
     @Test
-    public void testArgTransformingInvokableMethod() {
+    public void testArgTransformingInvokableMethod() throws Exception {
         ArgTransformer.runnableExecuted = 0;
 
         String fooArg = "fooArg";
@@ -126,7 +126,7 @@ public class InvokableMethodTest {
     }
 
     @Test
-    public void testInstanceTransformingInvokableMethod() {
+    public void testInstanceTransformingInvokableMethod() throws Exception {
         InstanceTransformer.runnableExecuted = 0;
 
         //test is intentionally *NOT* using the bean, but instead passes in new instance every time
@@ -159,7 +159,7 @@ public class InvokableMethodTest {
     }
 
     @Test
-    public void testReturnValueTransformingInvokableMethod() {
+    public void testReturnValueTransformingInvokableMethod() throws Exception {
         String fooArg = "  fooArg  ";
         String expected = (fooArg + fooArg).strip();
 
@@ -177,7 +177,7 @@ public class InvokableMethodTest {
     }
 
     @Test
-    public void testExceptionTransformingInvokableMethod() {
+    public void testExceptionTransformingInvokableMethod() throws Exception {
         String expected = IllegalArgumentException.class.getSimpleName();
         String expectedStatic = IllegalStateException.class.getSimpleName();
 
@@ -189,7 +189,7 @@ public class InvokableMethodTest {
     }
 
     @Test
-    public void testInvocationWrapperInvokableMethod() {
+    public void testInvocationWrapperInvokableMethod() throws Exception {
         String expected = "foo42foo42";
 
         // invocation wrapper defined on other class

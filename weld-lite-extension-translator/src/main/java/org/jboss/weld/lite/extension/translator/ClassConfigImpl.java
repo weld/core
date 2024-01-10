@@ -60,6 +60,7 @@ class ClassConfigImpl implements ClassConfig {
 
     @Override
     public Collection<MethodConfig> constructors() {
+        // TODO not exactly according to the specification, see `ClassInfoImpl.constructors()`
         return configurator.constructors()
                 .stream()
                 .map(annotatedConstructorConfigurator -> new MethodConstructorConfigImpl(annotatedConstructorConfigurator, bm))
@@ -68,6 +69,7 @@ class ClassConfigImpl implements ClassConfig {
 
     @Override
     public Collection<MethodConfig> methods() {
+        // TODO not exactly according to the specification, see `ClassInfoImpl.methods()`
         return configurator.methods()
                 .stream()
                 .map(annotatedMethodConfigurator -> new MethodConfigImpl(annotatedMethodConfigurator, bm))
@@ -76,6 +78,7 @@ class ClassConfigImpl implements ClassConfig {
 
     @Override
     public Collection<FieldConfig> fields() {
+        // TODO not exactly according to the specification, see `ClassInfoImpl.fields()`
         return configurator.fields()
                 .stream()
                 .map(annotatedFieldConfigurator -> new FieldConfigImpl(annotatedFieldConfigurator, bm))

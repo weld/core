@@ -19,6 +19,8 @@ package org.jboss.weld.lite.extension.translator;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -26,6 +28,8 @@ import java.security.PrivilegedActionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.GetConstructorAction;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
+import org.jboss.weld.security.GetDeclaredFieldsAction;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -72,6 +76,22 @@ final class SecurityActions {
             return Reflections.cast(AccessController.doPrivileged(new GetDeclaredConstructorsAction(javaClass)));
         } else {
             return Reflections.cast(javaClass.getDeclaredConstructors());
+        }
+    }
+
+    static Method[] getDeclaredMethods(Class<?> javaClass) {
+        if (System.getSecurityManager() != null) {
+            return Reflections.cast(AccessController.doPrivileged(new GetDeclaredMethodsAction(javaClass)));
+        } else {
+            return Reflections.cast(javaClass.getDeclaredMethods());
+        }
+    }
+
+    static Field[] getDeclaredFields(Class<?> javaClass) {
+        if (System.getSecurityManager() != null) {
+            return Reflections.cast(AccessController.doPrivileged(new GetDeclaredFieldsAction(javaClass)));
+        } else {
+            return Reflections.cast(javaClass.getDeclaredFields());
         }
     }
 

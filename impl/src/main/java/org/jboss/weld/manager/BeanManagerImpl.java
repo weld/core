@@ -128,6 +128,7 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
@@ -140,6 +141,7 @@ import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.producer.WeldInjectionTargetBuilderImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataReader;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.invokable.AbstractInvokerBuilder;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
@@ -255,7 +257,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     /*
      * These data structures are scoped to this bean deployment archive only and represent the beans, decorators, interceptors,
-     * namespaces and observers
+     * namespaces, observers and invokers
      * deployed in this bean deployment archive
      */
     private final transient List<Bean<?>> enabledBeans;
@@ -266,6 +268,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient List<Interceptor<?>> interceptors;
     private final transient List<String> namespaces;
     private final transient List<ObserverMethod<?>> observers;
+    private final transient List<AbstractInvokerBuilder<?, ?>> invokers; // only for validation, cleaned up afterward
 
     /*
      * set that is only used to make sure that no duplicate beans are added
@@ -321,7 +324,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return new BeanManagerImpl(serviceRegistry, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(),
                 new CopyOnWriteArrayList<Decorator<?>>(), new CopyOnWriteArrayList<Interceptor<?>>(),
                 new CopyOnWriteArrayList<ObserverMethod<?>>(),
-                new CopyOnWriteArrayList<String>(), new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
+                new CopyOnWriteArrayList<String>(), new CopyOnWriteArrayList<AbstractInvokerBuilder<?, ?>>(),
+                new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
                 new ClientProxyProvider(contextId), contexts,
                 ModuleEnablement.EMPTY_ENABLEMENT, id, new AtomicInteger(), new HashSet<BeanManagerImpl>(), contextId);
     }
@@ -330,15 +334,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return new BeanManagerImpl(services, new CopyOnWriteArrayList<Bean<?>>(), new CopyOnWriteArrayList<Bean<?>>(),
                 new CopyOnWriteArrayList<Decorator<?>>(),
                 new CopyOnWriteArrayList<Interceptor<?>>(), new CopyOnWriteArrayList<ObserverMethod<?>>(),
-                new CopyOnWriteArrayList<String>(),
+                new CopyOnWriteArrayList<String>(), new CopyOnWriteArrayList<AbstractInvokerBuilder<?, ?>>(),
                 rootManager.getEnterpriseBeans(), rootManager.getClientProxyProvider(), rootManager.getContexts(),
                 ModuleEnablement.EMPTY_ENABLEMENT, id,
                 new AtomicInteger(), rootManager.managers, rootManager.contextId);
     }
 
     private BeanManagerImpl(ServiceRegistry serviceRegistry, List<Bean<?>> beans, List<Bean<?>> transitiveBeans,
-            List<Decorator<?>> decorators,
-            List<Interceptor<?>> interceptors, List<ObserverMethod<?>> observers, List<String> namespaces,
+            List<Decorator<?>> decorators, List<Interceptor<?>> interceptors, List<ObserverMethod<?>> observers,
+            List<String> namespaces, List<AbstractInvokerBuilder<?, ?>> invokers,
             Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, ClientProxyProvider clientProxyProvider,
             Map<Class<? extends Annotation>, List<Context>> contexts, ModuleEnablement enabled, String id,
             AtomicInteger childIds,
@@ -354,6 +358,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.observers = observers;
         this.enabled = enabled;
         this.namespaces = namespaces;
+        this.invokers = invokers;
         this.id = id;
         this.managers = managers;
         this.contextId = contextId;
@@ -636,6 +641,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public void addObserver(ObserverMethod<?> observer) {
         // checkEventType(observer.getObservedType());
         observers.add(observer);
+    }
+
+    public void addInvoker(AbstractInvokerBuilder<?, ?> invoker) {
+        invokers.add(invoker);
+    }
+
+    public void forgetInvokersAfterValidation() {
+        invokers.clear();
     }
 
     /**
@@ -1042,6 +1055,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public List<ObserverMethod<?>> getObservers() {
         return observers;
+    }
+
+    public List<AbstractInvokerBuilder<?, ?>> getInvokers() {
+        return invokers;
     }
 
     @Override
@@ -1768,4 +1785,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
+    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType,
+            Set<Annotation> requiredQualifiers) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isMatchingEvent(Type eventType, Set<Annotation> eventQualifiers, Type observedEventType,
+            Set<Annotation> observedEventQualifiers) {
+        throw new UnsupportedOperationException();
+    }
 }

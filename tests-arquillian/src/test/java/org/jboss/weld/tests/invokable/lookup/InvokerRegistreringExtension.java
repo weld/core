@@ -14,21 +14,11 @@ import org.junit.Assert;
 public class InvokerRegistreringExtension implements Extension {
 
     private Invoker<InvokableBean, ?> instanceLookupInvoker;
-    private Invoker<InvokableBean, ?> unsatisfiedLookupInvoker;
-    private Invoker<InvokableBean, ?> ambiguousLookupInvoker;
     private Invoker<InvokableBean, ?> correctLookupInvoker;
     private Invoker<InvokableBean, ?> lookupWithRegisteredQualifier;
 
     public Invoker<InvokableBean, ?> getInstanceLookupInvoker() {
         return instanceLookupInvoker;
-    }
-
-    public Invoker<InvokableBean, ?> getUnsatisfiedLookupInvoker() {
-        return unsatisfiedLookupInvoker;
-    }
-
-    public Invoker<InvokableBean, ?> getAmbiguousLookupInvoker() {
-        return ambiguousLookupInvoker;
     }
 
     public Invoker<InvokableBean, ?> getCorrectLookupInvoker() {
@@ -41,18 +31,14 @@ public class InvokerRegistreringExtension implements Extension {
 
     public void createInvokers(@Observes ProcessManagedBean<InvokableBean> pmb) {
         Collection<AnnotatedMethod<? super InvokableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
-        Assert.assertEquals(5, invokableMethods.size());
+        Assert.assertEquals(3, invokableMethods.size());
         for (AnnotatedMethod<? super InvokableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("instanceLookup")) {
-                instanceLookupInvoker = pmb.createInvoker(invokableMethod).setInstanceLookup().build();
-            } else if (invokableMethod.getJavaMember().getName().contains("unsatisfiedLookup")) {
-                unsatisfiedLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).build();
-            } else if (invokableMethod.getJavaMember().getName().contains("ambiguousLookup")) {
-                ambiguousLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).build();
+                instanceLookupInvoker = pmb.createInvoker(invokableMethod).withInstanceLookup().build();
             } else if (invokableMethod.getJavaMember().getName().contains("lookupWithRegisteredQualifier")) {
-                lookupWithRegisteredQualifier = pmb.createInvoker(invokableMethod).setArgumentLookup(0).build();
+                lookupWithRegisteredQualifier = pmb.createInvoker(invokableMethod).withArgumentLookup(0).build();
             } else {
-                correctLookupInvoker = pmb.createInvoker(invokableMethod).setArgumentLookup(0).setArgumentLookup(1).build();
+                correctLookupInvoker = pmb.createInvoker(invokableMethod).withArgumentLookup(0).withArgumentLookup(1).build();
             }
         }
     }
