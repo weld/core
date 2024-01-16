@@ -220,7 +220,7 @@ public class BeanAttributesFactory {
                 Class<?> declaringClass;
                 if (annotated instanceof EnhancedAnnotatedMember) {
                     EnhancedAnnotatedMember<?, ?, ?> member = (EnhancedAnnotatedMember<?, ?, ?>) annotated;
-                    declaringClass = member.getDeclaringType().getJavaClass();
+                    declaringClass = member.getJavaMember().getDeclaringClass();
                     stack = "\n  at " + Formats.formatAsStackTraceElement(member.getJavaMember());
                 } else {
                     declaringClass = annotated.getJavaClass();

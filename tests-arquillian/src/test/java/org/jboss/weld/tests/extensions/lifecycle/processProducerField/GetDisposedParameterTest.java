@@ -62,6 +62,6 @@ public class GetDisposedParameterTest {
         assertTrue(parameter.isAnnotationPresent(Zero.class));
         assertEquals(int.class, parameter.getBaseType());
         assertEquals(0, parameter.getPosition());
-        assertEquals(Producer.class, parameter.getDeclaringCallable().getDeclaringType().getJavaClass());
+        assertEquals(Producer.class, parameter.getDeclaringCallable().getJavaMember().getDeclaringClass());
     }
 }

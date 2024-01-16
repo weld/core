@@ -129,7 +129,7 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
         if (priority != null) {
             priority(priority.value());
         }
-        beanClass(eventParameter.getDeclaringCallable().getDeclaringType().getJavaClass());
+        beanClass(eventParameter.getDeclaringCallable().getJavaMember().getDeclaringClass());
         observedType(eventParameter.getBaseType());
         qualifiers(Configurators.getQualifiers(eventParameter));
         return this;

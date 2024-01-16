@@ -1445,7 +1445,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private <X> FieldInjectionPointAttributes<?, X> createFieldInjectionPoint(AnnotatedField<X> field) {
         EnhancedAnnotatedField<?, X> enhancedField = services.get(MemberTransformer.class).loadEnhancedMember(field, getId());
-        return InferringFieldInjectionPointAttributes.of(enhancedField, null, field.getDeclaringType().getJavaClass(), this);
+        return InferringFieldInjectionPointAttributes.of(enhancedField, null, field.getJavaMember().getDeclaringClass(), this);
     }
 
     @Override
@@ -1454,7 +1454,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class)
                 .loadEnhancedParameter(parameter, getId());
         return validateInjectionPoint(InferringParameterInjectionPointAttributes.of(enhancedParameter, null,
-                parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
+                parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(), this));
     }
 
     private <T extends InjectionPoint> T validateInjectionPoint(T injectionPoint) {
@@ -1543,13 +1543,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <X> FieldProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field, Bean<X> declaringBean) {
-        BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(field.getDeclaringType().getJavaClass(), this);
+        BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(field.getJavaMember().getDeclaringClass(), this);
         return new FieldProducerFactory<X>(field, declaringBean, manager);
     }
 
     @Override
     public <X> MethodProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
-        BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(method.getDeclaringType().getJavaClass(), this);
+        BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(method.getJavaMember().getDeclaringClass(), this);
         return new MethodProducerFactory<X>(method, declaringBean, manager);
     }
 

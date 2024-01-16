@@ -616,7 +616,7 @@ public class Formats {
         return Formats.formatSimpleClassName(constructor) + " "
                 + Formats.addSpaceIfNeeded(Formats.formatAnnotations(constructor.getAnnotations()))
                 + Formats.addSpaceIfNeeded(Formats.formatModifiers(constructor.getJavaMember().getModifiers()))
-                + constructor.getDeclaringType().getJavaClass().getName()
+                + constructor.getJavaMember().getDeclaringClass().getName()
                 + Formats.formatAsFormalParameterList(constructor.getParameters());
     }
 
@@ -624,7 +624,7 @@ public class Formats {
         return Formats.formatSimpleClassName(field) + " "
                 + Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations()))
                 + Formats.addSpaceIfNeeded(Formats.formatModifiers(field.getJavaMember().getModifiers()))
-                + field.getDeclaringType().getJavaClass().getName() + "."
+                + field.getJavaMember().getDeclaringClass().getName() + "."
                 + field.getJavaMember().getName();
     }
 
@@ -632,7 +632,7 @@ public class Formats {
         return Formats.formatSimpleClassName(method) + " "
                 + Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations()))
                 + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers()))
-                + method.getDeclaringType().getJavaClass().getName() + "."
+                + method.getJavaMember().getDeclaringClass().getName() + "."
                 + method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters());
     }
 

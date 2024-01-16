@@ -49,28 +49,20 @@ public class DeclaringTypeTest {
     @Test
     public void testInheritance() {
         AnnotatedType<Child> type = beanManager.createAnnotatedType(Child.class);
+
         Assert.assertEquals(1, type.getConstructors().size());
+
         Assert.assertEquals(1, type.getFields().size());
-        for (AnnotatedField<? super Child> field : type.getFields()) {
-            if (field.getJavaMember().getName().equals("parent")) {
-                Assert.assertEquals(Parent.class, field.getJavaMember().getDeclaringClass()); // OK - Returns Parent
-                // this assertion is commented out because the spec is not clear which type to return and the flat type actually makes more sense
-                //                Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass()); // FAIL - Returns Child
-            } else {
-                Assert.fail("Unknown field " + field.getJavaMember());
-            }
-        }
+        AnnotatedField<? super Child> field = type.getFields().stream().findAny().get();
+        Assert.assertEquals("parent", field.getJavaMember().getName());
+        Assert.assertEquals(Parent.class, field.getJavaMember().getDeclaringClass());
+        Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass());
 
         Assert.assertEquals(1, type.getMethods().size());
-        for (AnnotatedMethod<? super Child> method : type.getMethods()) {
-            if (method.getJavaMember().getName().equals("parentMethod")) {
-                Assert.assertEquals(Parent.class, method.getJavaMember().getDeclaringClass()); // OK - Returns Parent
-                // this assertion is commented out because the spec is not clear which type to return and the flat type actually makes more sense
-                //                Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass()); // FAIL - Returns Child
-            } else {
-                Assert.fail("Unknown method " + method.getJavaMember());
-            }
-        }
+        AnnotatedMethod<? super Child> method = type.getMethods().stream().findAny().get();
+        Assert.assertEquals("parentMethod", method.getJavaMember().getName());
+        Assert.assertEquals(Parent.class, method.getJavaMember().getDeclaringClass());
+        Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass());
     }
 
 }

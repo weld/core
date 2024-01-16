@@ -9,6 +9,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Objects;
@@ -64,13 +65,13 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ReflectionCache reflectionCache, String contextId,
             String bdaId, String suffix) {
         super(baseType, sharedObjectCache);
+        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId, suffix);
         this.javaClass = rawType;
         this.sharedObjectCache = sharedObjectCache;
         this.reflectionCache = reflectionCache;
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
         this.methods = new BackedAnnotatedMethods();
-        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId, suffix);
     }
 
     @Override
@@ -186,7 +187,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Field field : SecurityActions.getDeclaredFields(clazz)) {
-                    fields.add(BackedAnnotatedField.of(field, BackedAnnotatedType.this, sharedObjectCache));
+                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field), sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
             }
@@ -201,7 +202,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Method method : SecurityActions.getDeclaredMethods(clazz)) {
-                    methods.add(BackedAnnotatedMethod.of(method, BackedAnnotatedType.this, sharedObjectCache));
+                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method), sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
             }
@@ -209,11 +210,21 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(javaClass)) {
                 for (Method method : SecurityActions.getDeclaredMethods(interfaceClazz)) {
                     if (Reflections.isDefault(method)) {
-                        methods.add(BackedAnnotatedMethod.of(method, BackedAnnotatedType.this, sharedObjectCache));
+                        methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method), sharedObjectCache));
                     }
                 }
             }
             return methods.build();
+        }
+    }
+
+    private <T> BackedAnnotatedType<T> getDeclaringAnnotatedType(Member member) {
+        Class<T> declaringClass = Reflections.<Class<T>> cast(member.getDeclaringClass());
+        if (declaringClass.equals(getJavaClass())) {
+            return cast(this);
+        } else {
+            return BackedAnnotatedType.of(declaringClass, sharedObjectCache, reflectionCache, identifier.getSuffix(),
+                    identifier.getBdaId());
         }
     }
 

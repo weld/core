@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.annotatedType;
 
+import jakarta.enterprise.context.Dependent;
+
+@Dependent
 public class Parent {
     int parent;
 
