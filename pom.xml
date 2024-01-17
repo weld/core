@@ -52,13 +52,12 @@
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.7.0</apache.bcel.version>
-        <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <arquillian.version>1.8.0.Final</arquillian.version>
         <arquillian.drone.version>3.0.0-alpha.5</arquillian.drone.version>
         <arquillian.graphene.version>3.0.0-alpha.3</arquillian.graphene.version>
         <arquillian.weld.version>4.0.0.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.0.Final</arquillian.tomcat.version>
-        <arquillian.jetty.version>1.0.0.Final</arquillian.jetty.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Version of the CDI 4.x release TCK -->
         <cdi.tck-4-1.version>4.1.0-M1</cdi.tck-4-1.version>
@@ -88,11 +87,11 @@
         <log4j.version>1.2.17</log4j.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
-        <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
+        <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
         <weld.api.version>6.0.Alpha2</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
-        <wildfly.arquillian.version>5.0.0.Alpha5</wildfly.arquillian.version>
+        <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
     </properties>
 
     <modules>
@@ -258,12 +257,6 @@
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-tomcat-embedded-10</artifactId>
                 <version>${arquillian.tomcat.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-jetty-embedded-11</artifactId>
-                <version>${arquillian.jetty.version}</version>
             </dependency>
 
             <dependency>
