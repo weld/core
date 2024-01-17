@@ -65,10 +65,10 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ReflectionCache reflectionCache, String contextId,
             String bdaId, String suffix) {
         super(baseType, sharedObjectCache);
-        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId, suffix);
         this.javaClass = rawType;
         this.sharedObjectCache = sharedObjectCache;
         this.reflectionCache = reflectionCache;
+        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId, suffix);
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
         this.methods = new BackedAnnotatedMethods();
@@ -218,10 +218,10 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         }
     }
 
-    private <T> BackedAnnotatedType<T> getDeclaringAnnotatedType(Member member) {
-        Class<T> declaringClass = Reflections.<Class<T>> cast(member.getDeclaringClass());
+    private BackedAnnotatedType<? super X> getDeclaringAnnotatedType(Member member) {
+        Class<? super X> declaringClass = cast(member.getDeclaringClass());
         if (declaringClass.equals(getJavaClass())) {
-            return cast(this);
+            return this;
         } else {
             return BackedAnnotatedType.of(declaringClass, sharedObjectCache, reflectionCache, identifier.getSuffix(),
                     identifier.getBdaId());
