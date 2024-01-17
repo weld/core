@@ -195,12 +195,12 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 EnhancedAnnotatedField<?, ? super T> weldField = EnhancedAnnotatedFieldImpl.of(annotatedField, this,
                         classTransformer);
                 fieldsTemp.add(weldField);
-                if (annotatedField.getDeclaringType().getJavaClass().equals(javaClass)) {
+                if (annotatedField.getJavaMember().getDeclaringClass().equals(javaClass)) {
                     declaredFieldsTemp.add(weldField);
                 }
                 for (Annotation annotation : weldField.getAnnotations()) {
                     annotatedFields.put(annotation.annotationType(), weldField);
-                    if (annotatedField.getDeclaringType().getJavaClass().equals(javaClass)) {
+                    if (annotatedField.getJavaMember().getDeclaringClass().equals(javaClass)) {
                         declaredAnnotatedFields.put(annotation.annotationType(), weldField);
                     }
                 }
