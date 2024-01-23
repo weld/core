@@ -17,11 +17,13 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Named;
 
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.MetadataLogger;
@@ -101,5 +103,34 @@ public class Bindings {
         if (model == null || !model.isValid()) {
             throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
+    }
+
+    /**
+     * Normalize set of qualifiers for a bean - automatically adds {@code @Any} and {@code Default} if needed.
+     *
+     * @param qualifiers input set of qualifiers, possibly missing built-in qualifiers
+     * @return normalized set of bean qualifiers
+     */
+    public static Set<Annotation> normalizeBeanQualifiers(Set<Annotation> qualifiers) {
+        if (qualifiers.isEmpty()) {
+            return DEFAULT_QUALIFIERS;
+        }
+        Set<Annotation> normalized = new HashSet<Annotation>(qualifiers);
+        normalized.remove(Any.Literal.INSTANCE);
+        normalized.remove(Default.Literal.INSTANCE);
+        if (normalized.isEmpty()) {
+            normalized = DEFAULT_QUALIFIERS;
+        } else {
+            ImmutableSet.Builder<Annotation> builder = ImmutableSet.builder();
+            if (normalized.size() == 1) {
+                if (normalized.iterator().next().annotationType().equals(Named.class)) {
+                    builder.add(Default.Literal.INSTANCE);
+                }
+            }
+            builder.add(Any.Literal.INSTANCE);
+            builder.addAll(qualifiers);
+            normalized = builder.build();
+        }
+        return normalized;
     }
 }
