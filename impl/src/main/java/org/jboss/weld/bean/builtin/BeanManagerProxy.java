@@ -193,6 +193,18 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     }
 
     @Override
+    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType,
+            Set<Annotation> requiredQualifiers) {
+        return delegate().isMatchingBean(beanTypes, beanQualifiers, requiredType, requiredQualifiers);
+    }
+
+    @Override
+    public boolean isMatchingEvent(Type eventType, Set<Annotation> eventQualifiers, Type observedEventType,
+            Set<Annotation> observedEventQualifiers) {
+        return delegate().isMatchingEvent(eventType, eventQualifiers, observedEventType, observedEventQualifiers);
+    }
+
+    @Override
     public Bean<?> getPassivationCapableBean(BeanIdentifier identifier) {
         return delegate().getPassivationCapableBean(identifier);
     }

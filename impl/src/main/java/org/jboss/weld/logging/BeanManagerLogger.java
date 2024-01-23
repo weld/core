@@ -128,4 +128,13 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1336, value = "InjectionTargetFactory.configure() may not be called after createInjectionTarget() invocation. AnnotatedType used: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToConfigureInjectionTargetFactory(Object param1);
 
+    @Message(id = 1337, value = "BeanContainer#{0} requires all parameters to be non-null.", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException assignabilityMethodIllegalArgs(Object param1);
+
+    @Message(id = 1338, value = "All annotations passed into BeanContainer#{0} have to be CDI Qualifiers. Following annotation was not recognized as a qualifier: {1}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException annotationNotAQualifier(Object param1, Object param2);
+
+    @Message(id = 1339, value = "Provided event type {0} cannot contain unresolvable type parameter", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException eventTypeUnresolvableWildcard(Object param1);
+
 }
