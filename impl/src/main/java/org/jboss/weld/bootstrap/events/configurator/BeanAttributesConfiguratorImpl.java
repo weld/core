@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.configurator.BeanAttributesConfigurator;
@@ -222,7 +221,8 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributes<T> complete() {
-        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, name, initQualifiers(qualifiers),
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, name,
+                Bindings.normalizeBeanQualifiers(qualifiers),
                 ImmutableSet.copyOf(types),
                 initScope());
     }
@@ -256,29 +256,6 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
             }
         }
         return Dependent.class;
-    }
-
-    private Set<Annotation> initQualifiers(Set<Annotation> qualifiers) {
-        if (qualifiers.isEmpty()) {
-            return Bindings.DEFAULT_QUALIFIERS;
-        }
-        Set<Annotation> normalized = new HashSet<Annotation>(qualifiers);
-        normalized.remove(Any.Literal.INSTANCE);
-        normalized.remove(Default.Literal.INSTANCE);
-        if (normalized.isEmpty()) {
-            normalized = Bindings.DEFAULT_QUALIFIERS;
-        } else {
-            ImmutableSet.Builder<Annotation> builder = ImmutableSet.builder();
-            if (normalized.size() == 1) {
-                if (normalized.iterator().next().annotationType().equals(Named.class)) {
-                    builder.add(Default.Literal.INSTANCE);
-                }
-            }
-            builder.add(Any.Literal.INSTANCE);
-            builder.addAll(qualifiers);
-            normalized = builder.build();
-        }
-        return normalized;
     }
 
 }

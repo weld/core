@@ -53,6 +53,8 @@ import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.AnnotatedField;
@@ -128,7 +130,6 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.inject.WeldInstance;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
@@ -156,6 +157,7 @@ import org.jboss.weld.module.ExpressionLanguageSupport;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.resolution.DecoratorResolvableBuilder;
+import org.jboss.weld.resolution.EventTypeAssignabilityRules;
 import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.InterceptorResolvableBuilder;
 import org.jboss.weld.resolution.NameBasedResolver;
@@ -179,9 +181,11 @@ import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -1580,6 +1584,72 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return getInstance(createCreationalContext(null));
     }
 
+    @Override
+    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType,
+            Set<Annotation> requiredQualifiers) {
+        String loggingMethodName = "isMatchingBean()";
+        if (beanTypes == null || beanQualifiers == null || requiredType == null || requiredQualifiers == null) {
+            throw BeanManagerLogger.LOG.assignabilityMethodIllegalArgs(loggingMethodName);
+        }
+        validateQualifiers(beanQualifiers, loggingMethodName);
+        validateQualifiers(requiredQualifiers, loggingMethodName);
+        // always add Object as bean type; filter bean types to only contain legal bean types
+        Set<Type> legalBeanTypes = new HashSet<>(beanTypes);
+        legalBeanTypes.add(Object.class);
+        legalBeanTypes = Beans.getLegalBeanTypes(legalBeanTypes, beanTypes);
+        // type check first
+        if (BeanTypeAssignabilityRules.instance().matches(requiredType, legalBeanTypes)) {
+            // normalize qualifiers, adding built-ins where missing, then compare
+            Set<Annotation> normalizedBeanQualifiers = Bindings.normalizeBeanQualifiers(beanQualifiers);
+            Set<Annotation> normalizedRequiredQualifiers = requiredQualifiers.isEmpty() ? Set.of(Default.Literal.INSTANCE)
+                    : requiredQualifiers;
+            MetaAnnotationStore metaAnnotationStore = services.get(MetaAnnotationStore.class);
+            if (Beans.containsAllQualifiers(QualifierInstance.of(normalizedRequiredQualifiers, metaAnnotationStore),
+                    QualifierInstance.of(normalizedBeanQualifiers, metaAnnotationStore))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isMatchingEvent(Type eventType, Set<Annotation> eventQualifiers, Type observedEventType,
+            Set<Annotation> observedEventQualifiers) {
+        String loggingMethodName = "isMatchingEvent()";
+        if (eventType == null || eventQualifiers == null || observedEventType == null || observedEventQualifiers == null) {
+            throw BeanManagerLogger.LOG.assignabilityMethodIllegalArgs(loggingMethodName);
+        }
+        if (Types.containsTypeVariable(Types.getCanonicalType(eventType))) {
+            throw BeanManagerLogger.LOG.eventTypeUnresolvableWildcard(eventType);
+        }
+        validateQualifiers(eventQualifiers, loggingMethodName);
+        validateQualifiers(observedEventQualifiers, loggingMethodName);
+        // type check first
+        if (EventTypeAssignabilityRules.instance().matches(observedEventType,
+                HierarchyDiscovery.forNormalizedType(eventType).getTypeClosure())) {
+            // normalize qualifiers, adding built-ins where missing, then compare
+            Set<Annotation> normalizedEventQualifiers = new HashSet<>(eventQualifiers);
+            if (eventQualifiers.isEmpty()) {
+                normalizedEventQualifiers.add(Default.Literal.INSTANCE);
+            }
+            normalizedEventQualifiers.add(Any.Literal.INSTANCE);
+            MetaAnnotationStore metaAnnotationStore = services.get(MetaAnnotationStore.class);
+            if (Beans.containsAllQualifiers(QualifierInstance.of(observedEventQualifiers, metaAnnotationStore),
+                    QualifierInstance.of(normalizedEventQualifiers, metaAnnotationStore))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void validateQualifiers(Set<Annotation> qualifiers, String methodName) {
+        for (Annotation qualifierCandidate : qualifiers) {
+            if (!isQualifier(qualifierCandidate.annotationType())) {
+                throw BeanManagerLogger.LOG.annotationNotAQualifier(methodName, qualifierCandidate.annotationType());
+            }
+        }
+    }
+
     private Bean<?> findNormalScopedDependant(CreationalContextImpl<?> weldCreationalContext) {
         CreationalContextImpl<?> parent = weldCreationalContext.getParentCreationalContext();
         if (parent != null) {
@@ -1783,17 +1853,5 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             // In some configurations the root manager does not have access to extensions
             return null;
         }
-    }
-
-    @Override
-    public boolean isMatchingBean(Set<Type> beanTypes, Set<Annotation> beanQualifiers, Type requiredType,
-            Set<Annotation> requiredQualifiers) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isMatchingEvent(Type eventType, Set<Annotation> eventQualifiers, Type observedEventType,
-            Set<Annotation> observedEventQualifiers) {
-        throw new UnsupportedOperationException();
     }
 }
