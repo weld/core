@@ -80,8 +80,7 @@ public class ExtensionBeanDeployer {
     private <E extends Extension> void deployBean(Metadata<E> extension, ClassTransformer classTransformer) {
         // Locate the BeanDeployment for this extension
         BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping,
-                contexts, extension.getValue()
-                        .getClass());
+                contexts, extension);
 
         // Do not register synthetic extension as a bean, only register container lifecycle observer methods
         if (extension.getValue() instanceof SyntheticExtension) {

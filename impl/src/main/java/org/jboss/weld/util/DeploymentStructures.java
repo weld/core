@@ -25,6 +25,7 @@ import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -47,6 +48,26 @@ public class DeploymentStructures {
             }
             return beanDeployment;
         }
+    }
+
+    public static <E> BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager,
+            BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts,
+            Metadata<E> extensionMetadata) {
+
+        // TODO: draft
+        String location = extensionMetadata.getLocation();
+        if (location != null && location.contains(":")) {
+            String prefix = location.substring(0, location.indexOf(":"));
+            for (BeanDeployment beanDeployment : bdaMapping.getBeanDeployments()) {
+                String bdaId = beanDeployment.getBeanDeploymentArchive().getId();
+                if (bdaId.contains(prefix)) {
+                    return beanDeployment;
+                }
+            }
+        }
+
+        return getOrCreateBeanDeployment(deployment, deploymentManager, bdaMapping, contexts,
+                extensionMetadata.getValue().getClass());
     }
 
 }
