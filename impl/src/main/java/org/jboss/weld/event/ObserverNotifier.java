@@ -40,6 +40,7 @@ import java.util.function.Supplier;
 
 import jakarta.enterprise.event.NotificationOptions;
 import jakarta.enterprise.event.ObserverException;
+import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.EventMetadata;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 
@@ -120,7 +121,7 @@ public class ObserverNotifier {
      * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is
      * verified.
      *
-     * @param event the event object
+     * @param eventType the event object
      * @param qualifiers given event qualifiers
      * @return resolved observer methods
      */
@@ -133,7 +134,7 @@ public class ObserverNotifier {
      * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is
      * verified.
      *
-     * @param event the event object
+     * @param eventType the event object
      * @param qualifiers given event qualifiers
      * @return resolved observer methods
      */
@@ -200,16 +201,19 @@ public class ObserverNotifier {
     protected Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         Set<Type> typeClosure = sharedObjectCache.getTypeClosureHolder(eventType).get();
-        return new ResolvableBuilder(resolver.getMetaAnnotationStore()).addTypes(typeClosure).addType(Object.class)
+        ResolvableBuilder resolvableBuilder = new ResolvableBuilder(resolver.getMetaAnnotationStore()).addTypes(typeClosure)
+                .addType(Object.class)
                 .addQualifiers(qualifiers)
-                .addQualifierUnchecked(QualifierInstance.ANY).create();
+                .addQualifierUnchecked(QualifierInstance.ANY);
+        if (qualifiers.isEmpty()) {
+            resolvableBuilder.addQualifier(Default.Literal.INSTANCE);
+        }
+        return resolvableBuilder.create();
+
     }
 
     protected Resolvable buildEventResolvable(Type eventType, Annotation... qualifiers) {
-        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ResolvableBuilder(resolver.getMetaAnnotationStore())
-                .addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get()).addType(Object.class)
-                .addQualifiers(qualifiers).addQualifierUnchecked(QualifierInstance.ANY).create();
+        return buildEventResolvable(eventType, Set.of(qualifiers));
     }
 
     /**

@@ -1361,7 +1361,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
 
         // there are no qualifiers by default
-        // ResolvableBuilder.create() takes care of adding @Default if there is no qualifier selected
+        // @Default and @Any are added as needed in ObserverQualifier#buildEventResolvable
         @Override
         public Set<Annotation> getQualifiers() {
             return Collections.emptySet();
