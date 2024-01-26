@@ -16,6 +16,17 @@
  */
 package org.jboss.weld.tests.event;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -34,9 +45,9 @@ public class EventQualifierTest {
                 .addPackage(EventQualifierTest.class.getPackage());
     }
 
-    /*
-     * description = "WELD-226"
-     */
+    @Inject
+    BeanManager bm;
+
     @Test
     public void testDefaultQualifierNotRequired(Bar bar) {
         bar.fireWithNoQualifiers();
@@ -58,6 +69,44 @@ public class EventQualifierTest {
         bar.fireWithUpdatedQualifierViaSelect();
         Assert.assertTrue(bar.isUnqualifiedObserved());
         Assert.assertTrue(bar.isUpdatedObserved());
+    }
+
+    @Test
+    public void testDefaultQualifierPresent(ObservingBean bean)
+            throws ExecutionException, InterruptedException, TimeoutException {
+        bean.reset();
+
+        Set<Annotation> expectedQualifiers = Set.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
+
+        // just get event fire right away - @Default should be included
+        bm.getEvent().fire(new Payload());
+        Assert.assertEquals(1, bean.getDefaultObjectNotified());
+        Assert.assertEquals(1, bean.getDefaultPayloadNotified());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultObjectQualifiers());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultPayloadQualifiers());
+
+        // select Payload and fire - @Default should be included
+        bm.getEvent().select(Payload.class).fire(new Payload());
+        Assert.assertEquals(2, bean.getDefaultObjectNotified());
+        Assert.assertEquals(2, bean.getDefaultPayloadNotified());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultObjectQualifiers());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultPayloadQualifiers());
+
+        // same in async variant
+        // just get event fire right away - @Default should be included
+        bm.getEvent().fireAsync(new Payload()).toCompletableFuture().get(2, TimeUnit.SECONDS);
+        Assert.assertEquals(1, bean.getDefaultObjectAsyncNotified());
+        Assert.assertEquals(1, bean.getDefaultPayloadAsyncNotified());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultObjectAsyncQualifiers());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultPayloadAsyncQualifiers());
+
+        // select Payload and fire - @Default should be included
+        bm.getEvent().select(Payload.class).fireAsync(new Payload()).toCompletableFuture().get(2, TimeUnit.SECONDS);
+        Assert.assertEquals(2, bean.getDefaultObjectAsyncNotified());
+        Assert.assertEquals(2, bean.getDefaultPayloadAsyncNotified());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultObjectAsyncQualifiers());
+        Assert.assertEquals(expectedQualifiers, bean.getDefaultPayloadAsyncQualifiers());
+
     }
 
 }
