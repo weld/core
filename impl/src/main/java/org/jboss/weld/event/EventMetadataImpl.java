@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.EventMetadata;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
@@ -59,6 +60,9 @@ public final class EventMetadataImpl implements EventMetadata {
     public Set<Annotation> getQualifiers() {
         ImmutableSet.Builder<Annotation> builder = ImmutableSet.<Annotation> builder();
         builder.add(Any.Literal.INSTANCE);
+        if ((qualifiers != null && qualifiers.isEmpty()) || (qualifierArray != null && qualifierArray.length == 0)) {
+            builder.add(Default.Literal.INSTANCE);
+        }
         if (qualifiers != null) {
             return builder.addAll(qualifiers).build();
         } else if (qualifierArray != null) {
