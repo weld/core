@@ -1057,11 +1057,13 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
 
         if (isEnabled(ARCHIVE_ISOLATION_SYSTEM_PROPERTY, true)) {
-            deployment = new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions);
+            // use special impl of WeldDeployment to ensure manually registered extensions land in synth. archives.
+            deployment = createWeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions);
             CommonLogger.LOG.archiveIsolationEnabled();
         } else {
             Set<WeldBeanDeploymentArchive> flatDeployment = new HashSet<WeldBeanDeploymentArchive>();
             flatDeployment.add(WeldBeanDeploymentArchive.merge(bootstrap, beanDeploymentArchives));
+            // there's only one archive, no need to use #createWeldDeployment
             deployment = new WeldDeployment(resourceLoader, bootstrap, flatDeployment, extensions);
             CommonLogger.LOG.archiveIsolationDisabled();
         }
@@ -1071,6 +1073,32 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             Services.put(deployment.getServices(), entry.getKey(), entry.getValue());
         }
         return deployment;
+    }
+
+    /**
+     * Create an anonymous impl of {@link WeldDeployment} overriding its {@link WeldDeployment#loadBeanDeploymentArchive(Class)}
+     * method.
+     *
+     * This is used by Weld SE in other than flat deployment mode to ensure that manually registered extensions land in the
+     * synthetic bean archive.
+     */
+    private WeldDeployment createWeldDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap,
+            Set<WeldBeanDeploymentArchive> beanDeploymentArchives, Iterable<Metadata<Extension>> extensions) {
+        return new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions) {
+            @Override
+            public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
+                if (isSyntheticBeanArchiveRequired()
+                        && Weld.this.extensions.stream().anyMatch(ext -> ext.getValue().getClass().equals(beanClass)
+                                && ext.getLocation().startsWith(Weld.SYNTHETIC_LOCATION_PREFIX))) {
+                    for (BeanDeploymentArchive bda : getBeanDeploymentArchives()) {
+                        if (bda.getId().equals(WeldDeployment.SYNTHETIC_BDA_ID)) {
+                            return bda;
+                        }
+                    }
+                }
+                return super.loadBeanDeploymentArchive(beanClass);
+            }
+        };
     }
 
     /**
