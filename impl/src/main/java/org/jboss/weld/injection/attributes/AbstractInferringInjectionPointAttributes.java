@@ -20,12 +20,14 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Set;
 
 import jakarta.decorator.Delegate;
 import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
+import org.jboss.weld.manager.InjectionTargetFactoryImpl;
 import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
@@ -41,11 +43,13 @@ public abstract class AbstractInferringInjectionPointAttributes<T, S>
     private final Set<Annotation> qualifiers;
     private final TypeAttribute typeAttribute;
     private final boolean delegate;
-
+    private final Class<?> declaringComponentClass;
+                
     public AbstractInferringInjectionPointAttributes(EnhancedAnnotated<?, ?> annotatedElement, String contextId, Bean<?> bean,
             Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
         this.bean = BeanHolder.of(contextId, bean);
         this.qualifiers = qualifiers;
+        this.declaringComponentClass = declaringComponentClass;
         if (bean == null) {
             this.typeAttribute = new NonContextualInjectionPointTypeAttribute(declaringComponentClass);
         } else {
@@ -56,7 +60,28 @@ public abstract class AbstractInferringInjectionPointAttributes<T, S>
 
     @Override
     public Type getType() {
-        return typeAttribute.getType();
+        Type t = typeAttribute.getType();
+        if (t instanceof TypeVariable<?>) {
+                if (InjectionTargetFactoryImpl.javaClassThreadLocal.get() != null) {
+                        Class<?> clazz = InjectionTargetFactoryImpl.javaClassThreadLocal.get();
+                        Type[] typeParameters = declaringComponentClass.getTypeParameters();
+                        int index = 0;
+                        for (int i = 0; i < typeParameters.length; i++) {
+                                if (typeParameters[i].getTypeName().equals(t.getTypeName())) {
+                                        index = i;
+                                        break;
+                                }
+                        }
+                        com.google.common.reflect.TypeToken<?> token = com.google.common.reflect.TypeToken.of(clazz);
+                        @SuppressWarnings({ "unchecked", "rawtypes" })
+                        Type[] typeArgs = ((ParameterizedType) token.getSupertype((Class) declaringComponentClass).getType())
+                                        .getActualTypeArguments();
+                        t = (Class<?>) typeArgs[index];
+                } else {
+                        t = ((TypeVariable<?>) t).getBounds()[0];
+                }
+        }
+        return t;
     }
 
     @Override
