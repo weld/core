@@ -92,6 +92,7 @@
         <weld.api.version>6.0.Alpha2</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
+        <guava.version>33.0.0-jre</guava.version>
     </properties>
 
     <modules>
@@ -472,6 +473,13 @@
                 <version>${spotbugs-annotations-version}</version>
                 <optional>true</optional>
             </dependency>
+            
+             <dependency>
+    			<groupId>com.google.guava</groupId>
+    			<artifactId>guava</artifactId> 
+                <version>${guava.version}</version>
+    		</dependency>
+            
         </dependencies>
 
     </dependencyManagement>
