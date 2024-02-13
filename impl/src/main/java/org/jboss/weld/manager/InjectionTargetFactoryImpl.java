@@ -58,6 +58,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
 
     private volatile EnhancedAnnotatedType<T> annotatedType;
     private volatile AnnotatedTypeConfiguratorImpl<T> configurator;
+    public static ThreadLocal<Class<?>> javaClassThreadLocal = new ThreadLocal<>();
 
     protected InjectionTargetFactoryImpl(AnnotatedType<T> type, BeanManagerImpl manager) {
         this.manager = manager;
@@ -80,6 +81,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
     private WeldInjectionTarget<T> createInjectionTarget(Bean<T> bean, boolean interceptor) {
         try {
             initAnnotatedType();
+            javaClassThreadLocal.set(originalAnnotatedType.getJavaClass());
             return validate(createInjectionTarget(annotatedType, bean, interceptor));
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
