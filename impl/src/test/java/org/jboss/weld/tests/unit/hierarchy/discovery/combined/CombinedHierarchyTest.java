@@ -47,6 +47,13 @@ public class CombinedHierarchyTest {
         expectedTypes.add(Types.newParameterizedType(ArrayList.class, Integer.class));
         expectedTypes.add(Types.newParameterizedType(Iterable.class, Integer.class));
 
+        // JDK 21 adds interface java.util.SequencedCollection<class java.lang.Integer>
+        try {
+            Class<?> seqCollectionClazz = Class.forName("java.util.SequencedCollection");
+            expectedTypes.add(Types.newParameterizedType(seqCollectionClazz, Integer.class));
+        } catch (ClassNotFoundException e) {
+            // this just means we are running on older JDK
+        }
         HierarchyDiscovery discovery = new HierarchyDiscovery(Types.newParameterizedType(ArrayList.class, Integer.class));
         Types.assertTypeSetMatches(expectedTypes, discovery.getTypeClosure());
     }
