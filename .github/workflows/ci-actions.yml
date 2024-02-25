@@ -93,6 +93,10 @@ jobs:
             name: "17",
             java-version: 17,
           }
+          - {
+            name: "21",
+            java-version: 21,
+          }
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
@@ -156,6 +160,10 @@ jobs:
             name: "17",
             java-version: 17,
           }
+          - {
+            name: "21",
+            java-version: 21,
+          }
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
@@ -212,8 +220,8 @@ jobs:
       fail-fast: false
       matrix:
         java:
-          - { name: "11",
-              java-version: 11,
+          - { name: "17",
+              java-version: 17,
           }
     steps:
       - uses: actions/checkout@v4
@@ -290,6 +298,10 @@ jobs:
           - {
             name: "17",
             java-version: 17,
+          }
+          - {
+            name: "21",
+            java-version: 21,
           }
     steps:
       - uses: actions/checkout@v4
@@ -389,6 +401,10 @@ jobs:
             name: "17",
             java-version: 17,
           }
+          - {
+            name: "21",
+            java-version: 21,
+          }
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
@@ -426,10 +442,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3.12.0
         with:
-          java-version: 11
+          java-version: 17
           distribution: 'temurin'
       - name: Download Maven Repo
         uses: actions/download-artifact@v3
