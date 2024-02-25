@@ -10,11 +10,11 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>47</version>
+        <version>49</version>
     </parent>
 
     <prerequisites>
-        <maven>3.0</maven>
+        <maven>3.8</maven>
     </prerequisites>
 
 
@@ -60,7 +60,7 @@
         <arquillian.tomcat.version>1.2.0.Final</arquillian.tomcat.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Version of the CDI 4.x release TCK -->
-        <cdi.tck-4-1.version>4.1.0-SNAPSHOT</cdi.tck-4-1.version>
+        <cdi.tck-4-1.version>4.1.0-M1</cdi.tck-4-1.version>
         <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
         <!-- We can also use our own file, needed for relaxed mode testing (see WeldMethodInterceptor) -->
         <!-- Our variant is under src/test/tck/tck-tests.xml -->
@@ -89,7 +89,7 @@
         <shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
         <testng.version>7.9.0</testng.version>
-        <weld.api.version>6.0-SNAPSHOT</weld.api.version>
+        <weld.api.version>6.0.Beta2</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -727,17 +727,4 @@
             </properties>
         </profile>
     </profiles>
-
-    <!-- Needed to download org.apache.maven.plugins:maven-compiler-plugin:jar:3.8.0-jboss-2 -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jboss-public-repository-group</id>
-            <name>JBoss Public Repository Group</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
