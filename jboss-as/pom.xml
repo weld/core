@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.0.0.Beta1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -30,7 +30,7 @@
     <properties>
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
         as the release plugin won't deal with double evaluation -->
-        <weld.update.version>6.0.0-SNAPSHOT</weld.update.version>
+        <weld.update.version>6.0.0.Beta1</weld.update.version>
         <!-- These are *NOT* automatically updated and should be reviewed if the relevant profile is to be used -->
         <cdi.update.version>4.1.0.Beta1</cdi.update.version>
         <interceptors.update.version>2.2.0-RC1</interceptors.update.version>
@@ -280,7 +280,7 @@
                                         </copy>
 
                                         <!-- WFLY doesn't yet have dep. on the EL API part of CDI, this forcibly adds it -->
-                                        <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.cdi-api.*?&quot;" replace="path=&quot;${cdi.api.file}&quot;/>&lt;resource-root path=&quot;${cdi.el.api.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.cdi-api.*?&quot;" replace="path=&quot;${cdi.api.file}&quot; /&gt;&lt;resource-root path=&quot;${cdi.el.api.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.lang-model.*?&quot;" replace="path=&quot;${cdi.lang.model.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.interceptor.dir}/main/module.xml" match="path=&quot;jakarta.interceptor-api.*?&quot;" replace="path=&quot;${interceptor.api.file}&quot;" byline="true" />
                                     </target>
