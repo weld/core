@@ -77,7 +77,7 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     IllegalStateException undefinedBeanDiscoveryValue(Object param1);
 
     @LogMessage(level = Level.INFO)
-    @Message(id = 14, value = "Falling back to Java Reflection for bean-discovery-mode=\"annotated\" discovery. Add org.jboss:jandex to the classpath to speed-up startup.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 14, value = "Falling back to Java Reflection for bean-discovery-mode=\"annotated\" discovery. Add io.smallrye:jandex to the classpath to speed-up startup.", format = Format.MESSAGE_FORMAT)
     void reflectionFallback();
 
     @Message(id = 15, value = "Unable to load annotation: {0}", format = Format.MESSAGE_FORMAT)
