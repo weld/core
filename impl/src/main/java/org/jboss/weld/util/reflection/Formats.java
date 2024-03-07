@@ -363,15 +363,29 @@ public class Formats {
         }
     }
 
-    public static String formatAsFormalParameterList(Iterable<? extends AnnotatedParameter<?>> parameters) {
-        return "(" + formatIterable(parameters, new Function<AnnotatedParameter<?>>() {
+    public static String formatAsFormalParameterList(Iterable<? extends AnnotatedParameter<?>> parameters,
+            boolean belongsToMethodInEnum) {
+        // For any method params coming from an enum (which cannot become a bean but can have PAT fired for) we simplify
+        // logging to avoid possible stack overflow during several methods; see WELD-2781
+        Function<AnnotatedParameter<?>> parameterFunction;
+        if (belongsToMethodInEnum) {
+            parameterFunction = new Function<AnnotatedParameter<?>>() {
+                @Override
+                public String apply(AnnotatedParameter<?> from, int position) {
+                    return commaDelimiterFunction().apply(from.getJavaParameter().getType().getName(), position);
+                }
+            };
+        } else {
+            parameterFunction = new Function<AnnotatedParameter<?>>() {
 
-            @Override
-            public String apply(AnnotatedParameter<?> from, int position) {
-                return commaDelimiterFunction().apply(formatParameter(from), position);
-            }
+                @Override
+                public String apply(AnnotatedParameter<?> from, int position) {
+                    return commaDelimiterFunction().apply(formatParameter(from), position);
+                }
 
-        }) + ")";
+            };
+        }
+        return "(" + formatIterable(parameters, parameterFunction) + ")";
     }
 
     public static String formatParameter(AnnotatedParameter<?> parameter) {
@@ -617,7 +631,7 @@ public class Formats {
                 + Formats.addSpaceIfNeeded(Formats.formatAnnotations(constructor.getAnnotations()))
                 + Formats.addSpaceIfNeeded(Formats.formatModifiers(constructor.getJavaMember().getModifiers()))
                 + constructor.getDeclaringType().getJavaClass().getName()
-                + Formats.formatAsFormalParameterList(constructor.getParameters());
+                + Formats.formatAsFormalParameterList(constructor.getParameters(), false);
     }
 
     public static String formatAnnotatedField(AnnotatedField<?> field) {
@@ -633,7 +647,8 @@ public class Formats {
                 + Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations()))
                 + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers()))
                 + method.getDeclaringType().getJavaClass().getName() + "."
-                + method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters());
+                + method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters(),
+                        method.getDeclaringType().getJavaClass().isEnum());
     }
 
     public static String formatAnnotatedParameter(AnnotatedParameter<?> parameter) {
