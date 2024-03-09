@@ -17,8 +17,11 @@
 
 package org.jboss.weld.environment.servlet.test.config;
 
+import jakarta.enterprise.context.Dependent;
+
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@Dependent
 public class GoodBean {
 }

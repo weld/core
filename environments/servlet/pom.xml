@@ -18,9 +18,6 @@
         <module>build</module>
         <module>tests/base</module>
         <module>tests/tomcat</module>
-        <!-- Arquillian Jetty container doesn't seem to be EE 10 ready ATM -->
-        <!-- See https://github.com/arquillian/arquillian-container-jetty/issues/110#issuecomment-1164313289 -->
-        <!-- <module>tests/jetty</module>-->
     </modules>
 
     <description>
@@ -29,8 +26,7 @@
 
     <properties>
         <tomcat.version>10.1.24</tomcat.version>
-        <jetty.version>11.0.21</jetty.version>
-        <jetty9.asm.version>7.0</jetty9.asm.version>
+        <jetty.version>12.0.8</jetty.version>
         <websockets.api>2.2.0</websockets.api>
         <undertow.version>2.3.13.Final</undertow.version>
     </properties>
@@ -71,44 +67,18 @@
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
+                <artifactId>jetty-bom</artifactId>
                 <version>${jetty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-servlet</artifactId>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-bom</artifactId>
                 <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-plus</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-jndi</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-webapp</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-annotations</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-util</artifactId>
-                <version>${jetty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>
