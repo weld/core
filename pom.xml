@@ -70,7 +70,7 @@
         <spotbugs-annotations-version>4.7.3</spotbugs-annotations-version>
         <groovy.version>3.0.20</groovy.version>
         <htmlunit.version>2.70.0</htmlunit.version>
-        <jacoco.version>0.8.8</jacoco.version>
+        <jacoco.version>0.8.11</jacoco.version>
         <jandex.version>3.1.3</jandex.version>
         <jakarta.activation.version>2.1.0</jakarta.activation.version>
         <jakarta.el.version>5.0.1</jakarta.el.version>
