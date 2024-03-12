@@ -28,7 +28,7 @@
     <description>The Weld reference guide</description>
 
     <properties>
-        <asciidoctor.version>2.2.2</asciidoctor.version>
+        <asciidoctor.version>3.0.0</asciidoctor.version>
         <asciidoctorj-pdf.version>2.3.7</asciidoctorj-pdf.version>
         <pdf.name>weld-reference.pdf</pdf.name>
         <html.name>index.html</html.name>
