@@ -31,7 +31,7 @@
 
     <properties>
         <weld.api.bom.version>6.0.Beta2</weld.api.bom.version>
-        <gpg.plugin.version>3.0.1</gpg.plugin.version>
+        <gpg.plugin.version>3.2.0</gpg.plugin.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
         <ossrh.releases.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</ossrh.releases.repo.url>
