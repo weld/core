@@ -60,7 +60,7 @@ jobs:
           zip -r wildfly.zip wildfly
           cd ..
       - name: Persist WildFly
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wildfly-patched-zip
           path: container/wildfly.zip
@@ -68,7 +68,7 @@ jobs:
         shell: bash
         run: tar -czf maven-repo.tgz -C ~ .m2/repository
       - name: Persist Maven Repo
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: maven-repo
           path: maven-repo.tgz
@@ -131,13 +131,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-incontainer-jdk${{matrix.java.name}}
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-incontainer-jdk${{matrix.java.name}}
@@ -198,13 +198,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-jdk${{matrix.java.name}}
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-cdi-tck-jdk${{matrix.java.name}}
@@ -257,13 +257,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-jdk${{matrix.java.name}}-incontainer-relaxed
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-cdi-tck-jdk${{matrix.java.name}}
@@ -276,7 +276,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-jdk${{matrix.java.name}}-relaxed
@@ -326,7 +326,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-no-container-jdk${{matrix.java.name}}
@@ -372,13 +372,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failed tests artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-examples
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-examples
@@ -428,7 +428,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-se-jdk${{matrix.java.name}}
@@ -463,7 +463,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-se-servlet-coop
