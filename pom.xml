@@ -81,7 +81,7 @@
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>2.1.19.Final</jboss.logmanager.version>
         <jsf.impl.version>4.0.0</jsf.impl.version>
-        <jsp.api.version>3.1.0</jsp.api.version>
+        <jsp.api.version>3.1.1</jsp.api.version>
         <jstl.api.version>3.0.0</jstl.api.version>
         <junit.version>4.13.2</junit.version>
         <log4j.version>1.2.17</log4j.version>
