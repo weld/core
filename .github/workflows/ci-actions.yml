@@ -41,7 +41,7 @@ jobs:
         shell: bash
       - name: Cache Maven Repository
         id: cache-maven
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           # Caching is an automated pre/post action that installs the cache if the key exists and exports the cache
