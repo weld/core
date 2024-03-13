@@ -155,7 +155,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
 
     @Override
     Object argumentForExtensionMethod(ExtensionMethodParameterType type, java.lang.reflect.Method method) {
-        if (type == ExtensionMethodParameterType.INVOKER_FACTORY) {
+        if (type == ExtensionMethodParameterType.INVOKER_FACTORY || type == ExtensionMethodParameterType.WELD_INVOKER_FACTORY) {
             return new InvokerFactoryImpl(beanManager);
         } else if (type == ExtensionMethodParameterType.TYPES) {
             return new TypesImpl(beanManager);

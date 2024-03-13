@@ -57,6 +57,7 @@ import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bootstrap.SyntheticExtension;
 import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
+import org.jboss.weld.bootstrap.event.WeldProcessManagedBean;
 import org.jboss.weld.bootstrap.events.NotificationListener;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
@@ -310,8 +311,8 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
      * @see ProcessManagedBean
      */
     @SuppressWarnings("serial")
-    public static Builder<ProcessManagedBean<?>> processManagedBean() {
-        return processManagedBean(new TypeLiteral<ProcessManagedBean<?>>() {
+    public static Builder<WeldProcessManagedBean<?>> processManagedBean() {
+        return processManagedBean(new TypeLiteral<WeldProcessManagedBean<?>>() {
         }.getType());
     }
 
@@ -321,9 +322,9 @@ public final class ContainerLifecycleObserver<T> implements ContainerLifecycleEv
      * @return a new builder instance
      * @see ProcessManagedBean
      */
-    public static Builder<ProcessManagedBean<?>> processManagedBean(Type observedType) {
-        checkRawType(observedType, ProcessManagedBean.class);
-        return ContainerLifecycleObserver.<ProcessManagedBean<?>> of(observedType);
+    public static Builder<WeldProcessManagedBean<?>> processManagedBean(Type observedType) {
+        checkRawType(observedType, WeldProcessManagedBean.class);
+        return ContainerLifecycleObserver.<WeldProcessManagedBean<?>> of(observedType);
     }
 
     /**

@@ -26,12 +26,12 @@ import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.enterprise.inject.spi.ProcessBean;
 import jakarta.enterprise.invoke.Invoker;
-import jakarta.enterprise.invoke.InvokerBuilder;
 
 import org.jboss.weld.bean.ClassBean;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.invokable.InvokerBuilderImpl;
 import org.jboss.weld.invokable.TargetMethod;
+import org.jboss.weld.invoke.WeldInvokerBuilder;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class AbstractProcessClassBean<X, B extends ClassBean<X>> extends AbstractDefinitionContainerEvent
@@ -54,7 +54,7 @@ public abstract class AbstractProcessClassBean<X, B extends ClassBean<X>> extend
         return bean;
     }
 
-    public InvokerBuilder<Invoker<X, ?>> createInvoker(AnnotatedMethod<? super X> annotatedMethod) {
+    public WeldInvokerBuilder<Invoker<X, ?>> createInvoker(AnnotatedMethod<? super X> annotatedMethod) {
         checkWithinObserverNotification();
 
         ClassBean<X> bean = getBean();

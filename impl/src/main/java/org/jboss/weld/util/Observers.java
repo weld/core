@@ -49,6 +49,7 @@ import jakarta.enterprise.inject.spi.ProcessSyntheticObserverMethod;
 
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.event.WeldAfterBeanDiscovery;
+import org.jboss.weld.bootstrap.event.WeldProcessManagedBean;
 import org.jboss.weld.event.ContainerLifecycleEventObserverMethod;
 import org.jboss.weld.event.EventMetadataAwareObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
@@ -79,9 +80,8 @@ public class Observers {
     public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>> builder()
             .addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
             .addAll(ProcessSyntheticAnnotatedType.class, ProcessSessionBean.class, ProcessManagedBean.class,
-                    ProcessProducerMethod.class,
-                    ProcessProducerField.class, ProcessSyntheticBean.class, ProcessSyntheticObserverMethod.class,
-                    WeldAfterBeanDiscovery.class)
+                    ProcessProducerMethod.class, ProcessProducerField.class, ProcessSyntheticBean.class,
+                    ProcessSyntheticObserverMethod.class, WeldAfterBeanDiscovery.class, WeldProcessManagedBean.class)
             .build();
 
     private static final String NOTIFY_METHOD_NAME = "notify";

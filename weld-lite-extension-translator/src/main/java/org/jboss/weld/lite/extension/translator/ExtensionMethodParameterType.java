@@ -20,6 +20,7 @@ import jakarta.enterprise.lang.model.declarations.ClassInfo;
 import jakarta.enterprise.lang.model.declarations.FieldInfo;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 
+import org.jboss.weld.invoke.WeldInvokerFactory;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 enum ExtensionMethodParameterType {
@@ -39,6 +40,7 @@ enum ExtensionMethodParameterType {
     OBSERVER_INFO(ObserverInfo.class, true, ExtensionPhase.REGISTRATION),
 
     INVOKER_FACTORY(InvokerFactory.class, false, ExtensionPhase.REGISTRATION),
+    WELD_INVOKER_FACTORY(WeldInvokerFactory.class, false, ExtensionPhase.REGISTRATION),
 
     SYNTHETIC_COMPONENTS(SyntheticComponents.class, false, ExtensionPhase.SYNTHESIS),
 
