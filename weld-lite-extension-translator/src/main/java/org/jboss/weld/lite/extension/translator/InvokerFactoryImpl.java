@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import jakarta.enterprise.inject.build.compatible.spi.BeanInfo;
-import jakarta.enterprise.inject.build.compatible.spi.InvokerFactory;
 import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -12,15 +11,16 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.Interceptor;
-import jakarta.enterprise.invoke.InvokerBuilder;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 
 import org.jboss.weld.bean.ClassBean;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.invokable.InvokerInfoBuilder;
 import org.jboss.weld.invokable.TargetMethod;
+import org.jboss.weld.invoke.WeldInvokerBuilder;
+import org.jboss.weld.invoke.WeldInvokerFactory;
 
-class InvokerFactoryImpl implements InvokerFactory {
+class InvokerFactoryImpl implements WeldInvokerFactory {
     private final BeanManager beanManager;
 
     InvokerFactoryImpl(BeanManager beanManager) {
@@ -28,7 +28,7 @@ class InvokerFactoryImpl implements InvokerFactory {
     }
 
     @Override
-    public InvokerBuilder<InvokerInfo> createInvoker(BeanInfo bean, MethodInfo method) {
+    public WeldInvokerBuilder<InvokerInfo> createInvoker(BeanInfo bean, MethodInfo method) {
         Bean<?> cdiBean = ((BeanInfoImpl) bean).cdiBean;
         if (!(cdiBean instanceof ClassBean)) {
             throw new DeploymentException("Cannot build invoker for a bean which is not a managed bean: " + cdiBean);

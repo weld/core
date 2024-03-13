@@ -5,10 +5,9 @@ import java.util.Collection;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.Extension;
-import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.enterprise.invoke.Invoker;
 
-import org.jboss.weld.invoke.WeldInvokerBuilder;
+import org.jboss.weld.bootstrap.event.WeldProcessManagedBean;
 import org.jboss.weld.tests.invokable.common.ArgTransformer;
 import org.jboss.weld.tests.invokable.common.ExceptionTransformer;
 import org.jboss.weld.tests.invokable.common.FooArg;
@@ -149,7 +148,7 @@ public class ObservingExtension implements Extension {
     private Invoker<SimpleBean, ?> invocationWrapperInvoker;
     private Invoker<SimpleBean, ?> staticInvocationWrapperInvoker;
 
-    public void createNoTransformationInvokers(@Observes ProcessManagedBean<SimpleBean> pmb) {
+    public void createNoTransformationInvokers(@Observes WeldProcessManagedBean<SimpleBean> pmb) {
         Collection<AnnotatedMethod<? super SimpleBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super SimpleBean> invokableMethod : invokableMethods) {
@@ -169,29 +168,25 @@ public class ObservingExtension implements Extension {
         }
     }
 
-    public void createArgTransformationInvokers(@Observes ProcessManagedBean<TransformableBean> pmb) {
+    public void createArgTransformationInvokers(@Observes WeldProcessManagedBean<TransformableBean> pmb) {
         Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticArgTransformingInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                staticArgTransformingInvoker = pmb.createInvoker(invokableMethod)
                         .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
                         .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
                         .build();
-                staticArgTransformerWithConsumerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                staticArgTransformerWithConsumerInvoker = pmb.createInvoker(invokableMethod)
                         .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
                         .withArgumentTransformer(1, ArgTransformer.class, "transform2") // static Transformer method with Consumer
                         .build();
             } else if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                argTransformingInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                argTransformingInvoker = pmb.createInvoker(invokableMethod)
                         .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
                         .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
                         .build();
-                argTransformerWithConsumerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                argTransformerWithConsumerInvoker = pmb.createInvoker(invokableMethod)
                         .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
                         .withArgumentTransformer(1, ArgTransformer.class, "transform2") // static Transformer method with Consumer
                         .build();
@@ -199,85 +194,75 @@ public class ObservingExtension implements Extension {
         }
     }
 
-    public void createInstanceTransformationInvokers(@Observes ProcessManagedBean<TransformableBean> pmb) {
+    public void createInstanceTransformationInvokers(@Observes WeldProcessManagedBean<TransformableBean> pmb) {
         Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                instanceTransformerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                instanceTransformerInvoker = pmb.createInvoker(invokableMethod)
                         .withInstanceTransformer(InstanceTransformer.class, "transform")
                         .build();
-                instanceTransformerWithConsumerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                instanceTransformerWithConsumerInvoker = pmb.createInvoker(invokableMethod)
                         .withInstanceTransformer(InstanceTransformer.class, "transform2")
                         .build();
-                instanceTransformerNoParamInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                instanceTransformerNoParamInvoker = pmb.createInvoker(invokableMethod)
                         .withInstanceTransformer(TransformableBean.class, "setTransformed")
                         .build();
             }
         }
     }
 
-    public void createReturnValueTransformationInvokers(@Observes ProcessManagedBean<TransformableBean> pmb) {
+    public void createReturnValueTransformationInvokers(@Observes WeldProcessManagedBean<TransformableBean> pmb) {
         Collection<AnnotatedMethod<? super TransformableBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super TransformableBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                returnTransformerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                returnTransformerInvoker = pmb.createInvoker(invokableMethod)
                         .withReturnValueTransformer(ReturnValueTransformer.class, "transform")
                         .build();
-                returnTransformerNoParamInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                returnTransformerNoParamInvoker = pmb.createInvoker(invokableMethod)
                         .withReturnValueTransformer(String.class, "strip")
                         .build();
 
             } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticReturnTransformerInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                staticReturnTransformerInvoker = pmb.createInvoker(invokableMethod)
                         .withReturnValueTransformer(ReturnValueTransformer.class, "transform")
                         .build();
-                staticReturnTransformerNoParamInvoker = ((WeldInvokerBuilder<Invoker<TransformableBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                staticReturnTransformerNoParamInvoker = pmb.createInvoker(invokableMethod)
                         .withReturnValueTransformer(String.class, "strip")
                         .build();
             }
         }
     }
 
-    public void createExceptionTransformationInvokers(@Observes ProcessManagedBean<TrulyExceptionalBean> pmb) {
+    public void createExceptionTransformationInvokers(@Observes WeldProcessManagedBean<TrulyExceptionalBean> pmb) {
         Collection<AnnotatedMethod<? super TrulyExceptionalBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(2, invokableMethods.size());
         for (AnnotatedMethod<? super TrulyExceptionalBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                exceptionTransformerInvoker = ((WeldInvokerBuilder<Invoker<TrulyExceptionalBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                exceptionTransformerInvoker = pmb.createInvoker(invokableMethod)
                         .withExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
 
             } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticExceptionTransformerInvoker = ((WeldInvokerBuilder<Invoker<TrulyExceptionalBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                staticExceptionTransformerInvoker = pmb.createInvoker(invokableMethod)
                         .withExceptionTransformer(ExceptionTransformer.class, "transform")
                         .build();
             }
         }
     }
 
-    public void createInvocationWrapperInvokers(@Observes ProcessManagedBean<SimpleBean> pmb) {
+    public void createInvocationWrapperInvokers(@Observes WeldProcessManagedBean<SimpleBean> pmb) {
         Collection<AnnotatedMethod<? super SimpleBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
         Assert.assertEquals(4, invokableMethods.size());
         for (AnnotatedMethod<? super SimpleBean> invokableMethod : invokableMethods) {
             if (invokableMethod.getJavaMember().getName().contains("ping")) {
-                invocationWrapperInvoker = ((WeldInvokerBuilder<Invoker<SimpleBean, ?>>) pmb.createInvoker(invokableMethod))
+                invocationWrapperInvoker = pmb.createInvoker(invokableMethod)
                         .withInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
 
             } else if (invokableMethod.getJavaMember().getName().contains("staticPing")) {
-                staticInvocationWrapperInvoker = ((WeldInvokerBuilder<Invoker<SimpleBean, ?>>) pmb
-                        .createInvoker(invokableMethod))
+                staticInvocationWrapperInvoker = pmb.createInvoker(invokableMethod)
                         .withInvocationWrapper(InvocationWrapper.class, "transform")
                         .build();
             }
