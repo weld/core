@@ -30,7 +30,6 @@ class ExtensionInvoker {
         for (Class<? extends BuildCompatibleExtension> extensionClass : extensions) {
             SkipIfPortableExtensionPresent skip = extensionClass.getAnnotation(SkipIfPortableExtensionPresent.class);
             if (skip != null) {
-                // TODO only if the corresponding portable extension exists!
                 continue;
             }
 

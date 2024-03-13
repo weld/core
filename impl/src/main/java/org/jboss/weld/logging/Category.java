@@ -37,6 +37,7 @@ public enum Category {
     SERIALIZATION("Serialization"),
     CONFIGURATION("Configuration"),
     LITE_EXTENSION_TRANSLATOR("LiteExtensionTranslator"),
+    INVOKER("Invoker"),
     ;
 
     private static final String LOG_PREFIX = "org.jboss.weld.";

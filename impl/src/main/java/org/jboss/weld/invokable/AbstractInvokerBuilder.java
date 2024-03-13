@@ -13,6 +13,7 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.invoke.WeldInvokerBuilder;
+import org.jboss.weld.logging.InvokerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder<T> {
@@ -47,9 +48,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
     @Override
     public WeldInvokerBuilder<T> withArgumentLookup(int position) {
         if (position < 0 || position >= argLookup.length) {
-            // TODO better exception, use Logger interface
-            throw new IllegalArgumentException("Cannot lookup argument " + position
-                    + ", the number of method parameters is " + argLookup.length);
+            throw InvokerLogger.LOG.invalidArgumentPosition("argument lookup", position, argLookup.length);
         }
         argLookup[position] = true;
         return this;
@@ -58,8 +57,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
     @Override
     public WeldInvokerBuilder<T> withInstanceTransformer(Class<?> clazz, String methodName) {
         if (instanceTransformer != null) {
-            // TODO better exception, use Logger interface
-            throw new IllegalStateException("Instance transformer already set");
+            throw InvokerLogger.LOG.settingTransformerRepeatedly("Instance");
         }
         this.instanceTransformer = new TransformerMetadata(clazz, methodName, TransformerType.INSTANCE);
         return this;
@@ -68,13 +66,10 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
     @Override
     public WeldInvokerBuilder<T> withArgumentTransformer(int position, Class<?> clazz, String methodName) {
         if (position < 0 || position >= argTransformers.length) {
-            // TODO better exception, use Logger interface
-            throw new IllegalArgumentException("Cannot transform argument " + position
-                    + ", the number of method parameters is " + argLookup.length);
+            throw InvokerLogger.LOG.invalidArgumentPosition("argument transformer", position, argLookup.length);
         }
         if (argTransformers[position] != null) {
-            // TODO better exception, use Logger interface
-            throw new IllegalStateException("Argument transformer " + position + " already set");
+            throw InvokerLogger.LOG.settingTransformerRepeatedly("Argument");
         }
         this.argTransformers[position] = new TransformerMetadata(clazz, methodName, TransformerType.ARGUMENT);
         return this;
@@ -83,8 +78,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
     @Override
     public WeldInvokerBuilder<T> withReturnValueTransformer(Class<?> clazz, String methodName) {
         if (returnValueTransformer != null) {
-            // TODO better exception, use Logger interface
-            throw new IllegalStateException("Return value transformer already set");
+            throw InvokerLogger.LOG.settingTransformerRepeatedly("Return value");
         }
         this.returnValueTransformer = new TransformerMetadata(clazz, methodName, TransformerType.RETURN_VALUE);
         return this;
@@ -93,8 +87,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
     @Override
     public WeldInvokerBuilder<T> withExceptionTransformer(Class<?> clazz, String methodName) {
         if (exceptionTransformer != null) {
-            // TODO better exception, use Logger interface
-            throw new IllegalStateException("Exception transformer already set");
+            throw InvokerLogger.LOG.settingTransformerRepeatedly("Exception");
         }
         this.exceptionTransformer = new TransformerMetadata(clazz, methodName, TransformerType.EXCEPTION);
         return this;
@@ -103,8 +96,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
     @Override
     public WeldInvokerBuilder<T> withInvocationWrapper(Class<?> clazz, String methodName) {
         if (invocationWrapper != null) {
-            // TODO better exception, use Logger interface
-            throw new IllegalStateException("Invocation wrapper already set");
+            throw InvokerLogger.LOG.settingTransformerRepeatedly("Invocation wrapper");
         }
         this.invocationWrapper = new TransformerMetadata(clazz, methodName, TransformerType.WRAPPER);
         return this;
@@ -157,7 +149,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
                 instanceArguments++;
             } else {
                 // internal error, this should not pass validation
-                throw new IllegalStateException("Invalid instance transformer method: " + instanceTransformer);
+                throw InvokerLogger.LOG.invalidTransformerMethod("instance", instanceTransformer);
             }
         }
 
@@ -178,7 +170,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
                 mh = MethodHandles.collectArguments(mh, position, argTransformerMethod);
             } else {
                 // internal error, this should not pass validation
-                throw new IllegalStateException("Invalid argument transformer method: " + argTransformers[i]);
+                throw InvokerLogger.LOG.invalidTransformerMethod("argument", argTransformers[i]);
             }
         }
 
