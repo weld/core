@@ -52,6 +52,8 @@ import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.util.Boxing;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.config.WeldConfiguration;
@@ -625,13 +627,16 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             // In rare cases, the bean class may be abstract - in this case we have to add methods from all interfaces implemented by any abstract class
             // from the hierarchy
             boolean isBeanClassAbstract = Modifier.isAbstract(cls.getModifiers());
+            // a final method might have a non-final declaration in abstract superclass
+            // hence we need to remember which we saw and skip those in superclasses
+            Set<MethodSignature> foundFinalMethods = new HashSet<>();
 
             while (cls != null) {
-                addMethods(cls, proxyClassType, staticConstructor);
+                addMethods(cls, proxyClassType, staticConstructor, foundFinalMethods);
                 if (isBeanClassAbstract && Modifier.isAbstract(cls.getModifiers())) {
                     for (Class<?> implementedInterface : Reflections.getInterfaceClosure(cls)) {
                         if (!additionalInterfaces.contains(implementedInterface)) {
-                            addMethods(implementedInterface, proxyClassType, staticConstructor);
+                            addMethods(implementedInterface, proxyClassType, staticConstructor, foundFinalMethods);
                         }
                     }
                 }
@@ -660,9 +665,14 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         }
     }
 
-    private void addMethods(Class<?> cls, ClassFile proxyClassType, ClassMethod staticConstructor) {
+    private void addMethods(Class<?> cls, ClassFile proxyClassType, ClassMethod staticConstructor,
+            Set<MethodSignature> foundFinalmethods) {
         for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
-            if (isMethodAccepted(method, getProxySuperclass())) {
+            MethodSignature methodSignature = new MethodSignatureImpl(method);
+            if (Modifier.isFinal(method.getModifiers())) {
+                foundFinalmethods.add(methodSignature);
+            }
+            if (isMethodAccepted(method, getProxySuperclass()) && !foundFinalmethods.contains(methodSignature)) {
                 try {
                     MethodInformation methodInfo = new RuntimeMethodInformation(method);
                     ClassMethod classMethod = proxyClassType.addMethod(method);
