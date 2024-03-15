@@ -29,4 +29,6 @@ include::weldmanager.asciidoc[]
 
 include::contexts.asciidoc[]
 
+include::weldinvoker.asciidoc[]
+
 include::ri-spi.asciidoc[]

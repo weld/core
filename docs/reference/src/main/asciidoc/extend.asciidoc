@@ -152,8 +152,11 @@ See also chapter http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#configurators[
 
 ==== Weld-enriched container lifecycle events
 
-Apart from CDI-defined lifecycle events, Weld also offers enriched observable container lifecycle event - `WeldAfterBeanDiscovery`.
-Compared to `jakarta.enterprise.inject.spi.AfterBeanDiscovery`, it adds one extra method - `addInterceptor()`.
+Apart from CDI-defined lifecycle events, Weld also offers enriched observable container lifecycle events - `WeldAfterBeanDiscovery` and `WeldProcessManagedBean`.
+
+===== `WeldAfterBeanDiscovery`
+
+Compared to `jakarta.enterprise.inject.spi.AfterBeanDiscovery`, this interface adds one extra method - `addInterceptor()`.
 This method works in the same way as the aforementioned <<_configurators>>; you get back an `InterceptorConfigurator` instance, where you can set all the desired data.
 The interceptor is created automatically, once the methods exits and the configurator instance is not reusable.
 But if you need to create several interceptors, you can simply request several configurator instances.
@@ -179,6 +182,12 @@ public void afterBeanDiscovery(@Observes WeldAfterBeanDiscovery event) {
 The sample presents a simple interception use case where you supply `java.util.function.Function` as the interceptor body method.
 For more complex cases, you may also choose to use `interceptWithMetadata` method which accepts `java.util.function.BiFunction` instead.
 The second parameter of the `BiFunction` emulates `@Inject @Intercepted Bean<?>` allowing access to metadata.
+
+===== `WeldProcessManagedBean`
+
+Compared to specification defined API, `WeldProcessManagedBean` overrides its method for invoker creation granting access
+to `org.jboss.weld.invoke.WeldInvokerBuilder` which is an enhanced version enabling use of various transformers.
+This is captured in greater detail within <<weldinvoker>> chapter.
 
 === The `BeanManager` object
 
