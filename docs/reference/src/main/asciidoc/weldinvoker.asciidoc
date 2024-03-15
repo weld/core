@@ -1,0 +1,88 @@
+ifdef::generate-index-link[]
+link:index.html[Weld {weldVersion} - CDI Reference Implementation]
+endif::[]
+
+[[weldinvoker]]
+== Enhanced `InvokerBuilder` API
+
+CDI 4.1 introduced `jakarta.enterprise.invoke.InvokerBuilder` API and Weld adds its own variant - `org.jboss.weld.invoke.WeldInvokerBuilder`.
+
+Main purpose of this API is to allow users to register various transformers for given method. This ranges from input transformers such as argument and instance transformer to output transformers which include return value and exception transformers. Last but not least, there is also invocation wrapper which provides the most flexibility by wrapping the whole invoker method call.
+
+Below is a list of methods available in `WeldInvokerBuilder`.
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------------------------------------------------------
+public interface WeldInvokerBuilder<T> extends InvokerBuilder<T> {
+
+    WeldInvokerBuilder<T> withInstanceLookup();
+    WeldInvokerBuilder<T> withArgumentLookup(int position);
+    WeldInvokerBuilder<T> withInstanceTransformer(Class<?> clazz, String methodName);
+    WeldInvokerBuilder<T> withArgumentTransformer(int position, Class<?> clazz, String methodName);
+    WeldInvokerBuilder<T> withReturnValueTransformer(Class<?> clazz, String methodName);
+    WeldInvokerBuilder<T> withExceptionTransformer(Class<?> clazz, String methodName);
+    WeldInvokerBuilder<T> withInvocationWrapper(Class<?> clazz, String methodName);
+}
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+A transformer is method defined by the `Class<?>` which declares it and its name as `String`.
+Transformers may be `static`, in which case they must be declared directly on the given class, or they may be instance methods, in which case they may be declared on the given class or inherited from any of its supertypes.
+Invocation wrappers must be `static` and must be declared directly on the given class.
+
+See javadoc of `WeldInvokerBuilder` for detailed documentation.
+
+=== How To Use
+
+Just like its CDI variant, `WeldInvokerBuilder` can be obtained either from Portable Extension or a Build Compatible Extension.
+While running Weld, all container provided implementations of `InvokerBuilder` will be instances of `WeldInvokerBuilder` so users can always just type cast from the original CDI API. However, that's not very convenient which is why the next two sections detail how to do it properly in whichever extension system you use.
+
+==== Build Compatible Extensions
+
+Standard way to create an invoker in these extensions is through method annotated `@Registration` with `jakarta.enterprise.inject.build.compatible.spi.InvokerFactory` as its parameter. Weld variant introduces a subclass of this parameter that should be used - `org.jboss.weld.invoke.WeldInvokerFactory`.
+That's all it takes; let's look at an example:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------------------------------------------------------
+    private InvokerInfo staticArgTransformingInvoker;
+    private InvokerInfo argTransformingInvoker;
+
+
+    @Registration(types = TransformableBean.class)
+    public void createArgTransformationInvokers(BeanInfo b, WeldInvokerFactory invokers) {
+        Collection<MethodInfo> invokableMethods = b.declaringClass().methods();
+        // assume the bean has two methods - "ping" and "staticPing"
+        for (MethodInfo invokableMethod : invokableMethods) {
+            if (invokableMethod.name().contains("staticPing")) {
+                staticArgTransformingInvoker = invokers.createInvoker(b, invokableMethod)
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
+                        .build();
+            } else if (invokableMethod.name().contains("ping")) {
+                argTransformingInvoker = invokers.createInvoker(b, invokableMethod)
+                        .withArgumentTransformer(0, FooArg.class, "doubleTheString") // non-static Transformer method
+                        .withArgumentTransformer(1, ArgTransformer.class, "transform") // static Transformer method
+                        .build();
+            }
+        }
+    }
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+==== Portable Extensions
+
+In Portable Extensions, the standard approach is to observe `ProcessManagedBean` event and its `createInvoker(...)` method.
+Weld offers a subclass of this event which should be used instead - `org.jboss.weld.bootstrap.event.WeldProcessManagedBean`.
+Below is an example code snippet:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------------------------------------------------------
+    private Invoker<SomeBean, ?> transformReturnType;
+
+    public void createInvokers(@Observes WeldProcessManagedBean<SomeBean> pmb) {
+        Collection<AnnotatedMethod<? super SomeBean>> invokableMethods = pmb.getAnnotatedBeanClass().getMethods();
+        // assuming there is only one method in SomeBean
+        AnnotatedMethod<? super SomeBean> invokableMethod = invokableMethods.iterator().next();
+        transformReturnType = pmb.createInvoker(invokableMethod)
+                .withReturnValueTransformer(Transformer.class, "transformReturn1")
+                .build();
+    }}
+-------------------------------------------------------------------------------------------------------------------------------------------------

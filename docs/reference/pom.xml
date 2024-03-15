@@ -112,7 +112,6 @@
                     <doctype>book</doctype>
                     <sourceDirectory>${basedir}/src/main/asciidoc</sourceDirectory>
                     <templateEngine>slim</templateEngine>
-                    <headerFooter>true</headerFooter>
                     <attributes>
                         <docinfo>true</docinfo>
                         <experimental>true</experimental>
