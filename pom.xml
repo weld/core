@@ -10,12 +10,8 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>50</version>
+        <version>52</version>
     </parent>
-
-    <prerequisites>
-        <maven>3.8</maven>
-    </prerequisites>
 
 
     <!-- Minimal metadata -->
@@ -89,7 +85,7 @@
         <shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
         <testng.version>7.9.0</testng.version>
-        <weld.api.version>6.0.Beta3</weld.api.version>
+        <weld.api.version>6.0.Beta5</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
     </properties>
@@ -516,7 +512,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>5.0.0-SNAPSHOT</tag>
+        <tag>HEAD</tag>
     </scm>
 
 
@@ -686,6 +682,7 @@
             </build>
         </profile>
         <profile>
+            <id>windows</id>
             <!-- Following profile is automatically triggered in Windows environment and allows to handle behaviour/problems
             specific for this OS. For instance excluding a test here will skip its execution on Windows. -->
             <activation>
