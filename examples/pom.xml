@@ -93,25 +93,24 @@
 
     <modules>
         <module>jsf/numberguess</module>
-        <module>jsf/translator</module>
-        <module>jsf/login</module>
         <module>se/numberguess</module>
         <module>se/groovy-numberguess</module>
     </modules>
 
     <properties>
-        <servlet.api.version>6.0.0</servlet.api.version>
-        <jsf.api.version>4.0.1</jsf.api.version>
-        <facelets.version>1.1.15</facelets.version>
-        <wildfly.plugin.version>5.0.0.Beta4</wildfly.plugin.version>
+        <servlet.api.version>6.1.0-M2</servlet.api.version>
+        <jsf.api.version>4.1.0-M1</jsf.api.version>
         <uel.version>5.0.0-M1</uel.version>
-        <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
-        <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
+
+        <wildfly.plugin.version>5.0.0.Beta4</wildfly.plugin.version>
+
+        <!-- Maven plugin versions -->
+        <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
+        <maven.failsafe.plugin.version>3.2.5</maven.failsafe.plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>jakarta.faces</groupId>
                 <artifactId>jakarta.faces-api</artifactId>
@@ -129,56 +128,10 @@
                 <artifactId>jakarta.el</artifactId>
                 <version>${uel.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>net.sourceforge.htmlunit</groupId>
-                <artifactId>htmlunit</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${arquillian.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.extension</groupId>
-                <artifactId>arquillian-drone-bom</artifactId>
-                <version>${arquillian.drone.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.graphene</groupId>
-                <artifactId>graphene-webdriver</artifactId>
-                <version>${arquillian.graphene.version}</version>
-                <type>pom</type>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.extension</groupId>
-                <artifactId>arquillian-drone-webdriver-depchain</artifactId>
-                <version>${arquillian.drone.version}</version>
-                <type>pom</type>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration combine.self="override">
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -194,15 +147,15 @@
                     <artifactId>maven-ear-plugin</artifactId>
                     <version>3.3.0</version>
                 </plugin>
-                <!-- Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187
-                    during release -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.4.0</version>
-                    <configuration>
-                        <useCache>false</useCache>
-                    </configuration>
+                    <version>${maven.war.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven.failsafe.plugin.version}</version>
                 </plugin>
                 <!-- WildFly plugin to deploy war -->
                 <plugin>
@@ -215,89 +168,6 @@
     </build>
 
     <profiles>
-
-        <profile>
-            <id>ftest</id>
-            <activation>
-                <property>
-                    <name>arquillian</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>build-helper-maven-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>add-ftest-source</id>
-                                    <goals>
-                                        <goal>add-test-source</goal>
-                                    </goals>
-                                    <configuration>
-                                        <sources>
-                                            <source>${ftest.sources.directory}</source>
-                                        </sources>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>add-ftest-resource</id>
-                                    <goals>
-                                        <goal>add-test-resource</goal>
-                                    </goals>
-                                    <configuration>
-                                        <resources>
-                                            <resource>
-                                                <directory>${ftest.resources.directory}</directory>
-                                                <targetPath>.</targetPath>
-                                            </resource>
-                                        </resources>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <configuration>
-                                <systemProperties>
-                                    <arquillian.launch>${arquillian}</arquillian.launch>
-                                    <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                    <additional.vm.args>${additional.vm.args}</additional.vm.args>
-                                </systemProperties>
-                            </configuration>
-                            <executions>
-                                <execution>
-                                    <id>surefire-it</id>
-                                    <phase>integration-test</phase>
-                                    <goals>
-                                        <goal>test</goal>
-                                    </goals>
-                                    <configuration>
-                                        <skip>false</skip>
-                                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                                        <trimStackTrace>false</trimStackTrace>
-                                        <printSummary>true</printSummary>
-                                        <includes>
-                                            <include>**/ftest/*Test.java</include>
-                                        </includes>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
 
         <profile>
             <id>arquillian-wildfly-managed</id>
@@ -331,98 +201,6 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
-        </profile>
-
-        <profile>
-            <id>arquillian-wildfly-cluster</id>
-            <activation>
-                <property>
-                    <name>arquillian</name>
-                    <value>wildfly-cluster</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly.arquillian</groupId>
-                    <artifactId>wildfly-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>surefire-it</id>
-                                    <phase>integration-test</phase>
-                                    <goals>
-                                        <goal>test</goal>
-                                    </goals>
-                                    <configuration>
-                                        <systemPropertyVariables>
-                                            <node1.contextPath>${node1.contextPath}</node1.contextPath>
-                                            <node1.managementAddress>${node1.managementAddress}
-                                            </node1.managementAddress>
-                                            <node1.managementPort>${node1.managementPort}</node1.managementPort>
-                                            <node1.jbossHome>${node1.jbossHome}</node1.jbossHome>
-                                            <node1.nodeName>${node1.nodeName}</node1.nodeName>
-
-                                            <node2.contextPath>${node2.contextPath}</node2.contextPath>
-                                            <node2.managementAddress>${node2.managementAddress}
-                                            </node2.managementAddress>
-                                            <node2.managementPort>${node2.managementPort}</node2.managementPort>
-                                            <node2.jbossHome>${node2.jbossHome}</node2.jbossHome>
-                                            <node2.nodeName>${node2.nodeName}</node2.nodeName>
-                                        </systemPropertyVariables>
-
-                                        <skip>false</skip>
-                                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                                        <trimStackTrace>false</trimStackTrace>
-                                        <printSummary>true</printSummary>
-                                        <includes>
-                                            <include>**/ftest/cluster/*Test.java</include>
-                                        </includes>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-
-        <profile>
-            <id>jacoco</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jacoco</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <configuration>
-                            <propertyName>jacoco.agent</propertyName>
-                            <excludes>
-                                <exclude>org.jboss.weld.examples.*</exclude>
-                            </excludes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>
