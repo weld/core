@@ -23,14 +23,13 @@
         </license>
     </licenses>
 
-    <!-- Common dependencies only -->
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <properties>
+        <!-- Version of WildFly server for provisioning only -->
+        <version.wfly.server>31.0.0.Final</version.wfly.server>
+    </properties>
 
+    <!-- Common dependencies -->
+    <dependencies>
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
@@ -50,70 +49,46 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.graphene</groupId>
-            <artifactId>graphene-webdriver</artifactId>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
 
     <profiles>
-        <!-- Special profile for wildfly-web container -->
         <profile>
-            <id>wildfly-web</id>
-            <dependencies>
-                <dependency>
-                    <groupId>jakarta.enterprise</groupId>
-                    <artifactId>jakarta.enterprise.cdi-api</artifactId>
-                    <scope>compile</scope>
-                </dependency>
-                <dependency>
-                    <groupId>jakarta.faces</groupId>
-                    <artifactId>jakarta.faces-api</artifactId>
-                    <scope>compile</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.weld.servlet</groupId>
-                    <artifactId>weld-servlet-core</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.weld.module</groupId>
-                    <artifactId>weld-jsf</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish</groupId>
-                    <artifactId>jakarta.faces</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>wildfly-cluster</id>
+            <!-- Can provision WFLY server of given version under /target/server with application WAR already in it -->
+            <id>provision-wildfly-server</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
                         <configuration>
-                            <webResources>
-                                <resource>
-                                    <directory>src/main/webapp-wildfly-cluster</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </webResources>
+                            <feature-packs>
+                                <feature-pack>
+                                    <location>org.wildfly:wildfly-galleon-pack:${version.wfly.server}</location>
+                                </feature-pack>
+                            </feature-packs>
+                            <layers>
+                                <layer>cloud-server</layer>
+                                <layer>jsf</layer>
+                            </layers>
+                            <name>weld-numberguess.war</name>
                         </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
         <profile>
+            <!-- Tested with Tomcat 10 as 11 was still in early Alphas when setting this up -->
             <id>tomcat</id>
             <dependencies>
                 <dependency>
@@ -124,12 +99,6 @@
                 <dependency>
                     <groupId>org.glassfish</groupId>
                     <artifactId>jakarta.faces</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>jakarta.servlet.jsp.jstl</groupId>
-                    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
                     <scope>runtime</scope>
                 </dependency>
 
@@ -157,6 +126,8 @@
             </build>
         </profile>
         <profile>
+            <!-- Note that the Jetty server needs to have their CDI module enabled -->
+            <!-- The module is org.eclipse.jetty.ee10:jetty-ee10-cdi where you should replace "ee10" with needed version -->
             <id>jetty</id>
             <dependencies>
                 <dependency>
@@ -171,9 +142,8 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>jakarta.servlet.jsp.jstl</groupId>
-                    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-                    <scope>runtime</scope>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>jakarta.el</artifactId>
                 </dependency>
 
                 <dependency>
@@ -200,34 +170,33 @@
             </build>
         </profile>
 
-        <!-- functional tests -->
         <profile>
-            <id>ftest</id>
+            <!-- A test profile that allows execution of tests against running WildFly server -->
+            <!-- Weld-numberguess application must be deployed to the server prior to executing this profile -->
+            <id>integration-testing</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
 
-        <profile>
-            <id>arquillian-wildfly-managed</id>
-        </profile>
-
-        <profile>
-            <id>arquillian-wildfly-remote</id>
-        </profile>
-
-        <profile>
-            <id>arquillian-wildfly-cluster</id>
-        </profile>
     </profiles>
     <build>
         <finalName>weld-numberguess</finalName>
@@ -239,6 +208,7 @@
                     <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
                     <webResources>
                         <resource>
+                            <!-- By default, we are adding the webapp-wildfly resources -->
                             <directory>src/main/webapp-wildfly</directory>
                             <filtering>true</filtering>
                         </resource>
@@ -264,22 +234,17 @@
                     </filesets>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <!-- Tests are skipped during build as a running container is required to execute them -->
                     <skip>true</skip>
                 </configuration>
             </plugin>
 
         </plugins>
     </build>
-
-    <properties>
-        <node1.contextPath>http://127.0.1.1:8080/weld-numberguess</node1.contextPath>
-        <node2.contextPath>http://127.0.2.1:8080/weld-numberguess</node2.contextPath>
-    </properties>
 
 </project>
 
