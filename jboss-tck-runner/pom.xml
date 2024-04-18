@@ -20,11 +20,6 @@
     </licenses>
     <url>http://weld.cdi-spec.org</url>
 
-    <properties>
-        <!-- This matches the htmlunit version in TCK -->
-        <htmlunit.version>2.50.0</htmlunit.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.enterprise</groupId>
@@ -177,10 +172,8 @@
                             <value>false</value>
                         </property>
                     </properties>
-                    <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
                     <dependenciesToScan>
                         <dependency>jakarta.enterprise:cdi-tck-core-impl</dependency>
-                        <dependency>jakarta.enterprise:cdi-tck-web-impl</dependency>
                     </dependenciesToScan>
                 </configuration>
             </plugin>
@@ -265,15 +258,6 @@
                                     <classifier>suite</classifier>
                                     <overWrite>false</overWrite>
                                     <destFileName>tck-core-suite.xml</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>jakarta.enterprise</groupId>
-                                    <artifactId>cdi-tck-web-impl</artifactId>
-                                    <version>${cdi.tck-4-1.version}</version>
-                                    <type>xml</type>
-                                    <classifier>suite</classifier>
-                                    <overWrite>false</overWrite>
-                                    <destFileName>tck-web-suite.xml</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>target/suites</outputDirectory>
@@ -360,7 +344,7 @@
             </build>
         </profile>
 
-        <!-- Run the TCK in the managed container (full Java EE platform) -->
+        <!-- Run the CDI TCK in the managed container (full Java EE platform) -->
         <profile>
             <id>incontainer</id>
             <activation>
@@ -372,52 +356,10 @@
             </activation>
             <properties>
                 <excluded.groups>se</excluded.groups>
-                <cdi.tck.suite.xml.file>target/suites/tck-web-suite.xml</cdi.tck.suite.xml.file>
+                <!-- Note that this is the CDI CORE exclude list; it doesn't include TCKs living in EE platform suite -->
+                <cdi.tck.suite.xml.file>target/suites/tck-core-suite.xml</cdi.tck.suite.xml.file>
             </properties>
             <dependencies>
-                <dependency>
-                    <groupId>jakarta.enterprise</groupId>
-                    <artifactId>cdi-tck-web-impl</artifactId>
-                    <version>${cdi.tck-4-1.version}</version>
-                    <type>xml</type>
-                    <classifier>suite</classifier>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>jakarta.el</groupId>
-                            <artifactId>jakarta.el-api</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>jakarta.faces</groupId>
-                            <artifactId>jakarta.faces-api</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>container-se-api</artifactId>
-                            <groupId>org.jboss.arquillian.container</groupId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-
-                <dependency>
-                    <groupId>jakarta.enterprise</groupId>
-                    <artifactId>cdi-tck-web-impl</artifactId>
-                    <version>${cdi.tck-4-1.version}</version>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>jakarta.el</groupId>
-                            <artifactId>jakarta.el-api</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>jakarta.faces</groupId>
-                            <artifactId>jakarta.faces-api</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <artifactId>container-se-api</artifactId>
-                            <groupId>org.jboss.arquillian.container</groupId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>

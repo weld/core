@@ -2,6 +2,8 @@
 <!-- CDI TCK TestNG configuration for Weld -->
 <!-- Used mainly for WeldMethodInterceptor in combination with relaxed construction mode -->
 <!-- This version is for the web profile of TCKs (with EJB tests and other EE deps) -->
+<!-- The list of tests present here should be synced with Platform TCK exclusion list -->
+<!-- See https://github.com/jakartaee/platform-tck/blob/master/cdi-ee-tck/src/main/resources/tck-tests.xml -->
 <suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
 
     <listeners>
