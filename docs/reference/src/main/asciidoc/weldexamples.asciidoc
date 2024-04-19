@@ -336,63 +336,6 @@ Swing application with no EJB or servlet dependencies. This example can
 be found in the `examples/se/numberguess` folder of the Weld
 distribution.
 
-==== Creating the Eclipse project
-
-To use the Weld SE numberguess example in Eclipse, you can either import
-it as a Maven project if you have the
-http://m2eclipse.sonatype.org/[m2eclipse plugin] installed, or generate
-an Eclipse project and import it.
-
-With m2eclipse installed, you can open any Maven project directly. From
-within Eclipse, select _File \-> Import... \-> Existing Maven Projects_.
-Then, browse to the location of the Weld SE numberguess example. You
-should see that Eclipse recognizes the Maven project.
-
-Without m2eclipse plugin, you first have to generate an Eclipse project.
-Switch into the Weld SE numberguess example folder, then execute the
-Maven Eclipse plugin, as follows:
-
-[source, console]
------------------------------------------------------------------------------------
-mvn eclipse:configure-workspace -Declipse.workspace=/path/to/your/eclipse/workspace
------------------------------------------------------------------------------------
-
-and then
-
-[source, console]
--------------------
-mvn eclipse:eclipse
--------------------
-
-Then from within Eclipse, select _File \-> Import... \-> Existing Projects
-into Workspace_ and browse to the location of the Weld SE numberguess
-example.
-
-In both cases, you should now see a project in your workspace called
-`weld-se-numberguess`.
-
-It's time to get the example running!
-
-==== Running the example from Eclipse
-
-Disable m2eclipse's _Workspace Resolution_, to make sure that Eclipse
-can find `StartMain`. Right click on the project, and choose _Properties
-\-> Maven_, and uncheck _Resolve dependencies from Workspace projects_:
-
-image:images/weld-se-numberguess-m2eclipse-1.png[image]
-
-Right click on the project, and choose _Run As \-> Java Application_:
-
-image:images/weld-se-numberguess-m2eclipse-2.png[image]
-
-Locate the `StartMain` class:
-
-image:images/weld-se-numberguess-m2eclipse-3.png[image]
-
-The application should now launch!
-
-image:images/weld-se-numberguess-m2eclipse-4.png[image]
-
 ==== Running the example from the command line
 
 * Ensure that Maven 3 is installed and in your PATH

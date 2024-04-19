@@ -106,7 +106,7 @@
             <id>jandex</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss</groupId>
+                    <groupId>io.smallrye</groupId>
                     <artifactId>jandex</artifactId>
                 </dependency>
             </dependencies>
@@ -119,9 +119,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.jboss.jandex</groupId>
+                        <groupId>io.smallrye</groupId>
                         <artifactId>jandex-maven-plugin</artifactId>
-                        <version>1.2.3</version>
+                        <version>${jandex.version}</version>
                         <executions>
                             <execution>
                                 <id>make-index</id>
@@ -136,7 +136,7 @@
                         </executions>
                         <dependencies>
                             <dependency>
-                                <groupId>org.jboss</groupId>
+                                <groupId>io.smallrye</groupId>
                                 <artifactId>jandex</artifactId>
                                 <version>${jandex.version}</version>
                             </dependency>
