@@ -21,102 +21,114 @@ examining the configuration files.
 
 All the configuration files for this example are located in `WEB-INF/`,
 which can be found in the `src/main/webapp` directory of the example.
-First, we have the JSF 2.2 version of `faces-config.xml`. A standardized
-version of Facelets is the default view handler in JSF 2.2, so there's
+First, we have the JSF 4.0 version of `faces-config.xml`. A standardized
+version of Facelets is the default view handler in JSF, so there's
 really nothing that we have to configure. Thus, the configuration
 consists of only the root element.
 
 [source.XML, xml]
 ------------------------------------------------------------------
-<faces-config version="2.2"
-   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-      http://xmlns.jcp.org/xml/ns/javaee
-      http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
-
-      <name>numberguess</name>
-
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="
+                  https://jakarta.ee/xml/ns/jakartaee
+                  https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd"
+              version="4.0">
 </faces-config>
 ------------------------------------------------------------------
 
 There's also an empty `beans.xml` file, which tells the container to
 look for beans in this archive and to activate the CDI services.
 
-Finally, some of the supported servers also need a `web.xml` which is
-located in `src/main/webapp-[server]/WEB-INF`.
+Finally, some supported servers also need a `web.xml` which is located in `src/main/webapp-[server]/WEB-INF`.
 
-NOTE: This demo uses JSF 2 as the view framework, but you can use Weld with
-any servlet-based web framework, such as JSF 1.2 or Wicket.
+NOTE: This demo uses JSF as the view framework, but you can use Weld with any servlet-based web framework.
+
+TODO continue here
 
 Let's take a look at the main JSF view, `src/main/webapp/home.xhtml`.
 
 [source.XML, xml]
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:h="http://java.sun.com/jsf/html"
-   xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
 
-   <ui:composition template="/template.xhtml"> <!--1-->
-      <ui:define name="content">
-         <h1>Guess a number...</h1>
-         <h:form id="numberGuess">
-            <div style="color: red">
-               <h:messages id="messages" globalOnly="false"/> <!--2-->
-               <h:outputText id="Higher" value="Higher!" rendered="#{game.guessLower}"/>
-               <h:outputText id="Lower" value="Lower!" rendered="#{game.guessHigher}"/>
-            </div>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+   <title>numberguess</title>
+</head>
 
-            <div>
-               I'm thinking of a number between
-               <span id="numberGuess:smallest">#{game.smallest}</span>
-               and <span id="numberGuess:biggest">#{game.biggest}</span>.
-               You have #{game.remainingGuesses} guesses remaining. <!--3-->
-            </div>
+<body>
+<div id="content">
+   <h1>Guess a number...</h1>
+   <h:form id="numberGuess">
 
-            <div>
-               Your guess:
-               <h:inputText id="inputGuess" value="#{game.guess}"
-                  required="true" size="3" disabled="#{game.guessCorrect}"
-                  validator="#{game.validateNumberRange}"/> <!--4--> <!--5-->
-               <h:commandButton id="guessButton" value="Guess" action="#{game.check}"
-               disabled="#{game.guessCorrect}"/> <!--6-->
-            </div>
-            <div>
-               <h:commandButton id="restartButton" value="Reset" action="#{game.reset}" immediate="true"/>
-            </div>
-         </h:form>
-      </ui:define>
-   </ui:composition>
+      <!-- Feedback for the user on their guess -->
+      <div style="color: red">
+         <h:messages id="messages" globalOnly="false" /><!--1-->
+         <h:outputText id="Higher" value="Higher!"
+                       rendered="#{game.number gt game.guess and game.guess ne 0}" />
+         <h:outputText id="Lower" value="Lower!"
+                       rendered="#{game.number lt game.guess and game.guess ne 0}" />
+      </div>
+
+      <!-- Instructions for the user -->
+      <div>
+         I'm thinking of a number between <span
+              id="numberGuess:smallest">#{game.smallest}</span> and <span
+              id="numberGuess:biggest">#{game.biggest}</span>. You have
+         #{game.remainingGuesses} guesses remaining.<!--2-->
+      </div>
+
+      <!-- Input box for the users guess, plus a button to submit, and reset -->
+      <!-- These are bound using EL to our CDI beans -->
+      <div>
+         Your guess:
+         <h:inputText id="inputGuess" value="#{game.guess}"
+                      required="true" size="3"
+                      disabled="#{game.number eq game.guess}"
+                      validator="#{game.validateNumberRange}" /><!--3--><!--4-->
+         <h:commandButton id="guessButton" value="Guess"
+                          action="#{game.check}"
+                          disabled="#{game.number eq game.guess}" /><!--5-->
+      </div>
+      <div>
+         <h:commandButton id="restartButton" value="Reset"
+                          action="#{game.reset}" immediate="true" />
+      </div>
+   </h:form>
+
+</div>
+
+<br style="clear: both" />
+
+</body>
 </html>
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-<1> Facelets is the built-in templating language for JSF. Here we are
-wrapping our page in a template which defines the layout.
-
-<2> There are a number of messages which can be sent to the user, "Higher!",
+<1> There are a number of messages which can be sent to the user, "Higher!",
 "Lower!" and "Correct!"
 
-<3> As the user guesses, the range of numbers they can guess gets smaller -
+<2> As the user guesses, the range of numbers they can guess gets smaller -
 this sentence changes to make sure they know the number range of a valid
 guess.
 
-<4> This input field is bound to a bean property using a value expression.
+<3> This input field is bound to a bean property using a value expression.
 
-<5> A validator binding is used to make sure the user doesn't accidentally
+<4> A validator binding is used to make sure the user doesn't accidentally
 input a number outside of the range in which they can guess - if the
 validator wasn't here, the user might use up a guess on an out of bounds
 number.
 
-<6> And, of course, there must be a way for the user to send their guess to
+<5> And, of course, there must be a way for the user to send their guess to
 the server. Here we bind to an action method on the bean.
 
-The example consists of 4 classes, the first two of which are
-qualifiers. First, there is the `@Random` qualifier, used for injecting
-a random number:
+The example consists of 4 classes, two of which are qualifiers.
+First, there is the `@Random` qualifier, used for injecting a random number:
 
 [source.JAVA, java]
 --------------------------------------------
@@ -185,7 +197,7 @@ retrieving a random number from the `@Random
 
 You'll notice that we've also added the `@Named` annotation to this
 class. This annotation is only required when you want to make the bean
-accessible to a JSF view via EL (i.e., #\{game}).
+accessible to a JSF view via EL (i.e., `#\{game}`).
 
 [source.JAVA, java]
 -------------------------------------------------------------------------------------------------
@@ -298,12 +310,11 @@ does not provide the CDI services. For your convenience we provide a
 single jar suitable for running Weld in any servlet container (including
 Jetty), `weld-servlet-shaded`.
 
-NOTE: You must also include the jars for JSF, EL, and the common annotations,
-all of which are provided by the Java EE platform (a Java EE application server).
+NOTE: You must also include the jars for JSF, EL, and the common annotations, all of which are provided by the Java EE platform (a Jakarta EE application server).
 
 Second, we need to explicitly specify the servlet listener in `web.xml`,
 again because the container isn't doing this stuff for you. The servlet
-listener boots Weld and controls it's interaction with requests.
+listener boots Weld and controls its interaction with requests.
 
 [source.XML, xml]
 -------------------------------------------------------------------------------
@@ -684,8 +695,7 @@ public class NumberGuessFrame extends javax.swing.JFrame {
 <3> This application is started in the prescribed Weld SE way, by observing
 the `ContainerInitialized` event.
 
-<4> This method initializes all of the Swing components. Note the use of the
-`msgGenerator` here.
+<4> This method initializes all the Swing components. Note the use of the `msgGenerator` here.
 
 <5> `guessButtonActionPerformed` is called when the 'Guess' button is
 clicked, and it does the following:
@@ -706,216 +716,7 @@ guesses).
 game, refreshes the messages in the UI and sets the button's label based
 on the game state.
 
-=== The translator example in depth
-
-The translator example will take any sentences you enter, and translate
-them to Latin. (Well, not really, but the stub is there for you to
-implement, at least. Good luck!)
-
-The translator example is built as an EAR and contains EJBs. As a
-result, it's structure is more complex than the numberguess example.
-
-NOTE: Java EE 7, which bundles EJB 3.2, allows you to package EJBs in a WAR,
-which will make this structure much simpler! Still, there are other
-advantages of using an EAR.
-
-First, let's take a look at the EAR aggregator project, which is located
-in the example's `ear` directory. Maven automatically generates the
-`application.xml` for us from this plugin configuration:
-
-[source.XML, xml]
----------------------------------------------------------------------
-<plugin>
-   <groupId>org.apache.maven.plugins</groupId>
-   <artifactId>maven-ear-plugin</artifactId>
-   <configuration>
-      <modules>
-         <webModule>
-            <groupId>org.jboss.weld.examples.jsf.translator</groupId>
-            <artifactId>weld-jsf-translator-war</artifactId>
-            <contextRoot>/weld-translator</contextRoot>
-         </webModule>
-      </modules>
-   </configuration>
-</plugin>
----------------------------------------------------------------------
-
-This configuration overrides the web context path, resulting in this
-application URL: http://localhost:8080/weld-translator.
-
-[NOTE]
-====
-
-If you weren't using Maven to generate these files, you would need
-`META-INF/application.xml`:
-
-[source.XML, xml]
-------------------------------------------------------------------
-<application version="7"
-   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-      http://xmlns.jcp.org/xml/ns/javaee
-      http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd">
-
-  <display-name>weld-jsf-translator-ear</display-name>
-  <description>The Weld JSF translator example (ear)</description>
-
-  <module>
-    <web>
-      <web-uri>weld-translator.war</web-uri>
-      <context-root>/weld-translator</context-root>
-    </web>
-  </module>
-  <module>
-    <ejb>weld-translator.jar</ejb>
-  </module>
-</application>
-------------------------------------------------------------------
-====
-
-Next, let's look at the WAR, which is located in the example's `war`
-directory. Just as in the numberguess example, we have a
-`faces-config.xml` for JSF 2.2 and a `web.xml` (to activate JSF) under
-WEB-INF, both sourced from `src/main/webapp/WEB-INF`.
-
-More interesting is the JSF view used to translate text. Just as in the
-numberguess example we have a template, which surrounds the form
-(omitted here for brevity):
-
-[source.XML, xml]
-------------------------------------------------------------------------------------------------------
-<h:form id="TranslatorMain">
-
-   <table>
-      <tr align="center" style="font-weight: bold">
-         <td>
-            Your text
-         </td>
-         <td>
-            Translation
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <h:inputTextarea id="text" value="#{translator.text}" required="true" rows="5" cols="80"/>
-         </td>
-         <td>
-            <h:outputText value="#{translator.translatedText}"/>
-         </td>
-      </tr>
-   </table>
-   <div>
-      <h:commandButton id="button" value="Translate" action="#{translator.translate}"/>
-   </div>
-
-</h:form>
-------------------------------------------------------------------------------------------------------
-
-The user can enter some text in the left-hand text area, and hit the
-translate button to see the result to the right.
-
-Finally, let's look at the EJB module, which is located in the example's
-`ejb` directory. In `src/main/resources/META-INF` there is just an empty
-`beans.xml`, used to mark the archive as containing beans.
-
-NOTE: The `beans.xml` file is no longer required for CDI enablement as of CDI
-1.1. CDI is automatically enabled for archives which don't contain
-`beans.xml` but contain one or more bean classes with a _bean defining
-annotation_, as described in section
-ifndef::generate-index-link[<<_implicit_bean_archive>>]
-ifdef::generate-index-link[link:ee.html#_implicit_bean_archive[Implicit bean archive]]
-.
-
-We've saved the most interesting bit for last, the code! The project has
-two simple beans, `SentenceParser` and `TextTranslator` and two session
-beans, `TranslatorControllerBean` and `SentenceTranslator`. You should
-be getting quite familiar with what a bean looks like by now, so we'll
-just highlight the most interesting bits here.
-
-Both `SentenceParser` and `TextTranslator` are dependent beans, and
-`TextTranslator` uses constructor injection:
-
-[source.JAVA, java]
-------------------------------------------------------------------
-public class TextTranslator implements Serializable {
-
-   private SentenceParser sentenceParser;
-
-   @EJB private Translator translator;
-
-   @Inject public TextTranslator(SentenceParser sentenceParser) {
-      this.sentenceParser = sentenceParser;
-   }
-
-   public String translate(String text) {
-      StringBuilder sb = new StringBuilder();
-      for (String sentence: sentenceParser.parse(text)) {
-         sb.append(translator.translate(sentence)).append(". ");
-      }
-      return sb.toString().trim();
-   }
-
-}
-------------------------------------------------------------------
-
-`TextTranslator` uses the simple bean (really just a plain Java class!)
-`SentenceParser` to parse the sentence and then calls on the stateless
-bean with the local business interface `Translator` to perform the
-translation. That's where the magic happens. Of course, we couldn't
-develop a full translator, but it's convincing enough to anyone who
-doesn't understand Latin!
-
-[source.JAVA, java]
---------------------------------------------------------
-@Stateless
-public class SentenceTranslator implements Translator {
-
-   public String translate(String sentence) {
-      return "Lorem ipsum dolor sit amet";
-   }
-
-}
---------------------------------------------------------
-
-Finally, there is UI orientated controller. This is a request scoped,
-named, stateful session bean, which injects the translator. It collects
-the text from the user and dispatches it to the translator. The bean
-also has getters and setters for all the fields on the page.
-
-[source.JAVA, java]
------------------------------------------------------------------------
-@Stateful
-@RequestScoped
-@Named("translator")
-public class TranslatorControllerBean implements TranslatorController {
-
-   @Inject private TextTranslator translator;
-
-   private String inputText;
-
-   private String translatedText;
-
-   public void translate() {
-      translatedText = translator.translate(inputText);
-   }
-
-   public String getText() {
-      return inputText;
-   }
-
-   public void setText(String text) {
-      this.inputText = text;
-   }
-
-   public String getTranslatedText() {
-      return translatedText;
-   }
-
-   @Remove public void remove() {}
-
-}
------------------------------------------------------------------------
-
 That concludes our short tour of the Weld starter examples. For more
 information on Weld, please visit http://weld.cdi-spec.org/.
+
+If you want to browse more Jakarta EE examples which leverage CDI technologies, there is a fair amount of them among https://github.com/wildfly/quickstart[WildFly Quickstarts].
