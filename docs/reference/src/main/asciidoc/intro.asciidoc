@@ -16,42 +16,16 @@ to actually use them to build an application!
 A bean is exactly what you think it is. Only now, it has a true identity
 in the container environment.
 
-Prior to Java EE 6, there was no clear definition of the term "bean" in
-the Java EE platform. Of course, we've been calling Java classes used in
-web and enterprise applications "beans" for years. There were even a
-couple of different kinds of things called "beans" in EE specifications,
-including EJB beans and JSF managed beans. Meanwhile, other third-party
-frameworks such as Spring and Seam introduced their own ideas of what it
-meant to be a "bean". What we've been missing is a common definition.
-
-Java EE 6 finally laid down that common definition in the Managed Beans
-specification. Managed Beans are defined as container-managed objects
-with minimal programming restrictions, otherwise known by the acronym
-POJO (Plain Old Java Object). They support a small set of basic
-services, such as resource injection, lifecycle callbacks and
-interceptors. Companion specifications, such as EJB and CDI, build on
-this basic model. But, _at last_, there's a uniform concept of a bean
-and a lightweight component model that's aligned across the Java EE
-platform.
+Starting with Java EE 6 (now Jakarta) there was a common definition of beans through Managed Beans specification. Managed Beans were defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle callbacks and interceptors. CDI/Weld builds on this basic model and clearly defines a uniform concept of a bean and a lightweight component model that's aligned across the Jakarta EE platform, MicroProfile specification and more.
 
 With very few exceptions, almost every concrete Java class that has a
 constructor with no parameters (or a constructor designated with the
-annotation `@Inject`) is a bean. This includes every JavaBean and every
-EJB session bean. If you've already got some JavaBeans or session beans
-lying around, they're already beans—you won't need any additional
-special metadata.
+annotation `@Inject`) is a bean; including EJB sessions beans. If you've already got some session beans lying around, they're already beans—you won't need any additional special metadata.
 
-The JavaBeans and EJBs you've been writing every day, up until now, have
-not been able to take advantage of the new services defined by the CDI
-specification. But you'll be able to use every one of them with
-CDI—allowing the container to create and destroy instances of your beans
-and associate them with a designated context, injecting them into other
-beans, using them in EL expressions, specializing them with qualifier
-annotations, even adding interceptors and decorators to them—without
-modifying your existing code. At most, you'll need to add some
-annotations.
+CDI container manages the lifecycle of your beans from creation to destruction. It also controls their association to designated context, injection into beans, bean availability in EL expressions, interception and decoration, specialization with qualifiers and more.
+Many of these functionalities are working automatically, for some you may need to add an annotation or two.
 
-Now let's see how to create your first bean that actually uses CDI.
+But enough talking, let's see how to create your first bean that actually uses CDI.
 
 === Getting our feet wet
 
