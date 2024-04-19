@@ -5,20 +5,23 @@ endif::[]
 [[part-2]]
 = Getting Start with Weld, the CDI Reference Implementation
 
-Weld, the CDI Reference Implementation (RI), can be downloaded from the
+Weld, the CDI Compatible Implementation, can be downloaded from the
 http://weld.cdi-spec.org/download[download page]. Information about the
-Weld source code repository and instructions about how to obtain and
+Weld https://github.com/weld[source code repository] and instructions about how to obtain and
 build the source can be found on the same page.
 
-Weld provides a complete SPI allowing Java EE containers such as
+Weld provides a complete SPI allowing Jakarta EE containers such as
 WildFly, GlassFish and WebLogic to use Weld as their built-in CDI
 implementation. Weld also runs in servlet engines like Tomcat and Jetty,
 or even in a plain Java SE environment.
 
-Weld comes with an extensive library of examples, which are a great
-starting point from which to learn CDI. In addition, a number of
-quickstarts featuring CDI can be found at the
-http://www.jboss.org/developer/quickstarts.html[JBoss Developer site]
+Weld comes with several examples showing various possible usages:
+
+* A full blow Jakarta EE server (WildFly)
+* Servlets such as Tomcat or Jetty
+* Standalone Java SE application
+
+Many more Jakarta EE examples can be seen in quickstarts of Jakarta EE servers. A good repository to browse would be https://github.com/wildfly/quickstart[WildFly Quickstarts] as it shows many more Jakarta-world technologies smoothly integrating with CDI/Weld.
 
 include::gettingstarted.asciidoc[]
 
