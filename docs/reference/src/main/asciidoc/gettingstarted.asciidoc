@@ -5,16 +5,13 @@ endif::[]
 [[gettingstarted]]
 == Getting started with Weld
 
-Weld comes with a number of examples. We recommend you start with
-`examples/jsf/numberguess` and `examples/jsf/translator`. Numberguess is
-a web (war) example containing only non-transactional managed beans.
+Weld comes with several numberguess examples in various flavors based on what environment you use.
+In its classic variant, it is a web (war) example containing only non-transactional managed beans.
 This example can be run on a wide range of servers, including WildFly,
 GlassFish, Apache Tomcat, Jetty, and any compliant
-Jakarta EE 10 container. Translator is an enterprise (ear) example that
-contains session beans. This example must be run on WildFly 27 or better,
-GlassFish 7 or better, or any compliant Jakarta EE 10 container.
+Jakarta EE container.
 
-Both examples use JSF 4.0.0 as the web framework and, as such, can be
+The example uses JSF as the web framework and, as such, can be
 found in the `examples/jsf` directory of the Weld distribution.
 
 === Prerequisites
@@ -25,16 +22,18 @@ following:
 * the latest release of Weld, which contains the examples
 * Maven 3, to build and deploy the examples
 * optionally, a supported runtime environment (minimum versions shown)
-** WildFly 27,
-** GlassFish 7 or better,
-** Apache Tomcat 10.1 or better (war example only), or
-** Jetty 11 or better (war example only)
+** WildFly,
+** GlassFish,
+** Apache Tomcat, or
+** Jetty
+
+Note that the version of these runtimes need to target the same Jakarta EE version that Weld does.
 
 In the next few sections, you'll be using the Maven command (`mvn`) to
 invoke the Maven project file in each example to compile, assemble and
 deploy the example to WildFly and, for the war example, Apache Tomcat.
-You can also deploy the generated artifact (war or ear) to any other
-container that supports Jakarta EE 10, such as GlassFish 7.
+You can also deploy the generated artifact (war) to any other
+container that supports Jakarta EE, such as GlassFish.
 
 The sections below cover the steps for deploying with Maven in detail.
 
@@ -48,15 +47,13 @@ $> cd examples/jsf/numberguess
 $> mvn wildfly:run
 ------------------------------
 
-The https://docs.jboss.org/wildfly/plugins/maven/latest/[Maven WildFly plugin] will run WildFly and deploy the example and the server will be automatically downloaded in the `target` directory.
+The https://docs.wildfly.org/wildfly-maven-plugin/[Maven WildFly plugin] will run WildFly and deploy the example and the server will be automatically downloaded in the `target` directory.
 The numberguess application is available at http://localhost:8080/weld-numberguess.
 
 === Deploying to WildFly
 
-To deploy the examples to a WildFly instance, you'll need to download
-http://wildfly.org/downloads/[WildFly] first. The good
-news is that there are no additional modifications you have to make to
-the server. It's ready to go!
+To deploy the examples to your own WildFly instance, you'll need to download https://www.wildfly.org/downloads/[WildFly] first.
+The good news is that there are no additional modifications you have to make to the server. It's ready to go!
 
 After you have downloaded WildFly, extract it. You can move the extracted folder anywhere you
 like. Wherever it lays to rest, that's what we'll call the WildFly
@@ -64,8 +61,8 @@ installation directory, or `JBOSS_HOME`.
 
 [source, console]
 --------------------------------
-$> unzip wildfly-27.x.y.Final.zip
-$> mv wildfly-27.*/ wildfly-27
+$> unzip wildfly-31.x.y.Final.zip
+$> mv wildfly-31.*/ wildfly-31
 --------------------------------
 
 In order for the build scripts to know where to deploy the example, you
@@ -75,13 +72,21 @@ e.g.:
 
 [source, console]
 -------------------------------------
-$> export JBOSS_HOME=/path/to/wildfly-27
+$> export JBOSS_HOME=/path/to/wildfly-31
 -------------------------------------
+
+Next up, start your WildFly server.
+Assuming default configuration and Linux, you can do that with the following command (for Windows, use the `.bat` file instead):
+
+[source, console]
+--------------------------------
+$> cd path/to/wildfly
+$> ./bin/standalone.sh
+--------------------------------
 
 You're now ready to run your first example!
 
-Switch to the `examples/jsf/numberguess` directory and execute the Maven
-`deploy` target:
+Switch to the `examples/jsf/numberguess` directory in Weld repository and execute the Maven `deploy` target:
 
 [source, console]
 ------------------------------
@@ -89,15 +94,7 @@ $> cd examples/jsf/numberguess
 $> mvn wildfly:deploy
 ------------------------------
 
-NOTE: If you are using Eclipse, you should seriously consider installing the
-http://tools.jboss.org[JBoss Tools] add-ons, which include a wide
-variety of tooling for CDI and Jakarta EE development, as well as an
-enhanced WildFly server view.
-
-Wait a few seconds for the application to deploy (or the application
-server to start) and see if you can determine the most efficient
-approach to pinpoint the random number at the local URL
-http://localhost:8080/weld-numberguess.
+Wait a bit for the application to deploy and see if you can determine the most efficient approach to pinpoint the random number at the local URL http://localhost:8080/weld-numberguess.
 
 [NOTE]
 ====
@@ -116,12 +113,13 @@ https://docs.wildfly.org/wildfly-maven-plugin/[plugin
 documentation].
 ====
 
-You can also run functional tests to verify that the example works as
-expected. Run:
+TODO this ain't true!!!
+
+You can also run some simple integration tests to verify that the example works as expected. Keep the server with deployed application running and execute the following:
 
 [source, console]
 --------------------------------------------
-$> mvn verify -Darquillian=wildfly-managed
+$> mvn verify -Pintegration-testing
 --------------------------------------------
 
 You should see the following output:
@@ -130,64 +128,6 @@ You should see the following output:
 ------------------------------------------------
 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 ------------------------------------------------
-
-The second starter example, `weld-translator`, will translate your text
-into Latin. (Well, not really, but the stub is there for you to
-implement, at least. Good luck!) To try it out, switch to the translator
-example directory and execute the deploy target:
-
-[source, console]
----------------------------------
-$> cd examples/jsf/translator/ear
-$> mvn wildfly:run
----------------------------------
-
-NOTE: The translator uses session beans, which are packaged in an EJB module
-within an ear. Java EE 8 allows session beans to be deployed in war
-modules, but that's a topic for a later chapter.
-
-Again, wait a few seconds for the application to deploy (if you're
-really bored, read the log messages), and visit
-http://localhost:8080/weld-translator to begin pseudo-translating.
-
-Again, functional tests can be running by executing:
-
-[source, console]
---------------------------------------------
-$> cd examples/jsf/translator/ftest
-$> mvn verify -Darquillian=wildfly-managed
---------------------------------------------
-
-=== Deploying to GlassFish
-
-Deploying to GlassFish should be easy and familiar, right? After all,
-it's the Jakarta EE compatible implementation and Weld is the CDI
-compatible implementation, meaning Weld gets bundled with GlassFish. So
-yes, it's all quite easy and familiar.
-
-To deploy the examples to GlassFish, you'll need a GlassFish 7 release. Extract
-the zip to a directory of your choice and set the `GLASSFISH_HOME` environment
-variable. Switch to the `GLASSFISH_HOME` directory and start the server:
-
-[source, console]
-----------------------------------
-$> ./bin/asadmin start-domain
-----------------------------------
-
-Now you can deploy the example.
-
-[source, console]
-------------------------------
-$> ./bin/asadmin deploy /path/examples/jsf/numberguess/target/weld-numberguess.war
-------------------------------
-
-Once the command completes the application is available at
-http://localhost:8080/weld-numberguess
-
-The reason the same artifact can be deployed to both WildFly and
-GlassFish, without any modifications, is because all of the features
-being used are part of the standard platform. And what a capable
-platform it has become!
 
 === Deploying to Apache Tomcat
 
@@ -213,7 +153,7 @@ for more info).
 
 Let's give the Weld servlet extension a spin on Apache Tomcat. First,
 you'll need to download Tomcat 10.1 or later from
-https://tomcat.apache.org/download-10.cgi[tomcat.apache.org] and extract
+https://tomcat.apache.org/[tomcat.apache.org] and extract
 it.
 
 [source, console]
@@ -240,7 +180,7 @@ a Windows command window:
 
 [source, console]
 ------------------------------------
-$> cd c:\path\to\apache-tomcat-9\bin
+$> cd c:\path\to\apache-tomcat-10\bin
 $> start
 ------------------------------------
 
