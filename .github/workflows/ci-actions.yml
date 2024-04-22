@@ -367,11 +367,19 @@ jobs:
           path: .
       - name: Extract WildFly
         run: unzip wildfly.zip
+      # Build examples, start WFLY in background, give it time to boot, run JSF numberguess tests, shutdown WFLY
       - name: Build with Maven
         run: |
+          mvn clean verify -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f examples/pom.xml
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f examples/pom.xml
+          $JBOSS_HOME/bin/standalone.sh &
+          sleep 3s
+          WFLY_PID=$(jps | grep -- jboss-modules.jar | grep -Eo '[0-9]{1,}')
+          mvn clean wildfly:deploy -Dno-format -f examples/jsf/numberguess/pom.xml
+          mvn clean verify -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Pintegration-testing -f examples/jsf/numberguess/pom.xml
+          kill -9 $WFLY_PID
+          sleep 3s
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
