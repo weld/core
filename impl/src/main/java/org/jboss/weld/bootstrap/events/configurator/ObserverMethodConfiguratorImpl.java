@@ -40,6 +40,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 import jakarta.enterprise.inject.spi.configurator.ObserverMethodConfigurator;
 
+import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.event.SyntheticObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.resolution.CovariantTypes;
@@ -82,7 +83,11 @@ public class ObserverMethodConfiguratorImpl<T> implements ObserverMethodConfigur
     public ObserverMethodConfiguratorImpl(ObserverMethod<T> observerMethod, Extension extension) {
         this(extension);
         read(observerMethod);
-        notifyWith(e -> observerMethod.notify(e));
+        if (observerMethod instanceof ObserverMethodImpl<?, ?>) {
+            notifyWith(e -> ((ObserverMethodImpl) observerMethod).notify(e.getEvent(), this.reception));
+        } else {
+            notifyWith(e -> observerMethod.notify(e));
+        }
     }
 
     @Override

@@ -295,7 +295,15 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
 
     @Override
     public void notify(final T event) {
-        sendEvent(event);
+        sendEvent(event, getReception());
+    }
+
+    /**
+     * Used as default notify method from ObserverMethodConfiguratorImpl.
+     * This allows Weld to respect {@link Reception} set in the configurator.
+     */
+    public void notify(final T event, Reception reception) {
+        sendEvent(event, reception);
     }
 
     /**
@@ -303,7 +311,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
      *
      * @param event The event to notify observer with
      */
-    protected void sendEvent(final T event) {
+    public void sendEvent(final T event, Reception reception) {
         if (isStatic) {
             sendEvent(event, null, null);
         } else {
