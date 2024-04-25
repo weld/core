@@ -54,7 +54,6 @@ import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.deployment.discovery.jandex.Jandex;
 import org.jboss.weld.environment.jetty.JettyContainer;
-import org.jboss.weld.environment.jetty.JettyLegacyContainer;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.servlet.deployment.ServletContextBeanArchiveHandler;
 import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
@@ -371,8 +370,7 @@ public class WeldServletLifecycle {
             if (container == null) {
                 // 3. Built-in containers in predefined order
                 container = checkContainers(ctx, dump,
-                        Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, JettyLegacyContainer.INSTANCE,
-                                UndertowContainer.INSTANCE));
+                        Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, UndertowContainer.INSTANCE));
             }
         }
         return container;
