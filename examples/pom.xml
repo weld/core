@@ -102,7 +102,7 @@
         <jsf.api.version>4.1.0-M1</jsf.api.version>
         <uel.version>5.0.0-M1</uel.version>
 
-        <wildfly.plugin.version>5.0.0.Beta4</wildfly.plugin.version>
+        <wildfly.plugin.version>5.0.0.Final</wildfly.plugin.version>
 
         <!-- Maven plugin versions -->
         <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
