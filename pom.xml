@@ -79,7 +79,7 @@
         <jsf.api.version>4.0.1</jsf.api.version>
         <jboss.logging.version>3.5.3.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
-        <jboss.logmanager.version>3.0.4.Final</jboss.logmanager.version>
+        <jboss.logmanager.version>3.0.6.Final</jboss.logmanager.version>
         <jsf.impl.version>4.1.0-M1</jsf.impl.version>
         <jsp.api.version>4.0.0-M2</jsp.api.version>
         <jstl.api.version>3.0.0</jstl.api.version>
