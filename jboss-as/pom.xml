@@ -33,7 +33,7 @@
         <weld.update.version>6.0.0-SNAPSHOT</weld.update.version>
         <!-- These are *NOT* automatically updated and should be reviewed if the relevant profile is to be used -->
         <cdi.update.version>4.1.0.RC1</cdi.update.version>
-        <interceptors.update.version>2.2.0-RC1</interceptors.update.version>
+        <interceptors.update.version>2.2.0</interceptors.update.version>
     </properties>
 
     <dependencies>
