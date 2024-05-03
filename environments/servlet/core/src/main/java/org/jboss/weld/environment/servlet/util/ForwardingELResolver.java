@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.util;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 
@@ -33,11 +30,6 @@ public abstract class ForwardingELResolver extends ELResolver {
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         return delegate().getCommonPropertyType(context, base);
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        return delegate().getFeatureDescriptors(context, base);
     }
 
     @Override
