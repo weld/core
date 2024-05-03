@@ -1,8 +1,5 @@
 package org.jboss.weld.environment.servlet.util;
 
-import java.beans.FeatureDescriptor;
-import java.util.Iterator;
-
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 
@@ -16,11 +13,6 @@ import jakarta.el.ELResolver;
 public class TransparentELResolver extends ELResolver {
     @Override
     public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
-        return null;
-    }
-
-    @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
         return null;
     }
 
