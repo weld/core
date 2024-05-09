@@ -18,6 +18,8 @@ package org.jboss.weld.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.ConversationScoped;
@@ -114,15 +116,18 @@ public abstract class ContextualInstanceStrategy<T> {
 
     private static class ApplicationScopedContextualInstanceStrategy<T> extends DefaultContextualInstanceStrategy<T> {
 
+        private final Lock lock = new ReentrantLock();
+
         private volatile T value;
 
         @Override
         T getIfExists(Bean<T> bean, BeanManagerImpl manager) {
-            T instance = value;
+            T instance = value; // volatile read
             if (instance != null) {
                 return instance;
             }
-            synchronized (this) {
+            lock.lock();
+            try {
                 if (value == null) {
                     instance = super.getIfExists(bean, manager);
                     if (instance != null) {
@@ -130,6 +135,8 @@ public abstract class ContextualInstanceStrategy<T> {
                     }
                 }
                 return instance;
+            } finally {
+                lock.unlock();
             }
         }
 
@@ -139,11 +146,14 @@ public abstract class ContextualInstanceStrategy<T> {
             if (instance != null) {
                 return instance;
             }
-            synchronized (this) {
+            lock.lock();
+            try {
                 if ((instance = value) == null) {
                     this.value = instance = super.get(bean, manager, ctx);
                 }
                 return instance;
+            } finally {
+                lock.unlock();
             }
         }
 
