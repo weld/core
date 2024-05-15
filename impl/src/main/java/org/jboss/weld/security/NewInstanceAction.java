@@ -16,20 +16,27 @@
  */
 package org.jboss.weld.security;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.PrivilegedExceptionAction;
 
 public class NewInstanceAction<T> extends AbstractGenericReflectionAction<T> implements PrivilegedExceptionAction<T> {
 
-    public static <T> NewInstanceAction<T> of(Class<T> javaClass) {
-        return new NewInstanceAction<T>(javaClass);
+    public static <T> NewInstanceAction<T> of(Constructor<T> constructor, Object... params) {
+        return new NewInstanceAction<T>(constructor, params);
     }
 
-    public NewInstanceAction(Class<T> javaClass) {
-        super(javaClass);
+    private final Constructor<T> constructor;
+    private final Object[] params;
+
+    public NewInstanceAction(Constructor<T> constructor, Object... params) {
+        super(constructor.getDeclaringClass());
+        this.constructor = constructor;
+        this.params = params;
     }
 
     @Override
-    public T run() throws InstantiationException, IllegalAccessException {
-        return javaClass.newInstance();
+    public T run() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+        return constructor.newInstance(params);
     }
 }

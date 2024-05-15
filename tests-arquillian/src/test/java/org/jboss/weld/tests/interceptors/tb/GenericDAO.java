@@ -47,7 +47,7 @@ public abstract class GenericDAO<T extends Entity> implements DAO<T> {
             throw new IllegalArgumentException("No Tx marker!");
 
         try {
-            return clazz.newInstance();
+            return clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
