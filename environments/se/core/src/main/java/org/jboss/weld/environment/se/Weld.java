@@ -51,6 +51,7 @@ import jakarta.annotation.Priority;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.UnsatisfiedResolutionException;
 import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.se.SeContainerInitializer;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -279,6 +280,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
 
     private final Set<Metadata<Extension>> extensions;
 
+    private final Set<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions;
+
     private final Map<String, Object> properties;
 
     private final Set<PackInfo> packages;
@@ -307,6 +310,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         this.enabledInterceptors = new ArrayList<Metadata<String>>();
         this.enabledDecorators = new ArrayList<Metadata<String>>();
         this.extensions = new HashSet<Metadata<Extension>>();
+        this.buildCompatibleExtensions = new HashSet<>();
         this.properties = new HashMap<String, Object>();
         this.packages = new HashSet<PackInfo>();
         this.containerLifecycleObservers = new LinkedList<>();
@@ -478,6 +482,13 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             } catch (Exception ex) {
                 CommonLogger.LOG.unableToInstantiate(extensionClass, new Object[] {}, ex);
             }
+        }
+        return this;
+    }
+
+    public Weld addBuildCompatibleExtensions(Class<? extends BuildCompatibleExtension>... extensionClasses) {
+        for (Class<? extends BuildCompatibleExtension> extension : extensionClasses) {
+            buildCompatibleExtensions.add(extension);
         }
         return this;
     }
@@ -748,6 +759,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         enabledInterceptors.clear();
         enabledDecorators.clear();
         extensions.clear();
+        buildCompatibleExtensions.clear();
         containerLifecycleObservers.clear();
         additionalServices.clear();
         return this;
@@ -1135,9 +1147,13 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
         // Register org.jboss.weld.lite.extension.translator.LiteExtensionTranslator in order to be able to execute build compatible extensions
         // Note that we only register this if we detect any BuildCompatibleExtension implementations
-        if (!BuildCompatibleExtensionLoader.getBuildCompatibleExtensions().isEmpty()) {
+        Set<Class<? extends BuildCompatibleExtension>> allBce = new HashSet<>();
+        allBce.addAll(BuildCompatibleExtensionLoader.getBuildCompatibleExtensions());
+        allBce.addAll(buildCompatibleExtensions);
+        if (!allBce.isEmpty()) {
             try {
-                result.add(new MetadataImpl<Extension>(SecurityActions.newInstance(LiteExtensionTranslator.class),
+                result.add(new MetadataImpl<Extension>(
+                        new LiteExtensionTranslator(allBce, Thread.currentThread().getContextClassLoader()),
                         SYNTHETIC_LOCATION_PREFIX + LiteExtensionTranslator.class.getName()));
             } catch (Exception e) {
                 throw new RuntimeException(e);

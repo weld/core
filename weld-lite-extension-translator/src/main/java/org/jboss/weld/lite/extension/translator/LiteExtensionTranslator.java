@@ -3,6 +3,7 @@ package org.jboss.weld.lite.extension.translator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.annotation.Priority;
@@ -42,7 +43,16 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
         this(BuildCompatibleExtensionLoader.getBuildCompatibleExtensions(), Thread.currentThread().getContextClassLoader());
     }
 
+    /**
+     * Deprecated, use {@link LiteExtensionTranslator#LiteExtensionTranslator(Collection, ClassLoader)}
+     */
+    @Deprecated
     public LiteExtensionTranslator(List<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions, ClassLoader cl) {
+        this((Collection<Class<? extends BuildCompatibleExtension>>) buildCompatibleExtensions, cl);
+    }
+
+    public LiteExtensionTranslator(Collection<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions,
+            ClassLoader cl) {
         this.util = new ExtensionInvoker(buildCompatibleExtensions);
         this.cl = cl;
         // clear out information about extensions we found, this is to prevent issues in test environments where this
