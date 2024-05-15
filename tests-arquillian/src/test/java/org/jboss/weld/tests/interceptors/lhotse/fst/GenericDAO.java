@@ -45,7 +45,7 @@ public abstract class GenericDAO<T extends Entity> implements DAO<T> {
             throw new IllegalArgumentException("Null id");
 
         try {
-            return clazz.newInstance();
+            return clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

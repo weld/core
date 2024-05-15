@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -386,7 +387,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                 return newInstantiator.newInstance(proxyClass);
             }
             return proxyInstantiator.newInstance(proxyClass);
-        } catch (InstantiationException e) {
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             throw new DefinitionException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
         } catch (IllegalAccessException e) {
             throw new DefinitionException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
