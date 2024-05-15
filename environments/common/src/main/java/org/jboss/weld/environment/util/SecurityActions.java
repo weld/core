@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.environment.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.security.NewInstanceAction;
 
 /**
@@ -38,15 +40,17 @@ final class SecurityActions {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    static <T> T newInstance(Class<T> javaClass) throws InstantiationException, IllegalAccessException {
+    static <T> T newInstance(Class<T> javaClass)
+            throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if (System.getSecurityManager() != null) {
             try {
-                return AccessController.doPrivileged(NewInstanceAction.of(javaClass));
+                return AccessController.doPrivileged(
+                        NewInstanceAction.of(AccessController.doPrivileged(GetDeclaredConstructorAction.of(javaClass))));
             } catch (PrivilegedActionException e) {
                 throw new WeldException(e.getCause());
             }
         } else {
-            return javaClass.newInstance();
+            return javaClass.getDeclaredConstructor().newInstance();
         }
     }
 

@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import jakarta.enterprise.inject.spi.Bean;
@@ -34,7 +35,7 @@ import org.jboss.weld.util.reflection.Reflections;
 /**
  * Implementations of this interface are capable of creating instances of a given proxy class. This can either be done simply by
  * calling
- * {@link Class#newInstance()} or using more advanced mechanism (e.g. sun.misc.Unsafe)
+ * {@code clazz.getDeclaredConstructor().newInstance()} or using more advanced mechanism (e.g. sun.misc.Unsafe)
  *
  * @author Jozef Hartinger
  *
@@ -52,7 +53,8 @@ public interface ProxyInstantiator extends Service {
      * @param clazz the class
      * @return an instance of a proxy class
      */
-    <T> T newInstance(Class<T> clazz) throws InstantiationException, IllegalAccessException;
+    <T> T newInstance(Class<T> clazz)
+            throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException;
 
     /**
      * Validate, whether the given constructor is sufficient for a class to be proxyable.
@@ -137,7 +139,7 @@ public interface ProxyInstantiator extends Service {
         }
 
         private static ProxyInstantiator newInstance(String implementation)
-                throws InstantiationException, IllegalAccessException {
+                throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             if (DefaultProxyInstantiator.class.getName().equals(implementation)) {
                 return DefaultProxyInstantiator.INSTANCE;
             }
@@ -146,7 +148,7 @@ public interface ProxyInstantiator extends Service {
             if (clazz == null) {
                 throw new WeldException("Unable to load ProxyInstantiator implementation: " + implementation);
             }
-            return clazz.newInstance();
+            return clazz.getDeclaredConstructor().newInstance();
         }
     }
 

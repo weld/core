@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import jakarta.enterprise.inject.spi.Bean;
@@ -39,8 +40,9 @@ public final class DefaultProxyInstantiator implements ProxyInstantiator {
     }
 
     @Override
-    public <T> T newInstance(Class<T> clazz) throws InstantiationException, IllegalAccessException {
-        return clazz.newInstance();
+    public <T> T newInstance(Class<T> clazz)
+            throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        return clazz.getDeclaredConstructor().newInstance();
     }
 
     @Override

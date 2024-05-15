@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.security.NewInstanceAction;
 
 /**
@@ -39,15 +42,39 @@ final class SecurityActions {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    static <T> T newInstance(Class<T> javaClass) throws InstantiationException, IllegalAccessException {
+    static <T> T newInstance(Class<T> javaClass)
+            throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if (System.getSecurityManager() != null) {
             try {
-                return AccessController.doPrivileged(NewInstanceAction.of(javaClass));
+                Constructor<T> constructor = AccessController.doPrivileged(GetDeclaredConstructorAction.of(javaClass));
+                return AccessController.doPrivileged(NewInstanceAction.of(constructor));
             } catch (PrivilegedActionException e) {
                 throw new WeldException(e.getCause());
             }
         } else {
-            return javaClass.newInstance();
+            return javaClass.getDeclaredConstructor().newInstance();
+        }
+    }
+
+    static <T> Constructor<T> getDeclaredConstructor(Class<T> javaClass, Class<?>... parameterTypes)
+            throws NoSuchMethodException, PrivilegedActionException {
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged(GetDeclaredConstructorAction.of(javaClass, parameterTypes));
+        } else {
+            return javaClass.getDeclaredConstructor(parameterTypes);
+        }
+    }
+
+    static <T> T newInstance(Constructor<T> constructor, Object... params)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        if (System.getSecurityManager() != null) {
+            try {
+                return AccessController.doPrivileged(NewInstanceAction.of(constructor, params));
+            } catch (PrivilegedActionException e) {
+                throw new WeldException(e.getCause());
+            }
+        } else {
+            return constructor.newInstance(params);
         }
     }
 

@@ -197,7 +197,8 @@ public class ReflectionTest {
 
     @Test
     public void testNewInstance() throws PrivilegedActionException {
-        Assert.assertNotNull(AccessController.doPrivileged(NewInstanceAction.of(TestObject.class)));
+        Assert.assertNotNull(AccessController.doPrivileged(
+                NewInstanceAction.of(AccessController.doPrivileged(GetDeclaredConstructorAction.of(TestObject.class)))));
     }
 
     @Test
