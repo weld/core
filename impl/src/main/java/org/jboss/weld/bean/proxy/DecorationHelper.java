@@ -17,6 +17,7 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.LinkedList;
@@ -128,7 +129,7 @@ public class DecorationHelper<T> implements PrivilegedAction<T> {
     public T run() {
         try {
             return instantiator.newInstance(proxyClassForDecorator);
-        } catch (InstantiationException e) {
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             throw new DefinitionException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
         } catch (IllegalAccessException e) {
             throw new DefinitionException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());

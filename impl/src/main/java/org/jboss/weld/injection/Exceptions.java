@@ -23,6 +23,7 @@ import java.security.PrivilegedActionException;
 import jakarta.enterprise.inject.CreationException;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.security.NewInstanceAction;
 
 class Exceptions {
@@ -36,8 +37,8 @@ class Exceptions {
         } else {
             RuntimeException e;
             try {
-
-                e = AccessController.doPrivileged(NewInstanceAction.of(exceptionToThrow));
+                e = AccessController.doPrivileged(
+                        NewInstanceAction.of(AccessController.doPrivileged(GetDeclaredConstructorAction.of(exceptionToThrow))));
             } catch (PrivilegedActionException ex) {
                 throw new WeldException(ex.getCause());
             }

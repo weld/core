@@ -71,7 +71,7 @@ public abstract class AbstractInterceptor<T> implements Interceptor<T> {
     @SuppressWarnings("unchecked")
     public T create(CreationalContext<T> creationalContext) {
         try {
-            return (T) getBeanClass().newInstance();
+            return (T) getBeanClass().getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Error creating an instance of " + getBeanClass());
         }

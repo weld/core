@@ -31,6 +31,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.security.NewInstanceAction;
 
 /**
@@ -51,7 +52,8 @@ class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         try {
-            T instance = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
+            T instance = AccessController.doPrivileged(
+                    NewInstanceAction.of(AccessController.doPrivileged(GetDeclaredConstructorAction.of(proxyClass))));
             if (!bean.getScope().equals(Dependent.class)) {
                 ctx.push(instance);
             }

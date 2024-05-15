@@ -1181,7 +1181,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         if (!allBce.isEmpty()) {
             try {
                 result.add(new MetadataImpl<Extension>(
-                        new LiteExtensionTranslator(allBce, Thread.currentThread().getContextClassLoader()),
+                        SecurityActions.newInstance(SecurityActions.getDeclaredConstructor(LiteExtensionTranslator.class,
+                                Collection.class, ClassLoader.class), allBce, Thread.currentThread().getContextClassLoader()),
                         SYNTHETIC_LOCATION_PREFIX + LiteExtensionTranslator.class.getName()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
