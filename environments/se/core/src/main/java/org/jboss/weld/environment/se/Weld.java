@@ -486,6 +486,12 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         return this;
     }
 
+    /**
+     * Add build compatible extensions to the set of extensions.
+     *
+     * @param extensionClasses build compatible extension classes to use in the container
+     * @return self
+     */
     public Weld addBuildCompatibleExtensions(Class<? extends BuildCompatibleExtension>... extensionClasses) {
         for (Class<? extends BuildCompatibleExtension> extension : extensionClasses) {
             buildCompatibleExtensions.add(extension);
