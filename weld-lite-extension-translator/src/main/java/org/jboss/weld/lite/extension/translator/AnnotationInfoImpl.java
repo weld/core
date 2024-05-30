@@ -11,6 +11,7 @@ import jakarta.enterprise.lang.model.AnnotationMember;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
+import org.jboss.weld.util.reflection.Reflections;
 
 class AnnotationInfoImpl implements AnnotationInfo {
     final Annotation annotation;
@@ -40,7 +41,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
     public AnnotationMember member(String name) {
         try {
             java.lang.reflect.Method member = annotation.annotationType().getDeclaredMethod(name);
-            SecurityActions.ensureAccessible(member, annotation);
+            Reflections.ensureAccessible(member, annotation);
             Object value = member.invoke(annotation);
             return new AnnotationMemberImpl(value, bm);
         } catch (NoSuchMethodException e) {
@@ -56,7 +57,7 @@ class AnnotationInfoImpl implements AnnotationInfo {
             java.lang.reflect.Method[] members = annotation.annotationType().getDeclaredMethods();
             Map<String, AnnotationMember> result = new HashMap<>();
             for (java.lang.reflect.Method member : members) {
-                SecurityActions.ensureAccessible(member, annotation);
+                Reflections.ensureAccessible(member, annotation);
                 String name = member.getName();
                 Object value = member.invoke(annotation);
                 result.put(name, new AnnotationMemberImpl(value, bm));

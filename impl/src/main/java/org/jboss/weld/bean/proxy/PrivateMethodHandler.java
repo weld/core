@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.jboss.weld.util.reflection.Reflections;
+
 /**
  * This method handler is used to invoke a private method which is not intercepted - Weld cannot use invokespecial in this case.
  *
@@ -36,7 +38,7 @@ class PrivateMethodHandler implements MethodHandler, Serializable {
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
         Object result = null;
         try {
-            SecurityActions.ensureAccessible(thisMethod);
+            Reflections.ensureAccessible(thisMethod, self);
             result = thisMethod.invoke(self, args);
         } catch (InvocationTargetException e) {
             throw e.getCause();

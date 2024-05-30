@@ -34,7 +34,7 @@ class ExtensionInvoker {
             }
 
             try {
-                BuildCompatibleExtension extensionInstance = SecurityActions.getConstructor(extensionClass).newInstance();
+                BuildCompatibleExtension extensionInstance = extensionClass.getConstructor().newInstance();
                 extensionClasses.put(extensionClass.getName(), extensionClass);
                 extensionClassInstances.put(extensionClass, extensionInstance);
             } catch (InvocationTargetException e) {

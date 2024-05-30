@@ -277,8 +277,9 @@ public class WeldServletLifecycle {
         // Note that we only register this if we discovered at least one implementation of BuildCompatibleExtension
         if (!BuildCompatibleExtensionLoader.getBuildCompatibleExtensions().isEmpty()) {
             try {
-                extensionsBuilder.add(new MetadataImpl<Extension>(SecurityActions.newInstance(LiteExtensionTranslator.class),
-                        "synthetic:" + LiteExtensionTranslator.class.getName()));
+                extensionsBuilder
+                        .add(new MetadataImpl<Extension>(LiteExtensionTranslator.class.getDeclaredConstructor().newInstance(),
+                                "synthetic:" + LiteExtensionTranslator.class.getName()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -300,8 +301,7 @@ public class WeldServletLifecycle {
             try {
                 Class<? extends BeanArchiveHandler> handlerClass = Reflections.loadClass(resourceLoader,
                         JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER);
-                strategy.registerHandler((SecurityActions.newConstructorInstance(handlerClass,
-                        new Class<?>[] { ServletContext.class }, context)));
+                strategy.registerHandler(handlerClass.getDeclaredConstructor(ServletContext.class).newInstance(context));
             } catch (Exception e) {
                 throw CommonLogger.LOG.unableToInstantiate(JANDEX_SERVLET_CONTEXT_BEAN_ARCHIVE_HANDLER,
                         Arrays.toString(new Object[] { context }), e);
@@ -356,7 +356,7 @@ public class WeldServletLifecycle {
         if (containerClassName != null) {
             try {
                 Class<Container> containerClass = Reflections.classForName(resourceLoader, containerClassName);
-                container = SecurityActions.newInstance(containerClass);
+                container = containerClass.getDeclaredConstructor().newInstance();
                 WeldServletLogger.LOG.containerDetectionSkipped(containerClassName);
             } catch (Exception e) {
                 WeldServletLogger.LOG.unableToInstantiateCustomContainerClass(containerClassName);

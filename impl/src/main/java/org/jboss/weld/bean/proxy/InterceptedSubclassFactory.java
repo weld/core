@@ -663,11 +663,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     public static <T> void setPrivateMethodHandler(T instance) {
         if (instance instanceof ProxyObject && instance.getClass().isSynthetic()
                 && instance.getClass().getName().endsWith(PROXY_SUFFIX)
-                && SecurityActions.hasDeclaredField(instance.getClass(), PRIVATE_METHOD_HANDLER_FIELD_NAME)) {
+                && Reflections.hasDeclaredField(instance.getClass(), PRIVATE_METHOD_HANDLER_FIELD_NAME)) {
             try {
-                Field privateMethodHandlerField = SecurityActions.getDeclaredField(instance.getClass(),
-                        PRIVATE_METHOD_HANDLER_FIELD_NAME);
-                SecurityActions.ensureAccessible(privateMethodHandlerField);
+                Field privateMethodHandlerField = instance.getClass().getDeclaredField(PRIVATE_METHOD_HANDLER_FIELD_NAME);
+                Reflections.ensureAccessible(privateMethodHandlerField, instance);
                 privateMethodHandlerField.set(instance, PrivateMethodHandler.INSTANCE);
             } catch (NoSuchFieldException ignored) {
             } catch (IllegalArgumentException | IllegalAccessException e) {

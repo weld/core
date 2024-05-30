@@ -17,7 +17,6 @@
 package org.jboss.weld.util;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,7 +48,6 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
@@ -362,11 +360,7 @@ public class BeanMethods {
                     if (methodMetadata == null) {
                         methodMetadata = new LinkedList<Method>();
                     }
-                    if (System.getSecurityManager() == null) {
-                        javaMethod.setAccessible(true);
-                    } else {
-                        AccessController.doPrivileged(SetAccessibleAction.of(javaMethod));
-                    }
+                    javaMethod.setAccessible(true);
                     methodMetadata.add(method.getJavaMember());
                 }
             }

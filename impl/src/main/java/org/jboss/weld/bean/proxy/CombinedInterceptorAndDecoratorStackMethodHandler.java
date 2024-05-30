@@ -86,7 +86,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackA
                     }
                 } else {
                     if (outerDecorator != null) {
-                        SecurityActions.ensureAccessible(thisMethod);
+                        Reflections.ensureAccessible(thisMethod, outerDecorator);
                         return Reflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
                     }
                 }
@@ -96,7 +96,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackA
                 }
             }
         }
-        SecurityActions.ensureAccessible(proceed);
+        Reflections.ensureAccessible(proceed, self);
         return Reflections.invokeAndUnwrap(self, proceed, args);
     }
 

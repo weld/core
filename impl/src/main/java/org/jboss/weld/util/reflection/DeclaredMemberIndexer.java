@@ -121,7 +121,7 @@ public final class DeclaredMemberIndexer {
      */
     public static List<Field> getDeclaredFields(Class<?> declaringClass) {
         Preconditions.checkNotNull(declaringClass);
-        List<Field> declaredFields = Arrays.asList(SecurityActions.getDeclaredFields(declaringClass));
+        List<Field> declaredFields = Arrays.asList(declaringClass.getDeclaredFields());
         Collections.sort(declaredFields, FIELD_COMPARATOR_INSTANCE);
         return declaredFields;
     }
@@ -132,7 +132,7 @@ public final class DeclaredMemberIndexer {
      */
     public static List<Method> getDeclaredMethods(Class<?> declaringClass) {
         Preconditions.checkNotNull(declaringClass);
-        List<Method> declaredMethods = Arrays.asList(SecurityActions.getDeclaredMethods(declaringClass));
+        List<Method> declaredMethods = Arrays.asList(declaringClass.getDeclaredMethods());
         Collections.sort(declaredMethods, METHOD_COMPARATOR_INSTANCE);
         return declaredMethods;
     }
@@ -143,7 +143,7 @@ public final class DeclaredMemberIndexer {
      */
     public static List<Constructor<?>> getDeclaredConstructors(Class<?> declaringClass) {
         Preconditions.checkNotNull(declaringClass);
-        List<Constructor<?>> declaredConstructors = Arrays.asList(SecurityActions.getDeclaredConstructors(declaringClass));
+        List<Constructor<?>> declaredConstructors = Arrays.asList(declaringClass.getDeclaredConstructors());
         Collections.sort(declaredConstructors, CONSTRUCTOR_COMPARATOR_INSTANCE);
         return declaredConstructors;
     }

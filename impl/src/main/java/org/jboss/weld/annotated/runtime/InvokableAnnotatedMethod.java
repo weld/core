@@ -26,6 +26,7 @@ import java.util.Map;
 
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
+import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
 import org.jboss.weld.util.collections.WeldCollections;
 
@@ -45,9 +46,11 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
 
     public InvokableAnnotatedMethod(AnnotatedMethod<T> annotatedMethod) {
         this.annotatedMethod = annotatedMethod;
-        this.methods = Collections.<Class<?>, Method> singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(),
-                annotatedMethod.getJavaMember());
-        SecurityActions.ensureAccessible(annotatedMethod.getJavaMember());
+        Method method = annotatedMethod.getJavaMember();
+        this.methods = Collections.<Class<?>, Method> singletonMap(method.getDeclaringClass(), method);
+        if (method != null && !method.isAccessible()) {
+            method.setAccessible(true);
+        }
     }
 
     /**
@@ -67,7 +70,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
      * class. Useful with proxies
      *
      * @param instance The instance to invoke
-     * @param manager The Bean manager
+     * @param parameters The method parameters
      * @return A reference to the instance
      */
     public <X> X invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException,
@@ -78,8 +81,10 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = annotatedMethod.getJavaMember();
-            method = SecurityActions.lookupMethod(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
-            SecurityActions.ensureAccessible(method);
+            method = MethodLookupAction.lookupMethod(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
+            if (method != null && !method.canAccess(instance)) {
+                method.setAccessible(true);
+            }
             synchronized (this) {
                 final Map<Class<?>, Method> newMethods = new HashMap<Class<?>, Method>(methods);
                 newMethods.put(instance.getClass(), method);

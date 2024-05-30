@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  *
@@ -48,7 +49,7 @@ public class InterceptedProxyMethodHandler extends CombinedInterceptorAndDecorat
         }
         Object result = null;
         try {
-            SecurityActions.ensureAccessible(thisMethod);
+            Reflections.ensureAccessible(thisMethod, instance);
             result = thisMethod.invoke(instance, args);
         } catch (InvocationTargetException e) {
             throw e.getCause();

@@ -34,6 +34,7 @@ import jakarta.enterprise.inject.spi.Bean;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.collections.Arrays2;
 
 /**
@@ -54,7 +55,7 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
             Bean<?> declaringBean, Class<?> declaringComponentClass,
             Set<Class<? extends Annotation>> specialParameterMarkers, InjectionPointFactory factory, BeanManagerImpl manager) {
         super(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, factory, manager);
-        this.accessibleMethod = SecurityActions.getAccessibleCopyOfMethod(enhancedMethod.getJavaMember());
+        this.accessibleMethod = GetAccessibleCopyOfMember.of(enhancedMethod.getJavaMember());
         this.annotatedMethod = enhancedMethod.slim();
         this.specialInjectionPointIndex = initSpecialInjectionPointIndex(enhancedMethod, specialParameterMarkers);
     }

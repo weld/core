@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static java.security.AccessController.doPrivileged;
-import static org.jboss.weld.util.AccessControllers.action;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.Method;
@@ -48,12 +45,7 @@ public class Annotations {
      *         annotation container
      */
     public static Method getRepeatableAnnotationAccessor(Class<? extends Annotation> annotation) {
-        Method value;
-        if (System.getSecurityManager() == null) {
-            value = Reflections.findDeclaredMethodByName(annotation, VALUE_MEMBER_NAME);
-        } else {
-            value = doPrivileged(action(() -> Reflections.findDeclaredMethodByName(annotation, VALUE_MEMBER_NAME)));
-        }
+        Method value = Reflections.findDeclaredMethodByName(annotation, VALUE_MEMBER_NAME);
         if (value == null) {
             return null;
         }

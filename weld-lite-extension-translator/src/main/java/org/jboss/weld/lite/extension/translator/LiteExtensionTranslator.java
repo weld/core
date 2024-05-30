@@ -81,7 +81,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             Class<? extends Annotation> scopeAnnotation = context.scopeAnnotation;
             if (scopeAnnotation == null) {
                 try {
-                    scopeAnnotation = SecurityActions.getConstructor(context.contextClass).newInstance().getScope();
+                    scopeAnnotation = context.contextClass.getConstructor().newInstance().getScope();
                 } catch (InvocationTargetException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(context.contextClass,
                             e.getCause().toString(), e);
@@ -145,7 +145,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
 
         for (Class<? extends jakarta.enterprise.context.spi.AlterableContext> contextClass : contextsToRegister) {
             try {
-                abd.addContext(SecurityActions.getConstructor(contextClass).newInstance());
+                abd.addContext(contextClass.getConstructor().newInstance());
             } catch (InvocationTargetException e) {
                 throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(contextClass, e.getCause().toString(), e);
             } catch (ReflectiveOperationException e) {
@@ -179,7 +179,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             configurator.stereotypes(syntheticBean.stereotypes);
             configurator.produceWith(lookup -> {
                 try {
-                    SyntheticBeanCreator creator = SecurityActions.getConstructor(syntheticBean.creatorClass).newInstance();
+                    SyntheticBeanCreator creator = syntheticBean.creatorClass.getConstructor().newInstance();
                     return creator.create(lookup, new ParametersImpl(syntheticBean.params));
                 } catch (InvocationTargetException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass,
@@ -192,7 +192,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             if (syntheticBean.disposerClass != null) {
                 configurator.disposeWith((object, lookup) -> {
                     try {
-                        SyntheticBeanDisposer disposer = SecurityActions.getConstructor(syntheticBean.disposerClass)
+                        SyntheticBeanDisposer disposer = syntheticBean.disposerClass.getConstructor()
                                 .newInstance();
                         disposer.dispose(object, lookup, new ParametersImpl(syntheticBean.params));
                     } catch (InvocationTargetException e) {
@@ -218,7 +218,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             configurator.transactionPhase(syntheticObserver.transactionPhase);
             configurator.notifyWith(eventContext -> {
                 try {
-                    SyntheticObserver observer = SecurityActions.getConstructor(syntheticObserver.observerClass).newInstance();
+                    SyntheticObserver observer = syntheticObserver.observerClass.getConstructor().newInstance();
                     observer.observe(eventContext, new ParametersImpl(syntheticObserver.params));
                 } catch (InvocationTargetException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticObserver.observerClass,

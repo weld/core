@@ -25,6 +25,7 @@ import java.util.Set;
 import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author David Allen
@@ -34,7 +35,7 @@ public abstract class AbstractBeanInstance implements BeanInstance {
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         Object result = null;
         try {
-            SecurityActions.ensureAccessible(method);
+            Reflections.ensureAccessible(method, instance);
             result = method.invoke(instance, arguments);
         } catch (InvocationTargetException e) {
             throw e.getCause();

@@ -41,6 +41,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.MethodInformation;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Proxy factory that generates client proxies, it uses optimizations that
@@ -82,13 +83,13 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         try {
             final T instance = super.create(beanInstance);
             if (beanIdField == null) {
-                final Field f = SecurityActions.getDeclaredField(instance.getClass(), BEAN_ID_FIELD);
-                SecurityActions.ensureAccessible(f);
+                final Field f = instance.getClass().getDeclaredField(BEAN_ID_FIELD);
+                Reflections.ensureAccessible(f);
                 beanIdField = f;
             }
             if (contextIdField == null) {
-                final Field f = SecurityActions.getDeclaredField(instance.getClass(), CONTEXT_ID_FIELD);
-                SecurityActions.ensureAccessible(f);
+                final Field f = instance.getClass().getDeclaredField(CONTEXT_ID_FIELD);
+                Reflections.ensureAccessible(f);
                 contextIdField = f;
             }
             beanIdField.set(instance, beanId);

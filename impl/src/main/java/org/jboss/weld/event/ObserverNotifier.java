@@ -360,7 +360,7 @@ public class ObserverNotifier {
         final Long timeout = initTimeoutOption(options.get(WeldNotificationOptions.TIMEOUT));
         final Consumer<Runnable> securityContextActionConsumer = securityServices.getSecurityContextAssociator();
         // grab current TCCL
-        ClassLoader tccl = SecurityActions.getContextClassLoader();
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         final ObserverExceptionHandler exceptionHandler;
         CompletableFuture<U> completableFuture;
 
@@ -468,19 +468,19 @@ public class ObserverNotifier {
             ObserverExceptionHandler exceptionHandler,
             boolean handleExceptions, Runnable notifyAction) {
         return () -> {
-            ClassLoader originalCl = SecurityActions.getContextClassLoader();
+            ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
             final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
             final RequestContext requestContext = requestContextHolder.get();
             securityContextActionConsumer.accept(() -> {
                 try {
-                    SecurityActions.setContextClassLoader(threadContextClassLoader);
+                    Thread.currentThread().setContextClassLoader(threadContextClassLoader);
                     requestContext.activate();
                     notifyAction.run();
                 } finally {
                     stack.pop();
                     requestContext.invalidate();
                     requestContext.deactivate();
-                    SecurityActions.setContextClassLoader(originalCl);
+                    Thread.currentThread().setContextClassLoader(originalCl);
                 }
             });
             if (handleExceptions) {

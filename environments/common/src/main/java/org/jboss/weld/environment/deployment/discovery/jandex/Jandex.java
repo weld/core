@@ -39,12 +39,9 @@ public class Jandex {
 
         Class<JandexDiscoveryStrategy> strategyClass = Reflections.loadClass(resourceLoader,
                 JANDEX_DISCOVERY_STRATEGY_CLASS_NAME);
-        return SecurityActions
-                .newConstructorInstance(strategyClass,
-                        new Class<?>[] { ResourceLoader.class, Bootstrap.class, Set.class, BeanDiscoveryMode.class },
-                        resourceLoader, bootstrap,
+        return strategyClass.getConstructor(ResourceLoader.class, Bootstrap.class, Set.class, BeanDiscoveryMode.class)
+                .newInstance(resourceLoader, bootstrap,
                         initialBeanDefiningAnnotations, emptyBeansXmlDiscoveryMode);
-
     }
 
 }
