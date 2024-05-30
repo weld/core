@@ -22,8 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -233,17 +231,13 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
     }
 
     private S prepareInstance(final Class<? extends S> serviceClass) {
-        SecurityManager securityManager = System.getSecurityManager();
-        if (securityManager != null) {
-            return AccessController.doPrivileged(new PrivilegedAction<S>() {
-
-                @Override
-                public S run() {
-                    return createInstance(serviceClass);
-                }
-            });
-        } else {
-            return createInstance(serviceClass);
+        Constructor<? extends S> constructor = null;
+        try {
+            constructor = serviceClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (Throwable t) {
+            throw new ServiceConfigurationError(ERROR_INSTANTIATING + ":" + serviceClass.getName(), t);
         }
     }
 
@@ -302,16 +296,5 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
 
     public Stream<Metadata<S>> stream() {
         return StreamSupport.stream(spliterator(), false);
-    }
-
-    private <S> S createInstance(Class<? extends S> serviceClass) {
-        Constructor<? extends S> constructor = null;
-        try {
-            constructor = serviceClass.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return constructor.newInstance();
-        } catch (Throwable t) {
-            throw new ServiceConfigurationError(ERROR_INSTANTIATING + ":" + serviceClass.getName(), t);
-        }
     }
 }

@@ -83,7 +83,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
                 }
             }
         }
-        SecurityActions.ensureAccessible(method);
+        Reflections.ensureAccessible(method, getTargetInstance());
         return Reflections.invokeAndUnwrap(getTargetInstance(), method, args);
     }
 }

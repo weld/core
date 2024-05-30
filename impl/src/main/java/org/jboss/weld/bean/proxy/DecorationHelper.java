@@ -18,8 +18,6 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -40,7 +38,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Marius Bogoevici
  * @author Ales Justin
  */
-public class DecorationHelper<T> implements PrivilegedAction<T> {
+public class DecorationHelper<T> {
     private static ThreadLocal<Stack<DecorationHelper<?>>> helperStackHolder = new ThreadLocal<Stack<DecorationHelper<?>>>() {
         @Override
         protected Stack<DecorationHelper<?>> initialValue() {
@@ -106,13 +104,19 @@ public class DecorationHelper<T> implements PrivilegedAction<T> {
     }
 
     private T createProxy(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
-        final T proxy = (System.getSecurityManager() == null) ? run() : AccessController.doPrivileged(this);
-        TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
-        Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
-        DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
-        newTargetBeanInstance.setInterceptorsHandler(methodHandler);
-        ProxyFactory.setBeanInstance(beanManager.getContextId(), proxy, newTargetBeanInstance, bean);
-        return proxy;
+        try {
+            final T proxy = instantiator.newInstance(proxyClassForDecorator);
+            TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
+            Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
+            DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
+            newTargetBeanInstance.setInterceptorsHandler(methodHandler);
+            ProxyFactory.setBeanInstance(beanManager.getContextId(), proxy, newTargetBeanInstance, bean);
+            return proxy;
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+            throw new DefinitionException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
+        } catch (IllegalAccessException e) {
+            throw new DefinitionException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
+        }
     }
 
     public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint,
@@ -123,17 +127,6 @@ public class DecorationHelper<T> implements PrivilegedAction<T> {
         SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(
                 decorator, decoratorInstance, null, contextualStore);
         return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);
-    }
-
-    @Override
-    public T run() {
-        try {
-            return instantiator.newInstance(proxyClassForDecorator);
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-            throw new DefinitionException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
-        } catch (IllegalAccessException e) {
-            throw new DefinitionException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
-        }
     }
 
 }

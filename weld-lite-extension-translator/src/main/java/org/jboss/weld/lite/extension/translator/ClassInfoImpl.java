@@ -134,7 +134,7 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
             map.put(constructor.getJavaMember(), constructor);
         }
 
-        return Arrays.stream(SecurityActions.getDeclaredConstructors(reflection))
+        return Arrays.stream(reflection.getDeclaredConstructors())
                 .filter(it -> !it.isSynthetic())
                 .map(it -> {
                     if (map.containsKey(it)) {

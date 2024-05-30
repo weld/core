@@ -169,7 +169,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private class BackedAnnotatedConstructors extends EagerlyInitializedLazyValueHolder<Set<AnnotatedConstructor<X>>> {
         @Override
         protected Set<AnnotatedConstructor<X>> computeValue() {
-            Constructor<?>[] declaredConstructors = SecurityActions.getDeclaredConstructors(javaClass);
+            Constructor<?>[] declaredConstructors = javaClass.getDeclaredConstructors();
             ImmutableSet.Builder<AnnotatedConstructor<X>> constructors = ImmutableSet.builder();
             for (Constructor<?> constructor : declaredConstructors) {
                 Constructor<X> c = Reflections.cast(constructor);
@@ -185,7 +185,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ImmutableSet.Builder<AnnotatedField<? super X>> fields = ImmutableSet.builder();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
-                for (Field field : SecurityActions.getDeclaredFields(clazz)) {
+                for (Field field : clazz.getDeclaredFields()) {
                     fields.add(BackedAnnotatedField.of(field, BackedAnnotatedType.this, sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
@@ -200,14 +200,14 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ImmutableSet.Builder<AnnotatedMethod<? super X>> methods = ImmutableSet.builder();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
-                for (Method method : SecurityActions.getDeclaredMethods(clazz)) {
+                for (Method method : clazz.getDeclaredMethods()) {
                     methods.add(BackedAnnotatedMethod.of(method, BackedAnnotatedType.this, sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
             }
             // Also add default methods
             for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(javaClass)) {
-                for (Method method : SecurityActions.getDeclaredMethods(interfaceClazz)) {
+                for (Method method : interfaceClazz.getDeclaredMethods()) {
                     if (Reflections.isDefault(method)) {
                         methods.add(BackedAnnotatedMethod.of(method, BackedAnnotatedType.this, sharedObjectCache));
                     }

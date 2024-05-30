@@ -16,14 +16,12 @@
  */
 package org.jboss.weld.module.web.servlet;
 
-import java.security.AccessController;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.servlet.ServletContext;
 
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.security.GetContextClassLoaderAction;
 
 /**
  * Simple holder for {@link ServletContext}s that associates a ServletContext with the TCCL.
@@ -56,12 +54,7 @@ public class ServletContextService implements Service {
     }
 
     private ClassLoader getContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return GetContextClassLoaderAction.INSTANCE.run();
-        } else {
-            return AccessController.doPrivileged(GetContextClassLoaderAction.INSTANCE);
-        }
-
+        return Thread.currentThread().getContextClassLoader();
     }
 
     @Override

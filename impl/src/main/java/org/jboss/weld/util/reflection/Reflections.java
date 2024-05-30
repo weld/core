@@ -18,7 +18,9 @@ package org.jboss.weld.util.reflection;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -167,7 +169,7 @@ public class Reflections {
         return isFinal(type) || getNonPrivateNonStaticFinalMethod(type) != null;
     }
 
-    public static Method getNonPrivateNonStaticFinalMethod(Class<?> type) {
+    public static Method getNonPrivateNonStaticFinalMethod(Class<?> type) {// TODO grep for access controller
         for (Class<?> clazz = type; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
                 if (isFinal(method) && !isPrivate(method) && !isStatic(method) && !method.isSynthetic()) {
@@ -525,5 +527,53 @@ public class Reflections {
         char[] chars = name.toCharArray();
         chars[0] = Character.toLowerCase(chars[0]);
         return new String(chars);
+    }
+
+    /**
+     * Checks if given Java class contains a declared field with provided name.
+     *
+     * @param javaClass java class
+     * @param name name of the field
+     * @return true if the class declares a field with provided name; false otherwise
+     */
+    public static boolean hasDeclaredField(Class<?> javaClass, String name) {
+        Field[] fields = javaClass.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Set the {@code accessible} flag for this accessible object.
+     * Uses {@link AccessibleObject#isAccessible()} to check accessibility.
+     *
+     * @param accessibleObject
+     */
+    public static void ensureAccessible(AccessibleObject accessibleObject) {
+        ensureAccessible(accessibleObject, null);
+    }
+
+    /**
+     * Set the {@code accessible} flag for this accessible object.
+     * Uses {@link AccessibleObject#canAccess(Object)} to check accessibility.
+     *
+     * @param accessibleObject
+     * @param instance instance of the accessible object you are trying to access
+     */
+    public static void ensureAccessible(AccessibleObject accessibleObject, Object instance) {
+        if (accessibleObject != null) {
+            if (instance != null) {
+                if (!accessibleObject.canAccess(instance)) {
+                    accessibleObject.setAccessible(true);
+                }
+            } else {
+                if (!accessibleObject.isAccessible()) {
+                    accessibleObject.setAccessible(true);
+                }
+            }
+        }
     }
 }

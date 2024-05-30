@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 
@@ -30,14 +27,13 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.InjectionTargets;
 
 /**
- * Default {@link WeldInjectionTargetBuilder} implementation. The builder runs in a privileged context.
+ * Default {@link WeldInjectionTargetBuilder} implementation.
  *
  * @author Jozef Hartinger
  *
  * @param <T>
  */
-public class WeldInjectionTargetBuilderImpl<T>
-        implements WeldInjectionTargetBuilder<T>, PrivilegedAction<BasicInjectionTarget<T>> {
+public class WeldInjectionTargetBuilderImpl<T> implements WeldInjectionTargetBuilder<T> {
 
     private final InjectionTargetService injectionTargetService;
 
@@ -88,14 +84,6 @@ public class WeldInjectionTargetBuilderImpl<T>
 
     @Override
     public WeldInjectionTarget<T> build() {
-        if (System.getSecurityManager() != null) {
-            return AccessController.doPrivileged(this);
-        }
-        return run();
-    }
-
-    @Override
-    public BasicInjectionTarget<T> run() {
         BasicInjectionTarget<T> injectionTarget = buildInternal();
         injectionTargetService.addInjectionTargetToBeInitialized(type, injectionTarget);
         injectionTargetService.validateProducer(injectionTarget);

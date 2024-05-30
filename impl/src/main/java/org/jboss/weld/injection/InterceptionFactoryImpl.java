@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-import java.security.AccessController;
 import java.util.Optional;
 
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -130,8 +129,7 @@ public class InterceptionFactoryImpl<T> implements InterceptionFactory<T> {
                 InterceptionContext.forNonConstructorInterception(data.getInterceptionModel(), creationalContext, beanManager,
                         data.getSlimAnnotatedType())));
 
-        T proxy = (System.getSecurityManager() == null) ? data.getInterceptedProxyFactory().run()
-                : AccessController.doPrivileged(data.getInterceptedProxyFactory());
+        T proxy = data.getInterceptedProxyFactory().instantiateProxy();
         ((ProxyObject) proxy).weld_setHandler(methodHandler);
         return proxy;
     }

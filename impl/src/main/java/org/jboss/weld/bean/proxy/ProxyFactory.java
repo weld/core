@@ -32,7 +32,6 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,7 +90,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Marius Bogoevici
  * @author Ales Justin
  */
-public class ProxyFactory<T> implements PrivilegedAction<T> {
+public class ProxyFactory<T> {
 
     // Default proxy class name suffix
     public static final String PROXY_SUFFIX = "$Proxy$";
@@ -370,16 +369,15 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
      * @return a new proxy object
      */
     public T create(BeanInstance beanInstance) {
-        final T proxy = (System.getSecurityManager() == null) ? run() : AccessController.doPrivileged(this);
+        final T proxy = instantiateProxy();
         ((ProxyObject) proxy).weld_setHandler(new ProxyMethodHandler(contextId, beanInstance, bean));
         return proxy;
     }
 
-    @Override
-    public T run() {
+    public T instantiateProxy() {
         try {
             Class<T> proxyClass = getProxyClass();
-            boolean hasConstrutedField = SecurityActions.hasDeclaredField(proxyClass, CONSTRUCTED_FLAG_NAME);
+            boolean hasConstrutedField = Reflections.hasDeclaredField(proxyClass, CONSTRUCTED_FLAG_NAME);
             if (hasConstrutedField != useConstructedFlag()) {
                 // The proxy class was created with a different type of ProxyInstantiator
                 ProxyInstantiator newInstantiator = ProxyInstantiator.Factory.create(!hasConstrutedField);
@@ -511,9 +509,6 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         if (proxiedBeanType.getPackage() == null || proxiedBeanType.getPackage().getName().isEmpty()
                 || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
-        } else if (System.getSecurityManager() != null) {
-            ProtectionDomainCache cache = Container.instance(contextId).services().get(ProtectionDomainCache.class);
-            domain = cache.getProtectionDomainForProxy(domain);
         }
         Class<T> proxyClass = cast(toClass(proxyClassType, originalClass, proxyServices, domain));
         BeanLogger.LOG.createdProxyClass(proxyClass, Arrays.toString(proxyClass.getInterfaces()));

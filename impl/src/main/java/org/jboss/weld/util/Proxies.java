@@ -230,7 +230,7 @@ public class Proxies {
 
         Constructor<?> constructor = null;
         try {
-            constructor = SecurityActions.getDeclaredConstructor(clazz);
+            constructor = clazz.getDeclaredConstructor();
         } catch (Exception ignored) {
         }
 

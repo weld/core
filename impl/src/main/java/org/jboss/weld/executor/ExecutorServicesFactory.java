@@ -21,7 +21,6 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.util.Permissions;
 
 public class ExecutorServicesFactory {
 
@@ -71,15 +70,10 @@ public class ExecutorServicesFactory {
         String threadPoolTypeString = configuration.getStringProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE);
 
         if (threadPoolTypeString.isEmpty()) {
-            // do not create ExecutorServices by default if we do not have the "modifyThreadGroup" permission
-            return Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP) ? ThreadPoolType.FIXED : ThreadPoolType.NONE;
+            return ThreadPoolType.FIXED;
         } else {
             try {
                 ThreadPoolType threadPoolType = ThreadPoolType.valueOf(threadPoolTypeString);
-                if (System.getSecurityManager() != null && ThreadPoolType.COMMON == threadPoolType) {
-                    threadPoolType = ThreadPoolType.FIXED;
-                    BootstrapLogger.LOG.commonThreadPoolWithSecurityManagerEnabled(threadPoolType);
-                }
                 return threadPoolType;
             } catch (Exception e) {
                 throw BootstrapLogger.LOG.invalidThreadPoolType(threadPoolTypeString);

@@ -42,7 +42,7 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
     }
 
     public Object invoke(Stack stack, Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        SecurityActions.ensureAccessible(proceed);
+        Reflections.ensureAccessible(proceed, self);
         if (proceed == null) {
             if (thisMethod.getName().equals(InterceptionUtils.POST_CONSTRUCT)) {
                 return executeInterception(self, null, null, null, InterceptionType.POST_CONSTRUCT, stack);

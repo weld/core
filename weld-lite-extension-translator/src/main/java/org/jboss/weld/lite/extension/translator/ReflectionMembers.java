@@ -23,7 +23,7 @@ class ReflectionMembers {
         return cachedMethods.computeIfAbsent(clazz, ignored -> {
             Set<java.lang.reflect.Method> result = new HashSet<>();
             forEachSuperclass(clazz, it -> {
-                Method[] methods = SecurityActions.getDeclaredMethods(it);
+                Method[] methods = it.getDeclaredMethods();
                 result.addAll(Arrays.asList(methods));
             });
             return result;
@@ -34,7 +34,7 @@ class ReflectionMembers {
         return cachedFields.computeIfAbsent(clazz, ignored -> {
             Set<java.lang.reflect.Field> result = new HashSet<>();
             forEachSuperclass(clazz, it -> {
-                Field[] fields = SecurityActions.getDeclaredFields(it);
+                Field[] fields = it.getDeclaredFields();
                 result.addAll(Arrays.asList(fields));
             });
             return result;

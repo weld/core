@@ -477,7 +477,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public Weld addExtensions(Class<? extends Extension>... extensionClasses) {
         for (Class<? extends Extension> extensionClass : extensionClasses) {
             try {
-                Extension extension = SecurityActions.newInstance(extensionClass);
+                Extension extension = extensionClass.getDeclaredConstructor().newInstance();
                 addExtension(extension);
             } catch (Exception ex) {
                 CommonLogger.LOG.unableToInstantiate(extensionClass, new Object[] {}, ex);
@@ -1172,7 +1172,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
         if (weldSEBeanRegistrant == null) {
             try {
-                weldSEBeanRegistrant = SecurityActions.newInstance(WeldSEBeanRegistrant.class);
+                weldSEBeanRegistrant = WeldSEBeanRegistrant.class.getDeclaredConstructor().newInstance();
                 result.add(new MetadataImpl<Extension>(weldSEBeanRegistrant,
                         SYNTHETIC_LOCATION_PREFIX + WeldSEBeanRegistrant.class.getName()));
             } catch (Exception e) {
@@ -1187,8 +1187,8 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         if (!allBce.isEmpty()) {
             try {
                 result.add(new MetadataImpl<Extension>(
-                        SecurityActions.newInstance(SecurityActions.getDeclaredConstructor(LiteExtensionTranslator.class,
-                                Collection.class, ClassLoader.class), allBce, Thread.currentThread().getContextClassLoader()),
+                        LiteExtensionTranslator.class.getDeclaredConstructor(Collection.class, ClassLoader.class)
+                                .newInstance(allBce, Thread.currentThread().getContextClassLoader()),
                         SYNTHETIC_LOCATION_PREFIX + LiteExtensionTranslator.class.getName()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
