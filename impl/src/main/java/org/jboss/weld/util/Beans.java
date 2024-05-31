@@ -467,21 +467,16 @@ public class Beans {
     /**
      *
      * @param classFileInfo
-     * @param checkTypeModifiers - this flag reflects whether Jandex version including fix for JANDEX-37 could be used
      * @return
      */
-    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo, boolean checkTypeModifiers) {
+    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(ClassFileInfo classFileInfo) {
 
         boolean isTypeManagedBean = ((classFileInfo.getModifiers() & BytecodeUtils.ENUM) == 0)
                 && !classFileInfo.isAssignableTo(Extension.class)
                 && classFileInfo.hasCdiConstructor()
                 && (!Modifier.isAbstract(classFileInfo.getModifiers()) || classFileInfo.isAnnotationDeclared(Decorator.class));
-        if (checkTypeModifiers) {
-            return isTypeManagedBean && (ClassFileInfo.NestingType.TOP_LEVEL.equals(classFileInfo.getNestingType())
-                    || Modifier.isStatic(classFileInfo.getModifiers()));
-        } else {
-            return isTypeManagedBean;
-        }
+        return isTypeManagedBean && (ClassFileInfo.NestingType.TOP_LEVEL.equals(classFileInfo.getNestingType())
+                || Modifier.isStatic(classFileInfo.getModifiers()));
     }
 
     public static boolean isDecoratorDeclaringInAppropriateConstructor(ClassFileInfo classFileInfo) {
