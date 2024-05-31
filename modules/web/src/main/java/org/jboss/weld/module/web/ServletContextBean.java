@@ -17,7 +17,6 @@
 package org.jboss.weld.module.web;
 
 import java.lang.annotation.Annotation;
-import java.security.AccessController;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -28,7 +27,6 @@ import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.web.logging.ServletLogger;
 import org.jboss.weld.module.web.servlet.ServletContextService;
-import org.jboss.weld.security.GetContextClassLoaderAction;
 
 /**
  * Built-in bean exposing {@link ServletContext}.
@@ -49,8 +47,7 @@ public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<S
     protected ServletContext newInstance(InjectionPoint ip, CreationalContext<ServletContext> creationalContext) {
         final ServletContext ctx = servletContexts.getCurrentServletContext();
         if (ctx == null) {
-            final ClassLoader cl = AccessController.doPrivileged(GetContextClassLoaderAction.INSTANCE);
-            throw ServletLogger.LOG.cannotInjectServletContext(cl, servletContexts);
+            throw ServletLogger.LOG.cannotInjectServletContext(Thread.currentThread().getContextClassLoader(), servletContexts);
         }
         return ctx;
     }

@@ -26,9 +26,9 @@ import java.util.Map;
 
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
 import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * An implementation of {@link AnnotatedMethod} used at runtime for invoking Java methods.
@@ -81,7 +81,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = annotatedMethod.getJavaMember();
-            method = MethodLookupAction.lookupMethod(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
+            method = Reflections.lookupMethod(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
             if (method != null && !method.canAccess(instance)) {
                 method.setAccessible(true);
             }

@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +31,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +43,6 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.Types;
 
 /**
@@ -169,9 +168,9 @@ public class Reflections {
         return isFinal(type) || getNonPrivateNonStaticFinalMethod(type) != null;
     }
 
-    public static Method getNonPrivateNonStaticFinalMethod(Class<?> type) {// TODO grep for access controller
+    public static Method getNonPrivateNonStaticFinalMethod(Class<?> type) {
         for (Class<?> clazz = type; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
-            for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
+            for (Method method : clazz.getDeclaredMethods()) {
                 if (isFinal(method) && !isPrivate(method) && !isStatic(method) && !method.isSynthetic()) {
                     return method;
                 }
@@ -442,10 +441,10 @@ public class Reflections {
      *
      * @param clazz the given class
      * @param methodName the given method name
-     * @return method method with the given name declared by the given class or null if no such method exists
+     * @return method with the given name declared by the given class or null if no such method exists
      */
     public static Method findDeclaredMethodByName(Class<?> clazz, String methodName) {
-        for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
+        for (Method method : clazz.getDeclaredMethods()) {
             if (methodName.equals(method.getName())) {
                 return method;
             }
@@ -574,6 +573,124 @@ public class Reflections {
                     accessibleObject.setAccessible(true);
                 }
             }
+        }
+    }
+
+    /**
+     * Creates a copy of the given Java member (field, method, constructor) and makes it accessible.
+     *
+     * @param member
+     * @return
+     * @param <T>
+     */
+    public static <T extends AccessibleObject & Member> T getAccessibleCopyOfMember(T member) {
+        T copy = copyMember(member);
+        copy.setAccessible(true);
+        return copy;
+    }
+
+    private static <T extends AccessibleObject & Member> T copyMember(T originalMember) {
+        final String unableToObtainAccessibleCopyOf = "Unable to obtain an accessible copy of ";
+        Class<?> declaringClass = originalMember.getDeclaringClass();
+        try {
+            if (originalMember instanceof Field) {
+                return (T) copyField((Field) originalMember, declaringClass);
+            }
+            if (originalMember instanceof Constructor<?>) {
+                return (T) copyConstructor((Constructor<?>) originalMember, declaringClass);
+            }
+            if (originalMember instanceof Method) {
+                return (T) copyMethod((Method) originalMember, declaringClass);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(unableToObtainAccessibleCopyOf + originalMember, e);
+        }
+        throw new IllegalArgumentException(unableToObtainAccessibleCopyOf + originalMember);
+    }
+
+    private static Field copyField(Field field, Class<?> declaringClass) throws NoSuchFieldException {
+        return declaringClass.getDeclaredField(field.getName());
+    }
+
+    private static Method copyMethod(Method method, Class<?> declaringClass) throws NoSuchMethodException {
+        return declaringClass.getDeclaredMethod(method.getName(), method.getParameterTypes());
+    }
+
+    private static Constructor<?> copyConstructor(Constructor<?> constructor, Class<?> declaringClass)
+            throws NoSuchMethodException {
+        return declaringClass.getDeclaredConstructor(constructor.getParameterTypes());
+    }
+
+    /**
+     * Looks up a field with given name within the class and any of its superclasses.
+     *
+     * @param javaClass
+     * @param fieldName
+     * @return
+     * @throws NoSuchMethodException
+     */
+    public static Field lookupField(Class<?> javaClass, String fieldName) throws NoSuchFieldException {
+        for (Class<?> inspectedClass = javaClass; inspectedClass != null; inspectedClass = inspectedClass.getSuperclass()) {
+            for (Class<?> inspectedInterface : inspectedClass.getInterfaces()) {
+                try {
+                    return lookupField(inspectedInterface, fieldName);
+                } catch (NoSuchFieldException e) {
+                    // Expected, nothing to see here.
+                }
+            }
+            try {
+                return inspectedClass.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException nsme) {
+                // Expected, nothing to see here.
+            }
+        }
+        throw new NoSuchFieldException();
+    }
+
+    /**
+     * Looks up a method with given name and parameters within the class and any of its superclasses.
+     *
+     * @param javaClass
+     * @param methodName
+     * @param parameterTypes
+     * @return
+     * @throws NoSuchMethodException
+     */
+    public static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes)
+            throws NoSuchMethodException {
+        for (Class<?> inspectedClass = javaClass; inspectedClass != null; inspectedClass = inspectedClass.getSuperclass()) {
+            for (Class<?> inspectedInterface : inspectedClass.getInterfaces()) {
+                try {
+                    return lookupMethod(inspectedInterface, methodName, parameterTypes);
+                } catch (NoSuchMethodException e) {
+                    // Expected, nothing to see here.
+                }
+            }
+            try {
+                return inspectedClass.getDeclaredMethod(methodName, parameterTypes);
+            } catch (NoSuchMethodException nsme) {
+                // Expected, nothing to see here.
+            }
+        }
+        throw new NoSuchMethodException(
+                javaClass + ", method: " + methodName + ", paramTypes: " + Arrays.toString(parameterTypes));
+    }
+
+    /**
+     * Attempts to look up a method based on provided name and parameter types within given class.
+     * If the method exists, it is returned; otherwise, the exception throws is wrapped in
+     * {@link ReflectionLogger#noSuchMethodWrapper(NoSuchMethodException, String)}
+     *
+     * @param javaClass class that should contain the method
+     * @param methodName method name
+     * @param parameterTypes method parameter types
+     * @return
+     */
+    public static Method wrapException(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
+        try {
+            return javaClass.getDeclaredMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            throw ReflectionLogger.LOG.noSuchMethodWrapper(e, e.getMessage());
         }
     }
 }

@@ -18,7 +18,6 @@ package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.Set;
 
 import jakarta.enterprise.inject.Any;
@@ -56,7 +55,6 @@ import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.event.SyntheticObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -180,7 +178,7 @@ public class Observers {
         if (clazz.isInterface()) {
             return false;
         }
-        for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
+        for (Method method : clazz.getDeclaredMethods()) {
             if (NOTIFY_METHOD_NAME.equals(method.getName()) && method.getParameterCount() == 1) {
                 return true;
             }

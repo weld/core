@@ -18,14 +18,13 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jboss.classfilewriter.AccessFlag;
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.code.CodeAttribute;
-import org.jboss.weld.security.GetDeclaredMethodAction;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 
 /**
@@ -88,7 +87,11 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
     }
 
     public static Method getMethod(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
-        return AccessController.doPrivileged(GetDeclaredMethodAction.wrapException(javaClass, methodName, parameterTypes));
+        try {
+            return javaClass.getDeclaredMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            throw ReflectionLogger.LOG.noSuchMethodWrapper(e, e.getMessage());
+        }
     }
 
 }

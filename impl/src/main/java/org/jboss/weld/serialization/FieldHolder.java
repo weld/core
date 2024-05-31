@@ -17,8 +17,6 @@
 package org.jboss.weld.serialization;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import org.jboss.weld.logging.ReflectionLogger;
 
@@ -28,7 +26,7 @@ import org.jboss.weld.logging.ReflectionLogger;
  * @author Jozef Hartinger
  *
  */
-public class FieldHolder extends AbstractSerializableHolder<Field> implements PrivilegedAction<Field> {
+public class FieldHolder extends AbstractSerializableHolder<Field> {
 
     private static final long serialVersionUID = 407021346356682729L;
 
@@ -43,11 +41,6 @@ public class FieldHolder extends AbstractSerializableHolder<Field> implements Pr
 
     @Override
     protected Field initialize() {
-        return AccessController.doPrivileged(this);
-    }
-
-    @Override
-    public Field run() {
         try {
             return declaringClass.getDeclaredField(fieldName);
         } catch (Exception e) {

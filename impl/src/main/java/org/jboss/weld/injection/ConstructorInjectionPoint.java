@@ -20,7 +20,6 @@ import static org.jboss.weld.injection.Exceptions.rethrowException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +37,6 @@ import org.jboss.weld.construction.api.ConstructionHandle;
 import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -65,8 +63,7 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         super(constructor, declaringBean, declaringComponentClass, false, factory, manager);
         this.constructor = constructor.slim();
         this.signature = constructor.getSignature();
-        this.accessibleConstructor = AccessController
-                .doPrivileged(new GetAccessibleCopyOfMember<Constructor<T>>(constructor.getJavaMember()));
+        this.accessibleConstructor = Reflections.getAccessibleCopyOfMember(constructor.getJavaMember());
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx) {

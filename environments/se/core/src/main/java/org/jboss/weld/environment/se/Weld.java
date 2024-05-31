@@ -30,7 +30,6 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -95,8 +94,6 @@ import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.security.GetClassLoaderAction;
-import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.Services;
@@ -1327,7 +1324,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         if (value != null) {
             return Boolean.TRUE.equals(value);
         }
-        String system = AccessController.doPrivileged(new GetSystemPropertyAction(key));
+        String system = System.getProperty(key);
         if (system != null) {
             return Boolean.valueOf(system);
         }
@@ -1365,8 +1362,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
 
         // parse from system properties
-        String stringValue = AccessController
-                .doPrivileged(new GetSystemPropertyAction(ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY));
+        String stringValue = System.getProperty(ADDITIONAL_BEAN_DEFINING_ANNOTATIONS_PROPERTY);
         if (stringValue != null) {
             for (String className : stringValue.split(",")) {
                 if (!className.isEmpty()) {
@@ -1400,8 +1396,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
             this.packName = packClass.getPackage().getName();
             this.packClassName = packClass.getName();
             this.scanRecursively = recursiveScan;
-            this.classLoaderRef = new WeakReference<ClassLoader>(
-                    AccessController.doPrivileged(new GetClassLoaderAction(packClass)));
+            this.classLoaderRef = new WeakReference<ClassLoader>(packClass.getClassLoader());
         }
 
         PackInfo(Package pack, boolean recursiveScan) {

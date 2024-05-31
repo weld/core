@@ -27,7 +27,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -105,8 +104,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.module.PlugableValidator;
-import org.jboss.weld.security.GetDeclaredFieldsAction;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
@@ -760,13 +757,13 @@ public class Validator implements Service {
         }
         // <class> declares producer with alternative
         // Intentionally do not process the class hierarchy -
-        for (Method declaredMethod : AccessController.doPrivileged(new GetDeclaredMethodsAction(enabledClass))) {
+        for (Method declaredMethod : enabledClass.getDeclaredMethods()) {
             if (declaredMethod.isAnnotationPresent(Produces.class)
                     && isAlternativeOrHasAlternativeStereotype(declaredMethod, beanManager)) {
                 return true;
             }
         }
-        for (Field declaredField : AccessController.doPrivileged(new GetDeclaredFieldsAction(enabledClass))) {
+        for (Field declaredField : enabledClass.getDeclaredFields()) {
             if (declaredField.isAnnotationPresent(Produces.class)
                     && isAlternativeOrHasAlternativeStereotype(declaredField, beanManager)) {
                 return true;

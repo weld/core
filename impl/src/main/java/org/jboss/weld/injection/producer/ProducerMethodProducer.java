@@ -18,8 +18,6 @@ package org.jboss.weld.injection.producer;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.util.Set;
 
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -39,7 +37,6 @@ import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.security.GetMethodAction;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -85,11 +82,10 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
             for (Type type : getDeclaringBean().getTypes()) {
                 Class<?> clazz = Reflections.getRawType(type);
                 try {
-                    AccessController
-                            .doPrivileged(new GetMethodAction(clazz, method.getName(), method.getParameterTypesAsArray()));
+                    clazz.getMethod(method.getName(), method.getParameterTypesAsArray());
                     methodDeclaredOnTypes = true;
                     break;
-                } catch (PrivilegedActionException ignored) {
+                } catch (NoSuchMethodException ignored) {
                 }
             }
             if (!methodDeclaredOnTypes) {

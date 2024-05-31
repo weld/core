@@ -20,14 +20,12 @@ import static org.jboss.weld.injection.Exceptions.rethrowException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
 
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -50,8 +48,7 @@ class SetterResourceInjection<T, X> extends AbstractResourceInjection<T> {
     SetterResourceInjection(ParameterInjectionPoint<T, X> injectionPoint, ResourceReferenceFactory<T> factory) {
         super(factory);
         AnnotatedMethod<X> annotatedMethod = (AnnotatedMethod<X>) injectionPoint.getAnnotated().getDeclaringCallable();
-        accessibleMethod = AccessController
-                .doPrivileged(new GetAccessibleCopyOfMember<Method>(annotatedMethod.getJavaMember()));
+        accessibleMethod = Reflections.getAccessibleCopyOfMember(annotatedMethod.getJavaMember());
     }
 
     @Override

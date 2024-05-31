@@ -17,8 +17,6 @@
 package org.jboss.weld.serialization;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Objects;
 
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
@@ -32,7 +30,7 @@ import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
  * @author Jozef Hartinger
  *
  */
-public class MethodHolder extends AbstractSerializableHolder<Method> implements PrivilegedAction<Method> {
+public class MethodHolder extends AbstractSerializableHolder<Method> {
 
     private static final long serialVersionUID = -3033089710155551280L;
 
@@ -55,11 +53,6 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
 
     @Override
     protected Method initialize() {
-        return AccessController.doPrivileged(this);
-    }
-
-    @Override
-    public Method run() {
         try {
             return DeclaredMemberIndexer.getMethodForIndex(index, declaringClass);
         } catch (Exception e) {

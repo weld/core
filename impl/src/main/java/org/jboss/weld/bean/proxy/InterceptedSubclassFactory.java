@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -49,7 +48,6 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
@@ -210,7 +208,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             while (cls != null) {
                 Set<BridgeMethod> declaredBridgeMethods = new HashSet<BridgeMethod>();
                 Collection<Method> classDeclaredMethods = Arrays
-                        .asList(AccessController.doPrivileged(new GetDeclaredMethodsAction(cls)).clone());
+                        .asList(cls.getDeclaredMethods().clone());
                 for (Method method : classDeclaredMethods) {
 
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);

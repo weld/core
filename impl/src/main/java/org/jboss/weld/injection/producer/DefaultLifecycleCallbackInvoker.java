@@ -17,7 +17,6 @@
 package org.jboss.weld.injection.producer;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.List;
 
 import jakarta.annotation.PostConstruct;
@@ -27,9 +26,9 @@ import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * If the component is not intercepted this implementation takes care of invoking its lifecycle callback methods. If the
@@ -55,7 +54,7 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
 
     private List<Method> initMethodList(List<? extends AnnotatedMethod<?>> methods) {
         return methods.stream()
-                .map((method) -> AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method.getJavaMember())))
+                .map((method) -> Reflections.getAccessibleCopyOfMember(method.getJavaMember()))
                 .collect(ImmutableList.collector());
     }
 

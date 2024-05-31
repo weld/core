@@ -17,8 +17,6 @@
 package org.jboss.weld.serialization;
 
 import java.lang.reflect.Constructor;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
@@ -29,8 +27,7 @@ import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
  * @author Jozef Hartinger
  *
  */
-public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor<X>>
-        implements PrivilegedAction<Constructor<X>> {
+public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor<X>> {
 
     private static final long serialVersionUID = -6439218442811003152L;
 
@@ -49,15 +46,11 @@ public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor
 
     @Override
     protected Constructor<X> initialize() {
-        return AccessController.doPrivileged(this);
-    }
-
-    @Override
-    public Constructor<X> run() {
         try {
             return DeclaredMemberIndexer.getConstructorForIndex(index, declaringClass);
         } catch (Exception e) {
             throw ReflectionLogger.LOG.unableToGetConstructorOnDeserialization(declaringClass, index, e);
         }
     }
+
 }

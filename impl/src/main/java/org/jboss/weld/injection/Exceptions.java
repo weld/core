@@ -17,14 +17,10 @@
 package org.jboss.weld.injection;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 
 import jakarta.enterprise.inject.CreationException;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.security.GetDeclaredConstructorAction;
-import org.jboss.weld.security.NewInstanceAction;
 
 class Exceptions {
 
@@ -37,9 +33,8 @@ class Exceptions {
         } else {
             RuntimeException e;
             try {
-                e = AccessController.doPrivileged(
-                        NewInstanceAction.of(AccessController.doPrivileged(GetDeclaredConstructorAction.of(exceptionToThrow))));
-            } catch (PrivilegedActionException ex) {
+                e = exceptionToThrow.getDeclaredConstructor().newInstance();
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                 throw new WeldException(ex.getCause());
             }
             e.initCause(t);
