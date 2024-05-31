@@ -349,10 +349,10 @@ objects managed by another framework to be injected into beans.
 The most common kind of CDI portable extension registers a bean (or
 beans) with the container.
 
-In this example, we make a framework class, `SecurityManager` available
+In this example, we make a framework class, `FrameworkManager` available
 for injection. To make things a bit more interesting, we're going to
 delegate back to the container's `InjectionTarget` to perform
-instantiation and injection upon the `SecurityManager` instance.
+instantiation and injection upon the `FrameworkManager` instance.
 
 [source.JAVA, java]
 -------------------------------------------------------------------------------------------
@@ -363,15 +363,15 @@ import java.lang.reflect.Type;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 ...
 
-public class SecurityManagerExtension implements Extension {
+public class FrameworkManagerExtension implements Extension {
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager bm) {
         event.addBean()
            /* read annotations of the class and create an InjectionTarget used to instantiate the class and inject dependencies */
-           .read(bm.createAnnotatedType(SecurityManager.class))
-           .beanClass(SecurityManager.class)
+           .read(bm.createAnnotatedType(FrameworkManager.class))
+           .beanClass(FrameworkManager.class)
            .scope(ApplicationScoped.class)
-           .name("securityManager");
+           .name("frameworkManager");
     }
 
 }
