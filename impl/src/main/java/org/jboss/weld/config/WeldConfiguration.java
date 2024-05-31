@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.security.AccessController;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -42,7 +41,6 @@ import org.jboss.weld.logging.ConfigurationLogger;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.Reflections;
@@ -239,7 +237,7 @@ public class WeldConfiguration implements Service {
      */
     static String getSystemProperty(String key) {
         try {
-            return AccessController.doPrivileged(new GetSystemPropertyAction(key));
+            return System.getProperty(key);
         } catch (Throwable ignore) {
             return null;
         }

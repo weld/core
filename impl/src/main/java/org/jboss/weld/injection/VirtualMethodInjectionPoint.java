@@ -32,7 +32,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -73,7 +72,7 @@ class VirtualMethodInjectionPoint<T, X> extends StaticMethodInjectionPoint<T, X>
                 // Initializer methods and decorated beans - overriding does not apply to private methods and package-private methods where the subclass is in a different package
                 method = accessibleMethod;
             } else {
-                method = MethodLookupAction.lookupMethod(receiver.getClass(), delegate.getName(), delegate.getParameterTypes());
+                method = Reflections.lookupMethod(receiver.getClass(), delegate.getName(), delegate.getParameterTypes());
                 Reflections.ensureAccessible(method, receiver);
             }
             final Map<Class<?>, Method> newMethods = ImmutableMap.<Class<?>, Method> builder().putAll(methods)

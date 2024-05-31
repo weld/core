@@ -19,7 +19,6 @@ package org.jboss.weld.bean.builtin.ee;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
 
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanAttributes;
@@ -35,7 +34,6 @@ import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ResourceInjection;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -63,7 +61,7 @@ public class StaticEEResourceProducerField<X, T> extends EEResourceProducerField
             ServiceRegistry services) {
         super(attributes, field, declaringBean, disposalMethod, manager, services);
         this.resourceInjection = getResourceInjection(field, declaringBean, manager);
-        this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(field.getJavaMember()));
+        this.accessibleField = Reflections.getAccessibleCopyOfMember(field.getJavaMember());
         this.injectionContext = new InjectionContextImpl<X>(manager, declaringBean.getInjectionTarget(),
                 declaringBean.getAnnotated(), null) {
             @Override

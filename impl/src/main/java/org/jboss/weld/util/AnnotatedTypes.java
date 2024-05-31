@@ -25,7 +25,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -57,7 +56,6 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.inject.Scope;
 
 import org.jboss.weld.logging.MetadataLogger;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -315,7 +313,7 @@ public class AnnotatedTypes {
             builder.append('@');
             builder.append(a.annotationType().getName());
             builder.append('(');
-            Method[] declaredMethods = AccessController.doPrivileged(new GetDeclaredMethodsAction(a.annotationType()));
+            Method[] declaredMethods = a.annotationType().getDeclaredMethods();
             List<Method> methods = new ArrayList<Method>(declaredMethods.length);
             Collections.addAll(methods, declaredMethods);
             Collections.sort(methods, MethodComparator.INSTANCE);

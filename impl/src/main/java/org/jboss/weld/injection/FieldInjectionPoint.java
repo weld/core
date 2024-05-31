@@ -21,7 +21,6 @@ import static org.jboss.weld.injection.Exceptions.rethrowException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.security.AccessController;
 
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Instance;
@@ -36,7 +35,6 @@ import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -63,7 +61,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
     protected FieldInjectionPoint(FieldInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;
         this.cacheable = isCacheableInjectionPoint(attributes);
-        this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(attributes.getMember()));
+        this.accessibleField = Reflections.getAccessibleCopyOfMember(attributes.getMember());
     }
 
     protected static boolean isCacheableInjectionPoint(WeldInjectionPointAttributes<?, ?> attributes) {

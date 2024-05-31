@@ -22,15 +22,12 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.Arrays;
 import java.util.List;
 
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.security.GetDeclaredConstructorsAction;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.reflection.Formats;
 import org.junit.Test;
 
@@ -86,7 +83,7 @@ public class FormatsTest {
     Constructor<?> findConstructor(Class<?> javaClass, Class<?>... parameterTypes) {
         Class<?> clazz = javaClass;
         while (clazz != Object.class && clazz != null) {
-            for (Constructor<?> constructor : AccessController.doPrivileged(new GetDeclaredConstructorsAction(clazz))) {
+            for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
                 if (Arrays.equals(constructor.getParameterTypes(), parameterTypes)) {
                     return constructor;
                 }
@@ -99,7 +96,7 @@ public class FormatsTest {
     Method findMethod(Class<?> javaClass, String name, Class<?>... parameterTypes) {
         Class<?> clazz = javaClass;
         while (clazz != Object.class && clazz != null) {
-            for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
+            for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), parameterTypes)) {
                     return method;
                 }

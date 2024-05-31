@@ -17,8 +17,6 @@
 package org.jboss.weld.module.ejb;
 
 import java.lang.reflect.Constructor;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -27,12 +25,9 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.GetDeclaredConstructorAction;
-import org.jboss.weld.security.NewInstanceAction;
 
 /**
  * Instantiator implementation that instantiates a proxy for a session bean.
@@ -52,22 +47,13 @@ class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         try {
-            T instance = AccessController.doPrivileged(
-                    NewInstanceAction.of(AccessController.doPrivileged(GetDeclaredConstructorAction.of(proxyClass))));
+            T instance = proxyClass.getDeclaredConstructor().newInstance();
             if (!bean.getScope().equals(Dependent.class)) {
                 ctx.push(instance);
             }
             ProxyFactory.setBeanInstance(bean.getBeanManager().getContextId(), instance, createEnterpriseTargetBeanInstance(),
                     bean);
             return instance;
-        } catch (PrivilegedActionException e) {
-            if (e.getCause() instanceof InstantiationException) {
-                throw new WeldException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
-            } else if (e.getCause() instanceof IllegalAccessException) {
-                throw new WeldException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
-            } else {
-                throw new WeldException(e.getCause());
-            }
         } catch (Exception e) {
             throw BeanLogger.LOG.sessionBeanProxyInstantiationFailed(bean, proxyClass, e);
         }

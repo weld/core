@@ -21,7 +21,6 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -34,7 +33,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.logging.ReflectionLogger;
-import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -144,7 +142,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AbstractBindi
             for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMethods()) {
                 if (includeNonBindingTypes || !getNonBindingMembers().contains(annotatedMethod)) {
                     try {
-                        AccessController.doPrivileged(SetAccessibleAction.of(annotatedMethod.getJavaMember()));
+                        annotatedMethod.getJavaMember().setAccessible(true);
                         Object thisValue = annotatedMethod.getJavaMember().invoke(instance);
                         Object thatValue = annotatedMethod.getJavaMember().invoke(other);
                         if (!thisValue.equals(thatValue)) {

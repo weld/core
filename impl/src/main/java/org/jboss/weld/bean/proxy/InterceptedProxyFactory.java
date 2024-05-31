@@ -22,7 +22,6 @@ import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.AccessController;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -39,7 +38,6 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.InterceptionFactoryImpl;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
@@ -100,7 +98,7 @@ public class InterceptedProxyFactory<T> extends ProxyFactory<T> {
 
             for (Class<?> cls : classes) {
                 Set<MethodSignature> declaredBridgeMethods = new HashSet<MethodSignature>();
-                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
+                for (Method method : cls.getDeclaredMethods()) {
 
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
 

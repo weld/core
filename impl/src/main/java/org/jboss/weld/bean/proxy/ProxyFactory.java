@@ -31,7 +31,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.security.AccessController;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,9 +62,6 @@ import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.proxy.WeldConstruct;
-import org.jboss.weld.security.GetDeclaredConstructorsAction;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
-import org.jboss.weld.security.GetProtectionDomainAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -504,7 +500,7 @@ public class ProxyFactory<T> {
         // Dump proxy type bytecode if necessary
         dumpToFile(proxyClassName, proxyClassType.toBytecode());
 
-        ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
+        ProtectionDomain domain = proxiedBeanType.getProtectionDomain();
 
         if (proxiedBeanType.getPackage() == null || proxiedBeanType.getPackage().getName().isEmpty()
                 || proxiedBeanType.equals(Object.class)) {
@@ -553,8 +549,7 @@ public class ProxyFactory<T> {
                 ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, !useConstructedFlag());
             } else {
                 boolean constructorFound = false;
-                for (Constructor<?> constructor : AccessController
-                        .doPrivileged(new GetDeclaredConstructorsAction(getBeanType()))) {
+                for (Constructor<?> constructor : getBeanType().getDeclaredConstructors()) {
                     if ((constructor.getModifiers() & Modifier.PRIVATE) == 0) {
                         constructorFound = true;
                         String[] exceptions = new String[constructor.getExceptionTypes().length];
@@ -663,7 +658,7 @@ public class ProxyFactory<T> {
 
     private void addMethods(Class<?> cls, ClassFile proxyClassType, ClassMethod staticConstructor,
             Set<MethodSignature> foundFinalmethods) {
-        for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
+        for (Method method : cls.getDeclaredMethods()) {
             MethodSignature methodSignature = new MethodSignatureImpl(method);
             if (Modifier.isFinal(method.getModifiers())) {
                 foundFinalmethods.add(methodSignature);

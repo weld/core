@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.security.AccessController;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +43,6 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
 import org.jboss.weld.environment.logging.CommonLogger;
-import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -82,7 +80,7 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
 
     @Override
     public List<ScanResult> scan() {
-        String javaClassPath = AccessController.doPrivileged(new GetSystemPropertyAction(JAVA_CLASS_PATH_SYSTEM_PROPERTY));
+        String javaClassPath = System.getProperty(JAVA_CLASS_PATH_SYSTEM_PROPERTY);
         if (javaClassPath == null) {
             throw CommonLogger.LOG.cannotReadJavaClassPathSystemProperty();
         }

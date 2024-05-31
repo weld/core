@@ -15,8 +15,6 @@ import org.apache.tomcat.InstanceManager;
 import org.jboss.weld.environment.servlet.logging.TomcatLogger;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.security.FieldLookupAction;
-import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.util.collections.Arrays2;
 
 /**
@@ -113,15 +111,15 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
     }
 
     private static <E> Object getContextFieldValue(E obj, Class<E> clazz) throws NoSuchFieldException, IllegalAccessException {
-        Field field = FieldLookupAction.lookupField(clazz, CONTEXT_FIELD_NAME);
+        Field field = org.jboss.weld.util.reflection.Reflections.lookupField(clazz, CONTEXT_FIELD_NAME);
         org.jboss.weld.util.reflection.Reflections.ensureAccessible(field, obj);
         return field.get(obj);
     }
 
     private static InstanceManager getInstanceManager(StandardContext stdContext) {
         try {
-            Method method = MethodLookupAction.lookupMethod(stdContext.getClass(), INSTANCE_MANAGER_GETTER_NAME,
-                    Arrays2.EMPTY_CLASS_ARRAY);
+            Method method = org.jboss.weld.util.reflection.Reflections.lookupMethod(stdContext.getClass(),
+                    INSTANCE_MANAGER_GETTER_NAME, Arrays2.EMPTY_CLASS_ARRAY);
             org.jboss.weld.util.reflection.Reflections.ensureAccessible(method, stdContext);
             try {
                 return Reflections.cast(method.invoke(stdContext));
@@ -132,7 +130,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
             // Getter/setter not found
         }
         try {
-            Field field = FieldLookupAction.lookupField(stdContext.getClass(), INSTANCE_MANAGER_FIELD_NAME);
+            Field field = org.jboss.weld.util.reflection.Reflections.lookupField(stdContext.getClass(),
+                    INSTANCE_MANAGER_FIELD_NAME);
             org.jboss.weld.util.reflection.Reflections.ensureAccessible(field, stdContext);
             try {
                 return Reflections.cast(field.get(stdContext));
@@ -147,7 +146,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
 
     private static void setInstanceManager(StandardContext stdContext, InstanceManager instanceManager) {
         try {
-            Method method = MethodLookupAction.lookupMethod(stdContext.getClass(), INSTANCE_MANAGER_SETTER_NAME,
+            Method method = org.jboss.weld.util.reflection.Reflections.lookupMethod(stdContext.getClass(),
+                    INSTANCE_MANAGER_SETTER_NAME,
                     new Class[] { InstanceManager.class });
             org.jboss.weld.util.reflection.Reflections.ensureAccessible(method, stdContext);
             try {
@@ -160,7 +160,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
             // Getter/setter not found
         }
         try {
-            Field field = FieldLookupAction.lookupField(stdContext.getClass(), INSTANCE_MANAGER_FIELD_NAME);
+            Field field = org.jboss.weld.util.reflection.Reflections.lookupField(stdContext.getClass(),
+                    INSTANCE_MANAGER_FIELD_NAME);
             org.jboss.weld.util.reflection.Reflections.ensureAccessible(field, stdContext);
             try {
                 field.set(stdContext, instanceManager);

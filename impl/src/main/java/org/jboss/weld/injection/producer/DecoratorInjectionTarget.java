@@ -18,7 +18,6 @@ package org.jboss.weld.injection.producer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.security.AccessController;
 import java.util.Set;
 
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -39,8 +38,8 @@ import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.Decorators;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * {@link InjectionTarget} implementation used for decorators.
@@ -59,8 +58,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
         this.delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, getInjectionPoints());
         if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
             FieldInjectionPoint<?, ?> fip = (FieldInjectionPoint<?, ?>) delegateInjectionPoint;
-            this.accessibleField = AccessController
-                    .doPrivileged(new GetAccessibleCopyOfMember<Field>(fip.getAnnotated().getJavaMember()));
+            this.accessibleField = Reflections.getAccessibleCopyOfMember(fip.getAnnotated().getJavaMember());
         } else {
             this.accessibleField = null;
         }

@@ -21,7 +21,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -40,12 +39,11 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.security.GetDeclaredMethodAction;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * This special proxy factory is mostly used for abstract decorators. When a
@@ -141,7 +139,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         if (cls == null) {
             return;
         }
-        all.addAll(Arrays.asList(AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))));
+        all.addAll(Arrays.asList(cls.getDeclaredMethods()));
 
         decoratorMethods(cls.getSuperclass(), all);
 
@@ -292,10 +290,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // and store it in the array
                 code.aastore();
             }
-            code.invokestatic(GetDeclaredMethodAction.class.getName(), "wrapException",
-                    "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/security/PrivilegedAction;");
-            code.invokestatic(AccessController.class.getName(), "doPrivileged",
-                    "(Ljava/security/PrivilegedAction;)Ljava/lang/Object;");
+            code.invokestatic(Reflections.class.getName(), "wrapException",
+                    "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
             code.checkcast(Method.class);
         }
 

@@ -19,12 +19,10 @@ package org.jboss.weld.injection;
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
 
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -46,8 +44,7 @@ class FieldResourceInjection<T, X> extends AbstractResourceInjection<T> {
      */
     FieldResourceInjection(FieldInjectionPoint<T, X> fieldInjectionPoint, ResourceReferenceFactory<T> factory) {
         super(factory);
-        this.accessibleField = AccessController
-                .doPrivileged(new GetAccessibleCopyOfMember<Field>(fieldInjectionPoint.getAnnotated().getJavaMember()));
+        this.accessibleField = Reflections.getAccessibleCopyOfMember(fieldInjectionPoint.getAnnotated().getJavaMember());
     }
 
     @Override

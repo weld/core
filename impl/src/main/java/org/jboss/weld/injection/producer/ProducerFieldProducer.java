@@ -19,7 +19,6 @@ package org.jboss.weld.injection.producer;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
@@ -37,7 +36,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.UtilLogger;
-import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -53,8 +51,7 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
 
     public ProducerFieldProducer(EnhancedAnnotatedField<T, ? super X> enhancedField, DisposalMethod<?, ?> disposalMethod) {
         super(enhancedField, disposalMethod);
-        this.accessibleField = AccessController
-                .doPrivileged(new GetAccessibleCopyOfMember<Field>(enhancedField.getJavaMember()));
+        this.accessibleField = Reflections.getAccessibleCopyOfMember(enhancedField.getJavaMember());
         checkProducerField(enhancedField);
     }
 

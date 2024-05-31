@@ -17,7 +17,6 @@
 package org.jboss.weld.bootstrap;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
@@ -36,7 +35,6 @@ import org.jboss.weld.resources.spi.ClassFileInfo.NestingType;
 import org.jboss.weld.resources.spi.ClassFileInfoException;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.reflection.Reflections;
@@ -140,8 +138,7 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
                 new ClassLoaderResourceLoader(classFileServices.getClass().getClassLoader()));
         if (classInfoclass != null) {
             try {
-                Method setFlags = AccessController
-                        .doPrivileged(GetDeclaredMethodAction.of(classInfoclass, "setFlags", short.class));
+                Method setFlags = classInfoclass.getDeclaredMethod("setFlags", short.class);
                 return setFlags != null;
             } catch (Exception exceptionIgnored) {
                 BootstrapLogger.LOG.usingOldJandexVersion();
