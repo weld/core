@@ -29,7 +29,7 @@
 
     <properties>
         <tomcat.version>10.1.23</tomcat.version>
-        <jetty.version>11.0.15</jetty.version>
+        <jetty.version>11.0.21</jetty.version>
         <jetty9.asm.version>7.0</jetty9.asm.version>
         <websockets.api>2.1.1</websockets.api>
         <undertow.version>2.3.13.Final</undertow.version>
