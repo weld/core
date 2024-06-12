@@ -176,115 +176,23 @@ public class Main {
 [[jetty]]
 ==== Jetty
 
-NOTE: At the time of release of Weld 5.0.1.Final, there is currently no testing for Jetty 11. Therefore, take
-the information provided here with a pinch of salt.
+NOTE: There is currently no regular testing for Jetty. Therefore, take the information provided here with a pinch of salt. Consult Jetty documentation and https://github.com/jetty/jetty-examples[examples] for more details on how to run Jetty with Weld.
 
-Jetty 11 and newer are supported. Context activation/deactivation and dependency
-injection into Servlets, Filters and Servlet listeners works out of the box.
+Jetty 12 and newer are supported. Context activation/deactivation and dependency injection into Servlets, Filters and Servlet listeners works out of the box.
 
 No further configuration is needed when starting Jetty as an embedded webapp server from within another Java program.
 However, if you’re using a Jetty standalone instance, there is one more configuration step that is required.
 
-===== Jetty `cdi-decorate` Module
+===== Jetty `ee10-cdi` Module
 
-The Weld/Jetty integration uses the jetty `cdi-decorate` module.
-To activate this module in jetty the argument `--module=cdi-decorate` needs to be added to the
+The Weld/Jetty integration uses the Jetty `ee10-cdi` module.
+To activate this module in Jetty, the argument `--add-modules=ee10-cdi` needs to be added to the
 command line, which can be done for a standard distribution by running the commands:
 
 -------------------------
 cd $JETTY_BASE
-java -jar $JETTY_HOME/start.jar --add-to-start=cdi-decorate
+java -jar $JETTY_HOME/start.jar --add-modules=ee10-cdi
 -------------------------
-
-===== Binding BeanManager to Jetty JNDI
-
-To bind the BeanManager into JNDI, you should either populate
-`WEB-INF/jetty-env.xml` with the following contents:
-
-[source.XML, xml]
--------------------------------------------------------------------------
-<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
-   "http://www.eclipse.org/jetty/configure.dtd">
-
-<Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
-    <New id="BeanManager" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg> <Ref id="webAppCtx"/> </Arg>
-        <Arg>BeanManager</Arg>
-        <Arg>
-            <New class="jakarta.naming.Reference">
-                <Arg>jakarta.enterprise.inject.spi.BeanManager</Arg>
-                <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
-                <Arg/>
-            </New>
-        </Arg>
-    </New>
-</Configure>
--------------------------------------------------------------------------
-
-Or you can configure a special Servlet listener to bind the BeanManager
-automatically:
-
-[source.XML, xml]
----------------------------------------------------------------------------------------------------------
-<listener>
-   <listener-class>org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener</listener-class>
-</listener>
-
----------------------------------------------------------------------------------------------------------
-
-You also need to make the BeanManager available to your
-deployment by adding this to the bottom of `web.xml`:
-
-[source.XML, xml]
--------------------------------------------------------------
-<resource-env-ref>
-   <resource-env-ref-name>BeanManager</resource-env-ref-name>
-   <resource-env-ref-type>
-     jakarta.enterprise.inject.spi.BeanManager
-   </resource-env-ref-type>
-</resource-env-ref>
--------------------------------------------------------------
-
-Jetty only allows you to bind entries to `java:comp/env`, so the
-BeanManager will be available at `java:comp/env/BeanManager`.
-
-===== Embedded Jetty
-
-When starting embedded Jetty programmatically from the main method it is necessary
-to register Weld's listener:
-
-[source.JAVA, java]
--------------------------------------------------------------
-public class Main {
-
-    public static void main(String[] args) throws Exception {
-        Server jetty = new Server(8080);
-        WebAppContext context = new WebAppContext();
-        context.setContextPath("/");
-        context.setResourceBase("src/main/resources");
-        jetty.setHandler(context);
-        context.addServlet(HelloWorldServlet.class, "/*");
-
-        context.addEventListener(new DecoratingListener()); # <1>
-        context.addEventListener(new Listener()); # <2>
-
-        jetty.start();
-        jetty.join();
-    }
-
-    public static class HelloWorldServlet extends HttpServlet {
-
-        @Inject BeanManager manager;
-
-        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-            resp.setContentType("text/plain");
-            resp.getWriter().append("Hello from " + manager);
-        }
-    }
-}
--------------------------------------------------------------
-<1> Jetty's `org.eclipse.jetty.webapp.DecoratingListener` registered programmatically
-<2> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically
 
 ==== Undertow
 
