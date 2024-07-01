@@ -76,7 +76,7 @@
         <jakarta.el.version>6.0.0</jakarta.el.version>
         <glassfish.jakarta.el.version>5.0.0-M1</glassfish.jakarta.el.version>
         <jakarta.jms.api.version>3.1.0</jakarta.jms.api.version>
-        <jsf.api.version>4.0.1</jsf.api.version>
+        <jsf.api.version>4.1.0</jsf.api.version>
         <jboss.logging.version>3.6.0.Final</jboss.logging.version>
         <jboss.logging.processor.version>2.2.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>3.0.6.Final</jboss.logmanager.version>
