@@ -183,9 +183,9 @@ task zipDist(type: Zip, dependsOn: copyDocs){
     from (file(distDir)){
         into finalName
     }
-    baseName finalName
-    extension "zip"
-    destinationDir file(project.projectDir.absolutePath)
+    archiveBaseName = finalName
+    archiveExtension = "zip"
+    destinationDirectory = file(project.projectDir.absolutePath)
 }
 
 defaultTasks 'zipDist'
