@@ -28,5 +28,5 @@ tests-arquillian/src/test/resources/org/jboss/weld/tests/contexts/conversation/e
 .externalToolBuilders
 bin
 examples/se/numberguess/dependency-reduced-pom.xml
-build/.gradle
-build/weld-*
+dist/.gradle
+dist/weld-*
