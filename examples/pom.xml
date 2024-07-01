@@ -98,7 +98,7 @@
     </modules>
 
     <properties>
-        <servlet.api.version>6.1.0-M2</servlet.api.version>
+        <servlet.api.version>6.1.0</servlet.api.version>
         <jsf.api.version>4.1.0</jsf.api.version>
         <uel.version>5.0.0-M1</uel.version>
 
