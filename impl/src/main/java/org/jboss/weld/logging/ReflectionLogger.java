@@ -89,9 +89,7 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 617, value = "Instantiation through Unsafe of {0} failed", format = Format.MESSAGE_FORMAT)
     WeldException unsafeInstantiationFailed(Object param1, @Cause Throwable cause);
 
-    @LogMessage(level = Level.WARN)
-    @Message(id = 619, value = "A lifecycle callback interceptor declares an interceptor binding with target other than ElementType.TYPE\n  {0}\n  Binding: {1}\n  Target: {2}", format = Format.MESSAGE_FORMAT)
-    void lifecycleCallbackInterceptorWithInvalidBindingTarget(Object interceptor, Object binding, Object elementTypes);
+    // id=619 was used in Weld 5 and earlier, see WELD-2790
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 620, value = "{0} is not declared @Target(METHOD, FIELD, PARAMETER, TYPE). Weld will use this annotation, however this may make the application unportable.", format = Format.MESSAGE_FORMAT)
