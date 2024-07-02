@@ -247,6 +247,12 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- The gpg plugin is here just to ensure order of execution *after* shade plugin -->
+            <!-- It does nothing in a standard build and the whole configuration of this plugin remains in Weld parent -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
@@ -362,7 +368,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>5.0.0-SNAPSHOT</tag>
+        <tag>6.0.0-SNAPSHOT</tag>
     </scm>
 
 </project>
