@@ -1,4 +1,4 @@
-name: Weld Parent Release
+name: Weld Core Release
 
 on:
   pull_request:
@@ -55,7 +55,7 @@ jobs:
         mvn -B release:perform -Drelease
         git push
         git push --tags
-        cd build
+        cd dist
         gradle -PweldVersion=${{steps.metadata.outputs.current-version}} -PweldPath=${GITHUB_WORKSPACE}
     - name: Upload dist ZIP file
       uses: actions/upload-artifact@v4
