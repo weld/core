@@ -138,13 +138,15 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <sourceFileExcludes>
+                                <!-- Skip module-info as multiple would be included -->
+                                <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
                             <includeDependencySources>true</includeDependencySources>
                             <dependencySourceIncludes>
                                 <dependencySourceInclude>org.jboss.weld:*</dependencySourceInclude>
                                 <dependencySourceInclude>org.jboss.weld.module:*</dependencySourceInclude>
                                 <dependencySourceInclude>org.jboss.weld.servlet:*</dependencySourceInclude>
-                                <dependencySourceInclude>jakarta.enterprise:*</dependencySourceInclude>
-                                <dependencySourceInclude>jakarta.inject:*</dependencySourceInclude>
                             </dependencySourceIncludes>
                             <additionalDependencies>
                                 <additionalDependency>
@@ -173,7 +175,7 @@
                                     <version>${jsp.api.version}</version>
                                 </additionalDependency>
                                 <additionalDependency>
-                                    <groupId>org.jboss</groupId>
+                                    <groupId>io.smallrye</groupId>
                                     <artifactId>jandex</artifactId>
                                     <version>${jandex.version}</version>
                                 </additionalDependency>
@@ -193,8 +195,8 @@
                                     <version>${jetty.version}</version>
                                 </additionalDependency>
                                 <additionalDependency>
-                                    <groupId>org.eclipse.jetty</groupId>
-                                    <artifactId>jetty-servlet</artifactId>
+                                    <groupId>org.eclipse.jetty.ee10</groupId>
+                                    <artifactId>jetty-ee10-servlet</artifactId>
                                     <version>${jetty.version}</version>
                                 </additionalDependency>
                                 <additionalDependency>
