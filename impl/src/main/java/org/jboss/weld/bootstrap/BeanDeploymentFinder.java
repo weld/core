@@ -63,4 +63,8 @@ public final class BeanDeploymentFinder {
         return DeploymentStructures.getOrCreateBeanDeployment(deployment, deploymentManager, bdaMapping, contexts, clazz);
     }
 
+    public BeanDeployment getBeanDeploymentIfExists(Class<?> clazz) {
+        return DeploymentStructures.getBeanDeploymentIfExists(deployment, bdaMapping, clazz);
+    }
+
 }

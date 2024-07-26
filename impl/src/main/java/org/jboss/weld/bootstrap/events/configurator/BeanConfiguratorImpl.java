@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanAttributes;
@@ -42,6 +43,7 @@ import jakarta.enterprise.util.TypeLiteral;
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bean.WeldBean;
+import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.event.WeldBeanConfigurator;
 import org.jboss.weld.contexts.CreationalContextImpl;
@@ -83,10 +85,18 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
      * @param defaultBeanClass
      * @param beanDeploymentFinder
      */
-    public BeanConfiguratorImpl(Class<?> defaultBeanClass, BeanDeploymentFinder beanDeploymentFinder) {
+    public BeanConfiguratorImpl(Class<?> defaultBeanClass, Class<?> fallbackClass, BeanDeploymentFinder beanDeploymentFinder) {
         this.beanClass = defaultBeanClass;
         this.injectionPoints = new HashSet<>();
-        this.beanManager = beanDeploymentFinder.getOrCreateBeanDeployment(beanClass).getBeanManager();
+        BeanDeployment beanDeployment = beanDeploymentFinder.getBeanDeploymentIfExists(beanClass);
+        if (beanDeployment == null && fallbackClass != null && BuildCompatibleExtension.class.isAssignableFrom(beanClass)) {
+            // case of synth beans coming from BCE with no backing archive
+            // use a fallback class, typically LiteExtensionTranslator.class
+            beanDeployment = beanDeploymentFinder.getOrCreateBeanDeployment(fallbackClass);
+        } else {
+            beanDeployment = beanDeploymentFinder.getOrCreateBeanDeployment(beanClass);
+        }
+        this.beanManager = beanDeployment.getBeanManager();
         this.attributes = new BeanAttributesConfiguratorImpl<>(beanManager);
     }
 
