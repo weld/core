@@ -104,7 +104,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     public <T> WeldBeanConfigurator<T> addBean() {
         // null is only going to occur if the invocation is outside of OM in which case it will fail in the
         // subsequent method inside checkWithinObserverNotification()
-        return addBean(getReceiver() != null ? getReceiver().getClass() : null);
+        return addBean(getReceiver() != null ? getReceiver().getClass() : null, null);
     }
 
     /**
@@ -115,12 +115,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
      * This method should not be used anywhere else.
      *
      * @param receiverClass class of the Build Compatible extension performing synth. bean registration
+     * @param fallbackClass fallback receiver class for BCEs coming from non-CDI archives; can be null
      * @param <T> bean type
      * @return instance of {@link WeldBeanConfigurator}
      */
-    public <T> WeldBeanConfigurator<T> addBean(Class<?> receiverClass) {
+    public <T> WeldBeanConfigurator<T> addBean(Class<?> receiverClass, Class<?> fallbackClass) {
         checkWithinObserverNotification();
-        BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(receiverClass, getBeanDeploymentFinder());
+        BeanConfiguratorImpl<T> configurator = new BeanConfiguratorImpl<>(receiverClass, fallbackClass,
+                getBeanDeploymentFinder());
         // note that here we deliberately keep getReceiver() since the logging is related to registering portable extension
         additionalBeans.add(BeanRegistration.of(configurator, getReceiver()));
         return configurator;
