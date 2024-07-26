@@ -163,7 +163,8 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             if (abd instanceof AfterBeanDiscoveryImpl) {
                 // specify the receiver class to be the BCE extension, linking the bean to it
                 // in EE env this affects the BM used for dynamic resolution inside bean creation method
-                configurator = ((AfterBeanDiscoveryImpl) abd).addBean(syntheticBean.extensionClass);
+                configurator = ((AfterBeanDiscoveryImpl) abd).addBean(syntheticBean.extensionClass,
+                        LiteExtensionTranslator.class);
             } else {
                 configurator = abd.addBean();
             }
