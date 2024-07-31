@@ -49,4 +49,15 @@ public class DeploymentStructures {
         }
     }
 
+    public static BeanDeployment getBeanDeploymentIfExists(Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
+            Class<?> clazz) {
+        BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
+        if (beanDeploymentArchive == null) {
+            throw UtilLogger.LOG.unableToFindBeanDeploymentArchive(clazz);
+        } else {
+            // can be null
+            return bdaMapping.getBeanDeployment(beanDeploymentArchive);
+        }
+    }
+
 }
