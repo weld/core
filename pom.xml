@@ -48,7 +48,8 @@
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.bcel.version>6.10.0</apache.bcel.version>
-        <arquillian.version>1.8.0.Final</arquillian.version>
+        <arquillian.version>1.9.1.Final</arquillian.version>
+        <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
         <arquillian.drone.version>3.0.0-alpha.5</arquillian.drone.version>
         <arquillian.graphene.version>3.0.0-alpha.3</arquillian.graphene.version>
         <arquillian.weld.version>4.0.0.Final</arquillian.weld.version>
@@ -62,8 +63,6 @@
         <!-- Our variant is under src/test/tck/tck-tests.xml -->
         <cdi.tck.suite.xml.file />
         <classfilewriter.version>1.3.1.Final</classfilewriter.version>
-        <spotbugs-maven-plugin.version>4.8.6.2</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>4.8.6</spotbugs-annotations-version>
         <groovy.version>3.0.22</groovy.version>
         <htmlunit.version>2.70.0</htmlunit.version>
         <jacoco.version>0.8.12</jacoco.version>
@@ -82,8 +81,9 @@
         <junit.version>4.13.2</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
-        <shrinkwrap.descriptors.version>2.0.0</shrinkwrap.descriptors.version>
         <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
+        <spotbugs-maven-plugin.version>4.8.6.1</spotbugs-maven-plugin.version>
+        <spotbugs-annotations-version>4.8.6</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
         <weld.api.version>6.0.Beta5</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
@@ -204,7 +204,17 @@
                 <version>${classfilewriter.version}</version>
             </dependency>
 
-            <!--Keep this Arq. BOM as first of all Arquillian dependencies in order to make it fetch correct versions!-->
+            <!--Keep Arq. BOMs as first of all Arquillian dependencies in order to make it fetch correct versions!-->
+            <!--Arquillian, Jakarta parts (enrichers etc) operating with jakarta packages -->
+            <dependency>
+                <groupId>org.jboss.arquillian.jakarta</groupId>
+                <artifactId>arquillian-jakarta-bom</artifactId>
+                <version>${arquillian.jakarta.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--Arquillian, all other parts, APIs, containers, ... -->
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -214,33 +224,11 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-container-spi</artifactId>
-                <version>${arquillian.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.junit</groupId>
-                <artifactId>arquillian-junit-container</artifactId>
-                <version>${arquillian.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.test</groupId>
-                <artifactId>arquillian-test-impl-base</artifactId>
-                <version>${arquillian.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-container-test-impl-base</artifactId>
-                <version>${arquillian.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-container-test-spi</artifactId>
-                <version>${arquillian.version}</version>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${shrinkwrap.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>
@@ -395,32 +383,14 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-api</artifactId>
-                <version>${shrinkwrap.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-spi</artifactId>
-                <version>${shrinkwrap.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-impl-base</artifactId>
-                <version>${shrinkwrap.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-                <artifactId>shrinkwrap-descriptors-impl</artifactId>
-                <version>${shrinkwrap.descriptors.version}</version>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+                <version>${shrinkwrap.resolver.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.shrinkwrap.resolver</groupId>
-                <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+                <artifactId>shrinkwrap-resolver-spi</artifactId>
                 <version>${shrinkwrap.resolver.version}</version>
             </dependency>
 

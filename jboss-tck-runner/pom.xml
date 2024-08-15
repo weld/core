@@ -388,7 +388,6 @@
                 <dependency>
                     <groupId>org.jboss.arquillian.protocol</groupId>
                     <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
-                    <version>${arquillian.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>
