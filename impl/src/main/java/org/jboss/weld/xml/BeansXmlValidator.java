@@ -138,7 +138,7 @@ public class BeansXmlValidator implements ErrorHandler {
                 xsds.add(source);
             }
         }
-        return xsds.toArray(EMPTY_SOURCE_ARRAY);
+        ;return xsds.toArray(EMPTY_SOURCE_ARRAY);
     }
 
     private static StreamSource loadXsd(String name, ClassLoader classLoader) {
