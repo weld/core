@@ -55,7 +55,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     private WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private Set<Annotation> delegateBindings;
     private Type delegateType;
-    private Set<Type> delegateTypes;
     private Set<Type> decoratedTypes;
 
     protected DecoratorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
@@ -90,8 +89,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
     protected void initDelegateType() {
         this.delegateType = this.delegateInjectionPoint.getType();
-        this.delegateTypes = new HashSet<Type>();
-        delegateTypes.add(delegateType);
     }
 
     @Override
