@@ -54,7 +54,7 @@ public class BeanManagerResourceBindingListener implements ServletContextListene
                 while (entries.hasMoreElements()) {
                     try {
                         NameClassPair e = entries.next();
-                        if (e.getName().equals(BEAN_MANAGER_JNDI_NAME) && e.getClassName().equals(BeanManager.class)) {
+                        if (e.getName().equals(BEAN_MANAGER_JNDI_NAME) && e.getClass().equals(BeanManager.class)) {
                             present = true;
                             break;
                         }
