@@ -44,7 +44,7 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
         PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("jakarta.persistence.PersistenceContext");
         PERSISTENCE_UNIT_ANNOTATION_CLASS = annotationTypeForName("jakarta.persistence.PersistenceUnit");
         PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("jakarta.persistence.PersistenceContextType");
-        if (PERSISTENCE_CONTEXT_TYPE_CLASS.getClass().equals(Dummy.class)) {
+        if (PERSISTENCE_CONTEXT_TYPE_CLASS.equals(Dummy.class)) {
             EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = enumValue(PERSISTENCE_CONTEXT_TYPE_CLASS, "EXTENDED");
         } else {
             EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
