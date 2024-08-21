@@ -405,7 +405,16 @@ public class ProxyFactory<T> {
             proxyClassName = proxyClassName.replaceFirst(JAKARTA, WELD_PROXY_PREFIX);
         }
         Class<T> proxyClass = null;
-        Class<?> originalClass = bean != null ? bean.getBeanClass() : proxiedBeanType;
+        Class<?> originalClass;
+        if (bean == null) {
+            originalClass = proxiedBeanType;
+        } else {
+            if (bean instanceof AbstractBuiltInBean<?>) {
+                originalClass = ((AbstractBuiltInBean<?>) bean).getType();
+            } else {
+                originalClass = bean.getBeanClass();
+            }
+        }
         BeanLogger.LOG.generatingProxyClass(proxyClassName);
         try {
             // First check to see if we already have this proxy class
