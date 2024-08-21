@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -131,9 +130,9 @@ public class BeansXmlValidator implements ErrorHandler {
     }
 
     private static StreamSource[] loadXsds(XmlSchema[] schemas) {
-        List<Source> xsds = new ArrayList<>();
+        List<StreamSource> xsds = new ArrayList<>();
         for (XmlSchema schema : schemas) {
-            Source source = loadXsd(schema.getFileName(), schema.getClassLoader());
+            StreamSource source = loadXsd(schema.getFileName(), schema.getClassLoader());
             if (source != null) {
                 xsds.add(source);
             }
