@@ -4,8 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
-
 import jakarta.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
@@ -14,8 +14,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.accessibility.bce.lib.MyBeanCreator;
 import org.jboss.weld.tests.accessibility.bce.lib.MyBce;
+import org.jboss.weld.tests.accessibility.bce.lib.MyBeanCreator;
 import org.jboss.weld.tests.accessibility.bce.lib.SomeType;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
