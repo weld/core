@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Download WildFly
         run: |
-          wget https://github.com/wildfly/wildfly/releases/download/29.0.1.Final/wildfly-29.0.1.Final.zip
+          wget https://github.com/wildfly/wildfly/releases/download/33.0.1.Final/wildfly-33.0.1.Final.zip
           unzip wildfly-*.zip -d container
           cd container
           mv ./* wildfly/
@@ -42,7 +42,7 @@ jobs:
           # after the job is done. In this case we refresh the cache monthly (by changing key) to avoid unlimited growth.
           key: q2maven-master-${{ steps.get-date.outputs.date }}
       - name: Build Weld SNAPSHOT
-        run: mvn clean install -DskipTests -B -V -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+        run: mvn clean install -DskipTests -Dno-format -B -V -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Patch WildFly
         run: |
           JBOSS_HOME=`pwd`'/container/*'
@@ -117,7 +117,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -pl '!jboss-tck-runner'
+          mvn clean verify -Dincontainer -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -pl '!jboss-tck-runner'
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -184,7 +184,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f jboss-tck-runner/pom.xml
+          mvn clean verify -Dincontainer -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f jboss-tck-runner/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -243,7 +243,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests-web.xml -Dadditional.vm.args="-Dorg.jboss.weld.construction.relaxed=true" -f jboss-tck-runner/pom.xml
+          mvn clean verify -Dincontainer -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests-web.xml -Dadditional.vm.args="-Dorg.jboss.weld.construction.relaxed=true" -f jboss-tck-runner/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -264,7 +264,7 @@ jobs:
           path: 'server-log.tgz'
       - name: Build with Maven, no WildFly
         run: |
-          mvn clean verify -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests.xml -Dorg.jboss.weld.construction.relaxed=true
+          mvn clean verify -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests.xml -Dorg.jboss.weld.construction.relaxed=true
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -314,7 +314,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn clean verify -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+          mvn clean verify -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -358,7 +358,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Darquillian=wildfly-managed -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f examples/pom.xml
+          mvn clean verify -Dno-format -Darquillian=wildfly-managed -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f examples/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -416,7 +416,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn clean verify -Dincontainer=se -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f jboss-tck-runner/pom.xml
+          mvn clean verify -Dincontainer=se -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f jboss-tck-runner/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -451,7 +451,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn clean verify -Dincontainer=weld-se-coop -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f environments/servlet/tests/tomcat/pom.xml
+          mvn clean verify -Dincontainer=weld-se-coop -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f environments/servlet/tests/tomcat/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
