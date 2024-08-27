@@ -1,0 +1,191 @@
+apply plugin: "java"
+
+def File weldDir
+def String releaseVersion
+def String examplesDir
+def String cdiArtifactsDir
+def String weldArtifactsDir
+def String cdiApiDocsDir
+def String finalName
+def String distDir
+def String docDir
+def String defaultReadmePreface
+def console = System.console()
+
+task setup {
+    if (!project.hasProperty("weldPath"))
+        weldDir = file(console.readLine("\n Path to Weld Core source directory: \n"))
+    else
+        weldDir = new File(weldPath)
+
+    if(!project.hasProperty("weldVersion"))
+        releaseVersion = new String(console.readLine("\n Weld Core Version (used to locate built Weld jars): \n"))
+    else
+        releaseVersion = weldVersion
+
+    if (!weldDir.exists())
+        throw new FileNotFoundException("Cannot find " + weldDir.absolutePath);
+
+    if (releaseVersion.equals(""))
+        throw new IllegalArgumentException("You must specify valid Weld version.")
+
+    println "Using " + weldDir.toString() + " as Weld Core source directory."
+    println "Using " + releaseVersion + " as Weld Core version."
+
+    finalName = "weld-".concat(releaseVersion)
+    distDir = project.projectDir.absolutePath + "/" + finalName
+    examplesDir = distDir.concat("/examples")
+    cdiArtifactsDir = distDir.concat("/artifacts/cdi")
+    weldArtifactsDir = distDir.concat("/artifacts/weld")
+    docDir = distDir.concat("/doc")
+    cdiApiDocsDir = docDir.concat("/apidocs/cdi")
+}
+
+// create dependencies (including javadoc and sources artifacts) according given coords and version
+def dep(coords, version = null) {
+    def coord = "$coords:$version"
+    def result = [dependencies.create(coord)]
+    result << dependencies.create("$coord:javadoc")
+    result << dependencies.create("$coord:sources")
+    result
+}
+
+task cleanDir(type: Delete, dependsOn: setup) {
+
+    delete fileTree(dir: weldDir.getAbsolutePath(), includes: ["**/target/", ".project", ".classpath", ".wtpmodules"])
+    delete distDir
+    delete "build"
+    delete finalName.concat(".zip")
+    doLast {
+        new File(distDir).mkdirs()
+        new File(examplesDir).mkdirs()
+        new File(cdiArtifactsDir).mkdirs()
+        new File(weldArtifactsDir).mkdirs()
+        new File(cdiApiDocsDir).mkdirs()
+    }
+}
+
+task copyFiles(type: Copy, dependsOn: cleanDir) {
+
+    from project.projectDir.absolutePath
+    into distDir
+    include "README.md"
+    include "LICENSE.txt"
+}
+
+task copyExamples(type: Copy, dependsOn: copyFiles) {
+
+    from fileTree(dir: weldDir.getAbsolutePath().concat("/examples"), excludes: ["**/target", "**/.settings", "**/.project"])
+    into examplesDir
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repository.jboss.org/nexus/content/groups/public/"
+    }
+    maven {
+        url "https://repository.jboss.org/nexus/content/repositories/staging"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/groups/staging"
+    }
+    // Maven Local repo is here so that this script can be built even on just SNAPSHOTS
+    mavenLocal()
+}
+
+dependencies {
+    implementation dep("org.jboss.weld:weld-core-impl", releaseVersion)
+    implementation dep("org.jboss.weld.environment:weld-environment-common", releaseVersion)
+    implementation dep("org.jboss.weld.se:weld-se-core", releaseVersion)
+    implementation dep("org.jboss.weld.module:weld-ejb", releaseVersion)
+    implementation dep("org.jboss.weld.module:weld-jsf", releaseVersion)
+    implementation dep("org.jboss.weld.module:weld-jta", releaseVersion)
+    implementation dep("org.jboss.weld.module:weld-web", releaseVersion)
+
+    implementation dep("org.jboss.weld.se:weld-se-shaded", releaseVersion)
+    implementation dep("org.jboss.weld.servlet:weld-servlet-shaded", releaseVersion)
+    implementation dep("org.jboss.weld.servlet:weld-servlet-core", releaseVersion)
+
+    // listed only because we need to download javadoc and sources artifacts too
+    implementation dep("jakarta.enterprise:jakarta.enterprise.cdi-api")
+    implementation dep("org.jboss.weld:weld-api")
+    implementation dep("org.jboss.weld:weld-spi")
+}
+
+// helper function which returns version of transitive dependency according the given artifactId
+def getVersion(artifactId) {
+    def result = null
+    configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact art ->
+        def id = art.moduleVersion.id
+        if (id.name.equals(artifactId))
+            result = id.version
+    }
+    result
+}
+
+task adjustReadme(type: Exec, dependsOn: copyExamples) {
+
+    workingDir distDir
+    commandLine "sed"
+    if(!project.hasProperty("readme"))
+        defaultReadmePreface = "Weld is the reference implementation of CDI ".concat(getVersion("jakarta.enterprise.cdi-api"))
+    else
+        defaultReadmePreface = readme
+
+    args "-i", "s/{CUSTOM_TEXT}/$defaultReadmePreface/", "README.md"
+}
+
+task copyCdiArtifacts(type: Copy, dependsOn: adjustReadme) {
+
+    from configurations.runtimeClasspath.findAll { dep -> dep.name.contains("cdi") }
+    into cdiArtifactsDir
+
+    def cdiVersion = getVersion("jakarta.enterprise.cdi-api")
+    // rename jars - remove version
+    rename { String fileName ->
+        fileName.replace("-".concat(cdiVersion), "")
+    }
+}
+
+task copyWeldArtifacts(type: Copy, dependsOn: copyCdiArtifacts) {
+
+    from configurations.runtimeClasspath.findAll { dep -> dep.name.contains("weld") }
+    into weldArtifactsDir
+
+    def weldApiVersion = getVersion("weld-api")
+    // rename jars - remove version
+    rename { String fileName ->
+        fileName.replace("-".concat(releaseVersion), "").replace("-".concat(weldApiVersion), "")
+    }
+}
+
+task extractCdiApiDoc(type: Copy, dependsOn: copyWeldArtifacts) {
+
+    from zipTree(cdiArtifactsDir.concat("/jakarta.enterprise.cdi-api-javadoc.jar"))
+    into cdiApiDocsDir
+}
+
+task buildDocs(type: Exec, dependsOn: extractCdiApiDoc) {
+
+    workingDir weldDir.path.concat("/docs/reference")
+    commandLine "mvn"
+    args "clean", "compile"
+}
+
+task copyDocs(type: Copy, dependsOn: buildDocs){
+
+    from weldDir.path.concat("/docs/reference/target/docbook")
+    into docDir
+}
+
+task zipDist(type: Zip, dependsOn: copyDocs){
+    from (file(distDir)){
+        into finalName
+    }
+    archiveBaseName = finalName
+    archiveExtension = "zip"
+    destinationDirectory = file(project.projectDir.absolutePath)
+}
+
+defaultTasks 'zipDist'
