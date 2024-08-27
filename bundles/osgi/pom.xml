@@ -249,6 +249,12 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- The gpg plugin is here just to ensure order of execution *after* shade plugin -->
+            <!-- It does nothing in a standard build and the whole configuration of this plugin remains in Weld parent -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
