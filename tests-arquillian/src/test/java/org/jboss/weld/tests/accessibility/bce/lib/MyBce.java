@@ -7,7 +7,6 @@ import jakarta.enterprise.inject.build.compatible.spi.SyntheticComponents;
 
 public class MyBce implements BuildCompatibleExtension {
 
-
     @Synthesis
     public void registerSynthBean(SyntheticComponents syntheticComponents) {
         syntheticComponents.addBean(SomeType.class)
