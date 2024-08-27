@@ -1,0 +1,4 @@
+name: Weld Core release
+release:
+  current-version: 5.1.2.Final
+  next-version: 5.1.3-SNAPSHOT

@@ -1,0 +1,65 @@
+name: Weld Core Release
+
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - '.github/project.yml'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: ${{github.event.pull_request.merged == true}}
+    env:
+      GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
+    steps:
+      - name: Retrieve project metadata
+        id: metadata
+        uses: radcortez/project-metadata-action@master
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          metadata-file-path: '.github/project.yml'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.RELEASE_TOKEN}}
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+          server-id: 'sonatype-nexus-staging'
+          server-username: 'MAVEN_DEPLOY_USERNAME'
+          server-password: 'MAVEN_DEPLOY_TOKEN'
+          gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
+          gpg-passphrase: 'MAVEN_GPG_PASSPHRASE'
+
+      - name: Maven release ${{steps.metadata.outputs.current-version}}
+        env:
+          MAVEN_DEPLOY_USERNAME: ${{secrets.MAVEN_DEPLOY_USERNAME}}
+          MAVEN_DEPLOY_TOKEN: ${{secrets.MAVEN_DEPLOY_TOKEN}}
+          MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+        run: |
+          export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
+          java -version
+          git config --global user.name "Weld CI"
+          git config --global user.email "weld-dev@lists.jboss.org"
+          git checkout -b release
+          mvn release:prepare --batch-mode -Drelease -DreleaseVersion=${{steps.metadata.outputs.current-version}} -Dtag=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
+          git checkout ${{github.base_ref}}
+          git rebase release
+          mvn -B release:perform -Drelease
+          git push
+          git push --tags
+          cd dist
+          git checkout ${{steps.metadata.outputs.current-version}}
+          gradle -PweldVersion=${{steps.metadata.outputs.current-version}} -PweldPath=${GITHUB_WORKSPACE}
+      - name: Upload dist ZIP file
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ./dist/weld-*
