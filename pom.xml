@@ -93,6 +93,9 @@
         <weld.api.version>5.0.SP3</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.0.Alpha5</wildfly.arquillian.version>
+        <!-- Override formatter/impsort versions from Weld parent to get JDK 11 compatible versions -->
+        <formatter.version>2.23.0</formatter.version>
+        <impsort.version>1.9.0</impsort.version>
     </properties>
 
     <modules>
