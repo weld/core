@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.Parameters;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
+
 import org.jboss.weld.tests.accessibility.bce.MyBean;
 
 public class MyBeanCreator implements SyntheticBeanCreator<SomeType> {
