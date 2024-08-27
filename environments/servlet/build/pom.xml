@@ -138,13 +138,15 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <sourceFileExcludes>
+                                <!-- Skip module-info as multiple would be included -->
+                                <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
                             <includeDependencySources>true</includeDependencySources>
                             <dependencySourceIncludes>
                                 <dependencySourceInclude>org.jboss.weld:*</dependencySourceInclude>
                                 <dependencySourceInclude>org.jboss.weld.module:*</dependencySourceInclude>
                                 <dependencySourceInclude>org.jboss.weld.servlet:*</dependencySourceInclude>
-                                <dependencySourceInclude>jakarta.enterprise:*</dependencySourceInclude>
-                                <dependencySourceInclude>jakarta.inject:*</dependencySourceInclude>
                             </dependencySourceIncludes>
                             <additionalDependencies>
                                 <additionalDependency>

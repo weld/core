@@ -121,12 +121,14 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <sourceFileExcludes>
+                                <!-- Skip module-info as multiple would be included -->
+                                <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
                             <includeDependencySources>true</includeDependencySources>
                             <dependencySourceIncludes>
                                 <dependencySourceInclude>org.jboss.weld:*</dependencySourceInclude>
                                 <dependencySourceInclude>org.jboss.weld.se:*</dependencySourceInclude>
-                                <dependencySourceInclude>jakarta.enterprise:*</dependencySourceInclude>
-                                <dependencySourceInclude>jakarta.inject:*</dependencySourceInclude>
                             </dependencySourceIncludes>
                             <additionalDependencies>
                                 <additionalDependency>
@@ -143,12 +145,6 @@
                                     <groupId>org.apache.bcel</groupId>
                                     <artifactId>bcel</artifactId>
                                     <version>${apache.bcel.version}</version>
-                                </additionalDependency>
-                                <!-- Temporary until there is release with https://github.com/eclipse-ee4j/cdi/pull/449 -->
-                                <additionalDependency>
-                                    <groupId>jakarta.ejb</groupId>
-                                    <artifactId>jakarta.ejb-api</artifactId>
-                                    <version>4.0.0-RC2</version>
                                 </additionalDependency>
                             </additionalDependencies>
                         </configuration>
