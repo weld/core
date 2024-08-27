@@ -31,9 +31,12 @@
 
     <properties>
         <weld.api.bom.version>5.0.SP3</weld.api.bom.version>
-        <gpg.plugin.version>3.0.1</gpg.plugin.version>
-        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+        <gpg.plugin.version>3.2.4</gpg.plugin.version>
+        <nexus.staging.plugin.version>1.7.0</nexus.staging.plugin.version>
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/
+        </jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/
+        </jboss.snapshots.repo.url>
         <ossrh.releases.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</ossrh.releases.repo.url>
         <ossrh.snapshots.repo.url>https://oss.sonatype.org/content/repositories/snapshots</ossrh.snapshots.repo.url>
     </properties>
@@ -130,82 +133,99 @@
     </scm>
 
     <profiles>
-      <profile>
-         <id>release</id>
-         <activation>
-            <property>
-               <name>release</name>
-            </property>
-         </activation>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-gpg-plugin</artifactId>
-                  <version>${gpg.plugin.version}</version>
-                  <configuration>
-                      <!-- Without interactive=true, there is no prompt for pwd when running on gpg plugin 3.0.1 -->
-                      <interactive>true</interactive>
-                      <useAgent>${gpg.useAgent}</useAgent>
-                  </configuration>
-                  <executions>
-                     <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                           <goal>sign</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      <!-- JBoss release repository -->
-      <profile>
-         <id>jboss-release-repo</id>
-         <activation>
-            <activeByDefault>false</activeByDefault>
-            <property>
-               <name>jboss-release-repo</name>
-               <value>true</value>
-            </property>
-         </activation>
-         <distributionManagement>
-            <repository>
-               <id>jboss-releases-repository</id>
-               <name>JBoss Releases Repository</name>
-               <url>${jboss.releases.repo.url}</url>
-            </repository>
-            <snapshotRepository>
-               <id>jboss-snapshots-repository</id>
-               <name>JBoss Snapshots Repository</name>
-               <url>${jboss.snapshots.repo.url}</url>
-            </snapshotRepository>
-         </distributionManagement>
-      </profile>
-      <!-- OSSRH release repository - selected by default -->
-      <profile>
-         <id>ossrh-release-repo</id>
-         <activation>
-            <activeByDefault>false</activeByDefault>
-            <property>
-               <name>!jboss-release-repo</name>
-            </property>
-         </activation>
-         <distributionManagement>
-            <snapshotRepository>
-               <id>sonatype-nexus-snapshots</id>
-               <name>Sonatype Nexus Snapshots</name>
-               <url>${ossrh.snapshots.repo.url}</url>
-            </snapshotRepository>
-            <repository>
-               <id>sonatype-nexus-staging</id>
-               <name>Nexus Release Repository</name>
-               <url>${ossrh.releases.repo.url}</url>
-            </repository>
-         </distributionManagement>
-      </profile>
+        <profile>
+            <!-- Repeated release config from Weld Parent because we intentionally avoid declaring it as BOM's parent -->
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${gpg.plugin.version}</version>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                            <!-- This is true by default -->
+                            <useAgent>${gpg.useAgent}</useAgent>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus.staging.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <serverId>sonatype-nexus-staging</serverId>
+                            <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
+                            <!-- Automatically releases staging repo, no manual action needed -->
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- JBoss release repository -->
+        <profile>
+            <id>jboss-release-repo</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>jboss-release-repo</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>jboss-releases-repository</id>
+                    <name>JBoss Releases Repository</name>
+                    <url>${jboss.releases.repo.url}</url>
+                </repository>
+                <snapshotRepository>
+                    <id>jboss-snapshots-repository</id>
+                    <name>JBoss Snapshots Repository</name>
+                    <url>${jboss.snapshots.repo.url}</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <!-- OSSRH release repository - selected by default -->
+        <profile>
+            <id>ossrh-release-repo</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!jboss-release-repo</name>
+                </property>
+            </activation>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>sonatype-nexus-snapshots</id>
+                    <name>Sonatype Nexus Snapshots</name>
+                    <url>${ossrh.snapshots.repo.url}</url>
+                </snapshotRepository>
+                <repository>
+                    <id>sonatype-nexus-staging</id>
+                    <name>Nexus Release Repository</name>
+                    <url>${ossrh.releases.repo.url}</url>
+                </repository>
+            </distributionManagement>
+        </profile>
    </profiles>
 
 </project>
