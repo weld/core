@@ -106,7 +106,7 @@
 
         <!-- Maven plugin versions -->
         <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
-        <maven.failsafe.plugin.version>3.3.1</maven.failsafe.plugin.version>
+        <maven.failsafe.plugin.version>3.5.0</maven.failsafe.plugin.version>
     </properties>
 
     <dependencyManagement>
