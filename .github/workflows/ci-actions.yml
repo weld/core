@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: 11
           distribution: 'temurin'
@@ -35,7 +35,7 @@ jobs:
         shell: bash
       - name: Cache Maven Repository
         id: cache-maven
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           # Caching is an automated pre/post action that installs the cache if the key exists and exports the cache
@@ -54,7 +54,7 @@ jobs:
           zip -r wildfly.zip wildfly
           cd ..
       - name: Persist WildFly
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wildfly-patched-zip
           path: container/wildfly.zip
@@ -62,7 +62,7 @@ jobs:
         shell: bash
         run: tar -czf maven-repo.tgz -C ~ .m2/repository
       - name: Persist Maven Repo
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: maven-repo
           path: maven-repo.tgz
@@ -94,12 +94,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -107,7 +107,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: wildfly-patched-zip
           path: .
@@ -125,13 +125,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-incontainer-jdk${{matrix.java.name}}
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-incontainer-jdk${{matrix.java.name}}
@@ -161,12 +161,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -174,7 +174,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: wildfly-patched-zip
           path: .
@@ -192,13 +192,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-jdk${{matrix.java.name}}
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-cdi-tck-jdk${{matrix.java.name}}
@@ -220,12 +220,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -233,7 +233,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: wildfly-patched-zip
           path: .
@@ -251,13 +251,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-jdk${{matrix.java.name}}-incontainer-relaxed
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-cdi-tck-jdk${{matrix.java.name}}
@@ -270,7 +270,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-jdk${{matrix.java.name}}-relaxed
@@ -300,12 +300,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -320,7 +320,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-no-container-jdk${{matrix.java.name}}
@@ -335,12 +335,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 11
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: 11
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -348,7 +348,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: wildfly-patched-zip
           path: .
@@ -366,13 +366,13 @@ jobs:
           find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
           find . -name 'server.log' -type f | tar -czf server-log.tgz -T -
       - name: Upload failed tests artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-examples
           path: 'test-reports.tgz'
       - name: Upload server log artifact (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: server-log-examples
@@ -402,12 +402,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java.name }}
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -422,7 +422,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-cdi-tck-se-jdk${{matrix.java.name}}
@@ -437,12 +437,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 11
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: 11
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -457,7 +457,7 @@ jobs:
         shell: bash
         run: find . -name '*-reports' -type d | tar -czf test-reports.tgz -T -
       - name: Upload failure Archive (if maven failed)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports-se-servlet-coop
