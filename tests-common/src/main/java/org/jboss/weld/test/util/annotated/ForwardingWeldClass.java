@@ -65,7 +65,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
         return delegate().getEnhancedConstructors();
     }
 
-    public Collection<EnhancedAnnotatedField<?, ?>> getEnhancedFields(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedField<?, ? super T>> getEnhancedFields(Class<? extends Annotation> annotationType) {
         return delegate().getEnhancedFields(annotationType);
     }
 

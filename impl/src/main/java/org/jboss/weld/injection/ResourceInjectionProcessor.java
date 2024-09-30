@@ -90,8 +90,7 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
         }
 
         Class<? extends Annotation> marker = getMarkerAnnotation(processorContext);
-
-        final Collection<EnhancedAnnotatedField<?, ? super T>> fields = type.getDeclaredEnhancedFields(marker);
+        final Collection<EnhancedAnnotatedField<?, ? super T>> fields = type.getEnhancedFields(marker);
         final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods = type.getDeclaredEnhancedMethods(marker);
 
         return createResourceInjections(fields, methods, declaringBean, type.getJavaClass(), manager);

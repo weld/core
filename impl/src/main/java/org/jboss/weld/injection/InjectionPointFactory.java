@@ -189,13 +189,14 @@ public class InjectionPointFactory {
     /*
      * Utility methods for field InjectionPoints
      */
-    public List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type,
+    public <T> List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean,
+            EnhancedAnnotatedType<T> type,
             BeanManagerImpl manager) {
         List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
 
         if (type.slim() instanceof UnbackedAnnotatedType<?>) {
             // external AnnotatedTypes require special treatment
-            Collection<EnhancedAnnotatedField<?, ?>> allFields = type.getEnhancedFields(Inject.class);
+            Collection<EnhancedAnnotatedField<?, ? super T>> allFields = type.getEnhancedFields(Inject.class);
 
             for (Class<?> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
                 ImmutableSet.Builder<FieldInjectionPoint<?, ?>> fields = ImmutableSet.builder();

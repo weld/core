@@ -69,7 +69,7 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
      * @return A set of abstracted fields with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    Collection<EnhancedAnnotatedField<?, ?>> getEnhancedFields(Class<? extends Annotation> annotationType);
+    Collection<EnhancedAnnotatedField<?, ? super T>> getEnhancedFields(Class<? extends Annotation> annotationType);
 
     /**
      * Gets all fields declared on this class only.

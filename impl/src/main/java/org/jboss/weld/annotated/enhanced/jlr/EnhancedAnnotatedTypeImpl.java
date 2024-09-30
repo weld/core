@@ -95,7 +95,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     // The set of abstracted fields
     private final Set<EnhancedAnnotatedField<?, ? super T>> fields;
     // The map from annotation type to abstracted field with annotation
-    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>> annotatedFields;
+    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ? super T>> annotatedFields;
 
     // The set of abstracted fields
     private final Set<EnhancedAnnotatedField<?, ? super T>> declaredFields;
@@ -189,7 +189,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             }
             this.declaredFields = new HashSet<EnhancedAnnotatedField<?, ? super T>>(declaredFieldsTemp);
         } else {
-            Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>> annotatedFields = new ListMultimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ?>>();
+            Multimap<Class<? extends Annotation>, EnhancedAnnotatedField<?, ? super T>> annotatedFields = new ListMultimap<>();
             fieldsTemp = new HashSet<EnhancedAnnotatedField<?, ? super T>>();
             for (AnnotatedField<? super T> annotatedField : annotatedType.getFields()) {
                 EnhancedAnnotatedField<?, ? super T> weldField = EnhancedAnnotatedFieldImpl.of(annotatedField, this,
@@ -443,10 +443,10 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
      * @return A set of matching abstracted fields, null if none are found.
      */
     @Override
-    public Collection<EnhancedAnnotatedField<?, ?>> getEnhancedFields(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedField<?, ? super T>> getEnhancedFields(Class<? extends Annotation> annotationType) {
         if (annotatedFields == null) {
             // Build collection from class hierarchy
-            ArrayList<EnhancedAnnotatedField<?, ?>> aggregatedFields = new ArrayList<EnhancedAnnotatedField<?, ?>>(
+            ArrayList<EnhancedAnnotatedField<?, ? super T>> aggregatedFields = new ArrayList<>(
                     this.declaredAnnotatedFields.get(annotationType));
             if ((superclass != null) && (superclass.getJavaClass() != Object.class)) {
                 aggregatedFields.addAll(superclass.getEnhancedFields(annotationType));
