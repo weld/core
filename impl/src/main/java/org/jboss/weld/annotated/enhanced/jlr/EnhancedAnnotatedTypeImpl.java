@@ -34,7 +34,6 @@ import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
-import jakarta.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
@@ -45,8 +44,6 @@ import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
-import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.ListMultimap;
@@ -70,17 +67,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Ales Justin
  */
 public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, Class<T>> implements EnhancedAnnotatedType<T> {
-
-    private static final Set<Class<? extends Annotation>> MAPPED_METHOD_ANNOTATIONS;
-
-    static {
-        Set<Class<? extends Annotation>> annotations = new HashSet<Class<? extends Annotation>>();
-        for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
-            annotations.add(InterceptionTypeRegistry.getAnnotationClass(interceptionType));
-        }
-        annotations.add(Inject.class);
-        MAPPED_METHOD_ANNOTATIONS = ImmutableSet.copyOf(annotations);
-    }
 
     @SuppressFBWarnings("unchecked")
     private static final Set<Class<? extends Annotation>> MAPPED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Observes.class,
@@ -158,7 +144,14 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 this.superclass = classTransformer.getEnhancedAnnotatedType(superclass, slim.getIdentifier().getBdaId());
             }
         } else {
-            this.superclass = classTransformer.getEnhancedAnnotatedType(Object.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+            EnhancedAnnotatedType<? super T> superclassAt;
+            Class<? super T> superclass = annotatedType.getJavaClass().getSuperclass();
+            if (superclass == null) {
+                superclassAt = classTransformer.getEnhancedAnnotatedType(Object.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+            } else {
+                superclassAt = classTransformer.getEnhancedAnnotatedType(superclass, slim.getIdentifier().getBdaId());
+            }
+            this.superclass = superclassAt;
         }
 
         // Assign class field information
@@ -345,10 +338,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
         Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = SetMultimap.newSetMultimap();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
-            for (Class<? extends Annotation> annotation : MAPPED_METHOD_ANNOTATIONS) {
-                if (method.isAnnotationPresent(annotation)) {
-                    result.put(annotation, method);
-                }
+            for (Annotation ann : method.getAnnotations()) {
+                result.put(ann.annotationType(), method);
             }
         }
         return Multimaps.unmodifiableMultimap(result);
@@ -490,8 +481,6 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     /**
      * Gets the abstracted methods that have a certain annotation type present
-     * <p/>
-     * If the annotated methods map is null, initialize it first
      *
      * @param annotationType The annotation type to match
      * @return A set of matching method abstractions. Returns an empty set if no
