@@ -195,6 +195,13 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
 
     boolean isAnonymousClass();
 
+    /**
+     * Indicates if this {@code EnhancedAnnotatedType} represents a sealed class/interface
+     *
+     * @return True if sealed, false otherwise
+     */
+    boolean isSealed();
+
     boolean isSerializable();
 
     boolean isDiscovered();
