@@ -240,6 +240,8 @@ public class Proxies {
             return ValidatorLogger.LOG.notProxyableArrayType(clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Reflections.isFinal(clazz)) {
             return ValidatorLogger.LOG.notProxyableFinalType(clazz, getDeclaringBeanInfo(declaringBean));
+        } else if (clazz.isSealed()) {
+            return ValidatorLogger.LOG.notProxyableSealedType(clazz, getDeclaringBeanInfo(declaringBean));
         } else {
             Method finalMethod = Reflections.getNonPrivateNonStaticFinalMethod(clazz);
             if (finalMethod != null) {

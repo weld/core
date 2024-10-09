@@ -115,6 +115,10 @@ public class InterceptionModelInitializer<T> {
             if (annotatedType.isFinal()) {
                 throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(annotatedType.getJavaClass());
             }
+            if (annotatedType.isSealed()) {
+                throw new DeploymentException(
+                        ValidatorLogger.LOG.notProxyableSealedType(annotatedType.getJavaClass(), annotatedType));
+            }
             if (constructor != null && Reflections.isPrivate(constructor.getJavaMember())) {
                 throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(
                         annotatedType.getJavaClass().getName(), constructor, annotatedType.getJavaClass()));

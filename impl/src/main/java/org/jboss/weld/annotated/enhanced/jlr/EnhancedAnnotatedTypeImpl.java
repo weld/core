@@ -469,6 +469,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
+    public boolean isSealed() {
+        return getJavaClass().isSealed();
+    }
+
+    @Override
     public boolean isMemberClass() {
         return getJavaClass().isMemberClass();
     }

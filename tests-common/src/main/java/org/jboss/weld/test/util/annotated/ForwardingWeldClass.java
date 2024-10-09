@@ -124,6 +124,10 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
         return delegate().isAnonymousClass();
     }
 
+    public boolean isSealed() {
+        return delegate().isSealed();
+    }
+
     @Override
     public boolean isParameterizedType() {
         return delegate().isParameterizedType();

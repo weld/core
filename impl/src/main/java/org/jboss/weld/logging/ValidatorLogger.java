@@ -316,4 +316,7 @@ public interface ValidatorLogger extends WeldLogger {
 
     @Message(id = 1489, value = "Argument lookup configured for target bean {0} and parameter {2} of target method {1} is ambiguous", format = Format.MESSAGE_FORMAT)
     DeploymentException invokerAmbiguousArgumentLookup(Class<?> beanClass, Method method, int position);
+
+    @Message(id = 1490, value = "Bean type {0} is not proxyable because it is sealed - {1}.", format = Format.MESSAGE_FORMAT)
+    UnproxyableResolutionException notProxyableSealedType(Object param1, Object param2);
 }
