@@ -93,6 +93,7 @@
                             org.jboss.weld.module.*;
                             org.jboss.weld.security;
                             org.jboss.weld.util;
+                            org.jboss.weld.util.reflection;
                             org.jboss.weld.xml;
 
                             version=${osgi.version}
