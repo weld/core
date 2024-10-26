@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -173,7 +174,10 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
     private void loadServiceFile(URL serviceFile) {
         InputStream is = null;
         try {
-            is = serviceFile.openStream();
+            URLConnection jarConnection = serviceFile.openConnection();
+            //Don't cache the file (avoids file leaks on GlassFish).
+            jarConnection.setUseCaches(false);
+            is = jarConnection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             String serviceClassName = null;
             int i = 0;
