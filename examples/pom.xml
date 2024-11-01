@@ -99,7 +99,7 @@
 
     <properties>
         <servlet.api.version>6.1.0</servlet.api.version>
-        <jsf.api.version>4.1.0</jsf.api.version>
+        <jsf.api.version>4.1.1</jsf.api.version>
         <uel.version>5.0.0-M1</uel.version>
 
         <wildfly.plugin.version>5.0.0.Final</wildfly.plugin.version>
