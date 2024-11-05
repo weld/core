@@ -175,7 +175,8 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
         InputStream is = null;
         try {
             URLConnection jarConnection = serviceFile.openConnection();
-            //Don't cache the file (avoids file leaks on GlassFish).
+            //Don't cache the file; in combination with Windows OS, this can cause file leaks on some EE servers (GlassFish)
+            // See WELD-2800 for more details
             jarConnection.setUseCaches(false);
             is = jarConnection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
