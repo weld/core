@@ -8,7 +8,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-jboss-runner-tck</artifactId>
-    <name>CDI TCK runner (4.0) for Weld (WildFly)</name>
+    <name>CDI TCK runner (4.1) for Weld (WildFly)</name>
     <description>Aggregates dependencies and runs the CDI TCK (both standalone and on WildFly)</description>
 
     <licenses>
@@ -173,7 +173,10 @@
                         </property>
                     </properties>
                     <dependenciesToScan>
+                        <!-- Jakarta CDI spec TCK part -->
                         <dependency>jakarta.enterprise:cdi-tck-core-impl</dependency>
+                        <!-- Jakarta Platform TCK bits -->
+                        <dependency>jakarta.tck:cdi-tck-ee-impl</dependency>
                     </dependenciesToScan>
                 </configuration>
             </plugin>
@@ -231,7 +234,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
-                    <name>!tck12</name>
+                    <name>!skipCopyTestSuites</name>
                 </property>
             </activation>
             <build>
@@ -258,6 +261,15 @@
                                     <classifier>suite</classifier>
                                     <overWrite>false</overWrite>
                                     <destFileName>tck-core-suite.xml</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>jakarta.tck</groupId>
+                                    <artifactId>cdi-tck-ee-impl</artifactId>
+                                    <version>${platform.tck-4-1.version}</version>
+                                    <type>xml</type>
+                                    <classifier>suite</classifier>
+                                    <overWrite>false</overWrite>
+                                    <destFileName>tck-web-suite.xml</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>target/suites</outputDirectory>
@@ -356,10 +368,26 @@
             </activation>
             <properties>
                 <excluded.groups>se</excluded.groups>
-                <!-- Note that this is the CDI CORE exclude list; it doesn't include TCKs living in EE platform suite -->
-                <cdi.tck.suite.xml.file>target/suites/tck-core-suite.xml</cdi.tck.suite.xml.file>
+                <!-- This is an exlude list taken from EE Platform TCK repo -->
+                <!-- Note that we run those tests combined with TCKs from CDI repo that do have their own file -->
+                <!-- In case the Platform TCK isn't a superset of the CDI TCK, we will need to adjust this -->
+                <cdi.tck.suite.xml.file>target/suites/tck-web-suite.xml</cdi.tck.suite.xml.file>
             </properties>
             <dependencies>
+                <dependency>
+                    <groupId>jakarta.tck</groupId>
+                    <artifactId>cdi-tck-ee-impl</artifactId>
+                    <version>${platform.tck-4-1.version}</version>
+                    <type>xml</type>
+                    <classifier>suite</classifier>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.tck</groupId>
+                    <artifactId>cdi-tck-ee-impl</artifactId>
+                    <version>${platform.tck-4-1.version}</version>
+                    <scope>test</scope>
+                </dependency>
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
