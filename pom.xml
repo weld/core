@@ -28,8 +28,6 @@
         <jdk.min.version>11</jdk.min.version>
 
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
-        <!-- Travis CI build workaround -->
-        <travis.surefire.argLine>-Xmx1024m</travis.surefire.argLine>
 
         <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
         <surefire.plugin.jdk17.args />
