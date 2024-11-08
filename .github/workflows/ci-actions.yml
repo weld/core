@@ -243,7 +243,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests.xml -Dadditional.vm.args="-Dorg.jboss.weld.construction.relaxed=true" -f jboss-tck-runner/pom.xml
+          mvn clean verify -Dincontainer -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests-web.xml -Dadditional.vm.args="-Dorg.jboss.weld.construction.relaxed=true" -f jboss-tck-runner/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash

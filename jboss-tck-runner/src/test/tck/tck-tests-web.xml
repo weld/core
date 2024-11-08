@@ -30,7 +30,21 @@
             <!-- Issues in the spec -->
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-597; test is only part of web profile of TCK and excluded there as well -->
+            <!-- https://github.com/jakartaee/cdi-tck/issues/440 -->
+            <class name="org.jboss.cdi.tck.tests.full.extensions.lifecycle.processBeanAttributes.specialization.VetoTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
+            <!-- CDITCK-587 -->
+            <class name="org.jboss.cdi.tck.tests.event.observer.transactional.roolback.TransactionalObserverRollbackTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
+            <!-- CDITCK-597 -->
             <class name="org.jboss.cdi.tck.tests.deployment.packaging.ejb.EJBJarDeploymentTest">
                 <methods>
                     <exclude name=".*"/>
