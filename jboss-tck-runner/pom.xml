@@ -163,9 +163,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
-                    <!-- http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4425695 -->
-                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true</argLine>
-                    <forkMode>once</forkMode>
                     <properties>
                         <property>
                             <name>usedefaultlisteners</name>
@@ -344,8 +341,6 @@
                                     available during in-container test execution -->
                                 <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
                                 <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
-                                <!-- Travis CI build workaround -->
-                                <argLine>${travis.surefire.argLine}</argLine>
                             </systemPropertyVariables>
                             <suiteXmlFiles>
                                 <suiteXmlFile>${cdi.tck.suite.xml.file}</suiteXmlFile>
@@ -404,12 +399,6 @@
                         <exclusion>
                             <groupId>org.jboss.logmanager</groupId>
                             <artifactId>log4j-jboss-logmanager</artifactId>
-                        </exclusion>
-                        <!-- Needs to be excluded, otherwise needs an extra dependency on org.slf4j:slf4j-api -->
-                        <!-- Future versions of wildfly-arquillian-container-managed will no longer need this exclusion, see https://issues.redhat.com/browse/WFARQ-119 -->
-                        <exclusion>
-                            <groupId>org.slf4j</groupId>
-                            <artifactId>jcl-over-slf4j</artifactId>
                         </exclusion>
                     </exclusions>
                 </dependency>
