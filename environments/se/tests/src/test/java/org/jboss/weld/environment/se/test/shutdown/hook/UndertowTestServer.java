@@ -16,10 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.shutdown.hook;
 
-import java.net.BindException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -49,15 +46,9 @@ class UndertowTestServer {
         }
         try {
             INSTANCE.server.start();
-        } catch (Exception e) {
-            // we might have started the server too early, it's stop() action was still in progress, wait a bit and retry
-            // this was happening with JDK 11 in Jenkins only
-            if (ExceptionUtils.indexOfType(e, BindException.class) != -1) {
-                Thread.sleep(2000l);
-                INSTANCE.server.start();
-            }
-        } finally {
             STARTED.set(true);
+        } catch (Exception e) {
+            throw new IllegalStateException("There was an error starting Undertow server.", e);
         }
     }
 
