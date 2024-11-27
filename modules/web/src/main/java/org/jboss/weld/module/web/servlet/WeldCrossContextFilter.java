@@ -35,9 +35,11 @@ import jakarta.servlet.ServletResponse;
  *   </filter-mapping>
  * </pre>
  *
+ * @deprecated this class is deprecated and will be removed in Weld 6
  *
  * @author <a href="mailto:mstrukel@redhat.com">Marko Strukelj</a>
  */
+@Deprecated(forRemoval = true)
 public class WeldCrossContextFilter implements Filter {
     private static final String REQUEST_CONTEXT_KEY = "org.jboss.weld.context.http.HttpRequestContextImpl";
     private volatile WeldInitialListener listener;
