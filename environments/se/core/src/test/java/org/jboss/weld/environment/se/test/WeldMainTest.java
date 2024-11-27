@@ -43,7 +43,7 @@ public class WeldMainTest {
         Weld weld = new Weld();
         WeldContainer container = weld.initialize();
 
-        MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
+        MainTestBean mainTestBean = container.select(MainTestBean.class).get();
         assertNotNull(mainTestBean);
 
         ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();

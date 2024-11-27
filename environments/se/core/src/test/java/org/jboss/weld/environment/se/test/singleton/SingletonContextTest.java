@@ -33,7 +33,7 @@ public class SingletonContextTest {
     public void testSingletonBeanLifecycle() {
         Weld weld = new Weld();
         WeldContainer container = weld.initialize();
-        assertEquals("bar", container.instance().select(Translator.class).get().translate("hello"));
+        assertEquals("bar", container.select().select(Translator.class).get().translate("hello"));
         assertTrue(Translator.isInitCallbackInvoked);
         assertTrue(Dictionary.isInitCallbackInvoked);
         weld.shutdown();

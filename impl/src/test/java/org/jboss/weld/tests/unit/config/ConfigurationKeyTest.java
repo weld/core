@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.jboss.weld.config.ConfigurationKey;
 import org.junit.Test;
@@ -62,16 +61,6 @@ public class ConfigurationKeyTest {
     public void testIsValidValueType() {
         assertFalse(ConfigurationKey.CONCURRENT_DEPLOYMENT.isValidValueType(Integer.class));
         assertTrue(ConfigurationKey.CONCURRENT_DEPLOYMENT.isValidValueType(Boolean.class));
-    }
-
-    @Test
-    public void testAllowRemoteAddressDefaultValue() {
-        Pattern allowRemoteAddress = Pattern.compile(ConfigurationKey.PROBE_ALLOW_REMOTE_ADDRESS.getDefaultValue().toString());
-        assertTrue(allowRemoteAddress.matcher("127.0.0.1").matches());
-        assertTrue(allowRemoteAddress.matcher("::1").matches());
-        assertTrue(allowRemoteAddress.matcher("::1%0").matches());
-        assertTrue(allowRemoteAddress.matcher("0:0:0:0:0:0:0:1").matches());
-        assertTrue(allowRemoteAddress.matcher("0:0:0:0:0:0:0:1%eth0").matches());
     }
 
 }

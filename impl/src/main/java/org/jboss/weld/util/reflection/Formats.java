@@ -128,7 +128,6 @@ public class Formats {
      * means of reflection calls.
      *
      * @param member
-     * @param resourceLoader
      * @return the line number or 0 if it's not possible to find it
      */
     public static int getLineNumber(Member member) {
@@ -512,10 +511,9 @@ public class Formats {
 
     /**
      *
-     * @param pkg This param is completely ignored
      * @return the formatted version
      */
-    public static String version(@Deprecated Package pkg) {
+    public static String version() {
         String version = null;
         String timestamp = null;
         // First try the weld-build.properties file

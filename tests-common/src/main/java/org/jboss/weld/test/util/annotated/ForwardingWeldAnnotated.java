@@ -42,14 +42,8 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated 
         return delegate().getMetaAnnotations(metaAnnotationType);
     }
 
-    @Deprecated
     public Set<Annotation> getQualifiers() {
         return delegate().getQualifiers();
-    }
-
-    @Deprecated
-    public Annotation[] getBindingsAsArray() {
-        return delegate().getBindingsAsArray();
     }
 
     public String getName() {

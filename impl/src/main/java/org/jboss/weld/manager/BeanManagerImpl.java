@@ -750,21 +750,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * The name of this method was misleading, use {@link #getInjectableReference(InjectionPoint, Bean, CreationalContext)}
-     * instead.
-     *
-     * @param injectionPoint
-     * @param resolvedBean
-     * @param creationalContext
-     * @return the injectable reference
-     * @deprecated Use {@link #getInjectableReference(InjectionPoint, Bean, CreationalContext)} instead
-     */
-    @Deprecated
-    public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
-        return getInjectableReference(injectionPoint, resolvedBean, creationalContext);
-    }
-
-    /**
      * Get a reference, registering the injection point used.
      *
      * @param injectionPoint the injection point to register

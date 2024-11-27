@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -249,12 +251,16 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     }
 
     /**
-     * Provides access to all beans within the application. Retained for backward compatibility - WeldContainer implements
-     * {@linkjakarta.enterprise.inject.Instance}.
+     * Deprecated - {@code WeldContainer} implements {@linkjakarta.enterprise.inject.Instance} and applications can
+     * therefore directly perform programmatic lookup from this object.
+     * See {@link #select(Type, Annotation...)} and other methods.
+     * <p>
+     * Provides access to all beans within the application.
      *
      * @return the instance
      * @deprecated Applications are encouraged to use methods for programmatic lookup directly.
      */
+    @Deprecated(forRemoval = true)
     public Instance<Object> instance() {
         checkState();
         return getInstance();

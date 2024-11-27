@@ -17,7 +17,6 @@
 package org.jboss.weld.annotated.enhanced.jlr;
 
 import static org.jboss.weld.util.collections.WeldCollections.immutableMapView;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -225,7 +224,6 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         return ImmutableSet.copyOf(metaAnnotationMap.get(metaAnnotationType));
     }
 
-    @Deprecated
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = getMetaAnnotations(Qualifier.class);
         if (qualifiers.size() > 0) {
@@ -233,11 +231,6 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         } else {
             return DEFAULT_QUALIFIERS;
         }
-    }
-
-    @Deprecated
-    public Annotation[] getBindingsAsArray() {
-        return getQualifiers().toArray(EMPTY_ANNOTATIONS);
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.annotated.enhanced;
 
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -30,8 +32,7 @@ import jakarta.interceptor.InterceptorBinding;
 import org.jboss.weld.util.collections.Arrays2;
 
 /**
- * AnnotatedItem provides a uniform access to the annotations on an annotated
- * item defined either in Java or XML
+ * AnnotatedItem provides uniform access to the annotations on an annotated item defined either in Java or XML
  *
  * @author Pete Muir
  */
@@ -61,25 +62,27 @@ public interface EnhancedAnnotated<T, S> extends Annotated {
 
     /**
      * Gets the binding types for this element
+     * <p>
+     * This reflection type should not know about CDI qualifiers.
+     * However, it is very convenient, so we keep it here.
      *
      * @returns A set of binding types present on the type. Returns an empty set
      *          if there are no matches.
-     * @deprecated This reflection type should not know about JSR-299 binding
-     *             types
      */
-    @Deprecated
     Set<Annotation> getQualifiers();
 
     /**
      * Gets the binding types for this element
+     * <p>
+     * This reflection type should not know about CDI qualifiers.
+     * However, it is very convenient, so we keep it here.
      *
      * @returns An array of binding types present on the type. Returns an empty
      *          array if there are no matches.
-     * @deprecated This reflection type should not know about JSR-299 binding
-     *             types
      */
-    @Deprecated
-    Annotation[] getBindingsAsArray();
+    default Annotation[] getBindingsAsArray() {
+        return getQualifiers().toArray(EMPTY_ANNOTATIONS);
+    }
 
     /**
      * Get the type hierarchy of any interfaces implemented by this class.

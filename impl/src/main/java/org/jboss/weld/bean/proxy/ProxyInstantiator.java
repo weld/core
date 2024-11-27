@@ -131,8 +131,7 @@ public interface ProxyInstantiator extends Service {
                     result = DefaultProxyInstantiator.INSTANCE;
                 }
             } else {
-                result = create(configuration.getBooleanProperty(ConfigurationKey.RELAXED_CONSTRUCTION)
-                        || configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE));
+                result = create(configuration.getBooleanProperty(ConfigurationKey.RELAXED_CONSTRUCTION));
             }
             BootstrapLogger.LOG.debugv("Using instantiator: {0}", result.getClass().getName());
             return result;
