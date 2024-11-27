@@ -40,7 +40,7 @@ public class ContainerIsolationTest {
 
         Weld weld2 = new Weld("2");
         WeldContainer weldContainer2 = weld2.initialize();
-        Foo foo2 = weldContainer2.instance().select(Foo.class).get();
+        Foo foo2 = weldContainer2.select(Foo.class).get();
 
         foo1.setValue(1);
         foo2.setValue(2);

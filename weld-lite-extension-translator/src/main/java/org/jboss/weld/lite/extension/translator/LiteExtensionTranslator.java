@@ -44,9 +44,10 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
     }
 
     /**
-     * Deprecated, use {@link LiteExtensionTranslator#LiteExtensionTranslator(Collection, ClassLoader)}
+     * Deprecated, use {@link LiteExtensionTranslator#LiteExtensionTranslator(Collection, ClassLoader)}.
+     * This method will be removed in future versions.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public LiteExtensionTranslator(List<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions, ClassLoader cl) {
         this((Collection<Class<? extends BuildCompatibleExtension>>) buildCompatibleExtensions, cl);
     }

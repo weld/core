@@ -37,7 +37,7 @@ public class PostConstructInheritanceTest {
 
             Plant.postConstructCalled = false;
             WeldContainer weldContainer = weld.initialize();
-            weldContainer.instance().select(Tree.class).get();
+            weldContainer.select(Tree.class).get();
             assertTrue(Plant.postConstructCalled);
 
         } finally {

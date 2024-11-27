@@ -118,8 +118,7 @@ public enum ConfigurationKey {
 
     /**
      * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the
-     * container, using non-portable
-     * JVM APIs.
+     * container, using non-portable JVM APIs.
      */
     @Description("Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the container, using non-portable JVM APIs.")
     RELAXED_CONSTRUCTION("org.jboss.weld.construction.relaxed", false),
@@ -129,16 +128,6 @@ public enum ConfigurationKey {
      * be set by an application.
      */
     PROXY_INSTANTIATOR("org.jboss.weld.proxy.instantiator", ""),
-
-    /**
-     * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the
-     * container, using non-portable
-     * JVM APIs.
-     *
-     * @deprecated this option is deprecated. RELAXED_CONSTRUCTION should be used instead
-     */
-    @Description("This option is deprecated - <code>org.jboss.weld.construction.relaxed</code> should be used instead.")
-    PROXY_UNSAFE("org.jboss.weld.proxy.unsafe", false),
 
     /**
      * XML descriptor validation is enabled by default.
@@ -155,30 +144,6 @@ public enum ConfigurationKey {
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
 
     /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.invocationMonitor.excludeType", ""),
-
-    /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES("org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties", true),
-
-    /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_EVENT_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.eventMonitor.excludeType", ""),
-
-    /**
      * This optimization is used to reduce the HTTP session replication overhead. However, the inconsistency detection mechanism
      * may cause problems in some
      * development environments.
@@ -187,45 +152,12 @@ public enum ConfigurationKey {
     BEAN_IDENTIFIER_INDEX_OPTIMIZATION("org.jboss.weld.serialization.beanIdentifierIndexOptimization", true),
 
     /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_EMBED_INFO_SNIPPET("org.jboss.weld.probe.embedInfoSnippet", true),
-
-    /**
      * If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g.
      * attributes of an HTTP session for a
      * session context).
      */
     @Description("If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a session context).")
     CONTEXT_ATTRIBUTES_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
-
-    /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_JMX_SUPPORT("org.jboss.weld.probe.jmxSupport", false),
-
-    /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_EVENT_MONITOR_CONTAINER_LIFECYCLE_EVENTS("org.jboss.weld.probe.eventMonitor.containerLifecycleEvents", false),
-
-    /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_ALLOW_REMOTE_ADDRESS("org.jboss.weld.probe.allowRemoteAddress",
-            "127.0.0.1|::1|::1%.+|0:0:0:0:0:0:0:1|0:0:0:0:0:0:0:1%.+"),
 
     /**
      * Weld supports a non-standard workaround to be able to create proxies for Java types which declare non-private non-static
@@ -283,14 +215,6 @@ public enum ConfigurationKey {
      */
     @Description("A regular expression. If a non-empty string, then all annotated types whose <code>jakarta.enterprise.inject.spi.AnnotatedType#getJavaClass().getName()</code> matches this pattern are vetoed if not annotated with a bean defining annotation.")
     VETO_TYPES_WITHOUT_BEAN_DEFINING_ANNOTATION("org.jboss.weld.bootstrap.vetoTypesWithoutBeanDefiningAnnotation", ""),
-
-    /**
-     * This option is deprecated and has no function since Weld 5.1.0.Final.
-     * It will be removed in upcoming versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    @Description("This option is deprecated and has no function since Weld 5.1.0.Final.")
-    PROBE_EXPORT_DATA_AFTER_DEPLOYMENT("org.jboss.weld.probe.exportDataAfterDeployment", ""),
 
     /**
      * If set to <code>true</code>:

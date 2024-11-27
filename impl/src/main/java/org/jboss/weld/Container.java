@@ -172,14 +172,6 @@ public class Container {
         return managers.get(key);
     }
 
-    /**
-     * @deprecated Use {@link #getBeanManager(String)} instead
-     */
-    @Deprecated
-    public BeanManagerImpl activityManager(String key) {
-        return getBeanManager(key);
-    }
-
     private String addBeanManager(BeanManagerImpl manager) {
         String id = manager.getId();
         if (manager.getId() == null) {

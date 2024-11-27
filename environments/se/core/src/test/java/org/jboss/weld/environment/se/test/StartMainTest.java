@@ -53,7 +53,7 @@ public class StartMainTest {
 
         assertEquals(container.getId(), RegistrySingletonProvider.STATIC_INSTANCE);
 
-        MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
+        MainTestBean mainTestBean = container.select(MainTestBean.class).get();
         assertNotNull(mainTestBean);
 
         ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();

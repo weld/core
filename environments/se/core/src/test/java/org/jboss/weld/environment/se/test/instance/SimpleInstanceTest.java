@@ -15,8 +15,8 @@ public class SimpleInstanceTest {
         Weld weld = new Weld();
         try {
             WeldContainer wc = weld.initialize();
-            Assert.assertNotNull(wc.instance().select(KPT.class).select(new KPQLiteral()).get());
-            Assert.assertNotNull(wc.instance().select(KPT.class, new KPQLiteral()).get());
+            Assert.assertNotNull(wc.select(KPT.class).select(new KPQLiteral()).get());
+            Assert.assertNotNull(wc.select().select(KPT.class, new KPQLiteral()).get());
         } finally {
             weld.shutdown();
         }

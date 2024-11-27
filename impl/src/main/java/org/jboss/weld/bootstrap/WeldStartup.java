@@ -146,7 +146,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public class WeldStartup {
 
     static {
-        VersionLogger.LOG.version(Formats.version(null));
+        VersionLogger.LOG.version(Formats.version());
     }
 
     private BeanManagerImpl deploymentManager;

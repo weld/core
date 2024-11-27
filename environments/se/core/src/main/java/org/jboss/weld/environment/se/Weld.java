@@ -197,13 +197,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
 
     /**
-     * Since Weld 5.1.0.Final, this property is deprecated and serves no purpose.
-     * It will be removed in future versions.
-     */
-    @Deprecated(since = "5.1.0.Final")
-    public static final String DEV_MODE_SYSTEM_PROPERTY = "org.jboss.weld.development";
-
-    /**
      * Standard behavior is that empty {@code beans.xml} is treated as discovery mode {@code annotated}.
      * This configuration property allows to change the behavior to discovery mode {@code all} which is how it used to work
      * prior to
@@ -947,18 +940,6 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
      */
     public Weld scanClasspathEntries() {
         return property(SCAN_CLASSPATH_ENTRIES_SYSTEM_PROPERTY, true);
-    }
-
-    /**
-     * Since Weld 5.1.0.Final, this method is deprecated and became no-op.
-     * It will be removed in future versions.
-     *
-     * @return self
-     * @see #DEV_MODE_SYSTEM_PROPERTY
-     */
-    @Deprecated(since = "5.1.0.Final")
-    public Weld enableDevMode() {
-        return property(DEV_MODE_SYSTEM_PROPERTY, true);
     }
 
     /**
