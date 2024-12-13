@@ -214,8 +214,8 @@ jobs:
       fail-fast: false
       matrix:
         java:
-          - { name: "11",
-              java-version: 11,
+          - { name: "21",
+              java-version: 21,
           }
     steps:
       - uses: actions/checkout@v4
