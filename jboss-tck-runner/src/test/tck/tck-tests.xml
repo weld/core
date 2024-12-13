@@ -29,6 +29,13 @@
 
             <!-- Issues in the TCK -->
 
+            <!-- https://github.com/jakartaee/cdi-tck/issues/485 -->
+            <class name="org.jboss.cdi.tck.tests.definition.bean.types.ManagedBeanTypesTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
