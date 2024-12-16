@@ -85,7 +85,7 @@
         <spotbugs-maven-plugin.version>4.8.6.5</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.8.6</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
-        <weld.api.version>6.0.CR1</weld.api.version>
+        <weld.api.version>6.0.Final</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
     </properties>
