@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -169,7 +170,7 @@ public class Beans {
             // note that a bridge method can be a candidate for interception in rare cases; do not discard those
             boolean businessMethod = !annotatedMethod.isStatic() && !annotatedMethod.isAnnotationPresent(Inject.class);
 
-            if (businessMethod && !isInterceptorMethod(annotatedMethod)) {
+            if (businessMethod && !isInterceptorMethod(annotatedMethod) && !isLambdaMethod(annotatedMethod)) {
                 annotatedMethods.add(annotatedMethod);
             }
         }
@@ -183,6 +184,14 @@ public class Beans {
             }
         }
         return false;
+    }
+
+    // Lambdas in classes will be compiled into methods declared on that given class.
+    // The exact representation differs between javac (standard compiler) and EJC (Eclipse compiler).
+    // We want to avoid attempting to intercept these methods - note that the detection is on a "best effort" basis.
+    private static boolean isLambdaMethod(AnnotatedMethod<?> annotatedMethod) {
+        Method javaMember = annotatedMethod.getJavaMember();
+        return !javaMember.isBridge() && javaMember.isSynthetic();
     }
 
     /**
