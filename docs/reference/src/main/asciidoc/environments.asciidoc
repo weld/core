@@ -285,7 +285,7 @@ available:
 * Managed beans with `@PostConstruct` and `@PreDestroy` lifecycle
 callbacks
 * Dependency injection with qualifiers and alternatives
-* `@Application`, `@Dependent` and `@Singleton` scopes
+* `@ApplicationScoped`, `@Dependent` and `@Singleton` scopes
 * Interceptors and decorators
 * Stereotypes
 * Events
