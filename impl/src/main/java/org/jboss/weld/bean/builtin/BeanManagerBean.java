@@ -22,6 +22,7 @@ import java.util.Set;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanContainer;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
@@ -30,7 +31,8 @@ import org.jboss.weld.util.collections.Arrays2;
 
 public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerProxy> {
 
-    private static final Set<Type> TYPES = Arrays2.<Type> asSet(Object.class, BeanContainer.class, BeanManager.class);
+    private static final Set<Type> TYPES = Arrays2.<Type> asSet(Object.class, BeanContainer.class, BeanManager.class,
+            ELAwareBeanManager.class);
 
     public BeanManagerBean(BeanManagerImpl manager) {
         super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(manager, BeanManager.class, null)), manager,
