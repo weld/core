@@ -1,4 +1,4 @@
 name: Weld Core release
 release:
-  current-version: 6.0.0.Final
-  next-version: 6.0.1-SNAPSHOT
+  current-version: 6.0.1.Final
+  next-version: 6.0.2-SNAPSHOT
