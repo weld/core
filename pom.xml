@@ -75,7 +75,7 @@
         <jboss.logging.version>3.6.1.Final</jboss.logging.version>
         <jboss.logging.processor.version>3.0.1.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>3.1.1.Final</jboss.logmanager.version>
-        <jsf.impl.version>4.1.1</jsf.impl.version>
+        <jsf.impl.version>4.1.2</jsf.impl.version>
         <jsp.api.version>4.0.0</jsp.api.version>
         <jstl.api.version>3.0.2</jstl.api.version>
         <junit.version>4.13.2</junit.version>
