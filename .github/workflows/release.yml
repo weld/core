@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Retrieve project metadata
       id: metadata
-      uses: radcortez/project-metadata-action@master
+      uses: radcortez/project-metadata-action@main
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         metadata-file-path: '.github/project.yml'
