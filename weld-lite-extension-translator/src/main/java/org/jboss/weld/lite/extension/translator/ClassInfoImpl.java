@@ -104,8 +104,7 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
 
     @Override
     public boolean isRecord() {
-        Class<?> superclass = reflection.getSuperclass();
-        return superclass != null && superclass.getName().equals("java.lang.Record");
+        return reflection.isRecord();
     }
 
     @Override
@@ -195,8 +194,9 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
     @Override
     public Collection<RecordComponentInfo> recordComponents() {
         if (isRecord()) {
-            // Records are not supported yet because base JDK version for lang model is 11
-            throw new UnsupportedOperationException("Records not yet supported");
+            return Arrays.stream(reflection.getRecordComponents())
+                    .map(it -> new RecordComponentInfoImpl(it, bm))
+                    .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
