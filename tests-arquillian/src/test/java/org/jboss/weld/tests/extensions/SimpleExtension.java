@@ -37,7 +37,7 @@ public class SimpleExtension implements Extension {
     public static boolean isObservedBeforeBeanDiscovery() {
         return observedBeforeBeanDiscovery;
     }
-    
+
     public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, ELAwareBeanManager beanManager) {
         assert beanManager != null;
         assert beanManager.getELResolver() != null;
