@@ -18,7 +18,7 @@ package org.jboss.weld.environment.servlet.jsf;
 
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
-import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationWrapper;
 import jakarta.faces.context.FacesContext;
@@ -49,7 +49,7 @@ public class WeldApplication extends ApplicationWrapper {
             delegate = new TransparentELResolver();
         }
 
-        public void beanManagerReady(BeanManager beanManager) {
+        public void beanManagerReady(ELAwareBeanManager beanManager) {
             this.delegate = beanManager.getELResolver();
         }
 
@@ -61,7 +61,7 @@ public class WeldApplication extends ApplicationWrapper {
 
     private LazyBeanManagerIntegrationELResolver elResolver;
     private ExpressionFactory expressionFactory;
-    private BeanManager beanManager;
+    private ELAwareBeanManager beanManager;
 
     public WeldApplication(Application application) {
         super(application);
@@ -72,7 +72,7 @@ public class WeldApplication extends ApplicationWrapper {
 
     private void init() {
         ExpressionFactory expressionFactory = this.expressionFactory;
-        BeanManager beanManager = null;
+        ELAwareBeanManager beanManager = null;
         if (expressionFactory == null && (expressionFactory = super.getExpressionFactory()) != null
                 && (beanManager = beanManager()) != null) {
             elResolver.beanManagerReady(beanManager);
@@ -90,7 +90,7 @@ public class WeldApplication extends ApplicationWrapper {
         }
     }
 
-    private BeanManager beanManager() {
+    private ELAwareBeanManager beanManager() {
         FacesContext facesContext;
         if (beanManager == null && (facesContext = FacesContext.getCurrentInstance()) != null) {
             Object obj = facesContext.getExternalContext().getContext();
@@ -98,7 +98,8 @@ public class WeldApplication extends ApplicationWrapper {
             try {
                 if (obj instanceof ServletContext) {
                     final ServletContext ctx = (ServletContext) obj;
-                    final BeanManager tmp = (BeanManager) ctx.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
+                    final ELAwareBeanManager tmp = (ELAwareBeanManager) ctx
+                            .getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
                     if (tmp == null) {
                         return null;
                     }

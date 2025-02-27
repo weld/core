@@ -22,14 +22,14 @@ import jakarta.annotation.Resource;
 import jakarta.ejb.Remove;
 import jakarta.ejb.Stateful;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
 
 @SuppressWarnings("serial")
 @Stateful
 @SessionScoped
 public class HelloBean implements IHelloBean, Serializable {
     @Resource(mappedName = "java:comp/BeanManager")
-    private BeanManager beanManager;
+    private ELAwareBeanManager beanManager;
 
     public String sayHello() {
         return "hello";
