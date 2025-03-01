@@ -52,7 +52,7 @@
         <arquillian.graphene.version>3.0.0-alpha.3</arquillian.graphene.version>
         <arquillian.weld.version>4.0.0.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
-        <arquillian.tomcat.version>1.2.2.Final</arquillian.tomcat.version>
+        <arquillian.tomcat.version>1.2.3.Final</arquillian.tomcat.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Version of the CDI 4.1 TCK release -->
         <cdi.tck-4-1.version>4.1.0</cdi.tck-4-1.version>
