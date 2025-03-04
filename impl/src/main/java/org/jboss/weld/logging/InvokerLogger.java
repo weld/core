@@ -5,6 +5,7 @@ import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -65,4 +66,22 @@ public interface InvokerLogger extends WeldLogger {
 
     @Message(id = 2014, value = "Invocation wrapper has unexpected parameters: {0} \nExpected param types are: {1}, Object[], Invoker.class", format = Message.Format.MESSAGE_FORMAT)
     DeploymentException wrapperUnexpectedParams(Object transformerMetadata, Object clazz);
+
+    @Message(id = 2015, value = "Cannot invoke {0} because the instance passed to the Invoker was null", format = Format.MESSAGE_FORMAT)
+    NullPointerException nullInstance(Object method);
+
+    @Message(id = 2016, value = "Cannot invoke {0} because the instance passed to the Invoker has type {1} which cannot be cast to {2}", format = Format.MESSAGE_FORMAT)
+    ClassCastException wrongInstanceType(Object method, Class<?> actualType, Class<?> expectedType);
+
+    @Message(id = 2017, value = "Cannot invoke {0} because {1} arguments were expected but only {2} were provided", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException notEnoughArguments(Object method, int expectedCount, int actualCount);
+
+    @Message(id = 2018, value = "Cannot invoke {0} because argument {1} has type {2} which cannot be cast to {3}", format = Format.MESSAGE_FORMAT)
+    ClassCastException wrongArgumentType(Object method, int pos, Class<?> actualType, Class<?> expectedType);
+
+    @Message(id = 2019, value = "Cannot invoke {0} because parameter {1} is a primitive type but the argument is null", format = Format.MESSAGE_FORMAT)
+    NullPointerException nullPrimitiveArgument(Object method, int pos);
+
+    @Message(id = 2020, value = "Cannot invoke {0} because the args parameter is null and arguments are required", format = Format.MESSAGE_FORMAT)
+    NullPointerException nullArgumentArray(Object method);
 }
