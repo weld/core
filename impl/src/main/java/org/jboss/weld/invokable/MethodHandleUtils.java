@@ -28,6 +28,11 @@ class MethodHandleUtils {
     static final MethodHandle REPLACE_PRIMITIVE_LOOKUP_NULLS;
     static final MethodHandle THROW_VALUE_CARRYING_EXCEPTION;
     static final MethodHandle TRIM_ARRAY_TO_SIZE;
+    static final MethodHandle CHECK_INSTANCE_HAS_TYPE;
+    static final MethodHandle CHECK_INSTANCE_NOT_NULL;
+    static final MethodHandle CHECK_ARG_COUNT_AT_LEAST;
+    static final MethodHandle CHECK_ARGUMENTS_HAVE_CORRECT_TYPE;
+    static final MethodHandle CHECK_ARGUMENTS_NOT_NULL;
 
     static {
         try {
@@ -45,6 +50,16 @@ class MethodHandleUtils {
                     "throwReturnValue", Object.class));
             TRIM_ARRAY_TO_SIZE = createMethodHandle(ArrayUtils.class.getDeclaredMethod(
                     "trimArrayToSize", Object[].class, int.class));
+            CHECK_INSTANCE_HAS_TYPE = createMethodHandle(
+                    InvokerValidationUtils.class.getDeclaredMethod("instanceHasType", Method.class, Class.class, Object.class));
+            CHECK_INSTANCE_NOT_NULL = createMethodHandle(
+                    InvokerValidationUtils.class.getDeclaredMethod("instanceNotNull", Method.class, Object.class));
+            CHECK_ARG_COUNT_AT_LEAST = createMethodHandle(
+                    InvokerValidationUtils.class.getDeclaredMethod("argCountAtLeast", Method.class, int.class, Object[].class));
+            CHECK_ARGUMENTS_HAVE_CORRECT_TYPE = createMethodHandle(InvokerValidationUtils.class
+                    .getDeclaredMethod("argumentsHaveCorrectType", Method.class, Class[].class, Object[].class));
+            CHECK_ARGUMENTS_NOT_NULL = createMethodHandle(InvokerValidationUtils.class.getDeclaredMethod("argumentsNotNull",
+                    Method.class, Class[].class, Object[].class));
         } catch (NoSuchMethodException e) {
             // should never happen
             throw new IllegalStateException("Unable to locate Weld internal helper method", e);

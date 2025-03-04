@@ -136,6 +136,19 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
         // single, array-typed parameter at the end for variable arity methods
         mh = mh.asFixedArity();
 
+        // Check instance is not null
+        if (!instanceLookup && !isStaticMethod) {
+            Class<?> instanceType = mh.type().parameterType(0);
+            Class<?> returnType = mh.type().returnType();
+            MethodHandle checkInstanceNotNull = MethodHandles.insertArguments(MethodHandleUtils.CHECK_INSTANCE_NOT_NULL, 0,
+                    reflectionMethod);
+            checkInstanceNotNull = checkInstanceNotNull
+                    .asType(checkInstanceNotNull.type().changeParameterType(0, instanceType));
+            MethodHandle npeCatch = MethodHandles.throwException(returnType, NullPointerException.class);
+            npeCatch = MethodHandles.collectArguments(npeCatch, 1, checkInstanceNotNull);
+            mh = MethodHandles.catchException(mh, NullPointerException.class, npeCatch);
+        }
+
         // instance transformer
         if (instanceTransformer != null && !isStaticMethod) {
             MethodHandle instanceTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
@@ -155,8 +168,10 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
 
         // argument transformers
         // backwards iteration for correct construction of the resulting parameter list
+        Class<?>[] transformerArgTypes = new Class<?>[argTransformers.length];
         for (int i = argTransformers.length - 1; i >= 0; i--) {
             if (argTransformers[i] == null) {
+                transformerArgTypes[i] = reflectionMethod.getParameterTypes()[i];
                 continue;
             }
             int position = instanceArguments + i;
@@ -172,6 +187,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
                 // internal error, this should not pass validation
                 throw InvokerLogger.LOG.invalidTransformerMethod("argument", argTransformers[i]);
             }
+            transformerArgTypes[i] = argTransformerMethod.type().parameterType(0);
         }
 
         // return type transformer
@@ -321,6 +337,61 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
         // instantiate `CleanupActions`
         if (requiresCleanup) {
             mh = MethodHandles.foldArguments(mh, MethodHandleUtils.CLEANUP_ACTIONS_CTOR);
+        }
+
+        Class<?>[] expectedTypes = new Class<?>[transformerArgTypes.length];
+        for (int i = 0; i < transformerArgTypes.length; i++) {
+            if (argLookup[i]) {
+                expectedTypes[i] = null;
+            } else {
+                expectedTypes[i] = transformerArgTypes[i];
+            }
+        }
+
+        if (reflectionMethod.getParameterCount() > 0) {
+            // Catch NullPointerException and check whether it's caused by any arguments being null:
+            Class<?> instanceType = mh.type().parameterType(0);
+            MethodHandle checkArgumentsNotNull = MethodHandles.insertArguments(MethodHandleUtils.CHECK_ARGUMENTS_NOT_NULL, 0,
+                    reflectionMethod, expectedTypes);
+            checkArgumentsNotNull = MethodHandles.dropArguments(checkArgumentsNotNull, 0, instanceType);
+            MethodHandle npeCatch = MethodHandles.throwException(mh.type().returnType(), NullPointerException.class);
+            npeCatch = MethodHandles.collectArguments(npeCatch, 1, checkArgumentsNotNull);
+            mh = MethodHandles.catchException(mh, NullPointerException.class, npeCatch);
+
+            // Catch IllegalArgumentException and check whether it's caused by the args array being too short
+            MethodHandle checkArgCountAtLeast = MethodHandles.insertArguments(MethodHandleUtils.CHECK_ARG_COUNT_AT_LEAST, 0,
+                    reflectionMethod, reflectionMethod.getParameterCount());
+            checkArgCountAtLeast = MethodHandles.dropArguments(checkArgCountAtLeast, 0, instanceType);
+            MethodHandle iaeCatch = MethodHandles.throwException(mh.type().returnType(), IllegalArgumentException.class);
+            iaeCatch = MethodHandles.collectArguments(iaeCatch, 1, checkArgCountAtLeast);
+            mh = MethodHandles.catchException(mh, IllegalArgumentException.class, iaeCatch);
+        }
+
+        if ((!isStaticMethod && !instanceLookup) || reflectionMethod.getParameterCount() > 0) {
+            // Catch ClassCastException and check whether it's caused by either the instance or the arguments being the wrong type
+            Class<?> instanceType = mh.type().parameterType(0);
+            MethodHandle checkTypes = null;
+            if (reflectionMethod.getParameterCount() > 0) {
+                checkTypes = MethodHandles.insertArguments(MethodHandleUtils.CHECK_ARGUMENTS_HAVE_CORRECT_TYPE, 0,
+                        reflectionMethod, expectedTypes);
+                checkTypes = MethodHandles.dropArguments(checkTypes, 0, Object.class);
+            }
+
+            if (!isStaticMethod && !instanceLookup) {
+                MethodHandle checkInstanceType = MethodHandles.insertArguments(MethodHandleUtils.CHECK_INSTANCE_HAS_TYPE, 0,
+                        reflectionMethod, instanceType);
+                if (checkTypes == null) {
+                    checkTypes = checkInstanceType;
+                } else {
+                    checkTypes = MethodHandles.foldArguments(checkTypes, checkInstanceType);
+                }
+            }
+
+            MethodHandle cceCatch = MethodHandles.throwException(mh.type().returnType(), ClassCastException.class);
+            cceCatch = MethodHandles.collectArguments(cceCatch, 1, checkTypes);
+
+            mh = mh.asType(mh.type().changeParameterType(0, Object.class)); // Defer the casting the instance to its expected type until we're inside the ClassCastException try block
+            mh = MethodHandles.catchException(mh, ClassCastException.class, cceCatch);
         }
 
         // create an inner invoker and pass it to wrapper
