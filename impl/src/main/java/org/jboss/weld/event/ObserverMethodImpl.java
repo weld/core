@@ -32,7 +32,7 @@ import jakarta.enterprise.event.TransactionPhase;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Produces;
-import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanContainer;
 import jakarta.enterprise.inject.spi.EventMetadata;
 import jakarta.enterprise.inject.spi.ObserverMethod;
 import jakarta.enterprise.inject.spi.WithAnnotations;
@@ -234,7 +234,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>, EventMetadat
             // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
             if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class)
                     && !parameter.isAnnotationPresent(ObservesAsync.class)
-                    && !BeanManager.class.equals(parameter.getBaseType())) {
+                    && !parameter.getTypeClosure().contains(BeanContainer.class)) {
                 throw EventLogger.LOG.invalidInjectionPoint(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
             }
         }
