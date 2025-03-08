@@ -136,6 +136,16 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
         // single, array-typed parameter at the end for variable arity methods
         mh = mh.asFixedArity();
 
+        // Check instance is not null
+        if (!instanceLookup && !isStaticMethod) {
+            Class<?> instanceType = mh.type().parameterType(0);
+            MethodHandle checkInstanceType = MethodHandles.insertArguments(MethodHandleUtils.CHECK_INSTANCE_NOT_NULL, 0,
+                    reflectionMethod);
+            checkInstanceType = checkInstanceType
+                    .asType(checkInstanceType.type().changeReturnType(instanceType).changeParameterType(0, instanceType));
+            mh = MethodHandles.filterArguments(mh, 0, checkInstanceType);
+        }
+
         // instance transformer
         if (instanceTransformer != null && !isStaticMethod) {
             MethodHandle instanceTransformerMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
@@ -155,8 +165,10 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
 
         // argument transformers
         // backwards iteration for correct construction of the resulting parameter list
+        Class<?>[] transformerArgTypes = new Class<?>[argTransformers.length];
         for (int i = argTransformers.length - 1; i >= 0; i--) {
             if (argTransformers[i] == null) {
+                transformerArgTypes[i] = reflectionMethod.getParameterTypes()[i];
                 continue;
             }
             int position = instanceArguments + i;
@@ -172,6 +184,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
                 // internal error, this should not pass validation
                 throw InvokerLogger.LOG.invalidTransformerMethod("argument", argTransformers[i]);
             }
+            transformerArgTypes[i] = argTransformerMethod.type().parameterType(0);
         }
 
         // return type transformer
@@ -321,6 +334,40 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
         // instantiate `CleanupActions`
         if (requiresCleanup) {
             mh = MethodHandles.foldArguments(mh, MethodHandleUtils.CLEANUP_ACTIONS_CTOR);
+        }
+
+        if (!isStaticMethod && !instanceLookup) {
+            // Check Instance type. Expected type may be different from the invoker type if transformer was used.
+            Class<?> instanceType = mh.type().parameterType(0);
+            MethodHandle instanceHasType = MethodHandles.insertArguments(MethodHandleUtils.CHECK_INSTANCE_HAS_TYPE, 0,
+                    reflectionMethod, instanceType);
+            instanceHasType = instanceHasType.asType(instanceHasType.type().changeReturnType(instanceType));
+            mh = MethodHandles.filterArguments(mh, 0, instanceHasType);
+        }
+
+        if (reflectionMethod.getParameterCount() > 0) {
+            Class<?>[] expectedTypes = new Class<?>[transformerArgTypes.length];
+            for (int i = 0; i < transformerArgTypes.length; i++) {
+                if (argLookup[i]) {
+                    expectedTypes[i] = null;
+                } else {
+                    expectedTypes[i] = transformerArgTypes[i];
+                }
+            }
+
+            // Check the argument types are correct
+            MethodHandle argumentHasCorrectType = MethodHandles.insertArguments(
+                    MethodHandleUtils.CHECK_ARGUMENTS_HAVE_CORRECT_TYPE, 0,
+                    reflectionMethod,
+                    expectedTypes);
+            mh = MethodHandles.filterArguments(mh, 1, argumentHasCorrectType);
+
+            // Check enough arguments are provided
+            // This check has to be done before we spread the args array into individual arguments
+            MethodHandle checkArgumentCount = MethodHandles.insertArguments(MethodHandleUtils.CHECK_ARG_COUNT_AT_LEAST, 0,
+                    reflectionMethod,
+                    reflectionMethod.getParameterCount());
+            mh = MethodHandles.filterArguments(mh, 1, checkArgumentCount);
         }
 
         // create an inner invoker and pass it to wrapper
