@@ -17,26 +17,54 @@
 package org.jboss.weld.tests.extensions;
 
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.BeanContainer;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.BeforeShutdown;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.el.ELAwareBeanManager;
+
+import org.jboss.weld.manager.api.WeldManager;
 
 public class SimpleExtension implements Extension {
 
     private static boolean observedBeforeBeanDiscovery;
-
-    public void observe(@Observes BeforeBeanDiscovery event) {
-        observedBeforeBeanDiscovery = true;
-    }
+    public static boolean observedBeforeBeanDiscoveryBc;
+    public static boolean observedBeforeBeanDiscoveryBm;
+    public static boolean observedBeforeBeanDiscoveryWm;
+    public static boolean observedBeforeBeanDiscoveryElBm;
 
     public static boolean isObservedBeforeBeanDiscovery() {
         return observedBeforeBeanDiscovery;
     }
 
-    public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, BeanManager beanManager) {
+    public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, WeldManager beanManager) {
         assert beanManager != null;
         assert beanManager.getELResolver() != null;
+    }
+
+    public void observeBeanManager(@Observes BeforeBeanDiscovery event) {
+        observedBeforeBeanDiscovery = true;
+    }
+
+    public void observeBeanManager(@Observes BeforeBeanDiscovery event, BeanManager bm) {
+        observedBeforeBeanDiscoveryBm = true;
+        assert bm != null;
+    }
+
+    public void observeBeanManager(@Observes BeforeBeanDiscovery event, BeanContainer bc) {
+        observedBeforeBeanDiscoveryBc = true;
+        assert bc != null;
+    }
+
+    public void observeBeanManager(@Observes BeforeBeanDiscovery event, WeldManager wm) {
+        observedBeforeBeanDiscoveryWm = true;
+        assert wm != null;
+    }
+
+    public void observeBeanManager(@Observes BeforeBeanDiscovery event, ELAwareBeanManager bm) {
+        observedBeforeBeanDiscoveryElBm = true;
+        assert bm != null;
     }
 
 }
