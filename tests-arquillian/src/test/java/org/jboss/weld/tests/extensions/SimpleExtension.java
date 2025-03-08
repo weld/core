@@ -38,7 +38,7 @@ public class SimpleExtension implements Extension {
         return observedBeforeBeanDiscovery;
     }
 
-    public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, WeldManager beanManager) {
+    public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, ELAwareBeanManager beanManager) {
         assert beanManager != null;
         assert beanManager.getELResolver() != null;
     }

@@ -58,7 +58,7 @@ public abstract class ForwardingBeanManager implements ELAwareBeanManager, Seria
 
     private static final long serialVersionUID = -3116833950882475733L;
 
-    public abstract BeanManager delegate();
+    public abstract ELAwareBeanManager delegate();
 
     @Override
     public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
