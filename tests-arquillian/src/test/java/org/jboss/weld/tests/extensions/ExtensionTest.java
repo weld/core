@@ -52,6 +52,14 @@ public class ExtensionTest {
         assertTrue(extension.isObservedBeforeBeanDiscovery());
     }
 
+    @Test
+    public void testBeanManagerInjectionAsOptionalParam() {
+        assertTrue(SimpleExtension.observedBeforeBeanDiscoveryBc);
+        assertTrue(SimpleExtension.observedBeforeBeanDiscoveryBm);
+        assertTrue(SimpleExtension.observedBeforeBeanDiscoveryWm);
+        assertTrue(SimpleExtension.observedBeforeBeanDiscoveryElBm);
+    }
+
     /*
      * description = "WELD-572"
      */
