@@ -57,7 +57,7 @@
         <!-- Version of the CDI 4.1 TCK release -->
         <cdi.tck-4-1.version>4.1.0</cdi.tck-4-1.version>
         <!-- Version of the Jakarta Platform TCK 4.1 release -->
-        <platform.tck-4-1.version>11.0.0.M1</platform.tck-4-1.version>
+        <platform.tck-4-1.version>11.0.0-M14</platform.tck-4-1.version>
         <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
         <!-- We can also use our own file, needed for relaxed mode testing (see WeldMethodInterceptor) -->
         <!-- Our variant is under src/test/tck/tck-tests.xml -->
