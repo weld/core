@@ -80,6 +80,13 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
     }
 
     @Override
+    public Collection<ClassInfo> permittedSubclasses() {
+        return Arrays.stream(reflection.getPermittedSubclasses())
+                .map(it -> new ClassInfoImpl(bm.createAnnotatedType(it), bm))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean isPlainClass() {
         return !isInterface() && !isEnum() && !isAnnotation() && !isRecord();
     }
@@ -115,6 +122,11 @@ class ClassInfoImpl extends DeclarationInfoImpl<Class<?>, jakarta.enterprise.inj
     @Override
     public boolean isFinal() {
         return java.lang.reflect.Modifier.isFinal(reflection.getModifiers());
+    }
+
+    @Override
+    public boolean isSealed() {
+        return reflection.isSealed();
     }
 
     @Override

@@ -44,7 +44,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck-4-1.version}</version>
+            <version>${cdi.tck.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.el</groupId>
