@@ -65,7 +65,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck-4-1.version}</version>
+            <version>${cdi.tck.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.el</groupId>
@@ -77,7 +77,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-core-impl</artifactId>
-            <version>${cdi.tck-4-1.version}</version>
+            <version>${cdi.tck.version}</version>
             <type>xml</type>
             <classifier>suite</classifier>
             <scope>test</scope>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-core-impl</artifactId>
-            <version>${cdi.tck-4-1.version}</version>
+            <version>${cdi.tck.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -253,7 +253,7 @@
                                 <artifactItem>
                                     <groupId>jakarta.enterprise</groupId>
                                     <artifactId>cdi-tck-core-impl</artifactId>
-                                    <version>${cdi.tck-4-1.version}</version>
+                                    <version>${cdi.tck.version}</version>
                                     <type>xml</type>
                                     <classifier>suite</classifier>
                                     <overWrite>false</overWrite>
@@ -262,7 +262,7 @@
                                 <artifactItem>
                                     <groupId>jakarta.tck</groupId>
                                     <artifactId>cdi-tck-ee-impl</artifactId>
-                                    <version>${platform.tck-4-1.version}</version>
+                                    <version>${platform.tck.version}</version>
                                     <type>xml</type>
                                     <classifier>suite</classifier>
                                     <overWrite>false</overWrite>
@@ -374,7 +374,7 @@
                 <dependency>
                     <groupId>jakarta.tck</groupId>
                     <artifactId>cdi-tck-ee-impl</artifactId>
-                    <version>${platform.tck-4-1.version}</version>
+                    <version>${platform.tck.version}</version>
                     <type>xml</type>
                     <classifier>suite</classifier>
                     <scope>test</scope>
@@ -382,7 +382,7 @@
                 <dependency>
                     <groupId>jakarta.tck</groupId>
                     <artifactId>cdi-tck-ee-impl</artifactId>
-                    <version>${platform.tck-4-1.version}</version>
+                    <version>${platform.tck.version}</version>
                     <scope>test</scope>
                 </dependency>
                 <dependency>

@@ -32,7 +32,7 @@
         as the release plugin won't deal with double evaluation -->
         <weld.update.version>7.0.0-SNAPSHOT</weld.update.version>
         <!-- These are *NOT* automatically updated and should be reviewed if the relevant profile is to be used -->
-        <cdi.update.version>4.1.0</cdi.update.version>
+        <cdi.update.version>5.0.0.Alpha1</cdi.update.version>
         <interceptors.update.version>2.2.0</interceptors.update.version>
     </properties>
 
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-ext-lib</artifactId>
-            <version>${cdi.tck-4-1.version}</version>
+            <version>${cdi.tck.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise</groupId>
@@ -250,7 +250,7 @@
                                     <target>
                                         <copy todir="${env.JBOSS_HOME}/standalone/lib/ext" overwrite="true">
                                             <fileset dir="target/dependency/lib">
-                                                <include name="cdi-tck-ext-lib-${cdi.tck-4-1.version}.jar" />
+                                                <include name="cdi-tck-ext-lib-${cdi.tck.version}.jar" />
                                             </fileset>
                                         </copy>
                                     </target>
