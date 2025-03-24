@@ -31,9 +31,6 @@
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
         as the release plugin won't deal with double evaluation -->
         <weld.update.version>6.0.2-SNAPSHOT</weld.update.version>
-        <!-- These are *NOT* automatically updated and should be reviewed if the relevant profile is to be used -->
-        <cdi.update.version>4.1.0</cdi.update.version>
-        <interceptors.update.version>2.2.0</interceptors.update.version>
     </properties>
 
     <dependencies>
@@ -71,26 +68,6 @@
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-tck-ext-lib</artifactId>
             <version>${cdi.tck-4-1.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>${cdi.update.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
-            <version>${cdi.update.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.lang-model</artifactId>
-            <version>${cdi.update.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.interceptor</groupId>
-            <artifactId>jakarta.interceptor-api</artifactId>
-            <version>${interceptors.update.version}</version>
         </dependency>
     </dependencies>
     <profiles>
