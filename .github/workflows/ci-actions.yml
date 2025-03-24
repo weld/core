@@ -24,13 +24,13 @@ jobs:
           distribution: 'temurin'
       - name: Download WildFly
         run: |
-          # wget https://ci.wildfly.org/guestAuth/repository/download/WF_WildflyPreviewNightly/latest.lastSuccessful/wildfly-preview-latest-SNAPSHOT.zip
-          # unzip wildfly-preview-latest-SNAPSHOT.zip
-          wget https://ci.wildfly.org/guestAuth/repository/download/WF_Nightly/latest.lastSuccessful/wildfly-latest-SNAPSHOT.zip
-          unzip wildfly-latest-SNAPSHOT.zip
+          wget https://ci.wildfly.org/guestAuth/repository/download/WF_WildflyPreviewNightly/latest.lastSuccessful/wildfly-preview-latest-SNAPSHOT.zip
+          unzip wildfly-preview-latest-SNAPSHOT.zip
+          # wget https://ci.wildfly.org/guestAuth/repository/download/WF_Nightly/latest.lastSuccessful/wildfly-latest-SNAPSHOT.zip
+          # unzip wildfly-latest-SNAPSHOT.zip
           # ZIP contains two more ZIPs, sources and actual WFLY
-          rm wildfly-*-src.zip
-          rm wildfly-latest-SNAPSHOT.zip
+          # rm wildfly-*-src.zip
+          # rm wildfly-latest-SNAPSHOT.zip
           unzip wildfly-*.zip -d container
           cd container
           mv ./* wildfly/
@@ -53,7 +53,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/container/*'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean package -Pupdate-jboss-as -Pupdate-jakarta-apis -Dtck -f jboss-as/pom.xml
+          mvn clean package -Pupdate-jboss-as -Dtck -f jboss-as/pom.xml
       - name: Zip Patched WildFly
         run: |
           cd container/

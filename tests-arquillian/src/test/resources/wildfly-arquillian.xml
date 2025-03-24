@@ -13,7 +13,8 @@
     <container qualifier="jboss-as-7" default="true">
         <configuration>
             <!-- This config file includes embedded JMS broker -->
-            <property name="serverConfig">standalone-full.xml</property>
+            <!-- NOTE: this file is by default located in $WILDFLY_HOME/docs/examples/ -->
+            <property name="serverConfig">standalone-activemq-embedded.xml</property>
             <!-- ARQ-649 workaround -->
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>

@@ -11,7 +11,8 @@
     <container qualifier="wildfly-23" default="true">
         <configuration>
             <!-- This config file includes embedded JMS broker -->
-            <property name="serverConfig">standalone-full.xml</property>
+            <!-- NOTE: this file is by default located in $WILDFLY_HOME/docs/examples/ -->
+            <property name="serverConfig">standalone-activemq-embedded.xml</property>
             <property name="javaVmArguments">-Xms128m -Xmx1g -ea -DcdiTckExcludeDummy=true ${gc.args} ${additional.vm.args} ${jacoco.agent}</property>
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
