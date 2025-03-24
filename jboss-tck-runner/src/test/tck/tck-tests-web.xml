@@ -51,6 +51,14 @@
                 </methods>
             </class>
 
+            <!-- Test uses Selenium and Chrome - a fragile setup that doesn't work in CI -->
+            <!-- See also https://github.com/jakartaee/platform-tck/issues/1228#issuecomment-2725633366 -->
+            <class name="org.jboss.cdi.tck.tests.context.conversation.LongRunningConversationPropagatedByFacesContextTest">
+                <methods>
+                    <exclude name="testConversationPropagatedAjax"/>
+                </methods>
+            </class>
+
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
