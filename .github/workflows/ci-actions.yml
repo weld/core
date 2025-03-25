@@ -80,6 +80,8 @@ jobs:
   incontainer-tests:
     name: "Weld In-container Tests - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
+    # Disabled until baseline WFLY supports EE 11 due to BeanManager#getELResolver calls
+    if: false
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -144,6 +146,8 @@ jobs:
   CDI-TCK:
     name: "CDI TCK - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
+    # Disabled until baseline WFLY supports EE 11 due to BeanManager#getELResolver calls
+    if: false
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -208,6 +212,8 @@ jobs:
   relaxed-mode-test:
     name: "Relaxed mode testing - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
+    # Disabled until baseline WFLY supports EE 11 due to BeanManager#getELResolver calls
+    if: false
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -328,6 +334,8 @@ jobs:
     name: "Weld Examples build and test - JDK 17}"
     runs-on: ubuntu-latest
     needs: initial-build
+    # Disabled until baseline WFLY supports EE 11 due to BeanManager#getELResolver calls
+    if: false
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
