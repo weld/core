@@ -83,7 +83,7 @@
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.resolver.version>3.3.4</shrinkwrap.resolver.version>
         <spotbugs-maven-plugin.version>4.9.3.0</spotbugs-maven-plugin.version>
-        <spotbugs-annotations-version>4.9.1</spotbugs-annotations-version>
+        <spotbugs-annotations-version>4.9.3</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
         <weld.api.version>7.0.Alpha1</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
