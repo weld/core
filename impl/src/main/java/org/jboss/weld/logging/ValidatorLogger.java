@@ -19,6 +19,7 @@ package org.jboss.weld.logging;
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
@@ -319,4 +320,8 @@ public interface ValidatorLogger extends WeldLogger {
 
     @Message(id = 1490, value = "Bean type {0} is not proxyable because it is sealed - {1}.", format = Format.MESSAGE_FORMAT)
     UnproxyableResolutionException notProxyableSealedType(Object param1, Object param2);
+
+    @Message(id = 1491, value = "An interceptor {0} cannot have more than one method per interception type. Following methods were found for interception type {1}: {2}.", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorsCannotHaveMoreThanOneMethodPerType(Class<?> interceptorClass, String interceptionType,
+            Collection<String> interceptionMethods);
 }
