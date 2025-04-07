@@ -35,7 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.event.Event;
@@ -62,8 +65,12 @@ import jakarta.enterprise.inject.spi.Producer;
 import jakarta.inject.Named;
 import jakarta.inject.Provider;
 import jakarta.inject.Scope;
+import jakarta.interceptor.AroundConstruct;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.AroundTimeout;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -126,6 +133,17 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Ales Justin
  */
 public class Validator implements Service {
+
+    private static final Collection<Class<? extends Annotation>> interceptionTypes;
+
+    static {
+        interceptionTypes = new HashSet<>();
+        interceptionTypes.add(AroundInvoke.class);
+        interceptionTypes.add(AroundConstruct.class);
+        interceptionTypes.add(AroundTimeout.class);
+        interceptionTypes.add(PostConstruct.class);
+        interceptionTypes.add(PreDestroy.class);
+    }
 
     private final Set<PlugableValidator> plugableValidators;
 
@@ -565,6 +583,17 @@ public class Validator implements Service {
                 }
                 if (!annotated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
                     throw ValidatorLogger.LOG.interceptorsCannotHaveDisposerMethods(interceptor);
+                }
+                for (Class<? extends Annotation> type : interceptionTypes) {
+                    Collection<EnhancedAnnotatedMethod<?, ?>> declaredEnhancedMethods = (Collection<EnhancedAnnotatedMethod<?, ?>>) annotated
+                            .getDeclaredEnhancedMethods(type);
+                    if (declaredEnhancedMethods.size() > 1) {
+                        throw ValidatorLogger.LOG.interceptorsCannotHaveMoreThanOneMethodPerType(annotated.getJavaClass(),
+                                type.getName(),
+                                declaredEnhancedMethods.stream()
+                                        .map(enhancedAnnotatedMethod -> enhancedAnnotatedMethod.getJavaMember().toString())
+                                        .collect(Collectors.toList()));
+                    }
                 }
                 annotated = annotated.getEnhancedSuperclass();
             }
