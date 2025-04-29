@@ -367,7 +367,7 @@ consists of two classes: `Weld` and `WeldContainer`.
 
 [source.JAVA, java]
 ---------------------------------------------------------------------------------
-/** A builder used to bootsrap a Weld SE container. */
+/** A builder used to bootstrap a Weld SE container. */
 public class Weld extends SeContainerInitializer implements ContainerInstanceFactory
 {
 
@@ -406,7 +406,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 ---------------------------------------------------------------
 
 Here's an example application main method which uses this API to
-bootsrap a Wedl SE container and call a business method of a bean `MyApplicationBean`.
+bootstrap a Weld SE container and call a business method of a bean `MyApplicationBean`.
 
 [source.JAVA, java]
 --------------------------------------------------------------
