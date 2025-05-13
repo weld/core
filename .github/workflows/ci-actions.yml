@@ -14,7 +14,7 @@ jobs:
   # builds Weld snapshot, downloads WFLY and upgrades it, prepares ENV variable
   initial-build:
     name: "Initial JDK 17 Weld Build + WildFly patch"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -79,7 +79,7 @@ jobs:
   # Weld in-container tests, does NOT include TCKs which are run as a separate job
   incontainer-tests:
     name: "Weld In-container Tests - JDK ${{matrix.java.name}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -143,7 +143,7 @@ jobs:
   # CDI TCKs in WildFly
   CDI-TCK:
     name: "CDI TCK - JDK ${{matrix.java.name}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -207,7 +207,7 @@ jobs:
   # relaxed mode, w/ and w/o Wildfly, single JDK version
   relaxed-mode-test:
     name: "Relaxed mode testing - JDK ${{matrix.java.name}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -279,7 +279,7 @@ jobs:
   # Weld no-container tests, includes junit, Weld SE tests plus CDI TCKs and integration tests that don't require EE container
   no-container-tests:
     name: "Weld Tests w/o Container - JDK ${{matrix.java.name}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -326,7 +326,7 @@ jobs:
   # Weld Examples build and test, only JDK 17
   examples-tests:
     name: "Weld Examples build and test - JDK 17}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: initial-build
     timeout-minutes: 120
     steps:
@@ -386,7 +386,7 @@ jobs:
   # CDI TCK for SE environment
   CDI-TCK-SE:
     name: "CDI TCK SE - JDK ${{matrix.java.name}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: initial-build
     timeout-minutes: 120
     strategy:
@@ -433,7 +433,7 @@ jobs:
   # Weld SE/Servlet cooperation
   weld-se-servlet-coop:
     name: "Weld SE-Servlet Cooperation"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: initial-build
     timeout-minutes: 20
     steps:
