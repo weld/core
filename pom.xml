@@ -88,6 +88,7 @@
         <weld.api.version>6.0.Final</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
+        
     </properties>
 
     <modules>
