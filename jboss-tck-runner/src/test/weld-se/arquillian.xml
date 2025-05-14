@@ -13,7 +13,7 @@
             <property name="librariesPath">${libPath}</property>
             <!--<property name="additionalJavaOpts">${surefire.plugin.jdk17.args}</property>-->
             <!--<property name="debug">true</property>-->
-            <!--<property name="logLevel">FINE</property>-->
+            <property name="logLevel">FINE</property>
             <!--<property name="keepDeploymentArchives">true</property>-->
         </configuration>
     </container>
