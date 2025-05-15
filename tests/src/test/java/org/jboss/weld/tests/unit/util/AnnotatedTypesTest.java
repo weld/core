@@ -112,6 +112,15 @@ public class AnnotatedTypesTest {
         id = AnnotatedTypes.createFieldId(field);
         Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair.legs[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]",
                 id, "wrong id for field :" + id);
+
+        builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
+        builder.addToField(Chair.class.getField("legs"), new ComplexAnnotationLiteral());
+        chair3 = builder.create();
+        field = chair3.getFields().iterator().next();
+        id = AnnotatedTypes.createFieldId(field);
+        Assert.assertEquals(id,
+                "org.jboss.weld.tests.unit.util.Chair.legs[@org.jboss.weld.tests.unit.util.ComplexAnnotation(intValues=[1, 2, 3],stringValues=[foo, bar])]",
+                "wrong id for type :" + id);
     }
 
     @Test
@@ -147,6 +156,18 @@ public class AnnotatedTypesTest {
         Assert.assertEquals(
                 "org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]()", id,
                 "wrong id for method :" + id);
+
+        builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
+        builder.addToMethod(Chair.class.getMethod("sit"), new ComplexAnnotationLiteral());
+        chair3 = builder.create();
+        it = chair3.getMethods().iterator();
+        method = it.next();
+        while (!method.getJavaMember().getName().equals("sit"))
+            method = it.next();
+        id = AnnotatedTypes.createCallableId(method);
+        Assert.assertEquals(id,
+                "org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComplexAnnotation(intValues=[1, 2, 3],stringValues=[foo, bar])]()",
+                "wrong id for type :" + id);
     }
 
     @Test
@@ -171,6 +192,14 @@ public class AnnotatedTypesTest {
         Assert.assertEquals(id, AnnotatedTypes.hash(
                 "org.jboss.weld.tests.unit.util.Chair{org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]();}"),
                 "wrong id for type :" + id);
+
+        builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
+        builder.addToMethod(Chair.class.getMethod("sit"), new ComplexAnnotationLiteral());
+        chair3 = builder.create();
+        id = AnnotatedTypes.createTypeId(chair3);
+        Assert.assertEquals(id, AnnotatedTypes.hash(
+                "org.jboss.weld.tests.unit.util.Chair{org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComplexAnnotation(intValues=[1, 2, 3],stringValues=[foo, bar])]();}"),
+                "wrong id for type :" + id);
     }
 
     private static class DefaultLiteral extends AnnotationLiteral<Default> implements Default {
@@ -184,6 +213,19 @@ public class AnnotatedTypesTest {
             return 1;
         }
 
+    }
+
+    private static class ComplexAnnotationLiteral extends AnnotationLiteral<ComplexAnnotation> implements ComplexAnnotation {
+
+        @Override
+        public int[] intValues() {
+            return new int[] { 1, 2, 3 };
+        }
+
+        @Override
+        public String[] stringValues() {
+            return new String[] { "foo", "bar" };
+        }
     }
 
 }

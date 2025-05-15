@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -324,7 +325,28 @@ public class AnnotatedTypes {
                     Object value = method.invoke(a);
                     builder.append(method.getName());
                     builder.append('=');
-                    builder.append(value.toString());
+                    // we need to detect arrays and write out their contents, plain toString() won't work there
+                    if (value instanceof Object[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof byte[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof short[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof int[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof long[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof float[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof double[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof boolean[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else if (value instanceof char[] array) {
+                        builder.append(Arrays.toString(array));
+                    } else {
+                        builder.append(value.toString());
+                    }
                 } catch (NullPointerException e) {
                     throwRE(a, method, e);
                 } catch (IllegalArgumentException e) {
