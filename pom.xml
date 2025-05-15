@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>53</version>
+        <version>54</version>
     </parent>
 
 
@@ -85,7 +85,7 @@
         <spotbugs-maven-plugin.version>4.9.3.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.9.3</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
-        <weld.api.version>7.0.Alpha1</weld.api.version>
+        <weld.api.version>7.0.Alpha2</weld.api.version>
         <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
     </properties>

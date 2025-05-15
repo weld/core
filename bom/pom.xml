@@ -30,15 +30,14 @@
     </developers>
 
     <properties>
-        <weld.api.bom.version>6.0.Final</weld.api.bom.version>
+        <weld.api.bom.version>7.0.Alpha2</weld.api.bom.version>
         <gpg.plugin.version>3.2.7</gpg.plugin.version>
         <nexus.staging.plugin.version>1.7.0</nexus.staging.plugin.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/
         </jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/
         </jboss.snapshots.repo.url>
-        <ossrh.releases.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</ossrh.releases.repo.url>
-        <ossrh.snapshots.repo.url>https://oss.sonatype.org/content/repositories/snapshots</ossrh.snapshots.repo.url>
+        <central.portal.releases.repo.url>https://central.sonatype.com/api/v1/publisher</central.portal.releases.repo.url>
     </properties>
 
     <dependencyManagement>
@@ -166,16 +165,16 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus.staging.plugin.version}</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <serverId>sonatype-nexus-staging</serverId>
-                            <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
-                            <!-- Automatically releases staging repo, no manual action needed -->
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
+                            <!-- Automatically publish staged repo -->
+                            <autoPublish>true</autoPublish>
+                            <!-- The plugin will block and wait until the artifact is published -->
+                            <waitUntil>published</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -204,9 +203,9 @@
                 </snapshotRepository>
             </distributionManagement>
         </profile>
-        <!-- OSSRH release repository - selected by default -->
+        <!-- Sonatype Central Portal - selected by default -->
         <profile>
-            <id>ossrh-release-repo</id>
+            <id>central-portal-release-repo</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
@@ -214,15 +213,10 @@
                 </property>
             </activation>
             <distributionManagement>
-                <snapshotRepository>
-                    <id>sonatype-nexus-snapshots</id>
-                    <name>Sonatype Nexus Snapshots</name>
-                    <url>${ossrh.snapshots.repo.url}</url>
-                </snapshotRepository>
                 <repository>
-                    <id>sonatype-nexus-staging</id>
-                    <name>Nexus Release Repository</name>
-                    <url>${ossrh.releases.repo.url}</url>
+                    <id>central-portal-staging</id>
+                    <name>Central Portal Repository</name>
+                    <url>${central.portal.releases.repo.url}</url>
                 </repository>
             </distributionManagement>
         </profile>
