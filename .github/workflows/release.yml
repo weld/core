@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Retrieve project metadata
         id: metadata
-        uses: radcortez/project-metadata-action@master
+        uses: radcortez/project-metadata-action@main
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           metadata-file-path: '.github/project.yml'
@@ -32,16 +32,16 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
-          server-id: 'sonatype-nexus-staging'
-          server-username: 'MAVEN_DEPLOY_USERNAME'
-          server-password: 'MAVEN_DEPLOY_TOKEN'
+          server-id: 'central'
+          server-username: 'CENTRAL_PORTAL_USERNAME'
+          server-password: 'CENTRAL_PORTAL_PWD'
           gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
           gpg-passphrase: 'MAVEN_GPG_PASSPHRASE'
 
       - name: Maven release ${{steps.metadata.outputs.current-version}}
         env:
-          MAVEN_DEPLOY_USERNAME: ${{secrets.MAVEN_DEPLOY_USERNAME}}
-          MAVEN_DEPLOY_TOKEN: ${{secrets.MAVEN_DEPLOY_TOKEN}}
+          CENTRAL_PORTAL_USERNAME: ${{secrets.CENTRAL_PORTAL_USERNAME}}
+          CENTRAL_PORTAL_PWD: ${{secrets.CENTRAL_PORTAL_PWD}}
           MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
         run: |
           export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED"
