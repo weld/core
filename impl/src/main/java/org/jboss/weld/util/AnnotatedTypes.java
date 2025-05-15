@@ -29,6 +29,7 @@ import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -326,7 +327,28 @@ public class AnnotatedTypes {
                     Object value = method.invoke(a);
                     builder.append(method.getName());
                     builder.append('=');
-                    builder.append(value.toString());
+                    // we need to detect arrays and write out their contents, plain toString() won't work there
+                    if (value instanceof Object[]) {
+                        builder.append(Arrays.toString((Object[]) value));
+                    } else if (value instanceof byte[]) {
+                        builder.append(Arrays.toString((byte[]) value));
+                    } else if (value instanceof short[]) {
+                        builder.append(Arrays.toString((short[]) value));
+                    } else if (value instanceof int[]) {
+                        builder.append(Arrays.toString((int[]) value));
+                    } else if (value instanceof long[]) {
+                        builder.append(Arrays.toString((long[]) value));
+                    } else if (value instanceof float[]) {
+                        builder.append(Arrays.toString((float[]) value));
+                    } else if (value instanceof double[]) {
+                        builder.append(Arrays.toString((double[]) value));
+                    } else if (value instanceof boolean[]) {
+                        builder.append(Arrays.toString((boolean[]) value));
+                    } else if (value instanceof char[]) {
+                        builder.append(Arrays.toString((char[]) value));
+                    } else {
+                        builder.append(value.toString());
+                    }
                 } catch (NullPointerException e) {
                     throwRE(a, method, e);
                 } catch (IllegalArgumentException e) {
