@@ -21,11 +21,14 @@
     <properties>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <!-- Maven Compiler plugin configuration defined in Weld Parent -->
+        <maven.compiler.argument.source>17</maven.compiler.argument.source>
+        <maven.compiler.argument.target>17</maven.compiler.argument.target>
+        <maven.compiler.argument.testSource>17</maven.compiler.argument.testSource>
+        <maven.compiler.argument.testTarget>17</maven.compiler.argument.testTarget>
 
         <!-- Should be equal to the newest Java version for which sources exist -->
-        <jdk.min.version>11</jdk.min.version>
+        <jdk.min.version>17</jdk.min.version>
 
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
 
