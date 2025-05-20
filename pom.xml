@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>55</version>
+        <version>56</version>
     </parent>
 
 
@@ -29,6 +29,9 @@
 
         <!-- Should be equal to the newest Java version for which sources exist -->
         <jdk.min.version>17</jdk.min.version>
+
+        <!-- Javadoc source version -->
+        <javadoc.source>17</javadoc.source>
 
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
 
