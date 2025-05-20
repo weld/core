@@ -21,7 +21,12 @@
     <properties>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
+        <!-- Specify against which Java SE release you want to build the project for releasing -->
+        <!-- This is typically the same as Maven Compiler plugin settings but may differ at times -->
+        <maven.compiler.release>17</maven.compiler.release>
+
         <!-- Maven Compiler plugin configuration defined in Weld Parent -->
+        <!-- Controls the source/target version we use for standard compilation and builds -->
         <maven.compiler.argument.source>17</maven.compiler.argument.source>
         <maven.compiler.argument.target>17</maven.compiler.argument.target>
         <maven.compiler.argument.testSource>17</maven.compiler.argument.testSource>
