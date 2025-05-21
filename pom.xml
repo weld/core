@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>54</version>
+        <version>56</version>
     </parent>
 
     <prerequisites>
@@ -25,8 +25,14 @@
     <properties>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <!-- Maven Compiler plugin configuration defined in Weld Parent -->
+        <maven.compiler.argument.source>11</maven.compiler.argument.source>
+        <maven.compiler.argument.target>11</maven.compiler.argument.target>
+        <maven.compiler.argument.testSource>11</maven.compiler.argument.testSource>
+        <maven.compiler.argument.testTarget>11</maven.compiler.argument.testTarget>
+
+        <!-- Javadoc source version -->
+        <javadoc.source>11</javadoc.source>
 
         <!-- Should be equal to the newest Java version for which sources exist -->
         <jdk.min.version>11</jdk.min.version>
