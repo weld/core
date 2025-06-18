@@ -59,7 +59,8 @@ public class SerializableContextualInstanceImpl<C extends Contextual<I>, I> impl
 
     @Override
     public String toString() {
-        return "Bean: " + contextual + "; Instance: " + instance + "; CreationalContext: " + creationalContext;
+        return "Bean: " + contextual + "; Instance: " + instance.getClass().getName() + "@"
+                + Integer.toHexString(instance.hashCode()) + "; CreationalContext: " + creationalContext;
     }
 
 }
