@@ -97,7 +97,6 @@
         <shrinkwrap.resolver.version>3.1.4</shrinkwrap.resolver.version>
         <testng.version>7.4.0</testng.version>
         <weld.api.version>5.0.SP3</weld.api.version>
-        <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.0.Alpha5</wildfly.arquillian.version>
         <!-- Override formatter/impsort versions from Weld parent to get JDK 11 compatible versions -->
         <formatter.version>2.23.0</formatter.version>
@@ -665,41 +664,6 @@
             <modules>
                 <module>bundles/osgi</module>
             </modules>
-        </profile>
-        <profile>
-            <!-- NOTE: groovy compilation must be disabled if using this profile -->
-            <id>log-msg-idx</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>log-msg-idx</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-logging-tools</artifactId>
-                    <version>${weld.logging.tools.version}</version>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <!-- We have to specify the processors to skip org.jboss.logging.processor.apt.LoggingToolsProcessor -->
-                            <annotationProcessors>
-                                <annotationProcessor>org.jboss.weld.logging.LogMessageIndexGenerator</annotationProcessor>
-                            </annotationProcessors>
-                            <compilerArguments>
-                                <AprojectVersion>${project.version}</AprojectVersion>
-                                <Aartifact>${project.groupId}:${project.artifactId}</Aartifact>
-                            </compilerArguments>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
             <!-- Following profile is automatically triggered in Windows environment and allows to handle behaviour/problems
