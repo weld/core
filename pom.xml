@@ -92,7 +92,6 @@
         <spotbugs-annotations-version>4.9.3</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
         <weld.api.version>7.0.Alpha2</weld.api.version>
-        <weld.logging.tools.version>1.0.3.Final</weld.logging.tools.version>
         <wildfly.arquillian.version>5.0.1.Final</wildfly.arquillian.version>
     </properties>
 
@@ -621,41 +620,6 @@
             <modules>
                 <module>bundles/osgi</module>
             </modules>
-        </profile>
-        <profile>
-            <!-- NOTE: groovy compilation must be disabled if using this profile -->
-            <id>log-msg-idx</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>log-msg-idx</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-logging-tools</artifactId>
-                    <version>${weld.logging.tools.version}</version>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <!-- We have to specify the processors to skip org.jboss.logging.processor.apt.LoggingToolsProcessor -->
-                            <annotationProcessors>
-                                <annotationProcessor>org.jboss.weld.logging.LogMessageIndexGenerator</annotationProcessor>
-                            </annotationProcessors>
-                            <compilerArguments>
-                                <AprojectVersion>${project.version}</AprojectVersion>
-                                <Aartifact>${project.groupId}:${project.artifactId}</Aartifact>
-                            </compilerArguments>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
             <id>windows</id>
