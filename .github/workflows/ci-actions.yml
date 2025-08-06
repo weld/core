@@ -104,7 +104,7 @@ jobs:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: maven-repo
           path: .
@@ -112,7 +112,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: wildfly-patched-zip
           path: .
@@ -170,7 +170,7 @@ jobs:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: maven-repo
           path: .
@@ -178,7 +178,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: wildfly-patched-zip
           path: .
@@ -231,7 +231,7 @@ jobs:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: maven-repo
           path: .
@@ -239,7 +239,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: wildfly-patched-zip
           path: .
@@ -308,7 +308,7 @@ jobs:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: maven-repo
           path: .
@@ -345,7 +345,7 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: maven-repo
           path: .
@@ -353,7 +353,7 @@ jobs:
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Patched WildFly
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: wildfly-patched-zip
           path: .
@@ -417,7 +417,7 @@ jobs:
           java-version: ${{ matrix.java.java-version }}
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: maven-repo
           path: .
@@ -452,7 +452,7 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: maven-repo
           path: .
