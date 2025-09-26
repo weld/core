@@ -142,6 +142,7 @@ public class SimpleEventTest {
 
     @Dependent
     public static class Receiver {
+
         public void receive1(@Observes @Updated String s) {
             RECEIVE_1_OBSERVED = true;
         }

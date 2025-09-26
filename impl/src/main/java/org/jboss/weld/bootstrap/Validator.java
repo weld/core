@@ -867,6 +867,15 @@ public class Validator implements Service {
                     throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
                             Formats.formatAsStackTraceElement(injectionPoint));
                 }
+            } else if (type.equals(Event.class) && parameterizedType.getRawType().equals(Instance.class)) {
+                // check for wildcard in Event injected via Instance -> @Inject Instance<Event<?>>
+                Type instanceTypeArgument = parameterizedType.getActualTypeArguments()[0];
+                if (instanceTypeArgument instanceof ParameterizedType
+                        && ((ParameterizedType) instanceTypeArgument).getRawType().equals(Event.class)
+                        && ((ParameterizedType) instanceTypeArgument).getActualTypeArguments()[0] instanceof WildcardType) {
+                    throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
+                            Formats.formatAsStackTraceElement(injectionPoint));
+                }
             }
         }
     }
