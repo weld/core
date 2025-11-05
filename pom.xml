@@ -518,7 +518,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <compilerArgs>
-                        <arg>-Aorg.jboss.logging.tools.addGeneratedAnnotation=false</arg>
+                        <!-- Needed since Java 23 to enable annotation processors (JBoss Logging) -->
+                        <!-- 'full' means that annotation processing happens alongside source code compilation -->
+                        <arg>-proc:full</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
