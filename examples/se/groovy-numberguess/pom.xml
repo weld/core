@@ -31,7 +31,7 @@
         </dependency>
         
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
+            <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <type>pom</type>
         </dependency>
@@ -72,6 +72,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <targetBytecode>${maven.compiler.argument.target}</targetBytecode>
                     <sources>
                         <source>
                             <directory>${project.basedir}/src/main/java</directory>
