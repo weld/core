@@ -98,18 +98,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
+            <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <optional>true</optional>
             <type>pom</type>
             <exclusions>
                 <!-- Exclude these otherwise surefire doesn't find any tests to run -->
                 <exclusion>
-                    <groupId>org.codehaus.groovy</groupId>
+                    <groupId>org.apache.groovy</groupId>
                     <artifactId>groovy-test-junit5</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.codehaus.groovy</groupId>
+                    <groupId>org.apache.groovy</groupId>
                     <artifactId>groovy-testng</artifactId>
                 </exclusion>
             </exclusions>
@@ -149,6 +149,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <!-- IIUIC, this should be the same as what we compile Weld into -->
+                    <targetBytecode>${maven.compiler.argument.target}</targetBytecode>
                     <testSources>
                         <testSource>
                             <directory>${project.basedir}/src/test/groovy</directory>
@@ -169,10 +171,6 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
-                        <configuration>
-                            <source>${maven.compiler.source}</source>
-                            <target>${maven.compiler.target}</target>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
