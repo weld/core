@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Download WildFly
         run: |
-          wget https://github.com/wildfly/wildfly/releases/download/33.0.1.Final/wildfly-33.0.1.Final.zip
+          wget https://github.com/wildfly/wildfly/releases/download/38.0.0.Final/wildfly-38.0.0.Final.zip
           unzip wildfly-*.zip -d container
           cd container
           mv ./* wildfly/
