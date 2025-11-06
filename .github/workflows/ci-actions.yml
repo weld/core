@@ -12,15 +12,15 @@ on:
 
 jobs:
   # builds Weld snapshot, downloads WFLY and upgrades it, prepares ENV variable
-  build-jdk11:
-    name: "Initial JDK 11 Weld Build + WildFly patch"
+  initial-build:
+    name: "Initial JDK 17 Weld Build + WildFly patch"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4.2.1
         with:
-          java-version: 11
+          java-version: 17
           distribution: 'temurin'
       - name: Download WildFly
         run: |
@@ -74,15 +74,12 @@ jobs:
   incontainer-tests:
     name: "Weld In-container Tests - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
-    needs: build-jdk11
+    needs: initial-build
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         java:
-          - { name: "11",
-              java-version: 11,
-          }
           - {
             name: "17",
             java-version: 17,
@@ -145,15 +142,12 @@ jobs:
   CDI-TCK:
     name: "CDI TCK - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
-    needs: build-jdk11
+    needs: initial-build
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         java:
-          - { name: "11",
-              java-version: 11,
-          }
           - {
             name: "17",
             java-version: 17,
@@ -216,7 +210,7 @@ jobs:
   relaxed-mode-test:
     name: "Relaxed mode testing - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
-    needs: build-jdk11
+    needs: initial-build
     timeout-minutes: 120
     strategy:
       fail-fast: false
@@ -288,15 +282,12 @@ jobs:
   no-container-tests:
     name: "Weld Tests w/o Container - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
-    needs: build-jdk11
+    needs: initial-build
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         java:
-          - { name: "11",
-              java-version: 11,
-          }
           - {
             name: "17",
             java-version: 17,
@@ -338,18 +329,18 @@ jobs:
           name: test-reports-no-container-jdk${{matrix.java.name}}
           path: 'test-reports.tgz'
 
-  # Weld Examples build and test, only JDK 11
+  # Weld Examples build and test, only one JDK
   examples-tests:
-    name: "Weld Examples build and test - JDK 11}"
+    name: "Weld Examples build and test - JDK 17}"
     runs-on: ubuntu-latest
-    needs: build-jdk11
+    needs: initial-build
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v4.2.1
         with:
-          java-version: 11
+          java-version: 17
           distribution: 'temurin'
       - name: Download Maven Repo
         uses: actions/download-artifact@v4
@@ -394,15 +385,12 @@ jobs:
   CDI-TCK-SE:
     name: "CDI TCK SE - JDK ${{matrix.java.name}}"
     runs-on: ubuntu-latest
-    needs: build-jdk11
+    needs: initial-build
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         java:
-          - { name: "11",
-              java-version: 11,
-          }
           - {
             name: "17",
             java-version: 17,
@@ -448,14 +436,14 @@ jobs:
   weld-se-servlet-coop:
     name: "Weld SE-Servlet Cooperation"
     runs-on: ubuntu-latest
-    needs: build-jdk11
+    needs: initial-build
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v4.2.1
         with:
-          java-version: 11
+          java-version: 17
           distribution: 'temurin'
       - name: Download Maven Repo
         uses: actions/download-artifact@v4
