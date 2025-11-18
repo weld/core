@@ -81,6 +81,11 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     }
 
     @Override
+    public SyntheticBeanBuilder<T> reserve(boolean isReserve) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
     public SyntheticBeanBuilder<T> priority(int priority) {
         this.priority = priority;
         return this;

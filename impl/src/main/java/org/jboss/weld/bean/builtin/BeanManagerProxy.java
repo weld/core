@@ -205,6 +205,11 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     }
 
     @Override
+    public <T> T unwrapClientProxy(T reference) {
+        return delegate().unwrapClientProxy(reference);
+    }
+
+    @Override
     public Bean<?> getPassivationCapableBean(BeanIdentifier identifier) {
         return delegate().getPassivationCapableBean(identifier);
     }

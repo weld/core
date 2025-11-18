@@ -61,7 +61,7 @@
         <arquillian.tomcat.version>1.2.3.Final</arquillian.tomcat.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Version of the CDI 4.1 TCK release -->
-        <cdi.tck.version>5.0.0.Alpha1</cdi.tck.version>
+        <cdi.tck.version>5.0.0-M1</cdi.tck.version>
         <!-- Version of the Jakarta Platform TCK 4.1 release -->
         <platform.tck.version>11.0.1</platform.tck.version>
         <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
@@ -91,7 +91,7 @@
         <spotbugs-maven-plugin.version>4.9.6.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.9.6</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
-        <weld.api.version>7.0.Alpha2</weld.api.version>
+        <weld.api.version>7.0.Alpha3</weld.api.version>
         <wildfly.arquillian.version>5.1.0.Final</wildfly.arquillian.version>
     </properties>
 

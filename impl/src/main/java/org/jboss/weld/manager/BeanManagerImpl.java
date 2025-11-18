@@ -1627,6 +1627,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return false;
     }
 
+    @Override
+    public <T> T unwrapClientProxy(T reference) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     private void validateQualifiers(Set<Annotation> qualifiers, String methodName) {
         for (Annotation qualifierCandidate : qualifiers) {
             if (!isQualifier(qualifierCandidate.annotationType())) {

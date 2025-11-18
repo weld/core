@@ -8,7 +8,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-jboss-runner-tck</artifactId>
-    <name>CDI TCK runner (4.1) for Weld (WildFly)</name>
+    <name>CDI TCK runner for Weld (WildFly)</name>
     <description>Aggregates dependencies and runs the CDI TCK (both standalone and on WildFly)</description>
 
     <licenses>

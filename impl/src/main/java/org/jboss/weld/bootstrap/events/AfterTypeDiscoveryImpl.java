@@ -69,6 +69,12 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     }
 
     @Override
+    public List<Class<?>> getReserves() {
+        throw new UnsupportedOperationException("Not yet implemented");
+
+    }
+
+    @Override
     public List<Class<?>> getInterceptors() {
         checkWithinObserverNotification();
         return builder.getInterceptorList(getReceiver());
