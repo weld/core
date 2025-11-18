@@ -38,6 +38,7 @@ import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.inject.spi.configurator.BeanConfigurator;
 import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.BeanIdentifiers;
@@ -331,6 +332,11 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
     public WeldBeanConfigurator<T> alternative(boolean alternative) {
         this.attributes.alternative(alternative);
         return this;
+    }
+
+    @Override
+    public BeanConfigurator<T> reserve(boolean value) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public Bean<T> complete() {

@@ -219,6 +219,12 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         return this;
     }
 
+    // TODO
+    @Override
+    public BeanAttributesConfigurator<T> reserve(boolean value) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     @Override
     public BeanAttributes<T> complete() {
         return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, name,

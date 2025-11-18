@@ -62,6 +62,11 @@ class StereotypeInfoImpl implements StereotypeInfo {
     }
 
     @Override
+    public boolean isReserve() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
     public Integer priority() {
         return cdiDeclaration.isAnnotationPresent(Priority.class)
                 ? cdiDeclaration.getAnnotation(Priority.class).value()

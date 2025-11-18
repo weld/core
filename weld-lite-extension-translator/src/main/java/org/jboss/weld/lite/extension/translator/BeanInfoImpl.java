@@ -105,6 +105,11 @@ class BeanInfoImpl implements BeanInfo {
     }
 
     @Override
+    public boolean isReserve() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
     public Integer priority() {
         if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedType
                 && cdiDeclaration.isAnnotationPresent(Priority.class)) {
