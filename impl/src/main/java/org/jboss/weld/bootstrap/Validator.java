@@ -167,6 +167,11 @@ public class Validator implements Service {
         if (beanManager.isPassivatingScope(bean.getScope()) && !Beans.isPassivationCapableBean(bean)) {
             throw ValidatorLogger.LOG.beanWithPassivatingScopeNotPassivationCapable(bean);
         }
+
+        // a bean cannot be an alternative and a reserve at the same time
+        if (bean.isAlternative() && bean.isReserve()) {
+            throw ValidatorLogger.LOG.beanReserveAndAlternative(bean);
+        }
     }
 
     /**
@@ -189,12 +194,12 @@ public class Validator implements Service {
                 validateInterceptors(beanManager, classBean);
             }
         }
-        // for each producer bean validate its disposer method
         if (bean instanceof AbstractProducerBean<?, ?, ?>) {
             AbstractProducerBean<?, ?, ?> producerBean = Reflections.<AbstractProducerBean<?, ?, ?>> cast(bean);
             if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?>) {
                 AbstractMemberProducer<?, ?> producer = Reflections.<AbstractMemberProducer<?, ?>> cast(producerBean
                         .getProducer());
+                // for each producer bean validate its disposer method
                 if (producer.getDisposalMethod() != null) {
                     for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
                         // pass the producer bean instead of the disposal method bean
@@ -203,6 +208,14 @@ public class Validator implements Service {
                         validateEventMetadataInjectionPoint(ip);
                         validateInjectionPointForDeploymentProblems(ip, null, beanManager);
                     }
+                }
+                // if it's an alternative, declaring bean cannot be a reserve
+                if (producerBean.isAlternative() && producerBean.getDeclaringBean().isReserve()) {
+                    throw ValidatorLogger.LOG.producedAlternativeOnReserveDeclaringBean(producerBean);
+                }
+                // if it's a reserve, declaring bean cannot be alternative
+                if (producerBean.isReserve() && producerBean.getDeclaringBean().isAlternative()) {
+                    throw ValidatorLogger.LOG.producedReserveOnAlternativeDeclaringBean(producerBean);
                 }
             }
         }

@@ -324,4 +324,13 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1491, value = "An interceptor {0} cannot have more than one method per interception type. Following methods were found for interception type {1}: {2}.", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorsCannotHaveMoreThanOneMethodPerType(Class<?> interceptorClass, String interceptionType,
             Collection<String> interceptionMethods);
+
+    @Message(id = 1492, value = "A {0} cannot be @Reserve and @Alternative at the same time. Note that apart from explicit annotations, beans may inherit these properties from their stereotypes too.", format = Format.MESSAGE_FORMAT)
+    DefinitionException beanReserveAndAlternative(Object bean);
+
+    @Message(id = 1493, value = "A @Reserve {0} cannot be produced by an @Alternative bean.", format = Format.MESSAGE_FORMAT)
+    DefinitionException producedReserveOnAlternativeDeclaringBean(Object bean);
+
+    @Message(id = 1494, value = "An @Alternative {0} cannot be produced by a @Reserve bean.", format = Format.MESSAGE_FORMAT)
+    DefinitionException producedAlternativeOnReserveDeclaringBean(Object bean);
 }

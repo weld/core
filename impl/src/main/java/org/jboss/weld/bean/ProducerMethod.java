@@ -97,7 +97,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
                 return ProducerMethod.this;
             }
         });
-        processExplicitPriority();
+        processPriority();
     }
 
     @Override

@@ -56,10 +56,12 @@ import org.jboss.weld.util.collections.ImmutableSet;
 public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     private final List<Item> alternatives = Collections.synchronizedList(new ArrayList<Item>());
+    private final List<Item> reserves = Collections.synchronizedList(new ArrayList<Item>());
     private final List<Item> interceptors = Collections.synchronizedList(new ArrayList<Item>());
     private final List<Item> decorators = Collections.synchronizedList(new ArrayList<Item>());
 
     private volatile Map<Class<?>, Integer> cachedAlternativeMap;
+    private volatile Map<Class<?>, Integer> cachedReserveMap;
     private volatile boolean sorted;
     private volatile boolean dirty;
 
@@ -81,6 +83,10 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     public void addAlternative(Class<?> javaClass, int priority) {
         addItem(alternatives, javaClass, priority);
+    }
+
+    public void addReserve(Class<?> javaClass, int priority) {
+        addItem(reserves, javaClass, priority);
     }
 
     public void addInterceptor(Class<?> javaClass, int priority) {
@@ -108,6 +114,27 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             @Override
             protected List<Item> getDelegate() {
                 return alternatives;
+            }
+        };
+    }
+
+    public List<Class<?>> getReserveList(final Extension extension) {
+        initialize();
+        return new EnablementListView() {
+
+            @Override
+            protected Extension getExtension() {
+                return extension;
+            }
+
+            @Override
+            protected ViewType getViewType() {
+                return ViewType.RESERVES;
+            }
+
+            @Override
+            protected List<Item> getDelegate() {
+                return reserves;
             }
         };
     }
@@ -180,9 +207,21 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         return cachedAlternativeMap;
     }
 
+    private Map<Class<?>, Integer> getGlobalReserveMap() {
+        if (cachedReserveMap == null || dirty) {
+            Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
+            for (Item item : reserves) {
+                map.put(item.getJavaClass(), item.getPriority());
+            }
+            cachedReserveMap = ImmutableMap.copyOf(map);
+        }
+        return cachedReserveMap;
+    }
+
     private void initialize() {
         if (!sorted) {
             Collections.sort(alternatives);
+            Collections.sort(reserves);
             Collections.sort(interceptors);
             Collections.sort(decorators);
             sorted = true;
@@ -236,11 +275,13 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         }
 
         Map<Class<?>, Integer> globalAlternatives = getGlobalAlternativeMap();
+        Map<Class<?>, Integer> globalReserves = getGlobalReserveMap();
 
         // We suppose that enablements are always created all at once
         dirty = false;
 
         return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives,
+                globalReserves,
                 alternativeClasses,
                 alternativeStereotypes);
     }
@@ -248,14 +289,15 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     @Override
     public void cleanupAfterBoot() {
         alternatives.clear();
+        reserves.clear();
         interceptors.clear();
         decorators.clear();
     }
 
     @Override
     public String toString() {
-        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators="
-                + decorators + "]";
+        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", reserves=" + reserves + ", interceptors="
+                + interceptors + ", decorators=" + decorators + "]";
     }
 
     private <T> void checkForDuplicates(List<Metadata<T>> list, MessageCallback<DeploymentException> messageCallback) {

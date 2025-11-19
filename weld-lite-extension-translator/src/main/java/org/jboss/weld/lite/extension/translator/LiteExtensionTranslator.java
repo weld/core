@@ -176,6 +176,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                 configurator.scope(syntheticBean.scope);
             }
             configurator.alternative(syntheticBean.isAlternative);
+            configurator.reserve(syntheticBean.isReserve);
             configurator.priority(syntheticBean.priority);
             configurator.name(syntheticBean.name);
             configurator.stereotypes(syntheticBean.stereotypes);

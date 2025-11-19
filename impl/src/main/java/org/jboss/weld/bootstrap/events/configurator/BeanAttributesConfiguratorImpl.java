@@ -65,6 +65,8 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     private boolean isAlternative;
 
+    private boolean isReserve;
+
     public BeanAttributesConfiguratorImpl(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.qualifiers = new HashSet<Annotation>();
@@ -219,15 +221,15 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         return this;
     }
 
-    // TODO
     @Override
     public BeanAttributesConfigurator<T> reserve(boolean value) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        this.isReserve = value;
+        return this;
     }
 
     @Override
     public BeanAttributes<T> complete() {
-        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, name,
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, isReserve, name,
                 Bindings.normalizeBeanQualifiers(qualifiers),
                 ImmutableSet.copyOf(types),
                 initScope());

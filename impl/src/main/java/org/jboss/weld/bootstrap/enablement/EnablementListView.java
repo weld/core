@@ -269,6 +269,7 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
     enum ViewType {
 
         ALTERNATIVES("getAlternatives()"),
+        RESERVES("getReserves()"),
         INTERCEPTORS("getInterceptors()"),
         DECORATORS("getDecorators()");
 

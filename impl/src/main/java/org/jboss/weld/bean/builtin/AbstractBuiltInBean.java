@@ -98,7 +98,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
     protected static class BuiltInBeanAttributes<T> extends ImmutableBeanAttributes<T> {
 
         public BuiltInBeanAttributes(Class<T> type) {
-            super(Collections.<Class<? extends Annotation>> emptySet(), false, null, Bindings.DEFAULT_QUALIFIERS,
+            super(Collections.<Class<? extends Annotation>> emptySet(), false, false, null, Bindings.DEFAULT_QUALIFIERS,
                     ImmutableSet.of(Object.class, type), Dependent.class);
         }
     }

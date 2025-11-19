@@ -1188,7 +1188,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         Set<Bean<? extends X>> resolvedBeans = beanResolver.resolve(beans);
         if (resolvedBeans.size() == 1) {
             return resolvedBeans.iterator().next();
-        } else if (resolvedBeans.size() == 0) {
+        } else if (resolvedBeans.isEmpty()) {
             return null;
         } else {
             throw BeanManagerLogger.LOG.ambiguousBeansForDependency(WeldCollections.toMultiRowString(beans));

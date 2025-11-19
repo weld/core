@@ -39,6 +39,8 @@ public class MergedStereotypes<T, E> {
     private boolean beanNameDefaulted;
     // Are any of the stereotypes alternatives
     private boolean alternative;
+    // Are any of the stereotypes reserves
+    private boolean reserve;
 
     private Set<Class<? extends Annotation>> stereotypes;
 
@@ -81,6 +83,9 @@ public class MergedStereotypes<T, E> {
             if (stereotype.isAlternative()) {
                 alternative = true;
             }
+            if (stereotype.isReserve()) {
+                reserve = true;
+            }
             if (stereotype.getDefaultScopeType() != null) {
                 possibleScopeTypes.add(stereotype.getDefaultScopeType());
             }
@@ -95,6 +100,10 @@ public class MergedStereotypes<T, E> {
 
     public boolean isAlternative() {
         return alternative;
+    }
+
+    public boolean isReserve() {
+        return reserve;
     }
 
     /**
@@ -130,7 +139,8 @@ public class MergedStereotypes<T, E> {
     @Override
     public String toString() {
         return "Merged stereotype model; Any of the stereotypes is an alternative: " +
-                alternative + "; possible scopes " + possibleScopeTypes;
+                alternative + "; Any of the stereotypes is a reserve: " +
+                reserve + "; possible scopes " + possibleScopeTypes;
     }
 
 }

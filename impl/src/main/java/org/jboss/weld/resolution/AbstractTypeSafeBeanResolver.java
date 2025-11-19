@@ -73,23 +73,40 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         @Override
         public Set<Bean<?>> apply(Set<Bean<?>> from) {
             if (from.size() > 1) {
-                ImmutableSet.Builder<Bean<?>> allBeans = ImmutableSet.builder();
+                ImmutableSet.Builder<Bean<?>> allBeansBuilder = ImmutableSet.builder();
                 // beans that are themselves alternatives or their defining bean is an alternative
                 Set<Bean<?>> priorityBeans = new HashSet<Bean<?>>();
+                // beans that are enabled reserves
+                Set<Bean<?>> reserveBeans = new HashSet<Bean<?>>();
+                // beans that are neither reserves nor alternatives
+                Set<Bean<?>> standardBeans = new HashSet<Bean<?>>();
 
                 for (Bean<?> bean : from) {
-                    if (bean.isAlternative()) {
+                    if (isBeanAlternative(bean)) {
+                        // alternatives requires special check to account for declaring bean of producer being
+                        // an alternative
                         priorityBeans.add(bean);
-                    } else if (bean instanceof AbstractProducerBean<?, ?, ?>) {
-                        AbstractProducerBean<?, ?, ?> producer = (AbstractProducerBean<?, ?, ?>) bean;
-                        if (producer.getDeclaringBean().isAlternative()) {
-                            priorityBeans.add(bean);
-                        }
+                    } else if (bean.isReserve()) {
+                        reserveBeans.add(bean);
+                    } else {
+                        standardBeans.add(bean);
                     }
-                    allBeans.add(bean);
+                    allBeansBuilder.add(bean);
                 }
                 if (priorityBeans.isEmpty()) {
-                    return allBeans.build();
+                    Set<Bean<?>> allBeans = allBeansBuilder.build();
+                    if (reserveBeans.size() == allBeans.size()) {
+                        // all beans are reserves, we need to disambiguate them
+                        return resolveReserves(reserveBeans);
+                    } else {
+                        // remaining beans are standard beans plus reserves
+                        // if there is exactly one non-reserve bean, return it, otherwise return all
+                        if (standardBeans.size() == 1) {
+                            return Collections.<Bean<?>> singleton(standardBeans.iterator().next());
+                        } else {
+                            return allBeans;
+                        }
+                    }
                 } else {
                     if (priorityBeans.size() == 1) {
                         return Collections.<Bean<?>> singleton(priorityBeans.iterator().next());
@@ -100,6 +117,16 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
             } else {
                 return ImmutableSet.copyOf(from);
             }
+        }
+
+        private boolean isBeanAlternative(Bean<?> bean) {
+            if (bean.isAlternative()) {
+                return true;
+            }
+            if (bean instanceof AbstractProducerBean<?, ?, ?> producer) {
+                return producer.getDeclaringBean().isAlternative();
+            }
+            return false;
         }
 
         /**
@@ -136,6 +163,37 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
             }
             return ImmutableSet.copyOf(selectedAlternativesWithHighestPriority);
         }
+
+    }
+
+    /**
+     * Otherwise, if there is no bean remaining and all candidate beans are reserves, then:
+     * - The container determines the highest priority value and eliminates all candidate beans except for reserves with the
+     * highest priority value.
+     * - If there is exactly one bean remaining, the container selects this bean, and the ambiguous dependency is called
+     * resolvable.
+     * - Otherwise, the ambiguous dependency is unresolvable.
+     */
+    public Set<Bean<?>> resolveReserves(Set<Bean<?>> reserves) {
+        int highestPriority = Integer.MIN_VALUE;
+        Set<Bean<?>> selectedReservesWithHighestPriority = new HashSet<Bean<?>>();
+        for (Bean<?> bean : reserves) {
+            Integer priority;
+            if (bean instanceof AbstractProducerBean) {
+                // first check for explicit priority declaration on producers
+                priority = ((AbstractProducerBean<?, ?, ?>) bean).getPriority();
+            } else {
+                priority = beanManager.getEnabled().getReservePriority(bean.getBeanClass());
+            }
+            if (priority > highestPriority) {
+                highestPriority = priority;
+                selectedReservesWithHighestPriority.clear();
+            }
+            if (priority == highestPriority) {
+                selectedReservesWithHighestPriority.add(bean);
+            }
+        }
+        return ImmutableSet.copyOf(selectedReservesWithHighestPriority);
 
     }
 

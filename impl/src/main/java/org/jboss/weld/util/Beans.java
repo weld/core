@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.annotation.Priority;
 import jakarta.decorator.Decorator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.ConversationScoped;
@@ -50,8 +51,11 @@ import jakarta.enterprise.event.ObservesAsync;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.CreationException;
 import jakarta.enterprise.inject.Disposes;
+import jakarta.enterprise.inject.Reserve;
+import jakarta.enterprise.inject.Stereotype;
 import jakarta.enterprise.inject.Typed;
 import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.Annotated;
 import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -67,6 +71,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
+import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.ForwardingBean;
@@ -254,6 +259,23 @@ public class Beans {
                 isEnabled = true;
             }
             return isEnabled;
+        } else if (bean.isReserve()) {
+            boolean isEnabled = false;
+            if (bean instanceof AbstractClassBean<?>) {
+                // for class beans, look at the global enablement
+                isEnabled = enabled.isEnabledReserveClass(bean.getBeanClass());
+            } else if (bean instanceof AbstractProducerBean<?, ?, ?>
+                    && ((AbstractProducerBean<?, ?, ?>) bean).getPriority() != null) {
+                // for producers, look at their priority
+                isEnabled = true;
+            }
+            // For synthetic enabled reserves, the ModuleEnablement may not yet be aware of them
+            if (!isEnabled
+                    && ((bean instanceof WeldBean && ((WeldBean<?>) bean).getPriority() != null)
+                            || bean instanceof Prioritized)) {
+                isEnabled = true;
+            }
+            return isEnabled;
         } else if (bean instanceof AbstractProducerBean<?, ?, ?>) {
             AbstractProducerBean<?, ?, ?> receiverBean = (AbstractProducerBean<?, ?, ?>) bean;
             return isBeanEnabled(receiverBean.getDeclaringBean(), enabled);
@@ -275,6 +297,17 @@ public class Beans {
      */
     public static boolean isAlternative(EnhancedAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
         return annotated.isAnnotationPresent(Alternative.class) || mergedStereotypes.isAlternative();
+    }
+
+    /**
+     * Is reserve.
+     *
+     * @param annotated the annotated
+     * @param mergedStereotypes merged stereotypes
+     * @return true if reserve, false otherwise
+     */
+    public static boolean isReserve(EnhancedAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
+        return annotated.isAnnotationPresent(Reserve.class) || mergedStereotypes.isReserve();
     }
 
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructorStrict(EnhancedAnnotatedType<T> type) {
@@ -717,6 +750,101 @@ public class Beans {
             contextualStore = serviceRegistry.get(ContextualStore.class);
         }
         return contextualStore.putIfAbsent(contextual);
+    }
+
+    /**
+     * Attempts to find {@link Priority}, {@link Alternative} and {@link Reserve} annotations declared on a stereotype(s) of
+     * given {@code Annotated}.
+     * Returns a helper object ({@link AnnotationSearchResult}) holding all of that information, note that parts of this object
+     * may be null.
+     * <p>
+     * Method does not throw if multiple priorities are found, just returns a collection of all found.
+     * <p>
+     * If there are more stereotypes that declare {@link Alternative} or {@link Reserve}, this method just stores the first
+     * found.
+     *
+     * @param type Annotated to be searched
+     * @return an {@link AnnotationSearchResult} holding all the information; some parts of it may be null indicating no such
+     *         information was found
+     */
+    public static AnnotationSearchResult annotationSearch(Annotated type) {
+        AnnotationSearchResult annotationSearchResult = new AnnotationSearchResult();
+
+        for (Annotation annotation : type.getAnnotations()) {
+            // identify stereotypes
+            Class<? extends Annotation> annotationClass = annotation.annotationType();
+            if (annotationClass.getAnnotation(Stereotype.class) != null) {
+                recursiveStereotypeSearch(annotationClass, annotationSearchResult);
+            }
+        }
+        return annotationSearchResult;
+    }
+
+    private static void recursiveStereotypeSearch(Class<? extends Annotation> stereotype,
+            AnnotationSearchResult annotationSearchResult) {
+        // search each stereotype for priority/alternative/reserve annotation
+        Priority priorityAnnotation = stereotype.getAnnotation(Priority.class);
+        if (priorityAnnotation != null) {
+            annotationSearchResult.addPriority(priorityAnnotation.value());
+        }
+        Reserve reserve = stereotype.getAnnotation(Reserve.class);
+        if (reserve != null) {
+            annotationSearchResult.setReserve(reserve.annotationType());
+        }
+        Alternative alternative = stereotype.getAnnotation(Alternative.class);
+        if (alternative != null) {
+            annotationSearchResult.setAlternative(alternative.annotationType());
+        }
+        // perform a recursive search for more stereotypes
+        for (Annotation annotation : stereotype.getAnnotations()) {
+            Class<? extends Annotation> annotationClass = annotation.annotationType();
+            if (annotationClass.getAnnotation(Stereotype.class) != null) {
+                recursiveStereotypeSearch(annotationClass, annotationSearchResult);
+            }
+        }
+    }
+
+    /**
+     * Holds information about priorities found in stereotypes as well as whether there the type is alternative/reserve
+     */
+    public static class AnnotationSearchResult {
+        private Class<? extends Annotation> reserve;
+        private Class<? extends Annotation> alternative;
+        private final Set<Integer> priorities;
+
+        private AnnotationSearchResult() {
+            this.reserve = null;
+            this.alternative = null;
+            this.priorities = new HashSet<>();
+        }
+
+        public Class<? extends Annotation> getReserve() {
+            return reserve;
+        }
+
+        public Class<? extends Annotation> getAlternative() {
+            return alternative;
+        }
+
+        public Set<Integer> getPriorities() {
+            return priorities;
+        }
+
+        public void addPriority(Integer priority) {
+            this.priorities.add(priority);
+        }
+
+        public void setAlternative(Class<? extends Annotation> alternative) {
+            if (this.alternative == null) {
+                this.alternative = alternative;
+            }
+        }
+
+        public void setReserve(Class<? extends Annotation> reserve) {
+            if (this.reserve == null) {
+                this.reserve = reserve;
+            }
+        }
     }
 
 }

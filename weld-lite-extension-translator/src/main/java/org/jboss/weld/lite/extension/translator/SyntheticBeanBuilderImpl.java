@@ -20,6 +20,7 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     Set<Annotation> qualifiers = new HashSet<>();
     Class<? extends Annotation> scope;
     boolean isAlternative;
+    boolean isReserve;
     int priority;
     String name;
     Set<Class<? extends Annotation>> stereotypes = new HashSet<>();
@@ -82,7 +83,8 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
 
     @Override
     public SyntheticBeanBuilder<T> reserve(boolean isReserve) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        this.isReserve = isReserve;
+        return this;
     }
 
     @Override

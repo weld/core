@@ -42,7 +42,8 @@ import org.jboss.weld.util.collections.ImmutableMap;
 public class ModuleEnablement {
 
     public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<Class<?>> emptyList(),
-            Collections.<Class<?>> emptyList(), Collections.<Class<?>, Integer> emptyMap(), Collections.<Class<?>> emptySet(),
+            Collections.<Class<?>> emptyList(), Collections.<Class<?>, Integer> emptyMap(),
+            Collections.<Class<?>, Integer> emptyMap(), Collections.<Class<?>> emptySet(),
             Collections.<Class<? extends Annotation>> emptySet());
 
     private final List<Class<?>> interceptors;
@@ -51,6 +52,7 @@ public class ModuleEnablement {
     private final Map<Class<?>, Integer> interceptorMap;
     private final Map<Class<?>, Integer> decoratorMap;
     private final Map<Class<?>, Integer> globalAlternatives;
+    private final Map<Class<?>, Integer> globalReserves;
 
     private final Set<Class<?>> localAlternativeClasses;
     private final Set<Class<? extends Annotation>> localAlternativeStereotypes;
@@ -59,7 +61,8 @@ public class ModuleEnablement {
     private final Comparator<Interceptor<?>> interceptorComparator;
 
     public ModuleEnablement(List<Class<?>> interceptors, List<Class<?>> decorators, Map<Class<?>, Integer> globalAlternatives,
-            Set<Class<?>> localAlternativeClasses, Set<Class<? extends Annotation>> localAlternativeStereotypes) {
+            Map<Class<?>, Integer> globalReserves, Set<Class<?>> localAlternativeClasses,
+            Set<Class<? extends Annotation>> localAlternativeStereotypes) {
         this.interceptors = interceptors;
         this.decorators = decorators;
 
@@ -70,6 +73,7 @@ public class ModuleEnablement {
         this.interceptorComparator = new EnablementComparator<Interceptor<?>>(interceptorMap);
 
         this.globalAlternatives = globalAlternatives;
+        this.globalReserves = globalReserves;
 
         this.localAlternativeClasses = localAlternativeClasses;
         this.localAlternativeStereotypes = localAlternativeStereotypes;
@@ -114,8 +118,16 @@ public class ModuleEnablement {
         return globalAlternatives.get(javaClass);
     }
 
+    public Integer getReservePriority(Class<?> javaClass) {
+        return globalReserves.get(javaClass);
+    }
+
     public boolean isEnabledAlternativeClass(Class<?> alternativeClass) {
         return globalAlternatives.containsKey(alternativeClass) || localAlternativeClasses.contains(alternativeClass);
+    }
+
+    public boolean isEnabledReserveClass(Class<?> reserveClass) {
+        return globalReserves.containsKey(reserveClass);
     }
 
     public boolean isEnabledAlternativeStereotype(Class<?> alternativeClass) {
@@ -158,6 +170,6 @@ public class ModuleEnablement {
     @Override
     public String toString() {
         return "ModuleEnablement [interceptors=" + interceptors + ", decorators=" + decorators + ", alternatives="
-                + getAllAlternatives() + "]";
+                + getAllAlternatives() + ", reserves=" + globalReserves.keySet() + "]";
     }
 }

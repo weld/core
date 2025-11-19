@@ -36,6 +36,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
@@ -225,9 +226,24 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         return explicitPriority;
     }
 
-    // requires initialized getAnnotated() hence subclasses need to invoke this manually
-    protected void processExplicitPriority() {
+    /**
+     * Searches for {@code @Priority} annotation declared either directly on the producer or via its stereotypes.
+     * <p>
+     * Requires initialized {@code getAnnotated()} hence subclasses need to invoke this manually.
+     */
+    protected void processPriority() {
         Priority annotation = getAnnotated() == null ? null : getAnnotated().getAnnotation(Priority.class);
         this.explicitPriority = annotation == null ? null : annotation.value();
+
+        // no explicit priority, try searching through stereotypes
+        if (explicitPriority == null) {
+            Beans.AnnotationSearchResult annotationSearchResult = Beans.annotationSearch(getAnnotated());
+            // multiple priorities within stereotypes are an error
+            if (annotationSearchResult.getPriorities().size() > 1) {
+                throw BootstrapLogger.LOG.multiplePriorityValuesDeclared(getAnnotated());
+            } else if (annotationSearchResult.getPriorities().size() == 1) {
+                this.explicitPriority = annotationSearchResult.getPriorities().iterator().next();
+            }
+        }
     }
 }

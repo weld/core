@@ -232,8 +232,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             }
         } else {
             beanManager.addBean(bean);
-            if (priority != null && bean.isAlternative()) {
-                globalEnablementBuilder.addAlternative(bean.getBeanClass(), priority);
+            if (priority != null) {
+                // validation of bean being both, alternative and reserve happens during validation
+                if (bean.isAlternative()) {
+                    globalEnablementBuilder.addAlternative(bean.getBeanClass(), priority);
+                }
+                if (bean.isReserve()) {
+                    globalEnablementBuilder.addReserve(bean.getBeanClass(), priority);
+                }
             }
         }
         containerLifecycleEvents.fireProcessBean(beanManager, bean, registration.extension);

@@ -126,4 +126,7 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1126, value = "BeanAttributesConfigurator is not able to read {0} - missing BeanManager", format = Format.MESSAGE_FORMAT)
     IllegalStateException beanAttributesConfiguratorCannotReadAnnotatedType(Object type);
 
+    @Message(id = 1127, value = "Stereotype {0} cannot declare @Alternative and @Reserve at the same time", format = Format.MESSAGE_FORMAT)
+    DefinitionException alternativeAndReserveSimultaneously(Object param1);
+
 }
