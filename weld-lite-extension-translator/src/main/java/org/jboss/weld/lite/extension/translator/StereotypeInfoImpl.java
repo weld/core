@@ -9,6 +9,7 @@ import java.util.Optional;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Reserve;
 import jakarta.enterprise.inject.build.compatible.spi.ScopeInfo;
 import jakarta.enterprise.inject.build.compatible.spi.StereotypeInfo;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -63,7 +64,7 @@ class StereotypeInfoImpl implements StereotypeInfo {
 
     @Override
     public boolean isReserve() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return cdiDeclaration.isAnnotationPresent(Reserve.class);
     }
 
     @Override

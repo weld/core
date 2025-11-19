@@ -3,6 +3,7 @@
 
     <engine>
         <property name="maxTestClassesBeforeRestart">40</property>
+        <!-- property name="deploymentExportPath">target/</property-->
     </engine>
 
     <container qualifier="weld" default="true">

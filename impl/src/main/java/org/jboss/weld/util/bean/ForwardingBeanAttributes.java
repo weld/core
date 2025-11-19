@@ -66,6 +66,11 @@ public abstract class ForwardingBeanAttributes<T> implements BeanAttributes<T> {
     }
 
     @Override
+    public boolean isReserve() {
+        return attributes().isReserve();
+    }
+
+    @Override
     public int hashCode() {
         return attributes().hashCode();
     }

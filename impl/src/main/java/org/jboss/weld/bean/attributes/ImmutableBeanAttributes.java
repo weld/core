@@ -35,16 +35,17 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
 
     private final Set<Class<? extends Annotation>> stereotypes;
     private final boolean alternative;
+    private final boolean reserve;
     private final String name;
     private final Set<Annotation> qualifiers;
     private final Set<Type> types;
     private final Class<? extends Annotation> scope;
 
-    public ImmutableBeanAttributes(Set<Class<? extends Annotation>> stereotypes, boolean alternative, String name,
-            Set<Annotation> qualifiers, Set<Type> types,
-            Class<? extends Annotation> scope) {
+    public ImmutableBeanAttributes(Set<Class<? extends Annotation>> stereotypes, boolean alternative, boolean reserve,
+            String name, Set<Annotation> qualifiers, Set<Type> types, Class<? extends Annotation> scope) {
         this.stereotypes = stereotypes;
         this.alternative = alternative;
+        this.reserve = reserve;
         this.name = name;
         this.qualifiers = qualifiers;
         this.types = types;
@@ -55,7 +56,8 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
      * Utility constructor used for overriding Bean qualifiers and name for specialization purposes.
      */
     public ImmutableBeanAttributes(Set<Annotation> qualifiers, String name, BeanAttributes<T> attributes) {
-        this(attributes.getStereotypes(), attributes.isAlternative(), name, qualifiers, attributes.getTypes(),
+        this(attributes.getStereotypes(), attributes.isAlternative(), attributes.isReserve(), name, qualifiers,
+                attributes.getTypes(),
                 attributes.getScope());
     }
 
@@ -67,6 +69,11 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
     @Override
     public boolean isAlternative() {
         return alternative;
+    }
+
+    @Override
+    public boolean isReserve() {
+        return reserve;
     }
 
     @Override

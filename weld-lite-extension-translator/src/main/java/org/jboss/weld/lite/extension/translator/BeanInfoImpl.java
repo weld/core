@@ -106,7 +106,7 @@ class BeanInfoImpl implements BeanInfo {
 
     @Override
     public boolean isReserve() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return cdiBean.isReserve();
     }
 
     @Override

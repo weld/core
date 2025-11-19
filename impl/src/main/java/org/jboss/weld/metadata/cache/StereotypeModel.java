@@ -29,6 +29,7 @@ import java.util.Set;
 
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Reserve;
 import jakarta.enterprise.inject.Stereotype;
 import jakarta.inject.Named;
 import jakarta.inject.Qualifier;
@@ -52,6 +53,8 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
 
     // Is the stereotype an alternative
     private boolean alternative;
+    // Is the stereotype a reserve
+    private boolean reserve;
     // The default scope type
     private Annotation defaultScopeType;
     // Is the bean name defaulted
@@ -75,6 +78,11 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         super.init(annotatedAnnotation);
         if (valid) {
             initAlternative(annotatedAnnotation);
+            initReserve(annotatedAnnotation);
+            if (isAlternative() && isReserve()) {
+                // stereotype cannot declare @Alternative and @Reserve at the same time
+                throw MetadataLogger.LOG.alternativeAndReserveSimultaneously(annotatedAnnotation);
+            }
             initDefaultScopeType(annotatedAnnotation);
             initBeanNameDefaulted(annotatedAnnotation);
             initInterceptorBindings(annotatedAnnotation);
@@ -144,6 +152,12 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         }
     }
 
+    private void initReserve(EnhancedAnnotation<T> annotatedAnnotation) {
+        if (annotatedAnnotation.isAnnotationPresent(Reserve.class)) {
+            this.reserve = true;
+        }
+    }
+
     @Override
     protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
         super.check(annotatedAnnotation);
@@ -207,6 +221,10 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
      */
     public boolean isAlternative() {
         return alternative;
+    }
+
+    public boolean isReserve() {
+        return reserve;
     }
 
     public Set<Annotation> getInheritedStereotypes() {

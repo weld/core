@@ -67,6 +67,7 @@ public class BeanAttributesFactory {
 
         private MergedStereotypes<T, ?> mergedStereotypes;
         private boolean alternative;
+        private boolean reserve;
         private String name;
         private Set<Annotation> qualifiers;
         private Set<Type> types;
@@ -79,6 +80,7 @@ public class BeanAttributesFactory {
             this.annotated = annotated;
             initStereotypes(annotated, manager);
             initAlternative(annotated);
+            initReserve(annotated);
             initName(annotated);
             initQualifiers(annotated);
             initScope(annotated);
@@ -95,6 +97,10 @@ public class BeanAttributesFactory {
 
         protected void initAlternative(EnhancedAnnotated<T, ?> annotated) {
             this.alternative = Beans.isAlternative(annotated, mergedStereotypes);
+        }
+
+        protected void initReserve(EnhancedAnnotated<T, ?> annotated) {
+            this.reserve = Beans.isReserve(annotated, mergedStereotypes);
         }
 
         /**
@@ -234,8 +240,8 @@ public class BeanAttributesFactory {
         }
 
         public BeanAttributes<T> build() {
-            return new ImmutableBeanAttributes<T>(mergedStereotypes.getStereotypes(), alternative, name, qualifiers, types,
-                    scope);
+            return new ImmutableBeanAttributes<T>(mergedStereotypes.getStereotypes(), alternative, reserve, name,
+                    qualifiers, types, scope);
         }
     }
 }
