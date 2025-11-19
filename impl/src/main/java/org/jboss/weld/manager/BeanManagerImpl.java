@@ -155,6 +155,7 @@ import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.ExpressionLanguageSupport;
 import org.jboss.weld.module.ObserverNotifierFactory;
+import org.jboss.weld.proxy.WeldClientProxy;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.resolution.DecoratorResolvableBuilder;
 import org.jboss.weld.resolution.EventTypeAssignabilityRules;
@@ -1628,8 +1629,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T unwrapClientProxy(T reference) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (reference instanceof WeldClientProxy) {
+            return (T) ((WeldClientProxy) reference).getMetadata().getContextualInstance();
+        } else {
+            return reference;
+        }
     }
 
     private void validateQualifiers(Set<Annotation> qualifiers, String methodName) {

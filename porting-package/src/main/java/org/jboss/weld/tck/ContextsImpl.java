@@ -17,6 +17,7 @@
 package org.jboss.weld.tck;
 
 import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.inject.Instance;
 
 import org.jboss.cdi.tck.spi.Contexts;
 import org.jboss.weld.Container;
@@ -24,13 +25,22 @@ import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.ManagedContext;
 import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.http.HttpRequestContext;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.ForwardingContext;
 
 public class ContextsImpl implements Contexts<Context> {
 
     public RequestContext getRequestContext() {
-        return Container.instance().deploymentManager().instance().select(HttpRequestContext.class).get();
+        BeanManagerImpl beanManager = Container.instance().deploymentManager();
+        // Active req. context impl will differ between running -Dincontainer (WFLY) and embedded tests
+        Instance<HttpRequestContext> httpReqContext = beanManager.instance().select(HttpRequestContext.class);
+        if (httpReqContext.isResolvable()) {
+            return httpReqContext.get();
+        } else {
+            return beanManager.instance().select(BoundRequestContext.class).get();
+        }
     }
 
     public void setActive(Context context) {
