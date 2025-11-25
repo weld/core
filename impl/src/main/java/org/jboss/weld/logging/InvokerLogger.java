@@ -2,6 +2,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
@@ -20,7 +22,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface InvokerLogger extends WeldLogger {
 
-    InvokerLogger LOG = Logger.getMessageLogger(InvokerLogger.class, Category.INVOKER.getName());
+    InvokerLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), InvokerLogger.class, Category.INVOKER.getName());
 
     @Message(id = 2000, value = "Cannot apply {0} to method argument with position {1}; total number of method parameters is {2}", format = Message.Format.MESSAGE_FORMAT)
     IllegalArgumentException invalidArgumentPosition(String kindOfTransformer, int position, int argLookupLength);

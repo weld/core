@@ -18,6 +18,7 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -40,7 +41,8 @@ import org.jboss.weld.exceptions.WeldException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface ReflectionLogger extends WeldLogger {
 
-    ReflectionLogger LOG = Logger.getMessageLogger(ReflectionLogger.class, Category.REFLECTION.getName());
+    ReflectionLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), ReflectionLogger.class,
+            Category.REFLECTION.getName());
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 600, value = "{0} is missing @Retention(RUNTIME). Weld will use this annotation, however this may make the application unportable.", format = Format.MESSAGE_FORMAT)

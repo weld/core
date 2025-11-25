@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
@@ -34,7 +36,8 @@ import org.jboss.weld.exceptions.IllegalStateException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface ConfigurationLogger extends WeldLogger {
 
-    ConfigurationLogger LOG = Logger.getMessageLogger(ConfigurationLogger.class, Category.CONFIGURATION.getName());
+    ConfigurationLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), ConfigurationLogger.class,
+            Category.CONFIGURATION.getName());
 
     @Message(id = 1900, value = "Invalid configuration property value {0} for key {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException invalidConfigurationPropertyValue(Object value, Object key);
