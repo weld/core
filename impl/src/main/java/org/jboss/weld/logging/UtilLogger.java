@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -39,7 +41,7 @@ import org.jboss.weld.exceptions.WeldException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface UtilLogger extends WeldLogger {
 
-    UtilLogger LOG = Logger.getMessageLogger(UtilLogger.class, Category.UTIL.getName());
+    UtilLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), UtilLogger.class, Category.UTIL.getName());
 
     // log message with id 802 was removed
 

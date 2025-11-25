@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.logging.Logger;
@@ -41,9 +43,10 @@ import org.jboss.weld.exceptions.IllegalStateException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface BootstrapLogger extends WeldLogger {
 
-    BootstrapLogger LOG = Logger.getMessageLogger(BootstrapLogger.class, Category.BOOTSTRAP.getName());
+    BootstrapLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), BootstrapLogger.class, Category.BOOTSTRAP.getName());
 
-    BootstrapLogger TRACKER_LOG = Logger.getMessageLogger(BootstrapLogger.class, Category.BOOTSTRAP_TRACKER.getName());
+    BootstrapLogger TRACKER_LOG = Logger.getMessageLogger(MethodHandles.lookup(), BootstrapLogger.class,
+            Category.BOOTSTRAP_TRACKER.getName());
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 100, value = "Weld initialized. Validating beans")

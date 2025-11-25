@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
@@ -33,7 +35,7 @@ import org.jboss.logging.annotations.MessageLogger;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface ElLogger extends WeldLogger {
 
-    ElLogger LOG = Logger.getMessageLogger(ElLogger.class, Category.EL.getName());
+    ElLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), ElLogger.class, Category.EL.getName());
 
     @Message(id = 1001, value = "Cannot pass null expressionFactory")
     IllegalArgumentException nullExpressionFactory();
