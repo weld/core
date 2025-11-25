@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -36,7 +38,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface XmlLogger extends WeldLogger {
 
-    XmlLogger LOG = Logger.getMessageLogger(XmlLogger.class, Category.BOOTSTRAP.getName());
+    XmlLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), XmlLogger.class, Category.BOOTSTRAP.getName());
 
     @Message(id = 1200, value = "Error configuring XML parser")
     IllegalStateException configurationError(@Cause Throwable cause);

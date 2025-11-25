@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
@@ -37,7 +39,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface MetadataLogger extends WeldLogger {
 
-    MetadataLogger LOG = Logger.getMessageLogger(MetadataLogger.class, Category.BOOTSTRAP.getName());
+    MetadataLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), MetadataLogger.class, Category.BOOTSTRAP.getName());
 
     @Message(id = 1100, value = "{0} can only be applied to an annotation.  It was applied to {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException metaAnnotationOnWrongType(Object param1, Object param2);

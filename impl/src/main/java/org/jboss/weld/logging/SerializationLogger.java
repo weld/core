@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
@@ -34,7 +36,8 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface SerializationLogger extends WeldLogger {
 
-    SerializationLogger LOG = Logger.getMessageLogger(SerializationLogger.class, Category.SERIALIZATION.getName());
+    SerializationLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), SerializationLogger.class,
+            Category.SERIALIZATION.getName());
 
     @Message(id = 1800, value = "Unable to get bean identifier at position {0} from {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToGetBeanIdentifier(int index, Object info);

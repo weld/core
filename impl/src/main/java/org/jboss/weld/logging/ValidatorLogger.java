@@ -18,6 +18,7 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -43,7 +44,7 @@ import org.jboss.weld.exceptions.UnserializableDependencyException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface ValidatorLogger extends WeldLogger {
 
-    ValidatorLogger LOG = Logger.getMessageLogger(ValidatorLogger.class, Category.VALIDATOR.getName());
+    ValidatorLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), ValidatorLogger.class, Category.VALIDATOR.getName());
 
     MessageCallback<DefinitionException> INJECTION_INTO_DISPOSER_METHOD = (t) -> ValidatorLogger.LOG
             .injectionIntoDisposerMethod(t[0], t[1]);

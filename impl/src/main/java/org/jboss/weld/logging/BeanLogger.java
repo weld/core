@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -44,7 +46,7 @@ import org.jboss.weld.exceptions.WeldException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface BeanLogger extends WeldLogger {
 
-    BeanLogger LOG = Logger.getMessageLogger(BeanLogger.class, Category.BEAN.getName());
+    BeanLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), BeanLogger.class, Category.BEAN.getName());
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 1, value = "Exactly one constructor ({0}) annotated with @Inject defined, using it as the bean constructor for {1}", format = Format.MESSAGE_FORMAT)
