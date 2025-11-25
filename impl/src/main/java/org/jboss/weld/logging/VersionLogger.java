@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
@@ -32,7 +34,7 @@ import org.jboss.logging.annotations.MessageLogger;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface VersionLogger extends WeldLogger {
 
-    VersionLogger LOG = Logger.getMessageLogger(VersionLogger.class, Category.VERSION.getName());
+    VersionLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), VersionLogger.class, Category.VERSION.getName());
 
     @LogMessage(level = Level.INFO)
     @Message(id = 900, value = "{0}", format = Format.MESSAGE_FORMAT)

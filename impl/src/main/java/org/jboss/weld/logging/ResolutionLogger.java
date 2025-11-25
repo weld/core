@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
@@ -35,7 +37,8 @@ import org.jboss.weld.exceptions.WeldException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface ResolutionLogger extends WeldLogger {
 
-    ResolutionLogger LOG = Logger.getMessageLogger(ResolutionLogger.class, Category.RESOLUTION.getName());
+    ResolutionLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), ResolutionLogger.class,
+            Category.RESOLUTION.getName());
 
     @Message(id = 1601, value = "Cannot extract rawType from {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException cannotExtractRawType(Object param1);

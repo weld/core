@@ -19,6 +19,7 @@ package org.jboss.weld.logging;
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 
 import jakarta.enterprise.context.spi.Context;
 
@@ -41,7 +42,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface ContextLogger extends WeldLogger {
 
-    ContextLogger LOG = Logger.getMessageLogger(ContextLogger.class, Category.CONTEXT.getName());
+    ContextLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), ContextLogger.class, Category.CONTEXT.getName());
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 200, value = "Looked for {0} and got {1} in {2}", format = Format.MESSAGE_FORMAT)

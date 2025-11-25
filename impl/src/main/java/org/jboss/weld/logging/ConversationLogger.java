@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
@@ -35,7 +37,8 @@ import org.jboss.weld.contexts.NonexistentConversationException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface ConversationLogger extends WeldLogger {
 
-    ConversationLogger LOG = Logger.getMessageLogger(ConversationLogger.class, Category.CONVERSATION.getName());
+    ConversationLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), ConversationLogger.class,
+            Category.CONVERSATION.getName());
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 304, value = "Cleaning up conversation {0}", format = Format.MESSAGE_FORMAT)

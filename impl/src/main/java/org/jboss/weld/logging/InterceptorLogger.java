@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
@@ -36,7 +38,8 @@ import org.jboss.weld.exceptions.IllegalStateException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface InterceptorLogger extends WeldLogger {
 
-    InterceptorLogger LOG = Logger.getMessageLogger(InterceptorLogger.class, Category.INTERCEPTOR.getName());
+    InterceptorLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), InterceptorLogger.class,
+            Category.INTERCEPTOR.getName());
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1700, value = "Interceptor annotation class {0} not found, interception based on it is not enabled", format = Format.MESSAGE_FORMAT)

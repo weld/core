@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import javax.naming.NamingException;
 
 import org.jboss.logging.Logger;
@@ -38,7 +40,8 @@ import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface BeanManagerLogger extends WeldLogger {
 
-    BeanManagerLogger LOG = Logger.getMessageLogger(BeanManagerLogger.class, Category.BEAN_MANAGER.getName());
+    BeanManagerLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), BeanManagerLogger.class,
+            Category.BEAN_MANAGER.getName());
 
     @Message(id = 1300, value = "Unable to locate BeanManager")
     NamingException cannotLocateBeanManager();

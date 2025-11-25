@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.invoke.MethodHandles;
+
 import jakarta.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.logging.Logger;
@@ -38,7 +40,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 @MessageLogger(projectCode = WELD_PROJECT_CODE)
 public interface EventLogger extends WeldLogger {
 
-    EventLogger LOG = Logger.getMessageLogger(EventLogger.class, Category.EVENT.getName());
+    EventLogger LOG = Logger.getMessageLogger(MethodHandles.lookup(), EventLogger.class, Category.EVENT.getName());
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 400, value = "Sending event {0} directly to observer {1}", format = Format.MESSAGE_FORMAT)
