@@ -10,16 +10,11 @@
     <name>CDI Lite Language Model TCK</name>
     <artifactId>lang-model-tck</artifactId>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>jakarta.enterprise</groupId>
-                <artifactId>cdi-tck-lang-model</artifactId>
+                <groupId>jakarta.cdi</groupId>
+                <artifactId>jakarta.cdi-tck-lang-model</artifactId>
                 <version>${cdi.tck.version}</version>
             </dependency>
         </dependencies>
@@ -51,8 +46,8 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-lang-model</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-tck-lang-model</artifactId>
             <scope>test</scope>
         </dependency>
 

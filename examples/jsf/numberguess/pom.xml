@@ -25,14 +25,14 @@
 
     <properties>
         <!-- Version of WildFly server for provisioning only -->
-        <version.wfly.server>31.0.0.Final</version.wfly.server>
+        <version.wfly.server>38.0.1.Final</version.wfly.server>
     </properties>
 
     <!-- Common dependencies -->
     <dependencies>
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
 

@@ -22,8 +22,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-api</artifactId>
         </dependency>
 
         <dependency>
@@ -63,8 +63,8 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-api</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-tck-api</artifactId>
             <version>${cdi.tck.version}</version>
             <exclusions>
                 <exclusion>
@@ -75,8 +75,8 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-core-impl</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-tck-core-impl</artifactId>
             <version>${cdi.tck.version}</version>
             <type>xml</type>
             <classifier>suite</classifier>
@@ -98,8 +98,8 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-core-impl</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-tck-core-impl</artifactId>
             <version>${cdi.tck.version}</version>
             <scope>test</scope>
             <exclusions>
@@ -171,7 +171,7 @@
                     </properties>
                     <dependenciesToScan>
                         <!-- Jakarta CDI spec TCK part -->
-                        <dependency>jakarta.enterprise:cdi-tck-core-impl</dependency>
+                        <dependency>jakarta.cdi:jakarta.cdi-tck-core-impl</dependency>
                         <!-- Jakarta Platform TCK bits -->
                         <dependency>jakarta.tck:cdi-tck-ee-impl</dependency>
                     </dependenciesToScan>
@@ -251,8 +251,8 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>jakarta.enterprise</groupId>
-                                    <artifactId>cdi-tck-core-impl</artifactId>
+                                    <groupId>jakarta.cdi</groupId>
+                                    <artifactId>jakarta.cdi-tck-core-impl</artifactId>
                                     <version>${cdi.tck.version}</version>
                                     <type>xml</type>
                                     <classifier>suite</classifier>
