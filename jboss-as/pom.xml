@@ -32,7 +32,7 @@
         as the release plugin won't deal with double evaluation -->
         <weld.update.version>7.0.0-SNAPSHOT</weld.update.version>
         <!-- These are *NOT* automatically updated and should be reviewed if the relevant profile is to be used -->
-        <cdi.update.version>5.0.0-M1</cdi.update.version>
+        <cdi.update.version>5.0.0.Alpha3</cdi.update.version>
     </properties>
 
     <dependencies>
@@ -67,23 +67,23 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-tck-ext-lib</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-tck-ext-lib</artifactId>
             <version>${cdi.tck.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-api</artifactId>
             <version>${cdi.update.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-el-api</artifactId>
             <version>${cdi.update.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.lang-model</artifactId>
+            <groupId>jakarta.cdi</groupId>
+            <artifactId>jakarta.cdi-lang-model-api</artifactId>
             <version>${cdi.update.version}</version>
         </dependency>
     </dependencies>
@@ -222,8 +222,8 @@
             </build>
         </profile>
         <profile>
-            <!-- Updates CDI API and Interceptors API in target WFLY distribution -->
-            <!-- This is mainly useful when developing against early CDI versions adding new APIs that aren't in WFLY -->
+            <!-- Updates CDI API and possibly other related Jakarta APIs in target WFLY distribution -->
+            <!-- Mainly useful for when CDI introduces breaking changes or new APIs that are used in TCKs -->
             <id>update-jakarta-apis</id>
             <build>
                 <defaultGoal>package</defaultGoal>
@@ -262,9 +262,11 @@
 
                                         <property name="module.dir" value="${jboss.home}/modules//system/layers/base/jakarta/enterprise/api" />
 
-                                        <property name="cdi.api.file" value="jakarta.enterprise.cdi-api-${cdi.update.version}.jar" />
-                                        <property name="cdi.el.api.file" value="jakarta.enterprise.cdi-el-api-${cdi.update.version}.jar" />
-                                        <property name="cdi.lang.model.file" value="jakarta.enterprise.lang-model-${cdi.update.version}.jar" />
+                                        <!-- NOTE: We are changing the jakarta.enterprise artifacts with the jakarta.cdi ones -->
+                                        <!-- NOTE: CDI 5.0 changes coordinates and WFLY by default uses the old ones! -->
+                                        <property name="cdi.api.file" value="jakarta.cdi-api-${cdi.update.version}.jar" />
+                                        <property name="cdi.el.api.file" value="jakarta.cdi-el-api-${cdi.update.version}.jar" />
+                                        <property name="cdi.lang.model.file" value="jakarta.cdi-lang-model-api-${cdi.update.version}.jar" />
 
                                         <delete>
                                             <fileset dir="${module.dir}/main" includes="*.jar" />
@@ -279,7 +281,7 @@
                                         </copy>
 
 
-                                        <!-- WFLY doesn't yet have dep. on the EL API part of CDI, this forcibly adds it -->
+                                        <!-- Replace paths to JAR files in the module.xml file -->
                                         <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.cdi-api.*?&quot;" replace="path=&quot;${cdi.api.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.cdi-el-api.*?&quot;" replace="path=&quot;${cdi.el.api.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/main/module.xml" match="path=&quot;jakarta.enterprise.lang.*?&quot;" replace="path=&quot;${cdi.lang.model.file}&quot;" byline="true" />
@@ -321,7 +323,7 @@
                                     <target>
                                         <copy todir="${env.JBOSS_HOME}/standalone/lib/ext" overwrite="true">
                                             <fileset dir="target/dependency/lib">
-                                                <include name="cdi-tck-ext-lib-${cdi.tck.version}.jar" />
+                                                <include name="jakarta.cdi-tck-ext-lib-${cdi.tck.version}.jar" />
                                             </fileset>
                                         </copy>
                                     </target>
@@ -349,7 +351,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
-                            <includeArtifactIds>jakarta.enterprise.cdi-api,jakarta.enterprise.cdi-el-api,jakarta.enterprise.lang-model,jakarta.interceptor-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
+                            <includeArtifactIds>jakarta.cdi-api,jakarta.cdi-el-api,jakarta.cdi-lang-model-api,jakarta.interceptor-api,weld-api,weld-core-impl,weld-lite-extension-translator,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,jakarta.cdi-tck-ext-lib</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
