@@ -2,4 +2,5 @@ name: Weld Core release
 release:
   current-version: 7.0.0.Alpha1
   next-version: 7.0.0-SNAPSHOT
+
   

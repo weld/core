@@ -30,7 +30,7 @@
     </developers>
 
     <properties>
-        <weld.api.bom.version>7.0.Alpha3</weld.api.bom.version>
+        <weld.api.bom.version>7.0.Alpha4</weld.api.bom.version>
         <gpg.plugin.version>3.2.8</gpg.plugin.version>
         <nexus.staging.plugin.version>1.7.0</nexus.staging.plugin.version>
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/
