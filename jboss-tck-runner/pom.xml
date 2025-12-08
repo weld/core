@@ -389,29 +389,11 @@
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
                     <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-spi</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-api</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.logmanager</groupId>
-                            <artifactId>log4j-jboss-logmanager</artifactId>
-                        </exclusion>
-                    </exclusions>
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.arquillian.protocol</groupId>
                     <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
                     <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
                 </dependency>
             </dependencies>
             <build>

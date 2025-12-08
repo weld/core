@@ -85,7 +85,6 @@
         <jsp.api.version>4.0.0</jsp.api.version>
         <jstl.api.version>3.0.2</jstl.api.version>
         <junit.version>4.13.2</junit.version>
-        <log4j.version>1.2.17</log4j.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.resolver.version>3.3.4</shrinkwrap.resolver.version>
         <spotbugs-maven-plugin.version>4.9.8.2</spotbugs-maven-plugin.version>
@@ -275,10 +274,6 @@
                 <version>${wildfly.arquillian.version}</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>org.jboss.logmanager</groupId>
-                        <artifactId>log4j-jboss-logmanager</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
@@ -415,12 +410,6 @@
                 <groupId>jakarta.servlet.jsp</groupId>
                 <artifactId>jakarta.servlet.jsp-api</artifactId>
                 <version>${jsp.api.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
             </dependency>
 
             <dependency>
