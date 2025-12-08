@@ -4,16 +4,16 @@ endif::[]
 
 [[logging]]
 == Logging
-Weld is using link:https://developer.jboss.org/wiki/JBossLoggingTooling[JBoss Logging], an abstraction layer which provides support for the internationalization and localization of log messages and exception messages. However, JBoss Logging itself does not write any log messages. Instead, it only constructs a log message and delegates to one of the supported logging frameworks.
+Weld is using link:https://github.com/jboss-logging/jboss-logging[JBoss Logging], an abstraction layer which provides support for the internationalization and localization of log messages and exception messages. However, JBoss Logging itself does not write any log messages. Instead, it only constructs a log message and delegates to one of the supported logging frameworks.
 
 The supported "back-end" frameworks include:
 
-. link:https://developer.jboss.org/wiki/StandaloneJBossLogManager[jboss-logmanager]
-. link:http://logging.apache.org/log4j/2.x/[Log4j]
-. link:http://www.slf4j.org/[SLF4J]
+. link:https://github.com/jboss-logging/jboss-logging[jboss-logmanager]
+. link:https://logging.apache.org/log4j/2.x/[Log4j]
+. link:https://www.slf4j.org/[SLF4J]
 . JDK logging
 
-A system property `org.jboss.logging.provider` may be used to specify the logging framework directly. Supported values are `jboss`, `jdk`, `log4j` and `slf4j`. If this system property is not set, JBoss Logging will attempt to find the logging frameworks from the above-mentioned list on the classpath - the first one found is taken.
+A system property `org.jboss.logging.provider` may be used to specify the logging framework directly. Supported values are `jboss`, `jdk`, `log4j2` and `slf4j`. If this system property is not set, JBoss Logging will attempt to find the logging frameworks from the above-mentioned list on the classpath - the first one found is taken.
 
 === Java EE containers
 If using Weld with a Java EE container (e.g. WildFly) the logging configuration is under the direction of the container. You should follow the container-specific guides to change the configuration (e.g. link:http://docs.wildfly.org/14/Admin_Guide.html#Logging[WildFly Admin Guide - Logging Configuration]).
