@@ -72,7 +72,7 @@
         <groovy.version>5.0.2</groovy.version>
         <htmlunit.version>2.70.0</htmlunit.version>
         <jacoco.version>0.8.14</jacoco.version>
-        <jandex.version>3.5.2</jandex.version>
+        <jandex.version>3.5.3</jandex.version>
         <jakarta.activation.version>2.1.4</jakarta.activation.version>
         <jakarta.el.version>6.0.1</jakarta.el.version>
         <glassfish.jakarta.el.version>5.0.0-M1</glassfish.jakarta.el.version>
