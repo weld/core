@@ -176,14 +176,15 @@ public final class Reflections {
     public static boolean hasBeanDefiningAnnotation(Class<?> clazz,
             Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
         for (Class<? extends Annotation> beanDefiningAnnotation : initialBeanDefiningAnnotations) {
-            if (clazz.isAnnotationPresent(beanDefiningAnnotation)) {
+            // Inherited annotations do not count, the annotation has to be *directly present*
+            if (clazz.getDeclaredAnnotation(beanDefiningAnnotation) != null) {
                 return true;
             }
         }
         for (Class<? extends Annotation> metaAnnotation : META_ANNOTATIONS) {
             // The check is not perfomed recursively as bean defining annotations must be declared directly on a bean class
             // Also we don't cache the results and rely completely on the reflection optimizations
-            if (hasBeanDefiningMetaAnnotationSpecified(clazz.getAnnotations(), metaAnnotation)) {
+            if (hasBeanDefiningMetaAnnotationSpecified(clazz.getDeclaredAnnotations(), metaAnnotation)) {
                 return true;
             }
         }
