@@ -63,6 +63,13 @@
          <scope>test</scope>
       </dependency>
 
+      <!-- without this the IDE is really confused about imports, bears no effect on tests themselves -->
+      <dependency>
+         <groupId>org.jboss.weld.se</groupId>
+         <artifactId>weld-se-core</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
       <dependency>
          <groupId>org.jboss.weld</groupId>
          <artifactId>weld-lite-extension-translator</artifactId>
