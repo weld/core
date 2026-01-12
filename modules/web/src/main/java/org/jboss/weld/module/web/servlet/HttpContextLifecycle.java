@@ -149,10 +149,10 @@ public class HttpContextLifecycle implements Service {
 
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
-        fireEventForApplicationScope(ctx, Initialized.Literal.APPLICATION);
+        fireSynchronizedEvent(ctx, ServletContext.class, Initialized.Literal.APPLICATION);
         Environment env = Container.getEnvironment();
         if (module != null && env != null && env.automaticallyHandleStartupShutdownEvents()) {
-            module.fireEvent(Startup.class, new Startup(), Any.Literal.INSTANCE);
+            fireSynchronizedEvent(new Startup(), Startup.class, Any.Literal.INSTANCE);
         }
     }
 
@@ -160,25 +160,25 @@ public class HttpContextLifecycle implements Service {
         // firstly, fire Shutdown event
         Environment env = Container.getEnvironment();
         if (module != null && env != null && env.automaticallyHandleStartupShutdownEvents()) {
-            module.fireEvent(Shutdown.class, new Shutdown(), Any.Literal.INSTANCE);
+            fireSynchronizedEvent(new Shutdown(), Shutdown.class, Any.Literal.INSTANCE);
         }
         // TODO WELD-2282 Firing these two right after each other does not really make sense
-        fireEventForApplicationScope(ctx, BeforeDestroyed.Literal.APPLICATION);
-        fireEventForApplicationScope(ctx, Destroyed.Literal.APPLICATION);
+        fireSynchronizedEvent(ctx, ServletContext.class, BeforeDestroyed.Literal.APPLICATION);
+        fireSynchronizedEvent(ctx, ServletContext.class, Destroyed.Literal.APPLICATION);
     }
 
-    private void fireEventForApplicationScope(ServletContext ctx, Annotation qualifier) {
+    private void fireSynchronizedEvent(Object payload, Class<?> payloadClass, Annotation qualifier) {
         if (module != null) {
             // Deliver events sequentially
             synchronized (container) {
                 if (module.isWebModule()) {
-                    module.fireEvent(ServletContext.class, ctx, qualifier);
+                    module.fireEvent(payloadClass, payload, qualifier);
                 } else {
                     // fallback for backward compatibility
                     ServletLogger.LOG.noEeModuleDescriptor(beanManager);
-                    final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null,
+                    final EventMetadata metadata = new EventMetadataImpl(payloadClass, null,
                             Collections.singleton(qualifier));
-                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata,
+                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(payloadClass, payload, metadata,
                             qualifier);
                 }
             }
