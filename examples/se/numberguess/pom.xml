@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-examples-parent</artifactId>
         <groupId>org.jboss.weld.examples</groupId>
-        <version>5.1.7.Final</version>
+        <version>5.1.8-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
