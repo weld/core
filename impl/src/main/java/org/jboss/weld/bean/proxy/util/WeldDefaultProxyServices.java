@@ -17,13 +17,28 @@
 
 package org.jboss.weld.bean.proxy.util;
 
+import static org.jboss.classfilewriter.AccessFlag.FINAL;
+import static org.jboss.classfilewriter.AccessFlag.PUBLIC;
+import static org.jboss.classfilewriter.AccessFlag.STATIC;
+import static org.jboss.classfilewriter.AccessFlag.SUPER;
+import static org.jboss.classfilewriter.AccessFlag.SYNTHETIC;
+import static org.jboss.classfilewriter.util.DescriptorUtils.makeDescriptor;
+import static org.jboss.weld.util.bytecode.BytecodeUtils.VOID_CLASS_DESCRIPTOR;
+
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.security.ProtectionDomain;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.jboss.classfilewriter.AccessFlag;
+import org.jboss.classfilewriter.ClassFile;
+import org.jboss.classfilewriter.code.CodeAttribute;
+import org.jboss.weld.bean.proxy.DummyClassFactoryImpl;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.proxy.WeldClientProxy;
 import org.jboss.weld.serialization.spi.ProxyServices;
 
 /**
@@ -135,6 +150,8 @@ public class WeldDefaultProxyServices implements ProxyServices {
     private Class<?> defineWithMethodLookup(String classToDefineName, byte[] classBytes, Class<?> originalClass,
             ClassLoader loader) {
         Module thisModule = WeldDefaultProxyServices.class.getModule();
+        Module apiModule = WeldClientProxy.class.getModule();
+
         try {
             Class<?> lookupBaseClass;
             try {
@@ -143,17 +160,83 @@ public class WeldDefaultProxyServices implements ProxyServices {
             } catch (Exception e) {
                 lookupBaseClass = originalClass;
             }
+
+            // Ensure we can read the other module, and the other module can read us
+
             Module lookupClassModule = lookupBaseClass.getModule();
             if (!thisModule.canRead(lookupClassModule)) {
                 // we need to read the other module in order to have privateLookup access
                 // see javadoc for MethodHandles.privateLookupIn()
                 thisModule.addReads(lookupClassModule);
             }
+
+            try {
+                // the other module needs to read us, since the proxy we are
+                // about to generate inside that module uses our classes
+
+                MethodHandle ensureReadsMethod = null;
+                if (!lookupClassModule.canRead(thisModule)) {
+                    ensureReadsMethod = generateEnsureReadsMethod(lookupBaseClass);
+                    ensureReadsMethod.invoke(thisModule);
+                }
+
+                if (!lookupClassModule.canRead(apiModule)) {
+                    if (ensureReadsMethod == null) {
+                        ensureReadsMethod = generateEnsureReadsMethod(lookupBaseClass);
+                    }
+                    ensureReadsMethod.invoke(apiModule);
+                }
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+
             MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(lookupBaseClass, MethodHandles.lookup());
             return lookup.defineClass(classBytes);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private MethodHandle generateEnsureReadsMethod(Class<?> lookupBaseClass)
+            throws IllegalAccessException, NoSuchMethodException {
+        MethodHandles.Lookup privateLookup = MethodHandles.privateLookupIn(lookupBaseClass, MethodHandles.lookup());
+
+        return privateLookup.findStatic(
+                // Define a hidden helper class in the *target* module/package
+                privateLookup.defineClass(generateReadsHelperBytes(lookupBaseClass)),
+                "ensureReads",
+                MethodType.methodType(void.class, Module.class));
+    }
+
+    private byte[] generateReadsHelperBytes(Class<?> lookupBaseClass) {
+        // Put helper in the same package as the base class so the private Lookup can define it
+
+        // Create class header
+        ClassFile ensureReadsClassFile = new ClassFile(
+                (lookupBaseClass.getPackage() == null ? "" : lookupBaseClass.getPackage().getName() + ".") + "Weld$ReadsHelper",
+                AccessFlag.of(PUBLIC, FINAL, SUPER, SYNTHETIC),
+                Object.class.getName(),
+                ProxyFactory.class.getClassLoader(),
+                DummyClassFactoryImpl.INSTANCE);
+
+        // Create method header for "public static void ensureReads(Module other)"
+        CodeAttribute code = ensureReadsClassFile.addMethod(
+                AccessFlag.of(PUBLIC, STATIC),
+                "ensureReads",
+                VOID_CLASS_DESCRIPTOR,
+                makeDescriptor(Module.class))
+                .getCodeAttribute();
+
+        // Create code for the method body "MethodHandles.lookup().lookupClass().getModule().addReads(other);"
+        code.invokestatic("java/lang/invoke/MethodHandles", "lookup", "()Ljava/lang/invoke/MethodHandles$Lookup;");
+        code.invokevirtual("java/lang/invoke/MethodHandles$Lookup", "lookupClass", "()Ljava/lang/Class;");
+        code.invokevirtual("java/lang/Class", "getModule", "()Ljava/lang/Module;");
+        code.aload(0); // parameter: Module other
+        code.invokevirtual("java/lang/Module", "addReads", "(Ljava/lang/Module;)Ljava/lang/Module;");
+        code.pop();
+        code.returnInstruction();
+
+        return ensureReadsClassFile.toBytecode();
     }
 
     /**
