@@ -13,13 +13,13 @@ import org.jboss.weld.bean.proxy.util.WeldDefaultProxyServices;
  * See {@link WeldDefaultProxyServices#defineClass(Class, String, byte[], int, int)} for details on how we define
  * classes.
  */
-class DummyClassFactoryImpl implements ClassFactory {
+public class DummyClassFactoryImpl implements ClassFactory {
 
     private DummyClassFactoryImpl() {
     }
 
     // final so that there's only one instance that's being referenced from anywhere
-    static final DummyClassFactoryImpl INSTANCE = new DummyClassFactoryImpl();
+    public static final DummyClassFactoryImpl INSTANCE = new DummyClassFactoryImpl();
 
     @Override
     public Class<?> defineClass(ClassLoader loader, String name, byte[] b, int off, int len, ProtectionDomain protectionDomain)
