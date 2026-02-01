@@ -27,7 +27,7 @@
     <properties>
         <tomcat.version>11.0.18</tomcat.version>
         <jetty.version>12.1.5</jetty.version>
-        <smallrye.common.version>2.14.0</smallrye.common.version>
+        <smallrye.common.version>2.15.0</smallrye.common.version>
         <websockets.api>2.2.0</websockets.api>
         <undertow.version>2.3.20.Final</undertow.version>
     </properties>
