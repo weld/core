@@ -51,7 +51,7 @@
         <manifest.specification.version>2.0</manifest.specification.version>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
-        <apache.bcel.version>6.11.0</apache.bcel.version>
+        <apache.bcel.version>6.12.0</apache.bcel.version>
         <arquillian.version>1.10.0.Final</arquillian.version>
         <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
         <arquillian.drone.version>3.0.0-alpha.5</arquillian.drone.version>
