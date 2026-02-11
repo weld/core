@@ -98,4 +98,10 @@ public class BeanArchiveImpl extends JavaArchiveImpl implements BeanArchive {
     public BeanArchive annotated() {
         return beanDiscoveryMode(BeanDiscoveryMode.ANNOTATED);
     }
+
+    @Override
+    public BeanArchive trim() {
+        descriptor.trim();
+        return covarientReturn();
+    }
 }

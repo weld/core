@@ -52,6 +52,8 @@ import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.config.WeldConfiguration;
@@ -263,7 +265,11 @@ public class BeanDeployment {
         }
         beanDeployer.addBuiltInBean(new RequestContextControllerBean(beanManager));
 
-        if (beanDeploymentArchive.getBeansXml() != null && beanDeploymentArchive.getBeansXml().isTrimmed()) {
+        BeansXml beansXml = beanDeploymentArchive.getBeansXml();
+        if (beansXml != null && beansXml.isTrimmed()) {
+            if (beansXml.getBeanDiscoveryMode() != BeanDiscoveryMode.ALL) {
+                throw BootstrapLogger.LOG.trimmingNonExplicitBeanArchive(beansXml.getUrl(), beansXml.getBeanDiscoveryMode());
+            }
             beanDeployer.getEnvironment().trim();
         }
         beanDeployer.createClassBeans();
