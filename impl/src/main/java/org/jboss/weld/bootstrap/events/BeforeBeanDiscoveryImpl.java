@@ -117,7 +117,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
     @Override
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
         checkWithinObserverNotification();
-        addSyntheticAnnotatedType(type, id);
+        addSyntheticAnnotatedType(type, id, getReceiver());
         BootstrapLogger.LOG.addAnnotatedTypeCalledInBBD(getReceiver(), type);
     }
 
@@ -126,7 +126,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         checkWithinObserverNotification();
         AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(
                 getBeanManager().createAnnotatedType(type));
-        additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));
+        additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id, getReceiver()));
         BootstrapLogger.LOG.addAnnotatedTypeCalledInBBD(getReceiver(), type);
         return configurator;
     }

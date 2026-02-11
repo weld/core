@@ -24,6 +24,7 @@ import java.util.List;
 import jakarta.enterprise.context.spi.Context;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -45,22 +46,24 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
         this.additionalAnnotatedTypes = new LinkedList<>();
     }
 
-    protected void addSyntheticAnnotatedType(AnnotatedType<?> type, String id) {
+    protected void addSyntheticAnnotatedType(AnnotatedType<?> type, String id, Extension extension) {
         AnnotatedTypeValidator.validateAnnotatedType(type);
         if (type.getJavaClass().isAnnotation() || Beans.isVetoed(type)) {
             return;
         }
-        storeSyntheticAnnotatedType(getOrCreateBeanDeployment(type.getJavaClass()), type, id);
+        storeSyntheticAnnotatedType(getOrCreateBeanDeployment(type.getJavaClass()), type, id, extension);
     }
 
-    protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id) {
-        deployment.getBeanDeployer().addSyntheticClass(type, getReceiver(), id);
+    protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id,
+            Extension extension) {
+        deployment.getBeanDeployer().addSyntheticClass(type, extension, id);
     }
 
     protected void finish() {
         try {
             for (AnnotatedTypeRegistration<?> annotatedTypeRegistration : additionalAnnotatedTypes) {
-                addSyntheticAnnotatedType(annotatedTypeRegistration.configurator.complete(), annotatedTypeRegistration.id);
+                addSyntheticAnnotatedType(annotatedTypeRegistration.configurator.complete(), annotatedTypeRegistration.id,
+                        annotatedTypeRegistration.extension);
             }
         } catch (Exception e) {
             throw new DefinitionException(e);
@@ -73,9 +76,14 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
 
         private final String id;
 
-        AnnotatedTypeRegistration(AnnotatedTypeConfiguratorImpl<T> configurator, String id) {
+        // store Extension reference - creation of synth. AT from configurators happens *after* we notify observers
+        // at that point, the getReceiver() method already returns null and we would not detect the AT as synthetic
+        private final Extension extension;
+
+        AnnotatedTypeRegistration(AnnotatedTypeConfiguratorImpl<T> configurator, String id, Extension extension) {
             this.configurator = configurator;
             this.id = id;
+            this.extension = extension;
         }
 
     }
