@@ -54,4 +54,9 @@ public interface BeanArchive extends JavaArchive {
      * Sets bean-discovery-mode to annotated
      */
     BeanArchive annotated();
+
+    /**
+     * Adds the trim element to beans.xml
+     */
+    BeanArchive trim();
 }

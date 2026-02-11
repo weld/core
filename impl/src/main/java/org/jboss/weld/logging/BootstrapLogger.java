@@ -349,4 +349,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 184, value = "BeforeBeanDiscovery.addInvokable() called by {0} for {1}", format = Format.MESSAGE_FORMAT)
     void addInvokableCalled(Object extensionName, Object type);
 
+    @Message(id = 185, value = "Archive trimming is permitted only for explicit bean archives. Found trimmed bean archive with discovery mode {1} and with URL {0}", format = Format.MESSAGE_FORMAT)
+    DeploymentException trimmingNonExplicitBeanArchive(Object beansXmlUrl, Object beansXmlDiscoveryMode);
+
 }

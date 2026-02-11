@@ -22,11 +22,14 @@ public class BeansXml implements Asset {
     };
 
     private static final String CLOSING_TAG_PREFIX = "</";
+    private static final String CLOSING_TAG_EMPTY = "/>";
     private static final String OPENING_TAG_PREFIX = "<";
     private static final String TAG_SUFFIX = ">";
     private static final String TAG_SUFFIX_NEW_LINE = ">\n";
     private static final String TAG_SUFFIX_SELF_CLOSE_NEW_LINE = " />\n";
     private static final String ALTERNATIVES_ELEMENT_NAME = "alternatives";
+    private static final String DECORATORS_ELEMENT_NAME = "decorators";
+    private static final String INTERCEPTORS_ELEMENT_NAME = "interceptors";
     private static final String CLASS = "class";
 
     private static final String SCAN_ELEMENT_NAME = "scan";
@@ -37,11 +40,14 @@ public class BeansXml implements Asset {
     private static final String NAME_ATTRIBUTE_NAME = "name";
     private static final String VALUE_ATTRIBUTE_NAME = "value";
 
+    private static final String TRIM_ELEMENT_NAME = "trim";
+
     private final List<Class<?>> alternatives;
     private final List<Class<?>> interceptors;
     private final List<Class<?>> decorators;
     private final List<Class<?>> stereotypes;
     private final List<Exclude> excludeFilters;
+    private boolean trimArchive;
 
     private BeanDiscoveryMode mode = BeanDiscoveryMode.ANNOTATED;
 
@@ -215,6 +221,11 @@ public class BeansXml implements Asset {
         return this;
     }
 
+    public BeansXml trim() {
+        this.trimArchive = true;
+        return this;
+    }
+
     public BeanDiscoveryMode getBeanDiscoveryMode() {
         return mode;
     }
@@ -226,20 +237,21 @@ public class BeansXml implements Asset {
     @Override
     public InputStream openStream() {
         StringBuilder xml = new StringBuilder();
-        xml.append("<beans version=\"1.1\" bean-discovery-mode=\"");
+        xml.append("<beans version=\"4.1\" bean-discovery-mode=\"");
         xml.append(getBeanDiscoveryMode().getValue());
         xml.append("\">\n");
         appendExcludeFilters(excludeFilters, xml);
         appendAlternatives(alternatives, stereotypes, xml);
-        appendSection("interceptors", CLASS, interceptors, xml);
-        appendSection("decorators", CLASS, decorators, xml);
+        appendSection(INTERCEPTORS_ELEMENT_NAME, CLASS, interceptors, xml);
+        appendSection(DECORATORS_ELEMENT_NAME, CLASS, decorators, xml);
+        appendTrimming(trimArchive, xml);
         xml.append("</beans>");
 
         return new ByteArrayInputStream(xml.toString().getBytes());
     }
 
     private void appendExcludeFilters(List<Exclude> filters, StringBuilder xml) {
-        if (filters.size() > 0) {
+        if (!filters.isEmpty()) {
             xml.append(OPENING_TAG_PREFIX).append(SCAN_ELEMENT_NAME).append(TAG_SUFFIX_NEW_LINE);
             for (Exclude ex : filters) {
                 xml.append(OPENING_TAG_PREFIX).append(EXCLUDE_ELEMENT_NAME);
@@ -264,7 +276,7 @@ public class BeansXml implements Asset {
     }
 
     private static void appendAlternatives(List<Class<?>> alternatives, List<Class<?>> stereotypes, StringBuilder xml) {
-        if (alternatives.size() > 0 || stereotypes.size() > 0) {
+        if (!alternatives.isEmpty() || !stereotypes.isEmpty()) {
             xml.append(OPENING_TAG_PREFIX).append(ALTERNATIVES_ELEMENT_NAME).append(TAG_SUFFIX_NEW_LINE);
             appendClasses(CLASS, alternatives, xml);
             appendClasses("stereotype", stereotypes, xml);
@@ -273,10 +285,16 @@ public class BeansXml implements Asset {
     }
 
     private static void appendSection(String name, String subName, List<Class<?>> classes, StringBuilder xml) {
-        if (classes.size() > 0) {
+        if (!classes.isEmpty()) {
             xml.append(OPENING_TAG_PREFIX).append(name).append(TAG_SUFFIX_NEW_LINE);
             appendClasses(subName, classes, xml);
             xml.append(CLOSING_TAG_PREFIX).append(name).append(TAG_SUFFIX_NEW_LINE);
+        }
+    }
+
+    private static void appendTrimming(boolean trimArchive, StringBuilder xml) {
+        if (trimArchive) {
+            xml.append(OPENING_TAG_PREFIX).append(TRIM_ELEMENT_NAME).append(CLOSING_TAG_EMPTY);
         }
     }
 
