@@ -50,7 +50,7 @@ public class ProcessSyntheticAnnotatedTypeTest {
                 .create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessSyntheticAnnotatedTypeTest.class))
                 .addPackage(Juicy.class.getPackage())
                 .addAsServiceProvider(Extension.class, RegisteringExtension1.class, RegisteringExtension2.class,
-                        ModifyingExtension.class, VerifyingExtension.class);
+                        RegisteringExtension3.class, ModifyingExtension.class, VerifyingExtension.class);
     }
 
     @Test
@@ -60,10 +60,15 @@ public class ProcessSyntheticAnnotatedTypeTest {
         assertTrue(psatClasses.contains(Orange.class));
         assertTrue(psatClasses.contains(Apple.class));
         assertTrue(psatClasses.contains(Pear.class));
+        assertTrue(psatClasses.contains(Kiwi.class));
+        assertTrue(psatClasses.contains(Banana.class));
         // also verify that PAT is fired for classes in a BDA
         assertTrue(patClasses.contains(Orange.class));
         assertTrue(patClasses.contains(Apple.class));
         assertTrue(patClasses.contains(Pear.class));
+        // Kiwi and Banana have no annotations
+        assertFalse(patClasses.contains(Kiwi.class));
+        assertFalse(patClasses.contains(Banana.class));
     }
 
     @Test
@@ -72,6 +77,8 @@ public class ProcessSyntheticAnnotatedTypeTest {
         assertTrue(sources.get(Apple.class) instanceof RegisteringExtension1);
         assertTrue(sources.get(Orange.class) instanceof RegisteringExtension1);
         assertTrue(sources.get(Pear.class) instanceof RegisteringExtension2);
+        assertTrue(sources.get(Kiwi.class) instanceof RegisteringExtension3);
+        assertTrue(sources.get(Banana.class) instanceof RegisteringExtension3);
     }
 
     @Test
@@ -89,5 +96,8 @@ public class ProcessSyntheticAnnotatedTypeTest {
         assertEquals(2, manager.getBeans(Pear.class, Any.Literal.INSTANCE).size());
         Set<Bean<?>> juicyPears = manager.getBeans(Pear.class, Juicy.Literal.INSTANCE);
         assertEquals(1, juicyPears.size());
+
+        assertEquals(1, manager.getBeans(Kiwi.class, Juicy.Literal.INSTANCE).size());
+        assertEquals(1, manager.getBeans(Banana.class, Fresh.Literal.INSTANCE).size());
     }
 }
