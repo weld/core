@@ -90,7 +90,7 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     @Override
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
         checkWithinObserverNotification();
-        addSyntheticAnnotatedType(type, id);
+        addSyntheticAnnotatedType(type, id, getReceiver());
         BootstrapLogger.LOG.addAnnotatedTypeCalled(getReceiver(), type);
     }
 
@@ -99,14 +99,14 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
         checkWithinObserverNotification();
         AnnotatedTypeConfiguratorImpl<T> configurator = new AnnotatedTypeConfiguratorImpl<>(
                 getBeanManager().createAnnotatedType(type));
-        additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id));
+        additionalAnnotatedTypes.add(new AnnotatedTypeRegistration<T>(configurator, id, getReceiver()));
         return configurator;
     }
 
     @Override
-    protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id) {
+    protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id,
+            Extension extension) {
         SlimAnnotatedType<?> annotatedType = transformer.getUnbackedAnnotatedType(type, getBeanManager().getId(), id);
-        Extension extension = getReceiver();
         SlimAnnotatedTypeContext<?> annotatedTypeContext = SlimAnnotatedTypeContext.of(annotatedType, extension);
 
         ProcessAnnotatedTypeImpl<?> event = events.fireProcessAnnotatedType(getBeanManager(), annotatedTypeContext);
