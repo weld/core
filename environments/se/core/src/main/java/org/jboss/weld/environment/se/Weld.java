@@ -470,7 +470,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
                 Extension extension = extensionClass.getDeclaredConstructor().newInstance();
                 addExtension(extension);
             } catch (Exception ex) {
-                CommonLogger.LOG.unableToInstantiate(extensionClass, new Object[] {}, ex);
+                throw CommonLogger.LOG.unableToInstantiate(extensionClass, Arrays.toString(new Object[] {}), ex);
             }
         }
         return this;
