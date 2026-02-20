@@ -18,6 +18,7 @@ package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.inject.Inject;
@@ -83,7 +84,46 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
                 }
             }
         }
-        Reflections.ensureAccessible(method, getTargetInstance());
-        return Reflections.invokeAndUnwrap(getTargetInstance(), method, args);
+        // If the decorator doesn't implement this method, delegate to the target instance
+        // However, the method signature might have covariant return types (e.g., WeldEvent vs Event)
+        // We need to find the actual method on the target instance that matches
+        Object target = getTargetInstance();
+        Method targetMethod = findMatchingMethod(target.getClass(), method);
+        if (targetMethod != null) {
+            Reflections.ensureAccessible(targetMethod, target);
+            return Reflections.invokeAndUnwrap(target, targetMethod, args);
+        } else {
+            // Fallback to original method if no match found
+            Reflections.ensureAccessible(method, target);
+            return Reflections.invokeAndUnwrap(target, method, args);
+        }
+    }
+
+    /**
+     * Find a method on the target class that matches the given method,
+     * taking into account covariant return types.
+     */
+    private Method findMatchingMethod(Class<?> targetClass, Method method) {
+        try {
+            // First try exact match
+            return targetClass.getMethod(method.getName(), method.getParameterTypes());
+        } catch (NoSuchMethodException e) {
+            // If exact match fails, look for covariant return types
+            try {
+                for (Method m : targetClass.getMethods()) {
+                    if (m.getName().equals(method.getName()) &&
+                            Arrays.equals(m.getParameterTypes(), method.getParameterTypes())) {
+                        // Found a method with same name and parameters, check return type compatibility
+                        if (method.getReturnType().isAssignableFrom(m.getReturnType()) ||
+                                m.getReturnType().isAssignableFrom(method.getReturnType())) {
+                            return m;
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                // Ignore
+            }
+            return null;
+        }
     }
 }

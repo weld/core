@@ -17,30 +17,19 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
-import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
-import static org.jboss.classfilewriter.util.DescriptorUtils.makeDescriptor;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.Bean;
 
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.ClassFile;
-import org.jboss.classfilewriter.ClassMethod;
-import org.jboss.classfilewriter.DuplicateMemberException;
-import org.jboss.classfilewriter.code.BranchEnd;
-import org.jboss.classfilewriter.code.CodeAttribute;
-import org.jboss.classfilewriter.util.Boxing;
-import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
@@ -48,10 +37,15 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.reflection.Reflections;
+
+import io.quarkus.gizmo2.Const;
+import io.quarkus.gizmo2.Expr;
+import io.quarkus.gizmo2.ParamVar;
+import io.quarkus.gizmo2.creator.ClassCreator;
+import io.quarkus.gizmo2.desc.FieldDesc;
+import io.quarkus.gizmo2.desc.MethodDesc;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -67,8 +61,6 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     static final String COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME = CombinedInterceptorAndDecoratorStackMethodHandler.class
             .getName();
-    static final String[] INVOKE_METHOD_PARAMETERS = new String[] { makeDescriptor(Stack.class), LJAVA_LANG_OBJECT,
-            LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT };
 
     protected static final String PRIVATE_METHOD_HANDLER_FIELD_NAME = "privateMethodHandler";
 
@@ -102,271 +94,119 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
-        // these interfaces we want to scan for method and our proxies will implement them
-        for (Class<?> c : proxiedBeanType.getInterfaces()) {
-            addInterface(c);
+    protected boolean isMethodAccepted(Method method, Class<?> proxySuperclass) {
+        // Use parent filters first
+        if (!super.isMethodAccepted(method, proxySuperclass)) {
+            return false;
         }
-        // now we need to go deeper in hierarchy and scan those interfaces for additional interfaces with default impls
-        for (Type type : typeClosure) {
-            Class<?> c = Reflections.getRawType(type);
-            if (c.isInterface()) {
-                addInterfaceToInspect(c);
-            }
-        }
-    }
-
-    private void addInterfaceToInspect(Class<?> iface) {
-        if (interfacesToInspect == null) {
-            interfacesToInspect = new HashSet<>();
-        }
-        this.interfacesToInspect.add(iface);
+        // Additionally filter out private methods with package-private parameters
+        // These would cause IllegalAccessError when the proxy subclass (in a different package)
+        // tries to reference the package-private type
+        return CommonProxiedMethodFilters.NON_PRIVATE_WITHOUT_PACK_PRIVATE_PARAMS.accept(method, proxySuperclass);
     }
 
     /**
-     * Returns a suffix to append to the name of the proxy class. The name
-     * already consists of <class-name>_$$_Weld, to which the suffix is added.
-     * This allows the creation of different types of proxies for the same class.
-     *
-     * @return a name suffix
+     * Override to handle bridge methods specially for intercepted subclasses.
+     * Bridge methods need special handling because:
+     * 1. We can't use invokespecial on interface methods (VerifyError)
+     * 2. We should skip bridge methods that have concrete implementations
+     * 3. We must intercept bridge methods that don't have concrete implementations
      */
-    protected String getProxyNameSuffix() {
-        return PROXY_SUFFIX;
-    }
-
     @Override
-    protected void addMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        // Add all class methods for interception
-        addMethodsFromClass(proxyClassType, staticConstructor);
+    protected List<MethodInfo> collectMethodsToProxy() {
+        List<MethodInfo> methods = new ArrayList<>();
+        Class<?> cls = getBeanType();
+        Set<MethodSignature> foundFinalMethods = new HashSet<>();
+        Set<MethodSignature> addedMethods = new HashSet<>();
+        Set<BridgeMethod> processedBridgeMethods = new HashSet<>();
 
-        // Add special proxy methods
-        addSpecialMethods(proxyClassType, staticConstructor);
+        // Add methods from the class hierarchy
+        while (cls != null) {
+            Method[] classDeclaredMethods = cls.getDeclaredMethods();
+            Set<BridgeMethod> declaredBridgeMethods = new HashSet<>();
 
-    }
+            for (Method method : classDeclaredMethods) {
+                MethodSignature methodSignature = new MethodSignatureImpl(method);
 
-    private boolean skipIfBridgeMethod(Method method, Collection<Method> classDeclaredMethods) {
-        if (method.isBridge()) {
-            // if it's a bridge method, we need to see if the class also contains an actual "impl" of that method
-            // if it does, we can skip this method, if it doesn't we will need to intercept it
-            for (Method declaredMethod : classDeclaredMethods) {
-                // only check non-bridge declared methods
-                if (declaredMethod.isBridge()) {
-                    continue;
+                if (Modifier.isFinal(method.getModifiers())) {
+                    foundFinalMethods.add(methodSignature);
                 }
-                if (method.getName().equals(declaredMethod.getName())) {
-                    Class<?>[] methodParams = method.getParameterTypes();
-                    Class<?>[] declaredMethodParams = declaredMethod.getParameterTypes();
-                    if (methodParams.length != declaredMethodParams.length) {
-                        continue;
-                    }
-                    boolean paramsNotMatching = false;
-                    for (int i = 0; i < methodParams.length; i++) {
-                        String methodParamName = methodParams[i].getName();
-                        String declaredMethodParamName = declaredMethodParams[i].getName();
-                        if (methodParamName.equals(declaredMethodParamName)
-                                || methodParamName.equals(Object.class.getName())) {
-                            continue;
-                        } else {
-                            paramsNotMatching = true;
-                            break;
-                        }
-                    }
-                    if (paramsNotMatching) {
-                        continue;
-                    }
-                    if (!Modifier.isInterface(declaredMethod.getDeclaringClass().getModifiers())) {
-                        if (method.getReturnType().getName().equals(Object.class.getName())
-                                || Modifier.isAbstract(declaredMethod.getModifiers())) {
-                            // bridge method with matching signature has Object as return type
-                            // or the method we compare against is abstract meaning the bridge overrides it
-                            // both cases are a match
-                            return true;
-                        } else {
-                            // as a last resort, we simply check equality of return Type
-                            if (method.getReturnType().getName().equals(declaredMethod.getReturnType().getName())) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        } else {
-            return false;
-        }
-    }
 
-    @Override
-    protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        try {
+                // Check if this is a bridge method with a concrete implementation
+                boolean skipBridgeMethod = method.isBridge() &&
+                        hasConcreteImplementation(method, classDeclaredMethods);
 
-            final Set<MethodSignature> finalMethods = new HashSet<MethodSignature>();
-            final Set<BridgeMethod> processedBridgeMethods = new HashSet<BridgeMethod>();
-
-            // Add all methods from the class hierarchy
-            Class<?> cls = getBeanType();
-            while (cls != null) {
-                Set<BridgeMethod> declaredBridgeMethods = new HashSet<BridgeMethod>();
-                Collection<Method> classDeclaredMethods = Arrays
-                        .asList(cls.getDeclaredMethods().clone());
-                for (Method method : classDeclaredMethods) {
-
-                    final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
-
-                    if (!Modifier.isFinal(method.getModifiers()) && !skipIfBridgeMethod(method, classDeclaredMethods)
-                            && enhancedMethodSignatures.contains(methodSignature)
-                            && !finalMethods.contains(methodSignature)
-                            && CommonProxiedMethodFilters.NON_PRIVATE_WITHOUT_PACK_PRIVATE_PARAMS.accept(method,
-                                    getProxySuperclass())
-                            && !bridgeMethodsContainsMethod(processedBridgeMethods, methodSignature,
-                                    method.getGenericReturnType(), Modifier.isAbstract(method.getModifiers()))) {
-                        try {
-                            final MethodInformation methodInfo = new RuntimeMethodInformation(method);
-
-                            if (interceptedMethodSignatures.contains(methodSignature)) {
-                                // create delegate-to-super method
-                                createDelegateMethod(proxyClassType, method, methodInfo);
-
-                                // this method is intercepted
-                                // override a subclass method to delegate to method handler
-                                ClassMethod classMethod = proxyClassType.addMethod(method);
-                                addConstructedGuardToMethodBody(classMethod);
-                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                                BeanLogger.LOG.addingMethodToProxy(method);
-                            } else {
-                                // this method is not intercepted
-                                // we still need to override and push InterceptionDecorationContext stack to prevent full interception
-                                ClassMethod classMethod = proxyClassType.addMethod(method);
-                                new RunWithinInterceptionDecorationContextGenerator(classMethod, this) {
-
-                                    @Override
-                                    void doWork(CodeAttribute b, ClassMethod classMethod) {
-                                        if (Modifier.isPrivate(classMethod.getAccessFlags())) {
-                                            // Weld cannot use invokespecial to invoke a private method from the superclass
-                                            invokePrivateMethodHandler(b, classMethod, methodInfo, staticConstructor);
-                                        } else {
-                                            // build the bytecode that invokes the super class method directly
-                                            b.aload(0);
-                                            // create the method invocation
-                                            b.loadMethodParameters();
-                                            b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(),
-                                                    methodInfo.getDescriptor());
-                                        }
-                                        // leave the result on top of the stack
-                                    }
-
-                                    @Override
-                                    void doReturn(CodeAttribute b, ClassMethod method) {
-                                        // assumes doWork() result is on top of the stack
-                                        b.returnInstruction();
-                                    }
-                                }.runStartIfNotOnTop();
-                            }
-
-                        } catch (DuplicateMemberException e) {
-                            // do nothing. This will happen if superclass methods have
-                            // been overridden
-                        }
-                    } else {
-                        if (Modifier.isFinal(method.getModifiers())) {
-                            finalMethods.add(methodSignature);
-                        }
-                        if (method.isBridge()) {
-                            BridgeMethod bridgeMethod = new BridgeMethod(methodSignature, method.getGenericReturnType());
-                            if (!hasAbstractPackagePrivateSuperClassWithImplementation(cls, bridgeMethod)) {
-                                declaredBridgeMethods.add(bridgeMethod);
-                            }
-                        }
-                    }
-                }
-                processedBridgeMethods.addAll(declaredBridgeMethods);
-                cls = cls.getSuperclass();
-            }
-            // We want to iterate over pre-defined interfaces (getAdditionalInterfaces()) and also over those we discovered earlier (interfacesToInspect)
-            Set<Class<?>> allInterfaces = new HashSet<>(getAdditionalInterfaces());
-            if (interfacesToInspect != null) {
-                allInterfaces.addAll(interfacesToInspect);
-            }
-            for (Class<?> c : allInterfaces) {
-                for (Method method : c.getMethods()) {
-                    MethodSignature signature = new MethodSignatureImpl(method);
-                    // For interfaces we do not consider return types when going through processed bridge methods
-                    if (enhancedMethodSignatures.contains(signature) && !bridgeMethodsContainsMethod(processedBridgeMethods,
-                            signature, null, Modifier.isAbstract(method.getModifiers()))) {
-                        try {
-                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            if (interceptedMethodSignatures.contains(signature) && Reflections.isDefault(method)) {
-                                createDelegateMethod(proxyClassType, method, methodInfo);
-
-                                // this method is intercepted
-                                // override a subclass method to delegate to method handler
-                                ClassMethod classMethod = proxyClassType.addMethod(method);
-                                addConstructedGuardToMethodBody(classMethod);
-                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                                BeanLogger.LOG.addingMethodToProxy(method);
-                            } else {
-                                // we only want to add default methods, rest is abstract and cannot be invoked
-                                if (Reflections.isDefault(method)) {
-                                    createDelegateMethod(proxyClassType, method, methodInfo);
-                                }
-                            }
-                        } catch (DuplicateMemberException e) {
-                        }
-                    }
+                // Check if method should be proxied (don't restrict to enhancedMethodSignatures - proxy all methods like parent)
+                if (isMethodAccepted(method, getProxySuperclass())
+                        && !skipBridgeMethod
+                        && !foundFinalMethods.contains(methodSignature)
+                        && !addedMethods.contains(methodSignature)
+                        && !bridgeMethodsContainsMethod(processedBridgeMethods, methodSignature,
+                                method.getGenericReturnType(), Modifier.isAbstract(method.getModifiers()))) {
+                    methods.add(new MethodInfo(method, false));
+                    addedMethods.add(methodSignature);
+                } else {
+                    // Track bridge methods even if we skip them
                     if (method.isBridge()) {
-                        processedBridgeMethods.add(new BridgeMethod(signature, method.getGenericReturnType()));
+                        BridgeMethod bridgeMethod = new BridgeMethod(methodSignature, method.getGenericReturnType());
+                        declaredBridgeMethods.add(bridgeMethod);
                     }
                 }
             }
-        } catch (Exception e) {
-            throw new WeldException(e);
+
+            processedBridgeMethods.addAll(declaredBridgeMethods);
+            cls = cls.getSuperclass();
         }
+
+        // Add methods from interfaces (including bridge methods from interfaces)
+        Set<Class<?>> allInterfaces = new HashSet<>(getAdditionalInterfaces());
+        if (interfacesToInspect != null) {
+            allInterfaces.addAll(interfacesToInspect);
+        }
+
+        for (Class<?> iface : allInterfaces) {
+            for (Method method : iface.getMethods()) {
+                MethodSignature signature = new MethodSignatureImpl(method);
+                // For interfaces we do not consider return types when checking bridge methods
+                if (enhancedMethodSignatures.contains(signature)
+                        && !addedMethods.contains(signature) // Check if already added
+                        && !bridgeMethodsContainsMethod(processedBridgeMethods, signature, null,
+                                Modifier.isAbstract(method.getModifiers()))) {
+                    // Only add default methods from interfaces
+                    if (Reflections.isDefault(method)) {
+                        methods.add(new MethodInfo(method, true));
+                        addedMethods.add(signature);
+                    }
+                }
+                if (method.isBridge()) {
+                    processedBridgeMethods.add(new BridgeMethod(signature, method.getGenericReturnType()));
+                }
+            }
+        }
+
+        return methods;
     }
 
     /**
-     * Returns true if super class of the parameter exists and is abstract and package private. In such case we want to omit
-     * such method.
-     *
-     * See WELD-2507 and Oracle issue - https://bugs.java.com/view_bug.do?bug_id=6342411
-     *
-     * @return true if the super class exists and is abstract and package private
+     * Checks if a method signature is already covered by a processed bridge method.
      */
-    private boolean hasAbstractPackagePrivateSuperClassWithImplementation(Class<?> clazz, BridgeMethod bridgeMethod) {
-        Class<?> superClass = clazz.getSuperclass();
-        while (superClass != null) {
-            if (Modifier.isAbstract(superClass.getModifiers()) && Reflections.isPackagePrivate(superClass.getModifiers())) {
-                // if superclass is abstract, we need to dig deeper
-                for (Method method : superClass.getDeclaredMethods()) {
-                    if (bridgeMethod.signature.matches(method) && method.getGenericReturnType().equals(bridgeMethod.returnType)
-                            && !Reflections.isAbstract(method)) {
-                        // this is the case we are after -> methods have same signature and the one in super class has actual implementation
-                        return true;
-                    }
-                }
-            }
-            superClass = superClass.getSuperclass();
-        }
-        return false;
-    }
-
-    private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods, MethodSignature signature,
-            Type returnType, boolean isMethodAbstract) {
+    private boolean bridgeMethodsContainsMethod(Set<BridgeMethod> processedBridgeMethods,
+            MethodSignature signature, Type returnType, boolean isMethodAbstract) {
         for (BridgeMethod bridgeMethod : processedBridgeMethods) {
             if (bridgeMethod.signature.equals(signature)) {
-                // method signature is equal (name and params) but return type can still differ
+                // Method signature is equal (name and params) but return type can still differ
                 if (returnType != null) {
                     if (bridgeMethod.returnType.equals(Object.class) || isMethodAbstract) {
-                        // bridge method with matching signature has Object as return type
+                        // Bridge method with matching signature has Object as return type
                         // or the method we compare against is abstract meaning the bridge overrides it
-                        // both cases are a match
                         return true;
                     } else {
                         if (bridgeMethod.returnType instanceof Class && returnType instanceof TypeVariable) {
-                            // in this case we have encountered a bridge method with specific return type in subclass
-                            // and we are observing a TypeVariable return type in superclass, this is a match
+                            // Bridge method with specific return type in subclass
+                            // and we are observing a TypeVariable return type in superclass
                             return true;
                         } else {
-                            // as a last resort, we simply check equality of return Type
+                            // As a last resort, check equality of return type
                             return bridgeMethod.returnType.equals(returnType);
                         }
                     }
@@ -377,306 +217,73 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         return false;
     }
 
-    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method,
-            ClassMethod staticConstructor) {
-        createInterceptorBody(classMethod, method, true, staticConstructor);
-    }
-
     /**
-     * Creates the given method on the proxy class where the implementation
-     * forwards the call directly to the method handler.
-     * <p/>
-     * the generated bytecode is equivalent to:
-     * <p/>
-     * return (RetType) methodHandler.invoke(this,param1,param2);
-     *
-     * @param methodInfo any JLR method
-     * @param delegateToSuper
-     * @return the method byte code
+     * Checks if a bridge method has a concrete (non-bridge) implementation in the same class.
+     * Based on the old skipIfBridgeMethod logic.
      */
-
-    protected void createInterceptorBody(ClassMethod method, MethodInformation methodInfo, boolean delegateToSuper,
-            ClassMethod staticConstructor) {
-
-        invokeMethodHandler(method, methodInfo, true, DEFAULT_METHOD_RESOLVER, delegateToSuper, staticConstructor);
-    }
-
-    private void createDelegateToSuper(ClassMethod classMethod, MethodInformation method) {
-        createDelegateToSuper(classMethod, method, classMethod.getClassFile().getSuperclass());
-    }
-
-    private void createDelegateToSuper(ClassMethod classMethod, MethodInformation method, String className) {
-        CodeAttribute b = classMethod.getCodeAttribute();
-        // first generate the invokespecial call to the super class method
-        b.aload(0);
-        b.loadMethodParameters();
-        b.invokespecial(className, method.getName(), method.getDescriptor());
-        b.returnInstruction();
-    }
-
-    /**
-     * calls methodHandler.invoke for a given method
-     *
-     * @param methodInfo declaring class of the method
-     * @param addReturnInstruction set to true you want to return the result of
-     * @param bytecodeMethodResolver The method resolver
-     * @param addProceed
-     */
-    protected void invokeMethodHandler(ClassMethod method, MethodInformation methodInfo, boolean addReturnInstruction,
-            BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed, ClassMethod staticConstructor) {
-        // now we need to build the bytecode. The order we do this in is as
-        // follows:
-        // load methodHandler
-        // dup the methodhandler
-        // invoke isDisabledHandler on the method handler to figure out of this is
-        // a self invocation.
-
-        // load this
-        // load the method object
-        // load the proceed method that invokes the superclass version of the
-        // current method
-        // create a new array the same size as the number of parameters
-        // push our parameter values into the array
-        // invokeinterface the invoke method
-        // add checkcast to cast the result to the return type, or unbox if
-        // primitive
-        // add an appropriate return instruction
-        final CodeAttribute b = method.getCodeAttribute();
-        b.aload(0);
-        getMethodHandlerField(method.getClassFile(), b);
-
-        if (addProceed) {
-            b.dup();
-
-            // get the Stack
-            b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack",
-                    "()" + DescriptorUtils.makeDescriptor(Stack.class));
-
-            // this is a self invocation optimisation
-            // test to see if this is a self invocation, and if so invokespecial the
-            // superclass method directly
-            // Do not optimize in case of private and default methods
-            if (!Reflections.isDefault(methodInfo.getMethod()) && !Modifier.isPrivate(method.getAccessFlags())) {
-                b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
-                b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler",
-                        "(" + DescriptorUtils.makeDescriptor(Stack.class) + ")" + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
-                b.iconst(0);
-                BranchEnd invokeSuperDirectly = b.ifIcmpeq();
-                // now build the bytecode that invokes the super class method
-                b.pop2(); // pop Stack and Handler
-                b.aload(0);
-                // create the method invocation
-                b.loadMethodParameters();
-                b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
-                b.returnInstruction();
-                b.branchEnd(invokeSuperDirectly);
-            }
-        } else {
-            b.aconstNull();
-        }
-
-        b.aload(0);
-        bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(),
-                methodInfo.getParameterTypes(), staticConstructor);
-
-        if (addProceed) {
-            if (Modifier.isPrivate(method.getAccessFlags())) {
-                // If the original method is private we can't use WeldSubclass.method$$super() as proceed
-                bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(),
-                        methodInfo.getParameterTypes(),
-                        staticConstructor);
-            } else {
-                bytecodeMethodResolver.getDeclaredMethod(method, method.getClassFile().getName(),
-                        methodInfo.getName() + SUPER_DELEGATE_SUFFIX,
-                        methodInfo.getParameterTypes(), staticConstructor);
-            }
-        } else {
-            b.aconstNull();
-        }
-
-        b.iconst(methodInfo.getParameterTypes().length);
-        b.anewarray(Object.class.getName());
-
-        int localVariableCount = 1;
-
-        for (int i = 0; i < methodInfo.getParameterTypes().length; ++i) {
-            String typeString = methodInfo.getParameterTypes()[i];
-            b.dup(); // duplicate the array reference
-            b.iconst(i);
-            // load the parameter value
-            BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
-            // box the parameter if necessary
-            Boxing.boxIfNessesary(b, typeString);
-            // and store it in the array
-            b.aastore();
-            if (isWide(typeString)) {
-                localVariableCount = localVariableCount + 2;
-            } else {
-                localVariableCount++;
-            }
-        }
-        // now we have all our arguments on the stack
-        // lets invoke the method
-        b.invokeinterface(StackAwareMethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
-                INVOKE_METHOD_PARAMETERS);
-        if (addReturnInstruction) {
-            // now we need to return the appropriate type
-            if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
-                b.returnInstruction();
-            } else if (isPrimitive(methodInfo.getReturnType())) {
-                Boxing.unbox(b, method.getReturnType());
-                b.returnInstruction();
-            } else {
-                b.checkcast(BytecodeUtils.getName(methodInfo.getReturnType()));
-                b.returnInstruction();
-            }
-        }
-    }
-
-    /**
-     * Adds methods requiring special implementations rather than just
-     * delegation.
-     *
-     * @param proxyClassType the Javassist class description for the proxy type
-     */
-    protected void addSpecialMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        try {
-            // Add special methods for interceptors
-            for (Method method : LifecycleMixin.class.getMethods()) {
-                BeanLogger.LOG.addingMethodToProxy(method);
-                MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false, staticConstructor);
-            }
-            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("weld_getTargetInstance");
-            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("weld_getTargetClass");
-            generateGetTargetInstanceBody(proxyClassType.addMethod(getInstanceMethod));
-            generateGetTargetClassBody(proxyClassType.addMethod(getInstanceClassMethod));
-
-            Method setMethodHandlerMethod = ProxyObject.class.getMethod("weld_setHandler", MethodHandler.class);
-            generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
-
-            Method getMethodHandlerMethod = ProxyObject.class.getMethod("weld_getHandler");
-            generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
-        } catch (Exception e) {
-            throw new WeldException(e);
-        }
-    }
-
-    private static void generateGetTargetInstanceBody(ClassMethod method) {
-        final CodeAttribute b = method.getCodeAttribute();
-        b.aload(0);
-        b.returnInstruction();
-    }
-
-    private static void generateGetTargetClassBody(ClassMethod method) {
-        final CodeAttribute b = method.getCodeAttribute();
-        BytecodeUtils.pushClassType(b, method.getClassFile().getSuperclass());
-        b.returnInstruction();
-    }
-
     @Override
-    public Class<?> getBeanType() {
-        return proxiedBeanType;
-    }
+    protected boolean hasConcreteImplementation(Method bridgeMethod,
+            Method[] classDeclaredMethods) {
+        if (!bridgeMethod.isBridge()) {
+            return false;
+        }
 
-    @Override
-    protected Class<? extends MethodHandler> getMethodHandlerType() {
-        return CombinedInterceptorAndDecoratorStackMethodHandler.class;
-    }
+        String bridgeName = bridgeMethod.getName();
+        Class<?>[] bridgeParams = bridgeMethod.getParameterTypes();
 
-    @Override
-    protected boolean isUsingProxyInstantiator() {
+        for (Method declaredMethod : classDeclaredMethods) {
+            // Only check non-bridge declared methods
+            if (declaredMethod.isBridge()) {
+                continue;
+            }
+
+            if (bridgeName.equals(declaredMethod.getName())) {
+                Class<?>[] methodParams = bridgeMethod.getParameterTypes();
+                Class<?>[] declaredMethodParams = declaredMethod.getParameterTypes();
+
+                if (methodParams.length == declaredMethodParams.length) {
+                    boolean paramsMatch = true;
+                    boolean paramsNotMatching = false;
+                    for (int i = 0; i < methodParams.length; i++) {
+                        String methodParamName = methodParams[i].getName();
+                        String declaredMethodParamName = declaredMethodParams[i].getName();
+                        if (!methodParamName.equals(declaredMethodParamName)
+                                && !methodParamName.equals(Object.class.getName())) {
+                            paramsNotMatching = true;
+                            break;
+                        }
+                    }
+
+                    if (paramsNotMatching) {
+                        continue;
+                    }
+
+                    // Parameters match, check if this is not an interface method
+                    if (!Modifier.isInterface(declaredMethod.getDeclaringClass().getModifiers())) {
+                        if (bridgeMethod.getReturnType().getName().equals(Object.class.getName())
+                                || Modifier.isAbstract(declaredMethod.getModifiers())) {
+                            // Bridge method with matching signature has Object as return type
+                            // or the method we compare against is abstract meaning the bridge overrides it
+                            return true;
+                        } else {
+                            // As a last resort, check equality of return type
+                            if (bridgeMethod.getReturnType().getName().equals(declaredMethod.getReturnType().getName())) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return false;
     }
 
-    @SuppressWarnings("unchecked")
-    private void createDelegateMethod(ClassFile proxyClassType, Method method, MethodInformation methodInformation) {
-        int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC
-                & ~AccessFlag.PROTECTED;
-        ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX,
-                DescriptorUtils.makeDescriptor(method.getReturnType()),
-                DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
-        delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
-        createDelegateToSuper(delegatingMethod, methodInformation);
-    }
-
-    private void invokePrivateMethodHandler(CodeAttribute b, ClassMethod classMethod, MethodInformation methodInfo,
-            ClassMethod staticConstructor) {
-        try {
-            classMethod.getClassFile().addField(AccessFlag.PRIVATE, PRIVATE_METHOD_HANDLER_FIELD_NAME, MethodHandler.class);
-        } catch (DuplicateMemberException ignored) {
-        }
-        // 1. Load private method handler
-        b.aload(0);
-        b.getfield(classMethod.getClassFile().getName(), PRIVATE_METHOD_HANDLER_FIELD_NAME,
-                DescriptorUtils.makeDescriptor(MethodHandler.class));
-        // 2. Load this
-        b.aload(0);
-        // 3. Load method
-        DEFAULT_METHOD_RESOLVER.getDeclaredMethod(classMethod, methodInfo.getDeclaringClass(), methodInfo.getName(),
-                methodInfo.getParameterTypes(),
-                staticConstructor);
-        // 4. No proceed method
-        b.aconstNull();
-        // 5. Load method params
-        b.iconst(methodInfo.getParameterTypes().length);
-        b.anewarray(Object.class.getName());
-        int localVariableCount = 1;
-        for (int i = 0; i < methodInfo.getParameterTypes().length; ++i) {
-            String typeString = methodInfo.getParameterTypes()[i];
-            b.dup(); // duplicate the array reference
-            b.iconst(i);
-            // load the parameter value
-            BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
-            // box the parameter if necessary
-            Boxing.boxIfNessesary(b, typeString);
-            // and store it in the array
-            b.aastore();
-            if (isWide(typeString)) {
-                localVariableCount = localVariableCount + 2;
-            } else {
-                localVariableCount++;
-            }
-        }
-        // Invoke PrivateMethodHandler
-        b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
-                new String[] { LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD,
-                        "[" + LJAVA_LANG_OBJECT });
-        if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
-            // No-op
-        } else if (isPrimitive(methodInfo.getReturnType())) {
-            Boxing.unbox(b, methodInfo.getReturnType());
-        } else {
-            b.checkcast(BytecodeUtils.getName(methodInfo.getReturnType()));
-        }
-    }
-
     /**
-     * If the given instance represents a proxy and its class is synthetic and its class name ends with {@value #PROXY_SUFFIX},
-     * attempt to find the
-     * {@value #PRIVATE_METHOD_HANDLER_FIELD_NAME} field and set its value to {@link PrivateMethodHandler#INSTANCE}.
-     *
-     * @param instance
+     * Helper class to track bridge methods with their return types.
      */
-    public static <T> void setPrivateMethodHandler(T instance) {
-        if (instance instanceof ProxyObject && instance.getClass().isSynthetic()
-                && instance.getClass().getName().endsWith(PROXY_SUFFIX)
-                && Reflections.hasDeclaredField(instance.getClass(), PRIVATE_METHOD_HANDLER_FIELD_NAME)) {
-            try {
-                Field privateMethodHandlerField = instance.getClass().getDeclaredField(PRIVATE_METHOD_HANDLER_FIELD_NAME);
-                Reflections.ensureAccessible(privateMethodHandlerField, instance);
-                privateMethodHandlerField.set(instance, PrivateMethodHandler.INSTANCE);
-            } catch (NoSuchFieldException ignored) {
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
     private static class BridgeMethod {
-
         private final Type returnType;
-
         private final MethodSignature signature;
 
         public BridgeMethod(MethodSignature signature, Type returnType) {
@@ -721,13 +328,821 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             }
             return true;
         }
+    }
 
-        @Override
-        public String toString() {
-            return new StringBuilder().append("method ").append(returnType).append(" ").append(signature.getMethodName())
-                    .append(Arrays.toString(signature.getParameterTypes()).replace('[', '(').replace(']', ')')).toString();
+    // DISABLED     @Override
+    public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        // these interfaces we want to scan for method and our proxies will implement them
+        for (Class<?> c : proxiedBeanType.getInterfaces()) {
+            addInterface(c);
+        }
+        // now we need to go deeper in hierarchy and scan those interfaces for additional interfaces with default impls
+        for (Type type : typeClosure) {
+            Class<?> c = Reflections.getRawType(type);
+            if (c.isInterface()) {
+                addInterfaceToInspect(c);
+            }
+        }
+    }
+
+    private void addInterfaceToInspect(Class<?> iface) {
+        if (interfacesToInspect == null) {
+            interfacesToInspect = new HashSet<>();
+        }
+        this.interfacesToInspect.add(iface);
+    }
+
+    /**
+     * Returns a suffix to append to the name of the proxy class. The name
+     * already consists of <class-name>_$$_Weld, to which the suffix is added.
+     * This allows the creation of different types of proxies for the same class.
+     *
+     * @return a name suffix
+     */
+    protected String getProxyNameSuffix() {
+        return PROXY_SUFFIX;
+    }
+
+    @Override
+    protected Class<? extends MethodHandler> getMethodHandlerType() {
+        return CombinedInterceptorAndDecoratorStackMethodHandler.class;
+    }
+
+    @Override
+    protected boolean isUsingProxyInstantiator() {
+        return false;
+    }
+
+    @Override
+    public Class<?> getBeanType() {
+        return proxiedBeanType;
+    }
+
+    @Override
+    protected void addFields(ClassCreator cc,
+            List<DeferredBytecode> initialValueBytecode) {
+        super.addFields(cc, initialValueBytecode);
+
+        // Add private method handler field for private method interception
+        cc.field(PRIVATE_METHOD_HANDLER_FIELD_NAME, f -> {
+            f.setType(MethodHandler.class);
+            f.private_();
+        });
+    }
+
+    @Override
+    protected void addMethodsFromClass(ClassCreator cc,
+            List<MethodInfo> methodsToProxy,
+            Map<MethodInfo, String> methodFieldNames) {
+
+        for (MethodInfo methodInfo : methodsToProxy) {
+            Method method = methodInfo.method;
+            String methodFieldName = methodFieldNames.get(methodInfo);
+
+            // Check if this method should be intercepted
+            MethodSignature methodSignature = new MethodSignatureImpl(method);
+            boolean hasInterceptors = interceptedMethodSignatures.contains(methodSignature);
+
+            // IMPORTANT: For bridge methods, check if the corresponding non-bridge method is intercepted
+            // Bridge methods use invokespecial which bypasses virtual dispatch, so we must override them
+            // in the proxy to ensure interception works
+            if (!hasInterceptors && !method.isBridge()) {
+                // This is a non-bridge method - check if there's a bridge with the same name that's intercepted
+                for (MethodInfo other : methodsToProxy) {
+                    if (other.method.getName().equals(method.getName()) && other.method.isBridge()) {
+                        MethodSignature otherSig = new MethodSignatureImpl(
+                                other.method);
+                        if (interceptedMethodSignatures.contains(otherSig)) {
+                            hasInterceptors = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (hasInterceptors) {
+                // For intercepted methods, we need to differentiate between bridge and non-bridge methods
+                if (method.isBridge()) {
+                    // For bridge methods, we need to determine if there's a corresponding non-bridge method
+                    // that will handle the interception. If so, skip the bridge and let it delegate naturally.
+                    // Only create a bridge delegate if the bridge is the ONLY intercepted method with this name.
+                    boolean hasNonBridgeIntercepted = false;
+                    for (MethodInfo other : methodsToProxy) {
+                        if (other.method.getName().equals(method.getName()) && !other.method.isBridge()) {
+                            MethodSignature otherSig = new MethodSignatureImpl(
+                                    other.method);
+                            if (interceptedMethodSignatures.contains(otherSig)) {
+                                hasNonBridgeIntercepted = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (hasNonBridgeIntercepted) {
+                        // Skip this bridge - there's a non-bridge method that's intercepted,
+                        // and we'll create a proper bridge delegate after that method is created
+                        continue;
+                    } else {
+                        // This bridge has no corresponding non-bridge intercepted method,
+                        // so we need to intercept it directly
+
+                        // First create the $$super method (skip for private methods only)
+                        if (!Modifier.isPrivate(method.getModifiers())) {
+                            if (methodInfo.isDefault) {
+                                createDefaultMethodSuperDelegate(cc, method);
+                            } else {
+                                createSuperDelegateMethod(cc, method);
+                            }
+                        }
+
+                        // Then create the intercepted method
+                        createInterceptedMethod(cc, methodInfo, methodFieldName);
+                    }
+                } else {
+                    // For non-bridge intercepted methods, create TWO methods:
+                    // 1. The regular method that delegates to the interceptor chain
+                    // 2. The method$$super() that calls super.method() (used as proceed by interceptors)
+
+                    // Create the $$super method first (skip for private methods only)
+                    // For default interface methods, create a special $$super that uses invokeSpecial on bean class
+                    if (!Modifier.isPrivate(method.getModifiers())) {
+                        if (methodInfo.isDefault) {
+                            createDefaultMethodSuperDelegate(cc, method);
+                        } else {
+                            createSuperDelegateMethod(cc, method);
+                        }
+                    }
+
+                    // Then create the regular method that delegates to interceptor chain
+                    createInterceptedMethod(cc, methodInfo, methodFieldName);
+
+                    // After creating the intercepted method, check if there are any bridge methods with the same name
+                    // and create simple delegates for them (to prevent inherited bridges from using invokespecial)
+                    for (MethodInfo bridgeCandidate : methodsToProxy) {
+                        if (bridgeCandidate.method.isBridge()
+                                && bridgeCandidate.method.getName().equals(method.getName())) {
+                            MethodSignature bridgeSig = new MethodSignatureImpl(
+                                    bridgeCandidate.method);
+                            if (interceptedMethodSignatures.contains(bridgeSig)) {
+                                // Create a simple bridge that calls this non-bridge method
+                                createBridgeDelegateToMethod(cc, bridgeCandidate.method, method);
+                            }
+                        }
+                    }
+                }
+            } else {
+                // For non-intercepted methods in InterceptedSubclass, we still need special handling
+                // They must call super directly but need to manage InterceptionDecorationContext
+                // to prevent full interception when calling other methods
+                //
+                // EXCEPTION: Skip bridge methods and default interface methods - they naturally delegate
+                // to concrete methods and we can't use invokespecial on interface methods anyway
+                if (!method.isBridge() && !methodInfo.isDefault) {
+                    createNonInterceptedMethod(cc, methodInfo, methodFieldName);
+                }
+            }
         }
 
     }
 
+    /**
+     * Creates a bridge method that delegates to a specific target method using virtual dispatch.
+     * This prevents the inherited bridge from using invokespecial which would bypass interception.
+     */
+    private void createBridgeDelegateToMethod(ClassCreator cc, Method bridgeMethod,
+            Method targetMethod) {
+        MethodDesc bridgeDesc = MethodDesc.of(bridgeMethod);
+        MethodDesc targetDesc = MethodDesc.of(targetMethod);
+
+        cc.method(bridgeDesc, m -> {
+            m.public_();
+            m.synthetic();
+            m.returning(bridgeMethod.getReturnType());
+
+            // Add parameters
+            Class<?>[] paramTypes = bridgeMethod.getParameterTypes();
+            ParamVar[] params = new ParamVar[paramTypes.length];
+            for (int i = 0; i < paramTypes.length; i++) {
+                params[i] = m.parameter("arg" + i, paramTypes[i]);
+            }
+
+            m.body(b -> {
+                // Call this.targetMethod(params) using virtual dispatch
+                // Cast parameters to match target method signature
+                Class<?>[] targetParamTypes = targetMethod.getParameterTypes();
+                Expr[] args = new Expr[params.length];
+                for (int i = 0; i < params.length; i++) {
+                    if (paramTypes[i] != targetParamTypes[i]) {
+                        args[i] = b.cast(params[i], targetParamTypes[i]);
+                    } else {
+                        args[i] = params[i];
+                    }
+                }
+
+                Expr result;
+                if (params.length == 0) {
+                    result = b.invokeVirtual(targetDesc, m.this_());
+                } else if (params.length == 1) {
+                    result = b.invokeVirtual(targetDesc, m.this_(), args[0]);
+                } else if (params.length == 2) {
+                    result = b.invokeVirtual(targetDesc, m.this_(), args[0], args[1]);
+                } else {
+                    result = b.invokeVirtual(targetDesc, m.this_(), args);
+                }
+
+                if (bridgeMethod.getReturnType() == void.class) {
+                    b.return_();
+                } else {
+                    b.return_(result);
+                }
+            });
+        });
+    }
+
+    /**
+     * Creates a method$$super() for default interface methods.
+     * Uses invokeSpecial on the bean class (superclass), which naturally delegates to the default interface method.
+     */
+    private void createDefaultMethodSuperDelegate(ClassCreator cc, Method method) {
+        String superMethodName = method.getName() + SUPER_DELEGATE_SUFFIX;
+
+        cc.method(superMethodName, m -> {
+            // Make it private and synthetic
+            m.private_();
+            m.synthetic();
+            m.returning(method.getReturnType());
+
+            // Set varargs flag if the method is varargs
+            if (method.isVarArgs()) {
+                m.varargs();
+            }
+
+            // Add parameters
+            Class<?>[] paramTypes = method.getParameterTypes();
+            ParamVar[] params = new ParamVar[paramTypes.length];
+            for (int i = 0; i < paramTypes.length; i++) {
+                params[i] = m.parameter("arg" + i, paramTypes[i]);
+            }
+
+            // Add exception types
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableType = (Class<? extends Throwable>) exceptionType;
+                m.throws_(throwableType);
+            }
+
+            m.body(b -> {
+                // For default interface methods, call the bean class (superclass) method via invokeSpecial
+                // Since the bean class doesn't override this method, it will naturally delegate to the
+                // default interface implementation
+                MethodDesc superMethodDesc = MethodDesc.of(getBeanType(), method.getName(),
+                        method.getReturnType(), method.getParameterTypes());
+
+                Expr result;
+                if (params.length == 0) {
+                    result = b.invokeSpecial(superMethodDesc, m.this_());
+                } else if (params.length == 1) {
+                    result = b.invokeSpecial(superMethodDesc, m.this_(), params[0]);
+                } else if (params.length == 2) {
+                    result = b.invokeSpecial(superMethodDesc, m.this_(), params[0], params[1]);
+                } else {
+                    result = b.invokeSpecial(superMethodDesc, m.this_(), (Expr[]) params);
+                }
+
+                if (method.getReturnType() == void.class) {
+                    b.return_();
+                } else {
+                    b.return_(result);
+                }
+            });
+        });
+    }
+
+    /**
+     * Creates a method$$super() that simply calls super.method().
+     * This is used by interceptors as the "proceed" method.
+     */
+    private void createSuperDelegateMethod(ClassCreator cc, Method method) {
+        String superMethodName = method.getName() + SUPER_DELEGATE_SUFFIX;
+
+        cc.method(superMethodName, m -> {
+            // Make it private and synthetic
+            m.private_();
+            m.synthetic();
+            m.returning(method.getReturnType());
+
+            // Set varargs flag if the method is varargs
+            if (method.isVarArgs()) {
+                m.varargs();
+            }
+
+            // Add parameters
+            Class<?>[] paramTypes = method.getParameterTypes();
+            ParamVar[] params = new ParamVar[paramTypes.length];
+            for (int i = 0; i < paramTypes.length; i++) {
+                params[i] = m.parameter("arg" + i, paramTypes[i]);
+            }
+
+            // Add exception types
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableType = (Class<? extends Throwable>) exceptionType;
+                m.throws_(throwableType);
+            }
+
+            m.body(b -> {
+                // Call super.method(args)
+                MethodDesc superMethodDesc = MethodDesc.of(method);
+
+                Expr result;
+                if (params.length == 0) {
+                    result = b.invokeSpecial(superMethodDesc, m.this_());
+                } else if (params.length == 1) {
+                    result = b.invokeSpecial(superMethodDesc, m.this_(), params[0]);
+                } else if (params.length == 2) {
+                    result = b.invokeSpecial(superMethodDesc, m.this_(), params[0], params[1]);
+                } else {
+                    result = b.invokeSpecial(superMethodDesc, m.this_(), (Expr[]) params);
+                }
+
+                if (method.getReturnType() == void.class) {
+                    b.return_();
+                } else {
+                    b.return_(result);
+                }
+            });
+        });
+    }
+
+    /**
+     * Creates the regular method that delegates to the interceptor chain.
+     * The interceptor chain will call method$$super() as the proceed method.
+     */
+    private void createInterceptedMethod(ClassCreator cc, MethodInfo methodInfo,
+            String methodFieldName) {
+        Method method = methodInfo.method;
+        // Use methodInfo.isDefault to check if this is a default interface method
+        boolean isDefaultInterfaceMethod = methodInfo.isDefault;
+
+        // Use MethodDesc to properly handle overloaded methods
+        MethodDesc methodDesc = MethodDesc.of(method);
+
+        cc.method(methodDesc, m -> {
+            m.public_();
+            m.returning(method.getReturnType());
+
+            // Set varargs flag if the method is varargs
+            if (method.isVarArgs()) {
+                m.varargs();
+            }
+
+            // Add parameters
+            Class<?>[] paramTypes = method.getParameterTypes();
+            ParamVar[] params = new ParamVar[paramTypes.length];
+            for (int i = 0; i < paramTypes.length; i++) {
+                params[i] = m.parameter("arg" + i, paramTypes[i]);
+            }
+
+            // Add exception types
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableType = (Class<? extends Throwable>) exceptionType;
+                m.throws_(throwableType);
+            }
+
+            m.body(b -> {
+                // Get the method handler field descriptor
+                FieldDesc methodHandlerField = FieldDesc.of(
+                        cc.type(),
+                        METHOD_HANDLER_FIELD_NAME,
+                        getMethodHandlerType());
+
+                // Create a local variable to store the instance reference (to avoid repeated field access)
+                var thisVar = b.localVar("thisInstance", m.this_());
+
+                // For relaxed construction mode, if methodHandler is null (during construction),
+                // just call the super method directly (without interception)
+                // EXCEPT for bridge/default interface methods - they can't use invokespecial
+                if (!method.isBridge() && !isDefaultInterfaceMethod) {
+                    Expr handlerCheck = b.get(thisVar.field(methodHandlerField));
+                    Expr isNull = b.eq(handlerCheck, Const.ofNull(getMethodHandlerType()));
+                    b.if_(isNull, nullBlock -> {
+                        // Call super.method(args) directly
+                        MethodDesc superMethodDesc = MethodDesc.of(method);
+
+                        Expr superResult;
+                        if (params.length == 0) {
+                            superResult = nullBlock.invokeSpecial(superMethodDesc, thisVar);
+                        } else if (params.length == 1) {
+                            superResult = nullBlock.invokeSpecial(superMethodDesc, thisVar, params[0]);
+                        } else if (params.length == 2) {
+                            superResult = nullBlock.invokeSpecial(superMethodDesc, thisVar, params[0], params[1]);
+                        } else {
+                            superResult = nullBlock.invokeSpecial(superMethodDesc, thisVar, (Expr[]) params);
+                        }
+
+                        if (method.getReturnType() == void.class) {
+                            nullBlock.return_();
+                        } else {
+                            nullBlock.return_(superResult);
+                        }
+                    });
+                }
+                // For bridge/default interface methods, skip the null check and always delegate to interceptor chain
+                // These will be invoked via reflection
+
+                // Read the handler field again (after null check, so we know it's not null here)
+                Expr handlerField = b.get(thisVar.field(methodHandlerField));
+
+                // Cast to StackAwareMethodHandler to ensure we call the correct invoke overload
+                Expr handler = b.cast(handlerField, StackAwareMethodHandler.class);
+
+                // Get the InterceptionDecorationContext Stack
+                MethodDesc getStackDesc = MethodDesc.of(
+                        InterceptionDecorationContext.class,
+                        "getStack",
+                        InterceptionDecorationContext.Stack.class);
+                Expr stack = b.invokeStatic(getStackDesc);
+
+                // Get the Method object for this method (from static field)
+                FieldDesc methodField = FieldDesc.of(
+                        cc.type(),
+                        methodFieldName,
+                        Method.class);
+                Expr thisMethodObj = Expr.staticField(methodField);
+
+                // Get the proceed Method object
+                // For private methods ONLY: use the original method (will be invoked via reflection)
+                // For all other methods (including bridge/default interface): use the $$super method
+                Expr proceedMethodObj;
+                if (Modifier.isPrivate(method.getModifiers())) {
+                    // For private methods, the proceed method is the same as thisMethod
+                    // These will be invoked via reflection by the method handler
+                    proceedMethodObj = thisMethodObj;
+                } else {
+                    // For all non-private methods (regular, bridge, default interface), look up the $$super method
+                    // The $$super method will be created separately and calls super.method() using invokespecial
+                    // Call this.getClass().getDeclaredMethod(methodName + "$$super", paramTypes)
+                    Expr thisClass = b.invokeVirtual(
+                            MethodDesc.of(Object.class, "getClass", Class.class),
+                            m.this_());
+
+                    Expr superMethodName = Const.of(method.getName() + SUPER_DELEGATE_SUFFIX);
+
+                    // Create parameter types array
+                    Expr paramTypesArray;
+                    if (paramTypes.length == 0) {
+                        paramTypesArray = b.newEmptyArray(Class.class, 0);
+                    } else {
+                        Expr paramTypesExpr = b.newEmptyArray(Class.class, paramTypes.length);
+                        var paramTypesVar = b.localVar("paramTypes", paramTypesExpr);
+
+                        for (int i = 0; i < paramTypes.length; i++) {
+                            b.set(paramTypesVar.elem(i), Const.of(paramTypes[i]));
+                        }
+                        paramTypesArray = paramTypesVar;
+                    }
+
+                    proceedMethodObj = b.invokeVirtual(
+                            MethodDesc.of(Class.class, "getDeclaredMethod",
+                                    Method.class, String.class, Class[].class),
+                            thisClass, superMethodName, paramTypesArray);
+                }
+
+                // Create args array
+                Expr argsArray;
+                if (paramTypes.length == 0) {
+                    argsArray = b.newEmptyArray(Object.class, 0);
+                } else {
+                    Expr arrayExpr = b.newEmptyArray(Object.class, paramTypes.length);
+                    var argsVar = b.localVar("args", arrayExpr);
+
+                    for (int i = 0; i < paramTypes.length; i++) {
+                        Expr paramValue = params[i];
+                        if (paramTypes[i].isPrimitive()) {
+                            paramValue = b.box(paramValue);
+                        }
+                        b.set(argsVar.elem(i), paramValue);
+                    }
+                    argsArray = argsVar;
+                }
+
+                // Call methodHandler.invoke(stack, this, thisMethod, proceedMethod, args)
+                // Use StackAwareMethodHandler interface which has a 5-parameter invoke method
+                MethodDesc invokeDesc = MethodDesc.of(
+                        StackAwareMethodHandler.class,
+                        INVOKE_METHOD_NAME,
+                        Object.class,
+                        InterceptionDecorationContext.Stack.class, Object.class, Method.class,
+                        Method.class, Object[].class);
+
+                Expr result = b.invokeInterface(invokeDesc, handler,
+                        stack, m.this_(), thisMethodObj, proceedMethodObj, argsArray);
+
+                // Handle return value
+                if (method.getReturnType() == void.class) {
+                    b.return_();
+                } else if (method.getReturnType().isPrimitive()) {
+                    Expr casted = b.cast(result, getWrapperType(method.getReturnType()));
+                    Expr unboxed = b.unbox(casted);
+                    b.return_(unboxed);
+                } else {
+                    Expr casted = b.cast(result, method.getReturnType());
+                    b.return_(casted);
+                }
+            });
+        });
+    }
+
+    @Override
+    protected void addSpecialMethods(ClassCreator cc) {
+        try {
+            // Add LifecycleMixin methods (postConstruct, preDestroy) using Stack-aware invoke
+            for (Method method : LifecycleMixin.class.getMethods()) {
+                BeanLogger.LOG.addingMethodToProxy(method);
+                generateStackAwareLifecycleMixinMethod(cc, method);
+            }
+
+            // Add TargetInstanceProxy methods
+            Method getInstanceMethod = TargetInstanceProxy.class
+                    .getMethod("weld_getTargetInstance");
+            generateGetTargetInstanceBody(cc, getInstanceMethod);
+
+            Method getInstanceClassMethod = TargetInstanceProxy.class
+                    .getMethod("weld_getTargetClass");
+            generateGetTargetClassBody(cc, getInstanceClassMethod);
+
+            // Add ProxyObject methods (getMethodHandler, setMethodHandler)
+            Method setMethodHandlerMethod = ProxyObject.class.getMethod("weld_setHandler",
+                    MethodHandler.class);
+            generateSetMethodHandlerBody(cc, setMethodHandlerMethod);
+
+            Method getMethodHandlerMethod = ProxyObject.class.getMethod("weld_getHandler");
+            generateGetMethodHandlerBody(cc, getMethodHandlerMethod);
+        } catch (Exception e) {
+            throw new WeldException(e);
+        }
+    }
+
+    /**
+     * Generates a LifecycleMixin method using Stack-aware invoke (5 parameters instead of 4).
+     * This is needed for InterceptedSubclass to properly handle the interception/decoration context.
+     */
+    private void generateStackAwareLifecycleMixinMethod(ClassCreator cc,
+            Method method) {
+        cc.method(method.getName(), m -> {
+            m.public_();
+            m.returning(void.class);
+
+            m.body(b -> {
+                // Get the method handler field
+                FieldDesc methodHandlerField = FieldDesc.of(
+                        cc.type(),
+                        METHOD_HANDLER_FIELD_NAME,
+                        getMethodHandlerType());
+                Expr handlerField = b.get(m.this_().field(methodHandlerField));
+
+                // Cast to StackAwareMethodHandler to ensure we call the correct invoke overload
+                Expr handler = b.cast(handlerField, StackAwareMethodHandler.class);
+
+                // Get the InterceptionDecorationContext Stack
+                // Pass null to let the handler fetch the stack (lifecycle callbacks use this pattern)
+                Expr stack = Const.ofNull(InterceptionDecorationContext.Stack.class);
+
+                // Get the Method object for this lifecycle method
+                Expr lifecycleMixinClass = Const
+                        .of(LifecycleMixin.class);
+                Expr methodName = Const.of(method.getName());
+                Expr emptyClassArray = b.newEmptyArray(Class.class, 0);
+
+                MethodDesc getMethodDesc = MethodDesc.of(
+                        Class.class, "getMethod", Method.class, String.class, Class[].class);
+                Expr methodObj = b.invokeVirtual(getMethodDesc, lifecycleMixinClass,
+                        methodName, emptyClassArray);
+
+                // Create null proceed Method parameter (lifecycle callbacks don't have proceed)
+                Expr nullMethod = Const.ofNull(Method.class);
+
+                // Create empty args array
+                Expr emptyArgs = b.newEmptyArray(Object.class, 0);
+
+                // Call methodHandler.invoke(stack, this, methodObj, null, emptyArgs)
+                // Use StackAwareMethodHandler's 5-parameter invoke
+                MethodDesc invokeDesc = MethodDesc.of(
+                        StackAwareMethodHandler.class,
+                        INVOKE_METHOD_NAME,
+                        Object.class,
+                        InterceptionDecorationContext.Stack.class, Object.class, Method.class,
+                        Method.class, Object[].class);
+
+                b.invokeInterface(invokeDesc, handler, stack, m.this_(), methodObj, nullMethod, emptyArgs);
+
+                // Return (void method)
+                b.return_();
+            });
+        });
+    }
+
+    /**
+     * Creates a non-intercepted method that calls super directly.
+     * These methods still need to manage the InterceptionDecorationContext to prevent
+     * full interception when they call other intercepted methods.
+     */
+    private void createNonInterceptedMethod(ClassCreator cc, MethodInfo methodInfo,
+            String methodFieldName) {
+        Method method = methodInfo.method;
+
+        cc.method(method.getName(), m -> {
+            m.public_();
+            m.returning(method.getReturnType());
+
+            // Set varargs flag if the method is varargs
+            if (method.isVarArgs()) {
+                m.varargs();
+            }
+
+            // Add parameters
+            Class<?>[] paramTypes = method.getParameterTypes();
+            ParamVar[] params = new ParamVar[paramTypes.length];
+            for (int i = 0; i < paramTypes.length; i++) {
+                params[i] = m.parameter("arg" + i, paramTypes[i]);
+            }
+
+            // Add exception types
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableType = (Class<? extends Throwable>) exceptionType;
+                m.throws_(throwableType);
+            }
+
+            m.body(b -> {
+                // For non-intercepted methods, we need to manage the InterceptionDecorationContext
+                // to suppress interception for any calls made from within this method.
+                // This prevents interceptors from firing on direct/self-invocations.
+
+                // Get InterceptionDecorationContext stack
+                MethodDesc getStackDesc = MethodDesc.of(
+                        InterceptionDecorationContext.class,
+                        "getStack",
+                        InterceptionDecorationContext.Stack.class);
+                Expr stackExpr = b.invokeStatic(getStackDesc);
+                var stack = b.localVar("stack", stackExpr);
+
+                // Get method handler to push onto stack
+                FieldDesc methodHandlerField = FieldDesc.of(
+                        cc.type(),
+                        METHOD_HANDLER_FIELD_NAME,
+                        getMethodHandlerType());
+                Expr handler = b.get(m.this_().field(methodHandlerField));
+
+                // Call stack.startIfNotOnTop(handler)
+                // This returns true if we pushed, false if handler was already on top
+                MethodDesc startIfNotOnTopDesc = MethodDesc.of(
+                        InterceptionDecorationContext.Stack.class,
+                        "startIfNotOnTop",
+                        boolean.class,
+                        CombinedInterceptorAndDecoratorStackMethodHandler.class);
+                Expr shouldPopExpr = b.invokeVirtual(startIfNotOnTopDesc, stack, handler);
+                var shouldPop = b.localVar("shouldPop", shouldPopExpr);
+
+                // Call the method
+                // - For private/interface methods: use privateMethodHandler to invoke via reflection
+                // - For regular class methods: call super.method() directly with invokeSpecial
+                Expr result;
+                boolean isInterfaceMethod = method.getDeclaringClass().isInterface();
+                if (Modifier.isPrivate(method.getModifiers()) || isInterfaceMethod) {
+                    // For private/interface methods, use the private method handler to invoke via reflection
+                    // Get the privateMethodHandler field
+                    FieldDesc privateMethodHandlerField = FieldDesc.of(
+                            cc.type(),
+                            PRIVATE_METHOD_HANDLER_FIELD_NAME,
+                            MethodHandler.class);
+                    Expr privateHandler = b.get(m.this_().field(privateMethodHandlerField));
+
+                    // Get the Method object for this private method
+                    FieldDesc methodField = FieldDesc.of(
+                            cc.type(),
+                            methodFieldName,
+                            Method.class);
+                    Expr thisMethodObj = Expr.staticField(methodField);
+
+                    // Create args array
+                    Expr argsArray;
+                    if (paramTypes.length == 0) {
+                        argsArray = b.newEmptyArray(Object.class, 0);
+                    } else {
+                        Expr arrayExpr = b.newEmptyArray(Object.class, paramTypes.length);
+                        var argsVar = b.localVar("args", arrayExpr);
+
+                        for (int i = 0; i < paramTypes.length; i++) {
+                            Expr paramValue = params[i];
+                            if (paramTypes[i].isPrimitive()) {
+                                paramValue = b.box(paramValue);
+                            }
+                            b.set(argsVar.elem(i), paramValue);
+                        }
+                        argsArray = argsVar;
+                    }
+
+                    // Call privateMethodHandler.invoke(this, thisMethod, null, args)
+                    MethodDesc invokeDesc = MethodDesc.of(
+                            MethodHandler.class,
+                            INVOKE_METHOD_NAME,
+                            Object.class,
+                            Object.class, Method.class,
+                            Method.class, Object[].class);
+                    result = b.invokeInterface(invokeDesc, privateHandler,
+                            m.this_(), thisMethodObj, Const.ofNull(Method.class), argsArray);
+                } else {
+                    // For regular class methods (non-private, non-interface), call super.method(args) directly
+                    MethodDesc superMethodDesc = MethodDesc.of(method);
+                    if (params.length == 0) {
+                        result = b.invokeSpecial(superMethodDesc, m.this_());
+                    } else if (params.length == 1) {
+                        result = b.invokeSpecial(superMethodDesc, m.this_(), params[0]);
+                    } else if (params.length == 2) {
+                        result = b.invokeSpecial(superMethodDesc, m.this_(), params[0], params[1]);
+                    } else {
+                        result = b.invokeSpecial(superMethodDesc, m.this_(), (Expr[]) params);
+                    }
+                }
+
+                // If we pushed onto the stack, pop it now
+                Expr shouldPopCheck = b.eq(shouldPop, Const.of(true));
+                b.if_(shouldPopCheck, popBlock -> {
+                    MethodDesc endDesc = MethodDesc.of(
+                            InterceptionDecorationContext.Stack.class,
+                            "end",
+                            void.class);
+                    popBlock.invokeVirtual(endDesc, stack);
+                });
+
+                // Return the result
+                if (method.getReturnType() == void.class) {
+                    b.return_();
+                } else {
+                    b.return_(result);
+                }
+            });
+        });
+    }
+
+    /**
+     * Generates weld_getTargetInstance() which returns 'this'.
+     * Note: The method is declared in TargetInstanceProxy<T> to return T, but at runtime
+     * it's erased to Object. We use Object as the return type to match the erased signature.
+     */
+    private void generateGetTargetInstanceBody(ClassCreator cc,
+            Method method) {
+        cc.method(method.getName(), m -> {
+            m.public_();
+            // Use the actual return type from the method (which is erased to Object)
+            m.returning(method.getReturnType());
+
+            m.body(b -> {
+                // Simply return this
+                b.return_(m.this_());
+            });
+        });
+    }
+
+    /**
+     * Generates weld_getTargetClass() which returns the bean type class.
+     * Note: The method is declared in TargetInstanceProxy<T> to return Class<? extends T>,
+     * but at runtime it's erased to Class. We match the erased signature.
+     */
+    private void generateGetTargetClassBody(ClassCreator cc,
+            Method method) {
+        cc.method(method.getName(), m -> {
+            m.public_();
+            // Use the actual return type from the method (which is erased to Class)
+            m.returning(method.getReturnType());
+
+            m.body(b -> {
+                // Return the bean type class (superclass of this proxy)
+                Expr beanTypeClass = Const.of(getBeanType());
+                b.return_(beanTypeClass);
+            });
+        });
+    }
+
+    /**
+     * Temporarily stubbed - not yet migrated to Gizmo 2
+     *
+     * @param instance
+     */
+    public static <T> void setPrivateMethodHandler(T instance) {
+        if (instance instanceof ProxyObject && instance.getClass().isSynthetic()
+                && instance.getClass().getName().endsWith(PROXY_SUFFIX)
+                && Reflections.hasDeclaredField(instance.getClass(), PRIVATE_METHOD_HANDLER_FIELD_NAME)) {
+            try {
+                Field privateMethodHandlerField = instance.getClass().getDeclaredField(PRIVATE_METHOD_HANDLER_FIELD_NAME);
+                Reflections.ensureAccessible(privateMethodHandlerField, instance);
+                privateMethodHandlerField.set(instance, PrivateMethodHandler.INSTANCE);
+            } catch (NoSuchFieldException ignored) {
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

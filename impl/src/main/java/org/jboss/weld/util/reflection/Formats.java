@@ -45,10 +45,10 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.LineNumberTable;
-import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
+import org.jboss.weld.util.bytecode.DescriptorUtil;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -167,10 +167,10 @@ public class Formats {
             String signature;
             String name;
             if (member instanceof Method) {
-                signature = DescriptorUtils.methodDescriptor((Method) member);
+                signature = DescriptorUtil.methodDescriptor((Method) member);
                 name = member.getName();
             } else if (member instanceof Constructor) {
-                signature = DescriptorUtils.makeDescriptor((Constructor<?>) member);
+                signature = DescriptorUtil.makeDescriptor((Constructor<?>) member);
                 name = INIT_METHOD_NAME;
             } else {
                 return 0;

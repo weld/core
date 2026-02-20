@@ -68,7 +68,7 @@
         <!-- We can also use our own file, needed for relaxed mode testing (see WeldMethodInterceptor) -->
         <!-- Our variant is under src/test/tck/tck-tests.xml -->
         <cdi.tck.suite.xml.file />
-        <classfilewriter.version>1.3.1.Final</classfilewriter.version>
+        <gizmo.version>2.1.1</gizmo.version>
         <groovy.version>5.0.4</groovy.version>
         <htmlunit.version>2.70.0</htmlunit.version>
         <jacoco.version>0.8.14</jacoco.version>
@@ -202,10 +202,11 @@
                 <version>${atinject.tck.version}</version>
             </dependency>
 
+
             <dependency>
-                <groupId>org.jboss.classfilewriter</groupId>
-                <artifactId>jboss-classfilewriter</artifactId>
-                <version>${classfilewriter.version}</version>
+                <groupId>io.quarkus.gizmo</groupId>
+                <artifactId>gizmo2</artifactId>
+                <version>${gizmo.version}</version>
             </dependency>
 
             <!--Keep Arq. BOMs as first of all Arquillian dependencies in order to make it fetch correct versions!-->
