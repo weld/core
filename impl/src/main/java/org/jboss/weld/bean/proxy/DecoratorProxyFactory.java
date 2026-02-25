@@ -17,33 +17,31 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.lang.constant.ClassDesc;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.Bean;
 
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.ClassFile;
-import org.jboss.classfilewriter.ClassMethod;
-import org.jboss.classfilewriter.code.CodeAttribute;
-import org.jboss.classfilewriter.util.DescriptorUtils;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
-import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
-import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.bytecode.StaticMethodInformation;
-import org.jboss.weld.util.reflection.Reflections;
+
+import io.quarkus.gizmo2.Const;
+import io.quarkus.gizmo2.Expr;
+import io.quarkus.gizmo2.ParamVar;
+import io.quarkus.gizmo2.creator.BlockCreator;
+import io.quarkus.gizmo2.creator.ClassCreator;
+import io.quarkus.gizmo2.desc.FieldDesc;
+import io.quarkus.gizmo2.desc.MethodDesc;
 
 /**
  * This special proxy factory is mostly used for abstract decorators. When a
@@ -57,10 +55,8 @@ import org.jboss.weld.util.reflection.Reflections;
 public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
 
     public static final String PROXY_SUFFIX = "DecoratorProxy";
-    private static final String INIT_MH_METHOD_NAME = "_initMH";
     private final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private final Field delegateField;
-    private final TargetInstanceBytecodeMethodResolver targetInstanceBytecodeMethodResolver = new TargetInstanceBytecodeMethodResolver();
 
     public DecoratorProxyFactory(String contextId, Class<T> proxyType,
             WeldInjectionPointAttributes<?, ?> delegateInjectionPoint, Bean<?> bean) {
@@ -73,68 +69,421 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         }
     }
 
-    /**
-     * calls _initMH on the method handler and then stores the result in the
-     * methodHandler field as then new methodHandler
-     */
-    private void addHandlerInitializerMethod(ClassFile proxyClassType, ClassMethod staticConstructor) throws Exception {
-        ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, INIT_MH_METHOD_NAME,
-                BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
-        final CodeAttribute b = classMethod.getCodeAttribute();
-        b.aload(0);
-        StaticMethodInformation methodInfo = new StaticMethodInformation(INIT_MH_METHOD_NAME, new Class[] { Object.class },
-                void.class,
-                classMethod.getClassFile().getName());
-        invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
-        b.checkcast(MethodHandler.class);
-        b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME,
-                DescriptorUtils.makeDescriptor(MethodHandler.class));
-        b.returnInstruction();
-        BeanLogger.LOG.createdMethodHandlerInitializerForDecoratorProxy(getBeanType());
-
-    }
-
     @Override
     protected void addAdditionalInterfaces(Set<Class<?>> interfaces) {
         interfaces.add(DecoratorProxy.class);
     }
 
     @Override
-    protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        Method initializerMethod = null;
-        int delegateParameterPosition = -1;
-        if (delegateInjectionPoint instanceof ParameterInjectionPoint<?, ?>) {
-            ParameterInjectionPoint<?, ?> parameterIP = (ParameterInjectionPoint<?, ?>) delegateInjectionPoint;
-            if (parameterIP.getMember() instanceof Method) {
-                initializerMethod = ((Method) parameterIP.getMember());
-                delegateParameterPosition = parameterIP.getAnnotated().getPosition();
-            }
+    protected void addStaticInitializer(ClassCreator cc, List<MethodInfo> methodsToProxy,
+            Map<MethodInfo, String> methodFieldNames) {
+        // If delegate field is private, add a static field to hold the accessible Field object
+        if (delegateField != null && Modifier.isPrivate(delegateField.getModifiers())) {
+            cc.staticField("weld$$$delegateField$$$accessor", f -> {
+                f.setType(Field.class);
+                f.private_();
+            });
         }
-        try {
-            if (delegateParameterPosition >= 0) {
-                addHandlerInitializerMethod(proxyClassType, staticConstructor);
-            }
-            Class<?> cls = getBeanType();
-            Set<Method> methods = new LinkedHashSet<Method>();
-            decoratorMethods(cls, methods);
-            for (Method method : methods) {
-                MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                if (!method.getDeclaringClass().getName().equals("java.lang.Object") || method.getName().equals("toString")) {
 
-                    if ((delegateParameterPosition >= 0) && (initializerMethod.equals(method))) {
-                        createDelegateInitializerCode(proxyClassType.addMethod(method), methodInfo, delegateParameterPosition);
+        // Create static initializer
+        cc.staticMethod("<clinit>", m -> {
+            m.returning(void.class);
+
+            m.body(b -> {
+                // First, initialize Method fields (from parent logic)
+                for (MethodInfo methodInfo : methodsToProxy) {
+                    String fieldName = methodFieldNames.get(methodInfo);
+                    Method method = methodInfo.method;
+
+                    Expr classExpr = Const.of(method.getDeclaringClass());
+                    Expr methodNameExpr = Const.of(method.getName());
+
+                    Class<?>[] paramTypes = method.getParameterTypes();
+                    Expr paramTypesArray;
+                    if (paramTypes.length == 0) {
+                        paramTypesArray = b.newEmptyArray(Class.class, 0);
+                    } else {
+                        Expr arrayExpr = b.newEmptyArray(Class.class, paramTypes.length);
+                        var paramTypesVar = b.localVar("paramTypes_" + fieldName, arrayExpr);
+
+                        for (int i = 0; i < paramTypes.length; i++) {
+                            Expr paramClassExpr = Const.of(paramTypes[i]);
+                            b.set(paramTypesVar.elem(i), paramClassExpr);
+                        }
+                        paramTypesArray = paramTypesVar;
                     }
-                    // exclude bridge methods
-                    if (Modifier.isAbstract(method.getModifiers())) {
-                        createAbstractMethodCode(proxyClassType.addMethod(method), methodInfo, staticConstructor);
+
+                    MethodDesc getDeclaredMethodDesc = MethodDesc.of(Class.class, "getDeclaredMethod",
+                            Method.class, String.class, Class[].class);
+                    Expr methodExpr = b.invokeVirtual(getDeclaredMethodDesc, classExpr, methodNameExpr,
+                            paramTypesArray);
+
+                    FieldDesc fieldDesc = FieldDesc.of(cc.type(), fieldName, Method.class);
+                    b.setStaticField(fieldDesc, methodExpr);
+                }
+
+                // If delegate field is private, initialize the accessor field
+                if (delegateField != null && Modifier.isPrivate(delegateField.getModifiers())) {
+                    // Get the Field object: Class.getDeclaredField("fieldName")
+                    MethodDesc getDeclaredFieldDesc = MethodDesc.of(Class.class, "getDeclaredField",
+                            Field.class, String.class);
+                    Expr declaringClassConst = Const.of(delegateField.getDeclaringClass());
+                    Expr fieldNameConst = Const.of(delegateField.getName());
+                    Expr fieldObjExpr = b.invokeVirtual(getDeclaredFieldDesc, declaringClassConst, fieldNameConst);
+
+                    // Store in LocalVar for cross-scope usage
+                    var fieldObj = b.localVar("delegateFieldAccessor", fieldObjExpr);
+
+                    // Call setAccessible(true) on the Field
+                    MethodDesc setAccessibleDesc = MethodDesc.of(Field.class, "setAccessible", void.class,
+                            boolean.class);
+                    b.invokeVirtual(setAccessibleDesc, fieldObj, Const.of(true));
+
+                    // Store in static field
+                    FieldDesc accessorFieldDesc = FieldDesc.of(cc.type(), "weld$$$delegateField$$$accessor",
+                            Field.class);
+                    b.setStaticField(accessorFieldDesc, fieldObj);
+                }
+
+                b.return_();
+            });
+        });
+    }
+
+    @Override
+    protected String getProxyNameSuffix() {
+        return PROXY_SUFFIX;
+    }
+
+    @Override
+    protected boolean isUsingProxyInstantiator() {
+        return false;
+    }
+
+    @Override
+    protected void addProxyMethod(ClassCreator cc, MethodInfo methodInfo, String methodFieldName) {
+        // For decorator proxies, non-abstract methods should just call super directly
+        // without going through the method handler
+        Method method = methodInfo.method;
+
+        // Create method descriptor
+        MethodDesc methodDesc = MethodDesc.of(method);
+
+        cc.method(methodDesc, m -> {
+            // Set modifiers
+            int modifiers = method.getModifiers();
+            if (Modifier.isPublic(modifiers)) {
+                m.public_();
+            } else if (Modifier.isProtected(modifiers)) {
+                m.protected_();
+            }
+
+            // Set varargs flag
+            if (method.isVarArgs()) {
+                m.varargs();
+            }
+
+            // Add parameters
+            ParamVar[] params = new ParamVar[method.getParameterCount()];
+            for (int i = 0; i < method.getParameterCount(); i++) {
+                params[i] = m.parameter("arg" + i, method.getParameterTypes()[i]);
+            }
+
+            // Add exceptions
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableClass = (Class<? extends Throwable>) exceptionType;
+                m.throws_(throwableClass);
+            }
+
+            m.body(b -> {
+                // For non-abstract methods in decorators, call the superclass implementation
+                // We need to check if the method is actually implemented in the decorator class
+                // If it's from an interface with no implementation, we can't use invokespecial
+
+                // Check if the method is actually declared in the decorator class (not just inherited from interface)
+                Method implementedMethod = null;
+                try {
+                    // Try to find the method in the decorator class hierarchy (not interfaces)
+                    Class<?> currentClass = getBeanType();
+                    while (currentClass != null && currentClass != Object.class) {
+                        try {
+                            implementedMethod = currentClass.getDeclaredMethod(method.getName(), method.getParameterTypes());
+                            // Found it in the class hierarchy
+                            break;
+                        } catch (NoSuchMethodException e) {
+                            // Not in this class, try parent
+                            currentClass = currentClass.getSuperclass();
+                        }
+                    }
+                } catch (Exception e) {
+                    // Ignore
+                }
+
+                if (implementedMethod != null && !Modifier.isAbstract(implementedMethod.getModifiers())) {
+                    // Method has an implementation in the decorator class hierarchy - call it with invokespecial
+                    MethodDesc superMethodDesc = MethodDesc.of(implementedMethod);
+
+                    Expr result;
+                    if (params.length == 0) {
+                        result = b.invokeSpecial(superMethodDesc, m.this_());
+                    } else if (params.length == 1) {
+                        result = b.invokeSpecial(superMethodDesc, m.this_(), params[0]);
+                    } else if (params.length == 2) {
+                        result = b.invokeSpecial(superMethodDesc, m.this_(), params[0], params[1]);
+                    } else {
+                        result = b.invokeSpecial(superMethodDesc, m.this_(), (Expr[]) params);
+                    }
+
+                    // Return the result
+                    if (method.getReturnType() == void.class) {
+                        b.return_();
+                    } else {
+                        b.return_(result);
+                    }
+                } else {
+                    // Method is not implemented in decorator - must delegate to the field
+                    // This shouldn't happen if routing logic is correct, but handle it gracefully
+                    if (delegateField != null) {
+                        // Read delegate field and invoke on it
+                        // Use reflection if private, direct access otherwise
+                        Expr delegateInstance = getDelegateFieldValue(b, m.this_(), cc);
+
+                        // Create method descriptor explicitly using delegate field's type as owner
+                        // This ensures we use the correct invoke instruction (interface vs virtual)
+                        boolean delegateIsInterface = delegateField.getType().isInterface();
+
+                        MethodDesc delegateMethodDesc = MethodDesc.of(
+                                delegateField.getType(),
+                                method.getName(),
+                                method.getReturnType(),
+                                method.getParameterTypes());
+
+                        Expr result;
+                        if (delegateIsInterface) {
+                            if (params.length == 0) {
+                                result = b.invokeInterface(delegateMethodDesc, delegateInstance);
+                            } else if (params.length == 1) {
+                                result = b.invokeInterface(delegateMethodDesc, delegateInstance, params[0]);
+                            } else if (params.length == 2) {
+                                result = b.invokeInterface(delegateMethodDesc, delegateInstance, params[0], params[1]);
+                            } else {
+                                result = b.invokeInterface(delegateMethodDesc, delegateInstance,
+                                        (Expr[]) params);
+                            }
+                        } else {
+                            if (params.length == 0) {
+                                result = b.invokeVirtual(delegateMethodDesc, delegateInstance);
+                            } else if (params.length == 1) {
+                                result = b.invokeVirtual(delegateMethodDesc, delegateInstance, params[0]);
+                            } else if (params.length == 2) {
+                                result = b.invokeVirtual(delegateMethodDesc, delegateInstance, params[0], params[1]);
+                            } else {
+                                result = b.invokeVirtual(delegateMethodDesc, delegateInstance,
+                                        (Expr[]) params);
+                            }
+                        }
+
+                        if (method.getReturnType() == void.class) {
+                            b.return_();
+                        } else {
+                            b.return_(result);
+                        }
+                    } else {
+                        // No delegate field and no implementation - this is an error
+                        // Just return a default value to avoid bytecode errors
+                        if (method.getReturnType() == void.class) {
+                            b.return_();
+                        } else if (method.getReturnType().isPrimitive()) {
+                            b.return_(Const.of(0));
+                        } else {
+                            b.return_(Const.ofNull(method.getReturnType()));
+                        }
                     }
                 }
+            });
+        });
+
+        BeanLogger.LOG.addingMethodToProxy(method);
+    }
+
+    @Override
+    protected void addMethodsFromClass(ClassCreator cc,
+            List<MethodInfo> methodsToProxy,
+            Map<MethodInfo, String> methodFieldNames) {
+
+        // Collect all methods from the decorator class hierarchy
+        Set<Method> allDecoratorMethods = new HashSet<>();
+        decoratorMethods(getBeanType(), allDecoratorMethods);
+
+        for (MethodInfo methodInfo : methodsToProxy) {
+            Method method = methodInfo.method;
+            String methodFieldName = methodFieldNames.get(methodInfo);
+
+            // Check if this method is abstract in the decorator
+            boolean isAbstractInDecorator = isAbstractInDecorator(method, allDecoratorMethods);
+
+            if (isAbstractInDecorator && delegateField != null) {
+                // For abstract methods, generate code that delegates to the injected field
+                addAbstractDelegateMethod(cc, methodInfo, methodFieldName);
+            } else {
+                // For non-abstract methods, call our overridden version that calls super directly
+                addProxyMethod(cc, methodInfo, methodFieldName);
             }
-        } catch (Exception e) {
-            throw new WeldException(e);
         }
     }
 
+    /**
+     * Checks if a method is abstract in the decorator class hierarchy.
+     * A method is considered abstract for delegation if:
+     * 1. It's declared as abstract in the decorator class, OR
+     * 2. It's not implemented anywhere in the decorator hierarchy (inherited from interface)
+     */
+    private boolean isAbstractInDecorator(Method method, Set<Method> allDecoratorMethods) {
+        // Check if the method is explicitly declared in the decorator hierarchy
+        for (Method decoratorMethod : allDecoratorMethods) {
+            if (isEqual(method, decoratorMethod)) {
+                // If found in decorator, return whether it's abstract there
+                return Modifier.isAbstract(decoratorMethod.getModifiers());
+            }
+        }
+
+        // Method not found in decorator hierarchy - it's inherited from an interface
+        // Check if decorator class or any superclass provides an implementation
+        try {
+            Method declaredMethod = getBeanType().getMethod(method.getName(), method.getParameterTypes());
+            // If we found it and it's not abstract, it's implemented
+            return Modifier.isAbstract(declaredMethod.getModifiers());
+        } catch (NoSuchMethodException e) {
+            // Method not found - shouldn't happen but treat as needing delegation
+            return true;
+        }
+    }
+
+    /**
+     * Generates a method that reads the delegate field and invokes the method on it.
+     * This is used for abstract methods in the decorator.
+     */
+    private void addAbstractDelegateMethod(ClassCreator cc, MethodInfo methodInfo, String methodFieldName) {
+        Method method = methodInfo.method;
+
+        // Create method descriptor
+        MethodDesc methodDesc = MethodDesc.of(method);
+
+        cc.method(methodDesc, m -> {
+            // Set modifiers
+            int modifiers = method.getModifiers();
+            if (Modifier.isPublic(modifiers)) {
+                m.public_();
+            } else if (Modifier.isProtected(modifiers)) {
+                m.protected_();
+            }
+
+            // Set varargs flag
+            if (method.isVarArgs()) {
+                m.varargs();
+            }
+
+            // Add parameters
+            ParamVar[] params = new ParamVar[method.getParameterCount()];
+            for (int i = 0; i < method.getParameterCount(); i++) {
+                params[i] = m.parameter("arg" + i, method.getParameterTypes()[i]);
+            }
+
+            // Add exceptions
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableClass = (Class<? extends Throwable>) exceptionType;
+                m.throws_(throwableClass);
+            }
+
+            m.body(b -> {
+                // Read the delegate field: this.delegateField
+                // The delegate field is declared in the decorator superclass
+                // Use reflection if private, direct access otherwise
+                Expr delegateInstance = getDelegateFieldValue(b, m.this_(), cc);
+
+                // Create method descriptor explicitly using delegate field's type as owner
+                // This avoids VerifyError from using a method descriptor bound to the decorator class
+                // and ensures we use the correct invoke instruction (interface vs virtual)
+                boolean delegateIsInterface = delegateField.getType().isInterface();
+
+                MethodDesc delegateMethodDesc = MethodDesc.of(
+                        delegateField.getType(),
+                        method.getName(),
+                        method.getReturnType(),
+                        method.getParameterTypes());
+
+                Expr result;
+                if (delegateIsInterface) {
+                    // Use invokeInterface for interface methods
+                    if (params.length == 0) {
+                        result = b.invokeInterface(delegateMethodDesc, delegateInstance);
+                    } else if (params.length == 1) {
+                        result = b.invokeInterface(delegateMethodDesc, delegateInstance, params[0]);
+                    } else if (params.length == 2) {
+                        result = b.invokeInterface(delegateMethodDesc, delegateInstance, params[0], params[1]);
+                    } else {
+                        result = b.invokeInterface(delegateMethodDesc, delegateInstance, (Expr[]) params);
+                    }
+                } else {
+                    // Use invokeVirtual for class methods
+                    if (params.length == 0) {
+                        result = b.invokeVirtual(delegateMethodDesc, delegateInstance);
+                    } else if (params.length == 1) {
+                        result = b.invokeVirtual(delegateMethodDesc, delegateInstance, params[0]);
+                    } else if (params.length == 2) {
+                        result = b.invokeVirtual(delegateMethodDesc, delegateInstance, params[0], params[1]);
+                    } else {
+                        result = b.invokeVirtual(delegateMethodDesc, delegateInstance, (Expr[]) params);
+                    }
+                }
+
+                // Return the result
+                if (method.getReturnType() == void.class) {
+                    b.return_();
+                } else {
+                    b.return_(result);
+                }
+            });
+        });
+
+        BeanLogger.LOG.addingMethodToProxy(method);
+    }
+
+    /**
+     * Helper to access delegate field, using reflection if private.
+     */
+    private Expr getDelegateFieldValue(BlockCreator b, Expr thisExpr, ClassCreator cc) {
+        if (Modifier.isPrivate(delegateField.getModifiers())) {
+            // Use reflection: accessor.get(this)
+            FieldDesc accessorFieldDesc = FieldDesc.of(
+                    cc.type(),
+                    "weld$$$delegateField$$$accessor",
+                    Field.class);
+            // Read static field
+            Expr accessor = Expr.staticField(accessorFieldDesc);
+
+            MethodDesc getDesc = MethodDesc.of(
+                    Field.class, "get", Object.class, Object.class);
+            Expr value = b.invokeVirtual(getDesc, accessor, thisExpr);
+
+            // Cast to the delegate field type
+            return b.cast(value, delegateField.getType());
+        } else {
+            // Direct field access for non-private fields
+            FieldDesc delegateFieldDesc = FieldDesc.of(
+                    ClassDesc.of(delegateField.getDeclaringClass().getName()),
+                    delegateField.getName(),
+                    delegateField.getType());
+            // Get the field value - thisExpr must support .field() method
+            return b.get(thisExpr.field(delegateFieldDesc));
+        }
+    }
+
+    /**
+     * Collects all methods from the decorator class hierarchy.
+     */
     private void decoratorMethods(Class<?> cls, Set<Method> all) {
         if (cls == null) {
             return;
@@ -161,140 +510,25 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         }
     }
 
-    // m is more generic than a
+    /**
+     * Checks if two methods are equal (same name, params, and compatible return types).
+     * m is more generic than a.
+     */
     private static boolean isEqual(Method m, Method a) {
-        if (m.getName().equals(a.getName()) && m.getParameterCount() == a.getParameterCount()
-                && m.getReturnType().isAssignableFrom(a.getReturnType())) {
+        if (m.getName().equals(a.getName()) && m.getParameterCount() == a.getParameterCount()) {
+            // Check parameters match exactly (or are compatible)
             for (int i = 0; i < m.getParameterCount(); i++) {
                 if (!(m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]))) {
                     return false;
                 }
             }
-            return true;
+            // For return types, allow covariant returns in either direction
+            // The decorator method (a) can have a more specific return type than the interface method (m)
+            // OR the interface method (m) can have a more specific return type (WeldEvent vs Event)
+            return m.getReturnType().isAssignableFrom(a.getReturnType())
+                    || a.getReturnType().isAssignableFrom(m.getReturnType());
         }
         return false;
-    }
-
-    @Override
-    protected String getProxyNameSuffix() {
-        return PROXY_SUFFIX;
-    }
-
-    @Override
-    protected boolean isUsingProxyInstantiator() {
-        return false;
-    }
-
-    private void createAbstractMethodCode(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
-        if ((delegateField != null) && (!Modifier.isPrivate(delegateField.getModifiers()))) {
-            // Call the corresponding method directly on the delegate
-            final CodeAttribute b = classMethod.getCodeAttribute();
-            // load the delegate field
-            b.aload(0);
-            b.getfield(classMethod.getClassFile().getName(), delegateField.getName(),
-                    DescriptorUtils.makeDescriptor(delegateField.getType()));
-            // load the parameters
-            b.loadMethodParameters();
-            // invoke the delegate method
-            b.invokeinterface(delegateField.getType().getName(), method.getName(), method.getDescriptor());
-            // return the value if applicable
-            b.returnInstruction();
-        } else {
-            if (!Modifier.isPrivate(method.getMethod().getModifiers())) {
-                // if it is a parameter injection point we need to initialize the
-                // injection point then handle the method with the method handler
-
-                // this is slightly different to a normal method handler call, as we pass
-                // in a TargetInstanceBytecodeMethodResolver. This resolver uses the
-                // method handler to call getTargetClass to get the correct class type to
-                // resolve the method with, and then resolves this method
-
-                invokeMethodHandler(classMethod, method, true, targetInstanceBytecodeMethodResolver, staticConstructor);
-            } else {
-                // if the delegate is private we need to use the method handler
-                createInterceptorBody(classMethod, method, staticConstructor);
-            }
-        }
-    }
-
-    /**
-     * When creates the delegate initializer code when the delegate is injected
-     * into a method.
-     * <p/>
-     * super initializer method is called first, and then _initMH is called
-     *
-     * @param initializerMethodInfo
-     * @param delegateParameterPosition
-     * @return
-     */
-    private void createDelegateInitializerCode(ClassMethod classMethod, MethodInformation initializerMethodInfo,
-            int delegateParameterPosition) {
-        final CodeAttribute b = classMethod.getCodeAttribute();
-        // we need to push all the parameters on the stack to call the corresponding
-        // superclass arguments
-        b.aload(0); // load this
-        int localVariables = 1;
-        int actualDelegateParameterPosition = 0;
-        for (int i = 0; i < initializerMethodInfo.getMethod().getParameterCount(); ++i) {
-            if (i == delegateParameterPosition) {
-                // figure out the actual position of the delegate in the local
-                // variables
-                actualDelegateParameterPosition = localVariables;
-            }
-            Class<?> type = initializerMethodInfo.getMethod().getParameterTypes()[i];
-            BytecodeUtils.addLoadInstruction(b, DescriptorUtils.makeDescriptor(type), localVariables);
-            if (type == long.class || type == double.class) {
-                localVariables = localVariables + 2;
-            } else {
-                localVariables++;
-            }
-        }
-        b.invokespecial(classMethod.getClassFile().getSuperclass(), initializerMethodInfo.getName(),
-                initializerMethodInfo.getDescriptor());
-        // if this method returns a value it is now sitting on top of the stack
-        // we will leave it there are return it later
-
-        // now we need to call _initMH
-        b.aload(0); // load this
-        b.aload(actualDelegateParameterPosition); // load the delegate
-        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME,
-                "(" + LJAVA_LANG_OBJECT + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
-        // return the object from the top of the stack that we got from calling
-        // the superclass method earlier
-        b.returnInstruction();
-
-    }
-
-    protected class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
-        private static final String JAVA_LANG_CLASS_CLASS_NAME = "java.lang.Class";
-
-        public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName,
-                String[] parameterTypes, ClassMethod staticConstructor) {
-            // get the correct class type to use to resolve the method
-            MethodInformation methodInfo = new StaticMethodInformation("weld_getTargetClass", new String[0], LJAVA_LANG_CLASS,
-                    TargetInstanceProxy.class.getName());
-            invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
-            CodeAttribute code = classMethod.getCodeAttribute();
-            code.checkcast("java/lang/Class");
-            // now we have the class on the stack
-            code.ldc(methodName);
-            // now we need to load the parameter types into an array
-            code.iconst(parameterTypes.length);
-            code.anewarray(JAVA_LANG_CLASS_CLASS_NAME);
-            for (int i = 0; i < parameterTypes.length; ++i) {
-                code.dup(); // duplicate the array reference
-                code.iconst(i);
-                // now load the class object
-                String type = parameterTypes[i];
-                BytecodeUtils.pushClassType(code, type);
-                // and store it in the array
-                code.aastore();
-            }
-            code.invokestatic(Reflections.class.getName(), "wrapException",
-                    "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-            code.checkcast(Method.class);
-        }
-
     }
 
 }

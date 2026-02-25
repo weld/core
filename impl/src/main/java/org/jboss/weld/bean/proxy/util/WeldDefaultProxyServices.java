@@ -17,14 +17,6 @@
 
 package org.jboss.weld.bean.proxy.util;
 
-import static org.jboss.classfilewriter.AccessFlag.FINAL;
-import static org.jboss.classfilewriter.AccessFlag.PUBLIC;
-import static org.jboss.classfilewriter.AccessFlag.STATIC;
-import static org.jboss.classfilewriter.AccessFlag.SUPER;
-import static org.jboss.classfilewriter.AccessFlag.SYNTHETIC;
-import static org.jboss.classfilewriter.util.DescriptorUtils.makeDescriptor;
-import static org.jboss.weld.util.bytecode.BytecodeUtils.VOID_CLASS_DESCRIPTOR;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -32,14 +24,16 @@ import java.security.ProtectionDomain;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.ClassFile;
-import org.jboss.classfilewriter.code.CodeAttribute;
-import org.jboss.weld.bean.proxy.DummyClassFactoryImpl;
+import org.jboss.weld.bean.proxy.ByteArrayClassOutput;
 import org.jboss.weld.bean.proxy.ProxyFactory;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.proxy.WeldClientProxy;
 import org.jboss.weld.serialization.spi.ProxyServices;
+
+import io.quarkus.gizmo2.Gizmo;
+import io.quarkus.gizmo2.ParamVar;
+import io.quarkus.gizmo2.desc.MethodDesc;
 
 /**
  * This class is a default implementation of ProxyServices that will only be loaded if no other implementation is detected.
@@ -210,33 +204,53 @@ public class WeldDefaultProxyServices implements ProxyServices {
 
     private byte[] generateReadsHelperBytes(Class<?> lookupBaseClass) {
         // Put helper in the same package as the base class so the private Lookup can define it
+        String className = (lookupBaseClass.getPackage() == null ? "" : lookupBaseClass.getPackage().getName() + ".")
+                + "Weld$ReadsHelper";
 
-        // Create class header
-        ClassFile ensureReadsClassFile = new ClassFile(
-                (lookupBaseClass.getPackage() == null ? "" : lookupBaseClass.getPackage().getName() + ".") + "Weld$ReadsHelper",
-                AccessFlag.of(PUBLIC, FINAL, SUPER, SYNTHETIC),
-                Object.class.getName(),
-                ProxyFactory.class.getClassLoader(),
-                DummyClassFactoryImpl.INSTANCE);
+        // Capture bytecode using ByteArrayClassOutput
+        ByteArrayClassOutput classOutput = new ByteArrayClassOutput();
+        Gizmo.create(classOutput).class_(className, cc -> {
+            cc.public_();
+            cc.final_();
+            cc.synthetic();
 
-        // Create method header for "public static void ensureReads(Module other)"
-        CodeAttribute code = ensureReadsClassFile.addMethod(
-                AccessFlag.of(PUBLIC, STATIC),
-                "ensureReads",
-                VOID_CLASS_DESCRIPTOR,
-                makeDescriptor(Module.class))
-                .getCodeAttribute();
+            // Create method "public static void ensureReads(Module other)"
+            cc.staticMethod("ensureReads", m -> {
+                m.public_();
+                m.returning(void.class);
+                ParamVar moduleParam = m.parameter("other", Module.class);
 
-        // Create code for the method body "MethodHandles.lookup().lookupClass().getModule().addReads(other);"
-        code.invokestatic("java/lang/invoke/MethodHandles", "lookup", "()Ljava/lang/invoke/MethodHandles$Lookup;");
-        code.invokevirtual("java/lang/invoke/MethodHandles$Lookup", "lookupClass", "()Ljava/lang/Class;");
-        code.invokevirtual("java/lang/Class", "getModule", "()Ljava/lang/Module;");
-        code.aload(0); // parameter: Module other
-        code.invokevirtual("java/lang/Module", "addReads", "(Ljava/lang/Module;)Ljava/lang/Module;");
-        code.pop();
-        code.returnInstruction();
+                m.body(b -> {
+                    // MethodHandles.lookup().lookupClass().getModule().addReads(other);
 
-        return ensureReadsClassFile.toBytecode();
+                    // MethodHandles.lookup()
+                    MethodDesc lookup = MethodDesc.of(MethodHandles.class, "lookup", MethodHandles.Lookup.class);
+                    var lookupResult = b.invokeStatic(lookup);
+
+                    // .lookupClass()
+                    MethodDesc lookupClass = MethodDesc.of(MethodHandles.Lookup.class, "lookupClass", Class.class);
+                    var classResult = b.invokeVirtual(lookupClass, lookupResult);
+
+                    // .getModule()
+                    MethodDesc getModule = MethodDesc.of(Class.class, "getModule", Module.class);
+                    var moduleResult = b.invokeVirtual(getModule, classResult);
+
+                    // .addReads(other)
+                    MethodDesc addReads = MethodDesc.of(Module.class, "addReads", Module.class, Module.class);
+                    b.invokeVirtual(addReads, moduleResult, moduleParam);
+
+                    // Return
+                    b.return_();
+                });
+            });
+        });
+
+        byte[] bytes = classOutput.getBytes();
+        if (bytes == null) {
+            throw new IllegalStateException(
+                    "Failed to generate helper class for modular access. Lookup base class: " + lookupBaseClass);
+        }
+        return bytes;
     }
 
     /**

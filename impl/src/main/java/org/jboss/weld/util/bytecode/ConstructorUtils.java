@@ -16,19 +16,19 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import static org.jboss.classfilewriter.util.DescriptorUtils.methodDescriptor;
-
 import java.util.List;
 
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.ClassFile;
-import org.jboss.classfilewriter.ClassMethod;
-import org.jboss.classfilewriter.DuplicateMemberException;
-import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 
+import io.quarkus.gizmo2.Const;
+import io.quarkus.gizmo2.Expr;
+import io.quarkus.gizmo2.ParamVar;
+import io.quarkus.gizmo2.creator.ClassCreator;
+import io.quarkus.gizmo2.desc.ConstructorDesc;
+import io.quarkus.gizmo2.desc.FieldDesc;
+
 /**
- * Utility class for working with constructors in the low level javassist API
+ * Utility class for working with constructors in Gizmo bytecode generation.
  *
  * @author Stuart Douglas
  */
@@ -38,55 +38,88 @@ public class ConstructorUtils {
     }
 
     /**
-     * adds a constructor that calls super()
+     * Adds a default constructor that calls super().
+     *
+     * @param classCreator the class creator
+     * @param superClass the superclass
+     * @param initialValueBytecode deferred bytecode for field initialization
+     * @param useUnsafeInstantiators whether unsafe instantiators are used
      */
-    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode,
+    public static void addDefaultConstructor(ClassCreator classCreator, Class<?> superClass,
+            List<DeferredBytecode> initialValueBytecode,
             final boolean useUnsafeInstantiators) {
-        addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, new String[0], new String[0], file, initialValueBytecode,
+        addConstructor(classCreator, superClass, new Class<?>[0], new Class<?>[0], initialValueBytecode,
                 useUnsafeInstantiators);
     }
 
     /**
      * Adds a constructor that delegates to a super constructor with the same
-     * descriptor. The bytecode in initialValueBytecode will be executed at the
+     * parameter types. The bytecode in initialValueBytecode will be executed at the
      * start of the constructor and can be used to initialize fields to a default
-     * value. As the object is not properly constructed at this point this
-     * bytecode may not reference this (i.e. the variable at location 0)
+     * value.
      *
-     * @param returnType the constructor descriptor
-     * @param exceptions any exceptions that are thrown
-     * @param file the classfile to add the constructor to
-     * @param initialValueBytecode bytecode that can be used to set initial values
+     * @param classCreator the class creator
+     * @param superClass the superclass
+     * @param parameterTypes the constructor parameter types
+     * @param exceptionTypes any exceptions that are thrown
+     * @param initialValueBytecode deferred bytecode for field initialization
+     * @param useUnsafeInstantiators whether unsafe instantiators are used
      */
-    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file,
+    public static void addConstructor(ClassCreator classCreator, Class<?> superClass, Class<?>[] parameterTypes,
+            Class<?>[] exceptionTypes,
             List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
-        try {
 
-            final String initMethodName = "<init>";
-            final ClassMethod ctor = file.addMethod(AccessFlag.PUBLIC, initMethodName, returnType, params);
-            ctor.addCheckedExceptions(exceptions);
-            final CodeAttribute b = ctor.getCodeAttribute();
-            for (final DeferredBytecode iv : initialValueBytecode) {
-                iv.apply(b);
+        classCreator.constructor(ctor -> {
+            ctor.public_();
+
+            // Add parameters
+            ParamVar[] params = new ParamVar[parameterTypes.length];
+            for (int i = 0; i < parameterTypes.length; i++) {
+                params[i] = ctor.parameter("param" + i, parameterTypes[i]);
             }
-            // we need to generate a constructor with a single invokespecial call
-            // to the super constructor
-            // to do this we need to push all the arguments on the stack first
-            // local variables is the number of parameters +1 for this
-            // if some of the parameters are wide this may go up.
-            b.aload(0);
-            b.loadMethodParameters();
-            // now we have the parameters on the stack
-            b.invokespecial(file.getSuperclass(), initMethodName, methodDescriptor(params, returnType));
-            if (!useUnsafeInstantiators) {
-                // now set constructed to true
-                b.aload(0);
-                b.iconst(1);
-                b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
+
+            // Add checked exceptions
+            for (Class<?> exceptionType : exceptionTypes) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableClass = (Class<? extends Throwable>) exceptionType;
+                ctor.throws_(throwableClass);
             }
-            b.returnInstruction();
-        } catch (DuplicateMemberException e) {
-            throw new RuntimeException(e);
-        }
+
+            ctor.body(b -> {
+                // Apply deferred bytecode (field initialization)
+                for (final DeferredBytecode iv : initialValueBytecode) {
+                    iv.apply(b);
+                }
+
+                // Call super constructor
+                ConstructorDesc superConstructor = ConstructorDesc.of(superClass, parameterTypes);
+                Expr[] paramExprs = new Expr[params.length];
+                for (int i = 0; i < params.length; i++) {
+                    paramExprs[i] = params[i];
+                }
+
+                if (paramExprs.length == 0) {
+                    b.invokeSpecial(superConstructor, ctor.this_());
+                } else if (paramExprs.length == 1) {
+                    b.invokeSpecial(superConstructor, ctor.this_(), paramExprs[0]);
+                } else if (paramExprs.length == 2) {
+                    b.invokeSpecial(superConstructor, ctor.this_(), paramExprs[0], paramExprs[1]);
+                } else {
+                    // For 3+ parameters, use the varargs version
+                    b.invokeSpecial(superConstructor, ctor.this_(), paramExprs);
+                }
+
+                // If not using unsafe instantiators, set the constructed flag to true
+                if (!useUnsafeInstantiators) {
+                    FieldDesc constructedField = FieldDesc.of(
+                            classCreator.type(),
+                            ProxyFactory.CONSTRUCTED_FLAG_NAME,
+                            boolean.class);
+                    b.set(ctor.this_().field(constructedField), Const.of(true));
+                }
+
+                b.return_();
+            });
+        });
     }
 }

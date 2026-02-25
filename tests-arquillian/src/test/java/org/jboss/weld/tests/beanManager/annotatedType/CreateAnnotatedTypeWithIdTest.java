@@ -28,15 +28,12 @@ import jakarta.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.ClassFactory;
-import org.jboss.classfilewriter.ClassFile;
-import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.bean.proxy.ByteArrayClassOutput;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.test.util.Utils;
@@ -44,6 +41,8 @@ import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import io.quarkus.gizmo2.Gizmo;
 
 /**
  *
@@ -65,22 +64,29 @@ public class CreateAnnotatedTypeWithIdTest {
         AnnotatedType<Component> annotatedType = beanManager.createAnnotatedType(Component.class);
         assertTrue(annotatedType.isAnnotationPresent(Dependent.class));
         assertFalse(hasPongMethod(annotatedType));
-        ClassFactory factory = (loader, name, b, off, len, protectionDomain) -> {
-            if (loader instanceof SimpleClassLoader) {
-                return ((SimpleClassLoader) loader).publicDefineClass(name, b, off, len, protectionDomain);
-            } else {
-                throw new RuntimeException("ClassLoader needs to be an instance of SimpleClassLoader but was: " + loader);
-            }
-        };
+
         // Create a different class with the same name
-        // we need to define this class in a new CL to avoid duplicate declaration - hence we use CFW way to define it
-        ClassFile componentClassFile = new ClassFile(Component.class.getName(), Object.class.getName(),
-                new SimpleClassLoader(Component.class.getClassLoader()), factory, new String[] {});
-        // Add void pong()
-        CodeAttribute b = componentClassFile.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.SYNTHETIC), "pong", "V")
-                .getCodeAttribute();
-        b.returnInstruction();
-        Class<?> componentClass = componentClassFile.define();
+        // we need to define this class in a new CL to avoid duplicate declaration - hence we use Gizmo to generate it
+        ByteArrayClassOutput classOutput = new ByteArrayClassOutput();
+        Gizmo.create(classOutput).class_(Component.class.getName(), cc -> {
+            cc.public_();
+
+            // Add void pong()
+            cc.method("pong", m -> {
+                m.public_();
+                m.synthetic();
+                m.returning(void.class);
+
+                m.body(b -> {
+                    b.return_();
+                });
+            });
+        });
+
+        byte[] bytecode = classOutput.getBytes();
+        SimpleClassLoader loader = new SimpleClassLoader(Component.class.getClassLoader());
+        Class<?> componentClass = loader.publicDefineClass(Component.class.getName(), bytecode, 0, bytecode.length, null);
+
         @SuppressWarnings("unchecked")
         BackedAnnotatedType<Component> newAnnotatedType = (BackedAnnotatedType<Component>) beanManager.createAnnotatedType(
                 componentClass,

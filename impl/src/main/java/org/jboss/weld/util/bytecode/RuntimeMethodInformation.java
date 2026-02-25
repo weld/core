@@ -16,12 +16,9 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import static org.jboss.classfilewriter.util.DescriptorUtils.methodDescriptor;
+import static org.jboss.weld.util.bytecode.DescriptorUtil.methodDescriptor;
 
 import java.lang.reflect.Method;
-
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.util.DescriptorUtils;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -41,18 +38,18 @@ public class RuntimeMethodInformation implements MethodInformation {
 
     public RuntimeMethodInformation(Method method) {
         this.method = method;
-        this.parameterTypes = DescriptorUtils.parameterDescriptors(method);
-        this.returnType = DescriptorUtils.makeDescriptor(method.getReturnType());
+        this.parameterTypes = DescriptorUtil.parameterDescriptors(method);
+        this.returnType = DescriptorUtil.makeDescriptor(method.getReturnType());
         this.descriptor = methodDescriptor(parameterTypes, returnType);
         this.declaringClass = method.getDeclaringClass().getName();
         int modifier;
         if (method.isBridge()) {
-            modifier = AccessFlag.PUBLIC | AccessFlag.BRIDGE | AccessFlag.SYNTHETIC;
+            modifier = AccessFlags.PUBLIC | AccessFlags.BRIDGE | AccessFlags.SYNTHETIC;
         } else {
-            modifier = AccessFlag.PUBLIC;
+            modifier = AccessFlags.PUBLIC;
         }
         if (method.isVarArgs()) {
-            modifier |= AccessFlag.VARARGS;
+            modifier |= AccessFlags.VARARGS;
         }
         this.modifier = modifier;
     }
