@@ -23,7 +23,7 @@ import jakarta.inject.Named;
 
 @Named
 @RequestScoped
-class Foo implements Serializable, Bar {
+class Foo implements Serializable, Bar, Bam {
     public static final String MESSAGE = "Hi";
 
     public String getRealMsg(int param1, long param2, double param3, boolean param4, char param5, float param7, short param8) {
@@ -36,4 +36,14 @@ class Foo implements Serializable, Bar {
         return MESSAGE;
     }
 
+    @Override
+    public Foo asFoo() {
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T as(Class<T> type) {
+        return (T) this;
+    }
 }
