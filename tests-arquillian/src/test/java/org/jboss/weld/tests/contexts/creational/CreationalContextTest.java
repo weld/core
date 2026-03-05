@@ -18,6 +18,7 @@ package org.jboss.weld.tests.contexts.creational;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,7 +57,7 @@ public class CreationalContextTest {
         assertNotNull(instance.id);
 
         WeldCreationalContext<InjectedBean> wcc = (WeldCreationalContext<InjectedBean>) cc;
-        assertEquals(5, wcc.getDependentInstances().size());
+        assertEquals(6, wcc.getDependentInstances().size());
 
         @SuppressWarnings("serial")
         Set<Class<?>> expectedDependentInstanceClasses = new HashSet<Class<?>>() {
@@ -66,12 +67,24 @@ public class CreationalContextTest {
                 add(Bravo.class);
                 add(Delta.class);
                 add(String.class);
+                // Actual class will be intercepted proxy, so something like BeanWithPreDestroyInterceptor$Proxy$_$$_WeldSubclass
+                add(BeanWithPreDestroyInterceptor.class);
             }
         };
-        Set<Class<?>> actualDependentInstanceClasses = new HashSet<Class<?>>();
+        // Cannot assert equality of sets directly due to BeanWithPreDestroyInterceptor being interceptor proxy
+        // Instead, iterate and verify assignability between sets
         for (ContextualInstance<?> dependency : wcc.getDependentInstances()) {
-            actualDependentInstanceClasses.add(dependency.getInstance().getClass());
+            int found = 0;
+            for (Class<?> clazz : expectedDependentInstanceClasses) {
+                if (clazz.isAssignableFrom(dependency.getInstance().getClass())) {
+                    found++;
+                }
+            }
+            if (found != 1) {
+                fail("Failed to match actual dependent instance " + dependency.getInstance().getClass()
+                        + " to exactly one within the set of expected dependent instances: "
+                        + expectedDependentInstanceClasses);
+            }
         }
-        assertEquals(expectedDependentInstanceClasses, actualDependentInstanceClasses);
     }
 }
