@@ -59,4 +59,12 @@ public class InjectedBean {
     @Juicy
     // retained within CreationalContext - because its dependency has @PreDestroy
     String id;
+
+    @Inject
+    // retained within creational context - it has pre-destroy interceptor
+    BeanWithPreDestroyInterceptor dependency9;
+
+    @Inject
+    // not retained, it has around invoke interceptor but no pre destroy
+    BeanWithAroundInvokeInterceptor dependency10;
 }
