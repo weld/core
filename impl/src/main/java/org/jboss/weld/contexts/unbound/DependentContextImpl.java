@@ -22,7 +22,6 @@ import jakarta.enterprise.context.ContextNotActiveException;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -35,6 +34,8 @@ import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
@@ -74,22 +75,27 @@ public class DependentContextImpl implements DependentContext {
     protected <T> void addDependentInstance(T instance, Contextual<T> contextual, WeldCreationalContext<T> creationalContext) {
         // by this we are making sure that the dependent instance has no transitive dependency with @PreDestroy / disposal method
         if (creationalContext.getDependentInstances().isEmpty()) {
-            if (contextual instanceof ManagedBean<?> && !isInterceptorOrDecorator(contextual)) {
-                ManagedBean<?> managedBean = (ManagedBean<?>) contextual;
-                if (managedBean.getProducer() instanceof BasicInjectionTarget<?>) {
-                    BasicInjectionTarget<?> injectionTarget = (BasicInjectionTarget<?>) managedBean.getProducer();
-                    if (!injectionTarget.getLifecycleCallbackInvoker().hasPreDestroyMethods()
-                            && !injectionTarget.hasInterceptors()) {
+            // handle managed beans
+            if (contextual instanceof ManagedBean<?> managedBean) {
+                if (contextual instanceof Interceptor<?>) {
+                    // Interceptors cannot have pre-destroy callbacks
+                    // At this point we know the interceptor has no dependent instances, so we needn't keep its reference
+                    // NOTE: decorators CAN have @PreDestroy callbacks!
+                    return;
+                }
+                if (managedBean.getProducer() instanceof BasicInjectionTarget<?> injectionTarget) {
+                    boolean hasPreDestroyMethods = injectionTarget.getLifecycleCallbackInvoker().hasPreDestroyMethods();
+                    boolean hasPreDestroyInt = hasPreDestroyInterceptor(managedBean);
+                    if (!hasPreDestroyMethods && !hasPreDestroyInt) {
                         // there is no @PreDestroy callback to call when destroying this dependent instance
                         // therefore, we do not need to keep the reference
+                        // Note that we need to account for @PreDestroy on the bean as well as interceptors
                         return;
                     }
                 }
             }
-            if (contextual instanceof AbstractProducerBean<?, ?, ?>) {
-                AbstractProducerBean<?, ?, ?> producerBean = (AbstractProducerBean<?, ?, ?>) contextual;
-                if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?>) {
-                    AbstractMemberProducer<?, ?> producer = (AbstractMemberProducer<?, ?>) producerBean.getProducer();
+            if (contextual instanceof AbstractProducerBean<?, ?, ?> producerBean) {
+                if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?> producer) {
                     if (producer.getDisposalMethod() == null) {
                         // there is no disposal method to call when destroying this dependent instance
                         // therefore, we do not need to keep the reference
@@ -107,10 +113,6 @@ public class DependentContextImpl implements DependentContext {
         ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance,
                 creationalContext, contextualStore);
         creationalContext.addDependentInstance(beanInstance);
-    }
-
-    private boolean isInterceptorOrDecorator(Contextual<?> contextual) {
-        return contextual instanceof Interceptor<?> || contextual instanceof Decorator<?>;
     }
 
     public <T> T get(Contextual<T> contextual) {
@@ -134,6 +136,29 @@ public class DependentContextImpl implements DependentContext {
         if (contextual instanceof AbstractBuiltInBean<?>) {
             AbstractBuiltInBean<?> abstractBuiltInBean = (AbstractBuiltInBean<?>) contextual;
             return abstractBuiltInBean.isDependentContextOptimizationAllowed();
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the managed bean has any interceptors with @PreDestroy lifecycle callbacks.
+     * Beans with only @AroundInvoke or other non-lifecycle interceptors should not be tracked.
+     *
+     * @param managedBean the managed bean to check
+     * @return true if the bean has @PreDestroy interceptors, false otherwise
+     */
+    private boolean hasPreDestroyInterceptor(ManagedBean<?> managedBean) {
+        InterceptionModel interceptionModel = managedBean.getBeanManager().getInterceptorModelRegistry()
+                .get(managedBean.getAnnotated());
+        if (interceptionModel != null) {
+            // Check if there are any external PRE_DESTROY interceptors (method is null for lifecycle interceptors)
+            if (!interceptionModel.getInterceptors(InterceptionType.PRE_DESTROY, null).isEmpty()) {
+                return true;
+            }
+            // Check if the bean class itself has @PreDestroy interceptor methods
+            if (interceptionModel.hasTargetClassInterceptors()) {
+                return interceptionModel.getTargetClassInterceptorMetadata().isEligible(InterceptionType.PRE_DESTROY);
+            }
         }
         return false;
     }
