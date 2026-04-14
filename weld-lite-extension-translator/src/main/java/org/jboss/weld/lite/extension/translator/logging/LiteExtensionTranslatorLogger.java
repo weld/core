@@ -108,4 +108,16 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     @Message(id = 20, value = "@Registration type must not contain wildcards, but found {0} in method {1}", format = Message.Format.MESSAGE_FORMAT)
     DefinitionException registrationTypeContainsWildcard(Object type, Object method);
 
+    @Message(id = 21, value = "Cannot build invoker for {0}: {1}", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException cannotBuildInvoker(Object reason, Object target);
+
+    @Message(id = 22, value = "Method does not belong to bean {0}: {1}", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException invokerMethodNotOnBean(Object beanClass, Object method);
+
+    @Message(id = 23, value = "Custom implementations of MethodInfo are not supported!", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException customMethodInfoNotSupported();
+
+    @Message(id = 24, value = "Unable to find field for record component {0} in {1}", format = Message.Format.MESSAGE_FORMAT)
+    IllegalStateException recordComponentFieldNotFound(Object componentName, Object recordClass, @Cause Throwable cause);
+
 }

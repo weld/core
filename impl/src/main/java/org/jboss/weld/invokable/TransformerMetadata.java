@@ -1,6 +1,6 @@
 package org.jboss.weld.invokable;
 
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.InvokerLogger;
 import org.jboss.weld.util.Preconditions;
 
 public class TransformerMetadata {
@@ -58,7 +58,7 @@ public class TransformerMetadata {
                 kind = "Exception transformer ";
                 break;
             default:
-                throw new IllegalStateException("Unknown transformer " + type);
+                throw InvokerLogger.LOG.unknownTransformerType(type);
         }
         return kind + declaringClass + "#" + methodName + "()";
     }
