@@ -69,7 +69,7 @@ class MethodHandleUtils {
                     Method.class, Class[].class, Object[].class));
         } catch (NoSuchMethodException e) {
             // should never happen
-            throw new IllegalStateException("Unable to locate Weld internal helper method", e);
+            throw InvokerLogger.LOG.cannotLocateInternalMethod(e);
         }
     }
 

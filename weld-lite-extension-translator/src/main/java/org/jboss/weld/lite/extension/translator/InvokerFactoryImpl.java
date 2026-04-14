@@ -14,11 +14,11 @@ import jakarta.enterprise.inject.spi.Interceptor;
 import jakarta.enterprise.lang.model.declarations.MethodInfo;
 
 import org.jboss.weld.bean.ClassBean;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.invokable.InvokerInfoBuilder;
 import org.jboss.weld.invokable.TargetMethod;
 import org.jboss.weld.invoke.WeldInvokerBuilder;
 import org.jboss.weld.invoke.WeldInvokerFactory;
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
 class InvokerFactoryImpl implements WeldInvokerFactory {
     private final BeanManager beanManager;
@@ -31,24 +31,24 @@ class InvokerFactoryImpl implements WeldInvokerFactory {
     public WeldInvokerBuilder<InvokerInfo> createInvoker(BeanInfo bean, MethodInfo method) {
         Bean<?> cdiBean = ((BeanInfoImpl) bean).cdiBean;
         if (!(cdiBean instanceof ClassBean)) {
-            throw new DeploymentException("Cannot build invoker for a bean which is not a managed bean: " + cdiBean);
+            throw LiteExtensionTranslatorLogger.LOG.cannotBuildInvoker("a bean which is not a managed bean", cdiBean);
         }
         if (cdiBean instanceof Interceptor) {
-            throw new DeploymentException("Cannot build invoker for an interceptor: " + cdiBean);
+            throw LiteExtensionTranslatorLogger.LOG.cannotBuildInvoker("an interceptor", cdiBean);
         }
         if (cdiBean instanceof Decorator) { // not representable in BCE, but can happen
-            throw new DeploymentException("Cannot build invoker for a decorator: " + cdiBean);
+            throw LiteExtensionTranslatorLogger.LOG.cannotBuildInvoker("a decorator", cdiBean);
         }
 
         if (method.isConstructor()) {
-            throw new DeploymentException("Cannot build invoker for a constructor: " + method);
+            throw LiteExtensionTranslatorLogger.LOG.cannotBuildInvoker("a constructor", method);
         }
         if (Modifier.isPrivate(method.modifiers())) {
-            throw new DeploymentException("Cannot build invoker for a private method: " + method);
+            throw LiteExtensionTranslatorLogger.LOG.cannotBuildInvoker("a private method", method);
         }
         if ("java.lang.Object".equals(method.declaringClass().name())
                 && !"toString".equals(method.name())) {
-            throw new DeploymentException("Cannot build invoker for a method declared on java.lang.Object: " + method);
+            throw LiteExtensionTranslatorLogger.LOG.cannotBuildInvoker("a method declared on java.lang.Object", method);
         }
 
         if (method instanceof MethodInfoImpl) {
@@ -57,8 +57,7 @@ class InvokerFactoryImpl implements WeldInvokerFactory {
 
             // verify that the `methodInfo` belongs to this bean
             if (!ReflectionMembers.allMethods(cdiBean.getBeanClass()).contains(reflectionMethod)) {
-                throw new DeploymentException("Method does not belong to bean " + cdiBean.getBeanClass().getName()
-                        + ": " + method);
+                throw LiteExtensionTranslatorLogger.LOG.invokerMethodNotOnBean(cdiBean.getBeanClass().getName(), method);
             }
 
             AnnotatedType<?> cdiBeanClass = ((ClassBean<?>) cdiBean).getAnnotated();
@@ -66,7 +65,7 @@ class InvokerFactoryImpl implements WeldInvokerFactory {
             TargetMethod targetMethod = cdiMethod != null ? new TargetMethod(cdiMethod) : new TargetMethod(reflectionMethod);
             return new InvokerInfoBuilder<>(cdiBeanClass, targetMethod, beanManager);
         } else {
-            throw new DeploymentException("Custom implementations of MethodInfo are not supported!");
+            throw LiteExtensionTranslatorLogger.LOG.customMethodInfoNotSupported();
         }
     }
 }

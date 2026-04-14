@@ -110,4 +110,13 @@ public interface InvokerLogger extends WeldLogger {
 
     @Message(id = 2028, value = "No async handler registered for type {0}{1}", format = Format.MESSAGE_FORMAT)
     DeploymentException asyncHandlerNotFound(Object asyncType, Object additionalMessage);
+
+    @Message(id = 2029, value = "Unable to locate Weld internal helper method", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotLocateInternalMethod(@Cause Throwable cause);
+
+    @Message(id = 2030, value = "Unknown transformer type: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unknownTransformerType(Object type);
+
+    @Message(id = 2031, value = "Unhandled primitive type: {0}", format = Format.MESSAGE_FORMAT)
+    RuntimeException unhandledPrimitiveType(Object primitive);
 }

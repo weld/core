@@ -177,6 +177,6 @@ public class InvokerValidationUtils {
         } else if (primitive == Byte.TYPE) {
             return actual == Byte.class;
         }
-        throw new RuntimeException("Unhandled primitive type: " + primitive);
+        throw InvokerLogger.LOG.unhandledPrimitiveType(primitive);
     }
 }

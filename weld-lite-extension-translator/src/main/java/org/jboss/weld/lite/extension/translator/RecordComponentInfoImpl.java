@@ -9,6 +9,8 @@ import jakarta.enterprise.lang.model.declarations.MethodInfo;
 import jakarta.enterprise.lang.model.declarations.RecordComponentInfo;
 import jakarta.enterprise.lang.model.types.Type;
 
+import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
+
 class RecordComponentInfoImpl
         extends DeclarationInfoImpl<java.lang.reflect.RecordComponent, jakarta.enterprise.inject.spi.AnnotatedMember<?>>
         implements RecordComponentInfo {
@@ -38,7 +40,8 @@ class RecordComponentInfoImpl
             java.lang.reflect.Field field = reflection.getDeclaringRecord().getDeclaredField(reflection.getName());
             return new FieldInfoImpl(field, bm);
         } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
+            throw LiteExtensionTranslatorLogger.LOG.recordComponentFieldNotFound(
+                    reflection.getName(), reflection.getDeclaringRecord().getName(), e);
         }
     }
 
