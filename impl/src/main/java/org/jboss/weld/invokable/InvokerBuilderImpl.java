@@ -12,7 +12,8 @@ public class InvokerBuilderImpl<B> extends AbstractInvokerBuilder<B, Invoker<B, 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Invoker<B, ?> build() {
-        return doBuild();
+        return (Invoker<B, ?>) doBuild();
     }
 }

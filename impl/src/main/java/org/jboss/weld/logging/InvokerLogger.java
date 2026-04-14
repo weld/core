@@ -86,4 +86,28 @@ public interface InvokerLogger extends WeldLogger {
 
     @Message(id = 2020, value = "Cannot invoke {0} because the args parameter is null and arguments are required", format = Format.MESSAGE_FORMAT)
     NullPointerException nullArgumentArray(Object method);
+
+    @Message(id = 2021, value = "AsyncHandler {0} implements AsyncHandler as a raw type without a type argument", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerRawType(Object handlerClass);
+
+    @Message(id = 2022, value = "AsyncHandler {0} has a type variable as async type; the async type must be a concrete class or parameterized type", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerTypeVariable(Object handlerClass);
+
+    @Message(id = 2023, value = "AsyncHandler {0} has an array as async type; arrays are not allowed", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerArrayType(Object handlerClass);
+
+    @Message(id = 2024, value = "AsyncHandler {0} is annotated with both @ReturnType and @ParameterType; exactly one is required", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerBothAnnotations(Object handlerClass);
+
+    @Message(id = 2025, value = "AsyncHandler {0} is not annotated with @ReturnType or @ParameterType; exactly one is required", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerNoAnnotation(Object handlerClass);
+
+    @Message(id = 2026, value = "Multiple async handlers found for async type {0}; handler class: {1}", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerDuplicate(Object asyncType, Object handlerClass);
+
+    @Message(id = 2027, value = "AsyncHandler {0} does not implement AsyncHandler directly; indirect implementation is not allowed", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerIndirectImplementation(Object handlerClass);
+
+    @Message(id = 2028, value = "No async handler registered for type {0}{1}", format = Format.MESSAGE_FORMAT)
+    DeploymentException asyncHandlerNotFound(Object asyncType, Object additionalMessage);
 }

@@ -24,6 +24,8 @@ class MethodHandleUtils {
     static final MethodHandle CLEANUP_ACTIONS_CTOR;
     static final MethodHandle CLEANUP_FOR_VOID;
     static final MethodHandle CLEANUP_FOR_NONVOID;
+    static final MethodHandle CLEANUP_FOR_VOID_DEFERRED;
+    static final MethodHandle CLEANUP_FOR_NONVOID_DEFERRED;
     static final MethodHandle LOOKUP;
     static final MethodHandle REPLACE_PRIMITIVE_LOOKUP_NULLS;
     static final MethodHandle THROW_VALUE_CARRYING_EXCEPTION;
@@ -42,6 +44,11 @@ class MethodHandleUtils {
                     runName, Throwable.class, CleanupActions.class));
             CLEANUP_FOR_NONVOID = createMethodHandle(CleanupActions.class.getMethod(
                     runName, Throwable.class, Object.class, CleanupActions.class));
+            String runDeferredName = "runDeferred";
+            CLEANUP_FOR_VOID_DEFERRED = createMethodHandle(CleanupActions.class.getMethod(
+                    runDeferredName, Throwable.class, CleanupActions.class));
+            CLEANUP_FOR_NONVOID_DEFERRED = createMethodHandle(CleanupActions.class.getMethod(
+                    runDeferredName, Throwable.class, Object.class, CleanupActions.class));
             LOOKUP = createMethodHandle(LookupUtils.class.getDeclaredMethod(
                     "lookup", CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
             REPLACE_PRIMITIVE_LOOKUP_NULLS = MethodHandleUtils.createMethodHandle(LookupUtils.class.getDeclaredMethod(

@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 
+import org.jboss.weld.invokable.AsyncHandlerRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation {
@@ -41,8 +42,13 @@ public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEv
 
     @Override
     public void ensureAsyncHandlerExists(Class<?> asyncType, Supplier<String> message) {
-        // TODO implement async handler validation
         checkWithinObserverNotification();
+        if (!getBeanManager().getServices().get(AsyncHandlerRegistry.class).hasHandler(asyncType)) {
+            String msg = message != null ? message.get() : null;
+            String suffix = msg != null ? ": " + msg : "";
+            addDeploymentProblem(
+                    org.jboss.weld.logging.InvokerLogger.LOG.asyncHandlerNotFound(asyncType, suffix));
+        }
     }
 
 }

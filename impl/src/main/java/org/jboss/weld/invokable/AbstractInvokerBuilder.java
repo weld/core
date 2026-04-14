@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.enterprise.inject.build.compatible.spi.InvokerInfo;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 
@@ -123,7 +124,7 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
         return false;
     }
 
-    InvokerImpl<B, ?> doBuild() {
+    InvokerInfo doBuild() {
         Class<B> reflectionBeanClass = beanClass.getJavaClass();
         Method reflectionMethod = method.getReflection();
 
@@ -290,11 +291,28 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
             mh = MethodHandles.permuteArguments(mh, typeBeforeLookups, reordering);
         }
 
+        // Check for async handler match
+        AsyncHandlerRegistry asyncRegistry = ((BeanManagerImpl) beanManager).getServices().get(AsyncHandlerRegistry.class);
+        AsyncHandlerRegistry.HandlerInfo returnTypeHandler = asyncRegistry
+                .findReturnTypeHandler(reflectionMethod.getReturnType());
+        AsyncHandlerRegistry.HandlerInfo paramTypeHandler = returnTypeHandler == null
+                ? asyncRegistry.findParameterTypeHandler(reflectionMethod.getParameterTypes())
+                : null;
+        boolean useAsyncCleanup = requiresCleanup && (returnTypeHandler != null || paramTypeHandler != null);
+
         // cleanup
         if (requiresCleanup) {
-            MethodHandle cleanupMethod = mh.type().returnType() == void.class
-                    ? MethodHandleUtils.CLEANUP_FOR_VOID
-                    : MethodHandleUtils.CLEANUP_FOR_NONVOID;
+            MethodHandle cleanupMethod;
+            if (useAsyncCleanup) {
+                // Use deferred cleanup: on success, store CleanupActions in ThreadLocal instead of running cleanup
+                cleanupMethod = mh.type().returnType() == void.class
+                        ? MethodHandleUtils.CLEANUP_FOR_VOID_DEFERRED
+                        : MethodHandleUtils.CLEANUP_FOR_NONVOID_DEFERRED;
+            } else {
+                cleanupMethod = mh.type().returnType() == void.class
+                        ? MethodHandleUtils.CLEANUP_FOR_VOID
+                        : MethodHandleUtils.CLEANUP_FOR_NONVOID;
+            }
 
             if (mh.type().returnType() != void.class) {
                 cleanupMethod = cleanupMethod.asType(cleanupMethod.type()
@@ -404,7 +422,22 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
             mh = MethodHandles.insertArguments(invocationWrapperMethod, 2, invoker);
         }
 
+        if (returnTypeHandler != null) {
+            return new AsyncInvokerImpl<>(mh, returnTypeHandler.getHandler(), true, -1);
+        } else if (paramTypeHandler != null) {
+            int asyncParamIndex = findAsyncParamIndex(reflectionMethod.getParameterTypes(), paramTypeHandler.getAsyncType());
+            return new AsyncInvokerImpl<>(mh, paramTypeHandler.getHandler(), false, asyncParamIndex);
+        }
         return new InvokerImpl<>(mh);
+    }
+
+    private int findAsyncParamIndex(Class<?>[] parameterTypes, Class<?> asyncType) {
+        for (int i = 0; i < parameterTypes.length; i++) {
+            if (parameterTypes[i] == asyncType) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     // the following methods are exposed for deployment validation
