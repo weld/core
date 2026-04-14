@@ -1,13 +1,18 @@
 package org.jboss.weld.lite.extension.translator;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import jakarta.enterprise.inject.build.compatible.spi.Registration;
+import jakarta.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
 
@@ -85,7 +90,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
             };
 
             Registration registration = method.getAnnotation(Registration.class);
-            actions.add(new ExtensionPhaseRegistrationAction(new HashSet<>(Arrays.asList(registration.types())),
+            actions.add(new ExtensionPhaseRegistrationAction(resolveRegistrationTypes(registration, method),
                     pbAcceptor, null));
         } else if (query == ExtensionMethodParameterType.INTERCEPTOR_INFO) {
             Consumer<jakarta.enterprise.inject.spi.ProcessBean<?>> pbAcceptor = pb -> {
@@ -118,7 +123,7 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
             };
 
             Registration registration = method.getAnnotation(Registration.class);
-            actions.add(new ExtensionPhaseRegistrationAction(new HashSet<>(Arrays.asList(registration.types())),
+            actions.add(new ExtensionPhaseRegistrationAction(resolveRegistrationTypes(registration, method),
                     pbAcceptor, null));
         } else if (query == ExtensionMethodParameterType.OBSERVER_INFO) {
             Consumer<jakarta.enterprise.inject.spi.ProcessObserverMethod<?, ?>> pomAcceptor = pom -> {
@@ -146,10 +151,57 @@ class ExtensionPhaseRegistration extends ExtensionPhaseBase {
             };
 
             Registration registration = method.getAnnotation(Registration.class);
-            actions.add(new ExtensionPhaseRegistrationAction(new HashSet<>(Arrays.asList(registration.types())),
+            actions.add(new ExtensionPhaseRegistrationAction(resolveRegistrationTypes(registration, method),
                     null, pomAcceptor));
         } else {
             throw LiteExtensionTranslatorLogger.LOG.unknownQueryParameter(query);
+        }
+    }
+
+    private Set<Type> resolveRegistrationTypes(Registration registration, java.lang.reflect.Method method) {
+        Set<Type> resolved = new HashSet<>();
+        for (Class<?> cls : registration.types()) {
+            resolved.add(resolveRegistrationType(cls, method));
+        }
+        return resolved;
+    }
+
+    private Type resolveRegistrationType(Class<?> cls, java.lang.reflect.Method method) {
+        if (!TypeLiteral.class.isAssignableFrom(cls) || cls == TypeLiteral.class) {
+            return cls;
+        }
+        // Walk the class hierarchy to find TypeLiteral<X>
+        Type superclass = cls.getGenericSuperclass();
+        while (superclass != null) {
+            if (superclass instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) superclass;
+                if (pt.getRawType() == TypeLiteral.class) {
+                    Type typeArg = pt.getActualTypeArguments()[0];
+                    validateRegistrationType(typeArg, method);
+                    return typeArg;
+                }
+            }
+            if (superclass instanceof Class) {
+                superclass = ((Class<?>) superclass).getGenericSuperclass();
+            } else {
+                break;
+            }
+        }
+        // Raw TypeLiteral (no type argument resolved) is a definition error
+        throw LiteExtensionTranslatorLogger.LOG.registrationTypeRawTypeLiteral(cls.getName(), method);
+    }
+
+    private void validateRegistrationType(Type type, java.lang.reflect.Method method) {
+        if (type instanceof TypeVariable) {
+            throw LiteExtensionTranslatorLogger.LOG.registrationTypeContainsTypeVariable(type, method);
+        }
+        if (type instanceof WildcardType) {
+            throw LiteExtensionTranslatorLogger.LOG.registrationTypeContainsWildcard(type, method);
+        }
+        if (type instanceof ParameterizedType) {
+            for (Type arg : ((ParameterizedType) type).getActualTypeArguments()) {
+                validateRegistrationType(arg, method);
+            }
         }
     }
 
