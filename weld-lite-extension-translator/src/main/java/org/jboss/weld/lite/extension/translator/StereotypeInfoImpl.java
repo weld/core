@@ -68,6 +68,12 @@ class StereotypeInfoImpl implements StereotypeInfo {
     }
 
     @Override
+    public boolean isEager() {
+        // TODO implement @Eager support
+        return false;
+    }
+
+    @Override
     public Integer priority() {
         return cdiDeclaration.isAnnotationPresent(Priority.class)
                 ? cdiDeclaration.getAnnotation(Priority.class).value()

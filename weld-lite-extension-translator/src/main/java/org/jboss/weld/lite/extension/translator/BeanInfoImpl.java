@@ -110,6 +110,12 @@ class BeanInfoImpl implements BeanInfo {
     }
 
     @Override
+    public boolean isEager() {
+        // TODO implement @Eager support
+        return cdiBean.isEager();
+    }
+
+    @Override
     public Integer priority() {
         if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedType
                 && cdiDeclaration.isAnnotationPresent(Priority.class)) {

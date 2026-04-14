@@ -18,6 +18,8 @@ package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 
+import java.util.function.Supplier;
+
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -35,6 +37,12 @@ public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEv
     public void addDeploymentProblem(Throwable t) {
         checkWithinObserverNotification();
         getErrors().add(t);
+    }
+
+    @Override
+    public void ensureAsyncHandlerExists(Class<?> asyncType, Supplier<String> message) {
+        // TODO implement async handler validation
+        checkWithinObserverNotification();
     }
 
 }

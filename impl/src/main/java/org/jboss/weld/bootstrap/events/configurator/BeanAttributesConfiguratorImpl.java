@@ -228,6 +228,12 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
     }
 
     @Override
+    public BeanAttributesConfigurator<T> eager(boolean value) {
+        // TODO implement @Eager support
+        return this;
+    }
+
+    @Override
     public BeanAttributes<T> complete() {
         return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, isReserve, name,
                 Bindings.normalizeBeanQualifiers(qualifiers),
