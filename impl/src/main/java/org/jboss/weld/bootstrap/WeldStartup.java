@@ -103,6 +103,7 @@ import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.injection.producer.InjectionTargetService;
+import org.jboss.weld.invokable.AsyncHandlerRegistry;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.VersionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -304,6 +305,7 @@ public class WeldStartup {
         services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
+        services.add(AsyncHandlerRegistry.class, new AsyncHandlerRegistry());
 
         /*
          * Setup ExecutorServices
@@ -435,6 +437,14 @@ public class WeldStartup {
 
     public void deployBeans() {
         tracker.start(Tracker.OP_DEPLOY_BEANS);
+        // Discover async handlers from all BDAs into the shared registry
+        AsyncHandlerRegistry asyncHandlerRegistry = deploymentManager.getServices().get(AsyncHandlerRegistry.class);
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
+            ResourceLoader resourceLoader = beanDeployment.getBeanManager().getServices().get(ResourceLoader.class);
+            if (resourceLoader != null) {
+                asyncHandlerRegistry.discoverHandlers(resourceLoader);
+            }
+        }
         for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.createBeans(environment);
         }

@@ -274,6 +274,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient List<String> namespaces;
     private final transient List<ObserverMethod<?>> observers;
     private final transient List<AbstractInvokerBuilder<?, ?>> invokers; // only for validation, cleaned up afterward
+    private final transient List<Bean<?>> eagerBeans = new ArrayList<>();
 
     /*
      * set that is only used to make sure that no duplicate beans are added
@@ -654,6 +655,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public void forgetInvokersAfterValidation() {
         invokers.clear();
+    }
+
+    public List<Bean<?>> getEagerBeans() {
+        return eagerBeans;
     }
 
     /**

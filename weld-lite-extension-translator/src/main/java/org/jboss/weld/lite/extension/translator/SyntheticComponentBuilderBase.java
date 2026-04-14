@@ -9,8 +9,6 @@ import jakarta.enterprise.invoke.Invoker;
 import jakarta.enterprise.lang.model.AnnotationInfo;
 import jakarta.enterprise.lang.model.declarations.ClassInfo;
 
-import org.jboss.weld.invokable.InvokerImpl;
-
 public class SyntheticComponentBuilderBase<THIS extends SyntheticComponentBuilderBase<THIS>> {
     final Map<String, Object> params = new HashMap<>();
 
@@ -135,7 +133,7 @@ public class SyntheticComponentBuilderBase<THIS extends SyntheticComponentBuilde
     public THIS withParam(String key, InvokerInfo[] value) {
         Invoker<?, ?>[] array = new Invoker<?, ?>[value.length];
         for (int i = 0; i < value.length; i++) {
-            array[i] = (InvokerImpl<?, ?>) value[i];
+            array[i] = (Invoker<?, ?>) value[i];
         }
         this.params.put(key, array);
         return self();

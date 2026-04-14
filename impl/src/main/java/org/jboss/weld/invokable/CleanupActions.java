@@ -8,6 +8,9 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
 
 class CleanupActions implements Consumer<Runnable> {
+    // ThreadLocal to expose the CleanupActions instance to async invokers
+    static final ThreadLocal<CleanupActions> CURRENT = new ThreadLocal<>();
+
     private final List<Runnable> cleanupTasks = new ArrayList<>();
     private final List<Instance.Handle<?>> dependentInstances = new ArrayList<>();
 
@@ -45,5 +48,23 @@ class CleanupActions implements Consumer<Runnable> {
     // this signature fits into the `MethodHandles.tryFinally()` combinator in case of `void` methods
     public static void run(Throwable cause, CleanupActions cleanupActions) {
         cleanupActions.cleanup();
+    }
+
+    // Deferred variants: only cleanup on exception, expose instance via ThreadLocal on success
+    public static <R> R runDeferred(Throwable cause, R returnValue, CleanupActions cleanupActions) {
+        if (cause != null) {
+            cleanupActions.cleanup();
+        } else {
+            CURRENT.set(cleanupActions);
+        }
+        return returnValue;
+    }
+
+    public static void runDeferred(Throwable cause, CleanupActions cleanupActions) {
+        if (cause != null) {
+            cleanupActions.cleanup();
+        } else {
+            CURRENT.set(cleanupActions);
+        }
     }
 }

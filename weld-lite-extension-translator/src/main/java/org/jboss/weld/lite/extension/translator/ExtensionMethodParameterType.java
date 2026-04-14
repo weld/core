@@ -9,6 +9,7 @@ import jakarta.enterprise.inject.build.compatible.spi.ClassConfig;
 import jakarta.enterprise.inject.build.compatible.spi.FieldConfig;
 import jakarta.enterprise.inject.build.compatible.spi.InterceptorInfo;
 import jakarta.enterprise.inject.build.compatible.spi.InvokerFactory;
+import jakarta.enterprise.inject.build.compatible.spi.InvokerValidation;
 import jakarta.enterprise.inject.build.compatible.spi.Messages;
 import jakarta.enterprise.inject.build.compatible.spi.MetaAnnotations;
 import jakarta.enterprise.inject.build.compatible.spi.MethodConfig;
@@ -43,6 +44,8 @@ enum ExtensionMethodParameterType {
     WELD_INVOKER_FACTORY(WeldInvokerFactory.class, false, ExtensionPhase.REGISTRATION),
 
     SYNTHETIC_COMPONENTS(SyntheticComponents.class, false, ExtensionPhase.SYNTHESIS),
+
+    INVOKER_VALIDATION(InvokerValidation.class, false, ExtensionPhase.VALIDATION),
 
     MESSAGES(Messages.class, false, ExtensionPhase.DISCOVERY, ExtensionPhase.ENHANCEMENT,
             ExtensionPhase.REGISTRATION, ExtensionPhase.SYNTHESIS, ExtensionPhase.VALIDATION),
