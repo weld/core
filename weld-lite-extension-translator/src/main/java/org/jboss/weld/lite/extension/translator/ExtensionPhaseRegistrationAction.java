@@ -3,12 +3,14 @@ package org.jboss.weld.lite.extension.translator;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+
 class ExtensionPhaseRegistrationAction {
-    private final Set<Class<?>> types;
+    private final Set<java.lang.reflect.Type> types;
     private final Consumer<jakarta.enterprise.inject.spi.ProcessBean<?>> beanAcceptor;
     private final Consumer<jakarta.enterprise.inject.spi.ProcessObserverMethod<?, ?>> observerAcceptor;
 
-    ExtensionPhaseRegistrationAction(Set<Class<?>> types,
+    ExtensionPhaseRegistrationAction(Set<java.lang.reflect.Type> types,
             Consumer<jakarta.enterprise.inject.spi.ProcessBean<?>> beanAcceptor,
             Consumer<jakarta.enterprise.inject.spi.ProcessObserverMethod<?, ?>> observerAcceptor) {
         this.types = types;
@@ -40,13 +42,20 @@ class ExtensionPhaseRegistrationAction {
 
     private boolean satisfies(Set<java.lang.reflect.Type> inspectedTypes) {
         for (java.lang.reflect.Type type : this.types) {
-            Class<?> rawType = getRawType(type);
-            if (rawType == null) {
-                continue;
-            }
-
-            if (inspectedTypes.contains(rawType)) {
-                return true;
+            if (type instanceof Class) {
+                // Raw type matching - match if any inspected type's raw type equals
+                Class<?> rawType = (Class<?>) type;
+                for (java.lang.reflect.Type inspectedType : inspectedTypes) {
+                    Class<?> rawInspected = getRawType(inspectedType);
+                    if (rawType.equals(rawInspected)) {
+                        return true;
+                    }
+                }
+            } else {
+                // Parameterized type matching - check if the type is in the bean's type set
+                if (inspectedTypes.contains(type)) {
+                    return true;
+                }
             }
         }
 
@@ -54,17 +63,21 @@ class ExtensionPhaseRegistrationAction {
     }
 
     private boolean satisfiesObserverMethod(java.lang.reflect.Type observedType) {
-        Class<?> rawObservedType = getRawType(observedType);
-        if (rawObservedType == null) {
-            return false;
-        }
         for (java.lang.reflect.Type type : this.types) {
-            Class<?> rawType = getRawType(type);
-            if (rawType == null) {
-                continue;
-            }
-            if (rawType.isAssignableFrom(rawObservedType)) {
-                return true;
+            if (type instanceof Class) {
+                // Raw type assignability
+                Class<?> rawObservedType = getRawType(observedType);
+                if (rawObservedType != null && ((Class<?>) type).isAssignableFrom(rawObservedType)) {
+                    return true;
+                }
+            } else {
+                // Parameterized type - check if the registration type is in the
+                // type closure of the observed type (i.e., the observed type is
+                // assignable to the registration type)
+                Set<java.lang.reflect.Type> closure = new HierarchyDiscovery(observedType).getTypeClosure();
+                if (closure.contains(type)) {
+                    return true;
+                }
             }
         }
 

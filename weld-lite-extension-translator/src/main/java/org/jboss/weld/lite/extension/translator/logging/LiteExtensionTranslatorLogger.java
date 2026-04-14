@@ -99,4 +99,13 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     @Message(id = 17, value = "There was a problem executing Build Compatible Extension method {0} during phase {1}. The exception was: {2}", format = Message.Format.MESSAGE_FORMAT)
     DeploymentException problemExecutingExtensionMethod(Object method, Object phase, String exception, @Cause Throwable cause);
 
+    @Message(id = 18, value = "@Registration type {0} extends raw TypeLiteral without a type argument, in method {1}", format = Message.Format.MESSAGE_FORMAT)
+    DefinitionException registrationTypeRawTypeLiteral(Object className, Object method);
+
+    @Message(id = 19, value = "@Registration type must not contain type variables, but found {0} in method {1}", format = Message.Format.MESSAGE_FORMAT)
+    DefinitionException registrationTypeContainsTypeVariable(Object type, Object method);
+
+    @Message(id = 20, value = "@Registration type must not contain wildcards, but found {0} in method {1}", format = Message.Format.MESSAGE_FORMAT)
+    DefinitionException registrationTypeContainsWildcard(Object type, Object method);
+
 }
