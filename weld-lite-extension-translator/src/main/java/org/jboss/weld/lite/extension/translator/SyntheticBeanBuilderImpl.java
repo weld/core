@@ -94,6 +94,12 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     }
 
     @Override
+    public SyntheticBeanBuilder<T> eager(boolean isEager) {
+        // TODO implement @Eager support
+        return this;
+    }
+
+    @Override
     public SyntheticBeanBuilder<T> name(String name) {
         this.name = name;
         return this;
