@@ -19,9 +19,11 @@ package org.jboss.weld.bean.builtin;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Set;
 
 import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
@@ -61,6 +63,9 @@ public class DynamicLookupInjectionPoint extends ForwardingInjectionPoint implem
 
     @Override
     public Set<Annotation> getQualifiers() {
+        if (qualifiers.isEmpty()) {
+            return Collections.singleton(Default.Literal.INSTANCE);
+        }
         return qualifiers;
     }
 }
