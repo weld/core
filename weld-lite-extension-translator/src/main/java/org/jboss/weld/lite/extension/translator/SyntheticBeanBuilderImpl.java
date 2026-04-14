@@ -21,6 +21,7 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     Class<? extends Annotation> scope;
     boolean isAlternative;
     boolean isReserve;
+    boolean isEager;
     int priority;
     String name;
     Set<Class<? extends Annotation>> stereotypes = new HashSet<>();
@@ -95,7 +96,7 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
 
     @Override
     public SyntheticBeanBuilder<T> eager(boolean isEager) {
-        // TODO implement @Eager support
+        this.isEager = isEager;
         return this;
     }
 

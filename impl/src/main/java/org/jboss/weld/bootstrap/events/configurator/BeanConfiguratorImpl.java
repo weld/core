@@ -342,7 +342,6 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
 
     @Override
     public BeanConfigurator<T> eager(boolean value) {
-        // TODO implement @Eager support
         this.attributes.eager(value);
         return this;
     }

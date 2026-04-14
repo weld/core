@@ -36,6 +36,7 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
     private final Set<Class<? extends Annotation>> stereotypes;
     private final boolean alternative;
     private final boolean reserve;
+    private final boolean eager;
     private final String name;
     private final Set<Annotation> qualifiers;
     private final Set<Type> types;
@@ -43,9 +44,15 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
 
     public ImmutableBeanAttributes(Set<Class<? extends Annotation>> stereotypes, boolean alternative, boolean reserve,
             String name, Set<Annotation> qualifiers, Set<Type> types, Class<? extends Annotation> scope) {
+        this(stereotypes, alternative, reserve, false, name, qualifiers, types, scope);
+    }
+
+    public ImmutableBeanAttributes(Set<Class<? extends Annotation>> stereotypes, boolean alternative, boolean reserve,
+            boolean eager, String name, Set<Annotation> qualifiers, Set<Type> types, Class<? extends Annotation> scope) {
         this.stereotypes = stereotypes;
         this.alternative = alternative;
         this.reserve = reserve;
+        this.eager = eager;
         this.name = name;
         this.qualifiers = qualifiers;
         this.types = types;
@@ -56,9 +63,8 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
      * Utility constructor used for overriding Bean qualifiers and name for specialization purposes.
      */
     public ImmutableBeanAttributes(Set<Annotation> qualifiers, String name, BeanAttributes<T> attributes) {
-        this(attributes.getStereotypes(), attributes.isAlternative(), attributes.isReserve(), name, qualifiers,
-                attributes.getTypes(),
-                attributes.getScope());
+        this(attributes.getStereotypes(), attributes.isAlternative(), attributes.isReserve(), attributes.isEager(), name,
+                qualifiers, attributes.getTypes(), attributes.getScope());
     }
 
     @Override
@@ -74,6 +80,11 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
     @Override
     public boolean isReserve() {
         return reserve;
+    }
+
+    @Override
+    public boolean isEager() {
+        return eager;
     }
 
     @Override

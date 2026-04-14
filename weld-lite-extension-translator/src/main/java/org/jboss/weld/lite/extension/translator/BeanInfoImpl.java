@@ -111,7 +111,6 @@ class BeanInfoImpl implements BeanInfo {
 
     @Override
     public boolean isEager() {
-        // TODO implement @Eager support
         return cdiBean.isEager();
     }
 
