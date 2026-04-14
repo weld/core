@@ -67,6 +67,8 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     private boolean isReserve;
 
+    private boolean isEager;
+
     public BeanAttributesConfiguratorImpl(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.qualifiers = new HashSet<Annotation>();
@@ -92,6 +94,7 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         stereotypes(beanAttributes.getStereotypes());
         types(beanAttributes.getTypes());
         alternative(beanAttributes.isAlternative());
+        eager(beanAttributes.isEager());
         return this;
     }
 
@@ -229,13 +232,13 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     @Override
     public BeanAttributesConfigurator<T> eager(boolean value) {
-        // TODO implement @Eager support
+        this.isEager = value;
         return this;
     }
 
     @Override
     public BeanAttributes<T> complete() {
-        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, isReserve, name,
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, isReserve, isEager, name,
                 Bindings.normalizeBeanQualifiers(qualifiers),
                 ImmutableSet.copyOf(types),
                 initScope());

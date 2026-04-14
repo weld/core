@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.enterprise.context.Eager;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Reserve;
@@ -55,6 +56,8 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     private boolean alternative;
     // Is the stereotype a reserve
     private boolean reserve;
+    // Is the stereotype eager
+    private boolean eager;
     // The default scope type
     private Annotation defaultScopeType;
     // Is the bean name defaulted
@@ -79,6 +82,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         if (valid) {
             initAlternative(annotatedAnnotation);
             initReserve(annotatedAnnotation);
+            initEager(annotatedAnnotation);
             if (isAlternative() && isReserve()) {
                 // stereotype cannot declare @Alternative and @Reserve at the same time
                 throw MetadataLogger.LOG.alternativeAndReserveSimultaneously(annotatedAnnotation);
@@ -158,6 +162,12 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         }
     }
 
+    private void initEager(EnhancedAnnotation<T> annotatedAnnotation) {
+        if (annotatedAnnotation.isAnnotationPresent(Eager.class)) {
+            this.eager = true;
+        }
+    }
+
     @Override
     protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
         super.check(annotatedAnnotation);
@@ -225,6 +235,10 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
 
     public boolean isReserve() {
         return reserve;
+    }
+
+    public boolean isEager() {
+        return eager;
     }
 
     public Set<Annotation> getInheritedStereotypes() {

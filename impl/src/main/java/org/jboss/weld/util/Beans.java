@@ -41,6 +41,7 @@ import jakarta.decorator.Decorator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.ConversationScoped;
 import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.Eager;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
@@ -308,6 +309,10 @@ public class Beans {
      */
     public static boolean isReserve(EnhancedAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
         return annotated.isAnnotationPresent(Reserve.class) || mergedStereotypes.isReserve();
+    }
+
+    public static boolean isEager(EnhancedAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
+        return annotated.isAnnotationPresent(Eager.class) || mergedStereotypes.isEager();
     }
 
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructorStrict(EnhancedAnnotatedType<T> type) {

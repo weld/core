@@ -45,6 +45,7 @@ import java.util.regex.Pattern;
 
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.Destroyed;
@@ -477,6 +478,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             } else {
                 BootstrapLogger.LOG.foundBean(bean);
                 beanList.add(bean);
+                if (bean.isEager() && ApplicationScoped.class.equals(bean.getScope())) {
+                    eagerBeans.add(bean);
+                }
                 if (bean instanceof SessionBean) {
                     SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
                     enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);

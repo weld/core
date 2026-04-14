@@ -282,6 +282,21 @@ public class WeldStartup {
         initialServices.add(ClassTransformer.class, classTransformer);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void initializeEagerBeans() {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
+            BeanManagerImpl bm = beanDeployment.getBeanManager();
+            List<Bean<?>> eagerBeans = bm.getEagerBeans();
+            if (eagerBeans.isEmpty()) {
+                continue;
+            }
+            Context appContext = bm.getContext(ApplicationScoped.class);
+            for (Bean<?> bean : eagerBeans) {
+                appContext.get((Bean) bean, bm.createCreationalContext(bean));
+            }
+        }
+    }
+
     private void addImplementationServices(ServiceRegistry services) {
         final WeldModules modules = new WeldModules();
         services.add(WeldModules.class, modules);
@@ -580,6 +595,9 @@ public class WeldStartup {
             deploymentManager.getServices().get(Validator.class).clearResolved();
             deploymentManager.getServices().get(ClassTransformer.class).cleanupAfterBoot();
         }
+
+        // Initialize @Eager beans before the Startup event
+        initializeEagerBeans();
 
         getContainer().setState(ContainerState.INITIALIZED);
 

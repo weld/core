@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.event.Event;
@@ -171,6 +172,11 @@ public class Validator implements Service {
         // a bean cannot be an alternative and a reserve at the same time
         if (bean.isAlternative() && bean.isReserve()) {
             throw ValidatorLogger.LOG.beanReserveAndAlternative(bean);
+        }
+
+        // @Eager is only allowed on @ApplicationScoped beans
+        if (bean.isEager() && !ApplicationScoped.class.equals(bean.getScope())) {
+            throw ValidatorLogger.LOG.eagerBeanMustBeApplicationScoped(bean, bean.getScope().getSimpleName());
         }
     }
 
