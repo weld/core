@@ -120,4 +120,16 @@ public interface LiteExtensionTranslatorLogger extends BasicLogger {
     @Message(id = 24, value = "Unable to find field for record component {0} in {1}", format = Message.Format.MESSAGE_FORMAT)
     IllegalStateException recordComponentFieldNotFound(Object componentName, Object recordClass, @Cause Throwable cause);
 
+    @Message(id = 25, value = "SyntheticBeanCreator {0} declares both create(SyntheticInjections, Parameters) and create(Instance, Parameters) directly; exactly one must be implemented", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException syntheticBeanCreatorBothMethods(Object creatorClass);
+
+    @Message(id = 26, value = "SyntheticBeanDisposer {0} declares both dispose(T, SyntheticInjections, Parameters) and dispose(T, Instance, Parameters) directly; exactly one must be implemented", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException syntheticBeanDisposerBothMethods(Object disposerClass);
+
+    @Message(id = 27, value = "Unsatisfied injection point declared via SyntheticBeanBuilder.withInjectionPoint(): type {0}, qualifiers {1}", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException unsatisfiedSyntheticInjectionPoint(Object type, Object qualifiers);
+
+    @Message(id = 28, value = "Ambiguous injection point declared via SyntheticBeanBuilder.withInjectionPoint(): type {0}, qualifiers {1}", format = Message.Format.MESSAGE_FORMAT)
+    DeploymentException ambiguousSyntheticInjectionPoint(Object type, Object qualifiers);
+
 }

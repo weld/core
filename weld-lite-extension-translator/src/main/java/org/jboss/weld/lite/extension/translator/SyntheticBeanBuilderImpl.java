@@ -1,8 +1,11 @@
 package org.jboss.weld.lite.extension.translator;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
@@ -25,6 +28,7 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     int priority;
     String name;
     Set<Class<? extends Annotation>> stereotypes = new HashSet<>();
+    List<InjectionPointDeclaration> injectionPoints = new ArrayList<>();
     Class<? extends SyntheticBeanCreator<T>> creatorClass;
     Class<? extends SyntheticBeanDisposer<T>> disposerClass;
     Class<? extends BuildCompatibleExtension> extensionClass;
@@ -120,6 +124,40 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     }
 
     @Override
+    public SyntheticBeanBuilder<T> withInjectionPoint(Class<?> type, Annotation... qualifiers) {
+        injectionPoints.add(new InjectionPointDeclaration(type, new HashSet<>(Arrays.asList(qualifiers))));
+        return this;
+    }
+
+    @Override
+    public SyntheticBeanBuilder<T> withInjectionPoint(Class<?> type, AnnotationInfo... qualifiers) {
+        Set<Annotation> annotations = new HashSet<>();
+        for (AnnotationInfo info : qualifiers) {
+            annotations.add(((AnnotationInfoImpl) info).annotation);
+        }
+        injectionPoints.add(new InjectionPointDeclaration(type, annotations));
+        return this;
+    }
+
+    @Override
+    public SyntheticBeanBuilder<T> withInjectionPoint(Type type, Annotation... qualifiers) {
+        java.lang.reflect.Type reflectionType = ((TypeImpl<?>) type).reflection.getType();
+        injectionPoints.add(new InjectionPointDeclaration(reflectionType, new HashSet<>(Arrays.asList(qualifiers))));
+        return this;
+    }
+
+    @Override
+    public SyntheticBeanBuilder<T> withInjectionPoint(Type type, AnnotationInfo... qualifiers) {
+        java.lang.reflect.Type reflectionType = ((TypeImpl<?>) type).reflection.getType();
+        Set<Annotation> annotations = new HashSet<>();
+        for (AnnotationInfo info : qualifiers) {
+            annotations.add(((AnnotationInfoImpl) info).annotation);
+        }
+        injectionPoints.add(new InjectionPointDeclaration(reflectionType, annotations));
+        return this;
+    }
+
+    @Override
     public SyntheticBeanBuilder<T> createWith(Class<? extends SyntheticBeanCreator<T>> creatorClass) {
         this.creatorClass = creatorClass;
         return this;
@@ -129,5 +167,15 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     public SyntheticBeanBuilder<T> disposeWith(Class<? extends SyntheticBeanDisposer<T>> disposerClass) {
         this.disposerClass = disposerClass;
         return this;
+    }
+
+    static class InjectionPointDeclaration {
+        final java.lang.reflect.Type type;
+        final Set<Annotation> qualifiers;
+
+        InjectionPointDeclaration(java.lang.reflect.Type type, Set<Annotation> qualifiers) {
+            this.type = type;
+            this.qualifiers = qualifiers;
+        }
     }
 }
