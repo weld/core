@@ -5,14 +5,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.AmbiguousResolutionException;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
+import jakarta.enterprise.inject.build.compatible.spi.Parameters;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanCreator;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticBeanDisposer;
+import jakarta.enterprise.inject.build.compatible.spi.SyntheticInjections;
 import jakarta.enterprise.inject.build.compatible.spi.SyntheticObserver;
+import jakarta.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.lite.extension.translator.logging.LiteExtensionTranslatorLogger;
@@ -36,6 +43,7 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
 
     private final List<ExtensionPhaseEnhancementAction> enhancementActions = new ArrayList<>();
     private final List<ExtensionPhaseRegistrationAction> registrationActions = new ArrayList<>();
+    private final List<SyntheticBeanBuilderImpl.InjectionPointDeclaration> syntheticInjectionPoints = new ArrayList<>();
 
     private jakarta.enterprise.inject.spi.BeanManager bm;
 
@@ -181,10 +189,17 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             configurator.priority(syntheticBean.priority);
             configurator.name(syntheticBean.name);
             configurator.stereotypes(syntheticBean.stereotypes);
+            boolean creatorUsesNewApi = usesNewCreateApi(syntheticBean.creatorClass);
             configurator.produceWith(lookup -> {
                 try {
                     SyntheticBeanCreator creator = syntheticBean.creatorClass.getConstructor().newInstance();
-                    return creator.create(lookup, new ParametersImpl(syntheticBean.params));
+                    if (creatorUsesNewApi) {
+                        return creator.create(
+                                new SyntheticInjectionsImpl(lookup, syntheticBean.injectionPoints),
+                                new ParametersImpl(syntheticBean.params));
+                    } else {
+                        return creator.create(lookup, new ParametersImpl(syntheticBean.params));
+                    }
                 } catch (InvocationTargetException e) {
                     throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.creatorClass,
                             e.getCause().toString(), e);
@@ -194,11 +209,18 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                 }
             });
             if (syntheticBean.disposerClass != null) {
+                boolean disposerUsesNewApi = usesNewDisposeApi(syntheticBean.disposerClass);
                 configurator.disposeWith((object, lookup) -> {
                     try {
                         SyntheticBeanDisposer disposer = syntheticBean.disposerClass.getConstructor()
                                 .newInstance();
-                        disposer.dispose(object, lookup, new ParametersImpl(syntheticBean.params));
+                        if (disposerUsesNewApi) {
+                            disposer.dispose(object,
+                                    new SyntheticInjectionsImpl(lookup, syntheticBean.injectionPoints),
+                                    new ParametersImpl(syntheticBean.params));
+                        } else {
+                            disposer.dispose(object, lookup, new ParametersImpl(syntheticBean.params));
+                        }
                     } catch (InvocationTargetException e) {
                         throw LiteExtensionTranslatorLogger.LOG.unableToInstantiateObject(syntheticBean.disposerClass,
                                 e.getCause().toString(), e);
@@ -208,6 +230,8 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
                     }
                 });
             }
+            // Collect injection points for validation during @Validation phase
+            syntheticInjectionPoints.addAll(syntheticBean.injectionPoints);
         }
 
         for (SyntheticObserverBuilderImpl<?> syntheticObserver : syntheticObservers) {
@@ -241,6 +265,25 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
 
             new ExtensionPhaseValidation(bm, util, errors).run();
 
+            // Validate synthetic bean injection points
+            for (SyntheticBeanBuilderImpl.InjectionPointDeclaration ip : syntheticInjectionPoints) {
+                Set<Annotation> qualifiers = ip.qualifiers.isEmpty()
+                        ? Set.of(Default.Literal.INSTANCE)
+                        : ip.qualifiers;
+                Set<Bean<?>> beans = bm.getBeans(ip.type, qualifiers.toArray(new Annotation[0]));
+                if (beans.isEmpty()) {
+                    errors.list.add(LiteExtensionTranslatorLogger.LOG
+                            .unsatisfiedSyntheticInjectionPoint(ip.type, qualifiers));
+                } else {
+                    try {
+                        bm.resolve(beans);
+                    } catch (AmbiguousResolutionException e) {
+                        errors.list.add(LiteExtensionTranslatorLogger.LOG
+                                .ambiguousSyntheticInjectionPoint(ip.type, qualifiers));
+                    }
+                }
+            }
+
             for (Throwable error : errors.list) {
                 adv.addDeploymentProblem(error);
             }
@@ -252,10 +295,56 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
             contextsToRegister.clear();
             enhancementActions.clear();
             registrationActions.clear();
+            syntheticInjectionPoints.clear();
 
             ReflectionMembers.clearCaches();
 
             this.bm = null;
+        }
+    }
+
+    /**
+     * Checks whether the creator class declares the new
+     * {@code create(SyntheticInjections, Parameters)} method directly.
+     * If both new and old methods are declared, throws DeploymentException.
+     */
+    private static boolean usesNewCreateApi(Class<? extends SyntheticBeanCreator> creatorClass) {
+        boolean hasNew = declaresMethod(creatorClass, "create",
+                SyntheticInjections.class, Parameters.class);
+        boolean hasOld = declaresMethod(creatorClass, "create",
+                Instance.class, Parameters.class);
+        if (hasNew && hasOld) {
+            throw LiteExtensionTranslatorLogger.LOG.syntheticBeanCreatorBothMethods(creatorClass);
+        }
+        return hasNew;
+    }
+
+    /**
+     * Checks whether the disposer class declares the new
+     * {@code dispose(T, SyntheticInjections, Parameters)} method directly.
+     * If both new and old methods are declared, throws DeploymentException.
+     */
+    private static boolean usesNewDisposeApi(Class<? extends SyntheticBeanDisposer> disposerClass) {
+        boolean hasNew = declaresMethod(disposerClass, "dispose",
+                Object.class, SyntheticInjections.class, Parameters.class);
+        boolean hasOld = declaresMethod(disposerClass, "dispose",
+                Object.class, Instance.class, Parameters.class);
+        if (hasNew && hasOld) {
+            throw LiteExtensionTranslatorLogger.LOG.syntheticBeanDisposerBothMethods(disposerClass);
+        }
+        return hasNew;
+    }
+
+    /**
+     * Checks if a method with the given name and parameter types is declared
+     * directly on the class (not inherited from a superclass or interface).
+     */
+    private static boolean declaresMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
+        try {
+            clazz.getDeclaredMethod(name, paramTypes);
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
         }
     }
 }
