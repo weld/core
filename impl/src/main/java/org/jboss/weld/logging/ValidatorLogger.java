@@ -335,6 +335,6 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1494, value = "An @Alternative {0} cannot be produced by a @Reserve bean.", format = Format.MESSAGE_FORMAT)
     DefinitionException producedAlternativeOnReserveDeclaringBean(Object bean);
 
-    @Message(id = 1495, value = "An @Eager bean must be @ApplicationScoped, but {0} has scope {1}.", format = Format.MESSAGE_FORMAT)
-    DefinitionException eagerBeanMustBeApplicationScoped(Object bean, Object scope);
+    @Message(id = 1495, value = "An @Eager bean must be @ApplicationScoped or @Singleton, but {0} has scope {1}.", format = Format.MESSAGE_FORMAT)
+    DefinitionException eagerBeanNotApplicationScopedOrSingleton(Object bean, Object scope);
 }

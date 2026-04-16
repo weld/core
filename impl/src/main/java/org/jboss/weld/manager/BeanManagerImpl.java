@@ -82,6 +82,7 @@ import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
 import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 import jakarta.enterprise.inject.spi.ProducerFactory;
 import jakarta.enterprise.util.TypeLiteral;
+import jakarta.inject.Singleton;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
@@ -478,7 +479,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             } else {
                 BootstrapLogger.LOG.foundBean(bean);
                 beanList.add(bean);
-                if (bean.isEager() && ApplicationScoped.class.equals(bean.getScope())) {
+                if (bean.isEager()
+                        && (ApplicationScoped.class.equals(bean.getScope())
+                                || Singleton.class.equals(bean.getScope()))) {
                     eagerBeans.add(bean);
                 }
                 if (bean instanceof SessionBean) {
