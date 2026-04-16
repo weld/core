@@ -290,9 +290,9 @@ public class WeldStartup {
             if (eagerBeans.isEmpty()) {
                 continue;
             }
-            Context appContext = bm.getContext(ApplicationScoped.class);
             for (Bean<?> bean : eagerBeans) {
-                appContext.get((Bean) bean, bm.createCreationalContext(bean));
+                Context context = bm.getContext(bean.getScope());
+                context.get((Bean) bean, bm.createCreationalContext(bean));
             }
         }
     }

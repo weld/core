@@ -44,9 +44,17 @@ public class EagerBeanTest {
     }
 
     @Test
+    public void testSingletonEagerBeanIsConstructedDuringStartup() {
+        assertTrue("@Singleton @Eager bean should be constructed during startup",
+                SingletonEagerBean.constructed);
+    }
+
+    @Test
     public void testEagerMetadata() {
         assertTrue("Eager bean should report isEager()=true",
                 container.getBeans(EagerBean.class).iterator().next().isEager());
+        assertTrue("Singleton eager bean should report isEager()=true",
+                container.getBeans(SingletonEagerBean.class).iterator().next().isEager());
         assertFalse("Lazy bean should report isEager()=false",
                 container.getBeans(LazyBean.class).iterator().next().isEager());
     }

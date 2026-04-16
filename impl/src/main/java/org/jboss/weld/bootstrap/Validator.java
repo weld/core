@@ -66,6 +66,7 @@ import jakarta.enterprise.inject.spi.Producer;
 import jakarta.inject.Named;
 import jakarta.inject.Provider;
 import jakarta.inject.Scope;
+import jakarta.inject.Singleton;
 import jakarta.interceptor.AroundConstruct;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.AroundTimeout;
@@ -174,9 +175,11 @@ public class Validator implements Service {
             throw ValidatorLogger.LOG.beanReserveAndAlternative(bean);
         }
 
-        // @Eager is only allowed on @ApplicationScoped beans
-        if (bean.isEager() && !ApplicationScoped.class.equals(bean.getScope())) {
-            throw ValidatorLogger.LOG.eagerBeanMustBeApplicationScoped(bean, bean.getScope().getSimpleName());
+        // @Eager is only allowed on @ApplicationScoped and @Singleton beans
+        if (bean.isEager()
+                && !ApplicationScoped.class.equals(bean.getScope())
+                && !Singleton.class.equals(bean.getScope())) {
+            throw ValidatorLogger.LOG.eagerBeanNotApplicationScopedOrSingleton(bean, bean.getScope().getSimpleName());
         }
     }
 
