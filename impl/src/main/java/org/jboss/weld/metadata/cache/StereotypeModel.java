@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Eager;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
@@ -35,6 +36,7 @@ import jakarta.enterprise.inject.Stereotype;
 import jakarta.inject.Named;
 import jakarta.inject.Qualifier;
 import jakarta.inject.Scope;
+import jakarta.inject.Singleton;
 import jakarta.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
@@ -88,6 +90,12 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
                 throw MetadataLogger.LOG.alternativeAndReserveSimultaneously(annotatedAnnotation);
             }
             initDefaultScopeType(annotatedAnnotation);
+            if (isEager() && defaultScopeType != null
+                    && !ApplicationScoped.class.equals(defaultScopeType.annotationType())
+                    && !Singleton.class.equals(defaultScopeType.annotationType())) {
+                throw MetadataLogger.LOG.eagerAndIncompatibleScopeOnStereotype(annotatedAnnotation,
+                        defaultScopeType.annotationType());
+            }
             initBeanNameDefaulted(annotatedAnnotation);
             initInterceptorBindings(annotatedAnnotation);
             initInheritedStereotypes(annotatedAnnotation);
