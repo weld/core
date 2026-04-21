@@ -131,4 +131,7 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1127, value = "Stereotype {0} cannot declare @Alternative and @Reserve at the same time", format = Format.MESSAGE_FORMAT)
     DefinitionException alternativeAndReserveSimultaneously(Object param1);
 
+    @Message(id = 1128, value = "Stereotype {0} declares @Eager with scope {1} which is not compatible. @Eager only allows @ApplicationScoped or @Singleton.", format = Format.MESSAGE_FORMAT)
+    DefinitionException eagerAndIncompatibleScopeOnStereotype(Object stereotype, Object scope);
+
 }
