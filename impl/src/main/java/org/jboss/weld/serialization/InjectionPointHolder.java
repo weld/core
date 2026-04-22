@@ -17,6 +17,9 @@
 package org.jboss.weld.serialization;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 import jakarta.enterprise.inject.spi.AnnotatedCallable;
 import jakarta.enterprise.inject.spi.AnnotatedConstructor;
@@ -27,6 +30,7 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.injection.EmptyInjectionPoint;
+import org.jboss.weld.injection.SyntheticInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.util.Preconditions;
@@ -55,6 +59,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
             } else {
                 this.identifier = new TransientInjectionPointIdentifier(ip);
             }
+        } else if (ip.getAnnotated() == null) {
+            this.identifier = new SyntheticInjectionPointIdentifier(contextId, ip);
         } else if (ip.getAnnotated() instanceof AnnotatedField<?>) {
             AnnotatedField<?> field = Reflections.cast(ip.getAnnotated());
             this.identifier = new FieldInjectionPointIdentifier(contextId, ip.getBean(), field);
@@ -136,6 +142,36 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
             return ip;
         }
 
+    }
+
+    /**
+     * Identifier for synthetic injection points that have a bean reference but no annotated element
+     * or member (e.g. injection points created for {@code BeanConfigurator.produceWith()} callbacks).
+     * Stores the bean, type, and qualifiers so the injection point can be reconstructed after
+     * deserialization.
+     */
+    private static class SyntheticInjectionPointIdentifier implements InjectionPointIdentifier {
+
+        private static final long serialVersionUID = 1L;
+
+        private final BeanHolder<?> bean;
+        private final Type type;
+        private final Set<Annotation> qualifiers;
+
+        SyntheticInjectionPointIdentifier(String contextId, InjectionPoint ip) {
+            this.bean = BeanHolder.of(contextId, ip.getBean());
+            this.type = ip.getType();
+            this.qualifiers = ip.getQualifiers();
+        }
+
+        @Override
+        public InjectionPoint restoreInjectionPoint() {
+            Bean<?> restoredBean = bean.get();
+            if (restoredBean == null) {
+                return null;
+            }
+            return new SyntheticInjectionPoint(restoredBean, type, qualifiers);
+        }
     }
 
     private abstract static class AbstractInjectionPointIdentifier implements InjectionPointIdentifier {

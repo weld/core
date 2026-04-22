@@ -44,11 +44,13 @@ import jakarta.enterprise.util.TypeLiteral;
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bean.WeldBean;
+import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.event.WeldBeanConfigurator;
 import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.inject.WeldInstance;
+import org.jboss.weld.injection.SyntheticInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -64,6 +66,9 @@ import org.jboss.weld.util.reflection.Formats;
  * @param <T>
  */
 public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configurator<Bean<T>> {
+
+    private static final Type INSTANCE_TYPE = new TypeLiteral<Instance<Object>>() {
+    }.getType();
 
     private final BeanManagerImpl beanManager;
 
@@ -400,7 +405,8 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         }
 
         private Instance<Object> createInstance(Bean<?> bean, CreationalContext<T> ctx, BeanManagerImpl beanManager) {
-            WeldInstance<Object> instance = beanManager.getInstance(ctx);
+            InjectionPoint ip = new SyntheticInjectionPoint(bean, INSTANCE_TYPE, Collections.emptySet());
+            WeldInstance<Object> instance = cast(InstanceImpl.of(ip, ctx, beanManager));
             if (Dependent.class.equals(bean.getScope())) {
                 return instance;
             }

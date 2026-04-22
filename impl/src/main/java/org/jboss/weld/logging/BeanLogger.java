@@ -355,7 +355,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1520, value = "Beans with different bean names {0}, {1} cannot be specialized by a single bean {2}", format = Format.MESSAGE_FORMAT)
     DefinitionException beansWithDifferentBeanNamesCannotBeSpecialized(Object param1, Object param2, Object param3);
 
-    @Message(id = 1521, value = "InjectionPoint.getAnnotated() must return either AnnotatedParameter or AnnotatedField but {0} was returned for {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1521, value = "InjectionPoint.getAnnotated() must return null, AnnotatedParameter, or AnnotatedField but {0} was returned for {1}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException invalidAnnotatedOfInjectionPoint(Object param1, Object param2);
 
     @Message(id = 1522, value = "Unable to restore InjectionPoint. No matching InjectionPoint found on {0}", format = Format.MESSAGE_FORMAT)
