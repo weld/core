@@ -2,6 +2,7 @@ package org.jboss.weld.lite.extension.translator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +35,32 @@ final class AnnotationProxy {
                 new AnnotationInvocationHandler(clazz, values));
     }
 
+    // Per java.lang.annotation.Annotation#hashCode, the hash code of an annotation member value
+    // must use Arrays.hashCode for array types (both primitive and reference) and Object.hashCode
+    // for scalar values.
+    private static int memberValueHashCode(Object value) {
+        if (value instanceof boolean[]) {
+            return Arrays.hashCode((boolean[]) value);
+        } else if (value instanceof byte[]) {
+            return Arrays.hashCode((byte[]) value);
+        } else if (value instanceof char[]) {
+            return Arrays.hashCode((char[]) value);
+        } else if (value instanceof double[]) {
+            return Arrays.hashCode((double[]) value);
+        } else if (value instanceof float[]) {
+            return Arrays.hashCode((float[]) value);
+        } else if (value instanceof int[]) {
+            return Arrays.hashCode((int[]) value);
+        } else if (value instanceof long[]) {
+            return Arrays.hashCode((long[]) value);
+        } else if (value instanceof short[]) {
+            return Arrays.hashCode((short[]) value);
+        } else if (value.getClass().isArray()) {
+            return Arrays.hashCode((Object[]) value);
+        }
+        return value.hashCode();
+    }
+
     private static final class AnnotationInvocationHandler implements java.lang.reflect.InvocationHandler {
         private final Class<? extends Annotation> clazz;
         private final Map<String, Object> members;
@@ -55,13 +82,17 @@ final class AnnotationProxy {
                 }
                 return "@" + clazz.getName() + joiner.toString();
             } else if ("equals".equals(method.getName())) {
+                // Per java.lang.annotation.Annotation#equals: two annotations are equal if they
+                // have the same annotation type and all members are equal.
                 Object other = args[0];
                 if (other instanceof Annotation) {
                     Annotation that = (Annotation) other;
                     if (clazz.equals(that.annotationType())) {
+                        // Note: 'member' (the loop variable) is the annotation member accessor method,
+                        // NOT 'method' (the invoke() parameter, which is the equals method itself).
                         for (java.lang.reflect.Method member : clazz.getDeclaredMethods()) {
                             Object thisValue = members.get(member.getName());
-                            Object thatValue = method.invoke(that);
+                            Object thatValue = member.invoke(that);
                             if (!Objects.deepEquals(thisValue, thatValue)) {
                                 return false;
                             }
@@ -71,13 +102,14 @@ final class AnnotationProxy {
                 }
                 return false;
             } else if ("hashCode".equals(method.getName())) {
-                Object[] components = new Object[members.size() + 1];
-                components[0] = clazz;
-                int i = 1;
-                for (Object memberValue : members.values()) {
-                    components[i++] = memberValue;
+                // Per java.lang.annotation.Annotation#hashCode: the hash code is the sum of
+                // (127 * memberName.hashCode()) ^ memberValueHashCode for each member.
+                // For zero-member annotations, this is 0.
+                int result = 0;
+                for (Map.Entry<String, Object> entry : members.entrySet()) {
+                    result += (127 * entry.getKey().hashCode()) ^ memberValueHashCode(entry.getValue());
                 }
-                return Objects.hash(components);
+                return result;
             } else {
                 return members.get(method.getName());
             }
