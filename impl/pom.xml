@@ -37,9 +37,10 @@
             <artifactId>weld-spi</artifactId>
         </dependency>
 
+
         <dependency>
-            <groupId>org.jboss.classfilewriter</groupId>
-            <artifactId>jboss-classfilewriter</artifactId>
+            <groupId>io.quarkus.gizmo</groupId>
+            <artifactId>gizmo2</artifactId>
         </dependency>
 
         <dependency>

@@ -46,7 +46,8 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackA
 
     @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        throw new UnsupportedOperationException();
+        // Delegate to the Stack-aware version with null stack (will be fetched from context)
+        return invoke(null, self, thisMethod, proceed, args);
     }
 
     @Override

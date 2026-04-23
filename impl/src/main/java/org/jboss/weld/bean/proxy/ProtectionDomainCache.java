@@ -35,7 +35,6 @@ import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
  * block
  * to be able to resolve methods using {@link Class#getDeclaredMethod(String, Class...)}.
  *
- * @see BytecodeMethodResolver
  * @see WELD-1751
  *
  * @author Jozef Hartinger

@@ -17,13 +17,12 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
-import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.constant.ClassDesc;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,22 +33,16 @@ import java.nio.file.StandardOpenOption;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.Bean;
 
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.ClassFile;
-import org.jboss.classfilewriter.ClassMethod;
-import org.jboss.classfilewriter.DuplicateMemberException;
-import org.jboss.classfilewriter.code.BranchEnd;
-import org.jboss.classfilewriter.code.CodeAttribute;
-import org.jboss.classfilewriter.util.Boxing;
-import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -67,14 +60,22 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.ConstructorUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
-import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Reflections;
+
+import io.quarkus.gizmo2.Const;
+import io.quarkus.gizmo2.Expr;
+import io.quarkus.gizmo2.Gizmo;
+import io.quarkus.gizmo2.ParamVar;
+import io.quarkus.gizmo2.creator.BlockCreator;
+import io.quarkus.gizmo2.creator.ClassCreator;
+import io.quarkus.gizmo2.creator.InstanceMethodCreator;
+import io.quarkus.gizmo2.desc.ConstructorDesc;
+import io.quarkus.gizmo2.desc.FieldDesc;
+import io.quarkus.gizmo2.desc.MethodDesc;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
@@ -94,15 +95,6 @@ public class ProxyFactory<T> {
     public static final String WELD_PROXY_PREFIX = "org.jboss.weld.generated.proxies";
     public static final String DEFAULT_PROXY_PACKAGE = WELD_PROXY_PREFIX + ".default";
     public static final String CONSTRUCTED_FLAG_NAME = "constructed";
-    protected static final BytecodeMethodResolver DEFAULT_METHOD_RESOLVER = new DefaultBytecodeMethodResolver();
-    protected static final String LJAVA_LANG_REFLECT_METHOD = "Ljava/lang/reflect/Method;";
-    protected static final String LJAVA_LANG_BYTE = "Ljava/lang/Byte;";
-    protected static final String LJAVA_LANG_CLASS = "Ljava/lang/Class;";
-    protected static final String LJAVA_LANG_OBJECT = "Ljava/lang/Object;";
-    protected static final String LBEAN_IDENTIFIER = "Lorg/jboss/weld/serialization/spi/BeanIdentifier;";
-    protected static final String LJAVA_LANG_STRING = "Ljava/lang/String;";
-    protected static final String LJAVA_LANG_THREAD_LOCAL = "Ljava/lang/ThreadLocal;";
-    protected static final String INIT_METHOD_NAME = "<init>";
     protected static final String INVOKE_METHOD_NAME = "invoke";
     protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
     static final String JAVA = "java";
@@ -468,37 +460,58 @@ public class ProxyFactory<T> {
         // Remove special interfaces from main set (deserialization scenario)
         additionalInterfaces.removeAll(specialInterfaces);
 
-        ClassFile proxyClassType = null;
-        final int accessFlags = AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.SUPER, AccessFlag.SYNTHETIC);
-        if (getBeanType().isInterface()) {
-            proxyClassType = newClassFile(proxyClassName, accessFlags, Object.class.getName());
-            proxyClassType.addInterface(getBeanType().getName());
-        } else {
-            proxyClassType = newClassFile(proxyClassName, accessFlags, getBeanType().getName());
-        }
-        // Add interfaces which require method generation
-        for (Class<?> clazz : additionalInterfaces) {
-            proxyClassType.addInterface(clazz.getName());
-        }
         List<DeferredBytecode> initialValueBytecode = new ArrayList<DeferredBytecode>();
 
-        // Workaround for IBM JVM - the ACC_STATIC flag should only be required for class file with version number 51.0 or above
-        ClassMethod staticConstructor = proxyClassType.addMethod(AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.STATIC),
-                "<clinit>", "V");
+        // Create ByteArrayClassOutput to capture generated bytecode
+        ByteArrayClassOutput classOutput = new ByteArrayClassOutput();
+        Gizmo gizmo = Gizmo.create(classOutput);
 
-        addFields(proxyClassType, initialValueBytecode);
-        addConstructors(proxyClassType, initialValueBytecode);
-        addMethods(proxyClassType, staticConstructor);
+        // Generate proxy class using Gizmo 2
+        gizmo.class_(proxyClassName, cc -> {
+            // Set modifiers (public, synthetic)
+            cc.public_();
+            cc.synthetic();
 
-        staticConstructor.getCodeAttribute().returnInstruction();
+            // Set superclass
+            if (getBeanType().isInterface()) {
+                cc.extends_(Object.class);
+                cc.implements_(getBeanType());
+            } else {
+                cc.extends_(getBeanType());
+            }
 
-        // Additional interfaces whose methods require special handling
-        for (Class<?> specialInterface : specialInterfaces) {
-            proxyClassType.addInterface(specialInterface.getName());
+            // Add interfaces which require method generation
+            for (Class<?> clazz : additionalInterfaces) {
+                cc.implements_(clazz);
+            }
+
+            // Additional interfaces whose methods require special handling
+            for (Class<?> specialInterface : specialInterfaces) {
+                cc.implements_(specialInterface);
+            }
+
+            // Add fields
+            addFields(cc, initialValueBytecode);
+
+            // Add constructors
+            addConstructors(cc, initialValueBytecode);
+
+            // Add methods (includes static initializer)
+            addMethods(cc);
+
+            // Add serialization support
+            addSerializationSupport(cc);
+        });
+
+        // Get generated bytecode
+        byte[] bytecode = classOutput.getBytes();
+
+        if (bytecode == null) {
+            throw new WeldException("Failed to generate proxy class: " + proxyClassName);
         }
 
         // Dump proxy type bytecode if necessary
-        dumpToFile(proxyClassName, proxyClassType.toBytecode());
+        dumpToFile(proxyClassName, bytecode);
 
         ProtectionDomain domain = proxiedBeanType.getProtectionDomain();
 
@@ -506,21 +519,10 @@ public class ProxyFactory<T> {
                 || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
         }
-        Class<T> proxyClass = cast(toClass(proxyClassType, originalClass, proxyServices, domain));
+
+        Class<T> proxyClass = cast(toClass(bytecode, proxyClassName, originalClass, proxyServices, domain));
         BeanLogger.LOG.createdProxyClass(proxyClass, Arrays.toString(proxyClass.getInterfaces()));
         return proxyClass;
-    }
-
-    private ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
-        try {
-            // We need to use a (non-deprecated) method that avoids instantiating DefaultClassFactory.INSTANCE
-            // If that happens, we will have module accessibility issues and the need to use --add-opens clausules
-            // NOTE: the CL and ClassFactory are never really used to define the class, see WeldDefaultProxyServices
-            return new ClassFile(name, accessFlags, superclass, ProxyFactory.class.getClassLoader(),
-                    DummyClassFactoryImpl.INSTANCE, interfaces);
-        } catch (Exception e) {
-            throw BeanLogger.LOG.unableToCreateClassFile(name, e.getCause());
-        }
     }
 
     private void dumpToFile(String fileName, byte[] data) {
@@ -537,34 +539,33 @@ public class ProxyFactory<T> {
     }
 
     /**
-     * Adds a constructor for the proxy for each constructor declared by the base
-     * bean type.
+     * Adds constructors to the proxy class using Gizmo 2 API.
      *
-     * @param proxyClassType the Javassist class for the proxy
-     * @param initialValueBytecode
+     * @param cc the class creator
+     * @param initialValueBytecode deferred bytecode for field initialization
      */
-    protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
+    protected void addConstructors(ClassCreator cc, List<DeferredBytecode> initialValueBytecode) {
         try {
             if (getBeanType().isInterface()) {
-                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, !useConstructedFlag());
+                // Interface-based proxy: add default constructor calling Object()
+                ConstructorUtils.addDefaultConstructor(cc, Object.class, initialValueBytecode, !useConstructedFlag());
             } else {
+                // Class-based proxy: mirror all non-private constructors from the bean type
                 boolean constructorFound = false;
                 for (Constructor<?> constructor : getBeanType().getDeclaredConstructors()) {
                     if ((constructor.getModifiers() & Modifier.PRIVATE) == 0) {
                         constructorFound = true;
-                        String[] exceptions = new String[constructor.getExceptionTypes().length];
-                        for (int i = 0; i < exceptions.length; ++i) {
-                            exceptions[i] = constructor.getExceptionTypes()[i].getName();
-                        }
-                        ConstructorUtils.addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR,
-                                DescriptorUtils.parameterDescriptors(constructor.getParameterTypes()), exceptions,
-                                proxyClassType, initialValueBytecode, !useConstructedFlag());
+                        Class<?>[] paramTypes = constructor.getParameterTypes();
+                        Class<?>[] exceptionTypes = constructor.getExceptionTypes();
+
+                        ConstructorUtils.addConstructor(cc, getBeanType(), paramTypes, exceptionTypes,
+                                initialValueBytecode, !useConstructedFlag());
                     }
                 }
                 if (!constructorFound) {
                     // the bean only has private constructors, we need to generate
                     // two fake constructors that call each other
-                    addConstructorsForBeanWithPrivateConstructors(proxyClassType);
+                    addConstructorsForBeanWithPrivateConstructors(cc);
                 }
             }
         } catch (Exception e) {
@@ -572,13 +573,25 @@ public class ProxyFactory<T> {
         }
     }
 
-    protected void addFields(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
-        // The field representing the underlying instance or special method
-        // handling
-        proxyClassType.addField(AccessFlag.PRIVATE, METHOD_HANDLER_FIELD_NAME, getMethodHandlerType());
+    /**
+     * Adds fields to the proxy class using Gizmo 2 API.
+     *
+     * @param cc the class creator
+     * @param initialValueBytecode deferred bytecode for field initialization
+     */
+    protected void addFields(ClassCreator cc, List<DeferredBytecode> initialValueBytecode) {
+        // The field representing the underlying instance or special method handling
+        cc.field(METHOD_HANDLER_FIELD_NAME, f -> {
+            f.setType(getMethodHandlerType());
+            f.private_();
+        });
+
         if (useConstructedFlag()) {
             // field used to indicate that super() has been called
-            proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
+            cc.field(CONSTRUCTED_FLAG_NAME, f -> {
+                f.setType(boolean.class);
+                f.private_();
+            });
         }
     }
 
@@ -586,96 +599,583 @@ public class ProxyFactory<T> {
         return MethodHandler.class;
     }
 
-    protected void addMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        // Add all class methods for interception
-        addMethodsFromClass(proxyClassType, staticConstructor);
-
-        // Add special proxy methods
-        addSpecialMethods(proxyClassType, staticConstructor);
-
-        // Add serialization support methods
-        addSerializationSupport(proxyClassType);
-    }
-
     /**
-     * Adds special serialization code. By default this is a nop
+     * Adds special serialization code using Gizmo 2 API. By default this is a nop
      *
-     * @param proxyClassType the Javassist class for the proxy class
+     * @param cc the class creator
      */
-    protected void addSerializationSupport(ClassFile proxyClassType) {
+    protected void addSerializationSupport(ClassCreator cc) {
         //noop
     }
 
-    protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
+    /**
+     * Adds all methods to the proxy class using Gizmo 2 API.
+     *
+     * @param cc the class creator
+     */
+    protected void addMethods(ClassCreator cc) {
         try {
-            // Add all methods from the class hierarchy
-            Class<?> cls = getBeanType();
+            // Collect all methods that need to be proxied
+            List<MethodInfo> methodsToProxy = collectMethodsToProxy();
 
-            // First add equals/hashCode methods if required
-            generateEqualsMethod(proxyClassType);
-            generateHashCodeMethod(proxyClassType);
+            // Add static fields for Method reflection objects
+            Map<MethodInfo, String> methodFieldNames = new HashMap<>();
+            for (MethodInfo methodInfo : methodsToProxy) {
+                String fieldName = "weld$$$method$$$" + methodFieldNames.size();
+                methodFieldNames.put(methodInfo, fieldName);
 
-            // In rare cases, the bean class may be abstract - in this case we have to add methods from all interfaces implemented by any abstract class
-            // from the hierarchy
-            boolean isBeanClassAbstract = Modifier.isAbstract(cls.getModifiers());
-            // a final method might have a non-final declaration in abstract superclass
-            // hence we need to remember which we saw and skip those in superclasses
-            Set<MethodSignature> foundFinalMethods = new HashSet<>();
-
-            while (cls != null) {
-                addMethods(cls, proxyClassType, staticConstructor, foundFinalMethods);
-                if (isBeanClassAbstract && Modifier.isAbstract(cls.getModifiers())) {
-                    for (Class<?> implementedInterface : Reflections.getInterfaceClosure(cls)) {
-                        if (!additionalInterfaces.contains(implementedInterface)) {
-                            addMethods(implementedInterface, proxyClassType, staticConstructor, foundFinalMethods);
-                        }
-                    }
-                }
-                cls = cls.getSuperclass();
+                cc.staticField(fieldName, f -> {
+                    f.setType(Method.class);
+                    f.private_();
+                });
             }
-            for (Class<?> c : additionalInterfaces) {
-                for (Method method : c.getMethods()) {
-                    if (isMethodAccepted(method, getProxySuperclass())) {
-                        try {
-                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            ClassMethod classMethod = proxyClassType.addMethod(method);
-                            if (Reflections.isDefault(method)) {
-                                addConstructedGuardToMethodBody(classMethod);
-                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                            } else {
-                                createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
-                            }
-                            BeanLogger.LOG.addingMethodToProxy(method);
-                        } catch (DuplicateMemberException e) {
-                        }
-                    }
-                }
+
+            // Add static initializer to populate Method fields
+            if (!methodsToProxy.isEmpty()) {
+                addStaticInitializer(cc, methodsToProxy, methodFieldNames);
             }
+
+            // Add methods from class hierarchy
+            addMethodsFromClass(cc, methodsToProxy, methodFieldNames);
+
+            // Add special proxy methods
+            addSpecialMethods(cc);
+
+            // Note: Serialization support is added separately via addSerializationSupport(cc)
         } catch (Exception e) {
             throw new WeldException(e);
         }
     }
 
-    private void addMethods(Class<?> cls, ClassFile proxyClassType, ClassMethod staticConstructor,
-            Set<MethodSignature> foundFinalmethods) {
-        for (Method method : cls.getDeclaredMethods()) {
-            MethodSignature methodSignature = new MethodSignatureImpl(method);
-            if (Modifier.isFinal(method.getModifiers())) {
-                foundFinalmethods.add(methodSignature);
+    /**
+     * Simple holder for method information during proxy generation.
+     */
+    protected static class MethodInfo {
+        final Method method;
+        final boolean isDefault;
+
+        MethodInfo(Method method, boolean isDefault) {
+            this.method = method;
+            this.isDefault = isDefault;
+        }
+    }
+
+    /**
+     * Collects all methods that need to be proxied.
+     */
+    protected List<MethodInfo> collectMethodsToProxy() {
+        List<MethodInfo> methods = new ArrayList<>();
+        Class<?> cls = getBeanType();
+        boolean isBeanClassAbstract = Modifier.isAbstract(cls.getModifiers());
+        Set<MethodSignature> foundFinalMethods = new HashSet<>();
+        Set<MethodSignature> addedMethods = new HashSet<>();
+
+        // Add methods from the class hierarchy
+        while (cls != null) {
+            Method[] classDeclaredMethods = cls.getDeclaredMethods();
+            for (Method method : classDeclaredMethods) {
+                MethodSignature methodSignature = new MethodSignatureImpl(method);
+                if (Modifier.isFinal(method.getModifiers())) {
+                    foundFinalMethods.add(methodSignature);
+                }
+                // Skip bridge methods that have a concrete implementation in the same class
+                if (method.isBridge() && hasConcreteImplementation(method, classDeclaredMethods)) {
+                    continue;
+                }
+                if (isMethodAccepted(method, getProxySuperclass())
+                        && !foundFinalMethods.contains(methodSignature)
+                        && !addedMethods.contains(methodSignature)) {
+                    methods.add(new MethodInfo(method, false));
+                    addedMethods.add(methodSignature);
+                }
             }
-            if (isMethodAccepted(method, getProxySuperclass()) && !foundFinalmethods.contains(methodSignature)) {
-                try {
-                    MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                    ClassMethod classMethod = proxyClassType.addMethod(method);
-                    addConstructedGuardToMethodBody(classMethod);
-                    createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                    BeanLogger.LOG.addingMethodToProxy(method);
-                } catch (DuplicateMemberException e) {
-                    // do nothing. This will happen if superclass methods
-                    // have been overridden
+            if (isBeanClassAbstract && Modifier.isAbstract(cls.getModifiers())) {
+                for (Class<?> implementedInterface : Reflections.getInterfaceClosure(cls)) {
+                    if (!additionalInterfaces.contains(implementedInterface)) {
+                        for (Method method : implementedInterface.getMethods()) {
+                            MethodSignature methodSignature = new MethodSignatureImpl(method);
+                            if (isMethodAccepted(method, getProxySuperclass()) && !addedMethods.contains(methodSignature)) {
+                                methods.add(new MethodInfo(method, Reflections.isDefault(method)));
+                                addedMethods.add(methodSignature);
+                            }
+                        }
+                    }
+                }
+            }
+            cls = cls.getSuperclass();
+        }
+
+        // Add methods from additional interfaces
+        for (Class<?> iface : additionalInterfaces) {
+            for (Method method : iface.getMethods()) {
+                MethodSignature methodSignature = new MethodSignatureImpl(method);
+                if (isMethodAccepted(method, getProxySuperclass()) && !addedMethods.contains(methodSignature)) {
+                    methods.add(new MethodInfo(method, Reflections.isDefault(method)));
+                    addedMethods.add(methodSignature);
                 }
             }
         }
+
+        return methods;
+    }
+
+    /**
+     * Adds a static initializer that populates Method reflection fields.
+     */
+    protected void addStaticInitializer(ClassCreator cc, List<MethodInfo> methodsToProxy,
+            Map<MethodInfo, String> methodFieldNames) {
+        cc.staticMethod("<clinit>", m -> {
+            m.returning(void.class);
+
+            m.body(b -> {
+                for (MethodInfo methodInfo : methodsToProxy) {
+                    String fieldName = methodFieldNames.get(methodInfo);
+                    Method method = methodInfo.method;
+
+                    // Get the declaring class: Class<?> declaringClass = <DeclaringClass>.class
+                    Expr classExpr = Const.of(method.getDeclaringClass());
+
+                    // Get the method name: String methodName = "methodName"
+                    Expr methodNameExpr = Const.of(method.getName());
+
+                    // Create parameter types array: Class<?>[] paramTypes = new Class<?>[] { ... }
+                    Class<?>[] paramTypes = method.getParameterTypes();
+
+                    Expr paramTypesArray;
+                    if (paramTypes.length == 0) {
+                        paramTypesArray = b.newEmptyArray(Class.class, 0);
+                    } else {
+                        // Create array, store in LocalVar immediately, then populate
+                        Expr arrayExpr = b.newEmptyArray(Class.class, paramTypes.length);
+                        var paramTypesVar = b.localVar("paramTypes_" + fieldName, arrayExpr);
+
+                        for (int i = 0; i < paramTypes.length; i++) {
+                            // Use Const.of(Class) to properly handle arrays and primitives
+                            Expr paramClassExpr = Const.of(paramTypes[i]);
+                            b.set(paramTypesVar.elem(i), paramClassExpr);
+                        }
+                        paramTypesArray = paramTypesVar;
+                    }
+
+                    // Call Class.getDeclaredMethod(methodName, paramTypes)
+                    MethodDesc getDeclaredMethodDesc = MethodDesc.of(
+                            Class.class,
+                            "getDeclaredMethod",
+                            Method.class,
+                            String.class,
+                            Class[].class);
+
+                    Expr methodExpr = b.invokeVirtual(getDeclaredMethodDesc, classExpr,
+                            methodNameExpr, paramTypesArray);
+
+                    // Store in static field: <ProxyClass>.fieldName = method
+                    FieldDesc fieldDesc = FieldDesc.of(
+                            cc.type(),
+                            fieldName,
+                            Method.class);
+                    b.setStaticField(fieldDesc, methodExpr);
+                }
+
+                b.return_();
+            });
+        });
+    }
+
+    /**
+     * Adds methods from the class hierarchy to the proxy.
+     */
+    protected void addMethodsFromClass(ClassCreator cc, List<MethodInfo> methodsToProxy,
+            Map<MethodInfo, String> methodFieldNames) {
+        // Always generate equals/hashCode methods
+        // We override any bean implementations to ensure proxy identity semantics
+        generateEqualsMethod(cc);
+        generateHashCodeMethod(cc);
+
+        for (MethodInfo methodInfo : methodsToProxy) {
+            // Skip equals/hashCode - we always generate our own versions
+            if (methodInfo.method.getName().equals("equals") && methodInfo.method.getParameterCount() == 1
+                    && methodInfo.method.getParameterTypes()[0] == Object.class) {
+                continue;
+            }
+            if (methodInfo.method.getName().equals("hashCode") && methodInfo.method.getParameterCount() == 0) {
+                continue;
+            }
+            addProxyMethod(cc, methodInfo, methodFieldNames.get(methodInfo));
+        }
+    }
+
+    /**
+     * Generates equals() method that compares proxy classes.
+     * Two proxies are equal if they have the same class.
+     */
+    protected void generateEqualsMethod(ClassCreator cc) {
+        cc.method("equals", m -> {
+            m.public_();
+            m.returning(boolean.class);
+            var otherParam = m.parameter("other", Object.class);
+
+            m.body(b -> {
+                // if (other == null) return false;
+                Expr nullCheck = b.eq(otherParam, Const.ofNull(Object.class));
+                b.if_(nullCheck, nullBlock -> {
+                    nullBlock.return_(Const.of(false));
+                });
+
+                // return this.getClass().equals(other.getClass());
+                Expr thisClass = b.invokeVirtual(
+                        MethodDesc.of(Object.class, "getClass", Class.class),
+                        m.this_());
+                Expr otherClass = b.invokeVirtual(
+                        MethodDesc.of(Object.class, "getClass", Class.class),
+                        otherParam);
+                Expr result = b.invokeVirtual(
+                        MethodDesc.of(Object.class, "equals", boolean.class, Object.class),
+                        thisClass, otherClass);
+                b.return_(result);
+            });
+        });
+    }
+
+    /**
+     * Generates hashCode() method that returns the proxy class hashCode.
+     */
+    protected void generateHashCodeMethod(ClassCreator cc) {
+        cc.method("hashCode", m -> {
+            m.public_();
+            m.returning(int.class);
+
+            m.body(b -> {
+                // return this.getClass().hashCode();
+                Expr thisClass = b.invokeVirtual(
+                        MethodDesc.of(Object.class, "getClass", Class.class),
+                        m.this_());
+                Expr hashCode = b.invokeVirtual(
+                        MethodDesc.of(Object.class, "hashCode", int.class),
+                        thisClass);
+                b.return_(hashCode);
+            });
+        });
+    }
+
+    /**
+     * Adds a single proxy method that forwards to the method handler.
+     */
+    protected void addProxyMethod(ClassCreator cc, MethodInfo methodInfo, String methodFieldName) {
+        Method method = methodInfo.method;
+
+        // Create method descriptor from the reflection Method
+        MethodDesc methodDesc = MethodDesc.of(method);
+
+        cc.method(methodDesc, m -> {
+            // Set method modifiers
+            int modifiers = method.getModifiers();
+            if (Modifier.isPublic(modifiers)) {
+                m.public_();
+            } else if (Modifier.isProtected(modifiers)) {
+                m.protected_();
+            }
+
+            // Set varargs flag if the method is varargs
+            if (method.isVarArgs()) {
+                m.varargs();
+            }
+
+            // Add parameters
+            ParamVar[] params = new ParamVar[method.getParameterCount()];
+            for (int i = 0; i < method.getParameterCount(); i++) {
+                params[i] = m.parameter("arg" + i, method.getParameterTypes()[i]);
+            }
+
+            // Add checked exceptions
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Throwable> throwableClass = (Class<? extends Throwable>) exceptionType;
+                m.throws_(throwableClass);
+            }
+
+            m.body(b -> {
+                // Add constructed guard if needed (prevents delegation before constructor completes)
+                if (useConstructedFlag()) {
+                    addConstructedGuard(m, b, method, params);
+                }
+
+                // Forward to method handler: methodHandler.invoke(this, method, null, args)
+                invokeMethodHandler(m, b, method, methodFieldName, params);
+            });
+        });
+
+        BeanLogger.LOG.addingMethodToProxy(method);
+    }
+
+    /**
+     * Adds a constructed guard that prevents method delegation before constructor completes.
+     * Generates: if (!this.constructed) return super.method(args);
+     */
+    protected void addConstructedGuard(InstanceMethodCreator m,
+            BlockCreator b, Method method, ParamVar[] params) {
+
+        // Load the constructed flag: this.constructed
+        FieldDesc constructedField = FieldDesc.of(
+                m.owner(),
+                CONSTRUCTED_FLAG_NAME,
+                boolean.class);
+        Expr constructedValue = b.get(m.this_().field(constructedField));
+
+        // Create a local variable to store the value (needed for cross-scope usage)
+        var constructedVar = b.localVar("constructed", constructedValue);
+
+        // Create boolean expression: constructed == false
+        Expr condition = b.eq(constructedVar, Const.of(false));
+
+        // if (!constructed) { call super and return }
+        b.if_(condition, falseBlock -> {
+            // Inside the if block: call super.method(args) and return
+
+            // Prepare parameter expressions
+            Expr[] paramExprs = new Expr[params.length];
+            for (int i = 0; i < params.length; i++) {
+                paramExprs[i] = params[i];
+            }
+
+            // Get the method's declaring class
+            Class<?> declaringClass = method.getDeclaringClass();
+
+            // For interface methods (non-default), we can't use invokeSpecial
+            // Return default values instead
+            if (declaringClass.isInterface() || getBeanType().isInterface()) {
+                // If the method is from an interface, there's no super implementation we can call
+                // Just return default value
+                if (method.getReturnType() == void.class) {
+                    falseBlock.return_();
+                } else if (method.getReturnType().isPrimitive()) {
+                    falseBlock.return_(getDefaultPrimitiveValue(falseBlock, method.getReturnType()));
+                } else {
+                    falseBlock.return_(Const.ofNull(Object.class));
+                }
+                return;
+            }
+
+            // Call super.method(args) - only valid for concrete class methods
+            MethodDesc superMethodDesc = MethodDesc.of(method);
+
+            Expr result;
+            if (paramExprs.length == 0) {
+                result = falseBlock.invokeSpecial(superMethodDesc, m.this_());
+            } else if (paramExprs.length == 1) {
+                result = falseBlock.invokeSpecial(superMethodDesc, m.this_(), paramExprs[0]);
+            } else if (paramExprs.length == 2) {
+                result = falseBlock.invokeSpecial(superMethodDesc, m.this_(), paramExprs[0], paramExprs[1]);
+            } else {
+                result = falseBlock.invokeSpecial(superMethodDesc, m.this_(), paramExprs);
+            }
+
+            if (method.getReturnType() == void.class) {
+                falseBlock.return_();
+            } else {
+                falseBlock.return_(result);
+            }
+        });
+        // If constructed == true, execution continues to method handler invocation
+    }
+
+    /**
+     * Returns the default value for a primitive type.
+     */
+    protected Expr getDefaultPrimitiveValue(BlockCreator b,
+            Class<?> primitiveType) {
+        if (primitiveType == boolean.class) {
+            return Const.of(false);
+        } else if (primitiveType == byte.class) {
+            return Const.of((byte) 0);
+        } else if (primitiveType == short.class) {
+            return Const.of((short) 0);
+        } else if (primitiveType == int.class) {
+            return Const.of(0);
+        } else if (primitiveType == long.class) {
+            return Const.of(0L);
+        } else if (primitiveType == float.class) {
+            return Const.of(0.0f);
+        } else if (primitiveType == double.class) {
+            return Const.of(0.0);
+        } else if (primitiveType == char.class) {
+            return Const.of((char) 0);
+        } else {
+            throw new IllegalArgumentException("Unknown primitive type: " + primitiveType);
+        }
+    }
+
+    /**
+     * Invokes the method handler: methodHandler.invoke(this, staticMethodField, null, args)
+     */
+    protected void invokeMethodHandler(InstanceMethodCreator m,
+            BlockCreator b, Method method, String methodFieldName,
+            ParamVar[] params) {
+
+        // 1. Load this.methodHandler
+        FieldDesc methodHandlerField = FieldDesc.of(
+                m.owner(),
+                METHOD_HANDLER_FIELD_NAME,
+                getMethodHandlerType());
+        Expr handler = b.get(m.this_().field(methodHandlerField));
+
+        // 2. Load the static Method field
+        FieldDesc methodField = FieldDesc.of(
+                m.owner(),
+                methodFieldName,
+                Method.class);
+        Expr methodObj = Expr.staticField(methodField);
+
+        // 3. Create null for the second Method parameter (not used in ProxyFactory)
+        Expr nullMethod = Const.ofNull(Method.class);
+
+        // 4. Create and populate Object[] args array
+        Class<?>[] paramTypes = method.getParameterTypes();
+
+        // If no parameters, create empty array and store directly
+        Expr argsArray;
+        if (paramTypes.length == 0) {
+            argsArray = b.newEmptyArray(Object.class, 0);
+        } else {
+            // For parameters, create array, store in LocalVar immediately, then populate
+            Expr arrayExpr = b.newEmptyArray(Object.class, paramTypes.length);
+            var argsVar = b.localVar("args", arrayExpr);
+
+            for (int i = 0; i < paramTypes.length; i++) {
+                Expr paramValue = params[i];
+                // Box primitive types
+                if (paramTypes[i].isPrimitive()) {
+                    paramValue = boxPrimitive(b, paramValue, paramTypes[i]);
+                }
+                b.set(argsVar.elem(i), paramValue);
+            }
+            argsArray = argsVar;
+        }
+
+        // 5. Call methodHandler.invoke(this, method, null, args)
+        // MethodHandler.invoke(Object self, Method thisMethod, Method proceed, Object[] args)
+        MethodDesc invokeDesc = MethodDesc.of(
+                MethodHandler.class,
+                INVOKE_METHOD_NAME,
+                Object.class,
+                Object.class, Method.class, Method.class, Object[].class);
+
+        Expr result = b.invokeInterface(invokeDesc, handler,
+                m.this_(), methodObj, nullMethod, argsArray);
+
+        // 6. Handle return value
+        Class<?> returnType = method.getReturnType();
+        if (returnType == void.class) {
+            // Void method - just return
+            b.return_();
+        } else if (returnType.isPrimitive()) {
+            // Primitive return - unbox
+            Expr unboxed = unboxPrimitive(b, result, returnType);
+            b.return_(unboxed);
+        } else {
+            // Object return - cast
+            Expr casted = b.cast(result, returnType);
+            b.return_(casted);
+        }
+    }
+
+    /**
+     * Boxes a primitive value into its wrapper type.
+     * Gizmo 2's box() automatically determines the wrapper type from the expression type.
+     */
+    protected Expr boxPrimitive(BlockCreator b,
+            Expr value, Class<?> primitiveType) {
+        return b.box(value);
+    }
+
+    /**
+     * Unboxes a wrapper object into its primitive value.
+     * Gizmo 2's unbox() automatically determines the primitive type from the expression type.
+     */
+    protected Expr unboxPrimitive(BlockCreator b,
+            Expr value, Class<?> primitiveType) {
+        // First cast to the wrapper type, then unbox
+        Class<?> wrapperType = getWrapperType(primitiveType);
+        Expr casted = b.cast(value, wrapperType);
+        return b.unbox(casted);
+    }
+
+    /**
+     * Gets the wrapper type for a primitive type.
+     */
+    protected Class<?> getWrapperType(Class<?> primitiveType) {
+        if (primitiveType == boolean.class) {
+            return Boolean.class;
+        } else if (primitiveType == byte.class) {
+            return Byte.class;
+        } else if (primitiveType == short.class) {
+            return Short.class;
+        } else if (primitiveType == int.class) {
+            return Integer.class;
+        } else if (primitiveType == long.class) {
+            return Long.class;
+        } else if (primitiveType == float.class) {
+            return Float.class;
+        } else if (primitiveType == double.class) {
+            return Double.class;
+        } else if (primitiveType == char.class) {
+            return Character.class;
+        } else {
+            throw new IllegalArgumentException("Unknown primitive type: " + primitiveType);
+        }
+    }
+
+    /**
+     * Adds constructors for beans with only private constructors using Gizmo 2 API.
+     *
+     * @param cc the class creator
+     */
+    /**
+     * Adds two constructors to the class that call each other in order to bypass
+     * the JVM class file verifier.
+     * <p>
+     * This would result in a stack overflow if they were actually called,
+     * however the proxy is directly created without calling the constructor
+     * (using Unsafe.allocateInstance or similar mechanisms).
+     */
+    protected void addConstructorsForBeanWithPrivateConstructors(ClassCreator cc) {
+        // Add first constructor: public <init>(Byte b)
+        // This calls the second constructor: this(null, null)
+        cc.constructor(c -> {
+            c.public_();
+            c.parameter("b", Byte.class);
+
+            c.body(b -> {
+                // Call this(null, null) - invoke the second constructor
+                ConstructorDesc secondCtor = ConstructorDesc.of(
+                        cc.type(),
+                        ClassDesc.of(Byte.class.getName()),
+                        ClassDesc.of(Byte.class.getName()));
+                Expr thisRef = c.this_();
+                Expr nullByte1 = Const.ofNull(Byte.class);
+                Expr nullByte2 = Const.ofNull(Byte.class);
+                b.invokeSpecial(secondCtor, thisRef, nullByte1, nullByte2);
+                b.return_();
+            });
+        });
+
+        // Add second constructor: public <init>(Byte b1, Byte b2)
+        // This calls the first constructor: this(null)
+        cc.constructor(c -> {
+            c.public_();
+            c.parameter("b1", Byte.class);
+            c.parameter("b2", Byte.class);
+
+            c.body(b -> {
+                // Call this(null) - invoke the first constructor
+                ConstructorDesc firstCtor = ConstructorDesc.of(
+                        cc.type(),
+                        ClassDesc.of(Byte.class.getName()));
+                Expr thisRef = c.this_();
+                Expr nullByte = Const.ofNull(Byte.class);
+                b.invokeSpecial(firstCtor, thisRef, nullByte);
+                b.return_();
+            });
+        });
     }
 
     protected boolean isMethodAccepted(Method method, Class<?> proxySuperclass) {
@@ -688,236 +1188,186 @@ public class ProxyFactory<T> {
     }
 
     /**
-     * Generate the body of the proxies hashCode method.
-     * <p/>
-     * If this method returns null, the method will not be added, and the
-     * hashCode on the superclass will be used as per normal virtual method
-     * resolution rules
-     */
-    protected void generateHashCodeMethod(ClassFile proxyClassType) {
-    }
-
-    /**
-     * Generate the body of the proxies equals method.
-     * <p/>
-     * If this method returns null, the method will not be added, and the
-     * hashCode on the superclass will be used as per normal virtual method
-     * resolution rules
+     * Checks if a bridge method has a concrete (non-bridge) implementation in the same class.
+     * If it does, we skip the bridge method and only proxy the concrete implementation.
      *
-     * @param proxyClassType The class file
+     * @param bridgeMethod the bridge method to check
+     * @param classMethods all declared methods in the class
+     * @return true if there's a concrete implementation, false otherwise
      */
-    protected void generateEqualsMethod(ClassFile proxyClassType) {
-
-    }
-
-    protected void createSpecialMethodBody(ClassMethod proxyClassType, MethodInformation method,
-            ClassMethod staticConstructor) {
-        createInterceptorBody(proxyClassType, method, staticConstructor);
-    }
-
-    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod) {
-        addConstructedGuardToMethodBody(classMethod, classMethod.getClassFile().getSuperclass());
-    }
-
-    /**
-     * Adds the following code to a delegating method:
-     * <p/>
-     * <code>
-     * if(!this.constructed) return super.thisMethod()
-     * </code>
-     * <p/>
-     * This means that the proxy will not start to delegate to the underlying
-     * bean instance until after the constructor has finished.
-     */
-    protected void addConstructedGuardToMethodBody(final ClassMethod classMethod, String className) {
-        if (!useConstructedFlag()) {
-            return;
+    protected boolean hasConcreteImplementation(Method bridgeMethod, Method[] classMethods) {
+        if (!bridgeMethod.isBridge()) {
+            return false;
         }
-        // now create the conditional
-        final CodeAttribute cond = classMethod.getCodeAttribute();
-        cond.aload(0);
-        cond.getfield(classMethod.getClassFile().getName(), CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
 
-        // jump if the proxy constructor has finished
-        BranchEnd jumpMarker = cond.ifne();
-        // generate the invokespecial call to the super class method
-        // this is run when the proxy is being constructed
-        cond.aload(0);
-        cond.loadMethodParameters();
-        cond.invokespecial(className, classMethod.getName(), classMethod.getDescriptor());
-        cond.returnInstruction();
-        cond.branchEnd(jumpMarker);
-    }
+        String bridgeName = bridgeMethod.getName();
+        Class<?>[] bridgeParams = bridgeMethod.getParameterTypes();
 
-    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method,
-            ClassMethod staticConstructor) {
-        createInterceptorBody(classMethod, method, staticConstructor);
-    }
+        for (Method candidate : classMethods) {
+            // Skip if it's also a bridge method or has different name
+            if (candidate.isBridge() || !candidate.getName().equals(bridgeName)) {
+                continue;
+            }
 
-    /**
-     * Creates the given method on the proxy class where the implementation
-     * forwards the call directly to the method handler.
-     * <p/>
-     * the generated bytecode is equivalent to:
-     * <p/>
-     * return (RetType) methodHandler.invoke(this,param1,param2);
-     *
-     * @param classMethod the class method
-     * @param method any JLR method
-     * @return the method byte code
-     */
-    protected void createInterceptorBody(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
-        invokeMethodHandler(classMethod, method, true, DEFAULT_METHOD_RESOLVER, staticConstructor);
-    }
+            // Check if parameter count matches
+            Class<?>[] candidateParams = candidate.getParameterTypes();
+            if (candidateParams.length != bridgeParams.length) {
+                continue;
+            }
 
-    /**
-     * calls methodHandler.invoke for a given method
-     *
-     * @param method The method information
-     * @param addReturnInstruction set to true you want to return the result of
-     *        the method invocation
-     * @param bytecodeMethodResolver The resolver that returns the method to invoke
-     */
-    protected void invokeMethodHandler(ClassMethod classMethod, MethodInformation method, boolean addReturnInstruction,
-            BytecodeMethodResolver bytecodeMethodResolver, ClassMethod staticConstructor) {
-        // now we need to build the bytecode. The order we do this in is as
-        // follows:
-        // load methodHandler
-        // load this
-        // load the method object
-        // load null
-        // create a new array the same size as the number of parameters
-        // push our parameter values into the array
-        // invokeinterface the invoke method
-        // add checkcast to cast the result to the return type, or unbox if
-        // primitive
-        // add an appropriate return instruction
-        final CodeAttribute b = classMethod.getCodeAttribute();
-        b.aload(0);
-        getMethodHandlerField(classMethod.getClassFile(), b);
-        b.aload(0);
-        bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(),
-                method.getParameterTypes(), staticConstructor);
-        b.aconstNull();
+            // Check if this is a more specific version of the bridge method
+            // Bridge methods typically have Object or other generic types as parameters
+            // while concrete implementations have specific types
+            boolean isMoreSpecific = false;
+            for (int i = 0; i < bridgeParams.length; i++) {
+                if (bridgeParams[i] != candidateParams[i]) {
+                    // Parameters differ - check if candidate is more specific
+                    if (bridgeParams[i].isAssignableFrom(candidateParams[i])) {
+                        isMoreSpecific = true;
+                    } else {
+                        // Parameters are incompatible, not a match
+                        isMoreSpecific = false;
+                        break;
+                    }
+                }
+            }
 
-        b.iconst(method.getParameterTypes().length);
-        b.anewarray("java.lang.Object");
-
-        int localVariableCount = 1;
-
-        for (int i = 0; i < method.getParameterTypes().length; ++i) {
-            String typeString = method.getParameterTypes()[i];
-            b.dup(); // duplicate the array reference
-            b.iconst(i);
-            // load the parameter value
-            BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
-            // box the parameter if necessary
-            Boxing.boxIfNessesary(b, typeString);
-            // and store it in the array
-            b.aastore();
-            if (isWide(typeString)) {
-                localVariableCount = localVariableCount + 2;
-            } else {
-                localVariableCount++;
+            if (isMoreSpecific || (bridgeParams.length == candidateParams.length &&
+                    java.util.Arrays.equals(bridgeParams, candidateParams))) {
+                // Found a concrete implementation (either more specific or exact match that's not a bridge)
+                return true;
             }
         }
-        // now we have all our arguments on the stack
-        // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), INVOKE_METHOD_NAME, LJAVA_LANG_OBJECT,
-                new String[] { LJAVA_LANG_OBJECT,
-                        LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
-        if (addReturnInstruction) {
-            // now we need to return the appropriate type
-            if (method.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
-                b.returnInstruction();
-            } else if (isPrimitive(method.getReturnType())) {
-                Boxing.unbox(b, method.getReturnType());
-                b.returnInstruction();
-            } else {
-                b.checkcast(BytecodeUtils.getName(method.getReturnType()));
-                b.returnInstruction();
-            }
-        }
+
+        return false;
     }
 
     /**
-     * Adds methods requiring special implementations rather than just
-     * delegation.
+     * Adds methods requiring special implementations using Gizmo 2 API.
      *
-     * @param proxyClassType the Javassist class description for the proxy type
+     * @param cc the class creator
      */
-    protected void addSpecialMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
+    protected void addSpecialMethods(ClassCreator cc) {
         try {
-            // Add special methods for interceptors
+            // Add special methods for interceptors (LifecycleMixin interface)
             for (Method method : LifecycleMixin.class.getMethods()) {
                 BeanLogger.LOG.addingMethodToProxy(method);
-                MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                final ClassMethod classMethod = proxyClassType.addMethod(method);
-                createInterceptorBody(classMethod, methodInfo, staticConstructor);
+                // Implement lifecycle methods - they just delegate to method handler
+                generateLifecycleMixinMethod(cc, method);
             }
-            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("weld_getTargetInstance");
-            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("weld_getTargetClass");
 
-            MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
-            createInterceptorBody(proxyClassType.addMethod(getInstanceMethod), getInstanceMethodInfo, staticConstructor);
+            // Add TargetInstanceProxy methods
+            // TODO: Method getInstanceMethod = TargetInstanceProxy.class.getMethod("weld_getTargetInstance");
+            // TODO: Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("weld_getTargetClass");
 
-            MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
-            createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo,
-                    staticConstructor);
-
+            // Add ProxyObject methods (getMethodHandler, setMethodHandler)
             Method setMethodHandlerMethod = ProxyObject.class.getMethod("weld_setHandler", MethodHandler.class);
-            generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
+            generateSetMethodHandlerBody(cc, setMethodHandlerMethod);
 
             Method getMethodHandlerMethod = ProxyObject.class.getMethod("weld_getHandler");
-            generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
+            generateGetMethodHandlerBody(cc, getMethodHandlerMethod);
         } catch (Exception e) {
             throw new WeldException(e);
         }
     }
 
-    protected void generateSetMethodHandlerBody(ClassMethod method) {
-        final CodeAttribute b = method.getCodeAttribute();
-        b.aload(0);
-        b.aload(1);
-        b.checkcast(getMethodHandlerType());
-        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME,
-                DescriptorUtils.makeDescriptor(getMethodHandlerType()));
-        b.returnInstruction();
-    }
+    /**
+     * Generates a LifecycleMixin method (postConstruct/preDestroy) that delegates to the method handler.
+     */
+    protected void generateLifecycleMixinMethod(ClassCreator cc, Method method) {
+        cc.method(method.getName(), m -> {
+            m.public_();
+            m.returning(void.class);
 
-    protected void generateGetMethodHandlerBody(ClassMethod method) {
-        final CodeAttribute b = method.getCodeAttribute();
-        b.aload(0);
-        getMethodHandlerField(method.getClassFile(), b);
-        b.returnInstruction();
+            m.body(b -> {
+                // Get the method handler field
+                FieldDesc methodHandlerField = FieldDesc.of(
+                        cc.type(),
+                        METHOD_HANDLER_FIELD_NAME,
+                        getMethodHandlerType());
+                Expr handler = b.get(m.this_().field(methodHandlerField));
+
+                // Get the Method object for this lifecycle method
+                // LifecycleMixin.class.getMethod(methodName)
+                Expr lifecycleMixinClass = Const.of(LifecycleMixin.class);
+                Expr methodName = Const.of(method.getName());
+                Expr emptyClassArray = b.newEmptyArray(Class.class, 0);
+
+                MethodDesc getMethodDesc = MethodDesc.of(
+                        Class.class, "getMethod", Method.class, String.class, Class[].class);
+                Expr methodObj = b.invokeVirtual(getMethodDesc, lifecycleMixinClass,
+                        methodName, emptyClassArray);
+
+                // Create null proceed Method parameter
+                Expr nullMethod = Const.ofNull(Method.class);
+
+                // Create empty args array
+                Expr emptyArgs = b.newEmptyArray(Object.class, 0);
+
+                // Call methodHandler.invoke(this, methodObj, null, emptyArgs)
+                MethodDesc invokeDesc = MethodDesc.of(
+                        MethodHandler.class,
+                        INVOKE_METHOD_NAME,
+                        Object.class,
+                        Object.class, Method.class, Method.class, Object[].class);
+
+                b.invokeInterface(invokeDesc, handler, m.this_(), methodObj, nullMethod, emptyArgs);
+
+                // Return (void method)
+                b.return_();
+            });
+        });
     }
 
     /**
-     * Adds two constructors to the class that call each other in order to bypass
-     * the JVM class file verifier.
-     * <p/>
-     * This would result in a stack overflow if they were actually called,
-     * however the proxy is directly created without calling the constructor
+     * Generates the setMethodHandler method using Gizmo 2 API.
+     *
+     * @param cc the class creator
+     * @param method the method to implement (weld_setHandler)
      */
-    private void addConstructorsForBeanWithPrivateConstructors(ClassFile proxyClassType) {
-        ClassMethod ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR,
-                LJAVA_LANG_BYTE);
-        CodeAttribute b = ctor.getCodeAttribute();
-        b.aload(0);
-        b.aconstNull();
-        b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME,
-                "(" + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
-        b.returnInstruction();
+    protected void generateSetMethodHandlerBody(ClassCreator cc, Method method) {
+        cc.method(method.getName(), m -> {
+            m.public_();
+            m.returning(void.class);
+            var handlerParam = m.parameter("handler", MethodHandler.class);
 
-        ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR,
-                LJAVA_LANG_BYTE, LJAVA_LANG_BYTE);
-        b = ctor.getCodeAttribute();
-        b.aload(0);
-        b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME,
-                "(" + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
-        b.returnInstruction();
+            m.body(b -> {
+                // this.methodHandler = (MethodHandlerType) handler;
+                FieldDesc methodHandlerField = FieldDesc.of(
+                        cc.type(),
+                        METHOD_HANDLER_FIELD_NAME,
+                        getMethodHandlerType());
+
+                // Cast the parameter to the specific MethodHandler type and set the field
+                var castedHandler = b.cast(handlerParam, getMethodHandlerType());
+                b.set(m.this_().field(methodHandlerField), castedHandler);
+                b.return_();
+            });
+        });
+    }
+
+    /**
+     * Generates the getMethodHandler method using Gizmo 2 API.
+     *
+     * @param cc the class creator
+     * @param method the method to implement (weld_getHandler)
+     */
+    protected void generateGetMethodHandlerBody(ClassCreator cc, Method method) {
+        cc.method(method.getName(), m -> {
+            m.public_();
+            m.returning(MethodHandler.class);
+
+            m.body(b -> {
+                // return this.methodHandler;
+                FieldDesc methodHandlerField = FieldDesc.of(
+                        cc.type(),
+                        METHOD_HANDLER_FIELD_NAME,
+                        getMethodHandlerType());
+
+                var fieldValue = b.get(m.this_().field(methodHandlerField));
+                b.return_(fieldValue);
+            });
+        });
     }
 
     public Class<?> getBeanType() {
@@ -940,10 +1390,6 @@ public class ProxyFactory<T> {
         return proxiedBeanType;
     }
 
-    protected void getMethodHandlerField(ClassFile file, CodeAttribute b) {
-        b.getfield(file.getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(getMethodHandlerType()));
-    }
-
     protected Class<?> getProxySuperclass() {
         return getBeanType().isInterface() ? Object.class : getBeanType();
     }
@@ -963,16 +1409,35 @@ public class ProxyFactory<T> {
     }
 
     /**
-     * Delegates proxy creation via {@link ProxyServices} to the integrator or to our own implementation.
+     * Converts a Class to a ClassDesc, properly handling arrays and primitives.
+     * For regular classes: "com.example.Foo" -> ClassDesc
+     * For arrays: "[Ljava.lang.String;" -> ClassDesc
+     * For primitives: "int" -> ClassDesc
      */
-    protected Class<?> toClass(ClassFile ct, Class<?> originalClass, ProxyServices proxyServices, ProtectionDomain domain) {
+    private static java.lang.constant.ClassDesc classDescriptorOf(Class<?> clazz) {
+        if (clazz.isPrimitive() || clazz.isArray()) {
+            // For primitives and arrays, use descriptor format
+            // Primitives: "I", "J", "Z", etc.
+            // Arrays: "[Ljava/lang/Object;", "[[I", etc.
+            return java.lang.constant.ClassDesc.ofDescriptor(clazz.descriptorString());
+        } else {
+            // For regular classes, use binary name
+            return java.lang.constant.ClassDesc.of(clazz.getName());
+        }
+    }
+
+    /**
+     * Delegates proxy creation via {@link ProxyServices} to the integrator or to our own implementation.
+     * Uses bytecode and className generated by Gizmo 2.
+     */
+    protected Class<?> toClass(byte[] bytecode, String className, Class<?> originalClass, ProxyServices proxyServices,
+            ProtectionDomain domain) {
         try {
-            byte[] bytecode = ct.toBytecode();
             Class<?> result;
             if (domain == null) {
-                result = proxyServices.defineClass(originalClass, ct.getName(), bytecode, 0, bytecode.length);
+                result = proxyServices.defineClass(originalClass, className, bytecode, 0, bytecode.length);
             } else {
-                result = proxyServices.defineClass(originalClass, ct.getName(), bytecode, 0, bytecode.length, domain);
+                result = proxyServices.defineClass(originalClass, className, bytecode, 0, bytecode.length, domain);
             }
             return result;
         } catch (RuntimeException e) {

@@ -16,7 +16,12 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import org.jboss.classfilewriter.code.CodeAttribute;
+import java.lang.constant.ClassDesc;
+
+import io.quarkus.gizmo2.Const;
+import io.quarkus.gizmo2.Expr;
+import io.quarkus.gizmo2.creator.BlockCreator;
+import io.quarkus.gizmo2.desc.FieldDesc;
 
 /**
  * utility class for common bytecode operations
@@ -45,79 +50,71 @@ public class BytecodeUtils {
     }
 
     /**
-     * Adds the correct load instruction based on the type descriptor
+     * NOTE: This method is not applicable in Gizmo 2 where parameters are declared
+     * with parameter() and accessed directly as ParamVar instances.
      *
-     * @param code the bytecode to add the instruction to
-     * @param type the type of the variable
-     * @param variable the variable number
+     * @deprecated In Gizmo 2, use parameter() to declare parameters and reference them directly
      */
-    public static void addLoadInstruction(CodeAttribute code, String type, int variable) {
-        char tp = type.charAt(0);
-        if (tp != 'L' && tp != '[') {
-            // we have a primitive type
-            switch (tp) {
-                case 'J':
-                    code.lload(variable);
-                    break;
-                case 'D':
-                    code.dload(variable);
-                    break;
-                case 'F':
-                    code.fload(variable);
-                    break;
-                default:
-                    code.iload(variable);
-            }
-        } else {
-            code.aload(variable);
-        }
+    @Deprecated
+    public static void addLoadInstruction(Object code, String type, int variable) {
+        throw new UnsupportedOperationException(
+                "addLoadInstruction is not applicable in Gizmo 2 - use parameter() to declare parameters");
     }
 
     /**
-     * Pushes a class type onto the stack from the string representation This can
-     * also handle primitives
+     * Loads a Class object from the string representation.
+     * This can handle both object types and primitives.
      *
-     * @param b the bytecode
-     * @param classType the type descriptor for the class or primitive to push.
+     * @param b the block creator
+     * @param classType the type descriptor for the class or primitive to load.
      *        This will accept both the java.lang.Object form and the
      *        Ljava/lang/Object; form
+     * @return the Expr representing the Class object
      */
-    public static void pushClassType(CodeAttribute b, String classType) {
+    public static Expr pushClassType(BlockCreator b, String classType) {
         if (classType.length() != 1) {
+            // Object or array type
             if (classType.startsWith("L") && classType.endsWith(";")) {
                 classType = classType.substring(1, classType.length() - 1);
             }
-            b.loadClass(classType);
+            // Convert internal name (slashes) to binary name (dots)
+            String className = classType.replace('/', '.');
+            // In Gizmo 2, we use Const.of() for class literals
+            return Const.of(ClassDesc.of(className));
         } else {
+            // Primitive type - load the TYPE field from the wrapper class
             char type = classType.charAt(0);
+            Class<?> wrapperClass;
             switch (type) {
                 case 'I':
-                    b.getstatic(Integer.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Integer.class;
                     break;
                 case 'J':
-                    b.getstatic(Long.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Long.class;
                     break;
                 case 'S':
-                    b.getstatic(Short.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Short.class;
                     break;
                 case 'F':
-                    b.getstatic(Float.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Float.class;
                     break;
                 case 'D':
-                    b.getstatic(Double.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Double.class;
                     break;
                 case 'B':
-                    b.getstatic(Byte.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Byte.class;
                     break;
                 case 'C':
-                    b.getstatic(Character.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Character.class;
                     break;
                 case 'Z':
-                    b.getstatic(Boolean.class.getName(), TYPE, LJAVA_LANG_CLASS);
+                    wrapperClass = Boolean.class;
                     break;
                 default:
                     throw new RuntimeException("Cannot handle primitive type: " + type);
             }
+            FieldDesc typeField = FieldDesc.of(wrapperClass, TYPE);
+            return b.getStaticField(typeField);
         }
     }
 

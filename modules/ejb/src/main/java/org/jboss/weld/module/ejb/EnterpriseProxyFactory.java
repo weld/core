@@ -19,16 +19,24 @@ package org.jboss.weld.module.ejb;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Set;
 
-import org.jboss.classfilewriter.ClassFile;
-import org.jboss.classfilewriter.ClassMethod;
+import jakarta.enterprise.context.spi.CreationalContext;
+
+import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.CommonProxiedMethodFilters;
+import org.jboss.weld.bean.proxy.Marker;
+import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.collections.ImmutableSet;
+
+import io.quarkus.gizmo2.Const;
+import io.quarkus.gizmo2.Expr;
+import io.quarkus.gizmo2.creator.ClassCreator;
+import io.quarkus.gizmo2.desc.FieldDesc;
+import io.quarkus.gizmo2.desc.MethodDesc;
 
 /**
  * This factory produces client proxies specific for enterprise beans, in
@@ -52,17 +60,84 @@ class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected void addSpecialMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        super.addSpecialMethods(proxyClassType, staticConstructor);
+    protected void addAdditionalInterfaces(Set<Class<?>> interfaces) {
+        super.addAdditionalInterfaces(interfaces);
+        // Add the EnterpriseBeanInstance interface
+        interfaces.add(EnterpriseBeanInstance.class);
+    }
 
-        // Add methods for the EnterpriseBeanInstance interface
+    @Override
+    protected void addSpecialMethods(ClassCreator cc) {
+        super.addSpecialMethods(cc);
+        // Add the destroy() method from EnterpriseBeanInstance interface
+        generateDestroyMethod(cc);
+    }
+
+    /**
+     * Generates the destroy() method from EnterpriseBeanInstance interface.
+     * This method delegates to the method handler which will handle the actual destruction.
+     */
+    private void generateDestroyMethod(ClassCreator cc) {
         try {
-            proxyClassType.addInterface(EnterpriseBeanInstance.class.getName());
-            for (Method method : EnterpriseBeanInstance.class.getMethods()) {
-                BeanLogger.LOG.addingMethodToEnterpriseProxy(method);
-                MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                createInterceptorBody(proxyClassType.addMethod(method), methodInfo, staticConstructor);
-            }
+            Method destroyMethod = EnterpriseBeanInstance.class.getMethod("destroy",
+                    Marker.class, SessionBean.class, CreationalContext.class);
+            BeanLogger.LOG.addingMethodToEnterpriseProxy(destroyMethod);
+
+            cc.method(destroyMethod.getName(), m -> {
+                m.public_();
+                m.returning(void.class);
+                var markerParam = m.parameter("marker", Marker.class);
+                var sessionBeanParam = m.parameter("enterpriseBean", SessionBean.class);
+                var contextParam = m.parameter("creationalContext", CreationalContext.class);
+
+                m.body(b -> {
+                    // Get the method handler field
+                    FieldDesc methodHandlerField = FieldDesc.of(
+                            cc.type(),
+                            METHOD_HANDLER_FIELD_NAME,
+                            getMethodHandlerType());
+                    Expr handler = b.get(m.this_().field(methodHandlerField));
+
+                    // Get the Method object for destroy()
+                    // EnterpriseBeanInstance.class.getMethod("destroy", ...)
+                    Expr enterpriseBeanInstanceClass = Const.of(EnterpriseBeanInstance.class);
+                    Expr methodName = Const.of("destroy");
+
+                    // Create parameter types array
+                    Expr paramTypesArray = b.newEmptyArray(Class.class, 3);
+                    var paramTypesVar = b.localVar("paramTypes", paramTypesArray);
+                    b.set(paramTypesVar.elem(0), Const.of(Marker.class));
+                    b.set(paramTypesVar.elem(1), Const.of(SessionBean.class));
+                    b.set(paramTypesVar.elem(2), Const.of(CreationalContext.class));
+
+                    MethodDesc getMethodDesc = MethodDesc.of(
+                            Class.class, "getMethod", Method.class, String.class, Class[].class);
+                    Expr methodObj = b.invokeVirtual(getMethodDesc, enterpriseBeanInstanceClass,
+                            methodName, paramTypesVar);
+
+                    // Create null proceed Method parameter
+                    Expr nullMethod = Const.ofNull(Method.class);
+
+                    // Create args array with the three parameters
+                    Expr argsArray = b.newEmptyArray(Object.class, 3);
+                    var argsVar = b.localVar("args", argsArray);
+                    b.set(argsVar.elem(0), markerParam);
+                    b.set(argsVar.elem(1), sessionBeanParam);
+                    b.set(argsVar.elem(2), contextParam);
+
+                    // Call methodHandler.invoke(this, methodObj, null, args)
+                    MethodDesc invokeDesc = MethodDesc.of(
+                            MethodHandler.class,
+                            INVOKE_METHOD_NAME,
+                            Object.class,
+                            Object.class, Method.class, Method.class, Object[].class);
+
+                    b.invokeInterface(invokeDesc, handler, m.this_(), methodObj, nullMethod, argsVar);
+
+                    // Return (void method)
+                    b.return_();
+                });
+            });
         } catch (Exception e) {
             throw new WeldException(e);
         }

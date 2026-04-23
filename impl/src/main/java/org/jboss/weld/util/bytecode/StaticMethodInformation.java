@@ -18,9 +18,6 @@ package org.jboss.weld.util.bytecode;
 
 import java.lang.reflect.Method;
 
-import org.jboss.classfilewriter.AccessFlag;
-import org.jboss.classfilewriter.util.DescriptorUtils;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class StaticMethodInformation implements MethodInformation {
@@ -32,14 +29,14 @@ public class StaticMethodInformation implements MethodInformation {
     private final int modifiers;
 
     public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass) {
-        this(name, parameterTypes, returnType, declaringClass, AccessFlag.PUBLIC);
+        this(name, parameterTypes, returnType, declaringClass, AccessFlags.PUBLIC);
     }
 
     public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass,
             int modifiers) {
         this.name = name;
-        this.parameterTypes = DescriptorUtils.parameterDescriptors(parameterTypes);
-        this.returnType = DescriptorUtils.makeDescriptor(returnType);
+        this.parameterTypes = DescriptorUtil.parameterDescriptors(parameterTypes);
+        this.returnType = DescriptorUtil.makeDescriptor(returnType);
         this.declaringClass = declaringClass;
         StringBuilder builder = new StringBuilder("(");
         for (String p : this.parameterTypes) {
@@ -64,7 +61,7 @@ public class StaticMethodInformation implements MethodInformation {
         builder.append(')');
         builder.append(returnType);
         descriptor = builder.toString();
-        this.modifiers = AccessFlag.PUBLIC;
+        this.modifiers = AccessFlags.PUBLIC;
     }
 
     public String getDeclaringClass() {
