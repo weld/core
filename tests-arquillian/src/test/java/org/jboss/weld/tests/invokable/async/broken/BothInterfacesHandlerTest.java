@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.invokable.async.broken;
 
-import jakarta.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.enterprise.invoke.AsyncHandler;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -14,15 +14,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class BothAnnotationsHandlerTest {
+public class BothInterfacesHandlerTest {
 
     @Deployment
-    @ShouldThrowException(DeploymentException.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
-                Utils.getDeploymentNameAsHash(BothAnnotationsHandlerTest.class))
-                .addClass(BothAnnotationsHandler.class)
-                .addAsServiceProvider(AsyncHandler.class, BothAnnotationsHandler.class);
+                Utils.getDeploymentNameAsHash(BothInterfacesHandlerTest.class))
+                .addClass(BothInterfacesHandler.class)
+                .addAsServiceProvider(AsyncHandler.ReturnType.class, BothInterfacesHandler.class)
+                .addAsServiceProvider(AsyncHandler.ParameterType.class, BothInterfacesHandler.class);
     }
 
     @Test

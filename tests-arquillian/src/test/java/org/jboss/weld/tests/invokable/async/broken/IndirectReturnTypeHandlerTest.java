@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.invokable.async.broken;
 
-import jakarta.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.enterprise.invoke.AsyncHandler;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -14,15 +14,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class UnannotatedHandlerTest {
+public class IndirectReturnTypeHandlerTest {
 
     @Deployment
-    @ShouldThrowException(DeploymentException.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
-                Utils.getDeploymentNameAsHash(UnannotatedHandlerTest.class))
-                .addClass(UnannotatedHandler.class)
-                .addAsServiceProvider(AsyncHandler.class, UnannotatedHandler.class);
+                Utils.getDeploymentNameAsHash(IndirectReturnTypeHandlerTest.class))
+                .addClass(IndirectReturnTypeHandler.class)
+                .addClass(IndirectReturnTypeBase.class)
+                .addAsServiceProvider(AsyncHandler.ReturnType.class, IndirectReturnTypeHandler.class);
     }
 
     @Test

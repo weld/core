@@ -18,6 +18,7 @@ public class AsyncInvokerExtension implements Extension {
     private Invoker<AsyncBean, ?> csInvoker;
     private Invoker<AsyncBean, ?> cfInvoker;
     private Invoker<AsyncBean, ?> fpInvoker;
+    private Invoker<AsyncBean, ?> noLookupInvoker;
 
     public void observeAsyncBean(@Observes WeldProcessManagedBean<AsyncBean> pmb) {
         Collection<AnnotatedMethod<? super AsyncBean>> methods = pmb.getAnnotatedBeanClass().getMethods();
@@ -38,6 +39,8 @@ public class AsyncInvokerExtension implements Extension {
                         .withInstanceLookup()
                         .withArgumentLookup(0)
                         .build();
+            } else if ("helloNoLookup".equals(name)) {
+                noLookupInvoker = pmb.createInvoker(m).build();
             }
         }
     }
@@ -58,5 +61,9 @@ public class AsyncInvokerExtension implements Extension {
 
     public Invoker<AsyncBean, ?> getFpInvoker() {
         return fpInvoker;
+    }
+
+    public Invoker<AsyncBean, ?> getNoLookupInvoker() {
+        return noLookupInvoker;
     }
 }

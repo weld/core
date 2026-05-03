@@ -66,6 +66,7 @@ public class AsyncHandlerRegistry implements Service {
 
     private void validateAndRegisterReturnType(AsyncHandler.ReturnType<?> handler) {
         Class<?> handlerClass = handler.getClass();
+        validateDirectImplementation(handlerClass, AsyncHandler.ReturnType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ReturnType.class);
         checkDuplicate(asyncType, handlerClass);
         handlers.put(asyncType, HandlerInfo.returnType(handler, asyncType));
@@ -73,9 +74,19 @@ public class AsyncHandlerRegistry implements Service {
 
     private void validateAndRegisterParameterType(AsyncHandler.ParameterType<?> handler) {
         Class<?> handlerClass = handler.getClass();
+        validateDirectImplementation(handlerClass, AsyncHandler.ParameterType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ParameterType.class);
         checkDuplicate(asyncType, handlerClass);
         handlers.put(asyncType, HandlerInfo.parameterType(handler, asyncType));
+    }
+
+    private void validateDirectImplementation(Class<?> handlerClass, Class<?> targetInterface) {
+        for (Class<?> iface : handlerClass.getInterfaces()) {
+            if (iface == targetInterface) {
+                return;
+            }
+        }
+        throw InvokerLogger.LOG.asyncHandlerIndirectImplementation(handlerClass);
     }
 
     private void checkDuplicate(Class<?> asyncType, Class<?> handlerClass) {
@@ -97,18 +108,7 @@ public class AsyncHandlerRegistry implements Service {
                 throw InvokerLogger.LOG.asyncHandlerRawType(handlerClass);
             }
         }
-        // Check superclass interfaces recursively
-        for (Type genericInterface : handlerClass.getGenericInterfaces()) {
-            Class<?> rawIface = null;
-            if (genericInterface instanceof ParameterizedType) {
-                rawIface = (Class<?>) ((ParameterizedType) genericInterface).getRawType();
-            } else if (genericInterface instanceof Class) {
-                rawIface = (Class<?>) genericInterface;
-            }
-            if (rawIface != null && targetInterface.isAssignableFrom(rawIface)) {
-                return extractAsyncType(rawIface, targetInterface);
-            }
-        }
+        // Should not happen if validateDirectImplementation passed
         throw InvokerLogger.LOG.asyncHandlerRawType(handlerClass);
     }
 
@@ -160,13 +160,18 @@ public class AsyncHandlerRegistry implements Service {
      * Returns the handler info if exactly one parameter matches; null otherwise.
      */
     public HandlerInfo findParameterTypeHandler(Class<?>[] parameterTypes) {
+        HandlerInfo match = null;
+        int matchCount = 0;
         for (Class<?> paramType : parameterTypes) {
             HandlerInfo info = handlers.get(paramType);
             if (info != null && !info.isReturnType()) {
-                return info;
+                match = info;
+                matchCount++;
             }
         }
-        return null;
+        // spec requires exactly one matching parameter; with 0 or 2+ matches
+        // the method is not considered async and null signals synchronous cleanup
+        return matchCount == 1 ? match : null;
     }
 
     @Override

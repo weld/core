@@ -9,6 +9,7 @@ import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -88,35 +89,29 @@ public interface InvokerLogger extends WeldLogger {
     NullPointerException nullArgumentArray(Object method);
 
     @Message(id = 2021, value = "AsyncHandler {0} implements AsyncHandler as a raw type without a type argument", format = Format.MESSAGE_FORMAT)
-    DeploymentException asyncHandlerRawType(Object handlerClass);
+    DefinitionException asyncHandlerRawType(Object handlerClass);
 
     @Message(id = 2022, value = "AsyncHandler {0} has a type variable as async type; the async type must be a concrete class or parameterized type", format = Format.MESSAGE_FORMAT)
-    DeploymentException asyncHandlerTypeVariable(Object handlerClass);
+    DefinitionException asyncHandlerTypeVariable(Object handlerClass);
 
     @Message(id = 2023, value = "AsyncHandler {0} has an array as async type; arrays are not allowed", format = Format.MESSAGE_FORMAT)
-    DeploymentException asyncHandlerArrayType(Object handlerClass);
+    DefinitionException asyncHandlerArrayType(Object handlerClass);
 
-    @Message(id = 2024, value = "AsyncHandler {0} is annotated with both @ReturnType and @ParameterType; exactly one is required", format = Format.MESSAGE_FORMAT)
-    DeploymentException asyncHandlerBothAnnotations(Object handlerClass);
+    @Message(id = 2024, value = "AsyncHandler {0} does not implement the async handler interface directly; indirect implementation through a superclass is not allowed", format = Format.MESSAGE_FORMAT)
+    DefinitionException asyncHandlerIndirectImplementation(Object handlerClass);
 
-    @Message(id = 2025, value = "AsyncHandler {0} is not annotated with @ReturnType or @ParameterType; exactly one is required", format = Format.MESSAGE_FORMAT)
-    DeploymentException asyncHandlerNoAnnotation(Object handlerClass);
-
-    @Message(id = 2026, value = "Multiple async handlers found for async type {0}; handler class: {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 2025, value = "Multiple async handlers found for async type {0}; handler class: {1}", format = Format.MESSAGE_FORMAT)
     DeploymentException asyncHandlerDuplicate(Object asyncType, Object handlerClass);
 
-    @Message(id = 2027, value = "AsyncHandler {0} does not implement AsyncHandler directly; indirect implementation is not allowed", format = Format.MESSAGE_FORMAT)
-    DeploymentException asyncHandlerIndirectImplementation(Object handlerClass);
-
-    @Message(id = 2028, value = "No async handler registered for type {0}{1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 2026, value = "No async handler registered for type {0}{1}", format = Format.MESSAGE_FORMAT)
     DeploymentException asyncHandlerNotFound(Object asyncType, Object additionalMessage);
 
-    @Message(id = 2029, value = "Unable to locate Weld internal helper method", format = Format.MESSAGE_FORMAT)
+    @Message(id = 2027, value = "Unable to locate Weld internal helper method", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotLocateInternalMethod(@Cause Throwable cause);
 
-    @Message(id = 2030, value = "Unknown transformer type: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 2028, value = "Unknown transformer type: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unknownTransformerType(Object type);
 
-    @Message(id = 2031, value = "Unhandled primitive type: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 2029, value = "Unhandled primitive type: {0}", format = Format.MESSAGE_FORMAT)
     RuntimeException unhandledPrimitiveType(Object primitive);
 }

@@ -25,6 +25,18 @@ public class AsyncBean {
         return result;
     }
 
+    public CompletionStage<String> helloNoLookup(CompletableFuture<String> future) {
+        CompletableFuture<String> result = new CompletableFuture<>();
+        future.whenComplete((value, error) -> {
+            if (error == null) {
+                result.complete(value);
+            } else {
+                result.completeExceptionally(error);
+            }
+        });
+        return result;
+    }
+
     public Flow.Publisher<String> helloFP(DependentBean dep, CompletableFuture<String> future) {
         return new CompletableFuturePublisher<>(future);
     }

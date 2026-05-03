@@ -7,77 +7,66 @@ import jakarta.enterprise.invoke.AsyncHandler;
 import jakarta.enterprise.invoke.Invoker;
 
 /**
- * An invoker that applies an {@link AsyncHandler} to the method invocation,
- * deferring cleanup of dependent beans until the async operation completes.
+ * Invoker for methods matching an {@link AsyncHandler.ParameterType} handler.
  * <p>
- * For {@link AsyncHandler.ReturnType} handlers: after the method returns, the return value
- * is passed to {@link AsyncHandler.ReturnType#transform(Object, Runnable)}, with the cleanup
- * action as the completion callback.
+ * Only used for ParameterType handlers. ReturnType handlers are embedded directly
+ * into the method handle chain's {@code tryFinally} cleanup (see
+ * {@link CleanupActions#runWithReturnTypeHandler}) and use plain {@link InvokerImpl}.
  * <p>
- * For {@link AsyncHandler.ParameterType} handlers: before the method is called, the matching
- * argument is passed to {@link AsyncHandler.ParameterType#transformArgument(Object, Runnable)},
- * and after the method returns, the return value is passed to
- * {@link AsyncHandler.ParameterType#transformReturnValue(Object, Runnable)}.
+ * When the method handle chain requires cleanup (dependent bean lookups, transformers
+ * with cleanup), the chain is built without internal {@link CleanupActions} creation
+ * ({@code foldArguments} is skipped). Instead, this invoker creates
+ * {@code CleanupActions} externally and passes it as the first parameter to
+ * {@code mh.invoke()}. This allows {@code transformArgument} to receive
+ * {@code ca::cleanup} as the completion callback before the method runs, which is
+ * required for correct behavior when the async parameter completes synchronously
+ * during the method body.
+ * <p>
+ * When no cleanup is needed, the chain has no {@code CleanupActions} at all and
+ * the handler receives a no-op completion callback.
  */
 class AsyncInvokerImpl<T, R> implements Invoker<T, R>, InvokerInfo {
     private final MethodHandle mh;
-    private final AsyncHandler.ReturnType<Object> returnTypeHandler;
     private final AsyncHandler.ParameterType<Object> parameterTypeHandler;
-    private final int asyncParamIndex; // for ParameterType, -1 for ReturnType
+    private final int asyncParamIndex;
+    private final boolean requiresCleanup;
 
-    AsyncInvokerImpl(MethodHandle mh, AsyncHandlerRegistry.HandlerInfo handlerInfo, int asyncParamIndex) {
+    AsyncInvokerImpl(MethodHandle mh, AsyncHandlerRegistry.HandlerInfo handlerInfo,
+            int asyncParamIndex, boolean requiresCleanup) {
         this.mh = mh;
-        if (handlerInfo.isReturnType()) {
-            this.returnTypeHandler = handlerInfo.getReturnTypeHandler();
-            this.parameterTypeHandler = null;
-            this.asyncParamIndex = -1;
-        } else {
-            this.returnTypeHandler = null;
-            this.parameterTypeHandler = handlerInfo.getParameterTypeHandler();
-            this.asyncParamIndex = asyncParamIndex;
-        }
+        this.parameterTypeHandler = handlerInfo.getParameterTypeHandler();
+        this.asyncParamIndex = asyncParamIndex;
+        this.requiresCleanup = requiresCleanup;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public R invoke(T instance, Object[] arguments) throws Exception {
+        Runnable completion;
+        CleanupActions ca;
+        if (requiresCleanup) {
+            ca = new CleanupActions();
+            completion = ca::cleanup;
+        } else {
+            ca = null;
+            completion = () -> {
+            };
+        }
+
+        arguments[asyncParamIndex] = parameterTypeHandler
+                .transformArgument(arguments[asyncParamIndex], completion);
+
         try {
-            // Clear any stale ThreadLocal before invocation
-            CleanupActions.CURRENT.remove();
-
-            if (parameterTypeHandler != null && asyncParamIndex >= 0
-                    && arguments != null && asyncParamIndex < arguments.length) {
-                // ParameterType: invoke the method, then retrieve deferred cleanup
-                R result = (R) mh.invoke(instance, arguments);
-
-                CleanupActions ca = CleanupActions.CURRENT.get();
-                CleanupActions.CURRENT.remove();
-
-                if (ca != null) {
-                    parameterTypeHandler.transformArgument(arguments[asyncParamIndex], ca::cleanup);
-                    return (R) parameterTypeHandler.transformReturnValue(result, () -> {
-                    });
-                }
-                return result;
-            }
-
-            // ReturnType: invoke the method, then transform the return value
-            R result = (R) mh.invoke(instance, arguments);
-
-            CleanupActions ca = CleanupActions.CURRENT.get();
-            CleanupActions.CURRENT.remove();
-
+            R result;
             if (ca != null) {
-                return (R) returnTypeHandler.transform(result, ca::cleanup);
+                result = (R) mh.invoke(ca, instance, arguments);
             } else {
-                return (R) returnTypeHandler.transform(result, () -> {
-                });
+                result = (R) mh.invoke(instance, arguments);
             }
+            return (R) parameterTypeHandler.transformReturnValue(result, completion);
         } catch (ValueCarryingException e) {
-            CleanupActions.CURRENT.remove();
             return (R) e.getMethodReturnValue();
         } catch (Throwable e) {
-            CleanupActions.CURRENT.remove();
             throw SneakyThrow.sneakyThrow(e);
         }
     }
