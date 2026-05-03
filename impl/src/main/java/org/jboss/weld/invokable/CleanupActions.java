@@ -6,10 +6,9 @@ import java.util.function.Consumer;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.invoke.AsyncHandler;
 
 class CleanupActions implements Consumer<Runnable> {
-    // ThreadLocal to expose the CleanupActions instance to async invokers
-    static final ThreadLocal<CleanupActions> CURRENT = new ThreadLocal<>();
 
     private final List<Runnable> cleanupTasks = new ArrayList<>();
     private final List<Instance.Handle<?>> dependentInstances = new ArrayList<>();
@@ -50,21 +49,32 @@ class CleanupActions implements Consumer<Runnable> {
         cleanupActions.cleanup();
     }
 
-    // Deferred variants: only cleanup on exception, expose instance via ThreadLocal on success
-    public static <R> R runDeferred(Throwable cause, R returnValue, CleanupActions cleanupActions) {
+    public static <R> R runExceptionOnly(Throwable cause, R returnValue, CleanupActions cleanupActions) {
         if (cause != null) {
             cleanupActions.cleanup();
-        } else {
-            CURRENT.set(cleanupActions);
         }
         return returnValue;
     }
 
-    public static void runDeferred(Throwable cause, CleanupActions cleanupActions) {
+    public static void runExceptionOnly(Throwable cause, CleanupActions cleanupActions) {
         if (cause != null) {
             cleanupActions.cleanup();
-        } else {
-            CURRENT.set(cleanupActions);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <R> R applyReturnTypeHandler(R returnValue, AsyncHandler.ReturnType<Object> handler) {
+        return (R) handler.transform(returnValue, () -> {
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <R> R runWithReturnTypeHandler(Throwable cause, R returnValue,
+            CleanupActions cleanupActions, AsyncHandler.ReturnType<Object> handler) {
+        if (cause != null) {
+            cleanupActions.cleanup();
+            return returnValue;
+        }
+        return (R) handler.transform(returnValue, cleanupActions::cleanup);
     }
 }

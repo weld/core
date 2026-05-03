@@ -298,16 +298,22 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
         AsyncHandlerRegistry.HandlerInfo paramTypeHandler = returnTypeHandler == null
                 ? asyncRegistry.findParameterTypeHandler(reflectionMethod.getParameterTypes())
                 : null;
-        boolean useAsyncCleanup = requiresCleanup && (returnTypeHandler != null || paramTypeHandler != null);
-
         // cleanup
         if (requiresCleanup) {
             MethodHandle cleanupMethod;
-            if (useAsyncCleanup) {
-                // Use deferred cleanup: on success, store CleanupActions in ThreadLocal instead of running cleanup
+            if (returnTypeHandler != null) {
+                // Embed handler.transform() directly into the tryFinally cleanup:
+                // on success, calls handler.transform(result, ca::cleanup)
+                // on exception, calls ca.cleanup() immediately
+                cleanupMethod = MethodHandleUtils.CLEANUP_FOR_NONVOID_RETURN_TYPE_HANDLER;
+                cleanupMethod = MethodHandles.insertArguments(cleanupMethod, 3,
+                        returnTypeHandler.getReturnTypeHandler());
+            } else if (paramTypeHandler != null) {
+                // ParameterType: CA is created by AsyncInvokerImpl and passed as the first parameter.
+                // Only run cleanup on exception — normal cleanup is handled by the completion callback.
                 cleanupMethod = mh.type().returnType() == void.class
-                        ? MethodHandleUtils.CLEANUP_FOR_VOID_DEFERRED
-                        : MethodHandleUtils.CLEANUP_FOR_NONVOID_DEFERRED;
+                        ? MethodHandleUtils.CLEANUP_FOR_VOID_EXCEPTION_ONLY
+                        : MethodHandleUtils.CLEANUP_FOR_NONVOID_EXCEPTION_ONLY;
             } else {
                 cleanupMethod = mh.type().returnType() == void.class
                         ? MethodHandleUtils.CLEANUP_FOR_VOID
@@ -352,10 +358,15 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
                 1, reflectionMethod.getParameterCount());
         mh = MethodHandles.filterArguments(mh, requiresCleanup ? 2 : 1, trimArgumentArray);
 
-        // instantiate `CleanupActions`
-        if (requiresCleanup) {
+        // Instantiate CleanupActions — for ParameterType handlers, the invoker creates
+        // CA externally and passes it as the first parameter, so we skip foldArguments.
+        boolean externalCleanupActions = requiresCleanup && paramTypeHandler != null;
+        if (requiresCleanup && !externalCleanupActions) {
             mh = MethodHandles.foldArguments(mh, MethodHandleUtils.CLEANUP_ACTIONS_CTOR);
         }
+
+        // When CA is external, instance is at position 1 (after CA); otherwise position 0
+        int instancePos = externalCleanupActions ? 1 : 0;
 
         Class<?>[] expectedTypes = new Class<?>[transformerArgTypes.length];
         for (int i = 0; i < transformerArgTypes.length; i++) {
@@ -368,10 +379,13 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
 
         if (reflectionMethod.getParameterCount() > 0) {
             // Catch NullPointerException and check whether it's caused by any arguments being null:
-            Class<?> instanceType = mh.type().parameterType(0);
+            Class<?> instanceType = mh.type().parameterType(instancePos);
             MethodHandle checkArgumentsNotNull = MethodHandles.insertArguments(MethodHandleUtils.CHECK_ARGUMENTS_NOT_NULL, 0,
                     reflectionMethod, expectedTypes);
             checkArgumentsNotNull = MethodHandles.dropArguments(checkArgumentsNotNull, 0, instanceType);
+            if (externalCleanupActions) {
+                checkArgumentsNotNull = MethodHandles.dropArguments(checkArgumentsNotNull, 0, CleanupActions.class);
+            }
             MethodHandle npeCatch = MethodHandles.throwException(mh.type().returnType(), NullPointerException.class);
             npeCatch = MethodHandles.collectArguments(npeCatch, 1, checkArgumentsNotNull);
             mh = MethodHandles.catchException(mh, NullPointerException.class, npeCatch);
@@ -380,6 +394,9 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
             MethodHandle checkArgCountAtLeast = MethodHandles.insertArguments(MethodHandleUtils.CHECK_ARG_COUNT_AT_LEAST, 0,
                     reflectionMethod, reflectionMethod.getParameterCount());
             checkArgCountAtLeast = MethodHandles.dropArguments(checkArgCountAtLeast, 0, instanceType);
+            if (externalCleanupActions) {
+                checkArgCountAtLeast = MethodHandles.dropArguments(checkArgCountAtLeast, 0, CleanupActions.class);
+            }
             MethodHandle iaeCatch = MethodHandles.throwException(mh.type().returnType(), IllegalArgumentException.class);
             iaeCatch = MethodHandles.collectArguments(iaeCatch, 1, checkArgCountAtLeast);
             mh = MethodHandles.catchException(mh, IllegalArgumentException.class, iaeCatch);
@@ -387,17 +404,23 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
 
         if ((!isStaticMethod && !instanceLookup) || reflectionMethod.getParameterCount() > 0) {
             // Catch ClassCastException and check whether it's caused by either the instance or the arguments being the wrong type
-            Class<?> instanceType = mh.type().parameterType(0);
+            Class<?> instanceType = mh.type().parameterType(instancePos);
             MethodHandle checkTypes = null;
             if (reflectionMethod.getParameterCount() > 0) {
                 checkTypes = MethodHandles.insertArguments(MethodHandleUtils.CHECK_ARGUMENTS_HAVE_CORRECT_TYPE, 0,
                         reflectionMethod, expectedTypes);
                 checkTypes = MethodHandles.dropArguments(checkTypes, 0, Object.class);
+                if (externalCleanupActions) {
+                    checkTypes = MethodHandles.dropArguments(checkTypes, 0, CleanupActions.class);
+                }
             }
 
             if (!isStaticMethod && !instanceLookup) {
                 MethodHandle checkInstanceType = MethodHandles.insertArguments(MethodHandleUtils.CHECK_INSTANCE_HAS_TYPE, 0,
                         reflectionMethod, instanceType);
+                if (externalCleanupActions) {
+                    checkInstanceType = MethodHandles.dropArguments(checkInstanceType, 0, CleanupActions.class);
+                }
                 if (checkTypes == null) {
                     checkTypes = checkInstanceType;
                 } else {
@@ -408,11 +431,13 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
             MethodHandle cceCatch = MethodHandles.throwException(mh.type().returnType(), ClassCastException.class);
             cceCatch = MethodHandles.collectArguments(cceCatch, 1, checkTypes);
 
-            mh = mh.asType(mh.type().changeParameterType(0, Object.class)); // Defer the casting the instance to its expected type until we're inside the ClassCastException try block
+            mh = mh.asType(mh.type().changeParameterType(instancePos, Object.class));
             mh = MethodHandles.catchException(mh, ClassCastException.class, cceCatch);
         }
 
         // create an inner invoker and pass it to wrapper
+        // NOTE: invocation wrappers combined with ParameterType async handlers are not
+        // currently supported — the inner InvokerImpl does not pass CleanupActions
         if (invocationWrapper != null) {
             InvokerImpl<?, ?> invoker = new InvokerImpl<>(mh);
 
@@ -422,11 +447,24 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
             mh = MethodHandles.insertArguments(invocationWrapperMethod, 2, invoker);
         }
 
+        // ReturnType handler is embedded in the MH chain (tryFinally or filterReturnValue),
+        // so a plain InvokerImpl suffices. ParameterType needs AsyncInvokerImpl because
+        // transformArgument must run before the chain but needs the completion callback
+        // that is only available after.
         if (returnTypeHandler != null) {
-            return new AsyncInvokerImpl<>(mh, returnTypeHandler, -1);
+            if (!requiresCleanup) {
+                MethodHandle transform = MethodHandleUtils.APPLY_RETURN_TYPE_HANDLER;
+                transform = MethodHandles.insertArguments(transform, 1,
+                        returnTypeHandler.getReturnTypeHandler());
+                transform = transform.asType(transform.type()
+                        .changeReturnType(mh.type().returnType())
+                        .changeParameterType(0, mh.type().returnType()));
+                mh = MethodHandles.filterReturnValue(mh, transform);
+            }
+            return new InvokerImpl<>(mh);
         } else if (paramTypeHandler != null) {
             int asyncParamIndex = findAsyncParamIndex(reflectionMethod.getParameterTypes(), paramTypeHandler.getAsyncType());
-            return new AsyncInvokerImpl<>(mh, paramTypeHandler, asyncParamIndex);
+            return new AsyncInvokerImpl<>(mh, paramTypeHandler, asyncParamIndex, requiresCleanup);
         }
         return new InvokerImpl<>(mh);
     }

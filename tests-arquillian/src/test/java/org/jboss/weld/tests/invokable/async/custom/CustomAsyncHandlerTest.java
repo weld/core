@@ -30,7 +30,7 @@ public class CustomAsyncHandlerTest {
                 .addPackage(CustomAsyncHandlerTest.class.getPackage())
                 .addClass(DependentBean.class)
                 .addAsServiceProvider(Extension.class, CustomAsyncExtension.class)
-                .addAsServiceProvider(AsyncHandler.class, MyAsyncTypeHandler.class);
+                .addAsServiceProvider(AsyncHandler.ReturnType.class, MyAsyncTypeHandler.class);
     }
 
     @Inject

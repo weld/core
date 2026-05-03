@@ -34,7 +34,7 @@ public class CustomAsyncBCETest {
                 .addPackage(CustomAsyncBCETest.class.getPackage())
                 .addClass(DependentBean.class)
                 .addAsServiceProvider(BuildCompatibleExtension.class, CustomAsyncBCExtension.class)
-                .addAsServiceProvider(AsyncHandler.class, MyAsyncTypeHandler.class);
+                .addAsServiceProvider(AsyncHandler.ReturnType.class, MyAsyncTypeHandler.class);
     }
 
     @Inject

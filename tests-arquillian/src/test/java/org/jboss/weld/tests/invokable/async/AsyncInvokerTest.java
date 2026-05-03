@@ -83,6 +83,23 @@ public class AsyncInvokerTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testReturnTypeWithoutLookups() throws Exception {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        AsyncBean bean = new AsyncBean();
+        CompletionStage<String> result = (CompletionStage<String>) extension.getNoLookupInvoker()
+                .invoke(bean, new Object[] { future });
+
+        assertFalse(result.toCompletableFuture().isDone());
+
+        future.complete("no-lookup");
+
+        assertTrue(result.toCompletableFuture().isDone());
+        assertEquals("no-lookup", result.toCompletableFuture().getNow(null));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testFlowPublisherReturnType() throws Exception {
         DependentBean.reset();
         CompletableFuture<String> future = new CompletableFuture<>();

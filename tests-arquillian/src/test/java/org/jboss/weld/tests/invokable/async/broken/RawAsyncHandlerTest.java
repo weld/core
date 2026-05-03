@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.invokable.async.broken;
 
-import jakarta.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.enterprise.invoke.AsyncHandler;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -17,12 +17,12 @@ import org.junit.runner.RunWith;
 public class RawAsyncHandlerTest {
 
     @Deployment
-    @ShouldThrowException(DeploymentException.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
                 Utils.getDeploymentNameAsHash(RawAsyncHandlerTest.class))
                 .addClass(RawAsyncHandler.class)
-                .addAsServiceProvider(AsyncHandler.class, RawAsyncHandler.class);
+                .addAsServiceProvider(AsyncHandler.ReturnType.class, RawAsyncHandler.class);
     }
 
     @Test

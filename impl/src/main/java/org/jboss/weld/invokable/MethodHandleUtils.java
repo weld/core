@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.invoke.AsyncHandler;
 import jakarta.enterprise.invoke.Invoker;
 
 import org.jboss.weld.logging.InvokerLogger;
@@ -24,8 +25,8 @@ class MethodHandleUtils {
     static final MethodHandle CLEANUP_ACTIONS_CTOR;
     static final MethodHandle CLEANUP_FOR_VOID;
     static final MethodHandle CLEANUP_FOR_NONVOID;
-    static final MethodHandle CLEANUP_FOR_VOID_DEFERRED;
-    static final MethodHandle CLEANUP_FOR_NONVOID_DEFERRED;
+    static final MethodHandle CLEANUP_FOR_VOID_EXCEPTION_ONLY;
+    static final MethodHandle CLEANUP_FOR_NONVOID_EXCEPTION_ONLY;
     static final MethodHandle LOOKUP;
     static final MethodHandle REPLACE_PRIMITIVE_LOOKUP_NULLS;
     static final MethodHandle THROW_VALUE_CARRYING_EXCEPTION;
@@ -34,6 +35,8 @@ class MethodHandleUtils {
     static final MethodHandle CHECK_INSTANCE_NOT_NULL;
     static final MethodHandle CHECK_ARG_COUNT_AT_LEAST;
     static final MethodHandle CHECK_ARGUMENTS_HAVE_CORRECT_TYPE;
+    static final MethodHandle CLEANUP_FOR_NONVOID_RETURN_TYPE_HANDLER;
+    static final MethodHandle APPLY_RETURN_TYPE_HANDLER;
     static final MethodHandle CHECK_ARGUMENTS_NOT_NULL;
 
     static {
@@ -44,17 +47,22 @@ class MethodHandleUtils {
                     runName, Throwable.class, CleanupActions.class));
             CLEANUP_FOR_NONVOID = createMethodHandle(CleanupActions.class.getMethod(
                     runName, Throwable.class, Object.class, CleanupActions.class));
-            String runDeferredName = "runDeferred";
-            CLEANUP_FOR_VOID_DEFERRED = createMethodHandle(CleanupActions.class.getMethod(
-                    runDeferredName, Throwable.class, CleanupActions.class));
-            CLEANUP_FOR_NONVOID_DEFERRED = createMethodHandle(CleanupActions.class.getMethod(
-                    runDeferredName, Throwable.class, Object.class, CleanupActions.class));
             LOOKUP = createMethodHandle(LookupUtils.class.getDeclaredMethod(
                     "lookup", CleanupActions.class, BeanManager.class, Type.class, Annotation[].class));
             REPLACE_PRIMITIVE_LOOKUP_NULLS = MethodHandleUtils.createMethodHandle(LookupUtils.class.getDeclaredMethod(
                     "replacePrimitiveLookupNulls", Object[].class, Class[].class, boolean[].class));
             THROW_VALUE_CARRYING_EXCEPTION = createMethodHandle(ValueCarryingException.class.getDeclaredMethod(
                     "throwReturnValue", Object.class));
+            String runExceptionOnly = "runExceptionOnly";
+            CLEANUP_FOR_VOID_EXCEPTION_ONLY = createMethodHandle(CleanupActions.class.getMethod(
+                    runExceptionOnly, Throwable.class, CleanupActions.class));
+            CLEANUP_FOR_NONVOID_EXCEPTION_ONLY = createMethodHandle(CleanupActions.class.getMethod(
+                    runExceptionOnly, Throwable.class, Object.class, CleanupActions.class));
+            CLEANUP_FOR_NONVOID_RETURN_TYPE_HANDLER = createMethodHandle(CleanupActions.class.getMethod(
+                    "runWithReturnTypeHandler", Throwable.class, Object.class, CleanupActions.class,
+                    AsyncHandler.ReturnType.class));
+            APPLY_RETURN_TYPE_HANDLER = createMethodHandle(CleanupActions.class.getMethod(
+                    "applyReturnTypeHandler", Object.class, AsyncHandler.ReturnType.class));
             TRIM_ARRAY_TO_SIZE = createMethodHandle(ArrayUtils.class.getDeclaredMethod(
                     "trimArrayToSize", Object[].class, int.class));
             CHECK_INSTANCE_HAS_TYPE = createMethodHandle(
