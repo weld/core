@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.AutoClose;
 import jakarta.enterprise.context.Eager;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
@@ -60,6 +61,8 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     private boolean reserve;
     // Is the stereotype eager
     private boolean eager;
+    // Is the stereotype auto-closeable
+    private boolean autoClose;
     // The default scope type
     private Annotation defaultScopeType;
     // Is the bean name defaulted
@@ -85,6 +88,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
             initAlternative(annotatedAnnotation);
             initReserve(annotatedAnnotation);
             initEager(annotatedAnnotation);
+            initAutoClose(annotatedAnnotation);
             if (isAlternative() && isReserve()) {
                 // stereotype cannot declare @Alternative and @Reserve at the same time
                 throw MetadataLogger.LOG.alternativeAndReserveSimultaneously(annotatedAnnotation);
@@ -176,6 +180,12 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         }
     }
 
+    private void initAutoClose(EnhancedAnnotation<T> annotatedAnnotation) {
+        if (annotatedAnnotation.isAnnotationPresent(AutoClose.class)) {
+            this.autoClose = true;
+        }
+    }
+
     @Override
     protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
         super.check(annotatedAnnotation);
@@ -247,6 +257,10 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
 
     public boolean isEager() {
         return eager;
+    }
+
+    public boolean isAutoClose() {
+        return autoClose;
     }
 
     public Set<Annotation> getInheritedStereotypes() {

@@ -194,19 +194,26 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         super.destroy(instance, creationalContext);
+        InjectionTarget<T> injectionTarget = getProducer();
         try {
-            InjectionTarget<T> injectionTarget = getProducer();
             injectionTarget.preDestroy(instance);
+        } catch (Exception e) {
+            BeanLogger.LOG.errorDestroying(instance, this);
+            BeanLogger.LOG.catchingDebug(e);
+        }
+        try {
             injectionTarget.dispose(instance);
+        } catch (Exception e) {
+            BeanLogger.LOG.errorDestroying(instance, this);
+            BeanLogger.LOG.catchingDebug(e);
+        }
+        if (creationalContext != null) {
             // WELD-1010 hack?
             if (creationalContext instanceof CreationalContextImpl) {
                 ((CreationalContextImpl<T>) creationalContext).release(this, instance);
             } else {
                 creationalContext.release();
             }
-        } catch (Exception e) {
-            BeanLogger.LOG.errorDestroying(instance, this);
-            BeanLogger.LOG.catchingDebug(e);
         }
     }
 

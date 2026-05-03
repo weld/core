@@ -32,6 +32,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldInjectionTarget;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -73,6 +74,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
     protected final BeanManagerImpl beanManager;
     private final SlimAnnotatedType<T> type;
     private final Set<InjectionPoint> injectionPoints;
+    private final Bean<T> bean;
 
     // Instantiation
     private Instantiator<T> instantiator;
@@ -87,6 +89,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
     protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager,
             Injector<T> injector, LifecycleCallbackInvoker<T> invoker, Instantiator<T> instantiator) {
         this.beanManager = beanManager;
+        this.bean = bean;
         this.type = type.slim();
         this.injector = injector;
         this.invoker = invoker;
@@ -138,7 +141,14 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
 
     @Override
     public void dispose(T instance) {
-        // No-op
+        if (bean != null && bean.isAutoClose() && instance instanceof AutoCloseable) {
+            try {
+                Beans.invokeAutoClose(instance);
+            } catch (Exception e) {
+                BeanLogger.LOG.errorDestroying(instance, bean);
+                BeanLogger.LOG.catchingDebug(e);
+            }
+        }
     }
 
     @Override
@@ -217,6 +227,6 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
 
     @Override
     public Bean<T> getBean() {
-        return null;
+        return bean;
     }
 }

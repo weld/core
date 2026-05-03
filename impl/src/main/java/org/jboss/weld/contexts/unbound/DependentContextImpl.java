@@ -86,8 +86,8 @@ public class DependentContextImpl implements DependentContext {
                 if (managedBean.getProducer() instanceof BasicInjectionTarget<?> injectionTarget) {
                     boolean hasPreDestroyMethods = injectionTarget.getLifecycleCallbackInvoker().hasPreDestroyMethods();
                     boolean hasPreDestroyInt = hasPreDestroyInterceptor(managedBean);
-                    if (!hasPreDestroyMethods && !hasPreDestroyInt) {
-                        // there is no @PreDestroy callback to call when destroying this dependent instance
+                    if (!hasPreDestroyMethods && !hasPreDestroyInt && !managedBean.isAutoClose()) {
+                        // there is no @PreDestroy callback or @AutoClose to handle when destroying this dependent instance
                         // therefore, we do not need to keep the reference
                         // Note that we need to account for @PreDestroy on the bean as well as interceptors
                         return;
@@ -96,8 +96,8 @@ public class DependentContextImpl implements DependentContext {
             }
             if (contextual instanceof AbstractProducerBean<?, ?, ?> producerBean) {
                 if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?> producer) {
-                    if (producer.getDisposalMethod() == null) {
-                        // there is no disposal method to call when destroying this dependent instance
+                    if (producer.getDisposalMethod() == null && !producerBean.isAutoClose()) {
+                        // there is no disposal method or @AutoClose to handle when destroying this dependent instance
                         // therefore, we do not need to keep the reference
                         return;
                     }

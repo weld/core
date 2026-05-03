@@ -199,10 +199,9 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         } catch (Exception e) {
             BeanLogger.LOG.errorDestroying(instance, this);
             BeanLogger.LOG.catchingDebug(e);
-        } finally {
-            if (getDeclaringBean().isDependent()) {
-                creationalContext.release();
-            }
+        }
+        if (creationalContext != null) {
+            creationalContext.release();
         }
     }
 

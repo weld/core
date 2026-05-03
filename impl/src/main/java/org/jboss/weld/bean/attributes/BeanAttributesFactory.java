@@ -69,6 +69,7 @@ public class BeanAttributesFactory {
         private boolean alternative;
         private boolean reserve;
         private boolean eager;
+        private boolean autoClose;
         private String name;
         private Set<Annotation> qualifiers;
         private Set<Type> types;
@@ -83,6 +84,7 @@ public class BeanAttributesFactory {
             initAlternative(annotated);
             initReserve(annotated);
             initEager(annotated);
+            initAutoClose(annotated);
             initName(annotated);
             initQualifiers(annotated);
             initScope(annotated);
@@ -107,6 +109,10 @@ public class BeanAttributesFactory {
 
         protected void initEager(EnhancedAnnotated<T, ?> annotated) {
             this.eager = Beans.isEager(annotated, mergedStereotypes);
+        }
+
+        protected void initAutoClose(EnhancedAnnotated<T, ?> annotated) {
+            this.autoClose = Beans.isAutoClose(annotated, mergedStereotypes);
         }
 
         /**
@@ -246,8 +252,8 @@ public class BeanAttributesFactory {
         }
 
         public BeanAttributes<T> build() {
-            return new ImmutableBeanAttributes<T>(mergedStereotypes.getStereotypes(), alternative, reserve, eager, name,
-                    qualifiers, types, scope);
+            return new ImmutableBeanAttributes<T>(mergedStereotypes.getStereotypes(), alternative, reserve, eager,
+                    autoClose, name, qualifiers, types, scope);
         }
     }
 }
