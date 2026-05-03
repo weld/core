@@ -351,6 +351,12 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         return this;
     }
 
+    @Override
+    public BeanConfigurator<T> autoClose(boolean value) {
+        this.attributes.autoClose(value);
+        return this;
+    }
+
     public Bean<T> complete() {
         if (createCallback == null) {
             // no callback specified, Weld does not know how to instantiate this new custom bean

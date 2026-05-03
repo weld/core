@@ -115,6 +115,11 @@ class BeanInfoImpl implements BeanInfo {
     }
 
     @Override
+    public boolean isAutoClose() {
+        return cdiBean.isAutoClose();
+    }
+
+    @Override
     public Integer priority() {
         if (cdiDeclaration instanceof jakarta.enterprise.inject.spi.AnnotatedType
                 && cdiDeclaration.isAnnotationPresent(Priority.class)) {

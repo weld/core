@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.context.AutoClose;
 import jakarta.enterprise.context.Eager;
 import jakarta.enterprise.context.NormalScope;
 import jakarta.enterprise.inject.Alternative;
@@ -71,6 +72,11 @@ class StereotypeInfoImpl implements StereotypeInfo {
     @Override
     public boolean isEager() {
         return cdiDeclaration.isAnnotationPresent(Eager.class);
+    }
+
+    @Override
+    public boolean isAutoClose() {
+        return cdiDeclaration.isAnnotationPresent(AutoClose.class);
     }
 
     @Override

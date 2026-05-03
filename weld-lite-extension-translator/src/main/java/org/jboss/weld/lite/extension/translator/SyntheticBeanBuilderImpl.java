@@ -25,6 +25,7 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     boolean isAlternative;
     boolean isReserve;
     boolean isEager;
+    boolean isAutoClose;
     int priority;
     String name;
     Set<Class<? extends Annotation>> stereotypes = new HashSet<>();
@@ -105,6 +106,12 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     }
 
     @Override
+    public SyntheticBeanBuilder<T> autoClose(boolean isAutoClose) {
+        this.isAutoClose = isAutoClose;
+        return this;
+    }
+
+    @Override
     public SyntheticBeanBuilder<T> name(String name) {
         this.name = name;
         return this;
@@ -124,6 +131,11 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
     }
 
     @Override
+    public SyntheticBeanBuilder<T> withInjectionPoint(Class<?> type) {
+        return withInjectionPoint(type, new Annotation[0]);
+    }
+
+    @Override
     public SyntheticBeanBuilder<T> withInjectionPoint(Class<?> type, Annotation... qualifiers) {
         injectionPoints.add(new InjectionPointDeclaration(type, new HashSet<>(Arrays.asList(qualifiers))));
         return this;
@@ -137,6 +149,11 @@ class SyntheticBeanBuilderImpl<T> extends SyntheticComponentBuilderBase<Syntheti
         }
         injectionPoints.add(new InjectionPointDeclaration(type, annotations));
         return this;
+    }
+
+    @Override
+    public SyntheticBeanBuilder<T> withInjectionPoint(Type type) {
+        return withInjectionPoint(type, new Annotation[0]);
     }
 
     @Override

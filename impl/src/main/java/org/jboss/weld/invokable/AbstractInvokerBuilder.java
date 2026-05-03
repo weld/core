@@ -423,10 +423,10 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
         }
 
         if (returnTypeHandler != null) {
-            return new AsyncInvokerImpl<>(mh, returnTypeHandler.getHandler(), true, -1);
+            return new AsyncInvokerImpl<>(mh, returnTypeHandler, -1);
         } else if (paramTypeHandler != null) {
             int asyncParamIndex = findAsyncParamIndex(reflectionMethod.getParameterTypes(), paramTypeHandler.getAsyncType());
-            return new AsyncInvokerImpl<>(mh, paramTypeHandler.getHandler(), false, asyncParamIndex);
+            return new AsyncInvokerImpl<>(mh, paramTypeHandler, asyncParamIndex);
         }
         return new InvokerImpl<>(mh);
     }
