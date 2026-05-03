@@ -54,6 +54,7 @@ import org.jboss.weld.injection.SyntheticInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.ForwardingWeldInstance;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -551,6 +552,14 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
         public void destroy(T instance, CreationalContext<T> creationalContext) {
             if (destroyCallback != null) {
                 destroyCallback.destroy(instance, creationalContext, beanManager);
+            }
+            if (isAutoClose() && instance instanceof AutoCloseable) {
+                try {
+                    Beans.invokeAutoClose(instance);
+                } catch (Exception e) {
+                    BeanLogger.LOG.errorDestroying(instance, this);
+                    BeanLogger.LOG.catchingDebug(e);
+                }
             }
             // release dependent beans from create/destroy callbacks
             if (creationalContext instanceof CreationalContextImpl) {

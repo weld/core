@@ -37,6 +37,7 @@ import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Beans;
 
 /**
  * Common functionality for {@link Producer}s backing producer fields and producer methods.
@@ -131,28 +132,42 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     public void dispose(T instance) {
         if (disposalMethod != null) {
-            // CreationalContext is only created if we need it to obtain the receiver
-            // MethodInvocationStrategy takes care of creating CC for parameters, if needed
-            if (disposalMethod.getAnnotated().isStatic()) {
-                disposalMethod.invokeDisposeMethod(null, instance, null);
-            } else {
-                WeldCreationalContext<X> ctx = null;
-                try {
-                    Object receiver = ContextualInstance.getIfExists(getDeclaringBean(), getBeanManager());
-                    if (receiver == null) {
-                        ctx = getBeanManager().createCreationalContext(null);
-                        // Create child CC so that a dependent reciever may be destroyed after the disposer method completes
-                        receiver = ContextualInstance.get(getDeclaringBean(), getBeanManager(),
-                                ctx.getCreationalContext(getDeclaringBean()));
-                    }
-                    if (receiver != null) {
-                        disposalMethod.invokeDisposeMethod(receiver, instance, ctx);
-                    }
-                } finally {
-                    if (ctx != null) {
-                        ctx.release();
+            try {
+                // CreationalContext is only created if we need it to obtain the receiver
+                // MethodInvocationStrategy takes care of creating CC for parameters, if needed
+                if (disposalMethod.getAnnotated().isStatic()) {
+                    disposalMethod.invokeDisposeMethod(null, instance, null);
+                } else {
+                    WeldCreationalContext<X> ctx = null;
+                    try {
+                        Object receiver = ContextualInstance.getIfExists(getDeclaringBean(), getBeanManager());
+                        if (receiver == null) {
+                            ctx = getBeanManager().createCreationalContext(null);
+                            // Create child CC so that a dependent reciever may be destroyed after the disposer method completes
+                            receiver = ContextualInstance.get(getDeclaringBean(), getBeanManager(),
+                                    ctx.getCreationalContext(getDeclaringBean()));
+                        }
+                        if (receiver != null) {
+                            disposalMethod.invokeDisposeMethod(receiver, instance, ctx);
+                        }
+                    } finally {
+                        if (ctx != null) {
+                            ctx.release();
+                        }
                     }
                 }
+            } catch (Exception e) {
+                BeanLogger.LOG.errorDestroying(instance, getBean());
+                BeanLogger.LOG.catchingDebug(e);
+            }
+        }
+        Bean<T> bean = getBean();
+        if (bean != null && bean.isAutoClose() && instance instanceof AutoCloseable) {
+            try {
+                Beans.invokeAutoClose(instance);
+            } catch (Exception e) {
+                BeanLogger.LOG.errorDestroying(instance, bean);
+                BeanLogger.LOG.catchingDebug(e);
             }
         }
     }

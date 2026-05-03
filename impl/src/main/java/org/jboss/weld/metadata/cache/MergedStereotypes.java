@@ -43,6 +43,8 @@ public class MergedStereotypes<T, E> {
     private boolean reserve;
     // Are any of the stereotypes eager
     private boolean eager;
+    // Are any of the stereotypes auto-closeable
+    private boolean autoClose;
 
     private Set<Class<? extends Annotation>> stereotypes;
 
@@ -91,6 +93,9 @@ public class MergedStereotypes<T, E> {
             if (stereotype.isEager()) {
                 eager = true;
             }
+            if (stereotype.isAutoClose()) {
+                autoClose = true;
+            }
             if (stereotype.getDefaultScopeType() != null) {
                 possibleScopeTypes.add(stereotype.getDefaultScopeType());
             }
@@ -113,6 +118,10 @@ public class MergedStereotypes<T, E> {
 
     public boolean isEager() {
         return eager;
+    }
+
+    public boolean isAutoClose() {
+        return autoClose;
     }
 
     /**
@@ -150,7 +159,8 @@ public class MergedStereotypes<T, E> {
         return "Merged stereotype model; Any of the stereotypes is an alternative: " +
                 alternative + "; Any of the stereotypes is a reserve: " +
                 reserve + "; Any of the stereotypes is eager: " +
-                eager + "; possible scopes " + possibleScopeTypes;
+                eager + "; Any of the stereotypes is auto-close: " +
+                autoClose + "; possible scopes " + possibleScopeTypes;
     }
 
 }

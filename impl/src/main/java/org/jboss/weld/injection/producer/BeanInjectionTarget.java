@@ -54,21 +54,13 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
                 NoopLifecycleCallbackInvoker.<T> getInstance());
     }
 
-    private final Bean<T> bean;
-
     public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector,
             LifecycleCallbackInvoker<T> invoker) {
         super(type, bean, beanManager, injector, invoker);
-        this.bean = bean;
     }
 
     public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         this(type, bean, beanManager, ResourceInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type));
-    }
-
-    @Override
-    public void dispose(T instance) {
-        // No-op
     }
 
     protected boolean isInterceptor() {
@@ -195,7 +187,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     @Override
     public T produce(CreationalContext<T> ctx) {
         T instance = super.produce(ctx);
-        if (bean != null && !bean.getScope().equals(Dependent.class) && !getInstantiator().hasDecoratorSupport()) {
+        if (getBean() != null && !getBean().getScope().equals(Dependent.class) && !getInstantiator().hasDecoratorSupport()) {
             // This should be safe, but needs verification PLM
             // Without this, the chaining of decorators will fail as the
             // incomplete instance will be resolved
@@ -204,8 +196,4 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         return instance;
     }
 
-    @Override
-    public Bean<T> getBean() {
-        return bean;
-    }
 }

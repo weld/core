@@ -39,6 +39,7 @@ import java.util.Set;
 import jakarta.annotation.Priority;
 import jakarta.decorator.Decorator;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.AutoClose;
 import jakarta.enterprise.context.ConversationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.Eager;
@@ -79,6 +80,11 @@ import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.WeldBean;
+import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
+import org.jboss.weld.bean.proxy.MethodHandler;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -313,6 +319,29 @@ public class Beans {
 
     public static boolean isEager(EnhancedAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
         return annotated.isAnnotationPresent(Eager.class) || mergedStereotypes.isEager();
+    }
+
+    public static boolean isAutoClose(EnhancedAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
+        return annotated.isAnnotationPresent(AutoClose.class) || mergedStereotypes.isAutoClose();
+    }
+
+    public static void invokeAutoClose(Object instance) throws Exception {
+        if (instance instanceof ProxyObject) {
+            MethodHandler handler = ((ProxyObject) instance).weld_getHandler();
+            if (handler instanceof CombinedInterceptorAndDecoratorStackMethodHandler) {
+                Stack stack = InterceptionDecorationContext.startIfNotOnTop(
+                        (CombinedInterceptorAndDecoratorStackMethodHandler) handler);
+                try {
+                    ((AutoCloseable) instance).close();
+                } finally {
+                    if (stack != null) {
+                        stack.end();
+                    }
+                }
+                return;
+            }
+        }
+        ((AutoCloseable) instance).close();
     }
 
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructorStrict(EnhancedAnnotatedType<T> type) {
