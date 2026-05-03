@@ -76,6 +76,11 @@ public abstract class ForwardingBeanAttributes<T> implements BeanAttributes<T> {
     }
 
     @Override
+    public boolean isAutoClose() {
+        return attributes().isAutoClose();
+    }
+
+    @Override
     public int hashCode() {
         return attributes().hashCode();
     }

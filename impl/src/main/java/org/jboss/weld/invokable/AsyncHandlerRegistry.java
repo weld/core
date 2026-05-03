@@ -34,13 +34,13 @@ public class AsyncHandlerRegistry implements Service {
      */
     public AsyncHandlerRegistry() {
         // Built-in handlers required by the spec
-        registerBuiltinHandler(CompletionStage.class, new BuiltinCompletionStageHandler(), true);
-        registerBuiltinHandler(CompletableFuture.class, new BuiltinCompletableFutureHandler(), true);
-        registerBuiltinHandler(Flow.Publisher.class, new BuiltinFlowPublisherHandler(), true);
+        registerBuiltinReturnTypeHandler(CompletionStage.class, new BuiltinCompletionStageHandler());
+        registerBuiltinReturnTypeHandler(CompletableFuture.class, new BuiltinCompletableFutureHandler());
+        registerBuiltinReturnTypeHandler(Flow.Publisher.class, new BuiltinFlowPublisherHandler());
     }
 
-    private void registerBuiltinHandler(Class<?> asyncType, AsyncHandler<?> handler, boolean isReturnType) {
-        HandlerInfo info = new HandlerInfo(handler, asyncType, isReturnType);
+    private void registerBuiltinReturnTypeHandler(Class<?> asyncType, AsyncHandler.ReturnType<?> handler) {
+        HandlerInfo info = HandlerInfo.returnType(handler, asyncType);
         info.setBuiltin(true);
         handlers.put(asyncType, info);
     }
@@ -55,70 +55,60 @@ public class AsyncHandlerRegistry implements Service {
         if (resourceLoader == null) {
             return;
         }
-        for (Metadata<AsyncHandler> metadata : ServiceLoader.load(AsyncHandler.class, resourceLoader)) {
-            validateAndRegister(metadata.getValue());
+        for (Metadata<AsyncHandler.ReturnType> metadata : ServiceLoader.load(AsyncHandler.ReturnType.class, resourceLoader)) {
+            validateAndRegisterReturnType(metadata.getValue());
+        }
+        for (Metadata<AsyncHandler.ParameterType> metadata : ServiceLoader.load(AsyncHandler.ParameterType.class,
+                resourceLoader)) {
+            validateAndRegisterParameterType(metadata.getValue());
         }
     }
 
-    private void validateAndRegister(AsyncHandler<?> handler) {
+    private void validateAndRegisterReturnType(AsyncHandler.ReturnType<?> handler) {
         Class<?> handlerClass = handler.getClass();
+        Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ReturnType.class);
+        checkDuplicate(asyncType, handlerClass);
+        handlers.put(asyncType, HandlerInfo.returnType(handler, asyncType));
+    }
 
-        // Must implement AsyncHandler directly (not through a subclass)
-        validateDirectImplementation(handlerClass);
+    private void validateAndRegisterParameterType(AsyncHandler.ParameterType<?> handler) {
+        Class<?> handlerClass = handler.getClass();
+        Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ParameterType.class);
+        checkDuplicate(asyncType, handlerClass);
+        handlers.put(asyncType, HandlerInfo.parameterType(handler, asyncType));
+    }
 
-        // Extract async type from AsyncHandler<T>
-        Class<?> asyncType = extractAsyncType(handlerClass);
-
-        // Must be annotated with exactly one of @ReturnType or @ParameterType
-        boolean isReturnType = handlerClass.isAnnotationPresent(AsyncHandler.ReturnType.class);
-        boolean isParameterType = handlerClass.isAnnotationPresent(AsyncHandler.ParameterType.class);
-
-        if (isReturnType && isParameterType) {
-            throw InvokerLogger.LOG.asyncHandlerBothAnnotations(handlerClass);
-        }
-        if (!isReturnType && !isParameterType) {
-            throw InvokerLogger.LOG.asyncHandlerNoAnnotation(handlerClass);
-        }
-
-        // Check for duplicate handlers for the same async type
+    private void checkDuplicate(Class<?> asyncType, Class<?> handlerClass) {
         HandlerInfo existing = handlers.get(asyncType);
         if (existing != null && !existing.isBuiltin()) {
             throw InvokerLogger.LOG.asyncHandlerDuplicate(asyncType, handlerClass);
         }
-
-        // Custom handlers override built-in handlers for the same type
-        handlers.put(asyncType, new HandlerInfo(handler, asyncType, isReturnType));
     }
 
-    private void validateDirectImplementation(Class<?> handlerClass) {
-        // Must implement AsyncHandler directly, not through an abstract subclass
-        boolean directlyImplements = false;
-        for (Class<?> iface : handlerClass.getInterfaces()) {
-            if (iface == AsyncHandler.class) {
-                directlyImplements = true;
-                break;
-            }
-        }
-        if (!directlyImplements) {
-            throw InvokerLogger.LOG.asyncHandlerIndirectImplementation(handlerClass);
-        }
-    }
-
-    private Class<?> extractAsyncType(Class<?> handlerClass) {
-        // Find AsyncHandler<T> in the direct superinterface types
+    private Class<?> extractAsyncType(Class<?> handlerClass, Class<?> targetInterface) {
         for (Type genericInterface : handlerClass.getGenericInterfaces()) {
             if (genericInterface instanceof ParameterizedType) {
                 ParameterizedType pt = (ParameterizedType) genericInterface;
-                if (pt.getRawType() == AsyncHandler.class) {
+                if (pt.getRawType() == targetInterface) {
                     Type typeArg = pt.getActualTypeArguments()[0];
                     return validateAndEraseAsyncType(typeArg, handlerClass);
                 }
-            } else if (genericInterface == AsyncHandler.class) {
-                // Raw AsyncHandler — deployment problem
+            } else if (genericInterface == targetInterface) {
                 throw InvokerLogger.LOG.asyncHandlerRawType(handlerClass);
             }
         }
-        // Should not happen if validateDirectImplementation passed
+        // Check superclass interfaces recursively
+        for (Type genericInterface : handlerClass.getGenericInterfaces()) {
+            Class<?> rawIface = null;
+            if (genericInterface instanceof ParameterizedType) {
+                rawIface = (Class<?>) ((ParameterizedType) genericInterface).getRawType();
+            } else if (genericInterface instanceof Class) {
+                rawIface = (Class<?>) genericInterface;
+            }
+            if (rawIface != null && targetInterface.isAssignableFrom(rawIface)) {
+                return extractAsyncType(rawIface, targetInterface);
+            }
+        }
         throw InvokerLogger.LOG.asyncHandlerRawType(handlerClass);
     }
 
@@ -155,7 +145,7 @@ public class AsyncHandlerRegistry implements Service {
     }
 
     /**
-     * Finds a matching @ReturnType handler for the given method return type.
+     * Finds a matching ReturnType handler for the given method return type.
      */
     public HandlerInfo findReturnTypeHandler(Class<?> returnType) {
         HandlerInfo info = handlers.get(returnType);
@@ -166,7 +156,7 @@ public class AsyncHandlerRegistry implements Service {
     }
 
     /**
-     * Finds a matching @ParameterType handler for the given method parameter types.
+     * Finds a matching ParameterType handler for the given method parameter types.
      * Returns the handler info if exactly one parameter matches; null otherwise.
      */
     public HandlerInfo findParameterTypeHandler(Class<?>[] parameterTypes) {
@@ -188,20 +178,37 @@ public class AsyncHandlerRegistry implements Service {
      * Holds information about a registered async handler.
      */
     public static class HandlerInfo {
-        private final AsyncHandler<?> handler;
+        private final AsyncHandler.ReturnType<?> returnTypeHandler;
+        private final AsyncHandler.ParameterType<?> parameterTypeHandler;
         private final Class<?> asyncType;
-        private final boolean returnType;
+        private final boolean isReturnType;
         private boolean builtin;
 
-        HandlerInfo(AsyncHandler<?> handler, Class<?> asyncType, boolean returnType) {
-            this.handler = handler;
+        static HandlerInfo returnType(AsyncHandler.ReturnType<?> handler, Class<?> asyncType) {
+            return new HandlerInfo(handler, null, asyncType, true);
+        }
+
+        static HandlerInfo parameterType(AsyncHandler.ParameterType<?> handler, Class<?> asyncType) {
+            return new HandlerInfo(null, handler, asyncType, false);
+        }
+
+        private HandlerInfo(AsyncHandler.ReturnType<?> returnTypeHandler,
+                AsyncHandler.ParameterType<?> parameterTypeHandler,
+                Class<?> asyncType, boolean isReturnType) {
+            this.returnTypeHandler = returnTypeHandler;
+            this.parameterTypeHandler = parameterTypeHandler;
             this.asyncType = asyncType;
-            this.returnType = returnType;
+            this.isReturnType = isReturnType;
         }
 
         @SuppressWarnings("unchecked")
-        public <T> AsyncHandler<T> getHandler() {
-            return (AsyncHandler<T>) handler;
+        public <T> AsyncHandler.ReturnType<T> getReturnTypeHandler() {
+            return (AsyncHandler.ReturnType<T>) returnTypeHandler;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> AsyncHandler.ParameterType<T> getParameterTypeHandler() {
+            return (AsyncHandler.ParameterType<T>) parameterTypeHandler;
         }
 
         public Class<?> getAsyncType() {
@@ -209,7 +216,7 @@ public class AsyncHandlerRegistry implements Service {
         }
 
         public boolean isReturnType() {
-            return returnType;
+            return isReturnType;
         }
 
         boolean isBuiltin() {
@@ -223,16 +230,14 @@ public class AsyncHandlerRegistry implements Service {
 
     // --- Built-in handlers ---
 
-    @AsyncHandler.ReturnType
-    static class BuiltinCompletionStageHandler<T> implements AsyncHandler<CompletionStage<T>> {
+    static class BuiltinCompletionStageHandler<T> implements AsyncHandler.ReturnType<CompletionStage<T>> {
         @Override
         public CompletionStage<T> transform(CompletionStage<T> original, Runnable completion) {
             return original.whenComplete((value, error) -> completion.run());
         }
     }
 
-    @AsyncHandler.ReturnType
-    static class BuiltinCompletableFutureHandler<T> implements AsyncHandler<CompletableFuture<T>> {
+    static class BuiltinCompletableFutureHandler<T> implements AsyncHandler.ReturnType<CompletableFuture<T>> {
         @Override
         public CompletableFuture<T> transform(CompletableFuture<T> original, Runnable completion) {
             CompletableFuture<T> result = new CompletableFuture<>();
@@ -248,8 +253,7 @@ public class AsyncHandlerRegistry implements Service {
         }
     }
 
-    @AsyncHandler.ReturnType
-    static class BuiltinFlowPublisherHandler<T> implements AsyncHandler<Flow.Publisher<T>> {
+    static class BuiltinFlowPublisherHandler<T> implements AsyncHandler.ReturnType<Flow.Publisher<T>> {
         @Override
         public Flow.Publisher<T> transform(Flow.Publisher<T> original, Runnable completion) {
             return subscriber -> original.subscribe(new Flow.Subscriber<T>() {

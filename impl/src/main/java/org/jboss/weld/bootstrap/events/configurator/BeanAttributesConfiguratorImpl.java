@@ -69,6 +69,8 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
 
     private boolean isEager;
 
+    private boolean isAutoClose;
+
     public BeanAttributesConfiguratorImpl(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.qualifiers = new HashSet<Annotation>();
@@ -94,7 +96,9 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
         stereotypes(beanAttributes.getStereotypes());
         types(beanAttributes.getTypes());
         alternative(beanAttributes.isAlternative());
+        reserve(beanAttributes.isReserve());
         eager(beanAttributes.isEager());
+        autoClose(beanAttributes.isAutoClose());
         return this;
     }
 
@@ -237,8 +241,15 @@ public class BeanAttributesConfiguratorImpl<T> implements BeanAttributesConfigur
     }
 
     @Override
+    public BeanAttributesConfigurator<T> autoClose(boolean value) {
+        this.isAutoClose = value;
+        return this;
+    }
+
+    @Override
     public BeanAttributes<T> complete() {
-        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, isReserve, isEager, name,
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), isAlternative, isReserve, isEager, isAutoClose,
+                name,
                 Bindings.normalizeBeanQualifiers(qualifiers),
                 ImmutableSet.copyOf(types),
                 initScope());
