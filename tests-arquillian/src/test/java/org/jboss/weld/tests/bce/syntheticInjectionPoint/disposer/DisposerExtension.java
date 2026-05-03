@@ -1,7 +1,5 @@
 package org.jboss.weld.tests.bce.syntheticInjectionPoint.disposer;
 
-import java.lang.annotation.Annotation;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.Synthesis;
@@ -24,7 +22,7 @@ public class DisposerExtension implements BuildCompatibleExtension {
                 .type(DisposableResult.class)
                 .qualifier(NewDisposerQualifier.class)
                 .scope(Dependent.class)
-                .withInjectionPoint(DisposerHelper.class, new Annotation[0])
+                .withInjectionPoint(DisposerHelper.class)
                 .createWith(NewDisposerCreator.class)
                 .disposeWith(NewApiDisposer.class);
     }

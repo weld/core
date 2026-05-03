@@ -1,7 +1,5 @@
 package org.jboss.weld.tests.bce.syntheticInjectionPoint.broken;
 
-import java.lang.annotation.Annotation;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.Synthesis;
@@ -16,7 +14,7 @@ public class NoMatchingBeanExtension implements BuildCompatibleExtension {
         syn.addBean(String.class)
                 .type(String.class)
                 .scope(ApplicationScoped.class)
-                .withInjectionPoint(NoSuchBean.class, new Annotation[0])
+                .withInjectionPoint(NoSuchBean.class)
                 .createWith(DummyCreator.class);
     }
 }

@@ -1,7 +1,5 @@
 package org.jboss.weld.tests.bce.syntheticInjectionPoint.indirectInjectionPoint;
 
-import java.lang.annotation.Annotation;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.Synthesis;
@@ -13,7 +11,7 @@ public class IndirectInjectionPointExtension implements BuildCompatibleExtension
         syn.addBean(SyntheticPojo.class)
                 .type(SyntheticPojo.class)
                 .scope(Dependent.class)
-                .withInjectionPoint(InjectionPointCaptor.class, new Annotation[0])
+                .withInjectionPoint(InjectionPointCaptor.class)
                 .createWith(IndirectInjectionPointCreator.class);
     }
 }

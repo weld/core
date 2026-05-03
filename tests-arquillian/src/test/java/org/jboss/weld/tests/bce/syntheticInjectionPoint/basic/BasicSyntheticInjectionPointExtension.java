@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.bce.syntheticInjectionPoint.basic;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class BasicSyntheticInjectionPointExtension implements BuildCompatibleExt
                 .type(SyntheticResult.class)
                 .qualifier(Scenario2aQualifier.class)
                 .scope(ApplicationScoped.class)
-                .withInjectionPoint(Alpha.class, new Annotation[0])
+                .withInjectionPoint(Alpha.class)
                 .createWith(NewApiClassAnnotationCreator.class);
 
         // withInjectionPoint(Class, AnnotationInfo...) — 2 qualifiers
@@ -80,7 +79,7 @@ public class BasicSyntheticInjectionPointExtension implements BuildCompatibleExt
                 .type(SyntheticResult.class)
                 .qualifier(DependentCleanupQualifier.class)
                 .scope(jakarta.enterprise.context.Dependent.class)
-                .withInjectionPoint(DependentHelper.class, new Annotation[0])
+                .withInjectionPoint(DependentHelper.class)
                 .createWith(DependentCleanupCreator.class);
     }
 }

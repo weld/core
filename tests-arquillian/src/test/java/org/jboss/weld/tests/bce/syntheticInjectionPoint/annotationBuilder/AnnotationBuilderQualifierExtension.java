@@ -1,7 +1,5 @@
 package org.jboss.weld.tests.bce.syntheticInjectionPoint.annotationBuilder;
 
-import java.lang.annotation.Annotation;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.build.compatible.spi.AnnotationBuilder;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
@@ -14,7 +12,7 @@ public class AnnotationBuilderQualifierExtension implements BuildCompatibleExten
         syn.addBean(SyntheticPojo.class)
                 .type(SyntheticPojo.class)
                 .scope(Dependent.class)
-                .withInjectionPoint(Service.class, new Annotation[0])
+                .withInjectionPoint(Service.class)
                 .withInjectionPoint(Service.class, AnnotationBuilder.of(Special.class).build())
                 .withInjectionPoint(Service.class,
                         AnnotationBuilder.of(Tagged.class).member("value", "foo").build())
