@@ -25,7 +25,8 @@ public class AutoCloseInterceptorTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
                 Utils.getDeploymentNameAsHash(AutoCloseInterceptorTest.class))
-                .addPackage(AutoCloseInterceptorTest.class.getPackage());
+                .addPackage(AutoCloseInterceptorTest.class.getPackage())
+                .addClass(ActionSequence.class);
     }
 
     @Inject

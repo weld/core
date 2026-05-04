@@ -33,6 +33,7 @@ public class ProducerDisposeAutoCloseTest {
         return ShrinkWrap.create(BeanArchive.class,
                 Utils.getDeploymentNameAsHash(ProducerDisposeAutoCloseTest.class))
                 .addPackage(ProducerDisposeAutoCloseTest.class.getPackage())
+                .addClass(ActionSequence.class)
                 .addAsServiceProvider(Extension.class, ProducerCaptureExtension.class);
     }
 

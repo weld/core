@@ -29,6 +29,7 @@ public class AutoCloseSyntheticBeanTest {
         return ShrinkWrap.create(BeanArchive.class,
                 Utils.getDeploymentNameAsHash(AutoCloseSyntheticBeanTest.class))
                 .addPackage(AutoCloseSyntheticBeanTest.class.getPackage())
+                .addClass(ActionSequence.class)
                 .addAsServiceProvider(Extension.class, AutoClosePortableExtension.class)
                 .addAsServiceProvider(BuildCompatibleExtension.class, AutoCloseBceExtension.class);
     }

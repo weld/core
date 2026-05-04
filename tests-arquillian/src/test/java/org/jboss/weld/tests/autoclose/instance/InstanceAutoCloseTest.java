@@ -25,7 +25,8 @@ public class InstanceAutoCloseTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
                 Utils.getDeploymentNameAsHash(InstanceAutoCloseTest.class))
-                .addPackage(InstanceAutoCloseTest.class.getPackage());
+                .addPackage(InstanceAutoCloseTest.class.getPackage())
+                .addClass(ActionSequence.class);
     }
 
     @Inject
