@@ -174,21 +174,6 @@
                                         <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-jsf.*?&quot;" replace="path=&quot;weld-jsf-${weld.update.version}.jar&quot;" byline="true" />
                                         <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-core-jsf.*?&quot;" replace="path=&quot;weld-jsf-${weld.update.version}.jar&quot;" byline="true" />
 
-                                        <echo>
-
-                                            =========================================================================
-
-                                            Copying standalone-activemq-embedded.xml
-
-                                            =========================================================================
-
-                                        </echo>
-
-                                        <copy todir="${jboss.home}/standalone/configuration" overwrite="true">
-                                            <fileset dir="${jboss.home}/docs//examples/configs">
-                                                <include name="standalone-activemq-embedded.xml" />
-                                            </fileset>
-                                        </copy>
                                     </target>
                                 </configuration>
                             </execution>
