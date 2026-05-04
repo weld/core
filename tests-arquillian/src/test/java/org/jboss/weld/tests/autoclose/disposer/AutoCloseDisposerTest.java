@@ -24,7 +24,8 @@ public class AutoCloseDisposerTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
                 Utils.getDeploymentNameAsHash(AutoCloseDisposerTest.class))
-                .addPackage(AutoCloseDisposerTest.class.getPackage());
+                .addPackage(AutoCloseDisposerTest.class.getPackage())
+                .addClass(ActionSequence.class);
     }
 
     @Inject
