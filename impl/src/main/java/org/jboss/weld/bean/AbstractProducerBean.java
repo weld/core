@@ -197,6 +197,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         try {
             getProducer().dispose(instance);
         } catch (Exception e) {
+            // AbstractMemberProducer.dispose() handles its own exceptions internally (disposer + auto-close);
+            // this catch is a safety net for custom Producer implementations set via ProcessProducer.setProducer()
             BeanLogger.LOG.errorDestroying(instance, this);
             BeanLogger.LOG.catchingDebug(e);
         }

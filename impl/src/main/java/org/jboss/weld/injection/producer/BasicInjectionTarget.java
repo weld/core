@@ -145,7 +145,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
             try {
                 Beans.invokeAutoClose(instance);
             } catch (Exception e) {
-                BeanLogger.LOG.errorDestroying(instance, bean);
+                BeanLogger.LOG.errorAutoClosing(instance, bean);
                 BeanLogger.LOG.catchingDebug(e);
             }
         }
