@@ -557,7 +557,7 @@ public class BeanConfiguratorImpl<T> implements WeldBeanConfigurator<T>, Configu
                 try {
                     Beans.invokeAutoClose(instance);
                 } catch (Exception e) {
-                    BeanLogger.LOG.errorDestroying(instance, this);
+                    BeanLogger.LOG.errorAutoClosing(instance, this);
                     BeanLogger.LOG.catchingDebug(e);
                 }
             }

@@ -166,7 +166,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
             try {
                 Beans.invokeAutoClose(instance);
             } catch (Exception e) {
-                BeanLogger.LOG.errorDestroying(instance, bean);
+                BeanLogger.LOG.errorAutoClosing(instance, bean);
                 BeanLogger.LOG.catchingDebug(e);
             }
         }

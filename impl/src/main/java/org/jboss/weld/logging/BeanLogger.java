@@ -557,4 +557,8 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1580, value = "Cannot obtain contextual reference for {0} - a previously obtained reference has already been destroyed.", format = Format.MESSAGE_FORMAT)
     IllegalStateException tryingToResolveContextualReferenceAfterDestroyWasInvoked(Object handler);
+
+    @LogMessage(level = Level.ERROR)
+    @Message(id = 1581, value = "Error invoking AutoCloseable.close() on an instance {0} of {1}", format = Format.MESSAGE_FORMAT)
+    void errorAutoClosing(Object param1, Object param2);
 }
