@@ -73,8 +73,6 @@ public class ContextDeadlockTest {
     @ArquillianResource
     private volatile URL url;
 
-    private final WebClient client = new WebClient();
-
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @Deployment(testable = false)
@@ -89,8 +87,6 @@ public class ContextDeadlockTest {
 
     @Test
     public void test() throws Exception {
-        client.getOptions().setTimeout(15000);
-
         List<Callable<Void>> requests = new LinkedList<Callable<Void>>();
         requests.add(new ConcurrentRequest(url.toString() + "/foo"));
         requests.add(new ConcurrentRequest(url.toString() + "/bar"));
@@ -105,19 +101,24 @@ public class ContextDeadlockTest {
         executor.shutdownNow();
     }
 
-    private class ConcurrentRequest implements Callable<Void> {
+    private static class ConcurrentRequest implements Callable<Void> {
 
         private final String url;
+        private final WebClient webClient;
 
         public ConcurrentRequest(String url) {
             this.url = url;
+            this.webClient = new WebClient();
+            this.webClient.getOptions().setTimeout(15000);
         }
 
         public Void call() throws Exception {
             try {
-                client.getPage(url);
+                webClient.getPage(url);
             } catch (SocketTimeoutException e) {
                 throw new RuntimeException("The request for " + url + " timed out. It is very likely that a deadlock occured.");
+            } finally {
+                webClient.close();
             }
             return null;
         }
