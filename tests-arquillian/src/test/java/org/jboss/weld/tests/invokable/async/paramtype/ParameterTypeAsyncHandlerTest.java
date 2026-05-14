@@ -2,6 +2,7 @@ package org.jboss.weld.tests.invokable.async.paramtype;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -108,5 +109,25 @@ public class ParameterTypeAsyncHandlerTest {
         assertEquals(1, DependentBean.destroyedCounter.get());
         assertTrue(result.isComplete());
         assertEquals("param-hello", result.getIfComplete());
+    }
+
+    @Test
+    public void testSynchronousThrow() throws Exception {
+        DependentBean.reset();
+        CompletableFuture<String> future = new CompletableFuture<>();
+        MyAsyncParam<String> result = MyAsyncParam.createSuspended();
+
+        assertEquals(0, DependentBean.destroyedCounter.get());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            extension.getThrowInvoker().invoke(null, new Object[] { null, future, result });
+        });
+
+        assertEquals(1, DependentBean.destroyedCounter.get());
+
+        // completion callback fired after exception must be a noop
+        future.complete("hello");
+
+        assertEquals(1, DependentBean.destroyedCounter.get());
     }
 }
