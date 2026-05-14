@@ -114,4 +114,7 @@ public interface InvokerLogger extends WeldLogger {
 
     @Message(id = 2029, value = "Unhandled primitive type: {0}", format = Format.MESSAGE_FORMAT)
     RuntimeException unhandledPrimitiveType(Object primitive);
+
+    @Message(id = 2030, value = "AsyncHandler {0} implements both ReturnType and ParameterType for the same async type {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException asyncHandlerBothKinds(Object handlerClass, Object asyncType);
 }
