@@ -14,6 +14,7 @@ public class ParamTypeExtension implements Extension {
     private Invoker<ParamTypeBean, ?> invoker;
     private Invoker<ParamTypeBean, ?> syncInvoker;
     private Invoker<ParamTypeBean, ?> noLookupInvoker;
+    private Invoker<ParamTypeBean, ?> throwInvoker;
 
     public void observeBean(@Observes WeldProcessManagedBean<ParamTypeBean> pmb) {
         Collection<AnnotatedMethod<? super ParamTypeBean>> methods = pmb.getAnnotatedBeanClass().getMethods();
@@ -31,6 +32,11 @@ public class ParamTypeExtension implements Extension {
                         .build();
             } else if ("helloNoLookup".equals(name)) {
                 noLookupInvoker = pmb.createInvoker(m).build();
+            } else if ("helloThrow".equals(name)) {
+                throwInvoker = pmb.createInvoker(m)
+                        .withInstanceLookup()
+                        .withArgumentLookup(0)
+                        .build();
             }
         }
     }
@@ -45,5 +51,9 @@ public class ParamTypeExtension implements Extension {
 
     public Invoker<ParamTypeBean, ?> getNoLookupInvoker() {
         return noLookupInvoker;
+    }
+
+    public Invoker<ParamTypeBean, ?> getThrowInvoker() {
+        return throwInvoker;
     }
 }
