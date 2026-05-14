@@ -68,7 +68,7 @@ public class AsyncHandlerRegistry implements Service {
         Class<?> handlerClass = handler.getClass();
         validateDirectImplementation(handlerClass, AsyncHandler.ReturnType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ReturnType.class);
-        checkDuplicate(asyncType, handlerClass);
+        checkDuplicate(asyncType, handlerClass, true);
         handlers.put(asyncType, HandlerInfo.returnType(handler, asyncType));
     }
 
@@ -76,7 +76,7 @@ public class AsyncHandlerRegistry implements Service {
         Class<?> handlerClass = handler.getClass();
         validateDirectImplementation(handlerClass, AsyncHandler.ParameterType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ParameterType.class);
-        checkDuplicate(asyncType, handlerClass);
+        checkDuplicate(asyncType, handlerClass, false);
         handlers.put(asyncType, HandlerInfo.parameterType(handler, asyncType));
     }
 
@@ -89,9 +89,12 @@ public class AsyncHandlerRegistry implements Service {
         throw InvokerLogger.LOG.asyncHandlerIndirectImplementation(handlerClass);
     }
 
-    private void checkDuplicate(Class<?> asyncType, Class<?> handlerClass) {
+    private void checkDuplicate(Class<?> asyncType, Class<?> handlerClass, boolean isReturnType) {
         HandlerInfo existing = handlers.get(asyncType);
         if (existing != null && !existing.isBuiltin()) {
+            if (existing.getHandlerClass() == handlerClass && existing.isReturnType() != isReturnType) {
+                throw InvokerLogger.LOG.asyncHandlerBothKinds(handlerClass, asyncType);
+            }
             throw InvokerLogger.LOG.asyncHandlerDuplicate(asyncType, handlerClass);
         }
     }
@@ -186,23 +189,25 @@ public class AsyncHandlerRegistry implements Service {
         private final AsyncHandler.ReturnType<?> returnTypeHandler;
         private final AsyncHandler.ParameterType<?> parameterTypeHandler;
         private final Class<?> asyncType;
+        private final Class<?> handlerClass;
         private final boolean isReturnType;
         private boolean builtin;
 
         static HandlerInfo returnType(AsyncHandler.ReturnType<?> handler, Class<?> asyncType) {
-            return new HandlerInfo(handler, null, asyncType, true);
+            return new HandlerInfo(handler, null, asyncType, handler.getClass(), true);
         }
 
         static HandlerInfo parameterType(AsyncHandler.ParameterType<?> handler, Class<?> asyncType) {
-            return new HandlerInfo(null, handler, asyncType, false);
+            return new HandlerInfo(null, handler, asyncType, handler.getClass(), false);
         }
 
         private HandlerInfo(AsyncHandler.ReturnType<?> returnTypeHandler,
                 AsyncHandler.ParameterType<?> parameterTypeHandler,
-                Class<?> asyncType, boolean isReturnType) {
+                Class<?> asyncType, Class<?> handlerClass, boolean isReturnType) {
             this.returnTypeHandler = returnTypeHandler;
             this.parameterTypeHandler = parameterTypeHandler;
             this.asyncType = asyncType;
+            this.handlerClass = handlerClass;
             this.isReturnType = isReturnType;
         }
 
@@ -218,6 +223,10 @@ public class AsyncHandlerRegistry implements Service {
 
         public Class<?> getAsyncType() {
             return asyncType;
+        }
+
+        public Class<?> getHandlerClass() {
+            return handlerClass;
         }
 
         public boolean isReturnType() {

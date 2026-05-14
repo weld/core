@@ -14,16 +14,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class BothInterfacesHandlerTest {
+public class TypeVariableAsyncHandlerTest {
 
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class,
-                Utils.getDeploymentNameAsHash(BothInterfacesHandlerTest.class))
-                .addClasses(BothInterfacesHandler.class, MyAsyncType.class)
-                .addAsServiceProvider(AsyncHandler.ReturnType.class, BothInterfacesHandler.class)
-                .addAsServiceProvider(AsyncHandler.ParameterType.class, BothInterfacesHandler.class);
+                Utils.getDeploymentNameAsHash(TypeVariableAsyncHandlerTest.class))
+                .addClass(TypeVariableAsyncHandler.class)
+                .addAsServiceProvider(AsyncHandler.ReturnType.class, TypeVariableAsyncHandler.class);
     }
 
     @Test
