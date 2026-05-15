@@ -19,7 +19,7 @@ jobs:
       id: metadata
       uses: radcortez/project-metadata-action@main
       with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
+        github-token: ${{secrets.RELEASE_TOKEN}}
         metadata-file-path: '.github/project.yml'
 
     - name: Checkout
