@@ -69,7 +69,7 @@ public class AsyncHandlerRegistry implements Service {
         validateDirectImplementation(handlerClass, AsyncHandler.ReturnType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ReturnType.class);
         checkDuplicate(asyncType, handlerClass, true);
-        handlers.put(asyncType, HandlerInfo.returnType(handler, asyncType));
+        handlers.putIfAbsent(asyncType, HandlerInfo.returnType(handler, asyncType));
     }
 
     private void validateAndRegisterParameterType(AsyncHandler.ParameterType<?> handler) {
@@ -77,7 +77,7 @@ public class AsyncHandlerRegistry implements Service {
         validateDirectImplementation(handlerClass, AsyncHandler.ParameterType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ParameterType.class);
         checkDuplicate(asyncType, handlerClass, false);
-        handlers.put(asyncType, HandlerInfo.parameterType(handler, asyncType));
+        handlers.putIfAbsent(asyncType, HandlerInfo.parameterType(handler, asyncType));
     }
 
     private void validateDirectImplementation(Class<?> handlerClass, Class<?> targetInterface) {
@@ -92,6 +92,15 @@ public class AsyncHandlerRegistry implements Service {
     private void checkDuplicate(Class<?> asyncType, Class<?> handlerClass, boolean isReturnType) {
         HandlerInfo existing = handlers.get(asyncType);
         if (existing != null && !existing.isBuiltin()) {
+            // In a WAR with multiple BDAs (e.g. WEB-INF/classes + JARs in WEB-INF/lib),
+            // all BDAs share the same classloader. Since discovery runs per BDA, the same
+            // service file is found multiple times, yielding the same handler class.
+            // This is not an error — skip re-registration. In an EAR with isolated module
+            // classloaders, different Class objects would be loaded, so this identity check
+            // does not suppress genuine duplicates across modules.
+            if (existing.getHandlerClass() == handlerClass && existing.isReturnType() == isReturnType) {
+                return;
+            }
             if (existing.getHandlerClass() == handlerClass && existing.isReturnType() != isReturnType) {
                 throw InvokerLogger.LOG.asyncHandlerBothKinds(handlerClass, asyncType);
             }
