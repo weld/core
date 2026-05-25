@@ -90,7 +90,7 @@
         <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.9.8</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
-        <weld.api.version>7.0.Alpha7</weld.api.version>
+        <weld.api.version>7.0.Beta1</weld.api.version>
         <wildfly.arquillian.version>5.1.0.Final</wildfly.arquillian.version>
     </properties>
 
@@ -545,16 +545,15 @@
                 <module>docs/reference</module>
             </modules>
         </profile>
+        <!-- Verifies that the Weld API version declared in bom/pom.xml matches the one in the parent POM. -->
         <profile>
             <id>bom</id>
             <activation>
-                <property>
-                    <name>release</name>
-                </property>
+                <!-- The bom directory always exists; this is just a trick to keep the profile always active. -->
+                <file>
+                    <exists>bom</exists>
+                </file>
             </activation>
-            <modules>
-                <module>bom</module>
-            </modules>
             <build>
                 <plugins>
                     <plugin>
