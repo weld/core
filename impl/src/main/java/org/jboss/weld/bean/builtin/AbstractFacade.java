@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Set;
 
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -40,10 +41,21 @@ public abstract class AbstractFacade<T, X> {
     protected static Type getFacadeType(InjectionPoint injectionPoint) {
         Type genericType = injectionPoint.getType();
         if (genericType instanceof ParameterizedType) {
-            return ((ParameterizedType) genericType).getActualTypeArguments()[0];
+            Type typeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+            if (typeArgument instanceof WildcardType) {
+                return getWildcardBound((WildcardType) typeArgument);
+            }
+            return typeArgument;
         } else {
             throw new IllegalStateException(BeanLogger.LOG.typeParameterMustBeConcrete(injectionPoint));
         }
+    }
+
+    private static Type getWildcardBound(WildcardType wildcard) {
+        if (wildcard.getLowerBounds().length > 0) {
+            return wildcard.getLowerBounds()[0];
+        }
+        return wildcard.getUpperBounds()[0];
     }
 
     private final BeanManagerImpl beanManager;
