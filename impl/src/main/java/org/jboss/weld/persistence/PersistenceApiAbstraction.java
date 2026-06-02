@@ -26,6 +26,7 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
 
     public final Class<? extends Annotation> PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
     public final Class<? extends Annotation> PERSISTENCE_UNIT_ANNOTATION_CLASS;
+    public final Class<? extends Annotation> PERSISTENCE_AGENT_ANNOTATION_CLASS;
     public final Object EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
     public final Class<?> PERSISTENCE_CONTEXT_TYPE_CLASS;
     public final Class<? extends Annotation> ENTITY_CLASS;
@@ -33,7 +34,9 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
     public final Class<? extends Annotation> EMBEDDABLE_CLASS;
     public final Class<?> ENTITY_MANAGER_CLASS;
     public final Class<?> ENTITY_MANAGER_FACTORY_CLASS;
+    public final Class<?> ENTITY_AGENT_CLASS;
     public final String SESSION_NAME = "org.hibernate.Session";
+    public final String STATELESS_SESSION_NAME = "org.hibernate.StatelessSession";
     public final String SESSION_FACTORY_NAME = "org.hibernate.SessionFactory";
 
     /**
@@ -43,6 +46,7 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
         super(resourceLoader);
         PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("jakarta.persistence.PersistenceContext");
         PERSISTENCE_UNIT_ANNOTATION_CLASS = annotationTypeForName("jakarta.persistence.PersistenceUnit");
+        PERSISTENCE_AGENT_ANNOTATION_CLASS = annotationTypeForName("jakarta.persistence.PersistenceAgent");
         PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("jakarta.persistence.PersistenceContextType");
         if (PERSISTENCE_CONTEXT_TYPE_CLASS.equals(Dummy.class)) {
             EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
@@ -54,6 +58,7 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
         EMBEDDABLE_CLASS = annotationTypeForName("jakarta.persistence.Embeddable");
         ENTITY_MANAGER_CLASS = classForName("jakarta.persistence.EntityManager");
         ENTITY_MANAGER_FACTORY_CLASS = classForName("jakarta.persistence.EntityManagerFactory");
+        ENTITY_AGENT_CLASS = classForName("jakarta.persistence.EntityAgent");
     }
 
     public void cleanup() {

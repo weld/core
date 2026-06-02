@@ -111,6 +111,7 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
     private void initializeProcessors() {
         resourceInjectionProcessors.add(new PersistenceUnitResourceInjectionProcessor());
         resourceInjectionProcessors.add(new PersistenceContextResourceInjectionProcessor());
+        resourceInjectionProcessors.add(new PersistenceAgentResourceInjectionProcessor());
         resourceInjectionProcessors.add(new ResourceResourceInjectionProcessor());
         resourceInjectionProcessors.add(new WebServiceResourceInjectionProcessor());
     }
@@ -195,6 +196,47 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
             // ugly hack that allows application servers to support hibernate session injection while at the same time
             // the injection points are validated by Weld for invalid types (required by the TCK)
             return !apiAbstraction.SESSION_NAME.equals(getRawType(getResourceInjectionPointType(member)).getName());
+        }
+    }
+
+    /**
+     * JPA persistence agent resource injection processor.
+     */
+    private static class PersistenceAgentResourceInjectionProcessor extends
+            ResourceInjectionProcessor<JpaInjectionServices, PersistenceApiAbstraction> {
+
+        @Override
+        protected <T> ResourceReferenceFactory<T> getResourceReferenceFactory(InjectionPoint injectionPoint,
+                JpaInjectionServices injectionServices, PersistenceApiAbstraction apiAbstraction) {
+
+            if (!injectionPoint.getType().equals(apiAbstraction.ENTITY_AGENT_CLASS)) {
+                throw BeanLogger.LOG.invalidResourceProducerType(injectionPoint.getAnnotated(),
+                        apiAbstraction.ENTITY_AGENT_CLASS);
+            }
+            return Reflections.<ResourceReferenceFactory<T>> cast(injectionServices
+                    .registerPersistenceAgentInjectionPoint(injectionPoint));
+        }
+
+        @Override
+        protected Class<? extends Annotation> getMarkerAnnotation(PersistenceApiAbstraction apiAbstraction) {
+            return apiAbstraction.PERSISTENCE_AGENT_ANNOTATION_CLASS;
+        }
+
+        @Override
+        protected PersistenceApiAbstraction getProcessorContext(BeanManagerImpl manager) {
+            return manager.getServices().get(PersistenceApiAbstraction.class);
+        }
+
+        @Override
+        protected JpaInjectionServices getInjectionServices(BeanManagerImpl manager) {
+            return manager.getServices().get(JpaInjectionServices.class);
+        }
+
+        @Override
+        protected boolean accept(AnnotatedMember<?> member, PersistenceApiAbstraction apiAbstraction) {
+            // ugly hack that allows application servers to support hibernate stateless session injection while at the same time
+            // the injection points are validated by Weld for invalid types (required (?) by the TCK)
+            return !apiAbstraction.STATELESS_SESSION_NAME.equals(getRawType(getResourceInjectionPointType(member)).getName());
         }
     }
 
