@@ -2,8 +2,6 @@ package org.jboss.weld.tests.instance.wildcard;
 
 import static org.junit.Assert.assertNotNull;
 
-import jakarta.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -13,21 +11,20 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Instance<? extends Event<String>> should be allowed since Event<String> is a valid Event injection point.
+ */
 @RunWith(Arquillian.class)
-public class InstanceWithWildcardTest {
+public class InstanceWithCovariantEventTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceWithWildcardTest.class))
-                .addClass(BeanWithWildcardInstance.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceWithCovariantEventTest.class))
+                .addClass(BeanWithCovariantEventInstance.class);
     }
 
-    @Inject
-    BeanWithWildcardInstance bean;
-
     @Test
-    public void testInstanceWithWildcard() {
+    public void testInstanceWithCovariantEvent(BeanWithCovariantEventInstance bean) {
         assertNotNull(bean);
-        assertNotNull(bean.getWildInstance());
     }
 }

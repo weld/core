@@ -115,4 +115,7 @@ public interface EventLogger extends WeldLogger {
 
     @Message(id = 422, value = "WeldEvent.select(Type subtype, Annotation... qualifiers) can be invoked only on an instance of WeldEvent<Object>.", format = Format.MESSAGE_FORMAT)
     IllegalStateException selectByTypeOnlyWorksOnObject();
+
+    @Message(id = 423, value = "Event type argument must not be a wildcard without lower bound: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException eventTypeArgumentWithoutLowerBound(Object injectionPoint);
 }

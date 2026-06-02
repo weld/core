@@ -22,7 +22,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,8 +76,19 @@ public class EventImpl<T> extends AbstractFacade<T, WeldEvent<T>> implements Wel
 
     private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         super(injectionPoint, null, beanManager);
+        checkEventTypeArgument(injectionPoint);
         this.injectionPointTypeHierarchy = new HierarchyDiscovery(getType());
         this.cachedObservers = new ConcurrentHashMap<Class<?>, CachedObservers>(DEFAULT_CACHE_CAPACITY);
+    }
+
+    private static void checkEventTypeArgument(InjectionPoint injectionPoint) {
+        Type type = injectionPoint.getType();
+        if (type instanceof ParameterizedType) {
+            Type typeArg = ((ParameterizedType) type).getActualTypeArguments()[0];
+            if (typeArg instanceof WildcardType && ((WildcardType) typeArg).getLowerBounds().length == 0) {
+                throw EventLogger.LOG.eventTypeArgumentWithoutLowerBound(injectionPoint);
+            }
+        }
     }
 
     /**
