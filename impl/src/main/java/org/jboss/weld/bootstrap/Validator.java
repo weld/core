@@ -886,20 +886,56 @@ public class Validator implements Service {
                             Formats.formatAsStackTraceElement(injectionPoint));
                 }
                 if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
-                    throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
-                            Formats.formatAsStackTraceElement(injectionPoint));
+                    WildcardType wildcard = (WildcardType) parameterizedType.getActualTypeArguments()[0];
+                    if (!isAllowedWildcard(wildcard, type)) {
+                        throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
+                                Formats.formatAsStackTraceElement(injectionPoint));
+                    }
                 }
             } else if (type.equals(Event.class) && parameterizedType.getRawType().equals(Instance.class)) {
-                // check for wildcard in Event injected via Instance -> @Inject Instance<Event<?>>
+                // Instance<X> or Instance<? extends X> where X is an invalid Event type is a definition error
                 Type instanceTypeArgument = parameterizedType.getActualTypeArguments()[0];
-                if (instanceTypeArgument instanceof ParameterizedType
-                        && ((ParameterizedType) instanceTypeArgument).getRawType().equals(Event.class)
-                        && ((ParameterizedType) instanceTypeArgument).getActualTypeArguments()[0] instanceof WildcardType) {
+                Type resolvedType = instanceTypeArgument;
+                if (instanceTypeArgument instanceof WildcardType) {
+                    WildcardType wildcard = (WildcardType) instanceTypeArgument;
+                    if (wildcard.getUpperBounds().length > 0) {
+                        resolvedType = wildcard.getUpperBounds()[0];
+                    }
+                }
+                if (isInvalidEventType(resolvedType)) {
                     throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
                             Formats.formatAsStackTraceElement(injectionPoint));
                 }
             }
         }
+    }
+
+    private static boolean isAllowedWildcard(WildcardType wildcard, Class<?> facadeType) {
+        if (facadeType.equals(Event.class)) {
+            // Event<? super X> is allowed, Event<?> and Event<? extends X> are not
+            return wildcard.getLowerBounds().length > 0;
+        }
+        if (facadeType.equals(Instance.class)) {
+            // Instance<? extends X> and Instance<?> are allowed, Instance<? super X> is not
+            return wildcard.getLowerBounds().length == 0;
+        }
+        return false;
+    }
+
+    private static boolean isInvalidEventType(Type type) {
+        if (type instanceof Class<?> && Event.class.equals(type)) {
+            return true;
+        }
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) type;
+            if (Event.class.equals(pt.getRawType())) {
+                Type typeArg = pt.getActualTypeArguments()[0];
+                if (typeArg instanceof WildcardType) {
+                    return ((WildcardType) typeArg).getLowerBounds().length == 0;
+                }
+            }
+        }
+        return false;
     }
 
     public static void checkBeanMetadataInjectionPoint(Object bean, InjectionPoint ip, Type expectedTypeArgument) {

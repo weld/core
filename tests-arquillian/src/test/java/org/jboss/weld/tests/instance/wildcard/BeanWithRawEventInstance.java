@@ -1,15 +1,13 @@
 package org.jboss.weld.tests.instance.wildcard;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
-public class BeanWithWildcardInstance {
+public class BeanWithRawEventInstance {
     @Inject
-    Instance<?> wildInstance;
-
-    public Instance<?> getWildInstance() {
-        return wildInstance;
-    }
+    @SuppressWarnings("rawtypes")
+    Instance<Event> rawEventInstance;
 }

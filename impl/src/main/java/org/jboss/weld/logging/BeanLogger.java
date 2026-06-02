@@ -561,4 +561,7 @@ public interface BeanLogger extends WeldLogger {
     @LogMessage(level = Level.ERROR)
     @Message(id = 1581, value = "Error invoking AutoCloseable.close() on an instance {0} of {1}", format = Format.MESSAGE_FORMAT)
     void errorAutoClosing(Object param1, Object param2);
+
+    @Message(id = 1582, value = "Instance type argument must not be a wildcard with lower bound: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException instanceTypeArgumentWithLowerBound(Object injectionPoint);
 }
