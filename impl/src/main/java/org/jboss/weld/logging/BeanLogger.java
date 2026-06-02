@@ -557,4 +557,7 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1580, value = "Cannot obtain contextual reference for {0} - a previously obtained reference has already been destroyed.", format = Format.MESSAGE_FORMAT)
     IllegalStateException tryingToResolveContextualReferenceAfterDestroyWasInvoked(Object handler);
+
+    @Message(id = 1581, value = "Instance type argument must not be a wildcard with lower bound: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException instanceTypeArgumentWithLowerBound(Object injectionPoint);
 }

@@ -1,0 +1,18 @@
+package org.jboss.weld.tests.event.wildcard.contravariant;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+
+@ApplicationScoped
+public class LifecycleEventObserver {
+
+    private boolean observed = false;
+
+    public void onLifecycleEvent(@Observes LifecycleEvent<?> event) {
+        observed = true;
+    }
+
+    public boolean isObserved() {
+        return observed;
+    }
+}

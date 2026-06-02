@@ -24,7 +24,9 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
@@ -89,6 +91,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext,
             BeanManagerImpl beanManager) {
         super(injectionPoint, creationalContext, beanManager);
+        checkInstanceTypeArgument(injectionPoint);
 
         if (injectionPoint.getQualifiers().isEmpty() && Object.class.equals(getType())) {
             // Do not prefetch the beans for Instance<Object> with no qualifiers
@@ -109,6 +112,16 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         // qualifiers and type
         this.ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
         this.ejbSupport = beanManager.getServices().get(EjbSupport.class);
+    }
+
+    private static void checkInstanceTypeArgument(InjectionPoint injectionPoint) {
+        Type type = injectionPoint.getType();
+        if (type instanceof ParameterizedType) {
+            Type typeArg = ((ParameterizedType) type).getActualTypeArguments()[0];
+            if (typeArg instanceof WildcardType && ((WildcardType) typeArg).getLowerBounds().length > 0) {
+                throw BeanLogger.LOG.instanceTypeArgumentWithLowerBound(injectionPoint);
+            }
+        }
     }
 
     public T get() {
