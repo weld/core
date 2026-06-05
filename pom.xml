@@ -524,6 +524,17 @@
             </modules>
         </profile>
         <profile>
+            <id>sigtest</id>
+            <activation>
+                <property>
+                    <name>sigtest</name>
+                </property>
+            </activation>
+            <modules>
+                <module>sigtest</module>
+            </modules>
+        </profile>
+        <profile>
             <id>examples</id>
             <activation>
                 <property>
