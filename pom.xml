@@ -61,7 +61,7 @@
         <arquillian.tomcat.version>1.2.4.Final</arquillian.tomcat.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Version of the CDI 4.1 TCK release -->
-        <cdi.tck.version>5.0.0.Beta1</cdi.tck.version>
+        <cdi.tck.version>5.0.0.Beta2-SNAPSHOT</cdi.tck.version>
         <!-- Version of the Jakarta Platform TCK 4.1 release -->
         <platform.tck.version>11.0.3</platform.tck.version>
         <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
@@ -521,6 +521,17 @@
             </activation>
             <modules>
                 <module>jboss-tck-runner</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>sigtest</id>
+            <activation>
+                <property>
+                    <name>sigtest</name>
+                </property>
+            </activation>
+            <modules>
+                <module>sigtest</module>
             </modules>
         </profile>
         <profile>
