@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -37,6 +38,8 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 
+// Re-enable once WildFly ships JPA 4.0
+@Ignore("WildFly still uses JPA 3.2 which is incompatible with JPA 4.0 API on classpath")
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class EMFFactoryTest {
