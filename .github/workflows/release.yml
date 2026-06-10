@@ -64,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: dist
-        path: ./dist/weld-*
+        path: ./dist/weld-*.zip
 
     - name: Create GitHub Release
       env:
@@ -78,7 +78,7 @@ jobs:
         fi
         gh release create "${TAG}" \
           --generate-notes \
-          --previous-tag "${PREV_TAG}" \
+          --notes-start-tag "${PREV_TAG}" \
           --title "Weld ${TAG}" \
           ${PRERELEASE_FLAG} \
           ./dist/weld-*.zip
