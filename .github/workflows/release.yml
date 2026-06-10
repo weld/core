@@ -23,12 +23,14 @@ jobs:
         metadata-file-path: '.github/project.yml'
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         token: ${{secrets.RELEASE_TOKEN}}
+        # Full history needed for git describe in the GitHub Release step
+        fetch-depth: 0
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         distribution: temurin
         java-version: 17
@@ -59,7 +61,24 @@ jobs:
         git checkout ${{steps.metadata.outputs.current-version}}
         gradle -PweldVersion=${{steps.metadata.outputs.current-version}} -PweldPath=${GITHUB_WORKSPACE}
     - name: Upload dist ZIP file
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: dist
-        path: ./dist/weld-*
+        path: ./dist/weld-*.zip
+
+    - name: Create GitHub Release
+      env:
+        GH_TOKEN: ${{secrets.RELEASE_TOKEN}}
+      run: |
+        TAG=${{steps.metadata.outputs.current-version}}
+        PREV_TAG=$(git describe --abbrev=0 --tags "${TAG}^")
+        PRERELEASE_FLAG=""
+        if echo "${TAG}" | grep -qE 'Alpha|Beta|CR'; then
+          PRERELEASE_FLAG="--prerelease"
+        fi
+        gh release create "${TAG}" \
+          --generate-notes \
+          --notes-start-tag "${PREV_TAG}" \
+          --title "Weld ${TAG}" \
+          ${PRERELEASE_FLAG} \
+          ./dist/weld-*.zip
