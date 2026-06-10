@@ -16,7 +16,7 @@ jobs:
     name: "Initial JDK 17 Weld Build + WildFly patch"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK
         uses: actions/setup-java@v4.2.1
         with:
@@ -97,7 +97,7 @@ jobs:
             java-version: 25,
           }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK ${{ matrix.java.name }}
         uses: actions/setup-java@v4.2.1
         with:
@@ -165,7 +165,7 @@ jobs:
             java-version: 25,
           }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK ${{ matrix.java.name }}
         uses: actions/setup-java@v4.2.1
         with:
@@ -224,7 +224,7 @@ jobs:
               java-version: 17,
           }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK ${{ matrix.java.name }}
         uses: actions/setup-java@v4.2.1
         with:
@@ -305,7 +305,7 @@ jobs:
             java-version: 25,
           }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK ${{ matrix.java.name }}
         uses: actions/setup-java@v4.2.1
         with:
@@ -340,7 +340,7 @@ jobs:
     needs: initial-build
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK
         uses: actions/setup-java@v4.2.1
         with:
@@ -416,7 +416,7 @@ jobs:
             java-version: 25,
           }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK ${{ matrix.java.name }}
         uses: actions/setup-java@v4.2.1
         with:
@@ -451,7 +451,7 @@ jobs:
     needs: initial-build
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDK 17
         uses: actions/setup-java@v4.2.1
         with:
