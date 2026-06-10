@@ -3,12 +3,41 @@ updates:
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
-    interval: daily
+    interval: weekly
   open-pull-requests-limit: 15
   target-branch: master
 - package-ecosystem: maven
   directory: "/"
   schedule:
-    interval: monthly
+    interval: weekly
   open-pull-requests-limit: 15
   target-branch: master
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 15
+  target-branch: "6.0"
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 15
+  target-branch: "6.0"
+  ignore:
+    - dependency-name: "jakarta.el:jakarta.el-api"
+      versions: ["[7.0,)"]
+    - dependency-name: "jakarta.faces:jakarta.faces-api"
+      versions: ["[5.0,)"]
+    - dependency-name: "jakarta.activation:jakarta.activation-api"
+      versions: ["[2.2,)"]
+    - dependency-name: "jakarta.jms:jakarta.jms-api"
+      versions: ["[3.2,)"]
+    - dependency-name: "jakarta.jws:jakarta.jws-api"
+      versions: ["[4.0,)"]
+    - dependency-name: "jakarta.xml.ws:jakarta.xml.ws-api"
+      versions: ["[5.0,)"]
+    - dependency-name: "jakarta.inject:jakarta.inject-tck"
+      versions: ["[2.1,)"]
+    - dependency-name: "org.jboss.weld:weld-api-bom"
+      versions: ["[7.0,)"]
