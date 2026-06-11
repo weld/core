@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>weld-core-parent</artifactId>
+        <groupId>org.jboss.weld</groupId>
+        <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>weld-sigtest</artifactId>
+    <packaging>jar</packaging>
+    <name>CDI API Signature Test</name>
+    <description>Verifies CDI API signatures against the TCK signature file</description>
+
+    <properties>
+        <!-- Used to select the correct JDK-specific sigfile artifact (classifier=jdk${value})
+             and by sigtest-maven-plugin to resolve JDK class signatures via -BootCP -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <maven.install.skip>true</maven.install.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-impl</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-sigfile</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>jakarta.cdi</groupId>
+                                    <artifactId>jakarta.cdi-tck-core-impl</artifactId>
+                                    <version>${cdi.tck.version}</version>
+                                    <type>sigfile</type>
+                                    <classifier>jdk${maven.compiler.release}</classifier>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>cdi-api.sigfile</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>jakarta.tck</groupId>
+                <artifactId>sigtest-maven-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>sigtest</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <action>strictcheck</action>
+                    <sigfile>${project.build.directory}/cdi-api.sigfile</sigfile>
+                    <packages>jakarta.decorator,jakarta.enterprise.**,jakarta.interceptor</packages>
+                    <report>${project.build.directory}/cdi-sig-report.txt</report>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
