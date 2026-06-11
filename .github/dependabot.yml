@@ -5,13 +5,13 @@ updates:
   schedule:
     interval: weekly
   open-pull-requests-limit: 15
-  target-branch: master
+  target-branch: main
 - package-ecosystem: maven
   directory: "/"
   schedule:
     interval: weekly
   open-pull-requests-limit: 15
-  target-branch: master
+  target-branch: main
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
