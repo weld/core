@@ -2,7 +2,7 @@ name: Weld CI
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     # Do not run for non-code changes
     paths-ignore:
       - '.gitignore'
@@ -44,7 +44,7 @@ jobs:
           path: ~/.m2/repository
           # Caching is an automated pre/post action that installs the cache if the key exists and exports the cache
           # after the job is done. In this case we refresh the cache monthly (by changing key) to avoid unlimited growth.
-          key: q2maven-master-${{ steps.get-date.outputs.date }}
+          key: q2maven-main-${{ steps.get-date.outputs.date }}
       - name: Build Weld SNAPSHOT
         run: mvn clean install -DskipTests -Dno-format -B -V -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Patch WildFly
