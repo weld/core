@@ -23,7 +23,7 @@ import org.jboss.weld.exceptions.WeldExceptionStringMessage;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * A localized message version of the {@linkjakarta.enterprise.context.ContextNotActiveException}.
+ * A localized message version of the {@link jakarta.enterprise.context.ContextNotActiveException}.
  *
  * @author David Allen
  */
