@@ -43,7 +43,7 @@ public class Foo {
 
     @PreDestroy
     public void destroy() {
-        try (InputStream in = new URL("http", "localhost", UNDERTOW_PORT, "test").openStream()) {
+        try (InputStream in = new URL("http", "localhost", UNDERTOW_PORT, "/test").openStream()) {
             // Sending HTTP GET request
         } catch (IOException e) {
             e.printStackTrace();
