@@ -12,7 +12,7 @@
         <listener class-name="org.testng.reporters.SuiteHTMLReporter"/>
         <listener class-name="org.testng.reporters.FailedReporter"/>
         <listener class-name="org.testng.reporters.XMLReporter"/>
-        <listener class-name="org.testng.reporters.EmailableReporter"/>
+        <listener class-name="org.testng.reporters.EmailableReporter2"/>
         <listener class-name="org.testng.reporters.TestHTMLReporter" />
     </listeners>
 
