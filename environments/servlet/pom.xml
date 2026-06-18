@@ -27,7 +27,6 @@
     <properties>
         <tomcat.version>11.0.22</tomcat.version>
         <jetty.version>12.1.10</jetty.version>
-        <smallrye.common.version>2.19.0</smallrye.common.version>
         <websockets.api>2.2.0</websockets.api>
         <undertow.version>2.3.24.Final</undertow.version>
     </properties>
@@ -93,16 +92,6 @@
                 <artifactId>jakarta.websocket-api</artifactId>
                 <version>${websockets.api}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <!-- Used by JBoss logmanager and Undertow-servlet dependencies in different versions, this unified them-->
-            <!-- Attempt to remove once we use jboss-logmanager > 3.1.2.Final -->
-            <dependency>
-                <groupId>io.smallrye.common</groupId>
-                <artifactId>smallrye-common-bom</artifactId>
-                <version>${smallrye.common.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
 
         </dependencies>
