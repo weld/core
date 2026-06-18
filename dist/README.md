@@ -60,4 +60,4 @@ Mailing Lists:   https://lists.jboss.org/mailman/listinfo/weld-dev
 
 Source Code:     http://github.com/weld
 
-Issue Tracking:  https://jira.jboss.org/jira/browse/WELD (core)
+Issue Tracking:  https://github.com/weld/core/issues
