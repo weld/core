@@ -570,7 +570,7 @@
                                 <configuration>
                                     <target>
                                         <property name="weld.api.search.string" value="&lt;weld.api.bom.version&gt;${weld.api.version}&lt;/weld.api.bom.version&gt;" />
-                                        <property name="bom.pom.file.path" value="bom${file.separator}pom.xml" />
+                                        <property name="bom.pom.file.path" value="${project.basedir}${file.separator}bom${file.separator}pom.xml" />
                                         <echo message="Verify Weld API used in ${bom.pom.file.path} matches ${weld.api.version}" />
                                         <fail message="Invalid Weld API version used in BOM pom.xml">
                                             <condition>
