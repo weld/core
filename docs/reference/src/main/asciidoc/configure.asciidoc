@@ -356,19 +356,13 @@ Last but not least external configuration is considered a source with the lowest
 For information on supported configuration keys, see <<weld_configuration>>. Also note that entries with unsupported properties will be ignored while invalid property values will lead
 to deployment problem.
 
-=== Excluding classes from scanning and deployment
+=== Filtering classes during scanning and deployment
 
-CDI 1.1 allows you to exclude classes in your archive from being
-scanned, having container lifecycle events fired, and being deployed as
-beans. See also
-http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#exclude_filters[12.4.2
+The CDI specification allows you to exclude classes in your archive from
+being scanned, having container lifecycle events fired, and being
+deployed as beans. See also
+https://jakarta.ee/specifications/cdi/5.0/jakarta-cdi-spec-5.0#exclude_filters[24.4.2
 Exclude filters].
-
-NOTE: Weld still supports the original non-portable way of excluding classes
-from discovery. The formal specification can be found in the xsd,
-located at http://jboss.org/schema/weld/beans_1_1.xsd. Unlike Weld, the
-CDI specification does not support regular expression patterns and `!`
-character to invert the activation condition.
 
 All the configuration is done in the `beans.xml` file. For more
 information see
@@ -379,7 +373,8 @@ ifdef::generate-index-link[link:ee.html#packaging-and-deployment[Packaging and d
 [source.XML, xml]
 ------------------------------------------------------------------------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee">
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       bean-discovery-mode="all">
 
     <scan>
 
@@ -435,13 +430,79 @@ filter if the system property's value matches exactly.
 The third filter shows how to exclude all types from a specific package
 (note the `name` attribute has suffix ".*").
 
-The fourth filter shows more a advanced configurations, where we use
+The fourth filter shows more advanced configurations, where we use
 multiple activation conditions to decide whether to activate the filter.
 
 You can combine as many activation conditions as you like (_all_ must be
-true for the filter to be activated). If you want to a filter that is
+true for the filter to be activated). If you want a filter that is
 active if _any_ of the activation conditions are true, then you need
 multiple identical filters, each with different activation conditions.
+
+==== Weld-specific scanning extensions
+
+In addition to the CDI `<scan>` element, Weld provides its own scanning
+extensions in the `http://jboss.org/schema/weld/beans` namespace.
+These extensions support the same activation conditions as the CDI
+standard (`<if-class-available>`, `<if-class-not-available>`,
+`<if-system-property>`) and add several capabilities on top:
+
+* *Include filters* — when at least one `<include>` is specified, only
+  classes matching an include filter are considered for scanning. If no
+  includes are defined, all classes are included by default. Exclude
+  filters always take precedence — a class matching both an include and
+  an exclude will be excluded.
+* *Regular expression patterns* — the `pattern` attribute accepts a Java
+  regular expression as an alternative to the Ant-style `name` attribute.
+  Only one of `name` or `pattern` may be specified on a single filter.
+* *Extended Ant-style patterns* — unlike the CDI standard which only
+  allows `*` and `**` as a suffix, Weld's `name` attribute supports full
+  Ant-style matching including `?` (exactly one character) and `*`
+  (zero or more characters) anywhere in the pattern.
+* *Inverted activation conditions* — prefixing the `name` of
+  `<if-class-available>` or the `name`/`value` of `<if-system-property>`
+  with `!` inverts the condition.
+
+The formal specification can be found in the
+https://github.com/weld/api/blob/main/weld/src/main/resources/weld_1_1.xsd[Weld XSD].
+
+[source.XML, xml]
+------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       xmlns:weld="http://jboss.org/schema/weld/beans"
+       bean-discovery-mode="all">
+
+    <weld:scan>
+
+        <!-- Whitelist: only scan classes from this package and its sub-packages.
+             All other classes in this archive are ignored. -->
+        <weld:include name="com.acme.web.**"/>
+
+        <!-- Exclude a sub-package from the whitelisted set above -->
+        <weld:exclude name="com.acme.web.internal.**"/>
+
+        <!-- Use a regular expression instead of an Ant pattern -->
+        <weld:exclude pattern="com\.acme\.web\.experimental\..*"/>
+
+        <!-- Conditionally exclude: only active if the class is NOT on the classpath -->
+        <weld:exclude name="com.acme.web.resteasy.**">
+            <weld:if-class-available name="!org.jboss.resteasy.core.ResteasyContext"/>
+        </weld:exclude>
+
+    </weld:scan>
+
+</beans>
+------------------------------------------------------------------------------------------------------
+
+In this example, only classes under `com.acme.web` are scanned.
+Within that set, the `internal` sub-package is always excluded,
+the `experimental` sub-package is excluded using a regular expression,
+and the `resteasy` sub-package is excluded only if RESTEasy is not
+on the classpath.
+
+NOTE: Include and exclude filters only apply to classes within the same
+bean archive as the `beans.xml` file. They do not affect classes in
+other bean archives (e.g. dependency JARs with their own `beans.xml`).
 
 
 === Mapping CDI contexts to HTTP requests
