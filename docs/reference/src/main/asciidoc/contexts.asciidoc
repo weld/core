@@ -325,7 +325,7 @@ public interface WeldManager extends BeanManager {
 ==== Example of context propagation
 
 There is a concise example in a form of a test in our code showing how to propagate all built-in contexts.
-This doc only contains an excerpt from it, you can look link:https://github.com/weld/core/blob/master/tests-arquillian/src/test/java/org/jboss/weld/tests/contexts/propagation[here] to get the full picture.
+This doc only contains an excerpt from it, you can look link:https://github.com/weld/core/blob/main/tests-arquillian/src/test/java/org/jboss/weld/tests/contexts/propagation[here] to get the full picture.
 
 Following code shows a service that provides an extra thread onto which you offload a `Callable<T>` that uses beans from currently active context.
 The service activates contexts, propagates state from original thread, executes task and cleans up.
@@ -340,7 +340,6 @@ public class ContextPropagationService {
     public static <T> Future<T> propagateContextsAndSubmitTask(Callable<T> task) {
         // gather all the contexts we want to propagate and the instances in them
         Map<Class<? extends Annotation>, Collection<ContextualInstance<Object>>> scopeToContextualInstances = new HashMap<>();
-        WeldManager get = CDI.current().select(WeldManager.class).get();
         for (WeldAlterableContext context : CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()) {
             scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances());
         }
@@ -349,11 +348,14 @@ public class ContextPropagationService {
 
             @Override
             public T call() throws Exception {
-                // Get WeldManager,get instances of @Bound contexts for request, session and conversation scopes
+                // Get WeldManager and @Bound context instances for request, session and conversation scopes
                 WeldManager weldManager = CDI.current().select(WeldManager.class).get();
-                BoundRequestContext requestContext = weldManager.instance().select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
-                BoundSessionContext sessionContext = weldManager.instance().select(BoundSessionContext.class, BoundLiteral.INSTANCE).get();
-                BoundConversationContext conversationContext = weldManager.instance().select(BoundConversationContext.class, BoundLiteral.INSTANCE).get();
+                BoundRequestContext requestContext = weldManager.instance()
+                    .select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
+                BoundSessionContext sessionContext = weldManager.instance()
+                    .select(BoundSessionContext.class, BoundLiteral.INSTANCE).get();
+                BoundConversationContext conversationContext = weldManager.instance()
+                    .select(BoundConversationContext.class, BoundLiteral.INSTANCE).get();
 
                 // We will be using bound contexts, prepare backing structures for contexts
                 Map<String, Object> sessionMap = new HashMap<>();
