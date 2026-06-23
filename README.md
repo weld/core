@@ -22,7 +22,7 @@ To build Weld simply run
 Upgrading Weld in WildFly
 -------------------------
 
-Firstly, set the `JBOSS_HOME` environment property to point to your WildFly installation which already contains Weld 3 in older version:
+Firstly, set the `JBOSS_HOME` environment property to point to your WildFly installation:
 
 > $ export JBOSS_HOME=/opt/wildfly
 

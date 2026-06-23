@@ -183,15 +183,16 @@ Jetty 12 and newer are supported. Context activation/deactivation and dependency
 No further configuration is needed when starting Jetty as an embedded webapp server from within another Java program.
 However, if you’re using a Jetty standalone instance, there is one more configuration step that is required.
 
-===== Jetty `ee10-cdi` Module
+===== Jetty CDI Module
 
-The Weld/Jetty integration uses the Jetty `ee10-cdi` module.
-To activate this module in Jetty, the argument `--add-modules=ee10-cdi` needs to be added to the
+The Weld/Jetty integration uses a Jetty CDI module.
+The module name depends on which Jakarta EE version you target: `ee10-cdi` for Jakarta EE 10 (Jetty 12.0.x) or `ee11-cdi` for Jakarta EE 11 (Jetty 12.1.x).
+To activate this module in Jetty, the argument `--add-modules=ee10-cdi` (or `ee11-cdi`) needs to be added to the
 command line, which can be done for a standard distribution by running the commands:
 
 -------------------------
 cd $JETTY_BASE
-java -jar $JETTY_HOME/start.jar --add-modules=ee10-cdi
+java -jar $JETTY_HOME/start.jar --add-modules=ee11-cdi
 -------------------------
 
 ==== Undertow
