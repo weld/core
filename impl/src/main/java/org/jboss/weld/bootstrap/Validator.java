@@ -864,11 +864,44 @@ public class Validator implements Service {
                             Formats.formatAsStackTraceElement(injectionPoint));
                 }
                 if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
-                    throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
-                            Formats.formatAsStackTraceElement(injectionPoint));
+                    WildcardType wildcard = (WildcardType) parameterizedType.getActualTypeArguments()[0];
+                    if (!isAllowedWildcard(wildcard, type)) {
+                        throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
+                                Formats.formatAsStackTraceElement(injectionPoint));
+                    }
+                }
+            } else if (type.equals(Event.class) && parameterizedType.getRawType().equals(Instance.class)) {
+                // check for wildcard in Event injected via Instance -> @Inject Instance<Event<?>>
+                Type instanceTypeArgument = parameterizedType.getActualTypeArguments()[0];
+                if (instanceTypeArgument instanceof ParameterizedType
+                        && ((ParameterizedType) instanceTypeArgument).getRawType().equals(Event.class)
+                        && ((ParameterizedType) instanceTypeArgument).getActualTypeArguments()[0] instanceof WildcardType) {
+                    WildcardType nestedWildcard = (WildcardType) ((ParameterizedType) instanceTypeArgument)
+                            .getActualTypeArguments()[0];
+                    if (!isAllowedWildcard(nestedWildcard, Event.class)) {
+                        throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint,
+                                Formats.formatAsStackTraceElement(injectionPoint));
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Event is contravariant so {@code Event<? super X>} is allowed.
+     * Instance is covariant so {@code Instance<? extends X>} is allowed.
+     * Unbounded wildcards are rejected for both.
+     */
+    private static boolean isAllowedWildcard(WildcardType wildcard, Class<?> facadeType) {
+        if (facadeType.equals(Event.class)) {
+            return wildcard.getLowerBounds().length > 0;
+        }
+        if (facadeType.equals(Instance.class)) {
+            Type[] upperBounds = wildcard.getUpperBounds();
+            return wildcard.getLowerBounds().length == 0
+                    && upperBounds.length > 0 && !Object.class.equals(upperBounds[0]);
+        }
+        return false;
     }
 
     public static void checkBeanMetadataInjectionPoint(Object bean, InjectionPoint ip, Type expectedTypeArgument) {
