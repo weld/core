@@ -108,6 +108,13 @@
     <dependencyManagement>
 
         <dependencies>
+            <!-- TODO remove once Weld API updates CDI API dependency -->
+            <dependency>
+                <groupId>jakarta.cdi</groupId>
+                <artifactId>jakarta.cdi-api</artifactId>
+                <version>5.0.0.Beta2-SNAPSHOT</version>
+            </dependency>
+
             <!--Optional BCEL classes dependency-->
             <dependency>
                 <groupId>org.apache.bcel</groupId>
