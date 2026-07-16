@@ -38,7 +38,7 @@ public class TestCDI extends CDI<Object> {
      * value directly in a subclass. However, it was probably not intended for the subclass to be able to do this.
      */
     public static void unsetCDIProvider() {
-        configuredProvider = null;
+        providerState.set(initialState());
     }
 
     @Override
