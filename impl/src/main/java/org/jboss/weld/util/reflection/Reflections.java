@@ -563,11 +563,14 @@ public class Reflections {
     }
 
     public static void ensureModuleAccess(Class<?> targetClass) {
+        Module coreModule = Reflections.class.getModule();
+        if (!coreModule.isNamed()) {
+            return;
+        }
         Module targetModule = targetClass.getModule();
         if (!targetModule.isNamed()) {
             return;
         }
-        Module coreModule = Reflections.class.getModule();
         if (!coreModule.canRead(targetModule)) {
             coreModule.addReads(targetModule);
         }
