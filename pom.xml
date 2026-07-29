@@ -85,6 +85,7 @@
         <jsp.api.version>4.0.0</jsp.api.version>
         <jstl.api.version>3.0.2</jstl.api.version>
         <junit.version>4.13.2</junit.version>
+        <junit.jupiter.version>6.1.2</junit.jupiter.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.resolver.version>3.3.7</shrinkwrap.resolver.version>
         <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>

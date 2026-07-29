@@ -7,6 +7,8 @@ module org.jboss.weld.module.web {
     requires static jakarta.el;
     requires static jakarta.servlet;
 
+    opens org.jboss.weld.module.web.logging to org.jboss.logging;
+
     provides org.jboss.weld.module.WeldModule
         with org.jboss.weld.module.web.WeldWebModule;
 }

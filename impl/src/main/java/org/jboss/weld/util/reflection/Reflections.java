@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 import org.jboss.weld.bootstrap.api.ModuleAccessForwarder;
 import org.jboss.weld.exceptions.WeldException;
@@ -547,7 +548,7 @@ public class Reflections {
         return false;
     }
 
-    private static final Set<String> forwardedPackages = ConcurrentHashMap.newKeySet();
+    private static final ConcurrentHashMap<String, CountDownLatch> forwardedPackages = new ConcurrentHashMap<>();
     private static volatile ModuleAccessForwarder moduleAccessForwarder;
     private static volatile String entryPointModuleName;
 
@@ -557,9 +558,9 @@ public class Reflections {
     }
 
     public static void clearModuleAccessForwarder() {
+        forwardedPackages.clear();
         moduleAccessForwarder = null;
         entryPointModuleName = null;
-        forwardedPackages.clear();
     }
 
     public static void ensureModuleAccess(Class<?> targetClass) {
@@ -583,21 +584,39 @@ public class Reflections {
             return;
         }
         ModuleAccessForwarder forwarder = moduleAccessForwarder;
+        if (forwarder == null) {
+            return;
+        }
+        // ConcurrentBeanDeployer processes beans in parallel, so multiple threads
+        // may need access to the same package simultaneously. A CountDownLatch
+        // ensures only one thread calls addOpens() while others wait for it to
+        // complete before proceeding to setAccessible().
         String key = targetModule.getName() + "/" + pkg;
-        if (forwardedPackages.add(key) && forwarder != null) {
+        CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch existing = forwardedPackages.putIfAbsent(key, latch);
+        if (existing != null) {
             try {
-                forwarder.forwardAccess(targetModule, pkg, coreModule);
-            } catch (Exception e) {
-                String target = entryPointModuleName != null
-                        ? entryPointModuleName
-                        : "org.jboss.weld.se";
-                throw new RuntimeException(
-                        "Cannot access package '" + pkg + "' in module '"
-                                + targetModule.getName() + "'. Add 'opens " + pkg
-                                + " to " + target + ";' to your module-info.java"
-                                + " to allow CDI bean discovery and injection.",
-                        e);
+                existing.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
+            return;
+        }
+        try {
+            forwarder.forwardAccess(targetModule, pkg, coreModule);
+        } catch (Exception e) {
+            forwardedPackages.remove(key);
+            String target = entryPointModuleName != null
+                    ? entryPointModuleName
+                    : coreModule.getName();
+            throw new RuntimeException(
+                    "Cannot access package '" + pkg + "' in module '"
+                            + targetModule.getName() + "'. Add 'opens " + pkg
+                            + " to " + target + ";' to your module-info.java"
+                            + " to allow CDI bean discovery and injection.",
+                    e);
+        } finally {
+            latch.countDown();
         }
     }
 

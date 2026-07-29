@@ -3,6 +3,7 @@ module org.jboss.weld.servlet {
     requires org.jboss.weld.environment.common;
     requires org.jboss.weld.lite.extension.translator;
     requires org.jboss.logging;
+    requires static org.jboss.logging.annotations;
     requires jakarta.servlet;
     requires static org.apache.tomcat.catalina;
 
