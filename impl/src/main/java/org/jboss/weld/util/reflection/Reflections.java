@@ -38,7 +38,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.jboss.weld.bootstrap.api.ModuleAccessForwarder;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -545,6 +547,53 @@ public class Reflections {
         return false;
     }
 
+    private static final Set<String> forwardedPackages = ConcurrentHashMap.newKeySet();
+    private static volatile ModuleAccessForwarder moduleAccessForwarder;
+    private static volatile String entryPointModuleName;
+
+    public static void setModuleAccessForwarder(ModuleAccessForwarder forwarder, String moduleName) {
+        moduleAccessForwarder = forwarder;
+        entryPointModuleName = moduleName;
+    }
+
+    public static void clearModuleAccessForwarder() {
+        moduleAccessForwarder = null;
+        entryPointModuleName = null;
+        forwardedPackages.clear();
+    }
+
+    public static void ensureModuleAccess(Class<?> targetClass) {
+        Module targetModule = targetClass.getModule();
+        if (!targetModule.isNamed()) {
+            return;
+        }
+        Module coreModule = Reflections.class.getModule();
+        if (!coreModule.canRead(targetModule)) {
+            coreModule.addReads(targetModule);
+        }
+        String pkg = targetClass.getPackageName();
+        if (targetModule.isOpen(pkg, coreModule)) {
+            return;
+        }
+        ModuleAccessForwarder forwarder = moduleAccessForwarder;
+        String key = targetModule.getName() + "/" + pkg;
+        if (forwardedPackages.add(key) && forwarder != null) {
+            try {
+                forwarder.forwardAccess(targetModule, pkg, coreModule);
+            } catch (Exception e) {
+                String target = entryPointModuleName != null
+                        ? entryPointModuleName
+                        : "org.jboss.weld.se";
+                throw new RuntimeException(
+                        "Cannot access package '" + pkg + "' in module '"
+                                + targetModule.getName() + "'. Add 'opens " + pkg
+                                + " to " + target + ";' to your module-info.java"
+                                + " to allow CDI bean discovery and injection.",
+                        e);
+            }
+        }
+    }
+
     /**
      * Set the {@code accessible} flag for this accessible object.
      * Uses {@link AccessibleObject#isAccessible()} to check accessibility.
@@ -564,6 +613,9 @@ public class Reflections {
      */
     public static void ensureAccessible(AccessibleObject accessibleObject, Object instance) {
         if (accessibleObject != null) {
+            if (accessibleObject instanceof Member member) {
+                ensureModuleAccess(member.getDeclaringClass());
+            }
             if (instance != null) {
                 if (!accessibleObject.canAccess(instance)) {
                     accessibleObject.setAccessible(true);
@@ -584,6 +636,7 @@ public class Reflections {
      * @param <T>
      */
     public static <T extends AccessibleObject & Member> T getAccessibleCopyOfMember(T member) {
+        ensureModuleAccess(member.getDeclaringClass());
         T copy = copyMember(member);
         copy.setAccessible(true);
         return copy;

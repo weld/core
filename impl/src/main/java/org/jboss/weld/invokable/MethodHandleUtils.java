@@ -17,6 +17,7 @@ import jakarta.enterprise.invoke.AsyncHandler;
 import jakarta.enterprise.invoke.Invoker;
 
 import org.jboss.weld.logging.InvokerLogger;
+import org.jboss.weld.util.reflection.Reflections;
 
 class MethodHandleUtils {
     private MethodHandleUtils() {
@@ -86,17 +87,8 @@ class MethodHandleUtils {
             return MethodHandles.publicLookup();
         }
 
-        // to create a method handle for a `protected`, package-private or `private` method,
-        // we need a private lookup in the declaring class
-        Module thisModule = MethodHandleUtils.class.getModule();
-        Class<?> targetClass = method.getDeclaringClass();
-        Module targetModule = targetClass.getModule();
-        if (!thisModule.canRead(targetModule)) {
-            // we need to read the other module in order to have privateLookup access
-            // see javadoc for MethodHandles.privateLookupIn()
-            thisModule.addReads(targetModule);
-        }
-        return MethodHandles.privateLookupIn(targetClass, MethodHandles.lookup());
+        Reflections.ensureModuleAccess(method.getDeclaringClass());
+        return MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
     }
 
     static MethodHandle createMethodHandle(Method method) {
