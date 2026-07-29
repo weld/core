@@ -1,6 +1,9 @@
 module org.jboss.weld.module.web {
     requires org.jboss.weld.core;
     requires org.jboss.weld.spi;
+    requires org.jboss.logging;
+    requires static org.jboss.logging.annotations;
+    requires static jakarta.cdi.el;
     requires static jakarta.el;
     requires static jakarta.servlet;
 

@@ -1,6 +1,7 @@
 module org.jboss.weld.environment.common {
     requires transitive org.jboss.weld.core;
     requires org.jboss.logging;
+    requires static org.jboss.logging.annotations;
     requires static org.jboss.jandex;
 
     exports org.jboss.weld.environment to
