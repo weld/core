@@ -45,6 +45,10 @@ jobs:
           # Caching is an automated pre/post action that installs the cache if the key exists and exports the cache
           # after the job is done. In this case we refresh the cache monthly (by changing key) to avoid unlimited growth.
           key: q2maven-main-${{ steps.get-date.outputs.date }}
+      - name: Build Weld API SNAPSHOT
+        run: |
+          git clone --branch jpms-migration --depth 1 https://github.com/manovotn/api.git /tmp/weld-api
+          mvn -f /tmp/weld-api/pom.xml clean install -DskipTests -Dno-format -B -V
       - name: Build Weld SNAPSHOT
         run: mvn clean install -DskipTests -Dno-format -B -V -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Patch WildFly
