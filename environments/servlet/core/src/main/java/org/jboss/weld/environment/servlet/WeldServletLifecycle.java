@@ -148,6 +148,7 @@ public class WeldServletLifecycle {
         }
 
         final CDI11Bootstrap bootstrap = new WeldBootstrap();
+        bootstrap.setModuleAccessForwarder((source, pkg, target) -> source.addOpens(pkg, target));
         if (isBootstrapNeeded) {
             final CDI11Deployment deployment = createDeployment(context, bootstrap);
 

@@ -40,6 +40,7 @@ import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.proxy.WeldClientProxy;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * This class is a default implementation of ProxyServices that will only be loaded if no other implementation is detected.
@@ -149,51 +150,40 @@ public class WeldDefaultProxyServices implements ProxyServices {
      */
     private Class<?> defineWithMethodLookup(String classToDefineName, byte[] classBytes, Class<?> originalClass,
             ClassLoader loader) {
-        Module thisModule = WeldDefaultProxyServices.class.getModule();
-        Module apiModule = WeldClientProxy.class.getModule();
-
         try {
             Class<?> lookupBaseClass;
             try {
-                // In case of decorators, it looks like we sometimes need the original class instead
                 lookupBaseClass = loader.loadClass(classToDefineName.substring(0, classToDefineName.indexOf("$")));
             } catch (Exception e) {
                 lookupBaseClass = originalClass;
             }
 
-            // Ensure we can read the other module, and the other module can read us
+            Reflections.ensureModuleAccess(lookupBaseClass);
 
+            Module thisModule = WeldDefaultProxyServices.class.getModule();
+            Module apiModule = WeldClientProxy.class.getModule();
             Module lookupClassModule = lookupBaseClass.getModule();
-            if (!thisModule.canRead(lookupClassModule)) {
-                // we need to read the other module in order to have privateLookup access
-                // see javadoc for MethodHandles.privateLookupIn()
-                thisModule.addReads(lookupClassModule);
-            }
 
-            try {
-                // the other module needs to read us, since the proxy we are
-                // about to generate inside that module uses our classes
-
+            if (lookupClassModule.isNamed()) {
                 MethodHandle ensureReadsMethod = null;
                 if (!lookupClassModule.canRead(thisModule)) {
                     ensureReadsMethod = generateEnsureReadsMethod(lookupBaseClass);
                     ensureReadsMethod.invoke(thisModule);
                 }
-
                 if (!lookupClassModule.canRead(apiModule)) {
                     if (ensureReadsMethod == null) {
                         ensureReadsMethod = generateEnsureReadsMethod(lookupBaseClass);
                     }
                     ensureReadsMethod.invoke(apiModule);
                 }
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
             }
 
             MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(lookupBaseClass, MethodHandles.lookup());
             return lookup.defineClass(classBytes);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
         }
     }
 

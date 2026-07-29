@@ -51,6 +51,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class BeanMethods {
 
@@ -360,6 +361,7 @@ public class BeanMethods {
                     if (methodMetadata == null) {
                         methodMetadata = new LinkedList<Method>();
                     }
+                    Reflections.ensureModuleAccess(javaMethod.getDeclaringClass());
                     javaMethod.setAccessible(true);
                     methodMetadata.add(method.getJavaMember());
                 }

@@ -85,12 +85,13 @@
         <jsp.api.version>4.0.0</jsp.api.version>
         <jstl.api.version>3.0.2</jstl.api.version>
         <junit.version>4.13.2</junit.version>
+        <junit.jupiter.version>6.1.2</junit.jupiter.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.resolver.version>3.3.7</shrinkwrap.resolver.version>
         <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.10.2</spotbugs-annotations-version>
         <testng.version>7.9.0</testng.version>
-        <weld.api.version>7.0.Beta2</weld.api.version>
+        <weld.api.version>7.0-SNAPSHOT</weld.api.version>
         <wildfly.arquillian.version>5.1.0.Final</wildfly.arquillian.version>
     </properties>
 
@@ -469,6 +470,12 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -509,6 +516,7 @@
                 <module>lang-model-tck</module>
                 <module>tests-arquillian</module>
                 <module>inject-tck-runner</module>
+                <module>tests-jpms</module>
             </modules>
         </profile>
         <profile>

@@ -38,7 +38,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
+import org.jboss.weld.bootstrap.api.ModuleAccessForwarder;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -545,6 +548,78 @@ public class Reflections {
         return false;
     }
 
+    private static final ConcurrentHashMap<String, CountDownLatch> forwardedPackages = new ConcurrentHashMap<>();
+    private static volatile ModuleAccessForwarder moduleAccessForwarder;
+    private static volatile String entryPointModuleName;
+
+    public static void setModuleAccessForwarder(ModuleAccessForwarder forwarder, String moduleName) {
+        moduleAccessForwarder = forwarder;
+        entryPointModuleName = moduleName;
+    }
+
+    public static void clearModuleAccessForwarder() {
+        forwardedPackages.clear();
+        moduleAccessForwarder = null;
+        entryPointModuleName = null;
+    }
+
+    public static void ensureModuleAccess(Class<?> targetClass) {
+        Module coreModule = Reflections.class.getModule();
+        if (!coreModule.isNamed()) {
+            return;
+        }
+        Module targetModule = targetClass.getModule();
+        if (!targetModule.isNamed()) {
+            return;
+        }
+        String moduleName = targetModule.getName();
+        if (moduleName.startsWith("java.") || moduleName.startsWith("jdk.")) {
+            return;
+        }
+        if (!coreModule.canRead(targetModule)) {
+            coreModule.addReads(targetModule);
+        }
+        String pkg = targetClass.getPackageName();
+        if (targetModule.isOpen(pkg, coreModule)) {
+            return;
+        }
+        ModuleAccessForwarder forwarder = moduleAccessForwarder;
+        if (forwarder == null) {
+            return;
+        }
+        // ConcurrentBeanDeployer processes beans in parallel, so multiple threads
+        // may need access to the same package simultaneously. A CountDownLatch
+        // ensures only one thread calls addOpens() while others wait for it to
+        // complete before proceeding to setAccessible().
+        String key = targetModule.getName() + "/" + pkg;
+        CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch existing = forwardedPackages.putIfAbsent(key, latch);
+        if (existing != null) {
+            try {
+                existing.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return;
+        }
+        try {
+            forwarder.forwardAccess(targetModule, pkg, coreModule);
+        } catch (Exception e) {
+            forwardedPackages.remove(key);
+            String target = entryPointModuleName != null
+                    ? entryPointModuleName
+                    : coreModule.getName();
+            throw new RuntimeException(
+                    "Cannot access package '" + pkg + "' in module '"
+                            + targetModule.getName() + "'. Add 'opens " + pkg
+                            + " to " + target + ";' to your module-info.java"
+                            + " to allow CDI bean discovery and injection.",
+                    e);
+        } finally {
+            latch.countDown();
+        }
+    }
+
     /**
      * Set the {@code accessible} flag for this accessible object.
      * Uses {@link AccessibleObject#isAccessible()} to check accessibility.
@@ -564,6 +639,9 @@ public class Reflections {
      */
     public static void ensureAccessible(AccessibleObject accessibleObject, Object instance) {
         if (accessibleObject != null) {
+            if (accessibleObject instanceof Member member) {
+                ensureModuleAccess(member.getDeclaringClass());
+            }
             if (instance != null) {
                 if (!accessibleObject.canAccess(instance)) {
                     accessibleObject.setAccessible(true);
@@ -584,6 +662,7 @@ public class Reflections {
      * @param <T>
      */
     public static <T extends AccessibleObject & Member> T getAccessibleCopyOfMember(T member) {
+        ensureModuleAccess(member.getDeclaringClass());
         T copy = copyMember(member);
         copy.setAccessible(true);
         return copy;

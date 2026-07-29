@@ -831,6 +831,7 @@ public class Weld extends SeContainerInitializer implements ContainerInstanceFac
         }
 
         final WeldBootstrap bootstrap = new WeldBootstrap();
+        bootstrap.setModuleAccessForwarder((source, pkg, target) -> source.addOpens(pkg, target));
         // load possible additional BDA
         parseAdditionalBeanDefiningAnnotations();
         final Deployment deployment = createDeployment(resourceLoader, bootstrap);

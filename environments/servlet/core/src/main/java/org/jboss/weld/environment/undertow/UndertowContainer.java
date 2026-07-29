@@ -29,7 +29,14 @@ public class UndertowContainer implements Container {
 
     @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
-        return context.getServletContext().getClass().getName().startsWith(UDT_SERVLET_PREFIX);
+        boolean isUndertow = context.getServletContext().getClass().getName().startsWith(UDT_SERVLET_PREFIX);
+        if (isUndertow) {
+            Module servletModule = this.getClass().getModule();
+            if (servletModule.isNamed()) {
+                servletModule.addReads(context.getServletContext().getClass().getModule());
+            }
+        }
+        return isUndertow;
     }
 
     @Override

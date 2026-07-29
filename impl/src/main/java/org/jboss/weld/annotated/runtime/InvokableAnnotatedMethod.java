@@ -49,6 +49,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
         Method method = annotatedMethod.getJavaMember();
         this.methods = Collections.<Class<?>, Method> singletonMap(method.getDeclaringClass(), method);
         if (method != null && !method.isAccessible()) {
+            Reflections.ensureModuleAccess(method.getDeclaringClass());
             method.setAccessible(true);
         }
     }
@@ -83,6 +84,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
             Method delegate = annotatedMethod.getJavaMember();
             method = Reflections.lookupMethod(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
             if (method != null && !method.canAccess(instance)) {
+                Reflections.ensureModuleAccess(method.getDeclaringClass());
                 method.setAccessible(true);
             }
             synchronized (this) {

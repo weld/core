@@ -23,6 +23,7 @@ import jakarta.enterprise.inject.spi.Extension;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
+import org.jboss.weld.bootstrap.api.ModuleAccessForwarder;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -34,6 +35,7 @@ import org.jboss.weld.config.SystemPropertiesConfiguration;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.ServiceLoader;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.xml.BeansXmlParser;
 import org.jboss.weld.xml.BeansXmlStreamParser;
 import org.jboss.weld.xml.BeansXmlValidator;
@@ -56,6 +58,12 @@ public class WeldBootstrap implements CDI11Bootstrap {
     public WeldBootstrap() {
         weldStartup = new WeldStartup();
         beansXmlValidator = SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled() ? null : new BeansXmlValidator();
+    }
+
+    @Override
+    public void setModuleAccessForwarder(ModuleAccessForwarder forwarder) {
+        String moduleName = forwarder.getClass().getModule().getName();
+        Reflections.setModuleAccessForwarder(forwarder, moduleName);
     }
 
     @Override
@@ -115,6 +123,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
             weldRuntime.shutdown();
             weldRuntime = null;
         }
+        Reflections.clearModuleAccessForwarder();
     }
 
     @Override
