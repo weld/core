@@ -516,11 +516,6 @@
                 <module>lang-model-tck</module>
                 <module>tests-arquillian</module>
                 <module>inject-tck-runner</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>jpms-tests</id>
-            <modules>
                 <module>tests-jpms</module>
             </modules>
         </profile>
