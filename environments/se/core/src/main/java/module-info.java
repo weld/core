@@ -1,3 +1,7 @@
+/*
+ * Copyright The Weld Authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 module org.jboss.weld.se {
     requires transitive org.jboss.weld.core;
     requires org.jboss.weld.environment.common;

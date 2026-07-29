@@ -1,3 +1,7 @@
+/*
+ * Copyright The Weld Authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 module org.jboss.weld.lite.extension.translator {
     requires org.jboss.weld.core;
     requires org.jboss.weld.spi;
