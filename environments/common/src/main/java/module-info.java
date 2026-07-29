@@ -4,6 +4,8 @@ module org.jboss.weld.environment.common {
     requires static org.jboss.logging.annotations;
     requires static org.jboss.jandex;
 
+    opens org.jboss.weld.environment.logging to org.jboss.logging;
+
     exports org.jboss.weld.environment to
         org.jboss.weld.se, org.jboss.weld.servlet;
     exports org.jboss.weld.environment.deployment to

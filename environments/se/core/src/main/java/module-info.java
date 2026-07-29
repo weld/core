@@ -5,6 +5,8 @@ module org.jboss.weld.se {
     requires org.jboss.logging;
     requires static org.jboss.logging.annotations;
 
+    opens org.jboss.weld.environment.se.logging to org.jboss.logging;
+
     exports org.jboss.weld.environment.se;
     exports org.jboss.weld.environment.se.bindings;
     exports org.jboss.weld.environment.se.contexts;

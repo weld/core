@@ -571,6 +571,10 @@ public class Reflections {
         if (!targetModule.isNamed()) {
             return;
         }
+        String moduleName = targetModule.getName();
+        if (moduleName.startsWith("java.") || moduleName.startsWith("jdk.")) {
+            return;
+        }
         if (!coreModule.canRead(targetModule)) {
             coreModule.addReads(targetModule);
         }

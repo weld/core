@@ -6,6 +6,8 @@ module org.jboss.weld.servlet {
     requires jakarta.servlet;
     requires static org.apache.tomcat.catalina;
 
+    opens org.jboss.weld.environment.servlet.logging to org.jboss.logging;
+
     exports org.jboss.weld.environment.servlet;
 
     provides jakarta.servlet.ServletContainerInitializer

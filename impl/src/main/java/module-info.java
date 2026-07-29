@@ -2,6 +2,7 @@ module org.jboss.weld.core {
     requires transitive org.jboss.weld.spi;
     requires org.jboss.classfilewriter;
     requires org.jboss.logging;
+    requires java.logging;
     requires static org.jboss.logging.annotations;
     requires static jakarta.cdi.el;
     requires static jakarta.el;
@@ -117,6 +118,8 @@ module org.jboss.weld.core {
         org.jboss.weld.servlet;
     exports org.jboss.weld.xml to
         org.jboss.weld.environment.common;
+
+    opens org.jboss.weld.logging to org.jboss.logging;
 
     uses org.jboss.weld.module.WeldModule;
     uses jakarta.enterprise.inject.spi.Extension;

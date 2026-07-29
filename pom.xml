@@ -518,6 +518,12 @@
             </modules>
         </profile>
         <profile>
+            <id>jpms-tests</id>
+            <modules>
+                <module>tests-jpms</module>
+            </modules>
+        </profile>
+        <profile>
             <id>tck</id>
             <activation>
                 <property>
