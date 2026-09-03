@@ -26,7 +26,7 @@
 
     <properties>
         <tomcat.version>11.0.25</tomcat.version>
-        <jetty.version>12.1.11</jetty.version>
+        <jetty.version>12.1.12</jetty.version>
         <websockets.api>2.2.0</websockets.api>
         <undertow.version>2.3.26.Final</undertow.version>
     </properties>
