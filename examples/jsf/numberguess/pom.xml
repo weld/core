@@ -91,11 +91,9 @@
             <!-- Tested with Tomcat 10 as 11 was still in early Alphas when setting this up -->
             <id>tomcat</id>
             <dependencies>
-                <dependency>
-                    <groupId>jakarta.faces</groupId>
-                    <artifactId>jakarta.faces-api</artifactId>
-                </dependency>
-
+                <!-- Mojarra's jakarta.faces is an uber jar which also contains the
+                     jakarta.faces-api classes, so it alone is packaged into WEB-INF/lib.
+                     Compilation uses the provided-scope jakarta.faces-api declared above. -->
                 <dependency>
                     <groupId>org.glassfish</groupId>
                     <artifactId>jakarta.faces</artifactId>
@@ -130,11 +128,9 @@
             <!-- The module is org.eclipse.jetty.ee10:jetty-ee10-cdi where you should replace "ee10" with needed version -->
             <id>jetty</id>
             <dependencies>
-                <dependency>
-                    <groupId>jakarta.faces</groupId>
-                    <artifactId>jakarta.faces-api</artifactId>
-                </dependency>
-
+                <!-- Mojarra's jakarta.faces is an uber jar which also contains the
+                     jakarta.faces-api classes, so it alone is packaged into WEB-INF/lib.
+                     Compilation uses the provided-scope jakarta.faces-api declared above. -->
                 <dependency>
                     <groupId>org.glassfish</groupId>
                     <artifactId>jakarta.faces</artifactId>
