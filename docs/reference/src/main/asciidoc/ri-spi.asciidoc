@@ -896,6 +896,9 @@ Use lookup methods directly on the container:
 +MyBean bean = container.select(MyBean.class).get();
 ----
 
+The deprecated `LiteExtensionTranslator(List, ClassLoader)` constructor has also been removed.
+Use `LiteExtensionTranslator(Collection, ClassLoader)` instead.
+
 Weld 7 removes the deprecated `WeldInstance.Handler` API and its associated methods.
 Use the following replacements:
 
