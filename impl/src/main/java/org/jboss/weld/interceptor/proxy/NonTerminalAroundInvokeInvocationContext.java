@@ -18,6 +18,7 @@ package org.jboss.weld.interceptor.proxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,6 @@ import java.util.Set;
 import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
-import org.jboss.weld.interceptor.WeldInvocationContext;
 
 /**
  * The non-terminal {@link InvocationContext} in the interception chain. This implementation is used for the first n-1
@@ -47,7 +47,7 @@ class NonTerminalAroundInvokeInvocationContext extends AroundInvokeInvocationCon
     public NonTerminalAroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
             Set<Annotation> interceptorBindings,
             List<InterceptorMethodInvocation> chain, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
-        this(target, method, proceed, parameters, newContextData(interceptorBindings), interceptorBindings, 0, chain,
+        this(target, method, proceed, parameters, new HashMap<>(), interceptorBindings, 0, chain,
                 currentHandler);
     }
 
@@ -68,11 +68,11 @@ class NonTerminalAroundInvokeInvocationContext extends AroundInvokeInvocationCon
 
     @Override
     public Object proceedInternal() throws Exception {
-        WeldInvocationContext ctx = createNextContext();
+        InvocationContext ctx = createNextContext();
         return chain.get(position + 1).invoke(ctx);
     }
 
-    private WeldInvocationContext createNextContext() {
+    private InvocationContext createNextContext() {
         if (position + 2 == chain.size()) {
             return new TerminalAroundInvokeInvocationContext(this);
         } else {

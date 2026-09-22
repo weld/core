@@ -77,6 +77,7 @@
         <jakarta.el.version>6.0.1</jakarta.el.version>
         <glassfish.jakarta.el.version>5.0.0-M1</glassfish.jakarta.el.version>
         <jakarta.jms.api.version>3.1.0</jakarta.jms.api.version>
+        <jaxrs.api.version>4.0.0</jaxrs.api.version>
         <jsf.api.version>4.1.2</jsf.api.version>
         <jboss.logging.version>3.6.3.Final</jboss.logging.version>
         <jboss.logging.processor.version>3.0.4.Final</jboss.logging.processor.version>
@@ -90,7 +91,8 @@
         <spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.10.4</spotbugs-annotations-version>
         <testng.version>7.12.0</testng.version>
-        <weld.api.version>7.0.CR1</weld.api.version>
+        <validation.api.version>3.1.1</validation.api.version>
+        <weld.api.version>7.0.CR2</weld.api.version>
         <wildfly.arquillian.version>5.1.0.Final</wildfly.arquillian.version>
     </properties>
 
@@ -296,6 +298,18 @@
                 <version>${weld.api.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${validation.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${jaxrs.api.version}</version>
             </dependency>
 
             <dependency>

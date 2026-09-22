@@ -215,12 +215,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     @Override
     public Handle<T> getHandle() {
         checkBeanResolved();
-        return new HandlerImpl<T>(() -> getBeanInstance(bean), this, bean);
-    }
-
-    @Override
-    public Handler<T> getHandler() {
-        return Reflections.cast(getHandle());
+        return new HandleImpl<T>(() -> getBeanInstance(bean), this, bean);
     }
 
     @Override
@@ -231,16 +226,6 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
     @Override
     public Iterable<Handle<T>> handles() {
         return () -> new HandleIterator(allBeans());
-    }
-
-    @Override
-    public Iterable<Handler<T>> handlers() {
-        return Reflections.cast(handles());
-    }
-
-    @Override
-    public Comparator<Handler<?>> getPriorityComparator() {
-        return Reflections.cast(getHandlePriorityComparator());
     }
 
     @Override
@@ -363,12 +348,12 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
         @Override
         public Handle<T> next() {
             Bean<?> bean = delegate.next();
-            return new HandlerImpl<>(() -> getBeanInstance(bean), InstanceImpl.this, bean);
+            return new HandleImpl<>(() -> getBeanInstance(bean), InstanceImpl.this, bean);
         }
 
     }
 
-    private static class HandlerImpl<T> implements Handler<T> {
+    private static class HandleImpl<T> implements Handle<T> {
 
         private final LazyValueHolder<T> value;
 
@@ -378,7 +363,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
         private final AtomicBoolean isDestroyed;
 
-        HandlerImpl(Supplier<T> supplier, WeldInstance<T> instance, Bean<?> bean) {
+        HandleImpl(Supplier<T> supplier, WeldInstance<T> instance, Bean<?> bean) {
             this.value = LazyValueHolder.forSupplier(supplier);
             this.bean = bean;
             this.instance = new WeakReference<>(instance);
@@ -422,7 +407,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements W
 
         @Override
         public String toString() {
-            return "HandlerImpl [bean=" + bean + "]";
+            return "HandleImpl [bean=" + bean + "]";
         }
 
     }

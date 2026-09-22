@@ -21,7 +21,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,10 +30,8 @@ import jakarta.interceptor.InvocationContext;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
-import org.jboss.weld.interceptor.WeldInvocationContext;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.util.ForwardingInvocationContext;
-import org.jboss.weld.util.Preconditions;
 
 /**
  * Weld's {@link InvocationContext} implementation. This is a forwarding implementation that delegates most method calls to an
@@ -49,8 +46,7 @@ import org.jboss.weld.util.Preconditions;
  * @author Jozef Hartinger
  *
  */
-public class WeldInvocationContextImpl extends ForwardingInvocationContext
-        implements org.jboss.weld.interceptor.WeldInvocationContext {
+public class WeldInvocationContextImpl extends ForwardingInvocationContext {
 
     private int position;
     private final List<InterceptorMethodInvocation> chain;
@@ -80,7 +76,6 @@ public class WeldInvocationContextImpl extends ForwardingInvocationContext
         } else {
             this.interceptorBindings = interceptorBindings;
         }
-        getContextData().put(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY, this.interceptorBindings);
     }
 
     @Override
@@ -148,19 +143,6 @@ public class WeldInvocationContextImpl extends ForwardingInvocationContext
                 stack.end();
             }
         }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
-        Preconditions.checkArgumentNotNull(annotationType, "annotationType");
-        Set<T> result = new HashSet<>();
-        for (Annotation interceptorBinding : interceptorBindings) {
-            if (interceptorBinding.annotationType().equals(annotationType)) {
-                result.add((T) interceptorBinding);
-            }
-        }
-        return result;
     }
 
     @Override

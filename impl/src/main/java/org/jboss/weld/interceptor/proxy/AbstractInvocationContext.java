@@ -24,14 +24,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.interceptor.WeldInvocationContext;
-import org.jboss.weld.util.Preconditions;
+import jakarta.interceptor.InvocationContext;
+
 import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-abstract class AbstractInvocationContext implements WeldInvocationContext {
+abstract class AbstractInvocationContext implements InvocationContext {
 
     protected Map<String, Object> contextData;
     protected final Method method;
@@ -76,15 +76,9 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
     @Override
     public Map<String, Object> getContextData() {
         if (contextData == null) {
-            contextData = newContextData(interceptorBindings);
+            contextData = new HashMap<>();
         }
         return contextData;
-    }
-
-    protected static Map<String, Object> newContextData(Set<Annotation> interceptorBindings) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put(WeldInvocationContext.INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
-        return result;
     }
 
     @Override
@@ -204,16 +198,6 @@ abstract class AbstractInvocationContext implements WeldInvocationContext {
     @Override
     public Constructor<?> getConstructor() {
         return constructor;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
-        Preconditions.checkArgumentNotNull(annotationType, "annotationType");
-        return interceptorBindings.stream()
-                .filter((annotation) -> annotation.annotationType().equals(annotationType))
-                .map(annotation -> (T) annotation)
-                .collect(ImmutableSet.collector());
     }
 
     @Override

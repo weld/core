@@ -882,6 +882,31 @@ This part of the appendix documents the changes in Weld from previous major vers
 These changes mostly touch changes in the SPI or in the container contract.
 For information on migration to older Weld versions, please consult https://docs.jboss.org/weld/reference/[their respective documentation].
 
+[[weld_6_to_7_migration]]
+==== Migration from Weld 6.0 to 7.0
+
+===== Removal of deprecated Weld APIs
+
+Weld 7 removes the deprecated `WeldInstance.Handler` API and its associated methods.
+Use the following replacements:
+
+[options="header"]
+|===
+|Removed API |Replacement
+|`WeldInstance.Handler<T>` |`Instance.Handle<T>`
+|`getHandler()` |`getHandle()`
+|`handlers()` |`handles()`
+|`handlersStream()` |`handlesStream()`
+|`getPriorityComparator()` |`WeldInstance.getHandlePriorityComparator()`
+|===
+
+The handle APIs are part of CDI; the priority comparator remains a Weld extension.
+
+Weld 7 also removes `org.jboss.weld.interceptor.WeldInvocationContext` and stops populating the `org.jboss.weld.interceptor.bindings` context-data entry.
+The binding key and `getInterceptorBindingsByType(Class<T>)` were deprecated in Weld 6.
+Use the standard Jakarta Interceptors `InvocationContext.getInterceptorBindings()` and `getInterceptorBindings(Class<T>)` methods instead.
+Interceptors no longer need to cast the invocation context to a Weld-specific interface.
+
 [[weld_4_to_5_migration]]
 ==== Migration from Weld 4.0 to 5.0
 
@@ -977,4 +1002,3 @@ If you are looking for deprecation removals in CDI API, take a look at https://g
 * `WeldInstance.Handler` class is now deprecated and so are multiple methods returning this type from `WeldInstance`
 ** The reason for this removal is that the very same feature was accepted into CDI specification so you can now use CDI API interfaces to achieve the same.
 ** For more information, take a look at https://github.com/jakartaee/cdi/blob/master/api/src/main/java/jakarta/enterprise/inject/Instance.java#L266-L315[`Instance.Handle` class from CDI API].
-

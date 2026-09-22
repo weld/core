@@ -575,61 +575,36 @@ Since CDI 2.0, most annotations from `jakarta.enterprise` package have their `An
 Therefore, in order to programmatically obtain (for instance) `@Any` annotation, you can simply do `Any.Literal.INSTANCE`.
 ====
 
-==== Enhanced version of `jakarta.enterprise.inject.Instance`
-
-Weld also provides `org.jboss.weld.inject.WeldInstance` - an enhanced version of `jakarta.enterprise.inject.Instance`.
-There are three additional methods.
-The first one - `getHandler()` - allows to obtain a contextual reference handler which not only holds the contextual reference but also allows to inspect the metadata of the relevant bean and to destroy the underlying contextual instance.
-Moreover, the handler implements `AutoCloseable`:
+`Instance.getHandle()` returns an `Instance.Handle<T>`, which provides access to the contextual reference through `get()`, bean metadata through `getBean()`, and explicit destruction through `destroy()`.
+Handles also implement `AutoCloseable` and can be used in a try-with-resources statement:
 
 [source.JAVA, java]
 ----------------------------------------------------------------------------------
-import org.jboss.weld.inject.WeldInstance;
+import jakarta.enterprise.inject.Instance;
 
 class Foo {
 
   @Inject
-  WeldInstance<Bar> instance;
+  Instance<Bar> instance;
 
   void doWork() {
-    try (Handler<Bar> barHandler = instance.getHandler()) {
-        barHandler.get().doBusiness();
-        // Note that Bar will be automatically destroyed at the end of the try-with-resources statement
+    try (Instance.Handle<Bar> handle = instance.getHandle()) {
+      handle.get().doBusiness();
     }
-    Handler<Bar> barHandler = instance.getHandler()
-    barHandler.get().doBusiness();
-    // Calls Instance.destroy()
-    barHandler.destroy();
   }
 
 }
 ----------------------------------------------------------------------------------
 
-The next method - `handlers()` - returns an `Iterable` which allows to iterate over handlers for all the beans that have the required type and required qualifiers and are eligible for injection.
-This might be useful if you need more control inside the loop:
+`Instance.handles()` and `Instance.handlesStream()` provide iteration and streaming over handles for all matching beans.
+These are standard CDI APIs and do not require a dependency on the Weld API.
 
-[source.JAVA, java]
-----------------------------------------------------------------------------------
-@ApplicationScoped
-class OrderService {
+==== Enhanced version of `jakarta.enterprise.inject.Instance`
 
-  @Inject
-  @Any
-  WeldInstance<OrderProcessor> instance;
+Weld provides `org.jboss.weld.inject.WeldInstance`, which extends `Instance` with selection by `java.lang.reflect.Type` and `getHandlePriorityComparator()`.
+The comparator sorts handles by descending bean priority and can be passed to `handlesStream().sorted(instance.getHandlePriorityComparator())`.
 
-  void create(Order order) {
-    for (Handler<OrderProcessor> handler : instance.handlers()) {
-            handler.get().process(order);
-            if (Dependent.class.equals(handler.getBean().getScope()) {
-                // Destroy only dependent processors
-                handler.destroy();
-            }
-        }
-    }
-  }
-----------------------------------------------------------------------------------
-
-Third method is a twist on the `select()` method, but it accepts `java.lang.reflect.Type` as parameter and optionally qualifier(s).
+Weld's additional `select()` overload accepts `java.lang.reflect.Type` as a parameter and optionally qualifier(s).
 This allows for generic selection of instances which can be handy while dealing with third party beans through extensions.
 However, in order to stay type-safe, this method has a limitation - it can only be invoked on `WeldInstance<Object>`.
 Invocation on any other type than `Object` will result in an  `IllegalStateException`.
