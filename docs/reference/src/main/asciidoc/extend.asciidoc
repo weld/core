@@ -277,10 +277,10 @@ AnnotatedType<SomeFrameworkComponent> type = beanManager.createAnnotatedType(Som
 
 //The extension uses an InjectionTarget to delegate instantiation, dependency injection
 //and lifecycle callbacks to the CDI container
-InjectionTarget<SomeFrameworkComponent> it = beanManager.createInjectionTarget(type);
+InjectionTarget<SomeFrameworkComponent> it = beanManager.getInjectionTargetFactory(type).createInjectionTarget(null);
 
 //each instance needs its own CDI CreationalContext
-CreationalContext ctx = beanManager.createCreationalContext(null);
+CreationalContext<SomeFrameworkComponent> ctx = beanManager.createCreationalContext(null);
 
 //instantiate the framework component and inject its dependencies
 SomeFrameworkComponent instance = it.produce(ctx);  //call the constructor
@@ -317,6 +317,9 @@ public interface BeanAttributes<T> {
    public String getName();
    public Set<Class<? extends Annotation>> getStereotypes();
    public boolean isAlternative();
+   public default boolean isReserve() { return false; }
+   public default boolean isEager() { return false; }
+   public default boolean isAutoClose() { return false; }
 }
 ------------------------------------------------------------
 
@@ -328,7 +331,6 @@ everything the container needs to manage instances of a certain bean.
 public interface Bean<T> extends Contextual<T>, BeanAttributes<T> {
    public Class<?> getBeanClass();
    public Set<InjectionPoint> getInjectionPoints();
-   public boolean isNullable();
 }
 -------------------------------------------------------------------
 

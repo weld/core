@@ -38,9 +38,9 @@ scopes by creating a new scope type annotation:
 
 [source.JAVA, java]
 ----------------------------------
-@ScopeType
+@NormalScope
 @Retention(RUNTIME)
-@Target({TYPE, METHOD})
+@Target({TYPE, METHOD, FIELD})
 public @interface ClusterScoped {}
 ----------------------------------
 
