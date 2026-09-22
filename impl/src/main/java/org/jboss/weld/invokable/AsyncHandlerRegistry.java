@@ -97,6 +97,10 @@ public class AsyncHandlerRegistry implements Service {
     }
 
     private void validateDirectImplementation(Class<?> handlerClass, Class<?> targetInterface) {
+        if (AsyncHandler.ReturnType.class.isAssignableFrom(handlerClass)
+                && AsyncHandler.ParameterType.class.isAssignableFrom(handlerClass)) {
+            throw InvokerLogger.LOG.asyncHandlerBothKinds(handlerClass);
+        }
         for (Class<?> iface : handlerClass.getInterfaces()) {
             if (iface == targetInterface) {
                 return;
@@ -108,10 +112,7 @@ public class AsyncHandlerRegistry implements Service {
     private void register(HandlerInfo info) {
         // Repeated discovery through BDAs sharing a classloader is not a duplicate provider.
         Map<Class<?>, HandlerInfo> providers = candidates.computeIfAbsent(info.getAsyncType(), key -> new HashMap<>());
-        HandlerInfo previous = providers.putIfAbsent(info.getHandlerClass(), info);
-        if (previous != null && previous.isReturnType() != info.isReturnType()) {
-            throw InvokerLogger.LOG.asyncHandlerBothKinds(info.getHandlerClass(), info.getAsyncType());
-        }
+        providers.putIfAbsent(info.getHandlerClass(), info);
     }
 
     /**

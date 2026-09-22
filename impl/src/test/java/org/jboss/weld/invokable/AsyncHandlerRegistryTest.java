@@ -13,6 +13,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.enterprise.inject.spi.DefinitionException;
 import jakarta.enterprise.inject.spi.DeploymentException;
 import jakarta.enterprise.invoke.AsyncHandler;
 
@@ -135,6 +136,39 @@ public class AsyncHandlerRegistryTest {
                 "type=one, type =two")) {
             var failure = assertThrows(configuration, DeploymentException.class, () -> new AsyncHandlerRegistry(configuration));
             assertTrue(configuration, failure.getMessage().contains("WELD-002032"));
+        }
+    }
+
+    @Test
+    public void bothKindsWithDifferentTypesFailThroughEitherDescriptor() {
+        for (Class<?> service : List.of(AsyncHandler.ReturnType.class, AsyncHandler.ParameterType.class)) {
+            assertThrows(DefinitionException.class,
+                    () -> discoverService(new AsyncHandlerRegistry(), service, BothKinds.class));
+        }
+    }
+
+    @Test
+    public void bothKindsWithSameTypeFailThroughSingleDescriptor() {
+        assertThrows(DefinitionException.class, () -> discover(new AsyncHandlerRegistry(), BothKindsSameType.class));
+    }
+
+    public static class BothKinds implements AsyncHandler.ReturnType<String>, AsyncHandler.ParameterType<Integer> {
+        public String transform(String original, Runnable completion) {
+            return original;
+        }
+
+        public Integer transformArgument(Integer original, Runnable completion) {
+            return original;
+        }
+    }
+
+    public static class BothKindsSameType implements AsyncHandler.ReturnType<String>, AsyncHandler.ParameterType<String> {
+        public String transform(String original, Runnable completion) {
+            return original;
+        }
+
+        public String transformArgument(String original, Runnable completion) {
+            return original;
         }
     }
 
