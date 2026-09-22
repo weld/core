@@ -103,14 +103,10 @@
             <optional>true</optional>
             <type>pom</type>
             <exclusions>
-                <!-- Exclude these otherwise surefire doesn't find any tests to run -->
+                <!-- Keep Surefire on JUnit 4; groovy-test-junit6 selects JUnit Platform without a Vintage engine. -->
                 <exclusion>
                     <groupId>org.apache.groovy</groupId>
-                    <artifactId>groovy-test-junit5</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.groovy</groupId>
-                    <artifactId>groovy-testng</artifactId>
+                    <artifactId>groovy-test-junit6</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
