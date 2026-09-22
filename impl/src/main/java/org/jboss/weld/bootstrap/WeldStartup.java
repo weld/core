@@ -320,7 +320,8 @@ public class WeldStartup {
         services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
-        services.add(AsyncHandlerRegistry.class, new AsyncHandlerRegistry());
+        services.add(AsyncHandlerRegistry.class,
+                new AsyncHandlerRegistry(configuration.getStringProperty(ConfigurationKey.ASYNC_HANDLERS)));
 
         /*
          * Setup ExecutorServices
@@ -460,6 +461,7 @@ public class WeldStartup {
                 asyncHandlerRegistry.discoverHandlers(resourceLoader);
             }
         }
+        asyncHandlerRegistry.validateHandlers();
         for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.createBeans(environment);
         }

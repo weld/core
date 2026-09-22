@@ -4,7 +4,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow;
@@ -29,10 +31,26 @@ public class AsyncHandlerRegistry implements Service {
     // Maps async type (erasure) to handler info
     private final Map<Class<?>, HandlerInfo> handlers = new HashMap<>();
 
+    private final Map<Class<?>, Map<Class<?>, HandlerInfo>> candidates = new HashMap<>();
+    private final Map<String, String> selections = new HashMap<>();
+
     /**
      * Creates a new registry with built-in handlers pre-registered.
      */
     public AsyncHandlerRegistry() {
+        this("");
+    }
+
+    public AsyncHandlerRegistry(String configuration) {
+        if (!configuration.isBlank()) {
+            for (String entry : configuration.split(",", -1)) {
+                String[] mapping = entry.split("=", -1);
+                if (mapping.length != 2 || mapping[0].isBlank() || mapping[1].isBlank()
+                        || selections.putIfAbsent(mapping[0].trim(), mapping[1].trim()) != null) {
+                    throw InvokerLogger.LOG.invalidAsyncHandlerConfiguration(configuration);
+                }
+            }
+        }
         // Built-in handlers required by the spec
         registerBuiltinReturnTypeHandler(CompletionStage.class, new BuiltinCompletionStageHandler());
         registerBuiltinReturnTypeHandler(CompletableFuture.class, new BuiltinCompletableFutureHandler());
@@ -41,8 +59,8 @@ public class AsyncHandlerRegistry implements Service {
 
     private void registerBuiltinReturnTypeHandler(Class<?> asyncType, AsyncHandler.ReturnType<?> handler) {
         HandlerInfo info = HandlerInfo.returnType(handler, asyncType);
-        info.setBuiltin(true);
         handlers.put(asyncType, info);
+        register(info);
     }
 
     /**
@@ -68,16 +86,14 @@ public class AsyncHandlerRegistry implements Service {
         Class<?> handlerClass = handler.getClass();
         validateDirectImplementation(handlerClass, AsyncHandler.ReturnType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ReturnType.class);
-        checkDuplicate(asyncType, handlerClass, true);
-        handlers.putIfAbsent(asyncType, HandlerInfo.returnType(handler, asyncType));
+        register(HandlerInfo.returnType(handler, asyncType));
     }
 
     private void validateAndRegisterParameterType(AsyncHandler.ParameterType<?> handler) {
         Class<?> handlerClass = handler.getClass();
         validateDirectImplementation(handlerClass, AsyncHandler.ParameterType.class);
         Class<?> asyncType = extractAsyncType(handlerClass, AsyncHandler.ParameterType.class);
-        checkDuplicate(asyncType, handlerClass, false);
-        handlers.putIfAbsent(asyncType, HandlerInfo.parameterType(handler, asyncType));
+        register(HandlerInfo.parameterType(handler, asyncType));
     }
 
     private void validateDirectImplementation(Class<?> handlerClass, Class<?> targetInterface) {
@@ -89,23 +105,45 @@ public class AsyncHandlerRegistry implements Service {
         throw InvokerLogger.LOG.asyncHandlerIndirectImplementation(handlerClass);
     }
 
-    private void checkDuplicate(Class<?> asyncType, Class<?> handlerClass, boolean isReturnType) {
-        HandlerInfo existing = handlers.get(asyncType);
-        if (existing != null && !existing.isBuiltin()) {
-            // In a WAR with multiple BDAs (e.g. WEB-INF/classes + JARs in WEB-INF/lib),
-            // all BDAs share the same classloader. Since discovery runs per BDA, the same
-            // service file is found multiple times, yielding the same handler class.
-            // This is not an error — skip re-registration. In an EAR with isolated module
-            // classloaders, different Class objects would be loaded, so this identity check
-            // does not suppress genuine duplicates across modules.
-            if (existing.getHandlerClass() == handlerClass && existing.isReturnType() == isReturnType) {
-                return;
-            }
-            if (existing.getHandlerClass() == handlerClass && existing.isReturnType() != isReturnType) {
-                throw InvokerLogger.LOG.asyncHandlerBothKinds(handlerClass, asyncType);
-            }
-            throw InvokerLogger.LOG.asyncHandlerDuplicate(asyncType, handlerClass);
+    private void register(HandlerInfo info) {
+        // Repeated discovery through BDAs sharing a classloader is not a duplicate provider.
+        Map<Class<?>, HandlerInfo> providers = candidates.computeIfAbsent(info.getAsyncType(), key -> new HashMap<>());
+        HandlerInfo previous = providers.putIfAbsent(info.getHandlerClass(), info);
+        if (previous != null && previous.isReturnType() != info.isReturnType()) {
+            throw InvokerLogger.LOG.asyncHandlerBothKinds(info.getHandlerClass(), info.getAsyncType());
         }
+    }
+
+    /**
+     * Resolves configured providers after discovery in every bean deployment archive has completed.
+     */
+    public void validateHandlers() {
+        Map<Class<?>, HandlerInfo> resolved = new HashMap<>();
+        Set<String> unresolved = new HashSet<>(selections.keySet());
+        for (Map.Entry<Class<?>, Map<Class<?>, HandlerInfo>> entry : candidates.entrySet()) {
+            Class<?> asyncType = entry.getKey();
+            String selection = selections.get(asyncType.getName());
+            HandlerInfo chosen = null;
+            for (HandlerInfo candidate : entry.getValue().values()) {
+                if (selection == null || candidate.getHandlerClass().getName().equals(selection)) {
+                    if (chosen != null) {
+                        throw InvokerLogger.LOG.asyncHandlerDuplicate(asyncType, entry.getValue().keySet());
+                    }
+                    chosen = candidate;
+                }
+            }
+            if (chosen == null) {
+                throw InvokerLogger.LOG.invalidAsyncHandlerSelection(asyncType.getName(), selection);
+            }
+            resolved.put(asyncType, chosen);
+            unresolved.remove(asyncType.getName());
+        }
+        if (!unresolved.isEmpty()) {
+            String asyncType = unresolved.iterator().next();
+            throw InvokerLogger.LOG.invalidAsyncHandlerSelection(asyncType, selections.get(asyncType));
+        }
+        handlers.clear();
+        handlers.putAll(resolved);
     }
 
     private Class<?> extractAsyncType(Class<?> handlerClass, Class<?> targetInterface) {
@@ -194,6 +232,8 @@ public class AsyncHandlerRegistry implements Service {
     @Override
     public void cleanup() {
         handlers.clear();
+        candidates.clear();
+        selections.clear();
     }
 
     /**
@@ -205,7 +245,6 @@ public class AsyncHandlerRegistry implements Service {
         private final Class<?> asyncType;
         private final Class<?> handlerClass;
         private final boolean isReturnType;
-        private boolean builtin;
 
         static HandlerInfo returnType(AsyncHandler.ReturnType<?> handler, Class<?> asyncType) {
             return new HandlerInfo(handler, null, asyncType, handler.getClass(), true);
@@ -247,13 +286,6 @@ public class AsyncHandlerRegistry implements Service {
             return isReturnType;
         }
 
-        boolean isBuiltin() {
-            return builtin;
-        }
-
-        void setBuiltin(boolean builtin) {
-            this.builtin = builtin;
-        }
     }
 
     // --- Built-in handlers ---
