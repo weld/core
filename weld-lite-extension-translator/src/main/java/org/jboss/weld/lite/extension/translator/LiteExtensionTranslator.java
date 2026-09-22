@@ -51,15 +51,6 @@ public class LiteExtensionTranslator implements jakarta.enterprise.inject.spi.Ex
         this(BuildCompatibleExtensionLoader.getBuildCompatibleExtensions(), Thread.currentThread().getContextClassLoader());
     }
 
-    /**
-     * Deprecated, use {@link LiteExtensionTranslator#LiteExtensionTranslator(Collection, ClassLoader)}.
-     * This method will be removed in future versions.
-     */
-    @Deprecated(forRemoval = true)
-    public LiteExtensionTranslator(List<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions, ClassLoader cl) {
-        this((Collection<Class<? extends BuildCompatibleExtension>>) buildCompatibleExtensions, cl);
-    }
-
     public LiteExtensionTranslator(Collection<Class<? extends BuildCompatibleExtension>> buildCompatibleExtensions,
             ClassLoader cl) {
         this.util = new ExtensionInvoker(buildCompatibleExtensions);
