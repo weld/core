@@ -35,7 +35,7 @@ jobs:
       - name: Get Date
         id: get-date
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y-%m")"
+          echo "date=$(/bin/date -u '+%Y-%m')" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Cache Maven Repository
         id: cache-maven
@@ -360,7 +360,7 @@ jobs:
 
   # Weld Examples build and test, only JDK 17
   examples-tests:
-    name: "Weld Examples build and test - JDK 17}"
+    name: "Weld Examples build and test - JDK 17"
     runs-on: ubuntu-latest
     needs: initial-build
     timeout-minutes: 120
@@ -416,7 +416,7 @@ jobs:
         if: failure()
         with:
           name: server-log-examples
-          path: 'test-reports.tgz'
+          path: 'server-log.tgz'
 
   # CDI TCK for SE environment
   CDI-TCK-SE:
