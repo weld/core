@@ -293,11 +293,10 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
 
         // Check for async handler match
         AsyncHandlerRegistry asyncRegistry = ((BeanManagerImpl) beanManager).getServices().get(AsyncHandlerRegistry.class);
-        AsyncHandlerRegistry.HandlerInfo returnTypeHandler = asyncRegistry
-                .findReturnTypeHandler(reflectionMethod.getReturnType());
-        AsyncHandlerRegistry.HandlerInfo paramTypeHandler = returnTypeHandler == null
-                ? asyncRegistry.findParameterTypeHandler(reflectionMethod.getParameterTypes())
-                : null;
+        AsyncHandlerRegistry.HandlerInfo handler = asyncRegistry.findHandler(reflectionMethod.getReturnType(),
+                reflectionMethod.getParameterTypes());
+        AsyncHandlerRegistry.HandlerInfo returnTypeHandler = handler != null && handler.isReturnType() ? handler : null;
+        AsyncHandlerRegistry.HandlerInfo paramTypeHandler = handler != null && !handler.isReturnType() ? handler : null;
         // cleanup
         if (requiresCleanup) {
             MethodHandle cleanupMethod;

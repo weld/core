@@ -159,7 +159,7 @@ public class AsyncHandlerRegistry implements Service {
     /**
      * Finds a matching ReturnType handler for the given method return type.
      */
-    public HandlerInfo findReturnTypeHandler(Class<?> returnType) {
+    private HandlerInfo findReturnTypeHandler(Class<?> returnType) {
         HandlerInfo info = handlers.get(returnType);
         if (info != null && info.isReturnType()) {
             return info;
@@ -168,22 +168,27 @@ public class AsyncHandlerRegistry implements Service {
     }
 
     /**
-     * Finds a matching ParameterType handler for the given method parameter types.
-     * Returns the handler info if exactly one parameter matches; null otherwise.
+     * Selects a handler only when exactly one return or parameter type handler matches.
      */
-    public HandlerInfo findParameterTypeHandler(Class<?>[] parameterTypes) {
-        HandlerInfo match = null;
-        int matchCount = 0;
+    public HandlerInfo findHandler(Class<?> returnType, Class<?>[] parameterTypes) {
+        return selectHandler(findReturnTypeHandler(returnType), parameterTypes);
+    }
+
+    private HandlerInfo selectHandler(HandlerInfo match, Class<?>[] parameterTypes) {
+        Map<Class<?>, Integer> occurrences = new HashMap<>();
         for (Class<?> paramType : parameterTypes) {
-            HandlerInfo info = handlers.get(paramType);
-            if (info != null && !info.isReturnType()) {
+            occurrences.merge(paramType, 1, Integer::sum);
+        }
+        for (Map.Entry<Class<?>, Integer> entry : occurrences.entrySet()) {
+            HandlerInfo info = handlers.get(entry.getKey());
+            if (entry.getValue() == 1 && info != null && !info.isReturnType()) {
+                if (match != null) {
+                    return null;
+                }
                 match = info;
-                matchCount++;
             }
         }
-        // spec requires exactly one matching parameter; with 0 or 2+ matches
-        // the method is not considered async and null signals synchronous cleanup
-        return matchCount == 1 ? match : null;
+        return match;
     }
 
     @Override
