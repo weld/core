@@ -201,9 +201,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 145, value = "Bean identifier index built:\n  {0}", format = Format.MESSAGE_FORMAT)
     void beanIdentifierIndexBuilt(Object info);
 
-    @LogMessage(level = Level.WARN)
-    @Message(id = 146, value = "BeforeBeanDiscovery.addAnnotatedType(AnnotatedType<?>) used for {0} is deprecated from CDI 1.1!", format = Format.MESSAGE_FORMAT)
-    void deprecatedAddAnnotatedTypeMethodUsed(Class<?> clazz);
+    // Message id 146 is reserved for the removed deprecated addAnnotatedType warning.
 
     @LogMessage(level = Level.WARN)
     @Message(id = 147, value = "Decorator {0} declares inappropriate constructor therefore will not available as a managed bean!", format = Format.MESSAGE_FORMAT)
