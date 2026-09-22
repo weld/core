@@ -38,12 +38,10 @@ import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ConfigurationLogger;
-import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
-import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -105,8 +103,6 @@ public class WeldConfiguration implements Service {
     private static final String SYSTEM_PROPETIES = "system properties";
 
     private static final String OBSOLETE_SYSTEM_PROPETIES = "obsolete system properties";
-
-    private static final String EXTERNAL_CONFIGURATION_CLASS_NAME = "org.jboss.weld.configuration.spi.ExternalConfiguration";
 
     private final Map<ConfigurationKey, Object> properties;
 
@@ -422,12 +418,9 @@ public class WeldConfiguration implements Service {
     }
 
     private Map<String, Object> getExternalConfigurationOptions(ServiceRegistry services) {
-        // to stay compatible with older SPI versions we first check if ExternalConfiguration is available before using the class
-        if (Reflections.isClassLoadable(EXTERNAL_CONFIGURATION_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
-            final ExternalConfiguration externalConfiguration = services.get(ExternalConfiguration.class);
-            if (externalConfiguration != null) {
-                return externalConfiguration.getConfigurationProperties();
-            }
+        final ExternalConfiguration externalConfiguration = services.get(ExternalConfiguration.class);
+        if (externalConfiguration != null) {
+            return externalConfiguration.getConfigurationProperties();
         }
         return Collections.emptyMap();
     }
