@@ -530,3 +530,25 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 </web-app>
 -----------------------------------------------------------------------------------------------------------
 
+
+[[async_handler_selection]]
+=== Selecting asynchronous invocation handlers
+
+CDI provides asynchronous invocation handlers for `CompletionStage`, `CompletableFuture`, and `Flow.Publisher`.
+Additional handlers are discovered through the `AsyncHandler.ReturnType` and `AsyncHandler.ParameterType` service-provider files.
+If more than one handler is registered for the same async type, including a collision with a built-in handler, deployment fails by default.
+
+Use `org.jboss.weld.invokable.asyncHandlers` to select a handler explicitly.
+Its value is a comma-separated list of `asyncType=handlerClass` mappings using binary class names (`$` for nested classes).
+For example, in `weld.properties`:
+
+[source,properties]
+----
+org.jboss.weld.invokable.asyncHandlers=java.util.concurrent.CompletionStage=com.example.MyStageHandler
+----
+
+The selected handler must be registered through its service-provider file (or be a built-in handler) and declare the configured async type.
+Other handlers for that type are ignored when selecting the handler.
+An absent provider, a mismatched async type, a malformed mapping, or repeated mappings for the same async type cause deployment to fail.
+The default value is an empty string, meaning that no explicit selections are made.
+As with other Weld configuration properties, the value may also be supplied through a system property or external configuration.

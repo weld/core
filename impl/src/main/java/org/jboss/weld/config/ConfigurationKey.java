@@ -288,6 +288,12 @@ public enum ConfigurationKey {
     @Description("If set to true then when a contextual reference for a @SessionScoped or @ConversationScoped bean is obtained from a context backed by an HTTP session the instance is set again using HttpSession.setAttribute(). This allows to trigger session replication in some application servers.")
     RESET_HTTP_SESSION_ATTR_ON_BEAN_ACCESS("org.jboss.weld.context.resetHttpSessionAttributeOnBeanAccess", false),
 
+    /**
+     * Comma-separated async-type=handler-class mappings, using binary class names.
+     * Selected handlers must be registered providers (or built-in handlers).
+     */
+    ASYNC_HANDLERS("org.jboss.weld.invokable.asyncHandlers", ""),
+
     ;
 
     /**
