@@ -36,7 +36,7 @@ public class ContainerIsolationTest {
 
         Weld weld1 = new Weld("1");
         WeldContainer weldContainer1 = weld1.initialize();
-        Foo foo1 = weldContainer1.instance().select(Foo.class).get();
+        Foo foo1 = weldContainer1.select(Foo.class).get();
 
         Weld weld2 = new Weld("2");
         WeldContainer weldContainer2 = weld2.initialize();

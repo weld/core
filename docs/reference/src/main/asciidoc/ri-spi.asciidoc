@@ -887,6 +887,15 @@ For information on migration to older Weld versions, please consult https://docs
 
 ===== Removal of deprecated Weld APIs
 
+The deprecated `WeldContainer.instance()` method has been removed.
+Use lookup methods directly on the container:
+
+[source,diff]
+----
+-MyBean bean = container.instance().select(MyBean.class).get();
++MyBean bean = container.select(MyBean.class).get();
+----
+
 Weld 7 removes the deprecated `WeldInstance.Handler` API and its associated methods.
 Use the following replacements:
 
