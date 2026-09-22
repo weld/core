@@ -842,6 +842,77 @@ For information on migration to older Weld versions, please consult https://docs
 [[weld_6_to_7_migration]]
 ==== Migration from Weld 6.0 to 7.0
 
+===== CDI 5 and Java 17
+
+Weld 7 implements Jakarta CDI 5.0. Both require Java 17 or newer.
+Applications and integrators should review the following changes in addition to the Weld API removals below.
+
+===== CDI artifact coordinates
+
+The CDI API coordinates are now `jakarta.cdi:jakarta.cdi-api`, replacing `jakarta.enterprise:jakarta.enterprise.cdi-api`.
+Use `jakarta.cdi:jakarta.cdi-el-api` when integrating with Jakarta Expression Language.
+CDI 5 provides API relocation artifacts to ease migration, but applications should update their dependency declarations.
+The CDI TCK artifacts also move to the `jakarta.cdi` group, with artifact names such as `jakarta.cdi-tck-api`;
+the TCK does not provide relocation artifacts.
+
+===== Expression Language integration
+
+`BeanManager.getELResolver()` and `BeanManager.wrapExpressionFactory()` have been removed.
+Use `jakarta.enterprise.inject.spi.el.ELAwareBeanManager` from the separate CDI EL API instead.
+Weld's `WeldManager` extends this interface, so integrators obtaining it through `Bootstrap.getManager()` can call these methods directly.
+
+===== Bean archives
+
+The CDI 5 descriptor uses version `5.0` and the `https://jakarta.ee/xml/ns/jakartaee` namespace with `beans_5_0.xsd`.
+For example:
+
+[source,xml]
+----
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_5_0.xsd"
+       version="5.0" bean-discovery-mode="annotated"/>
+----
+
+Trimming is no longer permitted in non-explicit bean archives.
+Remove `<trim/>` from descriptors using `bean-discovery-mode="annotated"` or `"none"`.
+Use an explicit bean archive (`bean-discovery-mode="all"`) when trimming is intended.
+
+===== New programming-model features
+
+* `@Reserve` declares a fallback bean. Select it with `@Priority`; a matching non-reserve bean takes precedence during typesafe resolution.
+  Reserves cannot be selected through `beans.xml`.
+* `@Eager` requests initialization of an `@ApplicationScoped` bean no later than the `Startup` event.
+* `@AutoClose` causes `close()` to be called during destruction when the contextual instance implements `AutoCloseable`.
+  It does not replace the ordinary bean lifecycle or require the bean to implement that interface.
+* Application and dependent scopes are global: their contexts have a container-wide lifetime and are active on all application threads during that lifetime.
+  This does not make instances of dependent beans shared.
+
+===== Asynchronous invokers
+
+CDI 5 introduces `AsyncHandler.ReturnType` and `AsyncHandler.ParameterType` service providers.
+A method is asynchronous for invocation purposes only when exactly one handler matches it.
+A parameter-type handler matches only if exactly one parameter has its async type.
+Dependent objects obtained through invoker lookup are retained until both the target method has returned and the handler has signalled completion;
+when the target method throws synchronously, they are destroyed before the exception is rethrown.
+
+Handlers for `CompletionStage`, `CompletableFuture`, and `Flow.Publisher` are built in.
+Multiple handlers for the same async type cause a deployment problem unless one is selected explicitly.
+Weld supports selection through `org.jboss.weld.invokable.asyncHandlers`; see
+ifndef::generate-index-link[<<async_handler_selection>>]
+ifdef::generate-index-link[link:configure.html#async_handler_selection[Selecting asynchronous invocation handlers]]
+.
+
+===== Build compatible extensions
+
+Synthetic beans can declare injection points using `SyntheticBeanBuilder.withInjectionPoint()` and obtain their references through `SyntheticInjections`.
+Migrate synthetic creators and disposers to the overloads using `SyntheticInjections` and register the injection points they use.
+The older overloads taking `Instance<Object>` remain available but are deprecated for removal.
+Implement exactly one overload for each creator or disposer.
+
+`SeContainerInitializer.addBuildCompatibleExtensions()` can register build compatible extensions programmatically in Java SE.
+The `@Registration` annotation can now specify parameterized types.
+
 ===== Removal of deprecated Weld APIs
 
 The deprecated `WeldContainer.instance()` method has been removed.
