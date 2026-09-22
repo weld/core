@@ -27,7 +27,7 @@
         <maven.compiler.argument.testSource>17</maven.compiler.argument.testSource>
         <maven.compiler.argument.testTarget>17</maven.compiler.argument.testTarget>
 
-        <!-- Should be equal to the newest Java version for which sources exist -->
+        <!-- Minimum Java version required to build Weld -->
         <jdk.min.version>17</jdk.min.version>
 
         <!-- Javadoc source version -->
@@ -35,7 +35,7 @@
 
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
 
-        <!-- Only initialized in JDK 9 profile to provide extra CMD args to surefire -->
+        <!-- Initialized in the JDK 17+ profile to provide extra JVM arguments to Surefire -->
         <surefire.plugin.jdk17.args />
         <!-- Jakarta JAX/JWS api and implementation -->
         <jax.api.version>4.0.3</jax.api.version>
@@ -60,9 +60,10 @@
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.5.Final</arquillian.tomcat.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
-        <!-- Version of the CDI 4.1 TCK release -->
+        <!-- Version of the CDI 5.0 TCK release -->
         <cdi.tck.version>5.0.0</cdi.tck.version>
-        <!-- Version of the Jakarta Platform TCK 4.1 release -->
+        <!-- Version of the Jakarta EE 11 Platform TCK release -->
+        <!-- TODO: Upgrade to the Jakarta EE 12 Platform TCK when available. -->
         <platform.tck.version>11.0.3</platform.tck.version>
         <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
         <!-- We can also use our own file, needed for relaxed mode testing (see WeldMethodInterceptor) -->

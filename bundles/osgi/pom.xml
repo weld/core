@@ -371,7 +371,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-        <tag>6.0.0-SNAPSHOT</tag>
+        <tag>HEAD</tag>
     </scm>
 
 </project>
