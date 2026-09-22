@@ -277,7 +277,7 @@ public enum ConfigurationKey {
      *
      * @see #UNUSED_BEANS_EXCLUDE_TYPE
      */
-    UNUSED_BEANS_EXCLUDE_ANNOTATION("org.jboss.weld.bootstrap.unusedBeans.excludeAnnotation", "javax\\.ws\\.rs.*"),
+    UNUSED_BEANS_EXCLUDE_ANNOTATION("org.jboss.weld.bootstrap.unusedBeans.excludeAnnotation", "jakarta\\.ws\\.rs.*"),
 
     /**
      * If set to true then when a contextual reference for a @SessionScoped or @ConversationScoped bean is obtained from a
