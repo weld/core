@@ -173,8 +173,8 @@
                             <publishingServerId>central</publishingServerId>
                             <!-- Automatically publish staged repo -->
                             <autoPublish>true</autoPublish>
-                            <!-- The plugin will block and wait until the artifact is published -->
-                            <waitUntil>published</waitUntil>
+                            <!-- Wait for validation; publication continues automatically -->
+                            <waitUntil>validated</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
