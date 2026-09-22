@@ -75,28 +75,13 @@ public abstract class ForwardingWeldInstance<T> implements WeldInstance<T> {
     }
 
     @Override
-    public WeldInstance.Handler<T> getHandler() {
-        return delegate().getHandler();
-    }
-
-    @Override
-    public Iterable<org.jboss.weld.inject.WeldInstance.Handler<T>> handlers() {
-        return delegate().handlers();
-    }
-
-    @Override
-    public Handle getHandle() {
+    public Handle<T> getHandle() {
         return delegate().getHandle();
     }
 
     @Override
     public Iterable<? extends Handle<T>> handles() {
         return delegate().handles();
-    }
-
-    @Override
-    public Comparator<Handler<?>> getPriorityComparator() {
-        return delegate().getPriorityComparator();
     }
 
     @Override

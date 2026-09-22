@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Similar to {@link WeldInstanceTest} but uses purely CDI APIs
+ * Tests instance handles and Weld's handle priority comparator.
  *
  * @author Matej Novotny
  */

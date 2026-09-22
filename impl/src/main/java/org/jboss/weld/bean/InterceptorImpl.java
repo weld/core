@@ -39,7 +39,6 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Marius Bogoevici
@@ -91,11 +90,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
                 .getInterceptorInvocation(instance, interceptionType)
                 .getInterceptorMethodInvocations();
 
-        Set<Annotation> interceptorBindings = null;
-        if (ctx instanceof org.jboss.weld.interceptor.WeldInvocationContext) {
-            interceptorBindings = Reflections.<org.jboss.weld.interceptor.WeldInvocationContext> cast(ctx)
-                    .getInterceptorBindings();
-        }
+        Set<Annotation> interceptorBindings = ctx.getInterceptorBindings();
 
         try {
             /*

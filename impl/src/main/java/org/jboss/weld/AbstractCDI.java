@@ -38,7 +38,6 @@ import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableSet;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to
@@ -115,11 +114,6 @@ public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
     }
 
     @Override
-    public Handler<T> getHandler() {
-        return getInstance().getHandler();
-    }
-
-    @Override
     public Handle<T> getHandle() {
         return getInstance().getHandle();
     }
@@ -130,19 +124,8 @@ public abstract class AbstractCDI<T> extends CDI<T> implements WeldInstance<T> {
     }
 
     @Override
-    public Iterable<Handler<T>> handlers() {
-        return getInstance().handlers();
-    }
-
-    @Override
     public Iterable<? extends Handle<T>> handles() {
         return getInstance().handles();
-    }
-
-    @Override
-    public Comparator<Handler<?>> getPriorityComparator() {
-        return Reflections.cast(new PriorityComparator(
-                BeanManagerProxy.unwrap(getBeanManager()).getServices().get(AnnotationApiAbstraction.class)));
     }
 
     @Override

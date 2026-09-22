@@ -49,7 +49,7 @@ public class InstanceHandleTest {
         return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceHandleTest.class))
                 .addClasses(Alpha.class, Bravo.class, Client.class, FirstProcessor.class, Processor.class,
                         SecondProcessor.class, Juicy.class)
-                .addPackage(WeldInstanceTest.class.getPackage())
+                .addPackage(InstanceHandleTest.class.getPackage())
                 .addClass(ActionSequence.class);
     }
 

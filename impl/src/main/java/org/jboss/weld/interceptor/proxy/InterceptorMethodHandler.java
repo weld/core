@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import jakarta.interceptor.InvocationContext;
+
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.bean.proxy.StackAwareMethodHandler;
@@ -84,7 +86,7 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
 
     protected Object executeAroundInvoke(Object instance, Method method, Method proceed, Object[] args,
             CachedInterceptionChain chain, Stack stack) throws Throwable {
-        org.jboss.weld.interceptor.WeldInvocationContext ctx = create(instance, method, proceed, args, chain.interceptorMethods,
+        InvocationContext ctx = create(instance, method, proceed, args, chain.interceptorMethods,
                 chain.interceptorBindings, stack);
         try {
             return chain.interceptorMethods.get(0).invoke(ctx);

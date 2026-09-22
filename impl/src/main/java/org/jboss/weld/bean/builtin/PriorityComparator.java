@@ -29,7 +29,6 @@ import org.jboss.weld.util.AnnotationApiAbstraction;
 /**
  *
  * @author Martin Kouba
- * @see WeldInstance#getPriorityComparator()
  * @see WeldInstance#getHandlePriorityComparator()
  */
 public class PriorityComparator implements Comparator<Instance.Handle<?>> {
