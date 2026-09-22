@@ -75,10 +75,8 @@ The game's main logic is located in `Game.java`. In this example, it differs fro
 * Since there is no dedicated validation phase, validation of user input is performed
     during the `check()` method.
 
-* The `reset()` method makes a call to the injected `rndGenerator` in order to get
-    the random number at the start of each game. Note that it cannot use
-    `manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){})`
-    as the JSF example does because there will not be any active contexts like there
-    is during a JSF request.
+* The `reset()` method calls the injected `rndGenerator` to obtain a new random
+    number at the start of each game. The JSF example instead uses an injected
+    `@Random Instance<Integer>` and calls `get()` for each new game.
 
 For a deeper look into the SE Number Guess example, please refer to chapter 7.2 of the reference documentation.
