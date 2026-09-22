@@ -434,22 +434,11 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
             mh = MethodHandles.catchException(mh, ClassCastException.class, cceCatch);
         }
 
-        // create an inner invoker and pass it to wrapper
-        // NOTE: invocation wrappers combined with ParameterType async handlers are not
-        // currently supported — the inner InvokerImpl does not pass CleanupActions
-        if (invocationWrapper != null) {
-            InvokerImpl<?, ?> invoker = new InvokerImpl<>(mh);
-
-            MethodHandle invocationWrapperMethod = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
-                    invocationWrapper, reflectionBeanClass);
-
-            mh = MethodHandles.insertArguments(invocationWrapperMethod, 2, invoker);
-        }
-
         // ReturnType handler is embedded in the MH chain (tryFinally or filterReturnValue),
-        // so a plain InvokerImpl suffices. ParameterType needs AsyncInvokerImpl because
-        // transformArgument must run before the chain but needs the completion callback
-        // that is only available after.
+        // so a plain InvokerImpl suffices. ParameterType needs AsyncInvokerImpl to create
+        // cleanup state before transformArgument and share it with the MH chain,
+        // allowing the completion callback to coordinate deferred cleanup.
+        InvokerInfo invoker;
         if (returnTypeHandler != null) {
             if (!requiresCleanup) {
                 MethodHandle transform = MethodHandleUtils.APPLY_RETURN_TYPE_HANDLER;
@@ -460,12 +449,20 @@ public abstract class AbstractInvokerBuilder<B, T> implements WeldInvokerBuilder
                         .changeParameterType(0, mh.type().returnType()));
                 mh = MethodHandles.filterReturnValue(mh, transform);
             }
-            return new InvokerImpl<>(mh);
+            invoker = new InvokerImpl<>(mh);
         } else if (paramTypeHandler != null) {
             int asyncParamIndex = findAsyncParamIndex(reflectionMethod.getParameterTypes(), paramTypeHandler.getAsyncType());
-            return new AsyncInvokerImpl<>(mh, paramTypeHandler, asyncParamIndex, requiresCleanup);
+            invoker = new AsyncInvokerImpl<>(mh, paramTypeHandler, asyncParamIndex, requiresCleanup);
+        } else {
+            invoker = new InvokerImpl<>(mh);
         }
-        return new InvokerImpl<>(mh);
+        // Each wrapper delegation must perform its own transformations and cleanup.
+        if (invocationWrapper != null) {
+            MethodHandle wrapper = MethodHandleUtils.createMethodHandleFromTransformer(reflectionMethod,
+                    invocationWrapper, reflectionBeanClass);
+            return new InvokerImpl<>(MethodHandles.insertArguments(wrapper, 2, invoker));
+        }
+        return invoker;
     }
 
     private int findAsyncParamIndex(Class<?>[] parameterTypes, Class<?> asyncType) {
