@@ -266,7 +266,7 @@ While this works most of the time, there are few rare cases, when it might be ne
 * `org.jboss.weld.environment.tomcat.TomcatContainer`
 * `org.jboss.weld.environment.jetty.JettyContainer`
 * `org.jboss.weld.environment.undertow.UndertowContainer`
-* or any custom `org.jboss.weld.environment.Container` implementation
+* or any custom `org.jboss.weld.environment.servlet.Container` implementation
 
 
 [[weld-se]]

@@ -290,13 +290,6 @@ registers an `@EJB` injection point (on a managed bean) and returns a
 `ResourceReferenceFactory` as explained above. This service is not
 required if the implementation of <<injection_services>> takes care of `@EJB` injection.
 
-NOTE: `EJBInjectionServices.resolveEjb(InjectionPoint ij)`, which allows
-`@EJB` injection point to be resolved without prior registration was
-deprecated in Weld 2 and should no longer be used. An injection point
-should be registered properly using
-`EjbInjectionServices.registerEjbInjectionPoint(InjectionPoint injectionPoint)`
-instead.
-
 [[jpa_services]]
 ==== JPA services
 
@@ -308,25 +301,10 @@ To allow JPA integration, the `org.jboss.weld.injection.spi.JpaInjectionServices
 should be implemented. This service is not required if the implementation of
 <<injection_services>> takes care of `@PersistenceContext` injection.
 
-[NOTE]
-====
-
-The following methods were deprecated in Weld 2:
-
-*
-`JpaInjectionServices.resolvePersistenceContext(InjectionPoint injectionPoint)`
-
-*
-`JpaInjectionServices.resolvePersistenceUnit(InjectionPoint injectionPoint)`
-
-An injection point should instead be registered properly using the
-following methods:
-
-*
-`JpaInjectionServices.registerPersistenceContextInjectionPoint(InjectionPoint injectionPoint)`
-*
-`JpaInjectionServices.registerPersistenceUnitInjectionPoint(InjectionPoint injectionPoint)`
-====
+Register injection points using
+`JpaInjectionServices.registerPersistenceContextInjectionPoint(InjectionPoint injectionPoint)` or
+`JpaInjectionServices.registerPersistenceUnitInjectionPoint(InjectionPoint injectionPoint)`.
+These methods validate the injection point and return a `ResourceReferenceFactory` for obtaining resource references at runtime.
 
 ==== Transaction Services
 
@@ -353,26 +331,10 @@ delegated to the container. You must provide an implementation of
 service is not required if the implementation of <<injection_services>> takes care of
 `@Resource` injection.
 
-[NOTE]
-====
-
-The following methods were deprecated in Weld 2:
-
-*
-`ResourceInjectionServices.resolveResource(InjectionPoint injectionPoint)`
-
-*
-`ResourceInjectionServices.resolveResource(String jndiName, String mappedName)`
-
-An injection point should instead be registered properly using the
-following methods:
-
-*
-`ResourceInjectionServices.registerResourceInjectionPoint(InjectionPoint injectionPoint)`
-
-*
-`ResourceInjectionServices.registerResourceInjectionPoint(String jndiName, String mappedName)`
-====
+Register resource injection points using
+`ResourceInjectionServices.registerResourceInjectionPoint(InjectionPoint injectionPoint)` or
+`ResourceInjectionServices.registerResourceInjectionPoint(String jndiName, String mappedName)`.
+Both methods return a `ResourceReferenceFactory` for obtaining resource references at runtime.
 
 ==== Web Service Injection Services
 
@@ -579,8 +541,8 @@ user configuration, classloader isolation for each CDI application.
 ==== Servlet
 
 If you are integrating Weld into a Servlet environment you must register
-`org.jboss.weld.servlet.WeldInitialListener` and
-`org.jboss.weld.servlet.WeldTerminalListener` as Servlet listeners,
+`org.jboss.weld.module.web.servlet.WeldInitialListener` and
+`org.jboss.weld.module.web.servlet.WeldTerminalListener` as Servlet listeners,
 either automatically, or through user configuration, for each CDI
 application which uses Servlet.
 
@@ -600,11 +562,11 @@ web descriptor. That allows application to place another filter around
 the CDI filter for dealing with exceptions.
 
 Weld provides this filter with a fully qualified class name
-of`org.jboss.weld.servlet.ConversationFilter`.
+of `org.jboss.weld.module.web.servlet.ConversationFilter`.
 
 If the application contains a filter mapping for a filter named ``CDI
 Conversation Filter'', the integrator is required to register
-`org.jboss.weld.servlet.ConversationFilter` as a filter with ``CDI
+`org.jboss.weld.module.web.servlet.ConversationFilter` as a filter with ``CDI
 Conversation Filter'' as its filter name. If no such mapping exists in
 the application, the integrator is not required to register the filter.
 In that case, `WeldInitialListener` will take care of conversation context
@@ -612,22 +574,27 @@ activation/deactivation at the beginning of HTTP request processing.
 
 ==== JSF
 
-If you are integrating Weld into a JSF environment you must register
-`org.jboss.weld.el.WeldELContextListener` as an EL Context listener.
+CDI 5 exposes EL integration through `jakarta.enterprise.inject.spi.el.ELAwareBeanManager`,
+provided by `jakarta.cdi:jakarta.cdi-el-api`.
+The `WeldManager` returned by `Bootstrap.getManager()` implements this interface.
+The EL integration methods are no longer declared by `BeanManager`.
 
 If you are integrating Weld into a JSF environment you must register
-`org.jboss.weld.jsf.ConversationAwareViewHandler` as a delegating view
+`org.jboss.weld.module.web.el.WeldELContextListener` as an EL Context listener.
+
+If you are integrating Weld into a JSF environment you must register
+`org.jboss.weld.module.jsf.ConversationAwareViewHandler` as a delegating view
 handler.
 
 If you are integrating Weld into a JSF environment you must obtain the
 bean manager for the module and then call
-`BeanManager.wrapExpressionFactory()`, passing
+`ELAwareBeanManager.wrapExpressionFactory()`, passing
 `Application.getExpressionFactory()` as the argument. The wrapped
 expression factory must be used in all EL expression evaluations
 performed by JSF in this web application.
 
 If you are integrating Weld into a JSF environment you must obtain the
-bean manager for the module and then call `BeanManager.getELResolver()`,
+bean manager for the module and then call `ELAwareBeanManager.getELResolver()`,
 The returned EL resolver should be registered with JSF for this web
 application.
 
@@ -636,32 +603,22 @@ module. You could call `Bootstrap.getManager()`, passing in the BDA for
 this module. Alternatively, you could use the injection into Java EE
 component classes, or look up the bean manager in JNDI.
 
-If you are integrating Weld into a JSF environment you must register
-`org.jboss.weld.servlet.ConversationPropagationFilter` as a Servlet
-listener, either automatically, or through user configuration, for each
-CDI application which uses JSF. This filter can be registered for all
-Servlet deployment safely.
-
-
-NOTE: Weld 3 only supports JSF 2.2 and above.
-
-NOTE: `org.jboss.weld.servlet.ConversationPropagationFilter` was deprecated
-and should no longer be used.
-
 ==== JSP
 
+Use the module's `ELAwareBeanManager` for EL integration, as described above.
+
 If you are integrating Weld into a JSP environment you must register
-`org.jboss.weld.el.WeldELContextListener` as an EL Context listener.
+`org.jboss.weld.module.web.el.WeldELContextListener` as an EL Context listener.
 
 If you are integrating Weld into a JSP environment you must obtain the
 bean manager for the module and then call
-`BeanManager.wrapExpressionFactory()`, passing
-`Application.getExpressionFactory()` as the argument. The wrapped
+`ELAwareBeanManager.wrapExpressionFactory()`, passing
+`JspApplicationContext.getExpressionFactory()` as the argument. The wrapped
 expression factory must be used in all EL expression evaluations
 performed by JSP.
 
 If you are integrating Weld into a JSP environment you must obtain the
-bean manager for the module and then call `BeanManager.getELResolver()`,
+bean manager for the module and then call `ELAwareBeanManager.getELResolver()`,
 The returned EL resolver should be registered with JSP for this web
 application.
 
