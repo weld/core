@@ -93,7 +93,7 @@
         <spotbugs-annotations-version>4.10.4</spotbugs-annotations-version>
         <testng.version>7.12.0</testng.version>
         <validation.api.version>3.1.1</validation.api.version>
-        <weld.api.version>7.0.CR2</weld.api.version>
+        <weld.api.version>7.0.Final</weld.api.version>
         <wildfly.arquillian.version>5.1.0.Final</wildfly.arquillian.version>
     </properties>
 
