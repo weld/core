@@ -147,7 +147,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                         priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
                     }
                 } else {
-                    priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
+                    priority = beanManager.getEnabled().getAlternativePriority(bean);
                 }
                 if (priority == null) {
                     // not all the beans left are alternatives with a priority - we are not able to resolve
@@ -183,7 +183,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                 // first check for explicit priority declaration on producers
                 priority = ((AbstractProducerBean<?, ?, ?>) bean).getPriority();
             } else {
-                priority = beanManager.getEnabled().getReservePriority(bean.getBeanClass());
+                priority = beanManager.getEnabled().getReservePriority(bean);
             }
             if (priority > highestPriority) {
                 highestPriority = priority;
