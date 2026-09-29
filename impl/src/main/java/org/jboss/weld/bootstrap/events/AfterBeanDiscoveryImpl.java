@@ -233,7 +233,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         } else {
             beanManager.addBean(bean);
             if (priority != null && bean.isAlternative()) {
-                globalEnablementBuilder.addAlternative(bean.getBeanClass(), priority);
+                // Synthetic priorities belong to individual beans; bean classes need not be unique.
+                globalEnablementBuilder.addSyntheticAlternative(bean, priority);
             }
         }
         containerLifecycleEvents.fireProcessBean(beanManager, bean, registration.extension);
