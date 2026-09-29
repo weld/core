@@ -233,12 +233,12 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         } else {
             beanManager.addBean(bean);
             if (priority != null) {
-                // validation of bean being both, alternative and reserve happens during validation
+                // Synthetic priorities belong to individual beans; bean classes need not be unique.
                 if (bean.isAlternative()) {
-                    globalEnablementBuilder.addAlternative(bean.getBeanClass(), priority);
+                    globalEnablementBuilder.addSyntheticAlternative(bean, priority);
                 }
                 if (bean.isReserve()) {
-                    globalEnablementBuilder.addReserve(bean.getBeanClass(), priority);
+                    globalEnablementBuilder.addSyntheticReserve(bean, priority);
                 }
             }
         }

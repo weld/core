@@ -32,6 +32,7 @@ import jakarta.enterprise.inject.spi.Decorator;
 import jakarta.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Holds information about interceptors, decorators and alternatives that are enabled in this module.
@@ -42,8 +43,8 @@ import org.jboss.weld.util.collections.ImmutableMap;
 public class ModuleEnablement {
 
     public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<Class<?>> emptyList(),
-            Collections.<Class<?>> emptyList(), Collections.<Class<?>, Integer> emptyMap(),
-            Collections.<Class<?>, Integer> emptyMap(), Collections.<Class<?>> emptySet(),
+            Collections.<Class<?>> emptyList(), Collections.<ItemKey, Integer> emptyMap(),
+            Collections.<ItemKey, Integer> emptyMap(), Collections.<Class<?>> emptySet(),
             Collections.<Class<? extends Annotation>> emptySet());
 
     private final List<Class<?>> interceptors;
@@ -51,8 +52,8 @@ public class ModuleEnablement {
 
     private final Map<Class<?>, Integer> interceptorMap;
     private final Map<Class<?>, Integer> decoratorMap;
-    private final Map<Class<?>, Integer> globalAlternatives;
-    private final Map<Class<?>, Integer> globalReserves;
+    private final Map<ItemKey, Integer> globalAlternatives;
+    private final Map<ItemKey, Integer> globalReserves;
 
     private final Set<Class<?>> localAlternativeClasses;
     private final Set<Class<? extends Annotation>> localAlternativeStereotypes;
@@ -60,8 +61,8 @@ public class ModuleEnablement {
     private final Comparator<Decorator<?>> decoratorComparator;
     private final Comparator<Interceptor<?>> interceptorComparator;
 
-    public ModuleEnablement(List<Class<?>> interceptors, List<Class<?>> decorators, Map<Class<?>, Integer> globalAlternatives,
-            Map<Class<?>, Integer> globalReserves, Set<Class<?>> localAlternativeClasses,
+    public ModuleEnablement(List<Class<?>> interceptors, List<Class<?>> decorators, Map<ItemKey, Integer> globalAlternatives,
+            Map<ItemKey, Integer> globalReserves, Set<Class<?>> localAlternativeClasses,
             Set<Class<? extends Annotation>> localAlternativeStereotypes) {
         this.interceptors = interceptors;
         this.decorators = decorators;
@@ -115,23 +116,35 @@ public class ModuleEnablement {
     }
 
     public Integer getAlternativePriority(Class<?> javaClass) {
-        return globalAlternatives.get(javaClass);
+        return globalAlternatives.get(new ItemKey(javaClass));
     }
 
     public Integer getReservePriority(Class<?> javaClass) {
-        return globalReserves.get(javaClass);
+        return globalReserves.get(new ItemKey(javaClass));
+    }
+
+    public Integer getAlternativePriority(Bean<?> bean) {
+        Integer priority = globalAlternatives.get(new ItemKey(bean));
+        return priority != null ? priority : getAlternativePriority(bean.getBeanClass());
+    }
+
+    public Integer getReservePriority(Bean<?> bean) {
+        Integer priority = globalReserves.get(new ItemKey(bean));
+        return priority != null ? priority : getReservePriority(bean.getBeanClass());
     }
 
     public boolean isEnabledAlternativeClass(Class<?> alternativeClass) {
-        return globalAlternatives.containsKey(alternativeClass) || localAlternativeClasses.contains(alternativeClass);
+        return globalAlternatives.containsKey(new ItemKey(alternativeClass))
+                || localAlternativeClasses.contains(alternativeClass);
     }
 
     public boolean isEnabledReserveClass(Class<?> reserveClass) {
-        return globalReserves.containsKey(reserveClass);
+        return globalReserves.containsKey(new ItemKey(reserveClass));
     }
 
     public boolean isEnabledAlternativeStereotype(Class<?> alternativeClass) {
-        return globalAlternatives.containsKey(alternativeClass) || localAlternativeStereotypes.contains(alternativeClass);
+        return globalAlternatives.containsKey(new ItemKey(alternativeClass))
+                || localAlternativeStereotypes.contains(alternativeClass);
     }
 
     public Set<Class<?>> getAlternativeClasses() {
@@ -143,7 +156,10 @@ public class ModuleEnablement {
     }
 
     public Set<Class<?>> getGlobalAlternatives() {
-        return globalAlternatives.keySet();
+        return globalAlternatives.keySet().stream()
+                .map(ItemKey::getJavaClass)
+                .filter(javaClass -> javaClass != null)
+                .collect(ImmutableSet.collector());
     }
 
     public Set<Class<?>> getAllAlternatives() {

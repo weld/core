@@ -19,6 +19,8 @@ package org.jboss.weld.bootstrap.enablement;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.util.Preconditions;
 
 /**
@@ -32,21 +34,27 @@ class Item implements Comparable<Item> {
 
     private final Class<?> javaClass;
 
+    private final ItemKey key;
+
     private final int originalPriority;
 
     private final AtomicInteger priority;
 
     Item(Class<?> javaClass, int priority) {
-        this(javaClass, priority, priority);
+        this(new ItemKey(javaClass), javaClass, priority);
     }
 
-    Item(Class<?> javaClass, int originalPriority, int priority) {
+    Item(Bean<?> bean, int priority) {
+        this(new ItemKey(bean), bean.getBeanClass(), priority);
+    }
+
+    private Item(ItemKey key, Class<?> javaClass, int priority) {
         Preconditions.checkArgumentNotNull(javaClass, "javaClass");
         Preconditions.checkArgumentNotNull(priority, "priority");
-        Preconditions.checkArgumentNotNull(originalPriority, "originalPriority");
         this.javaClass = javaClass;
+        this.key = key;
         this.priority = new AtomicInteger(priority);
-        this.originalPriority = originalPriority;
+        this.originalPriority = priority;
     }
 
     void scalePriority() {
@@ -55,6 +63,10 @@ class Item implements Comparable<Item> {
 
     Class<?> getJavaClass() {
         return javaClass;
+    }
+
+    ItemKey getKey() {
+        return key;
     }
 
     int getPriority() {
@@ -101,6 +113,8 @@ class Item implements Comparable<Item> {
         return javaClass.hashCode();
     }
 
+    // EnablementListView exposes classes and relies on class-based equality.
+    // Priority maps use getKey() to distinguish individual synthetic beans.
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -115,6 +129,6 @@ class Item implements Comparable<Item> {
 
     @Override
     public String toString() {
-        return "[Class=" + javaClass + ", priority=" + priority + "]";
+        return "[Key=" + key + ", priority=" + priority + "]";
     }
 }
