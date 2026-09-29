@@ -28,8 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
+import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bean.ForwardingBean;
 import org.junit.Test;
 
 /**
@@ -38,6 +40,36 @@ import org.junit.Test;
  *
  */
 public class EnablementListViewTest {
+
+    @Test
+    public void testClassViewOfSyntheticItems() {
+        Bean<?> bean = new ForwardingBean<Object>() {
+            @Override
+            public Bean<Object> delegate() {
+                throw new AssertionError("Only the bean class is needed for this list view");
+            }
+
+            @Override
+            public Class<?> getBeanClass() {
+                return String.class;
+            }
+        };
+        GlobalEnablementBuilder builder = new GlobalEnablementBuilder();
+        builder.addSyntheticAlternative(bean, 10);
+        builder.addAlternative(String.class, 20);
+        List<Class<?>> view = builder.getAlternativeList(null);
+
+        assertEquals(String.class, view.get(0));
+        assertTrue(view.contains(String.class));
+        // The synthetic bean and the regular class entry are both exposed as String.class in the view.
+        assertEquals(0, view.indexOf(String.class));
+        assertEquals(1, view.lastIndexOf(String.class));
+        assertTrue(view.remove(String.class));
+        assertEquals(1, view.size());
+        assertEquals(String.class, view.get(0));
+        assertTrue(view.remove(String.class));
+        assertTrue(view.isEmpty());
+    }
 
     @Test
     public void testBasicOperations() {

@@ -19,7 +19,6 @@ package org.jboss.weld.bootstrap.enablement;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -59,36 +59,38 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private final List<Item> interceptors = Collections.synchronizedList(new ArrayList<Item>());
     private final List<Item> decorators = Collections.synchronizedList(new ArrayList<Item>());
 
-    private volatile Map<Class<?>, Integer> cachedAlternativeMap;
+    private volatile Map<ItemKey, Integer> cachedAlternativeMap;
     private volatile boolean sorted;
     private volatile boolean dirty;
 
-    private void addItem(List<Item> list, Class<?> javaClass, int priority) {
+    private void addItem(List<Item> list, Item item) {
         sorted = false;
         dirty = true;
         synchronized (list) {
-            int originalPriority = priority;
             if (!list.isEmpty()) {
                 int scaling = list.get(0).getNumberOfScaling();
-                if (scaling > 0) {
-                    // We have to scale the priority if necessary
-                    priority *= new BigInteger("" + Item.ITEM_PRIORITY_SCALE_POWER).pow(scaling).intValue();
+                for (int i = 0; i < scaling; i++) {
+                    item.scalePriority();
                 }
             }
-            list.add(new Item(javaClass, originalPriority, priority));
+            list.add(item);
         }
     }
 
+    public void addSyntheticAlternative(Bean<?> bean, int priority) {
+        addItem(alternatives, new Item(bean, priority));
+    }
+
     public void addAlternative(Class<?> javaClass, int priority) {
-        addItem(alternatives, javaClass, priority);
+        addItem(alternatives, new Item(javaClass, priority));
     }
 
     public void addInterceptor(Class<?> javaClass, int priority) {
-        addItem(interceptors, javaClass, priority);
+        addItem(interceptors, new Item(javaClass, priority));
     }
 
     public void addDecorator(Class<?> javaClass, int priority) {
-        addItem(decorators, javaClass, priority);
+        addItem(decorators, new Item(javaClass, priority));
     }
 
     public List<Class<?>> getAlternativeList(final Extension extension) {
@@ -169,11 +171,11 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
      * need to synchronize access to
      * cachedAlternativeMap.
      */
-    private Map<Class<?>, Integer> getGlobalAlternativeMap() {
+    private Map<ItemKey, Integer> getGlobalAlternativeMap() {
         if (cachedAlternativeMap == null || dirty) {
-            Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
+            Map<ItemKey, Integer> map = new HashMap<ItemKey, Integer>();
             for (Item item : alternatives) {
-                map.put(item.getJavaClass(), item.getPriority());
+                map.put(item.getKey(), item.getPriority());
             }
             cachedAlternativeMap = ImmutableMap.copyOf(map);
         }
@@ -235,7 +237,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             alternativeStereotypes = Collections.emptySet();
         }
 
-        Map<Class<?>, Integer> globalAlternatives = getGlobalAlternativeMap();
+        Map<ItemKey, Integer> globalAlternatives = getGlobalAlternativeMap();
 
         // We suppose that enablements are always created all at once
         dirty = false;
