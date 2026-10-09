@@ -24,6 +24,7 @@ import jakarta.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
+import org.jboss.weld.interceptor.proxy.MethodInvoker;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.util.collections.ImmutableList;
 
@@ -39,6 +40,14 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
 
     public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, List<Method> interceptorMethods,
             boolean targetClass) {
+        this(instance, interceptionType, interceptorMethods, null, targetClass);
+    }
+
+    /**
+     * @param interceptorMethodInvokers the invokers of the given interceptor methods (same order), may be null
+     */
+    SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, List<Method> interceptorMethods,
+            MethodInvoker[] interceptorMethodInvokers, boolean targetClass) {
         this.instance = instance;
         this.interceptionType = interceptionType;
         this.targetClass = targetClass;
@@ -46,14 +55,20 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
         if (interceptorMethods.size() == 1) {
             // Very often there will be only one interceptor method
             interceptorMethodInvocations = ImmutableList
-                    .<InterceptorMethodInvocation> of(new SimpleMethodInvocation(interceptorMethods.get(0)));
+                    .<InterceptorMethodInvocation> of(new SimpleMethodInvocation(interceptorMethods.get(0),
+                            invoker(interceptorMethodInvokers, 0, interceptorMethods)));
         } else {
             ImmutableList.Builder<InterceptorMethodInvocation> builder = ImmutableList.builder();
-            for (Method method : interceptorMethods) {
-                builder.add(new SimpleMethodInvocation(method));
+            for (int i = 0; i < interceptorMethods.size(); i++) {
+                builder.add(new SimpleMethodInvocation(interceptorMethods.get(i),
+                        invoker(interceptorMethodInvokers, i, interceptorMethods)));
             }
             interceptorMethodInvocations = builder.build();
         }
+    }
+
+    private static MethodInvoker invoker(MethodInvoker[] invokers, int i, List<Method> interceptorMethods) {
+        return invokers != null ? invokers[i] : MethodInvoker.of(interceptorMethods.get(i));
     }
 
     @Override
@@ -64,17 +79,20 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
     class SimpleMethodInvocation implements InterceptorMethodInvocation {
 
         private final Method method;
+        private final MethodInvoker invoker;
 
-        SimpleMethodInvocation(Method method) {
+        SimpleMethodInvocation(Method method, MethodInvoker invoker) {
             this.method = method;
+            this.invoker = invoker;
         }
 
         @Override
         public Object invoke(InvocationContext invocationContext) throws Exception {
+            // same semantics as method.invoke(instance, invocationContext) / method.invoke(instance)
             if (invocationContext != null) {
-                return method.invoke(instance, invocationContext);
+                return invoker.invoke(method, instance, invocationContext);
             } else {
-                return method.invoke(instance);
+                return invoker.invoke(method, instance);
             }
         }
 
