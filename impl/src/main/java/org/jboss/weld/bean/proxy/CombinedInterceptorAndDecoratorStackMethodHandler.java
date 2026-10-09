@@ -15,6 +15,11 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackAwareMethodHandler, Serializable {
 
+    /**
+     * The (immutable) arguments array passed to the handler by intercepted subclasses for methods without parameters.
+     */
+    public static final Object[] NO_ARGUMENTS = new Object[0];
+
     public static final CombinedInterceptorAndDecoratorStackMethodHandler NULL_INSTANCE = new CombinedInterceptorAndDecoratorStackMethodHandler() {
         @Override
         public void setInterceptorMethodHandler(InterceptorMethodHandler interceptorMethodHandler) {
