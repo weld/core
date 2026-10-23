@@ -53,7 +53,7 @@ public class TypeSafeObserverResolver
         public int compare(ObserverMethod<?> o1, ObserverMethod<?> o2) {
             ObserverMethod<?> eom1 = (ObserverMethod<?>) o1;
             ObserverMethod<?> eom2 = (ObserverMethod<?>) o2;
-            return eom1.getPriority() - eom2.getPriority();
+            return Integer.compare(eom1.getPriority(), eom2.getPriority());
         }
     }
 
