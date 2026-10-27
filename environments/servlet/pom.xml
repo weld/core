@@ -28,7 +28,7 @@
         <tomcat.version>11.0.26</tomcat.version>
         <jetty.version>12.1.13</jetty.version>
         <websockets.api>2.2.0</websockets.api>
-        <undertow.version>2.3.26.Final</undertow.version>
+        <undertow.version>2.3.27.Final</undertow.version>
     </properties>
 
     <!-- Import the BOMs -->
