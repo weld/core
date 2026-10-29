@@ -117,6 +117,9 @@ public class Container {
 
     private ContainerState state = ContainerState.STOPPED;
 
+    // set at the very beginning of cleanup(); a container that is not cleaned up is still registered
+    private volatile boolean cleanedUp;
+
     public Container(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
         this(contextId, deploymentManager, deploymentServices, null);
     }
@@ -141,6 +144,7 @@ public class Container {
      * managers, and all deployment services
      */
     public void cleanup() {
+        cleanedUp = true;
         managers.clear();
         for (BeanManagerImpl beanManager : beanDeploymentArchives.values()) {
             beanManager.cleanup();
@@ -200,6 +204,16 @@ public class Container {
             beanDeploymentArchives.put(entry.getKey(), entry.getValue());
             addBeanManager(entry.getValue());
         }
+    }
+
+    /**
+     * Cheap check suitable for hot paths: as long as this method returns {@code false}, this container has not been cleaned
+     * up and is therefore still registered, i.e. {@link #isSet(String)} returns {@code true} for its context id.
+     *
+     * @return {@code true} if {@link #cleanup()} has been called on this container
+     */
+    public boolean isCleanedUp() {
+        return cleanedUp;
     }
 
     public ContainerState getState() {
