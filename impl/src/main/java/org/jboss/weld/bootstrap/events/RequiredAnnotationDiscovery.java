@@ -21,9 +21,13 @@ import java.lang.annotation.Inherited;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -34,9 +38,16 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class RequiredAnnotationDiscovery implements Service {
+public class RequiredAnnotationDiscovery extends AbstractBootstrapService {
 
     private final ReflectionCache cache;
+
+    /**
+     * For each class, the annotation types that make {@link #containsAnnotation} true. Every observer with
+     * {@code @WithAnnotations} asks about each of its required annotations separately, so without this every one of
+     * them would walk the whole class hierarchy and its members again.
+     */
+    private final ConcurrentMap<Class<?>, Set<Class<? extends Annotation>>> matchingAnnotations = new ConcurrentHashMap<>();
 
     public RequiredAnnotationDiscovery(ReflectionCache cache) {
         this.cache = cache;
@@ -81,39 +92,34 @@ public class RequiredAnnotationDiscovery implements Service {
      * @return
      */
     public boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Class<? extends Annotation> requiredAnnotation) {
+        return matchingAnnotations
+                .computeIfAbsent(annotatedType.getJavaClass(), clazz -> findMatchingAnnotations(annotatedType))
+                .contains(requiredAnnotation);
+    }
+
+    /**
+     * Collects, in one walk, the type of every annotation that is present where {@link #containsAnnotation} looks,
+     * and the types of the annotations that those annotations are annotated with.
+     */
+    private Set<Class<? extends Annotation>> findMatchingAnnotations(BackedAnnotatedType<?> annotatedType) {
+        Set<Class<? extends Annotation>> found = new HashSet<>();
         // class level annotations
-        if (containsAnnotation(annotatedType.getAnnotations(), requiredAnnotation, true)) {
-            return true;
-        }
+        addAnnotations(annotatedType.getAnnotations(), found);
         for (Class<?> clazz = annotatedType.getJavaClass(); clazz != null
                 && clazz != Object.class; clazz = clazz.getSuperclass()) {
             // fields
             for (Field field : clazz.getDeclaredFields()) {
-                if (containsAnnotations(cache.getAnnotations(field), requiredAnnotation)) {
-                    return true;
-                }
+                addAnnotations(cache.getAnnotations(field), found);
             }
             // constructors
             for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-                if (containsAnnotations(cache.getAnnotations(constructor), requiredAnnotation)) {
-                    return true;
-                }
-                for (Annotation[] parameterAnnotations : constructor.getParameterAnnotations()) {
-                    if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
-                        return true;
-                    }
-                }
+                addAnnotations(cache.getAnnotations(constructor), found);
+                addParameterAnnotations(constructor.getParameterAnnotations(), found);
             }
             // methods
             for (Method method : clazz.getDeclaredMethods()) {
-                if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation)) {
-                    return true;
-                }
-                for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
-                    if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
-                        return true;
-                    }
-                }
+                addAnnotations(cache.getAnnotations(method), found);
+                addParameterAnnotations(method.getParameterAnnotations(), found);
             }
         }
 
@@ -121,62 +127,42 @@ public class RequiredAnnotationDiscovery implements Service {
         for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(annotatedType.getJavaClass())) {
             for (Method method : interfaceClazz.getDeclaredMethods()) {
                 if (Reflections.isDefault(method)) {
-                    if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation)) {
-                        return true;
-                    }
-                    for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
-                        if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
-                            return true;
-                        }
-                    }
+                    addAnnotations(cache.getAnnotations(method), found);
+                    addParameterAnnotations(method.getParameterAnnotations(), found);
                 }
             }
         }
-        return false;
+        return found;
     }
 
-    private boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
-        return containsAnnotation(annotations, requiredAnnotation, true);
-    }
-
-    private boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation,
-            boolean checkMetaAnnotations) {
-        for (Annotation annotation : annotations) {
-            if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
-                return true;
-            }
+    private void addParameterAnnotations(Annotation[][] parameterAnnotations, Set<Class<? extends Annotation>> found) {
+        for (Annotation[] annotations : parameterAnnotations) {
+            addAnnotations(annotations, found);
         }
-        return false;
     }
 
-    private boolean containsAnnotations(Iterable<? extends Annotation> annotations,
-            Class<? extends Annotation> requiredAnnotation) {
-        return containsAnnotation(annotations, requiredAnnotation, true);
-    }
-
-    private boolean containsAnnotation(Iterable<? extends Annotation> annotations,
-            Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+    private void addAnnotations(Annotation[] annotations, Set<Class<? extends Annotation>> found) {
         for (Annotation annotation : annotations) {
-            if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
-                return true;
-            }
+            addAnnotation(annotation, found);
         }
-        return false;
     }
 
-    private boolean containsAnnotation(Annotation annotation, Class<? extends Annotation> requiredAnnotation,
-            boolean checkMetaAnnotations) {
+    private void addAnnotations(Iterable<? extends Annotation> annotations, Set<Class<? extends Annotation>> found) {
+        for (Annotation annotation : annotations) {
+            addAnnotation(annotation, found);
+        }
+    }
+
+    private void addAnnotation(Annotation annotation, Set<Class<? extends Annotation>> found) {
         Class<? extends Annotation> annotationType = annotation.annotationType();
-        if (requiredAnnotation.equals(annotationType)) {
-            return true;
+        found.add(annotationType);
+        for (Annotation metaAnnotation : cache.getAnnotations(annotationType)) {
+            found.add(metaAnnotation.annotationType());
         }
-        if (checkMetaAnnotations && containsAnnotation(cache.getAnnotations(annotationType), requiredAnnotation, false)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
-    public void cleanup() {
+    public void cleanupAfterBoot() {
+        matchingAnnotations.clear();
     }
 }

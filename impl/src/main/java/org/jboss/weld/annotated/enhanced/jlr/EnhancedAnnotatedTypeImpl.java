@@ -25,8 +25,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
@@ -317,18 +319,19 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
         Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
         Multimap<MethodSignature, Package> seenMethods = SetMultimap.newSetMultimap();
+        Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> methodsByDeclaringClass = methods.stream()
+                .collect(Collectors.groupingBy(method -> method.getJavaMember().getDeclaringClass()));
         for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null
                 && clazz != Object.class; clazz = clazz.getSuperclass()) {
-            for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
-                if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
-                    if (skipOverridingBridgeMethods && method.getJavaMember().isBridge()) {
-                        continue;
-                    }
-                    if (isOverridden(method, seenMethods)) {
-                        overriddenMethods.add(method);
-                    }
-                    seenMethods.put(method.getSignature(), method.getPackage());
+            for (EnhancedAnnotatedMethod<?, ? super T> method : methodsByDeclaringClass.getOrDefault(clazz,
+                    Collections.emptyList())) {
+                if (skipOverridingBridgeMethods && method.getJavaMember().isBridge()) {
+                    continue;
                 }
+                if (isOverridden(method, seenMethods)) {
+                    overriddenMethods.add(method);
+                }
+                seenMethods.put(method.getSignature(), method.getPackage());
             }
         }
         return immutableSetView(overriddenMethods);
