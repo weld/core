@@ -19,6 +19,12 @@ package org.jboss.weld.environment.se.test.discovery.withAnnotations;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.Set;
+
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
@@ -41,6 +47,7 @@ public class WithAnnotationsTest {
         return ClassPath.builder()
                 .add(ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(WithAnnotationsTest.class))
                         .addPackage(WithAnnotationsTest.class.getPackage())
+                        .addClasses(WithAnnotationsTest.class.getDeclaredClasses())
                         .addAsServiceProvider(Extension.class, VerifyingExtension.class))
                 .build();
     }
@@ -58,5 +65,33 @@ public class WithAnnotationsTest {
             assertEquals("ko", container.select(MyInterfaceMeta.class).get().pong("ko"));
         }
 
+    }
+
+    @Test
+    public void testWithAnnotationsRespectsClassAnnotationInheritance() {
+        try (WeldContainer container = new Weld().scanClasspathEntries().initialize()) {
+            VerifyingExtension extension = container.getBeanManager().getExtension(VerifyingExtension.class);
+            assertEquals(Set.of(Base.class), extension.getMarkedTypes());
+            assertEquals(Set.of(Base.class, Child.class), extension.getInheritedMarkedTypes());
+        }
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Marker {
+    }
+
+    @Inherited
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface InheritedMarker {
+    }
+
+    @Dependent
+    @Marker
+    @InheritedMarker
+    public static class Base {
+    }
+
+    @Dependent
+    public static class Child extends Base {
     }
 }
