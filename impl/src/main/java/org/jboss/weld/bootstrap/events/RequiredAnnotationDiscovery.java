@@ -173,15 +173,15 @@ public class RequiredAnnotationDiscovery extends AbstractBootstrapService {
     private boolean containsAnnotation(Annotation annotation, Class<? extends Annotation> requiredAnnotation,
             Set<Class<? extends Annotation>> found) {
         Class<? extends Annotation> annotationType = annotation.annotationType();
-        found.add(annotationType);
         if (requiredAnnotation.equals(annotationType)) {
             return true;
         }
+        found.add(annotationType);
         for (Annotation metaAnnotation : cache.getAnnotations(annotationType)) {
-            found.add(metaAnnotation.annotationType());
             if (requiredAnnotation.equals(metaAnnotation.annotationType())) {
                 return true;
             }
+            found.add(metaAnnotation.annotationType());
         }
         return false;
     }
