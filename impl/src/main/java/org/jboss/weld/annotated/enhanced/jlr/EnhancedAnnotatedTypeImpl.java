@@ -292,8 +292,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         SetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = SetMultimap.newSetMultimap();
         processMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotationMap.values(), classTransformer, true);
         this.declaredMetaAnnotationMap = Multimaps.unmodifiableMultimap(declaredMetaAnnotationMap);
-        Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> methodsByDeclaringClass = methodsTemp.stream()
-                .collect(Collectors.groupingBy(method -> method.getJavaMember().getDeclaringClass()));
+        Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> methodsByDeclaringClass = groupMethodsByDeclaringClass(
+                methodsTemp);
         this.overriddenMethods = getOverriddenMethods(this, methodsByDeclaringClass);
 
         // WELD-1548 remove all overriden methods except for those which are overriden by a bridge method
@@ -302,6 +302,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         this.methods = methodsTemp;
         this.annotatedMethods = buildAnnotatedMethodMultimap(this.methods);
         this.annotatedMethodsByAnnotatedParameters = buildAnnotatedParameterMethodMultimap(this.methods);
+    }
+
+    protected Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> groupMethodsByDeclaringClass(
+            Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        return methods.stream().collect(Collectors.groupingBy(method -> method.getJavaMember().getDeclaringClass()));
     }
 
     protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,

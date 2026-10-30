@@ -89,6 +89,12 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
     }
 
     @Override
+    protected Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> groupMethodsByDeclaringClass(
+            Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        return Collections.emptyMap();
+    }
+
+    @Override
     protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
             Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> methodsByDeclaringClass,
             boolean skipOverridingBridgeMethods) {
