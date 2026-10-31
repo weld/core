@@ -18,6 +18,9 @@ package org.jboss.weld.environment.se.test.discovery.withAnnotations;
 
 import static org.junit.Assert.assertNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Stereotype;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -32,6 +35,10 @@ public class VerifyingExtension implements Extension {
 
     private AnnotatedType<MyBeanMeta> myBeanMetaType;
 
+    private final Set<Class<?>> markedTypes = new HashSet<>();
+
+    private final Set<Class<?>> inheritedMarkedTypes = new HashSet<>();
+
     void processMyBean(@Observes @WithAnnotations(Named.class) ProcessAnnotatedType<MyBean> event) {
         assertNull(myBeanType);
         this.myBeanType = event.getAnnotatedType();
@@ -42,12 +49,29 @@ public class VerifyingExtension implements Extension {
         this.myBeanMetaType = event.getAnnotatedType();
     }
 
+    void processMarkedType(@Observes @WithAnnotations(WithAnnotationsTest.Marker.class) ProcessAnnotatedType<?> event) {
+        markedTypes.add(event.getAnnotatedType().getJavaClass());
+    }
+
+    void processInheritedMarkedType(
+            @Observes @WithAnnotations(WithAnnotationsTest.InheritedMarker.class) ProcessAnnotatedType<?> event) {
+        inheritedMarkedTypes.add(event.getAnnotatedType().getJavaClass());
+    }
+
     AnnotatedType<MyBean> getMyBeanType() {
         return myBeanType;
     }
 
     AnnotatedType<MyBeanMeta> getMyBeanMetaType() {
         return myBeanMetaType;
+    }
+
+    Set<Class<?>> getMarkedTypes() {
+        return markedTypes;
+    }
+
+    Set<Class<?>> getInheritedMarkedTypes() {
+        return inheritedMarkedTypes;
     }
 
 }
