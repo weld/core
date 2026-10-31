@@ -56,7 +56,7 @@
         <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
         <arquillian.drone.version>3.0.0-alpha.5</arquillian.drone.version>
         <arquillian.graphene.version>3.0.0-alpha.3</arquillian.graphene.version>
-        <arquillian.weld.version>4.0.0.Final</arquillian.weld.version>
+        <arquillian.weld.version>4.0.1.Final</arquillian.weld.version>
         <arquillian.se.container.version>1.0.2.Final</arquillian.se.container.version>
         <arquillian.tomcat.version>1.2.5.Final</arquillian.tomcat.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
