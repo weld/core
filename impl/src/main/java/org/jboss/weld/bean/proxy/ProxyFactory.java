@@ -403,6 +403,10 @@ public class ProxyFactory<T> {
             proxyClassName = proxyClassName.replaceFirst(JAVA, WELD_PROXY_PREFIX);
         } else if (proxyClassName.startsWith(JAKARTA)) {
             proxyClassName = proxyClassName.replaceFirst(JAKARTA, WELD_PROXY_PREFIX);
+        } else if (bean != null && shouldRelocateProxy(bean.getBeanClass())) {
+            // Target lives in a named module that doesn't open its package to Weld.
+            // Define the proxy into Weld's own package to avoid the opens requirement to the named module.
+            proxyClassName = WELD_PROXY_PREFIX + "." + proxyClassName;
         }
         Class<T> proxyClass = null;
         Class<?> originalClass = bean != null ? bean.getBeanClass() : proxiedBeanType;
@@ -980,6 +984,21 @@ public class ProxyFactory<T> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static boolean shouldRelocateProxy(Class<?> originalType) {
+        final Module module = originalType.getModule();
+        if (module == null || !module.isNamed()) {
+            return false; // classpath / unnamed module: MethodHandles.privateLookupIn works fine
+        }
+        // Only relocate proxy when we have a public modifier as we cannot override package-private methods.
+        // package-private access is intentionally handled by defineWithMethodLookup
+        if (!Modifier.isPublic(originalType.getModifiers())) {
+            return false;
+        }
+        final String pkg = originalType.getPackageName();
+        // We only need to relocate if the module is not already open to this module
+        return !module.isOpen(pkg, ProxyFactory.class.getModule());
     }
 
     /**
