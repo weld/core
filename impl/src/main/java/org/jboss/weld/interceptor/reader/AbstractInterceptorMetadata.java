@@ -21,8 +21,10 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
+import org.jboss.weld.interceptor.proxy.MethodInvoker;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
@@ -34,8 +36,12 @@ public abstract class AbstractInterceptorMetadata implements InterceptorMetadata
 
     protected final Map<InterceptionType, List<Method>> interceptorMethodMap;
 
+    // invokers of the interceptor methods, per interception type (ordinal); created lazily upon first invocation
+    private final AtomicReferenceArray<MethodInvoker[]> interceptorMethodInvokers;
+
     public AbstractInterceptorMetadata(Map<InterceptionType, List<Method>> interceptorMethodMap) {
         this.interceptorMethodMap = interceptorMethodMap;
+        this.interceptorMethodInvokers = new AtomicReferenceArray<>(InterceptionType.values().length);
     }
 
     public List<Method> getInterceptorMethods(InterceptionType interceptionType) {
@@ -59,8 +65,22 @@ public abstract class AbstractInterceptorMetadata implements InterceptorMetadata
 
     @Override
     public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptionType interceptionType) {
-        return new SimpleInterceptorInvocation(interceptorInstance, interceptionType, getInterceptorMethods(interceptionType),
-                isTargetClassInterceptor());
+        List<Method> interceptorMethods = getInterceptorMethods(interceptionType);
+        return new SimpleInterceptorInvocation(interceptorInstance, interceptionType, interceptorMethods,
+                getInterceptorMethodInvokers(interceptionType, interceptorMethods), isTargetClassInterceptor());
+    }
+
+    private MethodInvoker[] getInterceptorMethodInvokers(InterceptionType interceptionType, List<Method> interceptorMethods) {
+        MethodInvoker[] invokers = interceptorMethodInvokers.get(interceptionType.ordinal());
+        if (invokers == null) {
+            invokers = new MethodInvoker[interceptorMethods.size()];
+            for (int i = 0; i < invokers.length; i++) {
+                invokers[i] = MethodInvoker.of(interceptorMethods.get(i));
+            }
+            // a concurrent initialization creates an equivalent array
+            interceptorMethodInvokers.set(interceptionType.ordinal(), invokers);
+        }
+        return invokers;
     }
 
     protected abstract boolean isTargetClassInterceptor();

@@ -60,28 +60,40 @@ abstract class AroundInvokeInvocationContext extends AbstractInvocationContext {
     public static AroundInvokeInvocationContext create(Object instance, Method method, Method proceed, Object[] args,
             List<InterceptorMethodInvocation> chain,
             Set<Annotation> interceptorBindings, Stack stack) {
+        return create(instance, method, proceed, MethodInvoker.of(proceed), args, chain, interceptorBindings, stack);
+    }
+
+    static AroundInvokeInvocationContext create(Object instance, Method method, Method proceed, MethodInvoker proceedInvoker,
+            Object[] args, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, Stack stack) {
         CombinedInterceptorAndDecoratorStackMethodHandler currentHandler = (stack == null) ? null : stack.peek();
         if (chain.size() == 1) {
-            return new TerminalAroundInvokeInvocationContext(instance, method, proceed, args, null, interceptorBindings,
-                    currentHandler);
+            return new TerminalAroundInvokeInvocationContext(instance, method, proceed, proceedInvoker, args, null,
+                    interceptorBindings, currentHandler, stack);
         } else {
-            return new NonTerminalAroundInvokeInvocationContext(instance, method, proceed, args, interceptorBindings, chain,
-                    currentHandler);
+            return new NonTerminalAroundInvokeInvocationContext(instance, method, proceed, proceedInvoker, args,
+                    interceptorBindings, chain, currentHandler, stack);
         }
     }
 
     final CombinedInterceptorAndDecoratorStackMethodHandler currentHandler;
+    // invokes the proceed method
+    final MethodInvoker proceedInvoker;
+    // the stack of the thread that created this context (may be null), avoids the thread-local lookup upon proceed()
+    final Stack creatorStack;
 
-    AroundInvokeInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
-            Map<String, Object> contextData,
-            Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
+    AroundInvokeInvocationContext(Object target, Method method, Method proceed, MethodInvoker proceedInvoker,
+            Object[] parameters, Map<String, Object> contextData,
+            Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler,
+            Stack stack) {
         super(target, method, proceed, parameters, contextData, interceptorBindings);
+        this.proceedInvoker = proceedInvoker;
         this.currentHandler = currentHandler;
+        this.creatorStack = stack;
     }
 
     @Override
     public Object proceed() throws Exception {
-        final Stack stack = InterceptionDecorationContext.startIfNotOnTop(currentHandler);
+        final Stack stack = InterceptionDecorationContext.startIfNotOnTop(creatorStack, currentHandler);
         try {
             return proceedInternal();
         } catch (InvocationTargetException e) {
