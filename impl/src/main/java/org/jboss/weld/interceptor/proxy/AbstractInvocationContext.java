@@ -37,8 +37,8 @@ abstract class AbstractInvocationContext implements InvocationContext {
     protected final Method method;
     protected Object[] parameters;
     protected final Object target;
-    protected final Object timer;
-    protected final Constructor<?> constructor;
+    // no timer field: timeouts are not intercepted by this implementation, getTimer() always returns null
+    // no constructor field: only needed for around construct interception, see SimpleInvocationContext
     protected final Set<Annotation> interceptorBindings;
     protected final Method proceed;
 
@@ -58,17 +58,10 @@ abstract class AbstractInvocationContext implements InvocationContext {
 
     protected AbstractInvocationContext(Object target, Method method, Method proceed, Object[] parameters,
             Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
-        this(target, method, proceed, null, parameters, null, contextData, interceptorBindings);
-    }
-
-    protected AbstractInvocationContext(Object target, Method method, Method proceed, Constructor<?> constructor,
-            Object[] parameters, Object timer, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
         this.target = target;
         this.method = method;
         this.proceed = proceed;
-        this.constructor = constructor;
         this.parameters = parameters;
-        this.timer = timer;
         this.contextData = contextData;
         this.interceptorBindings = interceptorBindings != null ? interceptorBindings : Collections.emptySet();
     }
@@ -89,7 +82,7 @@ abstract class AbstractInvocationContext implements InvocationContext {
     @Override
     @SuppressFBWarnings("EI_EXPOSE_REP")
     public Object[] getParameters() {
-        if (this.method != null || this.constructor != null) {
+        if (this.method != null || getConstructor() != null) {
             return parameters;
         } else {
             throw new IllegalStateException("Illegal invocation to getParameters() during lifecycle invocation");
@@ -114,7 +107,8 @@ abstract class AbstractInvocationContext implements InvocationContext {
 
     @SuppressFBWarnings("EI_EXPOSE_REP")
     public void setParameters(Object[] params) {
-        if (this.method != null || this.constructor != null) {
+        Constructor<?> constructor = getConstructor();
+        if (this.method != null || constructor != null) {
             // there is no requirement to do anything if params is null
             // but this is theoretically possible only if the target method has no arguments
             int newParametersCount = params == null ? 0 : params.length;
@@ -192,12 +186,12 @@ abstract class AbstractInvocationContext implements InvocationContext {
 
     @Override
     public Object getTimer() {
-        return timer;
+        return null;
     }
 
     @Override
     public Constructor<?> getConstructor() {
-        return constructor;
+        return null;
     }
 
     @Override
