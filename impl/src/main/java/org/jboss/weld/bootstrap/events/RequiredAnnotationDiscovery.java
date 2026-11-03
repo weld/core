@@ -21,9 +21,13 @@ import java.lang.annotation.Inherited;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -34,9 +38,15 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class RequiredAnnotationDiscovery implements Service {
+public class RequiredAnnotationDiscovery extends AbstractBootstrapService {
 
     private final ReflectionCache cache;
+
+    /**
+     * Complete annotation sets from searches that reached the end without a match. Successful searches
+     * short-circuit without publishing a partial set.
+     */
+    private final ConcurrentMap<Class<?>, Set<Class<? extends Annotation>>> matchingAnnotations = new ConcurrentHashMap<>();
 
     public RequiredAnnotationDiscovery(ReflectionCache cache) {
         this.cache = cache;
@@ -81,38 +91,35 @@ public class RequiredAnnotationDiscovery implements Service {
      * @return
      */
     public boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Class<? extends Annotation> requiredAnnotation) {
+        Set<Class<? extends Annotation>> cached = matchingAnnotations.get(annotatedType.getJavaClass());
+        if (cached != null) {
+            return cached.contains(requiredAnnotation);
+        }
+        Set<Class<? extends Annotation>> found = new HashSet<>();
         // class level annotations
-        if (containsAnnotation(annotatedType.getAnnotations(), requiredAnnotation, true)) {
+        if (containsAnnotations(annotatedType.getAnnotations(), requiredAnnotation, found)) {
             return true;
         }
         for (Class<?> clazz = annotatedType.getJavaClass(); clazz != null
                 && clazz != Object.class; clazz = clazz.getSuperclass()) {
             // fields
             for (Field field : clazz.getDeclaredFields()) {
-                if (containsAnnotations(cache.getAnnotations(field), requiredAnnotation)) {
+                if (containsAnnotations(cache.getAnnotations(field), requiredAnnotation, found)) {
                     return true;
                 }
             }
             // constructors
             for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-                if (containsAnnotations(cache.getAnnotations(constructor), requiredAnnotation)) {
+                if (containsAnnotations(cache.getAnnotations(constructor), requiredAnnotation, found)
+                        || containsParameterAnnotations(constructor.getParameterAnnotations(), requiredAnnotation, found)) {
                     return true;
-                }
-                for (Annotation[] parameterAnnotations : constructor.getParameterAnnotations()) {
-                    if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
-                        return true;
-                    }
                 }
             }
             // methods
             for (Method method : clazz.getDeclaredMethods()) {
-                if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation)) {
+                if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation, found)
+                        || containsParameterAnnotations(method.getParameterAnnotations(), requiredAnnotation, found)) {
                     return true;
-                }
-                for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
-                    if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
-                        return true;
-                    }
                 }
             }
         }
@@ -121,28 +128,31 @@ public class RequiredAnnotationDiscovery implements Service {
         for (Class<?> interfaceClazz : Reflections.getInterfaceClosure(annotatedType.getJavaClass())) {
             for (Method method : interfaceClazz.getDeclaredMethods()) {
                 if (Reflections.isDefault(method)) {
-                    if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation)) {
+                    if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation, found)
+                            || containsParameterAnnotations(method.getParameterAnnotations(), requiredAnnotation, found)) {
                         return true;
                     }
-                    for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
-                        if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
-                            return true;
-                        }
-                    }
                 }
+            }
+        }
+        matchingAnnotations.putIfAbsent(annotatedType.getJavaClass(), found);
+        return false;
+    }
+
+    private boolean containsParameterAnnotations(Annotation[][] parameterAnnotations,
+            Class<? extends Annotation> requiredAnnotation, Set<Class<? extends Annotation>> found) {
+        for (Annotation[] annotations : parameterAnnotations) {
+            if (containsAnnotations(annotations, requiredAnnotation, found)) {
+                return true;
             }
         }
         return false;
     }
 
-    private boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
-        return containsAnnotation(annotations, requiredAnnotation, true);
-    }
-
-    private boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation,
-            boolean checkMetaAnnotations) {
+    private boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation,
+            Set<Class<? extends Annotation>> found) {
         for (Annotation annotation : annotations) {
-            if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
+            if (containsAnnotation(annotation, requiredAnnotation, found)) {
                 return true;
             }
         }
@@ -150,14 +160,10 @@ public class RequiredAnnotationDiscovery implements Service {
     }
 
     private boolean containsAnnotations(Iterable<? extends Annotation> annotations,
-            Class<? extends Annotation> requiredAnnotation) {
-        return containsAnnotation(annotations, requiredAnnotation, true);
-    }
-
-    private boolean containsAnnotation(Iterable<? extends Annotation> annotations,
-            Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+            Class<? extends Annotation> requiredAnnotation,
+            Set<Class<? extends Annotation>> found) {
         for (Annotation annotation : annotations) {
-            if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
+            if (containsAnnotation(annotation, requiredAnnotation, found)) {
                 return true;
             }
         }
@@ -165,18 +171,23 @@ public class RequiredAnnotationDiscovery implements Service {
     }
 
     private boolean containsAnnotation(Annotation annotation, Class<? extends Annotation> requiredAnnotation,
-            boolean checkMetaAnnotations) {
+            Set<Class<? extends Annotation>> found) {
         Class<? extends Annotation> annotationType = annotation.annotationType();
         if (requiredAnnotation.equals(annotationType)) {
             return true;
         }
-        if (checkMetaAnnotations && containsAnnotation(cache.getAnnotations(annotationType), requiredAnnotation, false)) {
-            return true;
+        found.add(annotationType);
+        for (Annotation metaAnnotation : cache.getAnnotations(annotationType)) {
+            if (requiredAnnotation.equals(metaAnnotation.annotationType())) {
+                return true;
+            }
+            found.add(metaAnnotation.annotationType());
         }
         return false;
     }
 
     @Override
-    public void cleanup() {
+    public void cleanupAfterBoot() {
+        matchingAnnotations.clear();
     }
 }

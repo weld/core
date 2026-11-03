@@ -25,8 +25,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
@@ -290,45 +292,52 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         SetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = SetMultimap.newSetMultimap();
         processMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotationMap.values(), classTransformer, true);
         this.declaredMetaAnnotationMap = Multimaps.unmodifiableMultimap(declaredMetaAnnotationMap);
-        this.overriddenMethods = getOverriddenMethods(this, methodsTemp);
+        Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> methodsByDeclaringClass = groupMethodsByDeclaringClass(
+                methodsTemp);
+        this.overriddenMethods = getOverriddenMethods(this, methodsByDeclaringClass);
 
         // WELD-1548 remove all overriden methods except for those which are overriden by a bridge method
-        methodsTemp.removeAll(getOverriddenMethods(this, methodsTemp, true));
+        methodsTemp.removeAll(getOverriddenMethods(this, methodsByDeclaringClass, true));
 
         this.methods = methodsTemp;
         this.annotatedMethods = buildAnnotatedMethodMultimap(this.methods);
         this.annotatedMethodsByAnnotatedParameters = buildAnnotatedParameterMethodMultimap(this.methods);
     }
 
-    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
+    protected Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> groupMethodsByDeclaringClass(
             Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        return getOverriddenMethods(annotatedType, methods, false);
+        return methods.stream().collect(Collectors.groupingBy(method -> method.getJavaMember().getDeclaringClass()));
+    }
+
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
+            Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> methodsByDeclaringClass) {
+        return getOverriddenMethods(annotatedType, methodsByDeclaringClass, false);
     }
 
     /**
      *
      * @param annotatedType
-     * @param methods
+     * @param methodsByDeclaringClass
      * @param skipOverridingBridgeMethods If set to <code>true</code> the returning set will not contain methods overriden by a
      *        bridge method
      * @return the set of overriden methods
      */
     protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
-            Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
+            Map<Class<?>, List<EnhancedAnnotatedMethod<?, ? super T>>> methodsByDeclaringClass,
+            boolean skipOverridingBridgeMethods) {
         Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
         Multimap<MethodSignature, Package> seenMethods = SetMultimap.newSetMultimap();
         for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null
                 && clazz != Object.class; clazz = clazz.getSuperclass()) {
-            for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
-                if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
-                    if (skipOverridingBridgeMethods && method.getJavaMember().isBridge()) {
-                        continue;
-                    }
-                    if (isOverridden(method, seenMethods)) {
-                        overriddenMethods.add(method);
-                    }
-                    seenMethods.put(method.getSignature(), method.getPackage());
+            for (EnhancedAnnotatedMethod<?, ? super T> method : methodsByDeclaringClass.getOrDefault(clazz,
+                    Collections.emptyList())) {
+                if (skipOverridingBridgeMethods && method.getJavaMember().isBridge()) {
+                    continue;
                 }
+                if (isOverridden(method, seenMethods)) {
+                    overriddenMethods.add(method);
+                }
+                seenMethods.put(method.getSignature(), method.getPackage());
             }
         }
         return immutableSetView(overriddenMethods);
