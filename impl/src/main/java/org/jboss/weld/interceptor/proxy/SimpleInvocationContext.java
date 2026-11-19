@@ -34,14 +34,23 @@ import jakarta.interceptor.InvocationContext;
  */
 public class SimpleInvocationContext extends AbstractInvocationContext {
 
+    private final Constructor<?> constructor;
+
     public SimpleInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters,
             Set<Annotation> interceptorBindings) {
-        super(target, targetMethod, proceed, null, parameters, null, null, interceptorBindings);
+        super(target, targetMethod, proceed, parameters, null, interceptorBindings);
+        this.constructor = null;
     }
 
     public SimpleInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData,
             Set<Annotation> interceptorBindings) {
-        super(null, null, null, constructor, parameters, null, contextData, interceptorBindings);
+        super(null, null, null, parameters, contextData, interceptorBindings);
+        this.constructor = constructor;
+    }
+
+    @Override
+    public Constructor<?> getConstructor() {
+        return constructor;
     }
 
     @Override
