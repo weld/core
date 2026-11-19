@@ -27,6 +27,7 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ContextualInstance;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.contexts.CreationalContextImpl;
 import org.jboss.weld.contexts.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
@@ -53,11 +54,14 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     private static final long serialVersionUID = -8144230657830556503L;
     // The bean
     private transient Bean<T> bean;
+    // The same bean if it is a Weld bean (null otherwise); avoids the type check of ContextualInstance on every invocation
+    private final transient RIBean<T> riBean;
     // The bean index in the manager
     private final BeanIdentifier id;
     private final String contextId;
     // The actual type of the resulting bean instance
     private final transient Class<?> instanceType;
+    private final transient Container container;
     private final transient BeanManagerImpl manager;
     private final transient CurrentInjectionPoint currentInjectionPoint;
 
@@ -71,19 +75,25 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
      */
     public ContextBeanInstance(Bean<T> bean, BeanIdentifier id, String contextId) {
         this.bean = bean;
+        this.riBean = bean instanceof RIBean ? cast(bean) : null;
         this.id = id;
         this.contextId = contextId;
         this.instanceType = computeInstanceType(bean);
         BeanLogger.LOG.createdContextInstance(bean, id);
-        this.manager = Container.instance(contextId).deploymentManager();
+        this.container = Container.instance(contextId);
+        this.manager = container.deploymentManager();
         this.currentInjectionPoint = manager.getServices().get(CurrentInjectionPoint.class);
     }
 
     public T getInstance() {
-        if (!Container.isSet(contextId)) {
+        // Checking the container we were created for is a single volatile read; the registry lookup in
+        // Container.isSet() is only needed once that container has been cleaned up (shut down)
+        if (container.isCleanedUp() && !Container.isSet(contextId)) {
             throw ContextLogger.LOG.contextualReferenceNotValidAfterShutdown(bean, contextId);
         }
-        T existingInstance = ContextualInstance.getIfExists(bean, manager);
+        // for an @ApplicationScoped bean this is a single volatile read of the instance cached by its strategy
+        T existingInstance = riBean != null ? ContextualInstance.getIfExists(riBean, manager)
+                : ContextualInstance.getIfExists(bean, manager);
         if (existingInstance != null) {
             return existingInstance;
         }

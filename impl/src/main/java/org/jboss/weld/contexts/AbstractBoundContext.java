@@ -78,6 +78,9 @@ public abstract class AbstractBoundContext<S> extends AbstractManagedContext imp
 
     @Override
     public void deactivate() {
+        // The bean store may be dissociated/replaced while a request is still running (e.g. session replication).
+        // Flush the cached contextual instances so that no instance of the old bean store is served from the cache.
+        RequestScopedCache.invalidate();
         getBeanStore().detach();
         super.deactivate();
     }
