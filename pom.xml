@@ -61,14 +61,10 @@
         <arquillian.tomcat.version>1.2.5.Final</arquillian.tomcat.version>
         <atinject.tck.version>2.0.1</atinject.tck.version>
         <!-- Version of the CDI 5.0 TCK release -->
-        <cdi.tck.version>5.0.0</cdi.tck.version>
+        <cdi.tck.version>5.0.1-SNAPSHOT</cdi.tck.version>
         <!-- Version of the Jakarta EE 11 Platform TCK release -->
         <!-- TODO: Upgrade to the Jakarta EE 12 Platform TCK when available. -->
         <platform.tck.version>11.0.3</platform.tck.version>
-        <!-- By default, each mvn profile uses corresponding file from TCK repo, see jboss-tck-runner/pom.xml -->
-        <!-- We can also use our own file, needed for relaxed mode testing (see WeldMethodInterceptor) -->
-        <!-- Our variant is under src/test/tck/tck-tests.xml -->
-        <cdi.tck.suite.xml.file />
         <classfilewriter.version>1.3.1.Final</classfilewriter.version>
         <groovy.version>6.0.0</groovy.version>
         <htmlunit.version>2.70.0</htmlunit.version>
@@ -91,6 +87,7 @@
         <shrinkwrap.resolver.version>3.3.7</shrinkwrap.resolver.version>
         <spotbugs-maven-plugin.version>4.10.5.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.10.5</spotbugs-annotations-version>
+        <surefire.version>3.6.1</surefire.version>
         <testng.version>7.12.0</testng.version>
         <validation.api.version>3.1.1</validation.api.version>
         <weld.api.version>7.0.Final</weld.api.version>

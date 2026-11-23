@@ -274,7 +274,7 @@ jobs:
         run: |
           JBOSS_HOME=`pwd`'/wildfly'
           export JBOSS_HOME=`echo $JBOSS_HOME`
-          mvn clean verify -Dincontainer -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests-web.xml -Dadditional.vm.args="-Dorg.jboss.weld.construction.relaxed=true" -f jboss-tck-runner/pom.xml
+          mvn clean verify -Dincontainer -Prelaxed-construction -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -f jboss-tck-runner/pom.xml
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
@@ -295,7 +295,7 @@ jobs:
           path: 'server-log.tgz'
       - name: Build with Maven, no WildFly
         run: |
-          mvn clean verify -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dcdi.tck.suite.xml.file=src/test/tck/tck-tests.xml -Dorg.jboss.weld.construction.relaxed=true
+          mvn clean verify -Prelaxed-construction -Dorg.jboss.weld.construction.relaxed=true -Dno-format -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
       - name: Prepare failure archive (if maven failed)
         if: failure()
         shell: bash
