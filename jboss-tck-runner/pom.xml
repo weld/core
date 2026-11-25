@@ -164,11 +164,6 @@
                     <failIfNoTests>true</failIfNoTests>
                     <excludesFile>${project.build.directory}/tck/cdi-excludes.txt</excludesFile>
                     <includes>
-                        <include>**/Test*.java</include>
-                        <include>**/*Test.java</include>
-                        <include>**/*Tests.java</include>
-                        <include>**/*TestCase.java</include>
-                        <!-- The TCK suites select packages, including classes with other names. -->
                         <include>**/org/jboss/cdi/tck/tests/**/*.java</include>
                         <include>**/org/jboss/cdi/tck/interceptors/tests/**/*.java</include>
                     </includes>
