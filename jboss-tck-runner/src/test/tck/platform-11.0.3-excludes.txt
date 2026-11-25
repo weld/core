@@ -1,0 +1,10 @@
+# Exact class exclusions from jakarta.tck:cdi-tck-ee-impl:11.0.3:xml:suite.
+# This release has no txt:excludes artifact. Keep platform.tck.version at 11.0.3
+# while using this file; consume the TCK's txt:excludes artifact for a newer release.
+# https://github.com/jakartaee/cdi-tck/issues/440
+# This old CDI 4.1 core class is outside the Platform-only scan; retain the published entry.
+org.jboss.cdi.tck.tests.full.extensions.lifecycle.processBeanAttributes.specialization.VetoTest
+# CDITCK-587
+org.jboss.cdi.tck.tests.event.observer.transactional.roolback.TransactionalObserverRollbackTest
+# CDITCK-597
+org.jboss.cdi.tck.tests.deployment.packaging.ejb.EJBJarDeploymentTest

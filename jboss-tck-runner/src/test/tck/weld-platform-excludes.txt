@@ -1,0 +1,3 @@
+# Weld's WildFly runner does not provide the browser needed by this Platform TCK AJAX test.
+# Keep its other methods in the Platform run.
+**/org/jboss/cdi/tck/tests/context/conversation/LongRunningConversationPropagatedByFacesContextTest.java#testConversationPropagatedAjax

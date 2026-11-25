@@ -78,29 +78,6 @@
             <groupId>jakarta.cdi</groupId>
             <artifactId>jakarta.cdi-tck-core-impl</artifactId>
             <version>${cdi.tck.version}</version>
-            <type>xml</type>
-            <classifier>suite</classifier>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.el</groupId>
-                    <artifactId>jakarta.el-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jakarta.faces</groupId>
-                    <artifactId>jakarta.faces-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>container-se-api</artifactId>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.cdi</groupId>
-            <artifactId>jakarta.cdi-tck-core-impl</artifactId>
-            <version>${cdi.tck.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -143,6 +120,27 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-cdi-tck-excludes</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>jakarta.cdi</groupId>
+                                    <artifactId>jakarta.cdi-tck-core-impl</artifactId>
+                                    <version>${cdi.tck.version}</version>
+                                    <type>txt</type>
+                                    <classifier>excludes</classifier>
+                                    <destFileName>cdi-excludes.txt</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/tck</outputDirectory>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-weld-dependencies</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -163,17 +161,29 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+                    <failIfNoTests>true</failIfNoTests>
+                    <excludesFile>${project.build.directory}/tck/cdi-excludes.txt</excludesFile>
+                    <includes>
+                        <include>**/org/jboss/cdi/tck/tests/**/*.java</include>
+                        <include>**/org/jboss/cdi/tck/interceptors/tests/**/*.java</include>
+                    </includes>
                     <properties>
                         <property>
                             <name>usedefaultlisteners</name>
                             <value>false</value>
                         </property>
+                        <property>
+                            <name>listener</name>
+                            <value>org.jboss.cdi.tck.impl.testng.ConfigurationLoggingListener,org.jboss.cdi.tck.impl.testng.ProgressLoggingTestListener</value>
+                        </property>
+                        <property>
+                            <!-- TestNG 7.4.0 can produce an NPE with higher verbosity. -->
+                            <name>surefire.testng.verbose</name>
+                            <value>0</value>
+                        </property>
                     </properties>
                     <dependenciesToScan>
-                        <!-- Jakarta CDI spec TCK part -->
                         <dependency>jakarta.cdi:jakarta.cdi-tck-core-impl</dependency>
-                        <!-- Jakarta Platform TCK bits -->
-                        <dependency>jakarta.tck:cdi-tck-ee-impl</dependency>
                     </dependenciesToScan>
                 </configuration>
             </plugin>
@@ -225,58 +235,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <!-- Copies the TCK testsuite xml artifacts into the target/suites directory for use by profiles -->
-            <id>copy-test-suites</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>!skipCopyTestSuites</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-test-suites</id>
-                                <phase>process-test-resources</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>jakarta.cdi</groupId>
-                                    <artifactId>jakarta.cdi-tck-core-impl</artifactId>
-                                    <version>${cdi.tck.version}</version>
-                                    <type>xml</type>
-                                    <classifier>suite</classifier>
-                                    <overWrite>false</overWrite>
-                                    <destFileName>tck-core-suite.xml</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>jakarta.tck</groupId>
-                                    <artifactId>cdi-tck-ee-impl</artifactId>
-                                    <version>${platform.tck.version}</version>
-                                    <type>xml</type>
-                                    <classifier>suite</classifier>
-                                    <overWrite>false</overWrite>
-                                    <destFileName>tck-web-suite.xml</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>target/suites</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!-- Run the TCK in standalone mode -->
         <profile>
             <id>weld-embedded</id>
@@ -286,9 +244,6 @@
                     <name>!incontainer</name>
                 </property>
             </activation>
-            <properties>
-                <cdi.tck.suite.xml.file>target/suites/tck-core-suite.xml</cdi.tck.suite.xml.file>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
@@ -332,7 +287,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${surefire.version}</version>
                         <configuration>
                             <excludedGroups>integration,javaee-full,se</excludedGroups>
                             <systemPropertyVariables>
@@ -342,9 +296,6 @@
                                 <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
                                 <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
                             </systemPropertyVariables>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${cdi.tck.suite.xml.file}</suiteXmlFile>
-                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -363,28 +314,8 @@
             </activation>
             <properties>
                 <excluded.groups>se</excluded.groups>
-                <!-- This is an exlude list taken from EE Platform TCK repo -->
-                <!-- Note that we run those tests combined with TCKs from CDI repo that do have their own file -->
-                <!-- In case the Platform TCK isn't a superset of the CDI TCK, we will need to adjust this -->
-                <!-- <cdi.tck.suite.xml.file>target/suites/tck-web-suite.xml</cdi.tck.suite.xml.file>-->
-                <!-- Due to an extra exclusion needed, we now use custom XML file, see https://github.com/jakartaee/platform-tck/issues/1228 -->
-                <cdi.tck.suite.xml.file>src/test/tck/tck-tests-web.xml</cdi.tck.suite.xml.file>
             </properties>
             <dependencies>
-                <dependency>
-                    <groupId>jakarta.tck</groupId>
-                    <artifactId>cdi-tck-ee-impl</artifactId>
-                    <version>${platform.tck.version}</version>
-                    <type>xml</type>
-                    <classifier>suite</classifier>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>jakarta.tck</groupId>
-                    <artifactId>cdi-tck-ee-impl</artifactId>
-                    <version>${platform.tck.version}</version>
-                    <scope>test</scope>
-                </dependency>
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
@@ -444,13 +375,6 @@
                                 --add-opens=java.management/javax.management=ALL-UNNAMED
                                 --add-opens=java.naming/javax.naming=ALL-UNNAMED
                             </argLine>
-                            <properties>
-                                <property>
-                                    <!-- Note a 7.4.0 issue results in NPEs and useless output if you go higher than 1 here -->
-                                    <name>surefire.testng.verbose</name>
-                                    <value>0</value>
-                                </property>
-                            </properties>
                             <systemPropertyVariables>
                                 <!-- Silencing the broken code in getActiveConfiguration(),
                                     see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
@@ -466,12 +390,86 @@
                                 <gc.args />
                                 <!-- This property propagates to the javaVmArguments in arquillian.xml -->
                                 <additional.vm.args>
-                                    ${surefire.plugin.jdk17.args}
+                                    ${additional.vm.args} ${surefire.plugin.jdk17.args}
                                 </additional.vm.args>
                             </systemProperties>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${cdi.tck.suite.xml.file}</suiteXmlFile>
-                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Run the released Platform CDI EE TCK in its own WildFly test run. -->
+        <profile>
+            <id>platform-tck</id>
+            <dependencies>
+                <dependency>
+                    <groupId>jakarta.tck</groupId>
+                    <artifactId>cdi-tck-ee-impl</artifactId>
+                    <version>${platform.tck.version}</version>
+                    <scope>test</scope>
+                    <!-- Its CDI 4.1 core dependency supplies TransformationUtils to the EE shutdown test. -->
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compose-platform-wildfly-excludes</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <concat destfile="${project.build.directory}/tck/platform-wildfly-excludes.txt" fixlastline="true" force="true">
+                                            <filelist dir="${project.basedir}/src/test/tck" files="platform-11.0.3-excludes.txt,weld-platform-excludes.txt" />
+                                        </concat>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-platform-tck-mode-and-version</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireProperty>
+                                            <property>incontainer</property>
+                                            <regex>^true$</regex>
+                                            <message>Run the Platform CDI EE TCK with -Dincontainer and -Pplatform-tck.</message>
+                                        </requireProperty>
+                                        <!-- This local copy matches only the immutable Platform 11.0.3 suite.
+                                             When a newer TCK publishes txt:excludes, consume that artifact instead. -->
+                                        <requireProperty>
+                                            <property>platform.tck.version</property>
+                                            <regex>^11[.]0[.]3$</regex>
+                                            <message>Update the Platform exclusion source when changing platform.tck.version.</message>
+                                        </requireProperty>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <dependenciesToScan combine.self="override">
+                                <dependency>jakarta.tck:cdi-tck-ee-impl</dependency>
+                            </dependenciesToScan>
+                            <excludesFile>${project.build.directory}/tck/platform-wildfly-excludes.txt</excludesFile>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -487,9 +485,6 @@
                     <value>se</value>
                 </property>
             </activation>
-            <properties>
-                <cdi.tck.suite.xml.file>target/suites/tck-core-suite.xml</cdi.tck.suite.xml.file>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
@@ -544,9 +539,32 @@
                                 <arquillian.launch>weld-se</arquillian.launch>
                                 <libPath>${project.build.outputDirectory}</libPath>
                             </systemPropertyVariables>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${cdi.tck.suite.xml.file}</suiteXmlFile>
-                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Keep relaxed construction and its three conditional exclusions together. -->
+        <profile>
+            <id>relaxed-construction</id>
+            <properties>
+                <additional.vm.args>-Dorg.jboss.weld.construction.relaxed=true</additional.vm.args>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <org.jboss.weld.construction.relaxed>true</org.jboss.weld.construction.relaxed>
+                            </systemPropertyVariables>
+                            <excludes>
+                                <exclude>**/org/jboss/cdi/tck/tests/implementation/simple/lifecycle/unproxyable/UnproxyableManagedBeanTest.java</exclude>
+                                <exclude>**/org/jboss/cdi/tck/tests/lookup/clientProxy/unproxyable/beanConstructor/BeanConstructorWithParametersTest.java</exclude>
+                                <exclude>**/org/jboss/cdi/tck/tests/lookup/clientProxy/unproxyable/privateConstructor/PrivateConstructorTest.java</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
