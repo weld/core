@@ -89,6 +89,9 @@
         <shrinkwrap.resolver.version>3.3.7</shrinkwrap.resolver.version>
         <spotbugs-maven-plugin.version>4.10.5.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations-version>4.10.5</spotbugs-annotations-version>
+        <!-- CDI 4.1 TCK execution still uses TestNG XML suites, which Surefire 3.6+ does not support.
+             Keep Weld 6 on this version when upgrading Weld parent. -->
+        <surefire.version>3.5.6</surefire.version>
         <testng.version>7.9.0</testng.version>
         <weld.api.version>6.0.Final</weld.api.version>
         <wildfly.arquillian.version>5.1.0.Final</wildfly.arquillian.version>
