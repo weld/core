@@ -183,10 +183,7 @@
                         </property>
                     </properties>
                     <dependenciesToScan>
-                        <!-- Jakarta CDI spec TCK part -->
                         <dependency>jakarta.cdi:jakarta.cdi-tck-core-impl</dependency>
-                        <!-- Jakarta Platform TCK bits -->
-                        <dependency>jakarta.tck:cdi-tck-ee-impl</dependency>
                     </dependenciesToScan>
                 </configuration>
             </plugin>
@@ -320,14 +317,6 @@
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>jakarta.tck</groupId>
-                    <artifactId>cdi-tck-ee-impl</artifactId>
-                    <version>${platform.tck.version}</version>
-                    <scope>test</scope>
-                    <!-- CDI 4.1 core supplies TransformationUtils for the EE shutdown test.
-                         The scan list above selects only CDI 5 core and this EE artifact. -->
-                </dependency>
-                <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
                     <scope>test</scope>
@@ -348,59 +337,6 @@
                     </resource>
                 </resources>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-platform-tck-suite</id>
-                                <phase>process-test-resources</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>jakarta.tck</groupId>
-                                            <artifactId>cdi-tck-ee-impl</artifactId>
-                                            <version>${platform.tck.version}</version>
-                                            <type>xml</type>
-                                            <classifier>suite</classifier>
-                                            <destFileName>platform-suite.xml</destFileName>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>${project.build.directory}/tck</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>derive-platform-tck-excludes</id>
-                                <phase>process-test-resources</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <copy file="${project.build.directory}/tck/platform-suite.xml" tofile="${project.build.directory}/tck/platform-suite-no-dtd.xml" />
-                                        <!-- XSLT does not need the suite's remote TestNG DTD. -->
-                                        <replaceregexp file="${project.build.directory}/tck/platform-suite-no-dtd.xml" match="&lt;!DOCTYPE[^&gt;]*&gt;" replace="" byline="true" />
-                                        <xslt in="${project.build.directory}/tck/platform-suite-no-dtd.xml" out="${project.build.directory}/tck/platform-excludes.txt" style="${project.basedir}/src/test/tck/platform-excludes.xsl" force="true" />
-                                        <concat destfile="${project.build.directory}/tck/wildfly-excludes.txt" fixlastline="true" force="true">
-                                            <filelist dir="${project.build.directory}/tck" files="cdi-excludes.txt,platform-excludes.txt" />
-                                        </concat>
-                                        <!-- Selenium/Chrome AJAX test excluded for ordinary and relaxed WildFly. -->
-                                        <echo file="${project.build.directory}/tck/wildfly-excludes.txt" append="true">**/org/jboss/cdi/tck/tests/context/conversation/LongRunningConversationPropagatedByFacesContextTest.java#testConversationPropagatedAjax
-</echo>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
@@ -428,7 +364,6 @@
                         <version>${surefire.version}</version>
                         <configuration>
                             <excludedGroups>${excluded.groups}</excludedGroups>
-                            <excludesFile>${project.build.directory}/tck/wildfly-excludes.txt</excludesFile>
 
                             <argLine>
                                 --add-exports=java.desktop/sun.awt=ALL-UNNAMED
@@ -458,6 +393,83 @@
                                     ${additional.vm.args} ${surefire.plugin.jdk17.args}
                                 </additional.vm.args>
                             </systemProperties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Run the released Platform CDI EE TCK in its own WildFly test run. -->
+        <profile>
+            <id>platform-tck</id>
+            <dependencies>
+                <dependency>
+                    <groupId>jakarta.tck</groupId>
+                    <artifactId>cdi-tck-ee-impl</artifactId>
+                    <version>${platform.tck.version}</version>
+                    <scope>test</scope>
+                    <!-- Its CDI 4.1 core dependency supplies TransformationUtils to the EE shutdown test. -->
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compose-platform-wildfly-excludes</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <concat destfile="${project.build.directory}/tck/platform-wildfly-excludes.txt" fixlastline="true" force="true">
+                                            <filelist dir="${project.basedir}/src/test/tck" files="platform-11.0.3-excludes.txt,weld-platform-excludes.txt" />
+                                        </concat>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-platform-tck-mode-and-version</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireProperty>
+                                            <property>incontainer</property>
+                                            <regex>^true$</regex>
+                                            <message>Run the Platform CDI EE TCK with -Dincontainer and -Pplatform-tck.</message>
+                                        </requireProperty>
+                                        <!-- This local copy matches only the immutable Platform 11.0.3 suite.
+                                             When a newer TCK publishes txt:excludes, consume that artifact instead. -->
+                                        <requireProperty>
+                                            <property>platform.tck.version</property>
+                                            <regex>^11[.]0[.]3$</regex>
+                                            <message>Update the Platform exclusion source when changing platform.tck.version.</message>
+                                        </requireProperty>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <dependenciesToScan combine.self="override">
+                                <dependency>jakarta.tck:cdi-tck-ee-impl</dependency>
+                            </dependenciesToScan>
+                            <excludesFile>${project.build.directory}/tck/platform-wildfly-excludes.txt</excludesFile>
                         </configuration>
                     </plugin>
                 </plugins>
