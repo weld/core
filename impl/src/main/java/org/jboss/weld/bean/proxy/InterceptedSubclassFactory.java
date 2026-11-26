@@ -494,8 +494,14 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             b.aconstNull();
         }
 
-        b.iconst(methodInfo.getParameterTypes().length);
-        b.anewarray(Object.class.getName());
+        if (methodInfo.getParameterTypes().length == 0) {
+            // share an empty array instead of allocating one upon every invocation
+            b.getstatic(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "NO_ARGUMENTS",
+                    "[" + LJAVA_LANG_OBJECT);
+        } else {
+            b.iconst(methodInfo.getParameterTypes().length);
+            b.anewarray(Object.class.getName());
+        }
 
         int localVariableCount = 1;
 
