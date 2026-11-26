@@ -28,14 +28,22 @@ public class RequestContextImpl extends AbstractUnboundContext implements Reques
         // Attach bean store (this context is unbound, so this can simply be thread-scoped
         setBeanStore(new HashMapBeanStore());
         super.activate();
+        // Enable the thread-local caches of request scoped instances and of the interception/decoration
+        // context stack for this request, the same way the bound and HTTP request contexts do
+        RequestScopedCache.beginRequest();
     }
 
     @Override
     public void deactivate() {
-        super.deactivate();
-        // Detach the bean store
-        setBeanStore(null);
-        cleanup();
+        try {
+            // end the cache before instances are destroyed so that no cached (destroyed) instance can be returned
+            RequestScopedCache.endRequest();
+        } finally {
+            super.deactivate();
+            // Detach the bean store
+            setBeanStore(null);
+            cleanup();
+        }
     }
 
     @Override
